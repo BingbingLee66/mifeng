@@ -1,0 +1,177 @@
+<template>
+  <div class="app-container">
+    <div class="block">
+      <el-form ref="query" label-width="auto" label-position="right" :model="query">
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="文章标题：">
+              <el-input v-model="query.title" placeholder="请输入文章标题"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-left: 10px;">
+            <el-form-item label="文章状态：">
+              <el-select v-model="query.status">
+                <el-option label="已发布" :value="1"></el-option>
+                <el-option label="已冻结(商会)" :value="0"></el-option>
+                <el-option label="已冻结(平台)" :value="3"></el-option>
+                <el-option label="审核不通过" :value="5"></el-option>
+                <el-option label="所有" :value="-1"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-left: 10px;">
+            <el-form-item :span="12" label="栏目：">
+              <el-select v-model="query.contentColumnId">
+                <el-option v-for="cc in contentColumnOptions" :label="cc.label" :value="cc.value" :key="cc.value"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-left: 10px;">
+            <el-form-item label="发布时间：">
+              <el-select v-model="query.publishTimeType">
+                <el-option label="24小时内" :value="1"></el-option>
+                <el-option label="3天内" :value="2"></el-option>
+                <el-option label="7天内" :value="3"></el-option>
+                <el-option label="一个月内" :value="4"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-form-item label=" ">
+              <el-button type="primary" @click="fetchData($event)" :actionid="getId('', '查询')" v-if="has('', '查询')">查询</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+    <br/>
+    <el-row>
+      <el-button type="danger" @click="batchDelArticle($event)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除</el-button>
+      <el-button type="danger" @click="batchUpdateStatus($event)" :actionid="getId('', '冻结')" v-if="has('', '冻结')">冻结</el-button>
+      <el-button type="primary" @click="goSettop($event)" :actionid="getId('', '置顶管理')" v-if="has('', '置顶管理')">置顶管理</el-button>
+    </el-row>
+    <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55px">
+      </el-table-column>
+      <!-- <el-table-column type="index" label="序号" width="60px">
+      </el-table-column> -->
+      <el-table-column label="ID" width="80px">
+        <template slot-scope="scope">
+          {{scope.row.id}}
+        </template>
+      </el-table-column>
+      <el-table-column label="文章">
+        <template slot-scope="scope">
+          {{!scope.row.title ? scope.row.contentColumn : scope.row.title}}
+        </template>
+      </el-table-column>
+      <el-table-column label="栏目" width="100px">
+        <template slot-scope="scope">
+          {{scope.row.contentColumn}}
+        </template>
+      </el-table-column>
+      <el-table-column label="来源" width="180px">
+        <template slot-scope="scope">
+          <div v-if="scope.row.publishType == 1">{{scope.row.chamberName}}</div>
+          <div v-if="scope.row.publishType == 2 || scope.row.publishType == 5">{{scope.row.companyName}}</div>
+          <div v-if="scope.row.publishType == 3 || scope.row.publishType == 4">{{scope.row.sourceName}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="发布时间" width="180px">
+        <template slot-scope="scope">
+          {{scope.row.publishTs}}
+        </template>
+      </el-table-column>
+      <el-table-column label="文章状态" width="100px">
+        <template slot-scope="scope">
+          <div v-if="scope.row.status == 0">已冻结(商会)</div>
+          <div v-if="scope.row.status == 1">已发布</div>
+          <div v-if="scope.row.status == 3">已冻结(平台)</div>
+          <div v-if="scope.row.status == 5">审核不通过</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="置顶" width="100px">
+        <template slot-scope="scope">
+          <div v-if="scope.row.istop == 1">是</div>
+          <div v-if="scope.row.istop == 0">否</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button type="text" @click="top($event, scope.row)" :actionid="getId('', '置顶')" v-if="!(!scope.row.title) && has('', '置顶')">置顶</el-button>
+          <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">详情</el-button>
+          <el-button type="text" @click="edit(scope.row)" :actionid="getId('', '编辑')" v-if="has('', '编辑')">编辑</el-button>
+          <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '冻结')" v-if="has('', '冻结') && scope.row.status == 1">冻结</el-button>
+          <el-button type="text" v-if="has('', '解冻') && scope.row.status == 0" disabled>解冻</el-button>
+          <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '解冻')" v-if="has('', '解冻') && scope.row.status == 3">解冻</el-button>
+          <el-button type="text" @click="delArticle($event, scope.row)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :page-sizes="pageSizes"
+      :page-size="limit"
+      :total="total"
+      :current-page.sync="currentpage"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange">
+    </el-pagination>
+    <el-dialog
+      title=""
+      :visible.sync="visible"
+      width="80%">
+      <div class="m-preview-wrap">
+        <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="m-article-remark">不通过理由：{{detailObj.auditRemark}}</div>
+        <div class="m-preview-area">
+          <div class="m-article-title">{{detailObj.title}}</div>
+          <div class="m-article-content" v-html="detailObj.contentHtml"></div>
+        </div>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script src="./manager.js"></script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+  @import "src/styles/common.scss";
+</style>
+<style>
+.m-preview-wrap {
+  width: 95%;
+  height: auto;
+  min-height: 500px;
+}
+.m-preview-area {
+  width: 100%;
+  min-height: 500px;
+  margin: 30px 20px;
+  border: 1px solid #d9dde2;
+  overflow-y: auto;
+}
+.m-article-remark {
+  font-size: 19px;
+  font-weight: 500;
+  margin: 0px 20px;
+}
+.m-article-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 40px 40px 20px 40px;
+}
+.m-article-content {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.8;
+  margin: 0 40px 20px 40px;
+}
+.m-article-content>p>img {
+  margin: 20px 10%;
+  width: 80% !important;
+  height: auto !important;
+  /*max-height: 100% !important;*/
+}
+</style>

@@ -1,0 +1,194 @@
+<template>
+  <div class="app-container">
+    <div class="block">
+      <el-form ref="query" :model="query" label-width="80px">
+        <el-form-item label="状态：">
+          <el-col :span="4">
+            <el-select v-model="query.status" @change="fetchData" placeholder="请选择状态">
+              <el-option v-for="(item, index) in statusOptions" :label="item.label" :value="item.value" :key="index"></el-option>
+            </el-select>
+          </el-col>
+        </el-form-item>
+      </el-form>
+    </div>
+    <br/>
+    <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
+      <el-table-column type="index" label="序号" width="60px">
+      </el-table-column>
+      <!-- <el-table-column label="ID">
+        <template slot-scope="scope">
+          {{scope.row.id}}
+        </template>
+      </el-table-column> -->
+      <el-table-column label="商会名称">
+        <template slot-scope="scope">
+          {{scope.row.name}}
+        </template>
+      </el-table-column>
+      <el-table-column label="办公地址">
+        <template slot-scope="scope">
+          {{scope.row.address}}
+        </template>
+      </el-table-column>
+      <el-table-column label="营业执照">
+        <template slot-scope="scope">
+          <img style="width: 80px; height: 35px;" :src="scope.row.license" @click="enlarge(scope.row.license)"/>
+        </template>
+      </el-table-column>
+      <el-table-column label="商会会长">
+        <template slot-scope="scope">
+          {{scope.row.president}}
+        </template>
+      </el-table-column>
+      <el-table-column label="推荐人">
+        <template slot-scope="scope">
+          {{scope.row.referrer}}
+        </template>
+      </el-table-column>
+      <el-table-column label="申请人ID">
+        <template slot-scope="scope">
+          {{scope.row.userId}}
+        </template>
+      </el-table-column>
+      <el-table-column label="申请人手机号">
+        <template slot-scope="scope">
+          {{scope.row.phone}}
+        </template>
+      </el-table-column>
+      <el-table-column label="申请时间">
+        <template slot-scope="scope">
+          {{scope.row.createdTs}}
+        </template>
+      </el-table-column>
+      <el-table-column label="状态">
+        <template slot-scope="scope">
+          <div v-if="scope.row.auditStatus == 0">待审核</div>
+          <div v-if="scope.row.auditStatus == 1">通过</div>
+          <div v-if="scope.row.auditStatus == 2">驳回</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" >
+        <template slot-scope="scope">
+          <el-button type="text" @click="detail(scope.row)">详情</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :page-sizes="pageSizes"
+      :page-size="limit"
+      :total="total"
+      :current-page.sync="currentpage"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange">
+    </el-pagination>
+
+    <el-dialog
+      title="商会详情"
+      :visible.sync="detailVisible"
+      width="50%"
+      center>
+      <el-row>
+        <el-col :offset="2" :span="8">商会名称</el-col>
+        <el-col :span="10">{{detailObj.name}}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :offset="2" :span="8">商会会长</el-col>
+        <el-col :span="10">{{detailObj.president}}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :offset="2" :span="8">办公地址</el-col>
+        <el-col :span="10">{{detailObj.address}}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :offset="2" :span="8">手机号</el-col>
+        <el-col :span="10">{{detailObj.phone}}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :offset="2" :span="8">营业执照</el-col>
+        <el-col :span="10">
+          <div class="license-box"><img :src="detailObj.license" @click="enlarge(detailObj.license)"/></div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :offset="2" :span="8">推荐人</el-col>
+        <el-col :span="10" v-if="detailObj.referrer">{{detailObj.referrer}}</el-col>
+        <el-col :span="10" v-if="!detailObj.referrer">无</el-col>
+      </el-row>
+      <el-row>
+        <hr/>
+      </el-row>
+
+      <el-form v-if="detailObj.auditStatus == 0" ref="detail" :model="detailObj" :rules="rules" label-position="left" label-width="150px">
+        <el-row>
+          <el-col :offset="2" :span="20">
+            <el-form-item label="设置密码" prop="temporaryPass">
+              <el-input type="password" v-model="detailObj.temporaryPass"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :offset="2" :span="20">
+            <el-form-item label="确认密码" prop="confirmPassword">
+              <el-input type="password" v-model="detailObj.confirmPassword"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="detailVisible">
+          <el-col :offset="2" :span="20">
+            <el-form-item label="排序" prop="level">
+              <el-input v-model="detailObj.level" minlength=1></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <el-row v-if="detailObj.auditStatus != 0">
+        <el-col :offset="2" :span="8">审核结果</el-col>
+        <el-col :span="10">
+          <div v-if="detailObj.auditStatus == 1">通过</div>
+          <div v-if="detailObj.auditStatus == 2">驳回</div>
+        </el-col>
+      </el-row>
+      <el-row v-if="detailObj.auditStatus != 0">
+        <el-col :offset="2" :span="8">操作时间</el-col>
+        <el-col :span="10">{{detailObj.auditedTs}}</el-col>
+      </el-row>
+      <el-row v-if="detailObj.auditStatus != 0">
+        <el-col :offset="2" :span="8">操作人</el-col>
+        <el-col :span="10">{{detailObj.auditor}}</el-col>
+      </el-row>
+
+      <span slot="footer" class="dialog-footer" v-if="detailObj.auditStatus == 0">
+        <el-button type="primary" @click="audit($event, detailObj, 1)" :actionid="getId('', '通过')" v-if="has('', '通过')">通过</el-button>
+        <el-button type="primary" @click="audit($event, detailObj, 2)" :actionid="getId('', '驳回')" v-if="has('', '驳回')">驳回</el-button>
+        <el-button @click.native="detailVisible = false">取消</el-button>
+      </el-row>
+      </span>
+
+      <span slot="footer" class="dialog-footer" v-if="detailObj.auditStatus != 0">
+        <el-button type="primary" @click.native="detailVisible = false">确定</el-button>
+      </span>
+    </el-dialog>
+
+  </div>
+
+</template>
+
+<script src="./joinAudit.js"></script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+  @import "src/styles/common.scss";
+</style>
+<style>
+.license-box {
+  width: 180px;
+  height: 100px;
+  border-color: #409EFF;
+}
+.license-box img {
+  width: 100%;
+  height: 100%;
+}
+</style>
