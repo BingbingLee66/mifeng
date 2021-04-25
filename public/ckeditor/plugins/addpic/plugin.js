@@ -1,4 +1,4 @@
-var httpUrl = 'https://tccc.9kd.com/ecservice/upload/richhtml-custom-img-upload'; //  图片上传路径
+var httpUrl = 'https://ysh.9kd.com/ecservice/upload/richhtml-custom-img-upload'; //  图片上传路径
 CKEDITOR.plugins.add(
   'addpic', { // 注册名为addpic的插件
     init: function(editor) {
