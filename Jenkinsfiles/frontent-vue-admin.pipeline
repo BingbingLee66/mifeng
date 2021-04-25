@@ -19,6 +19,5 @@ node {
 		}
         }
 		echo "部署网站"
-		sshPublisher(publishers: [sshPublisherDesc(configName: "${server_name}",transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "sh /sdata/script/deploy_vue.sh ${project_name} $version &>>/sdata/log/script/deploy_vue_admin.log",execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes:false, patternSeparator: '[, ]+', remoteDirectory: '/sdata/web/src/admin',remoteDirectorySDF: false, removePrefix: 'dist', sourceFiles: 'dist/**')],usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
     }
 }
