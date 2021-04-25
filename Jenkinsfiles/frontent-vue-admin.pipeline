@@ -1,4 +1,4 @@
-def git_auth = "c49132f5-2cef-4169-82e4-ee6c53f1d63f"
+def git_auth = "d43a6983-a10d-4ee2-9c3b-0f1b911fe8f7"
 def git_url = "git@gitlab.kd:yunshanghui/frontend/shanghui-admin.git"
 
 node {	
