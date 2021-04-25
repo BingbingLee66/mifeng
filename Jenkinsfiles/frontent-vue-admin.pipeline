@@ -1,0 +1,24 @@
+def git_auth = "c49132f5-2cef-4169-82e4-ee6c53f1d63f"
+def git_url = "git@gitlab.kd:yunshanghui/frontend/shanghui-admin.git"
+
+node {	
+    stage('拉取代码') {
+        if (action == "发布"){
+        checkout([$class: 'GitSCM', branches: [[name: '*/${branch}']],doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [],userRemoteConfigs: [[credentialsId: "${git_auth}", url: "$git_url"]]])
+        }
+    }
+    stage('打包，部署网站') {
+        if (action == "发布"){
+		echo "npm 打包"
+		nodejs('nodejs15'){
+		    sh '''
+			    npm config set registry https://registry.npm.taobao.org
+			    npm install
+			    npm run build
+			'''
+		}
+        }
+		echo "部署网站"
+		sshPublisher(publishers: [sshPublisherDesc(configName: "${server_name}",transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "sh /sdata/script/deploy_vue.sh ${project_name} $version &>>/sdata/log/script/deploy_vue_admin.log",execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes:false, patternSeparator: '[, ]+', remoteDirectory: '/sdata/web/src/admin',remoteDirectorySDF: false, removePrefix: 'dist', sourceFiles: 'dist/**')],usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+    }
+}
