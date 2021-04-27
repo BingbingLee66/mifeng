@@ -21,7 +21,7 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
+  publicPath: process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'test' ? './' : '/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: false,
