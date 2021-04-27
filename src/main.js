@@ -45,3 +45,7 @@ new Vue({
   i18n,
   render: h => h(App)
 })
+
+window.ysh = {
+  baseApiUrl: process.env.VUE_APP_BASE_API
+}
