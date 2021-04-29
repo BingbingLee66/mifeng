@@ -1,4 +1,4 @@
-import { getInfo, createQrcode } from '@/api/system/property'
+import { refreshGetInfo, getInfo, createQrcode } from '@/api/system/property'
 
 export default {
   data() {
@@ -97,6 +97,14 @@ export default {
       var alink = document.createElement('a')
       alink.href = img.src
       alink.click()
+    },
+    refresh() {
+      let params = {
+        ckey: this.$store.getters.ckey
+      }
+      refreshGetInfo(params).then(response => {
+        this.property = response.data.data
+      })
     }
   }
 }

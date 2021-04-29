@@ -8,9 +8,17 @@ export function getList (params) {
   })
 }
 
-export function getInfo (params) {
+export function getInfo(params) {
   return request({
     url: '/ec/systemProperty/me',
+    method: 'get',
+    params
+  })
+}
+
+export function refreshGetInfo(params) {
+  return request({
+    url: '/ec/systemProperty/update-qrcode',
     method: 'get',
     params
   })
