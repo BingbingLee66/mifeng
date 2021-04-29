@@ -52,82 +52,70 @@ export default {
         companyPositionId: '',
         license: '',
         companyIntroduction: '',
-        type: 0
+        type: 1
       },
       memberPostOptions: [],
       tradeOptions: [],
       positionOptions: [],
       nativeOptions: [],
       type: 'add',
-      rules: {
+      rules1: {
+        companyLogo: [
+          { required: true, message: '公司LOGO必须上传', trigger: 'change' }
+        ],
+        companyName: [
+          { required: true, message: '公司名称不能为空', trigger: 'blur' }
+        ],
         name: [
           { required: true, message: '会员名称不能为空', trigger: 'blur' }
         ],
+        companyPhone: [
+          { required: true, message: '联系方式不能为空', trigger: 'blur' },
+          { validator: checkTel, tigger: 'change' }
+        ],
+        tradeCas: [
+          { required: true, message: '行业类型不能为空', trigger: 'change' }
+        ],
+        companyPositionId: [
+          { required: true, message: '会内职位不能为空', trigger: 'change' }
+        ],
+        license: [
+          { required: true, message: '营业执照必须上传', trigger: 'change' }
+        ],
+        phone: [
+          { validator: checkPhone, trigger: 'change' }
+        ]
+      },
+      rules: {
         portrait: [
-          { required: true, message: '头像不能为空', trigger: 'blur' }
+          { required: true, message: '头像不能为空', trigger: 'change' }
         ],
-        nativeCas: [
-          { required: true, message: '籍贯不能为空', trigger: 'change' }
-        ],
-        birthday: [
-          { required: true, message: '生日不能为空', trigger: 'blur' }
+        name: [
+          { required: true, message: '会员名称不能为空', trigger: 'blur' }
         ],
         gender: [
-          { required: true, message: '性别不能为空', trigger: 'blur' }
+          { required: true, message: '性别不能为空', trigger: 'change' }
         ],
         phone: [
           { required: true, message: '手机号码不能为空', trigger: 'blur' },
           { validator: checkPhone, trigger: 'change' }
         ],
-        joinedTs: [
-          { required: true, message: '入会时间不能为空', trigger: 'blur' }
-        ],
-        memberPostId: [
-          { required: true, message: '职位不能为空', trigger: 'blur' }
-        ],
-        idCard: [
-          { required: true, message: '身份证号码不能为空', trigger: 'blur' },
-          { validator: checkIdCard, tigger: 'change' }
-        ],
-        frontOfIdCard: [
-          { required: true, message: '身份证头像面必须上传', trigger: 'blur' }
-        ],
-        backOfIdCard: [
-          { required: true, message: '身份证国徽面必须上传', trigger: 'blur' }
-        ],
-        resume: [
-          { required: true, message: '个人履历不能为空', trigger: 'blur' }
-        ],
-        // company
-        companyName: [
-          // { required: true, message: '公司名称不能为空', trigger: 'blur' }
-        ],
-        companyLogo: [
-          // { required: true, message: '公司LOGO必须上传', trigger: 'blur' }
-        ],
         tradeCas: [
-          // { required: true, message: '行业类型不能为空', trigger: 'blur' }
-        ],
-        companyPhone: [
-          // { required: true, message: '电话号码不能为空', trigger: 'blur' },
-          { validator: checkTel, tigger: 'change' }
-        ],
-        companyAddress: [
-          // { required: true, message: '办公地址不能为空', trigger: 'blur' }
+          { required: true, message: '行业类型不能为空', trigger: 'change' }
         ],
         companyPositionId: [
-          // { required: true, message: '职务不能为空', trigger: 'blur' }
+          { required: true, message: '会内职位不能为空', trigger: 'change' }
         ],
-        license: [
-          // { required: true, message: '营业执照必须上传', trigger: 'blur' }
+        frontOfIdCard: [
+          { required: true, message: '身份证头像面必须上传', trigger: 'change' }
         ],
-        companyIntroduction: [
-          // { required: true, message: '公司介绍不能为空', trigger: 'blur' }
+        backOfIdCard: [
+          { required: true, message: '身份证国徽面必须上传', trigger: 'change' }
         ]
       }
     }
   },
-  mounted () {
+  mounted() {
     this.getNativeOptions()
     if (this.$route.params.memberId) {
       this.memberId = this.$route.params.memberId
@@ -144,9 +132,7 @@ export default {
       this.querytype = window.localStorage.getItem('detail-type')
     }
   },
-  computed: {
-  },
-  created () {
+  created() {
     this.getMemberType()
     this.getPositionType()
   },
@@ -203,7 +189,7 @@ export default {
         })
       }
 
-      
+
     },
     transNativePlace (obj) {
       let nativePlace = obj.nativePlace
@@ -373,31 +359,58 @@ export default {
       })
       console.log(this.formObj.license)
     },
-    save () {
-      this.$refs['form'].validate((valid) => {
-        if (valid) {
-          if (this.type === 'add') {
-            this.formObj['ckey'] = this.$store.getters.ckey
-            add(this.formObj).then(response => {
-              this.$message({
-                message: '操作成功',
-                type: 'success'
+    save() {
+      if (this.formObj.type === 1) {
+        this.$refs['form1'].validate((valid) => {
+          if (valid) {
+            if (this.type === 'add') {
+              this.formObj['ckey'] = this.$store.getters.ckey
+              add(this.formObj).then(response => {
+                this.$message({
+                  message: '操作成功',
+                  type: 'success'
+                })
+                this.closeTab()
               })
-              this.closeTab()
-            })
-          } else if (this.type === 'edit') {
-            update(this.formObj).then(response => {
-              this.$message({
-                message: '操作成功',
-                type: 'success'
+            } else if (this.type === 'edit') {
+              update(this.formObj).then(response => {
+                this.$message({
+                  message: '操作成功',
+                  type: 'success'
+                })
+                this.closeTab()
               })
-              this.closeTab()
-            })
+            }
+          } else {
+            return false
           }
-        } else {
-          return false
-        }
-      })
+        })
+      } else {
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            if (this.type === 'add') {
+              this.formObj['ckey'] = this.$store.getters.ckey
+              add(this.formObj).then(response => {
+                this.$message({
+                  message: '操作成功',
+                  type: 'success'
+                })
+                this.closeTab()
+              })
+            } else if (this.type === 'edit') {
+              update(this.formObj).then(response => {
+                this.$message({
+                  message: '操作成功',
+                  type: 'success'
+                })
+                this.closeTab()
+              })
+            }
+          } else {
+            return false
+          }
+        })
+      }
     },
     handleItemChange(val) {
       let province = area.province_list
@@ -416,8 +429,8 @@ export default {
       this.formObj.nativePlace = result
       // console.log(this.formObj.nativePlace)
     },
-    handlerChange (value) {
+    handlerChange(value) {
       this.formObj.tradeId = value[value.length - 1]
-    },
+    }
   }
 }
