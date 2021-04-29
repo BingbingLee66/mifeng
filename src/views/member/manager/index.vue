@@ -82,7 +82,7 @@
           {{scope.row.phone}}
         </template>
       </el-table-column>
-      <el-table-column label="职位" width="100px">
+      <el-table-column label="会内职位" width="100px">
         <template slot-scope="scope">
           {{scope.row.postName}}
         </template>
@@ -97,12 +97,12 @@
           {{scope.row.tradeName}}
         </template>
       </el-table-column>
-      <el-table-column label="入会类型" width="100px">
+      <!-- <el-table-column label="入会类型" width="100px">
         <template slot-scope="scope">
           <div v-if="scope.row.type == 0">个人</div>
           <div v-if="scope.row.type == 1">企业</div>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="入会时间">
         <template slot-scope="scope">
           {{scope.row.joinedTs}}
