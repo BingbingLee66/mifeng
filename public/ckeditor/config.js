@@ -49,9 +49,10 @@ CKEDITOR.editorConfig = function( config ) {
 	// Upload handler url
 	config.filebrowserUploadMethod = 'form';
 	var domain = window.location.hostname;
-	var sitePrefix = 'https://'+domain+'/';
+	//var sitePrefix = 'https://'+domain+'/';
+  var sitePrefix = window.ysh.baseApiUrl;
 	// config.filebrowserImageUploadUrl = sitePrefix + 'ecadmin/upload/richhtml-img-upload';
-	config.filebrowserImageUploadUrl = sitePrefix + 'ecservice/upload/richhtml-img-upload';
+	config.filebrowserImageUploadUrl = sitePrefix + '/upload/richhtml-img-upload';
 	config.image_previewText=' ';
 
 	config.font_names='宋体/simsun;黑体/simhei;微软雅黑/msyh;'+ config.font_names;

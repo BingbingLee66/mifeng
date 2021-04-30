@@ -53,7 +53,7 @@
             <div v-if="member.gender == 1">男</div>
             <div v-if="member.gender == 2">女</div>
           </td>
-          <td width="8%">商会职位</td>
+          <td width="8%">会内职位</td>
           <td width="30%">{{member.postName}}</td>
         </tr>
         <tr align="center" height="45">
@@ -74,7 +74,7 @@
           <td colspan="2"></td>
         </tr>
         <tr align="center" height="45">
-          <td width="8%">个人履历</td>
+          <td width="8%">个人简历</td>
           <td align="left" height="150" colspan="10">{{resumeCp(member.resume)}} <el-button type="text" @click="resumeDetail(member.resume)">详情</el-button></td>
         </tr>
         <tr align="left" height="45">
@@ -86,15 +86,15 @@
           <td width="24%" rowspan="4">
             <div class="head-portrait"><img :src="member.companyLogo" v-if="member.companyLogo != ''" /></div>
           </td>
-          <td width="8%">公司名称</td>
+          <td width="8%">企业名称</td>
           <td width="30%">{{member.companyName}}</td>
-          <td width="8%">职务</td>
+          <td width="8%">企业职位</td>
           <td width="30%">{{member.companyPosition}}</td>
         </tr>
         <tr align="center" height="45">
           <td width="8%">行业</td>
           <td width="30%">{{member.tradeName}}</td>
-          <td width="8%">联系电话</td>
+          <td width="8%">联系方式</td>
           <td width="30%">{{member.companyPhone}}</td>
         </tr>
         <tr align="center" height="45">
@@ -104,7 +104,7 @@
           <td width="30%"><el-button type="text" @click="licenseDetail(member)">详情</el-button></td>
         </tr>
         <tr align="center" height="45">
-          <td width="8%">公司介绍</td>
+          <td width="8%">企业简介</td>
           <td align="left" height="150" colspan="10">{{companyInstrodCp(member.companyIntroduction)}} <el-button type="text" @click="companyIntroductionDetail(member.companyIntroduction)">详情</el-button></td>
         </tr>
       </table>

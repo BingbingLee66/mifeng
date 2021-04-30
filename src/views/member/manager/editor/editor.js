@@ -203,7 +203,7 @@ export default {
         })
       }
 
-      
+
     },
     transNativePlace (obj) {
       let nativePlace = obj.nativePlace
@@ -324,8 +324,8 @@ export default {
     },
     beforeAvatarUpload (file) {
       if (file.type !== 'image/jpeg' &&
-            file.type !== 'image/jpg' &&
-            file.type !== 'image/png') {
+        file.type !== 'image/jpg' &&
+        file.type !== 'image/png') {
         this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
         return false
       }

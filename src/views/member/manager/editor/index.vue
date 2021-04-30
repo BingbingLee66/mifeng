@@ -28,9 +28,9 @@
                 :before-upload="beforeAvatarUpload"
                 :http-request="uploadPortrait">
                 <img v-if="formObj.portrait" :src="formObj.portrait" class="avatar"
-                style="height: 100px; width: 100px;">
+                     style="height: 100px; width: 100px;">
                 <i v-else class="el-icon-plus avatar-uploader-icon"
-                style="height: 100px; width: 100px;"></i>
+                   style="height: 100px; width: 100px;"></i>
                 <div v-if="!formObj.portrait" class="uploader-tips">上传头像</div>
               </el-upload>
             </el-form-item>
@@ -154,10 +154,10 @@
                 :show-file-list="false"
                 :before-upload="beforeAvatarUpload"
                 :http-request="uploadLogo">
-                <img v-if="formObj.companyLogo" :src="formObj.companyLogo" 
-                style="height: 100px; width: 100px;" class="avatar avatar-tips">
+                <img v-if="formObj.companyLogo" :src="formObj.companyLogo"
+                     style="height: 100px; width: 100px;" class="avatar avatar-tips">
                 <i v-else class="el-icon-plus avatar-uploader-icon"
-                style="height: 100px; width: 100px;"></i>
+                   style="height: 100px; width: 100px;"></i>
                 <div v-if="!formObj.companyLogo" class="uploader-tips">上传LOGO</div>
               </el-upload>
             </el-form-item>
@@ -232,7 +232,7 @@
 <script src="./editor.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import "src/styles/common.scss";
 </style>
 <style>
 .form-border {
