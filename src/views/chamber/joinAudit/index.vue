@@ -30,7 +30,7 @@
           {{scope.row.address}}
         </template>
       </el-table-column>
-      <el-table-column label="营业执照">
+      <el-table-column label="社会团体法人登记证">
         <template slot-scope="scope">
           <img style="width: 80px; height: 35px;" :src="scope.row.license" @click="enlarge(scope.row.license)"/>
         </template>
@@ -106,7 +106,7 @@
         <el-col :span="10">{{detailObj.phone}}</el-col>
       </el-row>
       <el-row>
-        <el-col :offset="2" :span="8">营业执照</el-col>
+        <el-col :offset="2" :span="8">社会团体法人登记证</el-col>
         <el-col :span="10">
           <div class="license-box"><img :src="detailObj.license" @click="enlarge(detailObj.license)"/></div>
         </el-col>

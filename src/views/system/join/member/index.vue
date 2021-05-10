@@ -98,7 +98,6 @@
     background: url("https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/admin-entyr-poster-bg-2.png") no-repeat;
     background-size: 100% 100%;
     text-align: center;
-
     .q-avatar {
       width: 183px;
       height: 183px;
