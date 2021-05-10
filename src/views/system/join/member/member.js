@@ -112,17 +112,10 @@ export default {
         this.imageUrlToBase64(imgurl)
       })
     },
-    /**
-     * 将页面指定节点内容转为图片
-     * 1.拿到想要转换为图片的内容节点DOM；
-     * 2.转换，拿到转换后的canvas
-     * 3.转换为图片
-     */
     clickGeneratePicture() {
       html2canvas(this.$refs.qecodeRef).then(canvas => {
         // 转成图片，生成图片地址
         this.imgUrl = canvas.toDataURL("image/png")
-        console.log('imgUrl' ,this.imgUrl)
         this.downloadFileByBase64(this.imgUrl, '二维码')
       })
     },
@@ -165,7 +158,6 @@ export default {
         // 这里的dataurl就是base64类型
         // 使用toDataUrl将图片转换成jpeg的格式,不要把图片压缩成png，因为压缩成png后base64的字符串可能比不转换前的长！
         let dataURL = canvas.toDataURL("image/jpeg", quality)
-        console.log('dataURL',dataURL)
       }
     }
   }

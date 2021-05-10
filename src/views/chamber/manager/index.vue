@@ -107,7 +107,7 @@
         </el-row>
         <el-row>
           <el-col :offset="2" :span="20">
-            <el-form-item label="营业执照" prop="license">
+            <el-form-item label="社会团体法人登记证" prop="license">
               <el-upload
                 class="avatar-uploader"
                 action="/"
@@ -182,7 +182,7 @@
         <el-col :span="10">{{detailObj.phone}}</el-col>
       </el-row>
       <el-row>
-        <el-col :offset="2" :span="8">营业执照</el-col>
+        <el-col :offset="2" :span="8">社会团体法人登记证</el-col>
         <el-col :span="10">
           <div class="license-box"><img :src="detailObj.license" @click="enlarge(detailObj.license)"/></div>
         </el-col>
