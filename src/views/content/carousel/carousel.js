@@ -72,7 +72,7 @@ export default {
         return false
       }
     },
-    upload (content) {
+    upload(content) {
       let formData = new FormData()
       formData.append('file', content.file)
       upload(formData).then(response => {
