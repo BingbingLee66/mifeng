@@ -22,7 +22,8 @@
           <el-form-item label="邀请商会专属二维码：">
             <div style="text-align: center;">
               <div ref="qecodeRef">
-                <img src="https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/entry-poster.png" class="q-avatar" id="qrcode" />
+                <!-- https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/entry-poster.png -->
+                <img src="https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/test/png/qrcode.png" class="q-avatar" id="qrcode" />
               </div>
               <el-button style="margin-top: 20px;" type="primary" @click="save">保存二维码</el-button>
             </div>
