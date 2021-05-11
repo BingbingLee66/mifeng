@@ -113,7 +113,7 @@ export default {
       })
     },
     clickGeneratePicture() {
-      html2canvas(this.$refs.qecodeRef).then(canvas => {
+      html2canvas(this.$refs.qecodeRef12).then(canvas => {
         // 转成图片，生成图片地址
         this.imgUrl = canvas.toDataURL("image/png")
         this.downloadFileByBase64(this.imgUrl, '二维码')
