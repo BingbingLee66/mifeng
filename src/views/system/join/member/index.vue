@@ -18,7 +18,7 @@
         </div>
       </div>
       <el-button style="margin-top: 20px;" type="primary" @click="refresh">刷新二维码</el-button>
-      <el-button style="margin-top: 20px;" type="primary" @click="clickGeneratePicture">保存二维码</el-button>
+      <!--   <el-button style="margin-top: 20px;" type="primary" @click="clickGeneratePicture">保存二维码</el-button> -->
     </div>
   </div>
 </template>
