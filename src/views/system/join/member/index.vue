@@ -32,7 +32,7 @@
                 <div
                   class="erweima"
                   style="margin: 0 auto;width: 342px;height: 313px;background: url(img/admin-entyr-poster-bg-2.png) no-repeat;background-size: 100% 100%;text-align: center;">
-                  <img style="width: 183px;height: 183px;object-fit: cover;margin-top: 80px;" :src="property.systemJoinQrcode" class="q-avatar" id="qrcode"/>
+                  <img style="width: 183px;height: 183px;object-fit: cover;margin-top: 80px;" :src="property.systemJoinQrcode" id="qrcode"/>
                 </div>
               </div>
               <el-button style="margin-top: 20px;" type="primary" @click="refresh">刷新二维码</el-button>
@@ -83,6 +83,12 @@
       line-height: 25px;
       letter-spacing: 5px;
       margin-top: 10px;
+    }
+  }
+  .erweima{
+    &::before {
+      display: table;
+      content: '';
     }
   }
 }
