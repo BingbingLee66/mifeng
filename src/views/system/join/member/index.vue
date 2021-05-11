@@ -3,6 +3,7 @@
     <div>
       <div>邀请商会专属二维码:</div>
       <div
+        id="downloadCardDiv"
         ref="qecodeRef12"
         style="width: 375px;height: 667px;background-image: url(img/admin-entyr-poster-bg-1.png);background-size: 100% 100%;">
         <div style="padding-top:40px;text-align: center;font-family: PingFang SC, PingFang SC-Bold;font-family: PingFang SC, PingFang SC-Bold;">

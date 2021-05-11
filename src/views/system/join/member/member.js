@@ -28,8 +28,8 @@ export default {
       }
       getInfo(params).then(response => {
         this.property = response.data.data
-        let imgurl = response.data.data.systemJoinQrcode
-        this.imageUrlToBase64(imgurl)
+        /* let imgurl = response.data.data.systemJoinQrcode
+        this.imageUrlToBase64(imgurl)*/
       })
     },
     createQrcode(e) {
@@ -108,15 +108,52 @@ export default {
       }
       refreshGetInfo(params).then(response => {
         this.property = response.data.data
-        let imgurl = response.data.data.systemJoinQrcode
-        this.imageUrlToBase64(imgurl)
       })
     },
     clickGeneratePicture() {
-      html2canvas(this.$refs.qecodeRef12).then(canvas => {
-        // 转成图片，生成图片地址
-        this.imgUrl = canvas.toDataURL("image/png")
-        this.downloadFileByBase64(this.imgUrl, '二维码')
+      this.$nextTick(() => {
+        // var w = parseInt(window.getComputedStyle(_canvas).width);
+        // var h = parseInt(window.getComputedStyle(_canvas).height);
+        // var w = _canvas.offsetWidth;
+        // var h = _canvas.offsetHeight;
+        const canvas = document.createElement('canvas') // 创建一个canvas节点
+        const shareContent = document.getElementById('downloadCardDiv') // 需要截图的包裹的（原生的）DOM 对象
+        const width = shareContent.offsetWidth // 获取dom 宽度
+        const height = shareContent.offsetHeight // 获取dom 高度
+        const scale = 2 // 定义任意放大倍数 支持小数
+        canvas.getContext('2d').scale(scale, scale) // 获取context,设置scale
+        const rect = shareContent.getBoundingClientRect() // 获取元素相对于视口的
+        const scrollTop = document.documentElement.scrollTop || document.body.scrollTop // 获取滚动轴滚动的长度
+        html2canvas(document.getElementById('downloadCardDiv'), { // 转换为图片
+          x: rect.left, // 绘制的dom元素相对于视口的位置
+          y: rect.top,
+          // scrollX: scrollTop,// 滚动的长度
+          scrollY: -scrollTop,
+          scale: scale, // 添加的scale 参数
+          width: width, // dom 原始宽度
+          height: height,
+          useCORS: true, // 开启跨域
+          dpi: window.devicePixelRatio * 2
+        }).then(canvas => {
+          const context = canvas.getContext('2d')
+          // 关闭抗锯齿
+          context.mozImageSmoothingEnabled = false
+          context.msImageSmoothingEnabled = false
+          context.imageSmoothingEnabled = false
+          const imgUrl = canvas.toDataURL('image/png');
+          this.dataURL = imgUrl;
+          // console.log('下载图片')
+          var a = document.createElement('a')
+          a.download = '邀请卡'
+          // 设置图片地址
+          a.href = this.dataURL;
+          a.click();
+        })
+        /* html2canvas(this.$refs.qecodeRef12).then(canvas => {
+          // 转成图片，生成图片地址
+          this.imgUrl = canvas.toDataURL("image/png")
+          this.downloadFileByBase64(this.imgUrl, '二维码')
+        }) */
       })
     },
     dataURLtoBlob(dataurl) {
@@ -140,25 +177,6 @@ export default {
       let myBlob = this.dataURLtoBlob(base64)
       let myUrl = URL.createObjectURL(myBlob)
       this.downloadFile(myUrl, name)
-    },
-    imageUrlToBase64(imageUrl) {
-      // 一定要设置为let，不然图片不显示
-      let image = new Image()
-      // 解决跨域问题
-      image.setAttribute('crossOrigin', 'anonymous')
-      image.src = imageUrl
-      // image.onload为异步加载
-      image.onload = () => {
-        let canvas = document.createElement("canvas")
-        canvas.width = image.width
-        canvas.height = image.height
-        let context = canvas.getContext('2d')
-        context.drawImage(image, 0, 0, image.width, image.height)
-        let quality = 0.8
-        // 这里的dataurl就是base64类型
-        // 使用toDataUrl将图片转换成jpeg的格式,不要把图片压缩成png，因为压缩成png后base64的字符串可能比不转换前的长！
-        let dataURL = canvas.toDataURL("image/jpeg", quality)
-      }
     }
   }
 }
