@@ -46,7 +46,13 @@ export default {
         file
       }
       getPostUrl(posterDTO).then(res => {
-        console.log(res)
+        if (res.state === 1) {
+          let ImgUrl = res.data.filePath.systemPosterUrl
+          var a = document.createElement('a')
+          a.download = '商会二维码'
+          a.href = ImgUrl
+          a.click()
+        }
       })
     },
     clickGeneratePicture() {
@@ -75,15 +81,16 @@ export default {
           context.msImageSmoothingEnabled = false
           context.imageSmoothingEnabled = false
           const imgUrl = canvas.toDataURL('image/png')
-          // this.getPost(imgUrl)
-          this.dataURL = imgUrl
+          this.getPost(imgUrl)
+          this.isLoading = false
+          /* this.dataURL = imgUrl
           this.isLoading = false
           setTimeout(() => {
             var a = document.createElement('a')
             a.download = '商会二维码'
             a.href = this.dataURL
             a.click()
-          }, 1000)
+          }, 1000) */
         })
       }, 1000)
     }
