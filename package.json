@@ -23,6 +23,7 @@
     "axios": "0.18.0",
     "browserslist": "^4.9.0",
     "caniuse-lite": "^1.0.30001030",
+    "dom-to-image": "^2.6.0",
     "element-resize-detector": "^1.2.1",
     "element-ui": "2.11.0",
     "file-saver": "^2.0.5",

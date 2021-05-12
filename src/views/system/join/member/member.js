@@ -1,5 +1,6 @@
 import { refreshGetInfo, getInfo, getPostUrl } from '@/api/system/property'
-import html2canvas from "html2canvas"
+import html2canvas from 'html2canvas'
+import domtoimage from 'dom-to-image'
 
 export default {
   data() {
@@ -57,41 +58,58 @@ export default {
     },
     clickGeneratePicture() {
       this.isLoading = true
-      setTimeout(() => {
+      this.$nextTick(() => {
         const canvas = document.createElement('canvas')
         const shareContent = document.getElementById('postdiv')
         const width = shareContent.offsetWidth // 获取dom 宽度
         const height = shareContent.offsetHeight // 获取dom 高度
+        canvas.width = width * 2
+        canvas.height = height * 2
+        canvas.style.width = width * 2 + 'px'
+        canvas.style.height = width * 2 + 'px'
         const scale = 1 // 定义任意放大倍数 支持小数
-        canvas.getContext('2d').scale(scale, scale) // 获取context,设置scale
+        const context = canvas.getContext('2d')
+        context.scale(scale, scale)
         const rect = shareContent.getBoundingClientRect() // 获取元素相对于视口的
+        context.translate(-rect.left, -rect.top)
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop // 获取滚动轴滚动的长度
-        html2canvas(document.getElementById('postdiv'), { // 转换为图片
-          x: rect.left, // 绘制的dom元素相对于视口的位置
-          y: rect.top,
-          scrollX: 0, // 滚动的长度
+        html2canvas(shareContent, { // 转换为图片
           scrollY: -scrollTop,
-          scale: scale,
-          width: width, // dom 原始宽度
-          height: height,
+          scrollX: 0,
           useCORS: true // 开启跨域
         }).then(canvas => {
-          const context = canvas.getContext('2d')
-          context.mozImageSmoothingEnabled = false
-          context.msImageSmoothingEnabled = false
-          context.imageSmoothingEnabled = false
           const imgUrl = canvas.toDataURL('image/png')
-          this.getPost(imgUrl)
-          this.isLoading = false
-          /* this.dataURL = imgUrl
+          this.dataURL = imgUrl
+          console.log('000000:', this.dataURL)
           setTimeout(() => {
             var a = document.createElement('a')
             a.download = '商会二维码'
+            console.log('1111111:', this.dataURL)
+            console.log('imgUrl:', imgUrl === this.dataURL)
             a.href = this.dataURL
             a.click()
-          }, 1000) */
+            this.isLoading = false
+          }, 2000)
+          // this.getPost(imgUrl)
         })
-      }, 1000)
+      })
+    },
+    domtoimage() {
+      const node = document.getElementById('postdiv')
+      domtoimage.toPng(node)
+        .then((dataUrl) => {
+          console.log(dataUrl)
+        })
+        .catch(function(error) {
+          console.error('oops, something went wrong!', error)
+        })
+    },
+    // 下载图片
+    downloadUrl() {
+      var a = document.createElement('a')
+      a.download = '商会二维码'
+      a.href = this.dataURL
+      a.click()
     }
   }
 }
