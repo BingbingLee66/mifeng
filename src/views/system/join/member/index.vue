@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="app-wrap">
-      <div class="title">邀请商会专属二维码:</div>
+      <div class="title">邀请入会专属二维码:</div>
       <div class="post">
         <div id="postdiv" ref="postRefs" class="post-wrap">
           <p class="tit-1">{{property.name}}</p>

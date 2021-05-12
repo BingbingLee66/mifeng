@@ -101,7 +101,7 @@ export default {
       domtoimage.toPng(node)
         .then((dataUrl) => {
           var a = document.createElement('a')
-          a.download = '商会二维码'
+          a.download = '入会二维码'
           a.href = dataUrl
           a.click()
           _this.isLoading = false
