@@ -84,7 +84,6 @@ export default {
           this.getPost(imgUrl)
           this.isLoading = false
           /* this.dataURL = imgUrl
-          this.isLoading = false
           setTimeout(() => {
             var a = document.createElement('a')
             a.download = '商会二维码'

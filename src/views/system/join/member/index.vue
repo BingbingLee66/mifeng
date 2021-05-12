@@ -4,7 +4,7 @@
       <div class="title">邀请商会专属二维码:</div>
       <div class="post">
         <div id="postdiv" ref="postRefs" class="post-wrap">
-          <p class="tit-1">{{ property.name }}</p>
+          <p class="tit-1">{{property.name}}</p>
           <p class="tit-2">邀请您加入</p>
           <div class="erweima">
             <img :src="property.systemJoinQrcode"/>
@@ -55,13 +55,7 @@
           font-weight: bold;
           font-size: 42px;
           font-style: italic;
-          text-overflow: -o-ellipsis-lastline;
           overflow: hidden;
-          text-overflow: ellipsis;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          line-clamp: 2;
-          -webkit-box-orient: vertical;
         }
 
         .tit-2 {
