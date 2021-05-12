@@ -24,7 +24,15 @@ export function refreshGetInfo(params) {
   })
 }
 
-export function upload (params) {
+export function getPostUrl(params) {
+  return request({
+    url: '/ec/upload/poster',
+    method: 'post',
+    data: params
+  })
+}
+
+export function upload(params) {
   return request({
     url: '/ec/upload/system-logo',
     method: 'post',
@@ -41,7 +49,7 @@ export function updateLogo (params) {
   })
 }
 
-export function updateJoinInfo (params) {
+export function updateJoinInfo(params) {
   return request({
     url: '/ec/systemProperty/update-join-info',
     method: 'put',
@@ -49,7 +57,7 @@ export function updateJoinInfo (params) {
   })
 }
 
-export function createQrcode (params) {
+export function createQrcode(params) {
   return request({
     url: '/ec/systemProperty/create-qrcode',
     method: 'post',
