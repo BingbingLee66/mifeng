@@ -95,21 +95,21 @@ export default {
       })
     },
     domtoimage() {
+      let _this = this
+      this.isLoading = true
       const node = document.getElementById('postdiv')
       domtoimage.toPng(node)
         .then((dataUrl) => {
-          console.log(dataUrl)
+          var a = document.createElement('a')
+          a.download = '商会二维码'
+          a.href = dataUrl
+          a.click()
+          _this.isLoading = false
         })
         .catch(function(error) {
           console.error('oops, something went wrong!', error)
+          _this.isLoading = false
         })
-    },
-    // 下载图片
-    downloadUrl() {
-      var a = document.createElement('a')
-      a.download = '商会二维码'
-      a.href = this.dataURL
-      a.click()
     }
   }
 }
