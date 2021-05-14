@@ -19,11 +19,6 @@
         <el-form ref="form" :model="form" :rules="rules" label-width="150px">
           <el-row>
             <el-col :span="24">
-              <el-form-item label="原密码">
-                <el-input type="password" v-model="form.oldPassword" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
               <el-form-item label="新密码" prop="password">
                 <el-input type="password" v-model="form.password" />
               </el-form-item>

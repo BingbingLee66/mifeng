@@ -32,7 +32,7 @@ export default {
       this.chamberName = this.$store.getters.chamberName
       console.log(this.$store.getters.systemLogo)
       console.log(!this.$store.getters.systemLogo)
-      this.systemLogo = !this.$store.getters.systemLogo ? imgUrl : this.$store.getters.systemLogo 
+      this.systemLogo = !this.$store.getters.systemLogo ? imgUrl : this.$store.getters.systemLogo
     },
     handleClick(tab, event) {
       this.$router.push({ path: '/account/' + tab.name })
@@ -48,7 +48,6 @@ export default {
             return false
           }
           updatePass({
-            oldPass: this.form.oldPassword,
             newPass: this.form.password
           }).then(response => {
             this.$message({
