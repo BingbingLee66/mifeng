@@ -37,6 +37,7 @@
     </el-row>
   </div>
 </template>
+
 <script src="./updatePwd.js"></script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
