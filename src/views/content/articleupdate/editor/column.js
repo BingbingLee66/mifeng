@@ -34,7 +34,7 @@ export default {
       console.log(!!article.contentHtml)
       if (this.activeName === '7') {
         this.formObj['contentHtml'] = !!article.contentHtml ? article.contentHtml :
-          '<p>商会地址：</p><p></p><p>官网网址：</p><p>会长：</p><p>秘书处：</p><p>座机：</p><p>商会微信：</p>' 
+          '<p>商会地址：</p><p></p><p>官网网址：</p><p>会长：</p><p>秘书处：</p><p>座机：</p><p>商会微信：</p>'
       } else {
         this.formObj['contentHtml'] = !!article.contentHtml ? article.contentHtml : ''
       }
@@ -80,7 +80,7 @@ export default {
         }
       })
     },
-    getHtml (htmlStr) {
+    getHtml(htmlStr) {
       this.formObj.contentHtml = htmlStr
     }
   }

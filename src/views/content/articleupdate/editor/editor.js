@@ -1,5 +1,5 @@
-import { getUpdateDetail, uploadCoverImg, save } from '@/api/content/article'
-import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
+import {getUpdateDetail, uploadCoverImg, save} from '@/api/content/article'
+import {getContentColumnOptionsWithCkey} from '@/api/content/columnsetup'
 import Ckeditor from '@/components/CKEditor'
 import PreviewPh from '@/components/ArticlePreview'
 
@@ -27,25 +27,25 @@ export default {
       activeName: '5',
       rules: {
         title: [
-          { required: true, message: '文章标题不能为空', trigger: 'blur' },
-          { min: 5, max: 60, message: '限输入5-60个字的标题', trigger: 'blur' }
+          {required: true, message: '文章标题不能为空', trigger: 'blur'},
+          {min: 5, max: 60, message: '限输入5-60个字的标题', trigger: 'blur'}
         ],
         contentColumnId: [
-          { required: true, message: '对应栏目不能为空', trigger: 'blur' }
+          {required: true, message: '对应栏目不能为空', trigger: 'blur'}
         ],
         coverImg1: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+          {required: true, message: '封面图片必须上传', trigger: 'blur'}
         ],
         coverImg2: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+          {required: true, message: '封面图片必须上传', trigger: 'blur'}
         ],
         coverImg3: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+          {required: true, message: '封面图片必须上传', trigger: 'blur'}
         ]
       }
     }
   },
-  mounted () {
+  mounted() {
     this.getContentColumnType()
     if (this.$route.params.activeName) {
       this.activeName = this.$route.params.activeName
@@ -58,12 +58,11 @@ export default {
       this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
     }
   },
-  computed: {
-  },
-  created () {
+  computed: {},
+  created() {
   },
   methods: {
-    closeTab () {
+    closeTab() {
       // 退出当前tab, 打开指定tab
       let openPath = window.localStorage.getItem('articleupdate')
       let tagsViews = this.$store.state.tagsView.visitedViews
@@ -71,20 +70,20 @@ export default {
       for (let view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
-            this.$router.push({ path: openPath })
+            this.$router.push({path: openPath})
           })
           break
         }
       }
     },
-    init () {
+    init() {
       this.fetchData()
     },
-    beforeAvatarUpload (file, index) {
+    beforeAvatarUpload(file, index) {
       this.uploadIndex = index
       if (file.type !== 'image/jpeg' &&
-            file.type !== 'image/jpg' &&
-            file.type !== 'image/png') {
+        file.type !== 'image/jpg' &&
+        file.type !== 'image/png') {
         this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
         return false
       }
@@ -93,21 +92,21 @@ export default {
         return false
       }
     },
-    upload (content) {
+    upload(content) {
       let formData = new FormData()
       formData.append('file', content.file)
       uploadCoverImg(formData).then(response => {
         this.formObj.coverImgs.splice(this.uploadIndex, 1, response.data.filePath)
       })
     },
-    resetCoverImgs (type) {
+    resetCoverImgs(type) {
       if (type === 1) {
         this.formObj.coverImgs = ['']
       } else if (type === 2) {
         this.formObj.coverImgs = ['', '', '']
       }
     },
-    getContentColumnType () {
+    getContentColumnType() {
       let contentModuleId = 3
       if (this.activeName === '5') {
         contentModuleId = 3
@@ -122,7 +121,7 @@ export default {
         this.contentColumnOptions = response.data.data
       })
     },
-    fetchData () {
+    fetchData() {
       return new Promise((resolve, reject) => {
         let params = {
           id: this.articleId
@@ -147,7 +146,7 @@ export default {
         })
       })
     },
-    save () {
+    save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.formObj.coverType === 0) {
@@ -168,7 +167,12 @@ export default {
         }
       })
     },
-    getHtml (htmlStr) {
+    getHtml(htmlStr) {
+      /* htmlStr = htmlStr.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, (match, capture) => {
+        capture = capture.replace(/\s*!/g, '')
+        return `<img src= "${capture}" alt=""/>`
+      })
+      console.log('htmlStr', htmlStr) */
       this.formObj.contentHtml = htmlStr
     }
   }
