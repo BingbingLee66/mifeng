@@ -101,7 +101,7 @@
           <div v-if="scope.row.status == 0">已冻结</div>
         </template>
       </el-table-column>
-      <el-table-column label="状态">
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="text" :actionid="getId('', '详情')" v-if="has('', '详情')" @click="detail($event, scope.row)">详情</el-button>
           <el-button type="text" :actionid="getId('', '冻结')" v-if="has('', '冻结') && scope.row.status == 1" @click="updateStatus($event, scope.row)">冻结</el-button>
