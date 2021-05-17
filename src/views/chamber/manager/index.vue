@@ -15,12 +15,17 @@
           {{scope.row.id}}
         </template>
       </el-table-column> -->
-      <el-table-column label="商会标识" width="100px">
+      <el-table-column label="商/协会标识" width="100px">
         <template slot-scope="scope">
           {{scope.row.ckey}}
         </template>
       </el-table-column>
-      <el-table-column label="商会名称">
+      <el-table-column label="商/协会logo" width="140px">
+        <template slot-scope="scope">
+          <img style="width: 44px;height: 44px;border-radius: 50%;object-fit: cover;" :src="scope.row.systemLogo" alt="">
+        </template>
+      </el-table-column>
+      <el-table-column label="商/协会名称">
         <template slot-scope="scope">
           {{scope.row.name}}
         </template>
@@ -153,15 +158,15 @@
 
     <el-dialog title="商会详情" :visible.sync="detailVisible" width="50%">
       <el-row>
-        <el-col :offset="2" :span="6">商会名称：</el-col>
+        <el-col :offset="2" :span="6">商/协会名称：</el-col>
         <el-col :span="10">{{detailObj.name}}</el-col>
       </el-row>
       <el-row>
-        <el-col :offset="2" :span="6">商会logo：</el-col>
+        <el-col :offset="2" :span="6">商/协会logo：</el-col>
         <el-col :span="10"><img :src="detailObj.systemLogo" alt="" style="width: 88px;height: 88px;border-radius: 50%"></el-col>
       </el-row>
       <el-row>
-        <el-col :offset="2" :span="6">商会会长：</el-col>
+        <el-col :offset="2" :span="6">联系人姓名：</el-col>
         <el-col :span="10">{{detailObj.president}}</el-col>
       </el-row>
       <el-row>
@@ -169,7 +174,7 @@
         <el-col :span="10">{{detailObj.address}}</el-col>
       </el-row>
       <el-row>
-        <el-col :offset="2" :span="6">手机号：</el-col>
+        <el-col :offset="2" :span="6">联系人手机号：</el-col>
         <el-col :span="10">{{detailObj.phone}}</el-col>
       </el-row>
       <el-row>

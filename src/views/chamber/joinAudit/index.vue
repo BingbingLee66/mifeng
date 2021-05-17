@@ -15,14 +15,14 @@
       <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column type="index" label="序号" width="60px">
         </el-table-column>
-        <el-table-column label="商会名称">
+        <el-table-column label="商/协会名称">
           <template slot-scope="scope">
             {{scope.row.name}}
           </template>
         </el-table-column>
-        <el-table-column label="商会logo">
+        <el-table-column label="商/协会logo">
           <template slot-scope="scope">
-            <img :src="scope.row.systemLogo" alt="">
+            <img style="width: 44px;height: 44px;border-radius: 50%;object-fit: cover;" :src="scope.row.systemLogo" alt="">
           </template>
         </el-table-column>
         <el-table-column label="联系人姓名">
@@ -80,15 +80,15 @@
 
     <el-dialog title="商会详情" :visible.sync="detailVisible" width="50%" center>
       <el-row>
-        <el-col :offset="2" :span="8">商会名称</el-col>
+        <el-col :offset="2" :span="8">商/协会名称</el-col>
         <el-col :span="10">{{detailObj.name}}</el-col>
       </el-row>
       <el-row>
-        <el-col :offset="2" :span="8">商会logo</el-col>
-        <el-col :span="10"><img :src="detailObj.systemLogo" /></el-col>
+        <el-col :offset="2" :span="8">商/协会logo</el-col>
+        <el-col :span="10"><img style="width: 44px;height: 44px;border-radius: 50%;object-fit: cover;" :src="detailObj.systemLogo" /></el-col>
       </el-row>
       <el-row>
-        <el-col :offset="2" :span="8">商会会长</el-col>
+        <el-col :offset="2" :span="8">联系人姓名</el-col>
         <el-col :span="10">{{detailObj.president}}</el-col>
       </el-row>
       <el-row>
@@ -96,7 +96,7 @@
         <el-col :span="10">{{detailObj.address}}</el-col>
       </el-row>
       <el-row>
-        <el-col :offset="2" :span="8">手机号</el-col>
+        <el-col :offset="2" :span="8">联系人手机号</el-col>
         <el-col :span="10">{{detailObj.phone}}</el-col>
       </el-row>
       <el-row>
