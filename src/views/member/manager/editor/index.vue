@@ -7,7 +7,6 @@
             <el-radio-group v-model="formObj.type">
               <el-radio :label="1">企业入会</el-radio>
               <el-radio :label="0">个人入会</el-radio>
-
             </el-radio-group>
           </el-form-item>
           <div v-if="formObj.type === 1">

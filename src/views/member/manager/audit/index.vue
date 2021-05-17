@@ -43,7 +43,8 @@
         </el-table-column>
         <el-table-column label="手机号/联系方式" width="180px">
           <template slot-scope="scope">
-            {{scope.row.phone}}{{scope.row.companyPhone}}
+            <span v-if="scope.row.phone">{{scope.row.phone}}</span>
+            <span v-else>{{scope.row.companyPhone}}</span>
           </template>
         </el-table-column>
         <el-table-column label="入会类型" width="120px">

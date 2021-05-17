@@ -127,6 +127,9 @@ export default {
 
     save() {
       this.$refs['form'].validate((valid) => {
+        if (this.formObj.type === 1) {
+          this.formObj.phone = this.formObj.companyPhone
+        }
         if (valid) {
           if (this.type === 'add') {
             this.formObj['ckey'] = this.$store.getters.ckey

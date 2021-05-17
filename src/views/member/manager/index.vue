@@ -40,8 +40,8 @@
         </el-table-column>
         <el-table-column label="头像/企业logo" width="180px">
           <template slot-scope="scope">
-            <img v-if="scope.row.companyLogo" style="width: 44px;height: 44px;object-fit: cover;border-radius: 50%;" :src="scope.row.companyLogo" alt="">
-            <img v-else style="width: 44px;height: 44px;object-fit: cover;border-radius: 50%;" :src="scope.row.portrait" alt="">
+            <img v-if="scope.row.companyLogo" style="width: 88px;height: 88px;border-radius: 50%;" :src="scope.row.companyLogo" alt="">
+            <img v-else style="width: 88px;height: 88px;border-radius: 50%;" :src="scope.row.portrait" alt="">
           </template>
         </el-table-column>
         <el-table-column label="姓名/企业名称" width="180px">
@@ -51,7 +51,8 @@
         </el-table-column>
         <el-table-column label="手机号/联系方式" width="180px">
           <template slot-scope="scope">
-            {{scope.row.phone}}{{scope.row.companyPhone}}
+            <span v-if="scope.row.phone">{{scope.row.phone}}</span>
+            <span v-else>{{scope.row.companyPhone}}</span>
           </template>
         </el-table-column>
         <el-table-column label="入会类型" width="180px">
