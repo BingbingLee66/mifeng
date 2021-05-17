@@ -22,20 +22,20 @@ export default {
     }
   },
   computed: {
-    nativePlaceStr () {
+    /* nativePlaceStr () {
       return function (str) {
         return str.replace(new RegExp('-', 'gm'), '')
       }
-    }
+    } */
   },
   created() {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -71,12 +71,12 @@ export default {
         this.listLoading = false
       })
     },
-    detail (e, row) {
+    detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('memberaudit', this.$route.path)
       this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '1' } })
     },
-    batchApproved (e) {
+    batchApproved(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -96,7 +96,7 @@ export default {
         this.fetchData()
       })
     },
-    approved (e, row) {
+    approved(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let arr = []
       arr.push(row.id)
@@ -112,7 +112,7 @@ export default {
         this.fetchData()
       })
     },
-    batchRejectRemark (e) {
+    batchRejectRemark(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -123,7 +123,7 @@ export default {
       this.audit.remark = '资料乱填'
       this.batchVisible = true
     },
-    batchReject () {
+    batchReject() {
       let params = {
         'memberId': this.selectionDatas,
         'auditStatus': 2,
@@ -138,7 +138,7 @@ export default {
       })
       this.batchVisible = false
     },
-    rejectRemark (e, row) {
+    rejectRemark(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       if (row.id !== undefined) {
         this.audit.id = row.id
@@ -146,7 +146,7 @@ export default {
       this.audit.remark = '资料乱填'
       this.visible = true
     },
-    reject () {
+    reject() {
       let arr = []
       arr.push(this.audit.id)
       let params = {
@@ -163,10 +163,10 @@ export default {
       })
       this.visible = false
     },
-    handlerChange (value) {
+    handlerChange(value) {
       this.query.tradeType = value[value.length - 1]
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {

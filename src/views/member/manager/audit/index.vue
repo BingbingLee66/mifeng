@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="block">
-      <el-form ref="query" label-width="auto" label-position="left" :model="query">
+      <el-form ref="query" label-width="55px" label-position="left" :model="query">
         <el-row>
           <el-col :span="5">
             <el-form-item :span="12" label="状态：">
@@ -21,75 +21,62 @@
         </el-row>
       </el-form>
     </div>
-    <br/>
-    <el-row>
+    <div style="margin-bottom:30px">
       <el-button type="success" :actionid="getId('', '通过')" v-if="has('', '通过') && query.auditStatus == 0" @click="batchApproved($event)">通过</el-button>
       <el-button type="warning" :actionid="getId('', '驳回')" v-if="has('', '驳回') && query.auditStatus == 0" @click="batchRejectRemark($event)">驳回</el-button>
-    </el-row>
-    <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55px">
-      </el-table-column>
-      <!-- <el-table-column type="index" label="序号" width="60px">
-      </el-table-column> -->
-      <!-- <el-table-column label="ID">
-        <template slot-scope="scope">
-          {{scope.row.id}}
-        </template>
-      </el-table-column> -->
-      <el-table-column label="申请人名字">
-        <template slot-scope="scope">
-          {{scope.row.name}}
-        </template>
-      </el-table-column>
-      <el-table-column label="手机号" width="120px">
-        <template slot-scope="scope">
-          {{scope.row.phone}}
-        </template>
-      </el-table-column>
-      <el-table-column label="籍贯">
-        <template slot-scope="scope">
-          {{nativePlaceStr(scope.row.nativePlace)}}
-        </template>
-      </el-table-column>
-      <el-table-column label="公司">
-        <template slot-scope="scope">
-          {{scope.row.companyName}}
-        </template>
-      </el-table-column>
-      <el-table-column label="申请时间">
-        <template slot-scope="scope">
-          {{scope.row.createdTs}}
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" width="100px">
-        <template slot-scope="scope">
-          <div v-if="scope.row.auditStatus == 0">待审核</div>
-          <div v-if="scope.row.auditStatus == 1">已通过</div>
-          <div v-if="scope.row.auditStatus == 2">已驳回</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" >
-        <template slot-scope="scope">
-          <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">详情</el-button>
-          <el-button type="text" @click="approved($event, scope.row)" :actionid="getId('', '通过')" v-if="has('', '通过') && scope.row.auditStatus == 0">通过</el-button>
-          <el-button type="text" @click="rejectRemark($event, scope.row)" :actionid="getId('', '驳回')" v-if="has('', '驳回') && scope.row.auditStatus == 0">驳回</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-      :page-sizes="pageSizes"
-      :page-size="limit"
-      :total="total"
-      :current-page.sync="currentpage"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+    </div>
+    <div style="margin-bottom:30px">
+      <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55px">
+        </el-table-column>
+
+        <el-table-column label="头像/企业logo" width="180px">
+          <template slot-scope="scope">
+            <img style="width: 44px;height: 44px;object-fit: cover;border-radius: 50%;" :src="scope.row.companyLogo" alt="">
+            <img style="width: 44px;height: 44px;object-fit: cover;border-radius: 50%;" :src="scope.row.nativePlace" alt="">
+          </template>
+        </el-table-column>
+        <el-table-column label="姓名/企业名称" width="180px">
+          <template slot-scope="scope">
+            {{scope.row.name}}{{scope.row.companyName}}
+          </template>
+        </el-table-column>
+        <el-table-column label="手机号/联系方式" width="180px">
+          <template slot-scope="scope">
+            {{scope.row.phone}}{{scope.row.companyPhone}}
+          </template>
+        </el-table-column>
+        <el-table-column label="入会类型" width="120px">
+          <template slot-scope="scope">
+            <div v-if="scope.row.type == 0">个人</div>
+            <div v-if="scope.row.type == 1">企业</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="申请时间" width="180px">
+          <template slot-scope="scope">
+            {{scope.row.createdTs}}
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" width="120px">
+          <template slot-scope="scope">
+            <div v-if="scope.row.auditStatus == 0">待审核</div>
+            <div v-if="scope.row.auditStatus == 1">已通过</div>
+            <div v-if="scope.row.auditStatus == 2">已驳回</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <!-- <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">详情</el-button> -->
+            <el-button type="text" @click="approved($event, scope.row)" :actionid="getId('', '通过')" v-if="has('', '通过') && scope.row.auditStatus == 0">通过</el-button>
+            <el-button type="text" @click="rejectRemark($event, scope.row)" :actionid="getId('', '驳回')" v-if="has('', '驳回') && scope.row.auditStatus == 0">驳回</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange">
     </el-pagination>
-    <el-dialog
-      title="驳回理由"
-      :visible.sync="visible"
-      width="30%">
+    <el-dialog title="驳回理由" :visible.sync="visible" width="30%">
       <el-form ref="form" :model="audit" label-position="left" label-width="50px">
         <el-row>
           <el-col :span="24">
@@ -116,10 +103,7 @@
         <el-button type="primary" @click="reject">确定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="驳回理由"
-      :visible.sync="batchVisible"
-      width="30%">
+    <el-dialog title="驳回理由" :visible.sync="batchVisible" width="30%">
       <el-form ref="form" :model="audit" label-position="left" label-width="50px">
         <el-row>
           <el-col :span="24">
@@ -152,5 +136,5 @@
 <script src="./audit.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import 'src/styles/common.scss';
 </style>

@@ -1,4 +1,4 @@
-import { getList, getDetail, save, updateStatus, upload } from '@/api/chamber/manager'
+import {getList, getDetail, save, updateStatus, upload} from '@/api/chamber/manager'
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -20,7 +20,8 @@ export default {
     var confirmPass = (rule, value, callback) => {
       if (!/^\w*$/.test(value)) {
         return callback(new Error('密码只能由字母、数字和下划线"_"组成！'))
-      } if (value !== this.formObj.password) {
+      }
+      if (value !== this.formObj.password) {
         return callback(new Error('两次输入密码不一致!'))
       } else {
         callback() // 必须加上这个，不然一直塞在验证状态
@@ -47,7 +48,8 @@ export default {
         confirmPassword: '',
         level: 0,
         createdTs: '',
-        operator: ''
+        operator: '',
+        systemLogo: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -59,21 +61,24 @@ export default {
       type: 'add',
       rules: {
         name: [
-          { required: true, message: '商会名称不能为空', trigger: 'blur' },
-          { min: 1, max: 50, message: '商会名称1-50个字', trigger: 'change' }
+          { required: true, message: '商/协会名称不能为空', trigger: 'blur' },
+          { min: 1, max: 50, message: '商/协会名称1-50个字', trigger: 'change' }
+        ],
+        systemLogo: [
+          { required: true, message: '请上传商/协会logo', trigger: 'change' }
         ],
         president: [
-          { required: true, message: '商会会长不能为空', trigger: 'blur' }
+          { required: true, message: '联系人姓名不能为空', trigger: 'blur' }
         ],
         address: [
           { required: true, message: '办公地址不能为空', trigger: 'blur' }
         ],
         phone: [
-          { required: true, message: '手机号码不能为空', trigger: 'blur' },
+          { required: true, message: '联系人手机号不能为空', trigger: 'blur' },
           { validator: checkPhone, trigger: 'change' }
         ],
         license: [
-          { required: true, message: '营业执照必须上传', trigger: 'blur' }
+          { required: true, message: '营业执照必须上传', trigger: 'change' }
         ],
         password: [
           { required: true, message: '账号密码不能为空', trigger: 'blur' },
@@ -82,11 +87,11 @@ export default {
         confirmPassword: [
           { required: true, message: '确认密码不能为空', trigger: 'blur' },
           { validator: confirmPass, trigger: 'blur' }
-        ],
-        level: [
-          { required: true, message: '排序不能为空', trigger: 'blur' },
-          { validator: checkNumber, trigger: 'change' }
         ]
+        /* level: [
+          {required: true, message: '排序不能为空', trigger: 'blur'},
+          {validator: checkNumber, trigger: 'change'}
+        ]*/
       }
     }
   },
@@ -97,11 +102,11 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
-      return this.$store.getters.has({ tabName, actionName })
+    has(tabName, actionName) {
+      return this.$store.getters.has({tabName, actionName})
     },
-    getId (tabName, actionName) {
-      return this.$store.getters.getId({ tabName, actionName })
+    getId(tabName, actionName) {
+      return this.$store.getters.getId({tabName, actionName})
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -114,10 +119,10 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    beforeAvatarUpload (file) {
+    beforeSystemLogoUpload(file) {
       if (file.type !== 'image/jpeg' &&
-            file.type !== 'image/jpg' &&
-            file.type !== 'image/png') {
+        file.type !== 'image/jpg' &&
+        file.type !== 'image/png') {
         this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
         return false
       }
@@ -126,8 +131,42 @@ export default {
         return false
       }
     },
-    upload (content) {
-      let formData = new FormData()
+    uploadSystemLogo(content) {
+      const formData = new FormData()
+      formData.append('file', content.file)
+      upload(formData).then(response => {
+        this.formObj.systemLogo = response.data.filePath
+      })
+    },
+    init() {
+      this.fetchData()
+    },
+    fetchData() {
+      this.listLoading = true
+      let params = {
+        'pageSize': this.limit,
+        'page': this.currentpage
+      }
+      getList(params).then(response => {
+        this.list = response.data.data.list
+        this.total = response.data.data.totalRows
+        this.listLoading = false
+      })
+    },
+    beforeAvatarUpload(file) {
+      if (file.type !== 'image/jpeg' &&
+        file.type !== 'image/jpg' &&
+        file.type !== 'image/png') {
+        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+        return false
+      }
+      if (file.size > 1024 * 1024 * 2) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+        return false
+      }
+    },
+    upload(content) {
+      const formData = new FormData()
       formData.append('file', content.file)
       upload(formData).then(response => {
         this.formObj.license = response.data.filePath
@@ -160,7 +199,8 @@ export default {
         password: '',
         level: 0,
         createdTs: '',
-        operator: ''
+        operator: '',
+        systemLogo: ''
       }
       this.type = 'add'
       this.editorVisible = true
@@ -190,6 +230,7 @@ export default {
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          // console.log('this.formObj', this.formObj)
           save(this.formObj).then(response => {
             this.$message({
               message: '操作成功',
@@ -224,7 +265,7 @@ export default {
         this.fetchData()
       })
     },
-    enlarge (path) {
+    enlarge(path) {
       var newwin = window.open()
       newwin.document.write('<img src="' + path + '"/>')
     }
