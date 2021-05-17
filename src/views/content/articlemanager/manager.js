@@ -9,7 +9,7 @@ export default {
         title: '',
         status: 1,
         contentColumnId: -1,
-        publishTimeType: 1
+        publishTimeType: 3
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -75,6 +75,7 @@ export default {
         'status': this.query.status,
         'publishTimeType': this.query.publishTimeType
       }
+      console.log(this.query.publishTimeType, 5656)
       getManagerList(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
