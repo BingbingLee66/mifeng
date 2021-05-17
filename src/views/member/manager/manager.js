@@ -1,7 +1,7 @@
-import { list, updateStatus, transferPresident } from '@/api/member/manager'
-import { getMemberOptions } from '@/api/member/post'
-import { getTradeOptions } from '@/api/system/trade'
-import { exportJson2Excel } from '@/utils/exportExcel'
+import {list, updateStatus, transferPresident} from '@/api/member/manager'
+import {getMemberOptions} from '@/api/member/post'
+import {getTradeOptions} from '@/api/system/trade'
+import {exportJson2Excel} from '@/utils/exportExcel'
 
 export default {
   data() {
@@ -32,19 +32,17 @@ export default {
       selectionDatas: [],
       roleId: this.$store.state.user.profile.roleId,
       transferVisible: false,
-      formObj: {
-
-      },
+      formObj: {},
       rules: {
         password: [
-          { required: true, message: '账号密码不能为空', trigger: 'blur' },
-          { validator: checkPass, trigger: 'change' }
+          {required: true, message: '账号密码不能为空', trigger: 'blur'},
+          {validator: checkPass, trigger: 'change'}
         ]
       }
     }
   },
   computed: {
-    nativePlaceStr () {
+    nativePlaceStr() {
       return function (str) {
         if (str === null) {
           return ''
@@ -59,11 +57,11 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
-      return this.$store.getters.has({ tabName, actionName })
+    has(tabName, actionName) {
+      return this.$store.getters.has({tabName, actionName})
     },
-    getId (tabName, actionName) {
-      return this.$store.getters.getId({ tabName, actionName })
+    getId(tabName, actionName) {
+      return this.$store.getters.getId({tabName, actionName})
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -76,22 +74,22 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    getMemberType () {
+    getMemberType() {
       let params = {
         ckey: this.$store.getters.ckey
       }
       getMemberOptions(params).then(response => {
         this.memberPostOptions = response.data.data
-        this.memberPostOptions.unshift({ 'label': '全部', 'value': -1 })
+        this.memberPostOptions.unshift({'label': '全部', 'value': -1})
       })
     },
-    getTradeType () {
+    getTradeType() {
       let params = {
         ckey: this.$store.getters.ckey
       }
       getTradeOptions(params).then(response => {
         this.tradeOptions = response.data.data
-        this.tradeOptions.unshift({ 'label': '全部', 'value': -1 })
+        this.tradeOptions.unshift({'label': '全部', 'value': -1})
       })
     },
     init() {
@@ -125,17 +123,17 @@ export default {
         this.listLoading = false
       })
     },
-    add (e) {
+    add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('membereditor', this.$route.path)
-      this.$router.push({ name: '添加/编辑会员' })
+      this.$router.push({name: '添加/编辑会员'})
     },
-    detail (e, row) {
+    detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('membereditor', this.$route.path)
-      this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '0' } })
+      this.$router.push({name: '会员详情', params: {'memberDetail': row, 'querytype': '0'}})
     },
-    updateStatus (e, row) {
+    updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'id': row.id,
@@ -156,18 +154,17 @@ export default {
         this.fetchData()
       })
     },
-    handlerChange (value) {
+    handlerChange(value) {
       this.query.tradeType = value[value.length - 1]
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
         let new_data = {
-          '会员名称': data.name,
-          '手机号': data.phone,
-          '职位': data.postName,
-          '籍贯': data.nativePlace,
+          '姓名/企业名称': data.name ? data.name : data.companyName,
+          '手机号/联系方式': data.phone ? data.phone : data.companyPhone,
+          '会内职位': data.postName,
           '行业': data.tradeName,
           '入会类型': data.type == 0 ? '个人' : '企业',
           '入会时间': data.joinedTs,
@@ -176,7 +173,7 @@ export default {
         this.selectionDatas.push(new_data)
       }
     },
-    exportExcel (e) {
+    exportExcel(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -184,13 +181,14 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      console.log(this.selectionDatas)
       exportJson2Excel(this.selectionDatas)
     },
-    openTransfer (row) {
+    openTransfer(row) {
       this.formObj = row
       this.transferVisible = true
     },
-    transferPresident () {
+    transferPresident() {
       this.$confirm('确认转换会长将会把平台所有权转换，请谨慎操作', '确定转换给该会员？', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
