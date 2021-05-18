@@ -22,7 +22,7 @@
       </el-table-column>
       <el-table-column label="商/协会logo" width="140px">
         <template slot-scope="scope">
-          <img style="width: 44px;height: 44px;border-radius: 50%;object-fit: cover;" :src="scope.row.systemLogo" alt="">
+          <img style="width: 44px;height: 44px;border-radius: 50%;object-fit: cover;" :src="scope.row.systemLogo ? scope.row.systemLogo : 'https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/default_avatar.png'" alt="">
         </template>
       </el-table-column>
       <el-table-column label="商/协会名称">
@@ -163,7 +163,7 @@
       </el-row>
       <el-row>
         <el-col :offset="2" :span="6">商/协会logo：</el-col>
-        <el-col :span="10"><img :src="detailObj.systemLogo" alt="" style="width: 88px;height: 88px;border-radius: 50%"></el-col>
+        <el-col :span="10"><img :src="detailObj.systemLogo ? detailObj.systemLogo : 'https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/default_avatar.png'" alt="" style="width: 88px;height: 88px;border-radius: 50%"></el-col>
       </el-row>
       <el-row>
         <el-col :offset="2" :span="6">联系人姓名：</el-col>
