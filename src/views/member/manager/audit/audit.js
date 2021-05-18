@@ -7,7 +7,7 @@ export default {
       batchVisible: false,
       audit: {
         id: '',
-        remark: '资料乱填',
+        remark: '资料乱填'
       },
       query: {
         auditStatus: 0
@@ -18,7 +18,9 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: []
+      selectionDatas: [],
+      approveLoading: false,
+      rejectLoading: false
     }
   },
   computed: {
@@ -33,10 +35,10 @@ export default {
   },
   methods: {
     has(tabName, actionName) {
-      return this.$store.getters.has({ tabName, actionName })
+      return this.$store.getters.has({tabName, actionName})
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({ tabName, actionName })
+      return this.$store.getters.getId({tabName, actionName})
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -59,7 +61,7 @@ export default {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       this.listLoading = true
-      let params = {
+      const params = {
         'ckey': this.$store.getters.ckey,
         'auditStatus': this.query.auditStatus,
         'pageSize': this.limit,
@@ -74,7 +76,7 @@ export default {
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('memberaudit', this.$route.path)
-      this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '1' } })
+      this.$router.push({name: '会员详情', params: {'memberDetail': row, 'querytype': '1'}})
     },
     batchApproved(e) {
       if (this.selectionDatas.length === 0) {
@@ -84,7 +86,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
+      const params = {
         'memberId': this.selectionDatas,
         'auditStatus': 1
       }
@@ -98,17 +100,19 @@ export default {
     },
     approved(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let arr = []
+      const arr = []
       arr.push(row.id)
-      let params = {
+      const params = {
         'memberId': arr,
         'auditStatus': 1
       }
+      this.approveLoading = true
       updateAudit(params).then(response => {
         this.$message({
           message: '已通过',
           type: 'success'
         })
+        this.approveLoading = false
         this.fetchData()
       })
     },
@@ -124,7 +128,7 @@ export default {
       this.batchVisible = true
     },
     batchReject() {
-      let params = {
+      const params = {
         'memberId': this.selectionDatas,
         'auditStatus': 2,
         'remark': this.audit.remark
@@ -147,9 +151,9 @@ export default {
       this.visible = true
     },
     reject() {
-      let arr = []
+      const arr = []
       arr.push(this.audit.id)
-      let params = {
+      const params = {
         'memberId': arr,
         'auditStatus': 2,
         'remark': this.audit.remark
@@ -167,9 +171,9 @@ export default {
       this.query.tradeType = value[value.length - 1]
     },
     handleSelectionChange(value) {
-      let datas = value
+      const datas = value
       this.selectionDatas = []
-      for (let data of datas) {
+      for (const data of datas) {
         this.selectionDatas.push(data.id)
       }
     }
