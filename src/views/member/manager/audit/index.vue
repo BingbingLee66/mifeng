@@ -32,25 +32,22 @@
 
         <el-table-column label="头像/企业logo" width="180px">
           <template slot-scope="scope">
-            <img v-if="scope.row.companyLogo" style="width: 44px;height: 44px;object-fit: cover;border-radius: 50%;" :src="scope.row.companyLogo" alt="">
-            <img v-else style="width: 44px;height: 44px;object-fit: cover;border-radius: 50%;" :src="scope.row.portrait" alt="">
+            <img style="width: 44px;height: 44px;border-radius: 50%;" :src="scope.row.type == 0 ? scope.row.portrait : scope.row.companyLogo">
           </template>
         </el-table-column>
         <el-table-column label="姓名/企业名称" width="180px">
           <template slot-scope="scope">
-            {{scope.row.name}}{{scope.row.companyName}}
+            {{scope.row.type == 0 ? scope.row.name : scope.row.companyName}}
           </template>
         </el-table-column>
         <el-table-column label="手机号/联系方式" width="180px">
           <template slot-scope="scope">
-            <span v-if="scope.row.phone">{{scope.row.phone}}</span>
-            <span v-else>{{scope.row.companyPhone}}</span>
+            {{scope.row.phone}}
           </template>
         </el-table-column>
         <el-table-column label="入会类型" width="120px">
           <template slot-scope="scope">
-            <div v-if="scope.row.type == 0">个人</div>
-            <div v-if="scope.row.type == 1">企业</div>
+            {{scope.row.type == 0 ? '个人' : '企业'}}
           </template>
         </el-table-column>
         <el-table-column label="申请时间" width="180px">
