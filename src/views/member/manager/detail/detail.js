@@ -1,7 +1,7 @@
-import { getMemberDetail, getMemberAuditDetail, updateAudit, updateReaudit } from '@/api/member/manager'
+import {getMemberDetail, getMemberAuditDetail, updateAudit, updateReaudit} from '@/api/member/manager'
 
 export default {
-  data () {
+  data() {
     return {
       type: '', // 0会员 1提交审核 2修改审核
       memberDetail: {},
@@ -26,7 +26,7 @@ export default {
     }
   },
   computed: {
-    resumeCp () {
+    resumeCp() {
       return function (msg) {
         let result = msg
         if (!!msg && msg.length > 100) {
@@ -35,7 +35,7 @@ export default {
         return result
       }
     },
-    companyInstrodCp () {
+    companyInstrodCp() {
       return function (msg) {
         let result = msg
         if (!!msg && msg.length > 100) {
@@ -45,7 +45,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     if (this.$route.params.memberDetail) {
       this.memberDetail = this.$route.params.memberDetail
       window.localStorage.setItem('detail-member', JSON.stringify(this.memberDetail))
@@ -62,10 +62,10 @@ export default {
     }
     this.init()
   },
-  created () {
+  created() {
   },
   methods: {
-    closeTab () {
+    closeTab() {
       // 退出当前tab, 打开指定tab
       let openPath = window.localStorage.getItem('memberaudit')
       let tagsViews = this.$store.state.tagsView.visitedViews
@@ -73,16 +73,16 @@ export default {
       for (let view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
-            this.$router.push({ path: openPath })
+            this.$router.push({path: openPath})
           })
           break
         }
       }
     },
-    init () {
+    init() {
       this.fetchData()
     },
-    fetchData () {
+    fetchData() {
       this.listLoading = true
       let params = {
         'memberId': this.memberDetail.id
@@ -98,27 +98,27 @@ export default {
         })
       }
     },
-    idCardDetail (row) {
+    idCardDetail(row) {
       this.idCardImage.frontOfIdCard = row.frontOfIdCard
       this.idCardImage.backOfIdCard = row.backOfIdCard
       this.idCardVisible = true
     },
-    licenseDetail (row) {
+    licenseDetail(row) {
       this.licenseImage = row.license
       this.licenseVisible = true
     },
-    resumeDetail (msg) {
+    resumeDetail(msg) {
       this.resume = msg
       this.resumeVisible = true
     },
-    companyIntroductionDetail (msg) {
+    companyIntroductionDetail(msg) {
       this.companyIntroduction = msg
       this.companyIntroductionVisible = true
     },
-    goEdit () {
-      this.$router.push({ name: '添加/编辑会员', params: { 'memberId': this.memberDetail.id, 'querytype': this.type } })
+    goEdit() {
+      this.$router.push({name: '编辑会员', params: {'memberId': this.memberDetail.id, 'querytype': this.type}})
     },
-    approved (row) {
+    approved(row) {
       let arr = []
       arr.push(row.id)
       let params = {
@@ -143,12 +143,12 @@ export default {
         })
       }
     },
-    rejectRemark (row) {
+    rejectRemark(row) {
       this.audit.id.push(row.id)
       this.audit.remark = '资料乱填'
       this.rejectVisible = true
     },
-    reject () {
+    reject() {
       let params = {
         'memberId': this.audit.id,
         'auditStatus': 2,

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="block query_form">
-      <el-form ref="query" :inline="true" label-width="auto" :model="query">
+      <el-form ref="query" :inline="true" :model="query">
         <el-form-item label="会员名字/手机号码：" class="query_form_item_1">
           <el-input v-model="query.mulValue" />
         </el-form-item>

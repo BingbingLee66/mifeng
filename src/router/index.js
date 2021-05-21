@@ -30,7 +30,8 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [{
+export const constantRoutes = [
+  {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -58,13 +59,12 @@ export const constantRoutes = [{
     component: Layout,
     hidden: true,
     redirect: 'noredirect',
-    children: [{
+    children: [
+      {
         path: 'profile',
         name: '个人资料',
         component: () => import('@/views/account/profile.vue'),
-
         meta: { title: '个人资料' }
-
       },
       {
         path: 'timeline',
@@ -72,7 +72,6 @@ export const constantRoutes = [{
         component: () => import('@/views/account/timeline.vue'),
         hidden: true,
         meta: { title: '最近活动' }
-
       },
       {
         path: 'updatePwd',
@@ -147,10 +146,17 @@ export const constantRoutes = [{
       },
       {
         path: '/member/editor',
-        name: '添加/编辑会员',
+        name: '编辑会员',
         component: () => import('@/views/member/manager/editor/index'),
         hidden: true,
-        meta: { title: '添加/编辑会员' }
+        meta: { title: '编辑会员' }
+      },
+      {
+        path: '/member/add',
+        name: '添加会员',
+        component: () => import('@/views/member/manager/add/index'),
+        hidden: true,
+        meta: { title: '添加会员' }
       },
       {
         path: '/member/detail',

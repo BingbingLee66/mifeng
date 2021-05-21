@@ -126,7 +126,7 @@ export default {
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('membereditor', this.$route.path)
-      this.$router.push({name: '添加/编辑会员'})
+      this.$router.push({ name: '添加会员' })
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
