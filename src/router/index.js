@@ -164,6 +164,20 @@ export const constantRoutes = [
         component: () => import('@/views/member/manager/detail/index'),
         hidden: true,
         meta: { title: '会员详情' }
+      },
+      {
+        path: '/org-structure/department-manage',
+        name: '部门管理',
+        component: () => import('@/views/org-structure/department-manage/index'),
+        hidden: true,
+        meta: { title: '部门管理' }
+      },
+      {
+        path: '/org-structure/member-manage',
+        name: '成员管理',
+        component: () => import('@/views/org-structure/member-manage/index'),
+        hidden: true,
+        meta: { title: '成员管理' }
       }
     ]
   }
