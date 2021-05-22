@@ -1,6 +1,5 @@
 import {
   memberMe,
-  memberAuditMe,
   uploadPortrait,
   uploadIdCard,
   uploadCompanyLogo,
@@ -50,13 +49,13 @@ export default {
         backOfIdCard: '',
         resume: '', // 个人简介
         tradeId: '',
-        tradeCas: '', // 行业
         companyAddress: '',
         companyPositionId: '', // 会内职位
         license: '',
         companyIntroduction: ''
       },
       memberPostOptions: [],
+      bindTradeIds: [], // 已选择行业
       tradeOptions: [], // 行业选择列表
       positionOptions: [], // 会内职位选择列表
       nativeOptions: [],
@@ -138,8 +137,10 @@ export default {
         'memberId': this.memberId
       }
       memberMe(params).then(response => {
+        console.log('会员信息：', response)
         this.formObj = response.data.data
-        this.formObj['tradeCas'] = this.transTrade(this.formObj)
+        this.editFlagNum(this.formObj.tradeId)
+        // this.formObj.tradeCas = [[6,13],[6,12]] // element 需要[[6,13],[6,12]]这种格式才能回显
         this.formObj['nativeCas'] = this.transNativePlace(this.formObj) // 籍贯回显
         if (this.formObj.companyPhone === null) {
           this.formObj.companyPhone = ''
@@ -181,6 +182,42 @@ export default {
         }
       }
       return cas
+    },
+
+    // 行业回显
+    editFlagNum(obj) {
+      const echoTreeArr = []
+      let eachAry
+      // 回显分类value转为数组
+      if (obj === undefined || obj === null) {
+        eachAry = []
+      } else {
+        eachAry = obj.split(',')
+      }
+      const itemAry = [] // 分类树组件，每一项的value数组
+      // 递归分类数据
+      const recursionCategory = (data) => {
+        let len = data.length
+        for (let i = 0; i < len; i++) { // 循环data参数，匹配回显的value
+          itemAry.push(data[i].value) // 构建分类树数组项,入栈
+          for (let j = 0; j < eachAry.length; j++) { // 遍历子节点分类value，拼凑成数组项value，并终止循环
+            if (eachAry[j] == data[i].value) { // 匹配到子节点value
+              echoTreeArr.push(JSON.parse(JSON.stringify(itemAry))) // push进树分类数据
+              eachAry.splice(j, 1) // 删除以匹配到的value
+              break
+            }
+          }
+          if (eachAry.length <= 0) { // 所有回显value匹配完成后，跳出循环
+            break
+          } else if (data[i].children && data[i].children.length > 0) { // 如果存在子分类，递归继续
+            recursionCategory(data[i].children)
+          }
+          itemAry.pop() //  出栈
+        }
+      }
+      recursionCategory(this.tradeOptions) // 调用递归
+      this.bindTradeIds = echoTreeArr
+      console.log(this.bindTradeIds, '处理后将要回显的数组')
     },
     transTrade(obj) {
       let trade = this.formObj['tradeId']
@@ -320,9 +357,18 @@ export default {
       console.log(this.formObj.license)
     },
 
-    handlerChange(value) {
-      if (value !== undefined) {
-        this.formObj.tradeId = value[value.length - 1]
+    handlerChange(val) {
+      if (val !== undefined) {
+        if (val.length >= 5) {
+          this.bindTradeIds = this.bindTradeIds.reverse().slice(0, 5)
+          console.log('删除后', this.bindTradeIds)
+          return this.$message.error('最多只能选择5个行业')
+        }
+        const ids = []
+        val.forEach((item) => {
+          ids.push(item[item.length - 1])
+        })
+        this.formObj.tradeId = ids.join(',')
       }
     },
 
@@ -385,7 +431,7 @@ export default {
         }
       },
       deep: true
-    }
+    },
   }
 
 }

@@ -199,9 +199,11 @@
             <el-col :span="10">
               <el-form-item label="行业：" prop="tradeCas">
                 <el-cascader
+                  :show-all-levels="false"
                   :options="tradeOptions"
-                  v-model="formObj.tradeCas"
+                  v-model="bindTradeIds"
                   placeholder="请选择行业类型"
+                  :props="{ multiple: true, checkStrictly: false }"
                   @change="handlerChange">
                 </el-cascader>
               </el-form-item>
