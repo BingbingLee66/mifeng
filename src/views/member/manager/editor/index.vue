@@ -119,8 +119,12 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="5">
-              <el-form-item label="身份证照片：" prop="frontOfIdCard">
+            <div
+              style="text-align: left;font-weight: 700;vertical-align: middle;font-size: 14px;color: #606266;line-height: 40px;padding: 0 12px 0 0;-webkit-box-sizing: border-box;box-sizing: border-box;">
+              身份证照片：
+            </div>
+            <el-col :span="4">
+              <el-form-item label="" prop="frontOfIdCard">
                 <el-upload
                   class="avatar-uploader"
                   action="/"
@@ -133,7 +137,7 @@
                 </el-upload>
               </el-form-item>
             </el-col>
-            <el-col :span="5">
+            <el-col :span="4">
               <el-form-item label="" prop="backOfIdCard">
                 <el-upload
                   class="avatar-uploader"

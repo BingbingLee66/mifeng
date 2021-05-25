@@ -22,12 +22,12 @@
         </el-col>
       </el-row>
     </div>
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 20px;" class="table_style">
       <el-row>
         <span class="row-title">入会信息</span>
         <el-button v-if="type == 0" @click="goEdit">修改</el-button>
       </el-row>
-      <table border="1" width="100%" align="center" cellspacing="0">
+      <table width="100%" align="center" cellspacing="0">
         <tr align="center" height="45">
           <td width="100%" colspan="5">
             <div style="font-size: 18px; font-weight: 800;">{{member.chamberName}}</div>
@@ -213,16 +213,16 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "src/styles/common.scss";
 </style>
-<style>
+<style lang="scss">
   .wx-col {
-    border: 1px solid black;
+    border: 1px solid #DCDFE6;
     border-right: 0;
     border-radius: 0 !important;
     line-height: 40px;
     text-align: center;
   }
   .wx-col:last-child {
-    border: 1px solid black;
+    border: 1px solid #DCDFE6;
   }
   .col-title {
     background-color: #b7f0ff;
@@ -262,5 +262,18 @@
   .d-btn-box {
     margin: 20px 0 40px 0;
     height: 10px;
+  }
+  .table_style{
+    table{
+      border-top: 1px solid #DCDFE6;
+      border-right: 1px solid #DCDFE6;
+      border-spacing: 0px;
+      tr{
+        td{
+          border-bottom: 1px solid #DCDFE6;
+          border-left: 1px solid #DCDFE6;
+        }
+      }
+    }
   }
 </style>
