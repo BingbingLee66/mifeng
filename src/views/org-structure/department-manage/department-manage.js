@@ -1,6 +1,9 @@
 export default {
   data() {
     return {
+      showDialog: false, // 控制添加/编辑部门弹窗
+      showDelDialog: false, // 控制删除部门弹窗
+      name: '', // 部门名称
       tableData: [{
         id: 1,
         name: '广东省江西商会',
@@ -38,6 +41,19 @@ export default {
   created() {
   },
   methods: {
+    handleDialog(type, row) {
+      console.log(type, row)
+      this.showDialog = true
+    },
+    handleDelDialog() {
+      this.showDelDialog = true
+    },
+    save() {
+      console.log('保存')
+    },
+    del() {
+      console.log('删除')
+    },
     editName(e, row) {
       console.log(e, row)
     }
