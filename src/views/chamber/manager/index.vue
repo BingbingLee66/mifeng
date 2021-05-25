@@ -94,7 +94,7 @@
         <el-row>
           <el-col :offset="2" :span="20">
             <el-form-item label="联系人手机号" prop="phone">
-              <el-input v-model="formObj.phone" minlength=1 placeholder="手机号码即商会后台登录账号"></el-input>
+              <el-input readonly=true v-model="formObj.phone" minlength=1 placeholder="手机号码即商会后台登录账号"></el-input>
             </el-form-item>
           </el-col>
         </el-row>

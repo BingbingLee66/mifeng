@@ -42,8 +42,8 @@ export default {
         nativeCas: '', // 籍贯
         birthday: '',
         gender: 1,
-        joinedTs: '',
-        memberPostId: '',
+        joinedTs: '', // 入会时间
+        memberPostId: '', // 会内职位
         idCard: '',
         frontOfIdCard: '',
         backOfIdCard: '',
@@ -54,10 +54,10 @@ export default {
         license: '',
         companyIntroduction: ''
       },
-      memberPostOptions: [],
+      memberPostOptions: [], // 会内职位选择列表
       bindTradeIds: [], // 已选择行业
       tradeOptions: [], // 行业选择列表
-      positionOptions: [], // 会内职位选择列表
+      positionOptions: [], // 企业职位选择列表
       nativeOptions: [],
       type: 'add',
       rules: {},
@@ -94,6 +94,7 @@ export default {
       this.rules = this.personalRules
     }
     this.getNativeOptions()
+    this.getMemberType()
     this.getPositionType()
     if (this.$route.params.memberId) {
       this.memberId = this.$route.params.memberId

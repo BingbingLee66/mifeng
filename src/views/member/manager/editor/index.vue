@@ -16,14 +16,14 @@
           </el-row>
           <div v-if="formObj.type === 1">
             <el-row>
-              <el-col :span="10">
+              <el-col :span="7">
                 <el-form-item label="企业名称：" prop="companyName">
                   <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="10">
+              <el-col offset="1" :span="7">
                 <el-form-item label="企业logo：" prop="companyLogo">
                   <el-upload class="avatar-uploader" action="/" :show-file-list="false"
                              :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
@@ -38,7 +38,7 @@
             </el-row>
             <el-row>
               <el-col :span="10">
-                <el-form-item label="联系电话：" prop="companyPhone">
+                <el-form-item label="联系方式：" prop="companyPhone">
                   <el-input v-model="formObj.companyPhone"></el-input>
                 </el-form-item>
               </el-col>
@@ -55,7 +55,7 @@
             <el-row>
               <el-col :span="10">
                 <el-form-item label="手机号：" prop="phone">
-                  <el-input v-model="formObj.phone"></el-input>
+                  <el-input v-model="formObj.phone" :readonly=true></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -69,19 +69,19 @@
           </el-row> -->
           <div class="title_block">其他信息</div>
           <el-row v-if="formObj.type === 1">
-            <el-col :span="10">
+            <el-col :span="7">
               <el-form-item label="姓名：" prop="name">
                 <el-input v-model.trim="formObj.name" maxLength="100"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :offset="2" :span="10">
+            <el-col :offset="1" :span="7">
               <el-form-item label="手机号：" prop="phone">
-                <el-input v-model="formObj.phone"></el-input>
+                <el-input v-model="formObj.phone" :readonly=true></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="10">
+            <el-col :span="7">
               <el-form-item label="生日：" prop="birthday">
                 <el-date-picker
                   format="yyyy-MM-dd"
@@ -92,7 +92,17 @@
                 </el-date-picker>
               </el-form-item>
             </el-col>
-            <el-col :offset="2" :span="10">
+            <el-col :offset="1" :span="7">
+              <el-form-item label="性别：" prop="gender">
+                <el-select v-model="formObj.gender" placeholder="请选择性别类型">
+                  <el-option label="男" :value="1"></el-option>
+                  <el-option label="女" :value="2"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="7">
               <el-form-item label="籍贯：" prop="nativeCas">
                 <el-cascader
                   ref="cascaderAddr"
@@ -102,25 +112,15 @@
                 </el-cascader>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="10">
-              <el-form-item label="性别：" prop="gender">
-                <el-select v-model="formObj.gender" placeholder="请选择性别类型">
-                  <el-option label="男" :value="1"></el-option>
-                  <el-option label="女" :value="2"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :offset="2" :span="10">
-              <el-form-item label="身份证号码：" prop="idCard">
-                <el-input v-model="formObj.idCard" maxLength="25"></el-input>
+            <el-col :offset="1" :span="7">
+              <el-form-item label="身份证号：" prop="idCard">
+                <el-input v-model="formObj.idCard" maxLength="18"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="6">
-              <el-form-item label="身份证照：" prop="frontOfIdCard">
+              <el-form-item label="身份证照片：" prop="frontOfIdCard">
                 <el-upload
                   class="avatar-uploader"
                   action="/"
@@ -150,18 +150,18 @@
           </el-row>
           <el-row>
             <el-col :span="20">
-              <el-form-item label="个人简介：" prop="resume">
+              <el-form-item label="个人简介：" prop="resume" class="flex_style">
                 <el-input type="textarea" :rows="8" v-model="formObj.resume" maxLength="1000"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="10" v-if="formObj.type === 0">
+            <el-col :span="7" v-if="formObj.type === 0">
               <el-form-item label="企业名称：" prop="companyName">
                 <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="10" v-if="formObj.type === 0">
+            <el-col offset="1" :span="7" v-if="formObj.type === 0">
               <el-form-item label="企业logo：" prop="companyLogo">
                 <el-upload class="avatar-uploader" action="/" :show-file-list="false"
                            :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
@@ -175,7 +175,32 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="10">
+            <el-col :span="7">
+              <el-form-item label="行业：" prop="tradeCas">
+                <el-cascader
+                  :show-all-levels="false"
+                  :options="tradeOptions"
+                  v-model="bindTradeIds"
+                  placeholder="请选择行业类型"
+                  :props="{ multiple: true, checkStrictly: false }"
+                  @change="handlerChange">
+                </el-cascader>
+              </el-form-item>
+            </el-col>
+            <el-col :offset="1" :span="7">
+              <el-form-item label="会内职位：" prop="memberPostId">
+                <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
+                  <el-option
+                    v-for="post in memberPostOptions"
+                    :label="post.label"
+                    :value="post.value"
+                    :key="post.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="7">
               <el-form-item label="营业执照：" prop="license">
                 <el-upload
                   class="avatar-uploader"
@@ -189,28 +214,27 @@
                 </el-upload>
               </el-form-item>
             </el-col>
-            <el-col :span="10" v-if="formObj.type === 0">
-              <el-form-item label="联系电话：" prop="companyPhone">
+            <el-col :offset="1" :span="7" v-if="formObj.type === 0">
+              <el-form-item label="联系方式：" prop="companyPhone">
                 <el-input v-model="formObj.companyPhone"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="10">
-              <el-form-item label="行业：" prop="tradeCas">
-                <el-cascader
-                  :show-all-levels="false"
-                  :options="tradeOptions"
-                  v-model="bindTradeIds"
-                  placeholder="请选择行业类型"
-                  :props="{ multiple: true, checkStrictly: false }"
-                  @change="handlerChange">
-                </el-cascader>
+            <el-col :span="7">
+              <el-form-item label="入会时间：" prop="joinedTs">
+                <el-date-picker
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  v-model="formObj.joinedTs"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
               </el-form-item>
             </el-col>
-            <el-col :offset="2" :span="10">
-              <el-form-item label="会内职位：" prop="companyPositionId">
-                <el-select v-model="formObj.companyPositionId" placeholder="请选择会内职位">
+            <el-col :offset="1" :span="7">
+              <el-form-item label="企业职位：" prop="companyPositionId">
+                <el-select v-model="formObj.companyPositionId" placeholder="请选择企业职位">
                   <el-option
                     v-for="position in positionOptions"
                     :label="position.label"
@@ -223,7 +247,7 @@
           </el-row>
           <el-row>
             <el-col :span="20">
-              <el-form-item label="办公地址：" prop="companyAddress">
+              <el-form-item label="办公地址：" prop="companyAddress" class="adress_style">
                 <el-input v-model.trim="formObj.companyAddress" maxLength="200"></el-input>
               </el-form-item>
             </el-col>
@@ -257,6 +281,7 @@
   align-items: center;
   margin-top: 40px;
   margin-bottom: 20px;
+  font-weight: 700;
 
   &::before {
     content: '';
@@ -278,25 +303,27 @@
   padding: 0 0 100px 100px;
   width: 100%;
 
-  .el-select {
-    width: auto !important;
-  }
-
   .el-form--label-left .el-form-item__label {
     text-align: left;
     width: 100px;
   }
 
-  .el-input {
-    width: 80%;
-  }
-  .el-cascader{
-    width: 60%;
-  }
   .el-form-item__error {
     position: absolute;
     top: 110%;
     left: 100px;
+  }
+
+  .el-select, .el-input, .el-cascader {
+    width: 290px !important;
+  }
+  .el-textarea{
+    width: 830px !important;
+  }
+  .adress_style{
+    .el-input{
+      width: 830px !important;
+    }
   }
 }
 
