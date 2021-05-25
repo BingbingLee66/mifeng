@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="block form-border">
-      <div class="form-container">
+      <div class="edit_form_container">
         <el-form ref="form" :model="formObj" :rules="rules" label-position="left">
           <div class="title_block">入会信息</div>
           <el-row>
@@ -285,25 +285,6 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import 'src/styles/common.scss';
-
-.title_block {
-  font-size: 18px;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
-  display: flex;
-  align-items: center;
-  margin-top: 40px;
-  margin-bottom: 20px;
-  font-weight: 700;
-
-  &::before {
-    content: '';
-    display: block;
-    width: 3px;
-    background: #409EFF;
-    height: 20px;
-    margin-right: 5px;
-  }
-}
 </style>
 <style lang="scss">
 .form-border {
@@ -311,9 +292,28 @@
   border: 1px solid #bfc5d0;
 }
 
-.form-container {
+.edit_form_container {
   padding: 0 0 100px 100px;
   width: 100%;
+
+  .title_block {
+    font-size: 18px;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-weight: 700;
+
+    &::before {
+      content: '';
+      display: block;
+      width: 3px;
+      background: #409EFF;
+      height: 20px;
+      margin-right: 5px;
+    }
+  }
 
   .el-form--label-left .el-form-item__label {
     text-align: left;
@@ -323,51 +323,43 @@
   .el-select, .el-input, .el-cascader {
     width: 100% !important;
   }
-}
 
-.bar-info {
-  margin: 20px 2px;
-  padding-left: 25px;
-  font-size: 20px;
-  font-weight: 800;
-  border-left: 3px solid black;
-}
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
 
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 180px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+  }
 
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 180px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-}
+  .avatar {
+    width: 180px;
+    height: 100px;
+    display: block;
+  }
 
-.avatar {
-  width: 180px;
-  height: 100px;
-  display: block;
-}
+  .avatar-tips {
+    height: 116px;
+  }
 
-.avatar-tips {
-  height: 116px;
-}
-
-.uploader-tips {
-  line-height: 50px;
-  margin-top: -34px;
-  font-size: 12px;
-  color: #8c939d;
+  .uploader-tips {
+    line-height: 50px;
+    margin-top: -34px;
+    font-size: 12px;
+    color: #8c939d;
+  }
 }
 </style>

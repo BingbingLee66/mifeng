@@ -152,7 +152,7 @@ export default {
     transNativePlace(obj) {
       let nativePlace = obj.nativePlace
       let cas = []
-      if (nativePlace !== '') {
+      if (nativePlace !== '' && nativePlace !== undefined && nativePlace !== null) {
         let place = nativePlace.split('-')
         let province = area.province_list
         let city = area.city_list
