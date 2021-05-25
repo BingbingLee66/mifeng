@@ -23,12 +23,19 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col offset="1" :span="7">
+              <el-col :span="7">
                 <el-form-item label="企业logo：" prop="companyLogo">
-                  <el-upload class="avatar-uploader" action="/" :show-file-list="false"
-                             :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
-                    <img v-if="formObj.companyLogo" :src="formObj.companyLogo" style="height: 100px; width: 100px;"
-                         class="avatar avatar-tips">
+                  <el-upload
+                    class="avatar-uploader"
+                    action="/"
+                    :show-file-list="false"
+                    :before-upload="beforeAvatarUpload"
+                    :http-request="uploadLogo">
+                    <img
+                      v-if="formObj.companyLogo"
+                      :src="formObj.companyLogo"
+                      style="height: 100px; width: 100px;"
+                      class="avatar avatar-tips">
                     <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
                     </i>
                     <div v-if="!formObj.companyLogo" class="uploader-tips">上传LOGO</div>
@@ -37,7 +44,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="10">
+              <el-col :span="7">
                 <el-form-item label="联系方式：" prop="companyPhone">
                   <el-input v-model="formObj.companyPhone"></el-input>
                 </el-form-item>
@@ -46,27 +53,20 @@
           </div>
           <div v-else>
             <el-row>
-              <el-col :span="10">
+              <el-col :span="7">
                 <el-form-item label="姓名：" prop="name" class="form_content">
                   <el-input v-model.trim="formObj.name" maxLength="100"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="10">
+              <el-col :span="7">
                 <el-form-item label="手机号：" prop="phone">
                   <el-input v-model="formObj.phone" :readonly=true></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
           </div>
-          <!-- <el-row>
-            <el-col :span="10">
-              <el-form-item label="所在部门：" prop="companyPhone">
-                <el-input v-model="formObj.companyPhone"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row> -->
           <div class="title_block">其他信息</div>
           <el-row v-if="formObj.type === 1">
             <el-col :span="7">
@@ -119,7 +119,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="6">
+            <el-col :span="5">
               <el-form-item label="身份证照片：" prop="frontOfIdCard">
                 <el-upload
                   class="avatar-uploader"
@@ -133,7 +133,7 @@
                 </el-upload>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="5">
               <el-form-item label="" prop="backOfIdCard">
                 <el-upload
                   class="avatar-uploader"
@@ -149,7 +149,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="20">
+            <el-col :span="15">
               <el-form-item label="个人简介：" prop="resume" class="flex_style">
                 <el-input type="textarea" :rows="8" v-model="formObj.resume" maxLength="1000"></el-input>
               </el-form-item>
@@ -161,12 +161,20 @@
                 <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
               </el-form-item>
             </el-col>
-            <el-col offset="1" :span="7" v-if="formObj.type === 0">
+            <el-col :offset="1" :span="7" v-if="formObj.type === 0">
               <el-form-item label="企业logo：" prop="companyLogo">
-                <el-upload class="avatar-uploader" action="/" :show-file-list="false"
-                           :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
-                  <img v-if="formObj.companyLogo" :src="formObj.companyLogo" style="height: 100px; width: 100px;"
-                       class="avatar avatar-tips">
+                <el-upload
+                  class="avatar-uploader"
+                  action="/"
+                  :show-file-list="false"
+                  :before-upload="beforeAvatarUpload"
+                  :http-request="uploadLogo"
+                >
+                  <img
+                    v-if="formObj.companyLogo"
+                    :src="formObj.companyLogo"
+                    style="height: 100px; width: 100px;"
+                    class="avatar avatar-tips">
                   <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
                   </i>
                   <div v-if="!formObj.companyLogo" class="uploader-tips">上传LOGO</div>
@@ -246,14 +254,14 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="20">
+            <el-col :span="15">
               <el-form-item label="办公地址：" prop="companyAddress" class="adress_style">
                 <el-input v-model.trim="formObj.companyAddress" maxLength="200"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="20">
+            <el-col :span="15">
               <el-form-item label="企业简介：" prop="companyIntroduction">
                 <el-input type="textarea" :rows="8" v-model="formObj.companyIntroduction" maxLength="1000"></el-input>
               </el-form-item>
@@ -308,22 +316,8 @@
     width: 100px;
   }
 
-  .el-form-item__error {
-    position: absolute;
-    top: 110%;
-    left: 100px;
-  }
-
   .el-select, .el-input, .el-cascader {
-    width: 290px !important;
-  }
-  .el-textarea{
-    width: 830px !important;
-  }
-  .adress_style{
-    .el-input{
-      width: 830px !important;
-    }
+    width: 100% !important;
   }
 }
 
