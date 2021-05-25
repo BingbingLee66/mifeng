@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="block form-border">
-      <div class="form-container">
+      <div class="add_form_container">
         <el-form ref="form" :model="formObj" :rules="rules" label-position="left">
           <el-form-item label="入会类型：">
             <el-radio-group v-model="formObj.type">
@@ -54,7 +54,7 @@
   border: 1px solid #bfc5d0;
 }
 
-.form-container {
+.add_form_container {
   padding: 50px 0 100px 100px;
   width: 50%;
 }
