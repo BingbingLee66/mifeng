@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## [1.4.0] - 2021-05-25
+
+### Added
+
+- 会员管理-添加/编辑会员页面分离，编辑页面重新设计，行业支持选择多个[#53](https://gitlab.kd/yunshanghui/backend/api/-/issues/53)
+- 商会后台，会员信息的ui调整[#61](https://gitlab.kd/yunshanghui/backend/api/-/issues/61)
+
+### Fixed
+- 会员管理-商会会员，姓名/企业名称显示错误[#54]
+  (https://gitlab.kd/yunshanghui/backend/api/-/issues/54)
+- 编辑会员-企业入会页面需要修改的内容[#55]
+  (https://gitlab.kd/yunshanghui/backend/api/-/issues/55)
+- 编辑会员-个人入会页面的修改内容[#56]
+  (https://gitlab.kd/yunshanghui/backend/api/-/issues/56)
+- 编辑资料-身份证号的位数限制有误[#57]
+  (https://gitlab.kd/yunshanghui/backend/api/-/issues/55)
+- 编辑资料，手机号不允许修改[#58]
+  (https://gitlab.kd/yunshanghui/backend/api/-/issues/58)
+
+
 ## [1.3.0] - 2021-05-18
 
 ### Added
