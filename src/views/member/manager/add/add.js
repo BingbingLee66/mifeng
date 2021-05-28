@@ -5,6 +5,9 @@ import {
   add,
   update
 } from '@/api/member/manager'
+import {
+  getDepartmentList
+} from '@/api/org-structure/org'
 
 export default {
   data() {
@@ -30,7 +33,8 @@ export default {
         phone: '',
         companyName: '',
         companyPhone: '',
-        companyLogo: ''
+        companyLogo: '',
+        departmentId: ''
       },
       type: 'add',
       rules: {
@@ -52,31 +56,13 @@ export default {
           {validator: checkPhone, trigger: 'change'}
         ]
       },
-      options: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
-        }]
-      }]
+      departmentOptions: [],
+      departmentCas: ''
     }
   },
 
   created() {
+    this.getdepartmentType()
   },
 
   mounted() {
@@ -95,6 +81,30 @@ export default {
   },
 
   methods: {
+    /*
+    * 获取部门列表数据
+    * */
+    getdepartmentType() {
+      const params = {
+        'ckey': this.$store.getters.ckey,
+        'parentId': 0
+      }
+      getDepartmentList(params).then(res => {
+        console.log('部门列表：', res.data.data[0].departmentRespList)
+        if (res.state === 1) {
+          this.departmentOptions = res.data.data[0].departmentRespList
+        }
+      })
+    },
+    /*
+    * 选择部门
+    * */
+    handlerDepartmentChange(val) {
+      console.log(val)
+      // console.log(this.departmentOptions)
+      this.formObj.departmentId = [...val].pop()
+    },
+
     closeTab() {
       // 退出当前tab, 打开指定tab
       const openPath = window.localStorage.getItem('membereditor')

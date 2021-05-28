@@ -30,7 +30,7 @@
                   style="height: 100px; width: 100px;">
                 </i>
               </el-upload>
-<!--              <div style="color: #999">格式:jpg/png/jpeg  尺寸:132*132px</div>-->
+              <!--              <div style="color: #999">格式:jpg/png/jpeg  尺寸:132*132px</div>-->
             </el-form-item>
             <el-form-item label="联系电话：" prop="companyPhone">
               <el-input v-model="formObj.companyPhone"></el-input>
@@ -46,9 +46,17 @@
           </div>
           <el-form-item label="所在部门：">
             <el-cascader
+              :show-all-levels="false"
+              :options="departmentOptions"
+              :props="{ checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList' }"
+              v-model="departmentCas"
+              placeholder="请选择部门"
+              @change="handlerDepartmentChange">
+            </el-cascader>
+            <!--  <el-cascader
               :options="options"
               :props="{ multiple: true, checkStrictly: true }"
-              clearable></el-cascader>
+              clearable></el-cascader>  -->
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-dbClick @click="save">保存</el-button>

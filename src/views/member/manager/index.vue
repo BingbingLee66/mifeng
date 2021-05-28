@@ -23,8 +23,14 @@
           </el-cascader>
         </el-form-item>
         <el-form-item label="入会时间：">
-          <el-date-picker format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="query.date" type="daterange"
-                          range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+          <el-date-picker
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            v-model="query.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="部门：">
