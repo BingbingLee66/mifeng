@@ -71,7 +71,8 @@
         <tr align="center" height="45">
           <td width="8%">手机号码</td>
           <td colspan="1">{{member.phone}}</td>
-          <td colspan="2"></td>
+          <td width="8%">部门</td>
+          <td colspan="2">{{member.departmentName}}</td>
         </tr>
         <tr align="center" height="45">
           <td width="8%">个人简历</td>
