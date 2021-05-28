@@ -2,6 +2,7 @@ import {list, updateStatus, transferPresident} from '@/api/member/manager'
 import {getMemberOptions} from '@/api/member/post'
 import {getTradeOptions} from '@/api/system/trade'
 import {exportJson2Excel} from '@/utils/exportExcel'
+import {getDepartmentList} from '@/api/org-structure/org'
 
 export default {
   data() {
@@ -13,15 +14,18 @@ export default {
       }
     }
     return {
+      departmentOptions: [],
       memberPostOptions: [],
       tradeOptions: [],
       tradeCas: -1,
+      departmentCas: -1,
       query: {
         mulValue: '',
         memberPostType: -1,
         type: -1,
         tradeType: -1,
-        date: ''
+        date: '',
+        department: -1
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -52,8 +56,9 @@ export default {
     }
   },
   created() {
-    this.getMemberType()
-    this.getTradeType()
+    this.getMemberType() // 获取商会职位数据
+    this.getTradeType() // 获取行业数据
+    this.getdepartmentType() // 获取部门数据
     this.init()
   },
   methods: {
@@ -74,24 +79,43 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
+
     getMemberType() {
-      let params = {
+      const params = {
         ckey: this.$store.getters.ckey
       }
       getMemberOptions(params).then(response => {
+        console.log('会内职位数据', response.data.data)
         this.memberPostOptions = response.data.data
         this.memberPostOptions.unshift({'label': '全部', 'value': -1})
       })
     },
+
     getTradeType() {
-      let params = {
+      const params = {
         ckey: this.$store.getters.ckey
       }
       getTradeOptions(params).then(response => {
+        console.log('行业数据：', response.data.data)
         this.tradeOptions = response.data.data
         this.tradeOptions.unshift({'label': '全部', 'value': -1})
       })
     },
+
+    getdepartmentType() {
+      const params = {
+        'ckey': this.$store.getters.ckey,
+        'parentId': 0
+      }
+      getDepartmentList(params).then(res => {
+        console.log('部门列表：', res.data.data[0].departmentRespList)
+        if (res.state === 1) {
+          this.departmentOptions = res.data.data[0].departmentRespList
+          this.departmentOptions.unshift({'departmentName': '全部', 'id': -1})
+        }
+      })
+    },
+
     init() {
       if (this.has('', '查询')) {
         this.fetchData()
@@ -107,9 +131,9 @@ export default {
         'memberPostType': this.query.memberPostType,
         'type': this.query.type,
         'tradeType': this.query.tradeType,
+        'department': this.query.department,
         'pageSize': this.limit,
-        'page': this.currentpage,
-        'department': -1
+        'page': this.currentpage
       }
       if (this.query.mulValue) {
         params['mulValue'] = this.query.mulValue
@@ -127,7 +151,7 @@ export default {
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('membereditor', this.$route.path)
-      this.$router.push({ name: '添加会员' })
+      this.$router.push({name: '添加会员'})
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -158,6 +182,14 @@ export default {
     handlerChange(value) {
       this.query.tradeType = value[value.length - 1]
     },
+
+    /*
+    * 选择行业
+    * */
+    handlerDepartmentChange(val) {
+      this.query.department = [...val].pop()
+    },
+
     handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
