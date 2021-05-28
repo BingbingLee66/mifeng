@@ -50,6 +50,11 @@
             {{scope.row.type == 0 ? '个人' : '企业'}}
           </template>
         </el-table-column>
+        <el-table-column label="所在部门" width="180px">
+          <template slot-scope="scope">
+            {{scope.row.departmentName }}
+          </template>
+        </el-table-column>
         <el-table-column label="申请时间" width="180px">
           <template slot-scope="scope">
             {{scope.row.createdTs}}
