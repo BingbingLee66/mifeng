@@ -178,6 +178,13 @@ export const constantRoutes = [
         component: () => import('@/views/org-structure/member-manage/index'),
         hidden: true,
         meta: { title: '成员管理' }
+      },
+      {
+        path: '/org-structure/invite-member',
+        name: '邀请成员',
+        component: () => import('@/views/org-structure/invite-member/index'),
+        hidden: true,
+        meta: { title: '邀请成员' }
       }
     ]
   }

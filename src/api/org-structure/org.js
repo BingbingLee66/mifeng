@@ -1,10 +1,25 @@
 import request from '@/utils/request'
 
-export function getUserList(params) {
+export function getDepartmentList(params) {
   return request({
-    url: '/ec/member/all-user',
+    url: '/api/ec/department/list',
     method: 'get',
     params
   })
 }
 
+export function saveDepartment(params) {
+  return request({
+    url: '/api/ec/department/save',
+    method: 'post',
+    params
+  })
+}
+
+export function delDepartment(params) {
+  return request({
+    url: '/api/ec/department/delete',
+    method: 'delete',
+    params
+  })
+}

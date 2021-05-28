@@ -35,27 +35,49 @@ export default {
       type: 'add',
       rules: {
         companyName: [
-          { required: true, message: '企业名称不能为空', trigger: 'blur' }
+          {required: true, message: '企业名称不能为空', trigger: 'blur'}
         ],
         companyLogo: [
-          { required: true, message: '公司logo必须上传', trigger: 'blur' }
+          {required: true, message: '公司logo必须上传', trigger: 'blur'}
         ],
         companyPhone: [
-          { required: true, message: '联系方式不能为空', trigger: 'blur' },
-          { validator: checkTel, tigger: 'change' }
+          {required: true, message: '联系方式不能为空', trigger: 'blur'},
+          {validator: checkTel, tigger: 'change'}
         ],
         name: [
-          { required: true, message: '姓名不能为空', trigger: 'blur' }
+          {required: true, message: '姓名不能为空', trigger: 'blur'}
         ],
         phone: [
-          { required: true, message: '手机号码不能为空', trigger: 'blur' },
-          { validator: checkPhone, trigger: 'change' }
+          {required: true, message: '手机号码不能为空', trigger: 'blur'},
+          {validator: checkPhone, trigger: 'change'}
         ]
-      }
+      },
+      options: [{
+        value: 'zhinan',
+        label: '指南',
+        children: [{
+          value: 'shejiyuanze',
+          label: '设计原则',
+          children: [{
+            value: 'yizhi',
+            label: '一致'
+          }, {
+            value: 'fankui',
+            label: '反馈'
+          }, {
+            value: 'xiaolv',
+            label: '效率'
+          }, {
+            value: 'kekong',
+            label: '可控'
+          }]
+        }]
+      }]
     }
   },
 
-  created() { },
+  created() {
+  },
 
   mounted() {
     if (this.$route.params.memberId) {
@@ -81,7 +103,7 @@ export default {
       for (const view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
-            this.$router.push({ path: openPath })
+            this.$router.push({path: openPath})
           })
           break
         }

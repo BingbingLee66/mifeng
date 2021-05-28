@@ -102,13 +102,14 @@ export default {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       this.listLoading = true
-      let params = {
+      const params = {
         'ckey': this.$store.getters.ckey,
         'memberPostType': this.query.memberPostType,
         'type': this.query.type,
         'tradeType': this.query.tradeType,
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        'department': -1
       }
       if (this.query.mulValue) {
         params['mulValue'] = this.query.mulValue

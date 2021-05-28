@@ -13,13 +13,24 @@
             <el-form-item label="企业名称：" prop="companyName">
               <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
             </el-form-item>
-            <el-form-item label="企业logo：" prop="companyLogo">
-              <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
-                <img v-if="formObj.companyLogo" :src="formObj.companyLogo" style="height: 100px; width: 100px;" class="avatar avatar-tips">
-                <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
+            <el-form-item label="企业logo：" prop="companyLogo" class="avatar_style">
+              <el-upload
+                class="avatar-uploader"
+                action="/"
+                :show-file-list="false"
+                :before-upload="beforeAvatarUpload"
+                :http-request="uploadLogo">
+                <img
+                  v-if="formObj.companyLogo"
+                  :src="formObj.companyLogo"
+                  class="avatar avatar-tips">
+                <i
+                  v-else
+                  class="el-icon-plus avatar-uploader-icon"
+                  style="height: 100px; width: 100px;">
                 </i>
-                <div v-if="!formObj.companyLogo" class="uploader-tips">上传LOGO</div>
               </el-upload>
+<!--              <div style="color: #999">格式:jpg/png/jpeg  尺寸:132*132px</div>-->
             </el-form-item>
             <el-form-item label="联系电话：" prop="companyPhone">
               <el-input v-model="formObj.companyPhone"></el-input>
@@ -33,6 +44,12 @@
               <el-input v-model="formObj.phone"></el-input>
             </el-form-item>
           </div>
+          <el-form-item label="所在部门：">
+            <el-cascader
+              :options="options"
+              :props="{ multiple: true, checkStrictly: true }"
+              clearable></el-cascader>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" v-dbClick @click="save">保存</el-button>
             <el-button @click="closeTab">取消</el-button>
@@ -48,7 +65,7 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import 'src/styles/common.scss';
 </style>
-<style>
+<style lang="scss">
 .form-border {
   margin: 20px 50px;
   border: 1px solid #bfc5d0;
@@ -57,51 +74,44 @@
 .add_form_container {
   padding: 50px 0 100px 100px;
   width: 50%;
-}
 
-.bar-info {
-  margin: 20px 2px;
-  padding-left: 25px;
-  font-size: 20px;
-  font-weight: 800;
-  border-left: 3px solid black;
-}
+  .el-cascader {
+    width: 100%;
+  }
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
+  .avatar_style {
+    .el-form-item__label {
+      float: none;
+    }
+  }
 
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
+  .avatar-uploader .el-upload {
+    width: 132px;
+    height: 132px;
+    border: 1px dashed #d9d9d9;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+  }
 
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 180px;
-  height: 100px;
-  line-height: 100px;
-  text-align: center;
-}
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
 
-.avatar {
-  width: 180px;
-  height: 100px;
-  display: block;
-}
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 132px;
+    height: 132px;
+    line-height: 132px;
+    text-align: center;
+  }
 
-.avatar-tips {
-  height: 116px;
-}
-
-.uploader-tips {
-  line-height: 50px;
-  margin-top: -34px;
-  font-size: 12px;
-  color: #8c939d;
+  .avatar {
+    width: 132px;
+    height: 132px;
+    display: block;
+  }
 }
 </style>
