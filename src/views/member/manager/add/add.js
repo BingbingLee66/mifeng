@@ -100,7 +100,7 @@ export default {
     * 选择部门
     * */
     handlerDepartmentChange(val) {
-      console.log(val)
+      // console.log(val)
       // console.log(this.departmentOptions)
       this.formObj.departmentId = [...val].pop()
     },

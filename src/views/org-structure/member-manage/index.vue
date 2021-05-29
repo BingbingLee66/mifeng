@@ -5,22 +5,41 @@
         <el-input
           placeholder="搜索人员姓名"
           prefix-icon="el-icon-search"
-          v-model="searchValue">
+          v-model="searchValue"
+          @input="handleValueChange">
         </el-input>
       </div>
-      <el-tree
-        :data="data"
-        node-key="id"
-        :props="defaultProps"
-        :expand-on-click-node="true"
-        :highlight-current="true"
-        :current-node-key="1"
-        :default-expanded-keys="[1]"
-        @node-click="handleNodeClick">
-      </el-tree>
+      <div class="search-result" v-if="showFlag">
+        <div class="member-list">
+          <div v-if="searchResult.length>0">
+            <div class="member-item" v-for="item in searchResult" :key="item.id" @click="goDetail(item.id)">
+              <div class="avatar"></div>
+              <div class="name">{{item.name}}</div>
+            </div>
+          </div>
+         <div v-else>
+           未搜索到相关成员，换个词试试。
+         </div>
+        </div>
+      </div>
+      <div class="department-list" v-if="!showFlag">
+        <el-tree
+          :data="departmentTree"
+          node-key="id"
+          :props="{ value:'id',children:'departmentRespList' }"
+          :expand-on-click-node="true"
+          :highlight-current="true"
+          :current-node-key="currentKey"
+          :default-expanded-keys="[currentKey]"
+          @node-click="handleNodeClick">
+          <template slot-scope="{ node, data }">
+            <span style="font-size: 16px">{{ data.departmentName }} ({{ data.peopleCount }})</span>
+          </template>
+        </el-tree>
+      </div>
     </div>
     <div class="content_wrap">
-      <div class="name">广西省江西商会</div>
+      <div class="name">{{ departmentName }}</div>
       <div class="content_item operation">
         <div class="ico"><i class="el-icon-s-custom"></i>部门成员</div>
         <div>
@@ -32,7 +51,7 @@
       <div class="content_item">
         <el-table
           ref="multipleTable"
-          :data="tableData"
+          :data="memberData"
           tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange">
@@ -46,7 +65,7 @@
             <template slot-scope="scope">{{ scope.row.name }}</template>
           </el-table-column>
           <el-table-column
-            prop="position"
+            prop="postName"
             label="职位"
             width="280">
           </el-table-column>
@@ -59,13 +78,14 @@
       </div>
       <div class="content_item">
         <el-pagination
+          :hide-on-single-page="true"
+          background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="currentpage"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
+          :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400">
+          :total="totalPages">
         </el-pagination>
       </div>
     </div>
@@ -89,6 +109,37 @@
     .search_wrap {
       padding: 20px;
       background: rgba(245, 245, 245, 0.5);
+    }
+
+    .department-list {
+      height: calc(100vh - 165px);
+      overflow-y: auto;
+    }
+
+    .search-result {
+      height: calc(100vh - 165px);
+      overflow-y: auto;
+      background: rgba(245, 245, 245, 0.5);
+      .member-list{
+        padding: 10px 20px;
+        .member-item{
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          padding: 5px 0;
+          cursor: pointer;
+          &:hover{
+            background: rgba(245, 245, 245, 0.8);
+          }
+          .avatar{
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #fcc;
+            margin-right: 20px;
+          }
+        }
+      }
     }
 
     .el-tree {

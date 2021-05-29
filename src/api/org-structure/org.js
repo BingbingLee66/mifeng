@@ -23,3 +23,11 @@ export function delDepartment(params) {
     params
   })
 }
+
+export function getMemberList(params) {
+  return request({
+    url: '/ec/member/member-list',
+    method: 'get',
+    params
+  })
+}
