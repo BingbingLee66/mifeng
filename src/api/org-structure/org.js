@@ -31,3 +31,11 @@ export function getMemberList(params) {
     params
   })
 }
+
+export function updateDepartment(params) {
+  return request({
+    url: '/api/ec/department/update-department',
+    method: 'put',
+    params
+  })
+}

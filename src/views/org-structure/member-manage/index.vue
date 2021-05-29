@@ -14,12 +14,12 @@
           <div v-if="searchResult.length>0">
             <div class="member-item" v-for="item in searchResult" :key="item.id" @click="goDetail(item.id)">
               <div class="avatar"></div>
-              <div class="name">{{item.name}}</div>
+              <div class="name">{{ item.name }}</div>
             </div>
           </div>
-         <div v-else>
-           未搜索到相关成员，换个词试试。
-         </div>
+          <div v-else>
+            未搜索到相关成员，换个词试试。
+          </div>
         </div>
       </div>
       <div class="department-list" v-if="!showFlag">
@@ -44,11 +44,11 @@
         <div class="ico"><i class="el-icon-s-custom"></i>部门成员</div>
         <div>
           <el-button type="primary" @click="add">添加成员</el-button>
-          <el-button type="warning">调整部门</el-button>
+          <el-button type="warning" @click="handleOpenAdjustDialog">调整部门</el-button>
           <el-button type="success" @click="invite">邀请成员加入</el-button>
         </div>
       </div>
-      <div class="content_item">
+      <div class="content_item table_wrap">
         <el-table
           ref="multipleTable"
           :data="memberData"
@@ -78,7 +78,7 @@
       </div>
       <div class="content_item">
         <el-pagination
-          :hide-on-single-page="true"
+          :hide-on-single-page="false"
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -88,6 +88,29 @@
           :total="totalPages">
         </el-pagination>
       </div>
+    </div>
+
+    <!-- 调整部门弹窗 -->
+    <div class="adjust_dialog">
+      <el-dialog :visible.sync="showDialog" title="调整部门" width="500px">
+        <div class="from_wrap">
+          <div class="from_item">
+            <div class="from_item_label">选择部门：</div>
+            <el-cascader
+              :show-all-levels="false"
+              :options="departmentOptions"
+              :props="{ checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList' }"
+              v-model="departmentCas"
+              placeholder="请选择部门"
+              @change="handlerDepartmentChange">
+            </el-cascader>
+          </div>
+          <div class="from_item" style="padding-left: 80px">
+            <el-button @click.native="showDialog = false">取消</el-button>
+            <el-button type="primary" v-dbClick @click="save">保存</el-button>
+          </div>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -120,18 +143,22 @@
       height: calc(100vh - 165px);
       overflow-y: auto;
       background: rgba(245, 245, 245, 0.5);
-      .member-list{
+
+      .member-list {
         padding: 10px 20px;
-        .member-item{
+
+        .member-item {
           display: flex;
           align-items: center;
           margin-bottom: 10px;
           padding: 5px 0;
           cursor: pointer;
-          &:hover{
+
+          &:hover {
             background: rgba(245, 245, 245, 0.8);
           }
-          .avatar{
+
+          .avatar {
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -212,6 +239,32 @@
 
     .content_item {
       margin-top: 30px;
+    }
+    .table_wrap {
+      height: 530px;
+      overflow-y: auto;
+    }
+  }
+
+  .adjust_dialog {
+    .from_wrap {
+      .from_item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+
+        .from_item_label {
+          width: 80px;
+        }
+
+        .el-input {
+          width: 350px;
+        }
+      }
+    }
+
+    .el-button {
+      margin-right: 20px;
     }
   }
 }

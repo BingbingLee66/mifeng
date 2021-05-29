@@ -1,24 +1,35 @@
 import {
   getDepartmentList,
-  getMemberList
+  getMemberList,
+  updateDepartment
 } from '@/api/org-structure/org'
 
 export default {
   data() {
     return {
-      departmentTree: [],
       currentKey: 0,
-      searchValue: '',
-      departmentId: 0,
-      departmentName: '',
+      departmentTree: [], // 组织架构树
+      memberData: [], // 成员数据
+
+      searchValue: '', // 搜索值
+      searchResult: [], // 搜索结果
+      showFlag: false, // 是否展示搜索结果
+
+      departmentId: 0, // 部门id
+      departmentName: '', // 部门名称
+
       page: 1,
-      pageSize: 5,
+      pageSize: 10,
       totalPages: 0,
       currentpage: 1,
-      memberData: [],
-      searchResult: [],
-      multipleSelection: [],
-      showFlag: false
+
+      showDialog: false, // 控制调整部门弹窗
+      departmentOptions: [],
+      departmentCas: [],
+      memberIds: '', // 会员id
+      firstDepartmentId: 0, // 调整前部门id
+      finalDepartmentId: 0 // 调整后部门id
+
     }
   },
   computed: {},
@@ -37,6 +48,7 @@ export default {
       getDepartmentList(params).then(res => {
         console.log('部门树结构：', res)
         if (res.state === 1) {
+          this.departmentOptions = res.data.data[0].departmentRespList
           this.departmentTree = res.data.data
           this.departmentTree[0]['departmentName'] = this.departmentTree[0].name
           this.departmentTree[0]['peopleCount'] = this.departmentTree[0].count
@@ -136,12 +148,6 @@ export default {
       })
     },
 
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath)
-    },
     toggleSelection(rows) {
       if (rows) {
         rows.forEach(row => {
@@ -151,8 +157,41 @@ export default {
         this.$refs.multipleTable.clearSelection()
       }
     },
+
+    /*
+    * 调整部门
+    * */
+    handleOpenAdjustDialog() {
+      if (this.memberIds.length === 0) return this.$message.error('请先选择部门成员')
+      this.showDialog = true
+    },
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      let arr = []
+      let index
+      for (index in val) {
+        arr.push(val[index].id)
+      }
+      arr = arr.join(',')
+      this.memberIds = arr
+    },
+
+    handlerDepartmentChange(val) {
+      this.finalDepartmentId = [...val].pop()
+    },
+
+    save() {
+      const params = {
+        'finalDepartmentId': this.finalDepartmentId, // 调整后的部门
+        'firstDepartmentId': this.departmentId, // 调整前的部门
+        'memberIds': this.memberIds
+      }
+      updateDepartment(params).then(res => {
+        console.log('调整部门：', res)
+        if (res.state === 1) {
+          this.$message.success('操作成功')
+          this.showDialog = false
+        }
+      })
     },
 
     /**
