@@ -13,7 +13,8 @@
         <div class="member-list">
           <div v-if="searchResult.length>0">
             <div class="member-item" v-for="item in searchResult" :key="item.id" @click="goDetail(item.id)">
-              <div class="avatar"></div>
+              <!-- <div class="avatar"></div> -->
+              <i class="el-icon-s-custom"></i>
               <div class="name">{{ item.name }}</div>
             </div>
           </div>
@@ -41,7 +42,7 @@
     <div class="content_wrap">
       <div class="name">{{ departmentName }}</div>
       <div class="content_item operation">
-        <div class="ico"><i class="el-icon-s-custom"></i>部门成员</div>
+        <div class="ico"><i class="el-icon-s-custom"></i>成员</div>
         <div>
           <el-button type="primary" @click="add">添加成员</el-button>
           <el-button type="warning" @click="handleOpenAdjustDialog">调整部门</el-button>
@@ -50,6 +51,7 @@
       </div>
       <div class="content_item table_wrap">
         <el-table
+          :header-cell-style="{background:'rgba(245,245,245,0.5)',color:'#000',fontSize:'15px'}"
           ref="multipleTable"
           :data="memberData"
           tooltip-effect="dark"
@@ -60,19 +62,30 @@
             width="55">
           </el-table-column>
           <el-table-column
-            label="姓名"
+            label="姓名/企业名称"
             width="280">
-            <template slot-scope="scope">{{ scope.row.name }}</template>
+            <template slot-scope="scope">
+              {{ scope.row.type == 0 ? scope.row.name : scope.row.companyName }}
+            </template>
           </el-table-column>
           <el-table-column
-            prop="postName"
             label="职位"
             width="280">
+            <template slot-scope="scope">
+              {{ scope.row.postName ? scope.row.postName : '-' }}
+            </template>
           </el-table-column>
           <el-table-column
             prop="phone"
-            label="手机号"
+            label="手机号/联系电话"
             show-overflow-tooltip>
+          </el-table-column>
+          <el-table-column
+            label="部门"
+            show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row.departmentName ? scope.row.departmentName : '-' }}
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -145,17 +158,22 @@
       background: rgba(245, 245, 245, 0.5);
 
       .member-list {
-        padding: 10px 20px;
+        padding: 0 20px;
 
         .member-item {
           display: flex;
           align-items: center;
           margin-bottom: 10px;
-          padding: 5px 0;
+          padding: 10px 0;
           cursor: pointer;
+          border-bottom: 1px solid #EBEEF5;
 
           &:hover {
             background: rgba(245, 245, 245, 0.8);
+          }
+
+          .name {
+            margin-left: 5px;
           }
 
           .avatar {
@@ -228,6 +246,7 @@
 
       .el-icon-s-custom {
         font-size: 18px;
+        margin-right: 5px;
       }
     }
 
@@ -240,6 +259,7 @@
     .content_item {
       margin-top: 30px;
     }
+
     .table_wrap {
       height: 530px;
       overflow-y: auto;

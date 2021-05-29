@@ -190,6 +190,8 @@ export default {
         if (res.state === 1) {
           this.$message.success('操作成功')
           this.showDialog = false
+          this.getMemberList()
+          this.getDepartmentList()
         }
       })
     },
@@ -198,14 +200,18 @@ export default {
      * 跳转邀请成员加入页面
      */
     invite() {
-      this.$router.push({name: '邀请成员'})
+      this.$router.push({
+        name: '邀请成员'
+      })
     },
 
     /*
     *  跳转添加会员页面
     * */
     add() {
-      this.$router.push({name: '添加会员'})
+      this.$router.push({
+        name: '添加会员'
+      })
     }
   }
 }
