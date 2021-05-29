@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [1.5.0] - 2021-05-31
+
+### Added
+
+- 组织架构 - 部门管理 - 添加、编辑、删除部门[#48](https://gitlab.kd/yunshanghui/backend/api/-/issues/48)
+- 组织架构 - 成员管理 - 搜索成员、组织架构树、成员列表及分页查询、添加成员、调整部门、邀请成员加入[#49](https://gitlab.kd/yunshanghui/backend/api/-/issues/61)
+- 会员管理-添加会员、入会审核、会员列表、会员详情增加部门字段 [#52](https://gitlab.kd/yunshanghui/backend/api/-/issues/52)
+
+### Fixed
+
+
+
 ## [1.4.0] - 2021-05-25
 
 ### Added
@@ -8,6 +20,7 @@
 - 商会后台，会员信息的ui调整[#61](https://gitlab.kd/yunshanghui/backend/api/-/issues/61)
 
 ### Fixed
+
 - 会员管理-商会会员，姓名/企业名称显示错误[#54]
   (https://gitlab.kd/yunshanghui/backend/api/-/issues/54)
 - 编辑会员-企业入会页面需要修改的内容[#55]
@@ -18,7 +31,6 @@
   (https://gitlab.kd/yunshanghui/backend/api/-/issues/55)
 - 编辑资料，手机号不允许修改[#58]
   (https://gitlab.kd/yunshanghui/backend/api/-/issues/58)
-
 
 ## [1.3.0] - 2021-05-18
 
@@ -33,6 +45,7 @@
 - 后台富文本编辑器，“视频”上传入口隐藏 yunshanghui/frontend/shanghui-admin#36
 
 ### Fixed
+
 - 会员管理-入会审核，同意按钮没有加防抖 yunshanghui/frontend/shanghui-admin#45
 - 商会后台，导出商会成员的表单与实际列名不同 yunshanghui/frontend/shanghui-admin#42
 - 商会logo在列表样式 yunshanghui/frontend/shanghui-admin#41
