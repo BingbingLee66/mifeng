@@ -64,31 +64,43 @@
             width="55">
           </el-table-column>
           <el-table-column
-            label="姓名/企业名称"
-            width="280">
+            label="姓名"
+            width="200">
             <template slot-scope="scope">
-              {{ scope.row.type == 0 ? scope.row.name : scope.row.companyName }}
+              {{ scope.row.name ? scope.row.name : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="企业名称"
+            width="200">
+            <template slot-scope="scope">
+              {{ scope.row.companyName ? scope.row.companyName : '-' }}
             </template>
           </el-table-column>
           <el-table-column
             label="职位"
-            width="280">
+            width="200">
             <template slot-scope="scope">
               {{ scope.row.postName ? scope.row.postName : '-' }}
             </template>
           </el-table-column>
           <el-table-column
+            width="200"
             prop="phone"
-            label="手机号/联系电话"
-            show-overflow-tooltip>
-          </el-table-column>
-          <!-- <el-table-column
-            label="部门"
+            label="手机号"
             show-overflow-tooltip>
             <template slot-scope="scope">
-              {{ scope.row.departmentName ? scope.row.departmentName : '-' }}
+              {{ scope.row.phone ? scope.row.phone : '-' }}
             </template>
-          </el-table-column> -->
+          </el-table-column>
+          <el-table-column
+            prop="companyPhone"
+            label="联系电话"
+            show-overflow-tooltip>
+            <template slot-scope="scope">
+              {{ scope.row.companyPhone ? scope.row.companyPhone : '-' }}
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <div class="content_item">
