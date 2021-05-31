@@ -7,6 +7,7 @@ import {
 import {
   getDepartmentList
 } from '@/api/org-structure/org'
+import {logger} from "runjs/lib/common";
 
 export default {
   data() {
@@ -70,11 +71,24 @@ export default {
         }]
       },
       departmentOptions: [],
-      departmentCas: ''
+      departmentCas: []
     }
   },
 
   created() {
+    console.log('allParentId:', this.$route.query.allParentId)
+    if (this.$route.query.sign) {
+      if (typeof this.$route.query.allParentId === 'number') {
+        this.departmentCas.push(this.$route.query.allParentId)
+      } else {
+        let arr = this.$route.query.allParentId.split(',')
+        arr.shift()
+        arr = arr.map(i => parseInt(i, 0))
+        this.departmentCas = arr
+        const did = [...arr].pop()
+        this.formObj.departmentId = did
+      }
+    }
     this.getdepartmentType()
   },
 
@@ -113,9 +127,10 @@ export default {
     * 选择部门
     * */
     handlerDepartmentChange(val) {
-      // console.log(val)
+      console.log(val)
       // console.log(this.departmentOptions)
       this.formObj.departmentId = [...val].pop()
+      console.log(this.formObj.departmentId)
     },
 
     // 根据会员id查询会员信息

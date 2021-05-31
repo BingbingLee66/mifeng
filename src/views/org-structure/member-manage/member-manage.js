@@ -28,8 +28,9 @@ export default {
       departmentCas: [],
       memberIds: '', // 会员id
       firstDepartmentId: 0, // 调整前部门id
-      finalDepartmentId: 0 // 调整后部门id
+      finalDepartmentId: 0, // 调整后部门id
 
+      allParentId: ''
     }
   },
   computed: {},
@@ -106,8 +107,9 @@ export default {
       } else {
         this.departmentId = data.id
       }
-      this.memberData = []
       this.departmentName = data.departmentName
+      this.allParentId = !data.allParentId ? '' : data.parentId !== 0 ? data.allParentId : data.id
+      this.memberData = []
       this.getMemberList()
     },
 
@@ -201,12 +203,19 @@ export default {
      * 跳转邀请成员加入页面
      */
     invite() {
-      this.$router.push({
-        path: '/org-structure/invite-member',
-        query: {
-          departmentId: this.departmentId
-        }
-      })
+      console.log('部门id', this.departmentId)
+      if (this.departmentId === 0) {
+        this.$router.push({
+          path: '/sys/member/qrcode'
+        })
+      } else {
+        this.$router.push({
+          path: '/org-structure/invite-member',
+          query: {
+            departmentId: this.departmentId
+          }
+        })
+      }
     },
 
     /*
@@ -216,7 +225,8 @@ export default {
       this.$router.push({
         path: '/member/add',
         query: {
-          sign: 'org-member'
+          sign: 'org-member',
+          allParentId: this.allParentId
         }
       })
     }

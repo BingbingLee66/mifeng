@@ -35,7 +35,7 @@
           :default-checked-keys="[currentKey]"
           @node-click="handleNodeClick">
           <template slot-scope="{ node, data }">
-            <span style="font-size: 16px">{{ data.departmentName }} ({{ data.peopleCount }})</span>
+            <span style="font-size: 16px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{ data.departmentName }} ({{ data.peopleCount }})</span>
           </template>
         </el-tree>
       </div>
@@ -195,30 +195,12 @@
       font-size: 24px;
       color: #000;
 
-      .el-tree-node__content {
-        padding: 25px 0 25px 10px !important;
-
-        .el-tree-node__expand-icon {
-          font-size: 19px;
-        }
-
-        .el-tree-node__label {
-          font-size: 16px;
-        }
+      .el-tree-node__content{
+        height: 50px;
       }
 
-      .el-tree-node__children {
-        .el-tree-node__content {
-          padding: 25px 0;
-
-          .el-tree-node__expand-icon {
-            font-size: 19px;
-          }
-
-          .el-tree-node__label {
-            font-size: 16px;
-          }
-        }
+      .el-tree-node__expand-icon {
+        font-size: 18px;
       }
     }
 
@@ -227,10 +209,6 @@
       color: #fff;
     }
 
-    .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content .el-tree-node__expand-icon {
-      color: #fff;
-      font-size: 19px;
-    }
   }
 
   .content_wrap {
