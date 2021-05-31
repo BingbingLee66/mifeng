@@ -66,11 +66,11 @@
     <div class="department_dialog">
       <el-dialog title="删除部门" :close-on-click-modal="false" :visible.sync="showDelDialog" width="400px">
         <div class="wraning_tips">
-          <p class="tips">
-            <span>确认删除该部门吗？</span> <br/>
-            <span>如果该部门有下级部门，也将一并删除。</span> <br/>
-            <span>部门下的成员将自动挪到商会下面。</span> <br/>
-          </p>
+          <div class="tips">
+            <p>确认删除该部门吗？</p>
+            <p>如果该部门有下级部门，也将一并删除。</p>
+            <p>部门下的成员将自动挪到商会下面。</p>
+          </div>
         </div>
         <div class="from_item" style="padding-left: 80px;margin-top: 30px;">
           <el-button @click.native="showDelDialog = false">取消</el-button>
@@ -107,6 +107,11 @@
 
   .el-button {
     margin-right: 20px;
+  }
+
+  .wraning_tips{
+    font-size: 14px;
+    margin-top: -20px;
   }
 }
 </style>
