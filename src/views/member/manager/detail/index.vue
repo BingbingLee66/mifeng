@@ -12,7 +12,7 @@
         <el-col :span="2" class="wx-col col-title">手机号</el-col>
         <el-col :span="3" class="wx-col">{{memberDetail.phone ? memberDetail.phone : '空'}}</el-col>
         <el-col :span="2" class="wx-col col-title">注册时间</el-col>
-        <el-col :span="4" class="wx-col">{{memberDetail.joinedTs ? memberDetail.joinedTs : '空'}}</el-col>
+        <el-col :span="4" class="wx-col">{{memberDetail.createdTs ? memberDetail.createdTs : '空'}}</el-col>
         <el-col :span="2" class="wx-col col-title">注册方式</el-col>
         <el-col :span="3" class="wx-col">
           <span v-if="memberDetail.registerType == 0">商会后台</span>
