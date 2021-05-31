@@ -56,8 +56,15 @@
       </el-button>
     </div>
     <div style="margin-bottom:30px">
-      <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit
-                highlight-current-row @selection-change="handleSelectionChange">
+      <el-table
+        id="out-table"
+        :data="list"
+        v-loading="listLoading"
+        element-loading-text="Loading"
+        border
+        fit
+        highlight-current-row
+        @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55px">
         </el-table-column>
         <el-table-column label="头像/企业logo" width="180px">

@@ -7,10 +7,17 @@ import {
   add,
   update
 } from '@/api/member/manager'
-import {getMemberOptions} from '@/api/member/post'
-import {getTradeOptions} from '@/api/system/trade'
-import {getPositionOptions} from '@/api/system/position'
+import {
+  getMemberOptions
+} from '@/api/member/post'
+import {
+  getTradeOptions
+} from '@/api/system/trade'
+import {
+  getPositionOptions
+} from '@/api/system/position'
 import area from '@/utils/area'
+import {getDepartmentList} from "@/api/org-structure/org";
 
 export default {
   data() {
@@ -52,7 +59,8 @@ export default {
         companyAddress: '',
         companyPositionId: '', // 会内职位
         license: '',
-        companyIntroduction: ''
+        companyIntroduction: '',
+        departmentId: ''
       },
       memberPostOptions: [], // 会内职位选择列表
       bindTradeIds: [], // 已选择行业
@@ -62,25 +70,39 @@ export default {
       type: 'add',
       rules: {},
       companyRules: {
-        companyName: [
-          {required: true, message: '企业名称不能为空', trigger: 'blur'}
-        ],
-        companyLogo: [
-          {required: true, message: '公司logo必须上传', trigger: 'blur'}
-        ],
-        companyPhone: [
-          {required: true, message: '联系方式不能为空', trigger: 'blur'},
-        ]
+        companyName: [{
+          required: true,
+          message: '企业名称不能为空',
+          trigger: 'blur'
+        }],
+        companyLogo: [{
+          required: true,
+          message: '公司logo必须上传',
+          trigger: 'blur'
+        }],
+        companyPhone: [{
+          required: true,
+          message: '联系方式不能为空',
+          trigger: 'blur'
+        }]
       },
       personalRules: {
-        name: [
-          {required: true, message: '姓名不能为空', trigger: 'blur'}
-        ],
-        phone: [
-          {required: true, message: '手机号码不能为空', trigger: 'blur'},
-          {validator: checkPhone, trigger: 'change'}
-        ]
-      }
+        name: [{
+          required: true,
+          message: '姓名不能为空',
+          trigger: 'blur'
+        }],
+        phone: [{
+          required: true,
+          message: '手机号码不能为空',
+          trigger: 'blur'
+        }, {
+          validator: checkPhone,
+          trigger: 'change'
+        }]
+      },
+      departmentOptions: [],
+      departmentCas: []
     }
   },
 
@@ -96,6 +118,7 @@ export default {
     this.getNativeOptions()
     this.getMemberType()
     this.getPositionType()
+    this.getdepartmentType()
     if (this.$route.params.memberId) {
       this.memberId = this.$route.params.memberId
       this.type = 'edit'
@@ -147,6 +170,29 @@ export default {
           this.formObj.companyPhone = ''
         }
       })
+    },
+
+    /*
+    * 获取部门列表数据
+    * */
+    getdepartmentType() {
+      const params = {
+        'ckey': this.$store.getters.ckey,
+        'parentId': 0
+      }
+      getDepartmentList(params).then(res => {
+        console.log('部门列表：', res.data.data[0].departmentRespList)
+        if (res.state === 1) {
+          this.departmentOptions = res.data.data[0].departmentRespList
+        }
+      })
+    },
+
+    /*
+    * 选择部门
+    * */
+    handlerDepartmentChange(val) {
+      this.formObj.departmentId = [...val].pop()
     },
 
     transNativePlace(obj) {
@@ -405,6 +451,7 @@ export default {
               this.closeTab()
             })
           } else if (this.type === 'edit') {
+            console.log('修改后提交的参数：', this.formObj)
             update(this.formObj).then(response => {
               this.$message({
                 message: '操作成功',

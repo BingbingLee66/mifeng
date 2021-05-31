@@ -67,6 +67,27 @@
               </el-col>
             </el-row>
           </div>
+          <el-row>
+            <el-col :span="7">
+              <el-form-item label="所在部门：" prop="department">
+                <el-cascader
+                  :show-all-levels="false"
+                  :options="departmentOptions"
+                  :props="{ checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList' }"
+                  v-model="departmentCas"
+                  placeholder="请选择部门"
+                  @change="handlerDepartmentChange">
+                </el-cascader>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="所在部门：">
+
+            <!--  <el-cascader
+              :options="options"
+              :props="{ multiple: true, checkStrictly: true }"
+              clearable></el-cascader>  -->
+          </el-form-item>
           <div class="title_block">其他信息</div>
           <el-row v-if="formObj.type === 1">
             <el-col :span="7">
