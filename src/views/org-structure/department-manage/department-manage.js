@@ -42,7 +42,11 @@ export default {
      *添加/编辑部门
      */
     handleDialog(type, row) {
-      console.log(row)
+      console.log('选中的部门信息：', row)
+      if (row.allParentName && row.allParentName.split(',').length === 20) {
+        this.$message.error('当前部门层级已超过20层，无法添加')
+        return
+      }
       this.type = type
       if (type === 'edit') {
         this.departmentName = row.departmentName
