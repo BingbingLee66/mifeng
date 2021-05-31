@@ -80,6 +80,7 @@ export default {
     if (this.$route.query.sign) {
       if (typeof this.$route.query.allParentId === 'number') {
         this.departmentCas.push(this.$route.query.allParentId)
+        this.formObj.departmentId = this.$route.query.allParentId
       } else {
         let arr = this.$route.query.allParentId.split(',')
         arr.shift()
@@ -172,6 +173,7 @@ export default {
         if (this.formObj.type === 1) {
           this.formObj.phone = this.formObj.companyPhone
         }
+        console.log('提交的参数：', this.formObj)
         if (valid) {
           if (this.type === 'add') {
             this.formObj['ckey'] = this.$store.getters.ckey

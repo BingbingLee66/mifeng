@@ -57,6 +57,7 @@
           :data="memberData"
           tooltip-effect="dark"
           style="width: 100%"
+          @row-click="skipToDetail"
           @selection-change="handleSelectionChange">
           <el-table-column
             type="selection"
@@ -81,13 +82,13 @@
             label="手机号/联系电话"
             show-overflow-tooltip>
           </el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             label="部门"
             show-overflow-tooltip>
             <template slot-scope="scope">
               {{ scope.row.departmentName ? scope.row.departmentName : '-' }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
       </div>
       <div class="content_item">

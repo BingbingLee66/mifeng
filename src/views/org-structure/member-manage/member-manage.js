@@ -113,6 +113,17 @@ export default {
       this.getMemberList()
     },
 
+    skipToDetail(row, column, event) {
+      console.log(row, column, event)
+      this.$router.push({
+        name: '会员详情',
+        params: {
+          'memberDetail': row,
+          'querytype': '0'
+        }
+      })
+    },
+
     /*
     * 搜索成员
     * */
@@ -141,10 +152,12 @@ export default {
     },
 
     goDetail(id) {
+      const memberDetail = {}
+      memberDetail['id'] = id
       this.$router.push({
         name: '会员详情',
         params: {
-          'memberDetail': id,
+          'memberDetail': memberDetail,
           'querytype': '0'
         }
       })

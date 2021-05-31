@@ -84,7 +84,7 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      let params = {
+      const params = {
         'memberId': this.memberDetail.id
       }
       if (this.type === '0') {
