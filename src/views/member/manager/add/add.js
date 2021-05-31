@@ -1,6 +1,5 @@
 import {
   memberMe,
-  // memberAuditMe,
   uploadCompanyLogo,
   add,
   update
@@ -38,23 +37,37 @@ export default {
       },
       type: 'add',
       rules: {
-        companyName: [
-          {required: true, message: '企业名称不能为空', trigger: 'blur'}
-        ],
-        companyLogo: [
-          {required: true, message: '公司logo必须上传', trigger: 'blur'}
-        ],
-        companyPhone: [
-          {required: true, message: '联系方式不能为空', trigger: 'blur'},
-          {validator: checkTel, tigger: 'change'}
-        ],
-        name: [
-          {required: true, message: '姓名不能为空', trigger: 'blur'}
-        ],
-        phone: [
-          {required: true, message: '手机号码不能为空', trigger: 'blur'},
-          {validator: checkPhone, trigger: 'change'}
-        ]
+        companyName: [{
+          required: true,
+          message: '企业名称不能为空',
+          trigger: 'blur'
+        }],
+        companyLogo: [{
+          required: true,
+          message: '公司logo必须上传',
+          trigger: 'blur'
+        }],
+        companyPhone: [{
+          required: true,
+          message: '联系方式不能为空',
+          trigger: 'blur'
+        }, {
+          validator: checkTel,
+          tigger: 'change'
+        }],
+        name: [{
+          required: true,
+          message: '姓名不能为空',
+          trigger: 'blur'
+        }],
+        phone: [{
+          required: true,
+          message: '手机号码不能为空',
+          trigger: 'blur'
+        }, {
+          validator: checkPhone,
+          trigger: 'change'
+        }]
       },
       departmentOptions: [],
       departmentCas: ''
@@ -105,20 +118,6 @@ export default {
       this.formObj.departmentId = [...val].pop()
     },
 
-    closeTab() {
-      // 退出当前tab, 打开指定tab
-      const openPath = window.localStorage.getItem('membereditor')
-      const tagsViews = this.$store.state.tagsView.visitedViews
-      // let selectView = null
-      for (const view of tagsViews) {
-        if (view.path === this.$route.path) {
-          this.$store.dispatch('tagsView/delView', view).then(() => {
-            this.$router.push({path: openPath})
-          })
-          break
-        }
-      }
-    },
     // 根据会员id查询会员信息
     fetchData() {
       const params = {
@@ -166,7 +165,14 @@ export default {
                 message: '操作成功',
                 type: 'success'
               })
-              this.closeTab()
+              if (this.$route.query.sign) {
+                this.$router.push({
+                  name: '成员管理',
+                  params: this.departmentId
+                })
+              } else {
+                this.closeTab()
+              }
             })
           } else if (this.type === 'edit') {
             update(this.formObj).then(response => {
@@ -174,13 +180,37 @@ export default {
                 message: '操作成功',
                 type: 'success'
               })
-              this.closeTab()
+              if (this.$route.query.sign) {
+                this.$router.push({
+                  name: '成员管理',
+                  params: this.departmentId
+                })
+              } else {
+                this.closeTab()
+              }
             })
           }
         } else {
           return false
         }
       })
+    },
+
+    closeTab() {
+      // 退出当前tab, 打开指定tab
+      const openPath = window.localStorage.getItem('membereditor')
+      const tagsViews = this.$store.state.tagsView.visitedViews
+      // let selectView = null
+      for (const view of tagsViews) {
+        if (view.path === this.$route.path) {
+          this.$store.dispatch('tagsView/delView', view).then(() => {
+            this.$router.push({
+              path: openPath
+            })
+          })
+          break
+        }
+      }
     }
   },
 

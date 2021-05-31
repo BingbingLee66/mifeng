@@ -214,7 +214,10 @@ export default {
     * */
     add() {
       this.$router.push({
-        name: '添加会员'
+        path: '/member/add',
+        query: {
+          sign: 'org-member'
+        }
       })
     }
   }

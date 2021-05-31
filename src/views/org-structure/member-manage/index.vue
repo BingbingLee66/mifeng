@@ -32,6 +32,7 @@
           :highlight-current="true"
           :current-node-key="currentKey"
           :default-expanded-keys="[currentKey]"
+          :default-checked-keys="[currentKey]"
           @node-click="handleNodeClick">
           <template slot-scope="{ node, data }">
             <span style="font-size: 16px">{{ data.departmentName }} ({{ data.peopleCount }})</span>
