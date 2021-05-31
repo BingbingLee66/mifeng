@@ -188,6 +188,7 @@ export default {
       updateDepartment(params).then(res => {
         console.log('调整部门：', res)
         if (res.state === 1) {
+          this.memberData = []
           this.$message.success('操作成功')
           this.showDialog = false
           this.getMemberList()

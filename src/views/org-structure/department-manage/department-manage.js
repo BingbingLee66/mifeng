@@ -59,7 +59,6 @@ export default {
     save() {
       const params = {
         'ckey': this.$store.getters.ckey,
-        'chamberId': 108,
         'id': this.departmentId,
         'departmentName': this.departmentName,
         'parentId': this.departmentParentId
