@@ -58,7 +58,7 @@ export default {
 
     save() {
       // 非空验证
-      if (this.departmentName === null || this.departmentName === ""){
+      if (this.departmentName === null || this.departmentName.trim() === '') {
         this.$message.error('请输入部门名称')
         return
       }
