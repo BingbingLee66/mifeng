@@ -202,7 +202,10 @@ export default {
      */
     invite() {
       this.$router.push({
-        name: '邀请成员'
+        path: '/org-structure/invite-member',
+        query: {
+          departmentId: this.departmentId
+        }
       })
     },
 

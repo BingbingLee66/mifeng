@@ -39,3 +39,14 @@ export function updateDepartment(params) {
     params
   })
 }
+
+/*
+* 获取部门入会专属二维码
+* */
+export function getInviteLogo(params) {
+  return request({
+    url: '/api/ec/department/invite-logo',
+    method: 'get',
+    params
+  })
+}
