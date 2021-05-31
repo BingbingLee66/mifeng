@@ -3,8 +3,14 @@
     <div class="department_container">
       <div class="tit">在这里创建、编辑和删除部门</div>
       <div style="margin-top:30px">
-        <el-table :data="departmentData" style="width: 80%;margin-bottom: 20px;" row-key="id" border default-expand-all
-                  :tree-props="{children: 'departmentRespList', hasChildren: 'hasChildren'}">
+        <el-table
+          :data="departmentData"
+          style="width: 80%;margin-bottom: 20px;"
+          row-key="id"
+          border
+          default-expand-all
+          :tree-props="{children: 'departmentRespList', hasChildren: 'hasChildren'}"
+        >
           <el-table-column label="部门名称" width="480">
             <template slot-scope="scope">
               {{ scope.$index === 0 ? scope.row.name : scope.row.departmentName }}
@@ -30,7 +36,7 @@
     </div>
     <!--  添加/编辑部门弹窗  -->
     <div class="department_dialog">
-      <el-dialog :visible.sync="showDialog" width="500px">
+      <el-dialog :close-on-click-modal="false" :visible.sync="showDialog" width="500px">
         <template slot="title">
           {{ type === 'add' ? '添加部门' : '编辑部门' }}
         </template>
@@ -58,7 +64,7 @@
 
     <!--  删除部门弹窗  -->
     <div class="department_dialog">
-      <el-dialog title="删除部门" :visible.sync="showDelDialog" width="400px">
+      <el-dialog title="删除部门" :close-on-click-modal="false" :visible.sync="showDelDialog" width="400px">
         <div class="wraning_tips">
           <p class="tips">
             <span>确认删除该部门吗？</span> <br/>

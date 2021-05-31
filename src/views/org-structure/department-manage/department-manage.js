@@ -57,6 +57,11 @@ export default {
     },
 
     save() {
+      // 非空验证
+      if (this.departmentName === null || this.departmentName === ""){
+        this.$message.error('请输入部门名称')
+        return
+      }
       const params = {
         'ckey': this.$store.getters.ckey,
         'id': this.departmentId,
