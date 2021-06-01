@@ -134,6 +134,7 @@ export default {
     * */
     handleValueChange(e) {
       console.log(e)
+      this.page = 1
       if (e.length > 0) {
         this.searchValue = e
         this.showFlag = true
@@ -147,6 +148,9 @@ export default {
     * 获取成员列表
     * */
     search() {
+      if (this.page === 1) {
+        this.searchResult = []
+      }
       const params = {
         'ckey': this.$store.getters.ckey,
         'departmentId': 0,
