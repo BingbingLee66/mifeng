@@ -20,6 +20,7 @@ export default {
 
       page: 1,
       pageSize: 10,
+      searchPage: 20,
       totalPages: 0,
       currentpage: 1,
 
@@ -36,6 +37,10 @@ export default {
   computed: {},
   created() {
     this.getDepartmentList()
+  },
+  mounted() {
+    const box = this.$refs.searchBox
+    box.addEventListener('scroll', this.handleScroll, true)
   },
   methods: {
     /**
@@ -130,24 +135,46 @@ export default {
     handleValueChange(e) {
       console.log(e)
       if (e.length > 0) {
+        this.searchValue = e
         this.showFlag = true
-        const params = {
-          'ckey': this.$store.getters.ckey,
-          'departmentId': 0,
-          'memberName': e,
-          'page': this.page,
-          'pageSize': this.pageSize
-        }
-        getMemberList(params).then(res => {
-          console.log('搜索结果：', res)
-          if (res.state === 1 && JSON.stringify(res.data) !== '{}') {
-            this.searchResult = res.data.page.list
-          } else {
-            this.searchResult = []
-          }
-        })
+        this.search()
       } else {
         this.showFlag = false
+      }
+    },
+
+    /*
+    * 获取成员列表
+    * */
+    search() {
+      const params = {
+        'ckey': this.$store.getters.ckey,
+        'departmentId': 0,
+        'memberName': this.searchValue,
+        'page': this.page,
+        'pageSize': this.searchPage
+      }
+      getMemberList(params).then(res => {
+        console.log('搜索结果：', res)
+        if (res.state === 1 && JSON.stringify(res.data) !== '{}') {
+          if (this.page === 1) {
+            this.searchResult = res.data.page.list
+          } else {
+            this.searchResult.push(...res.data.page.list)
+          }
+        } else {
+          return
+        }
+      })
+    },
+    handleScroll(e) {
+      var scrollTop = e.target.scrollTop
+      var windowHeight = e.target.clientHeight
+      var scrollHeight = e.target.scrollHeight
+      if (scrollTop + windowHeight === scrollHeight) {
+        console.log('触底了')
+        this.page += 1
+        this.search()
       }
     },
 

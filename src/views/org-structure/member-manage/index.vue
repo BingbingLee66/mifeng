@@ -9,7 +9,7 @@
           @input="handleValueChange">
         </el-input>
       </div>
-      <div class="search-result" v-if="showFlag">
+      <div ref="searchBox" class="search-result" v-show="showFlag">
         <div class="member-list">
           <div v-if="searchResult.length>0">
             <div class="member-item" v-for="item in searchResult" :key="item.id" @click="goDetail(item.id)">
@@ -23,7 +23,7 @@
           </div>
         </div>
       </div>
-      <div class="department-list" v-if="!showFlag">
+      <div class="department-list" v-show="!showFlag">
         <el-tree
           :data="departmentTree"
           node-key="id"
