@@ -107,6 +107,8 @@ export default {
     * */
     handleNodeClick(data) {
       console.log('当前部门', data)
+      this.currentpage = 1
+      this.page = 1
       if (this.currentKey === data.id) {
         this.departmentId = 0
       } else {
