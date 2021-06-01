@@ -115,7 +115,7 @@
             <div v-if="scope.row.status == 3">待邀请</div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="100px">
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">
               详情
