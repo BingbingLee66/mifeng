@@ -46,6 +46,7 @@
           </div>
           <el-form-item label="所在部门：">
             <el-cascader
+              clearable
               :show-all-levels="false"
               :options="departmentOptions"
               :props="{ checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList' }"
