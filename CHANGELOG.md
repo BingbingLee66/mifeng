@@ -9,7 +9,18 @@
 - 会员管理-添加会员、入会审核、会员列表、会员详情增加部门字段 [#52](https://gitlab.kd/yunshanghui/backend/api/-/issues/52)
 
 ### Fixed
-
+* 会员详情页面的注册时间为空 [#65](https://gitlab.kd/yunshanghui/backend/api/-/issues/65)
+* 部门管理，添加和编辑部门可以输入空、空格 [#68](https://gitlab.kd/yunshanghui/backend/api/-/issues/68)
+* 删除部门的提示语调整行间距 [#71](https://gitlab.kd/yunshanghui/backend/api/-/issues/48)
+* 成员管理页面的部门名称显示不全 [#72](https://gitlab.kd/yunshanghui/backend/api/-/issues/48)
+* 从组织机构进入，没有默认填充部门 [#73](https://gitlab.kd/yunshanghui/backend/api/-/issues/73)
+* 添加成员后，没有返回到【 成员管理】的该部门页面 [#76](https://gitlab.kd/yunshanghui/backend/api/-/issues/76)
+* 成员管理，最底层部门依然显示了折叠按钮 [#81](https://gitlab.kd/yunshanghui/backend/api/-/issues/81)
+* 点击列表条目，未进入成员详情页 [#82](https://gitlab.kd/yunshanghui/backend/api/-/issues/82)
+* 商会邀请入会二维码图标未更换成最新图标 [#84](https://gitlab.kd/yunshanghui/backend/api/-/issues/84)
+* 商协会成员页面多出一列 [#85](https://gitlab.kd/yunshanghui/backend/api/-/issues/85)
+* 成员管理调整部门后，会记录上次操作的部门，且无法手动清掉  [#86](https://gitlab.kd/yunshanghui/backend/api/-/issues/86)
+* 商/协会成员，导出excel表缺少部门字段信息 [#87](https://gitlab.kd/yunshanghui/backend/api/-/issues/87)
 
 
 ## [1.4.0] - 2021-05-25
