@@ -50,3 +50,14 @@ export function getInviteLogo(params) {
     params
   })
 }
+
+/*
+* 刷新部门入会专属二维码
+* */
+export function updateInviteLogo(params) {
+  return request({
+    url: '/api/ec/department/update-qrcode',
+    method: 'get',
+    params
+  })
+}

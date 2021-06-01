@@ -1,7 +1,10 @@
 import {
-  getInviteLogo
+  getInviteLogo,
+  updateInviteLogo
 } from '@/api/org-structure/org'
+
 import domtoimage from 'dom-to-image'
+import {refreshGetInfo} from "@/api/system/property";
 
 export default {
   data() {
@@ -22,10 +25,9 @@ export default {
     *  获取入会专属二维码
     * */
     getInviteLogo() {
-      const departmentId = this.$route.query.departmentId
       const params = {
         ckey: this.$store.getters.ckey,
-        departmentId
+        departmentId: this.$route.query.departmentId
       }
       getInviteLogo(params).then(res => {
         if (res.state === 1) {
@@ -35,6 +37,24 @@ export default {
         }
       })
     },
+
+    /*
+    * 刷新入会专属二维码
+    * */
+    refresh() {
+      const params = {
+        ckey: this.$store.getters.ckey,
+        departmentId: this.$route.query.departmentId
+      }
+      updateInviteLogo(params).then(res => {
+        if (res.state === 1) {
+          this.chamberName = res.data.data.chamberName
+          this.departmentName = res.data.data.departmentName
+          this.qrcode = res.data.data.systemJoinQrcode
+        }
+      })
+    },
+
     domtoimage() {
       const _this = this
       this.isLoading = true

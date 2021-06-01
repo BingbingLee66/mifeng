@@ -10,6 +10,7 @@
             <img :src="qrcode"/>
           </div>
         </div>
+        <el-button style="margin-top: 20px;" type="primary" @click="refresh">刷新二维码</el-button>
         <el-button style="margin-top: 20px;" type="primary" @click="domtoimage" :loading="isLoading">保存图片</el-button>
       </div>
     </div>
