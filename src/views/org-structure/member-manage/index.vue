@@ -124,6 +124,7 @@
           <div class="from_item">
             <div class="from_item_label">选择部门：</div>
             <el-cascader
+              clearable
               :show-all-levels="false"
               :options="departmentOptions"
               :props="{ checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList' }"

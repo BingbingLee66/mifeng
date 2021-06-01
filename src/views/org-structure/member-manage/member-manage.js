@@ -177,6 +177,7 @@ export default {
     * 调整部门
     * */
     handleOpenAdjustDialog() {
+      this.departmentCas = []
       if (this.memberIds.length === 0) return this.$message.error('请先选择部门成员')
       this.showDialog = true
     },
