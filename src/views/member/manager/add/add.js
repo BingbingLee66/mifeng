@@ -28,6 +28,8 @@ export default {
     }
     return {
       memberId: '',
+      item: null,
+      // sonArr: [],
       formObj: {
         type: 1,
         name: '',
@@ -143,54 +145,79 @@ export default {
     * 递归遍历部门树结构，改变disabled属性
     * */
     changeData(list, treeDatas) {
-      // console.log('treeData', treeDatas)
-      console.log('list:', list)
-      let ids = []
-      list.forEach(val => {
-        val.forEach((v, i, arr) => {
-          if (i !== arr.length - 1) {
-            ids.push(v)
-          }
-        })
-      })
+      console.log("节点信息", this.$refs['cascaderAddr'].getCheckedNodes())
+
+      console.log('list', list)
+      return;
+      let currentId;
+      // let ids = []
+      // list.forEach(val => {
+      //   val.forEach((v, i, arr) => {
+      //     if (i !== arr.length - 1) {
+      //       ids.push(v)
+      //     } else {
+      //       console.log('当前id', v);
+      //       currentId = v
+      //     }
+      //   })
+      // })
+      console.log('ids:', ids);
+      console.log("currentId", currentId);
+      this.handleForEach(ids, treeDatas);
+      this.handleCurrentItemForEach(currentId, treeDatas);
+      this.handleItemSonForEach(this.item, currentId)
+    },
+    handleForEach(ids, treeDatas) {
       treeDatas.forEach((item, index) => {
         if (ids.includes(item.id)) {
-          this.$set(item, 'disabled', false)
+          this.$set(item, 'disabled', true);
+        }
+        else {
+          this.$set(item, 'disabled', false);
         }
         if (item.departmentRespList.length > 0) {
-          // this.changeData(list, item.departmentRespList)
+          this.handleForEach(ids, item.departmentRespList)
         }
       })
-      // for (const i in treeDatas) {
-      //   console.log(treeDatas[i].id)
-      //   if (treeDatas[i].departmentRespList.length > 0) {
-      //     console.log('执行了')
-      //     this.setData(treeDatas[i].departmentRespList)
-      //   }
-      // }
-      // let cid = []
-      // for (const j in ids) {
-      //   for (const k in ids[j]) {
-      //     cid.push(ids[j][k])
-      //   }
-      // }
-      // for (const i in treeDatas) {
-      //   console.log(treeDatas[i].id)
-      //   cid = [...new Set(cid)]
-      //   console.log('cid', cid)
-      //   if (treeDatas[i].departmentRespList.length > 0) {
-      //     this.setData(treeDatas[i].departmentRespList)
-      //   }
-      // }
     },
-
     /*
     * 选择部门
     * */
     handlerDepartmentChange(list) {
       this.changeData(list, this.departmentOptions)
     },
+    //arr:装当前id后面的子集id
+    /**
+     * 递归找出当前item项
+     */
+    handleCurrentItemForEach(currentId, treeDatas) {
+      treeDatas.forEach((item, index) => {
+        if (item.id === currentId) {
+          this.item = item.departmentRespList;
+          console.log("当前的项", this.item)
+        }
+        if (item.departmentRespList.length > 0) {
+          this.handleCurrentItemForEach(currentId, item.departmentRespList)
+        }
+      })
+    },
+    handleItemSonForEach(arr, currentId) {
+      // let departmentRespList = this.item;
+      // let arr=[];
 
+      arr.forEach(item => {
+        // this.sonArr.push(item.id);
+        if (currentId) {
+          this.$set(item, 'disabled', true);
+        } else {
+          console.log("执行disables为false拉")
+          this.$set(item, 'disabled', false);
+        }
+        if (item.departmentRespList.length > 0) {
+          this.handleItemSonForEach(item.departmentRespList, currentId)
+        }
+      })
+    },
     // 根据会员id查询会员信息
     fetchData() {
       const params = {
@@ -287,7 +314,27 @@ export default {
       }
     }
   },
-
+  // for (const i in treeDatas) {
+  //   console.log(treeDatas[i].id)
+  //   if (treeDatas[i].departmentRespList.length > 0) {
+  //     console.log('执行了')
+  //     this.setData(treeDatas[i].departmentRespList)
+  //   }
+  // }
+  // let cid = []
+  // for (const j in ids) {
+  //   for (const k in ids[j]) {
+  //     cid.push(ids[j][k])
+  //   }
+  // }
+  // for (const i in treeDatas) {
+  //   console.log(treeDatas[i].id)
+  //   cid = [...new Set(cid)]
+  //   console.log('cid', cid)
+  //   if (treeDatas[i].departmentRespList.length > 0) {
+  //     this.setData(treeDatas[i].departmentRespList)
+  //   }
+  // }
   watch: {
     formObj: {
       handler(val) {

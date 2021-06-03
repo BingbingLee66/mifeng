@@ -14,20 +14,9 @@
               <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
             </el-form-item>
             <el-form-item label="企业logo：" prop="companyLogo" class="avatar_style">
-              <el-upload
-                class="avatar-uploader"
-                action="/"
-                :show-file-list="false"
-                :before-upload="beforeAvatarUpload"
-                :http-request="uploadLogo">
-                <img
-                  v-if="formObj.companyLogo"
-                  :src="formObj.companyLogo"
-                  class="avatar avatar-tips">
-                <i
-                  v-else
-                  class="el-icon-plus avatar-uploader-icon"
-                  style="height: 100px; width: 100px;">
+              <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
+                <img v-if="formObj.companyLogo" :src="formObj.companyLogo" class="avatar avatar-tips">
+                <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
                 </i>
               </el-upload>
               <!--              <div style="color: #999">格式:jpg/png/jpeg  尺寸:132*132px</div>-->
@@ -45,14 +34,7 @@
             </el-form-item>
           </div>
           <el-form-item label="所在部门：">
-            <el-cascader
-              clearable
-              :show-all-levels="false"
-              :options="departmentOptions"
-              :props="{ multiple: true, checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList',disable:'disabled' }"
-              v-model="departmentCas"
-              placeholder="请选择部门"
-              @change="handlerDepartmentChange">
+            <el-cascader ref="cascaderAddr" clearable :show-all-levels="false" :options="departmentOptions" :props="{ multiple: true, checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList',disable:'disabled' }" v-model="departmentCas" placeholder="请选择部门" @change="handlerDepartmentChange">
             </el-cascader>
             <!--  <el-cascader
               :options="options"
@@ -72,55 +54,55 @@
 <script src="./add.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import 'src/styles/common.scss';
+  @import "src/styles/common.scss";
 </style>
 <style lang="scss">
-.form-border {
-  margin: 20px 50px;
-  border: 1px solid #bfc5d0;
-}
-
-.add_form_container {
-  padding: 50px 0 100px 100px;
-  width: 50%;
-
-  .el-cascader {
-    width: 100%;
+  .form-border {
+    margin: 20px 50px;
+    border: 1px solid #bfc5d0;
   }
 
-  .avatar_style {
-    .el-form-item__label {
-      float: none;
+  .add_form_container {
+    padding: 50px 0 100px 100px;
+    width: 50%;
+
+    .el-cascader {
+      width: 100%;
+    }
+
+    .avatar_style {
+      .el-form-item__label {
+        float: none;
+      }
+    }
+
+    .avatar-uploader .el-upload {
+      width: 132px;
+      height: 132px;
+      border: 1px dashed #d9d9d9;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      border-radius: 50%;
+    }
+
+    .avatar-uploader .el-upload:hover {
+      border-color: #409eff;
+    }
+
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 132px;
+      height: 132px;
+      line-height: 132px;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 132px;
+      height: 132px;
+      display: block;
     }
   }
-
-  .avatar-uploader .el-upload {
-    width: 132px;
-    height: 132px;
-    border: 1px dashed #d9d9d9;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    border-radius: 50%;
-  }
-
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
-
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 132px;
-    height: 132px;
-    line-height: 132px;
-    text-align: center;
-  }
-
-  .avatar {
-    width: 132px;
-    height: 132px;
-    display: block;
-  }
-}
 </style>
