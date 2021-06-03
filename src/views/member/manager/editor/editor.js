@@ -7,30 +7,30 @@ import {
   add,
   update
 } from '@/api/member/manager'
+
 import {
   getMemberOptions
 } from '@/api/member/post'
+
 import {
   getTradeOptions
 } from '@/api/system/trade'
+
 import {
   getPositionOptions
 } from '@/api/system/position'
+
 import area from '@/utils/area'
-import {getDepartmentList} from "@/api/org-structure/org";
+
+import {
+  getDepartmentList
+} from '@/api/org-structure/org'
 
 export default {
   data() {
     var checkPhone = (rule, value, callback) => {
       if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(value)) {
         return callback(new Error('手机号码格式不正确'))
-      } else {
-        return callback()
-      }
-    }
-    var checkTel = (rule, value, callback) => {
-      if (!/^$|^((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/.test(value)) {
-        return callback(new Error('电话号码格式不正确'))
       } else {
         return callback()
       }
@@ -135,7 +135,9 @@ export default {
       for (const view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
-            this.$router.push({path: openPath})
+            this.$router.push({
+              path: openPath
+            })
           })
           break
         }
@@ -196,30 +198,30 @@ export default {
     },
 
     transNativePlace(obj) {
-      let nativePlace = obj.nativePlace
-      let cas = []
+      const nativePlace = obj.nativePlace
+      const cas = []
       if (nativePlace !== '' && nativePlace !== undefined && nativePlace !== null) {
-        let place = nativePlace.split('-')
-        let province = area.province_list
-        let city = area.city_list
-        let county = area.county_list
+        const place = nativePlace.split('-')
+        const province = area.province_list
+        const city = area.city_list
+        const county = area.county_list
         for (let i = 0; i < place.length; i++) {
           if (i === 0) {
-            for (let p in province) {
+            for (const p in province) {
               if (place[i] === province[p]) {
                 cas.push(p)
                 break
               }
             }
           } else if (i === 1) {
-            for (let c in city) {
+            for (const c in city) {
               if (place[i] === city[c]) {
                 cas.push(c)
                 break
               }
             }
           } else if (i === 2) {
-            for (let c in county) {
+            for (const c in county) {
               if (place[i] === county[c]) {
                 cas.push(c)
                 break
@@ -244,7 +246,7 @@ export default {
       const itemAry = [] // 分类树组件，每一项的value数组
       // 递归分类数据
       const recursionCategory = (data) => {
-        let len = data.length
+        const len = data.length
         for (let i = 0; i < len; i++) { // 循环data参数，匹配回显的value
           itemAry.push(data[i].value) // 构建分类树数组项,入栈
           for (let j = 0; j < eachAry.length; j++) { // 遍历子节点分类value，拼凑成数组项value，并终止循环
@@ -267,17 +269,17 @@ export default {
       console.log(this.bindTradeIds, '处理后将要回显的数组')
     },
     transTrade(obj) {
-      let trade = this.formObj['tradeId']
-      let cas = []
+      const trade = this.formObj['tradeId']
+      const cas = []
       if (trade !== null && trade !== '') {
-        for (let pTrade of this.tradeOptions) {
+        for (const pTrade of this.tradeOptions) {
           if (trade === pTrade.value) {
             cas.push(pTrade.value)
             break
           }
-          let children = pTrade.children
+          const children = pTrade.children
           let findFlag = false
-          for (let cTrade of children) {
+          for (const cTrade of children) {
             if (trade === cTrade.value) {
               cas.push(cTrade.value)
               findFlag = true
@@ -293,7 +295,7 @@ export default {
       return cas
     },
     getMemberType() {
-      let params = {
+      const params = {
         ckey: this.$store.getters.ckey
       }
       getMemberOptions(params).then(response => {
@@ -301,7 +303,7 @@ export default {
       })
     },
     getTradeType() {
-      let params = {
+      const params = {
         ckey: this.$store.getters.ckey
       }
       getTradeOptions(params).then(response => {
@@ -314,19 +316,19 @@ export default {
       })
     },
     getNativeOptions() {
-      let province = area.province_list
-      let city = area.city_list
-      let county = area.county_list
-      for (let provinceKey in province) {
-        let provinceOption = {
+      const province = area.province_list
+      const city = area.city_list
+      // const county = area.county_list
+      for (const provinceKey in province) {
+        const provinceOption = {
           label: province[provinceKey],
           value: provinceKey,
           children: []
         }
-        let province_relat_Key = provinceKey.substring(0, 2)
-        for (let cityKey in city) {
+        const province_relat_Key = provinceKey.substring(0, 2)
+        for (const cityKey in city) {
           if (cityKey.startsWith(province_relat_Key)) {
-            let cityOption = {
+            const cityOption = {
               label: city[cityKey],
               value: cityKey
               // children: []
@@ -371,7 +373,7 @@ export default {
     },
 
     uploadPortrait(content) {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', content.file)
       uploadPortrait(formData).then(response => {
         this.formObj.portrait = response.data.filePath
@@ -379,7 +381,7 @@ export default {
     },
 
     uploadFrontOfIdCard(content) {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', content.file)
       uploadIdCard(formData).then(response => {
         this.formObj.frontOfIdCard = response.data.filePath
@@ -387,7 +389,7 @@ export default {
     },
 
     uploadBackOfIdCard(content) {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', content.file)
       uploadIdCard(formData).then(response => {
         this.formObj.backOfIdCard = response.data.filePath
@@ -395,7 +397,7 @@ export default {
     },
 
     uploadLicense(content) {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', content.file)
       uploadLicense(formData).then(response => {
         console.log(response.data.filePath)
@@ -421,9 +423,9 @@ export default {
 
     handleItemChange(val) {
       if (val === undefined) return
-      let province = area.province_list
-      let city = area.city_list
-      let county = area.county_list
+      const province = area.province_list
+      const city = area.city_list
+      const county = area.county_list
       let result = ''
       for (let i = 0; i < val.length; i++) {
         if (i === 0) {
@@ -479,7 +481,7 @@ export default {
         }
       },
       deep: true
-    },
+    }
   }
 
 }

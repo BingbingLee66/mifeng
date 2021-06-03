@@ -4,10 +4,11 @@ import {
   add,
   update
 } from '@/api/member/manager'
+
 import {
   getDepartmentList
 } from '@/api/org-structure/org'
-import {logger} from "runjs/lib/common";
+import tree from "element-ui/packages/table/src/store/tree";
 
 export default {
   data() {
@@ -121,17 +122,73 @@ export default {
         console.log('部门列表：', res.data.data[0].departmentRespList)
         if (res.state === 1) {
           this.departmentOptions = res.data.data[0].departmentRespList
+          this.setData(this.departmentOptions)
         }
       })
     },
+
+    /*
+    * 递归遍历部门树结构，添加disabled属性
+    * */
+    setData(treeDatas) {
+      for (const i in treeDatas) {
+        this.$set(treeDatas[i], 'disabled', false)
+        if (treeDatas[i].departmentRespList.length > 0) {
+          this.setData(treeDatas[i].departmentRespList)
+        }
+      }
+    },
+
+    /*
+    * 递归遍历部门树结构，改变disabled属性
+    * */
+    changeData(list, treeDatas) {
+      // console.log('treeData', treeDatas)
+      console.log('list:', list)
+      let ids = []
+      list.forEach(val => {
+        val.forEach((v, i, arr) => {
+          if (i !== arr.length - 1) {
+            ids.push(v)
+          }
+        })
+      })
+      treeDatas.forEach((item, index) => {
+        if (ids.includes(item.id)) {
+          this.$set(item, 'disabled', false)
+        }
+        if (item.departmentRespList.length > 0) {
+          // this.changeData(list, item.departmentRespList)
+        }
+      })
+      // for (const i in treeDatas) {
+      //   console.log(treeDatas[i].id)
+      //   if (treeDatas[i].departmentRespList.length > 0) {
+      //     console.log('执行了')
+      //     this.setData(treeDatas[i].departmentRespList)
+      //   }
+      // }
+      // let cid = []
+      // for (const j in ids) {
+      //   for (const k in ids[j]) {
+      //     cid.push(ids[j][k])
+      //   }
+      // }
+      // for (const i in treeDatas) {
+      //   console.log(treeDatas[i].id)
+      //   cid = [...new Set(cid)]
+      //   console.log('cid', cid)
+      //   if (treeDatas[i].departmentRespList.length > 0) {
+      //     this.setData(treeDatas[i].departmentRespList)
+      //   }
+      // }
+    },
+
     /*
     * 选择部门
     * */
-    handlerDepartmentChange(val) {
-      console.log(val)
-      // console.log(this.departmentOptions)
-      this.formObj.departmentId = [...val].pop()
-      console.log(this.formObj.departmentId)
+    handlerDepartmentChange(list) {
+      this.changeData(list, this.departmentOptions)
     },
 
     // 根据会员id查询会员信息

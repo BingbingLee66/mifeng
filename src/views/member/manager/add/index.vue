@@ -49,7 +49,7 @@
               clearable
               :show-all-levels="false"
               :options="departmentOptions"
-              :props="{ checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList' }"
+              :props="{ multiple: true, checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList',disable:'disabled' }"
               v-model="departmentCas"
               placeholder="请选择部门"
               @change="handlerDepartmentChange">
