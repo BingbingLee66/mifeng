@@ -4,7 +4,9 @@ import {
   add,
   update
 } from '@/api/member/manager'
-
+import {
+  getMemberOptions
+} from '@/api/member/post'
 import {
   getDepartmentList
 } from '@/api/org-structure/org'
@@ -38,9 +40,12 @@ export default {
         companyName: '',
         companyPhone: '',
         companyLogo: '',
-        departmentId: ''
+        departmentId: '',
+        memberPostId: ''
       },
       type: 'add',
+      //会内职位
+      memberPostOptions: null,
       rules: {
         companyName: [{
           required: true,
@@ -72,7 +77,19 @@ export default {
         }, {
           validator: checkPhone,
           trigger: 'change'
-        }]
+        }],
+        contactName: [{
+          required: true,
+          message: '请输入联系人姓名',
+          trigger: 'blur'
+        }],
+        memberPostId: [{
+          required: true,
+          message: '请选择会内职位',
+          trigger: 'change'
+        }],
+
+
       },
       departmentOptions: [],
       departmentCas: []
@@ -94,7 +111,8 @@ export default {
         this.formObj.departmentId = did
       }
     }
-    this.getdepartmentType()
+    this.getdepartmentType();
+    this.getMemberType()
   },
 
   mounted() {
@@ -316,7 +334,16 @@ export default {
           break
         }
       }
-    }
+    },
+    //拉取会内职位
+    getMemberType() {
+      const params = {
+        ckey: this.$store.getters.ckey
+      }
+      getMemberOptions(params).then(response => {
+        this.memberPostOptions = response.data.data
+      })
+    },
   },
   // for (const i in treeDatas) {
   //   console.log(treeDatas[i].id)

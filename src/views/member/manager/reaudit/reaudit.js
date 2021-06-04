@@ -1,5 +1,5 @@
 import { reauditList, getMemberAuditDetail, updateReaudit } from '@/api/member/manager'
-
+import DetailDialog from './component/detailDialog.vue'
 export default {
   data() {
     return {
@@ -20,8 +20,13 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: []
+      selectionDatas: [],
+      //驳回理由
+      rejectionReason: ""
     }
+  },
+  components: {
+    "DetailDialog": DetailDialog
   },
   computed: {
   },
@@ -29,10 +34,10 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -63,12 +68,16 @@ export default {
         this.listLoading = false
       })
     },
-    detail (e, row) {
+    detail(e, row) {
+      console.log('e', e);
+      console.log('row', row)
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       // window.localStorage.setItem('memberaudit', this.$route.path)
       // this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '2' } })
-
-      let params = {
+      this.$refs['detailDialog'].open()
+      return;
+      let params =
+      {
         'memberId': row.id,
         'type': 2
       }
@@ -80,7 +89,12 @@ export default {
       })
       this.detailVisible = true
     },
-    batchApproved (e) {
+    monitorRefusal() {
+      console.log("子组件有驳回");
+      this.batchRejectVisible = true;
+      //驳回成功后
+    },
+    batchApproved(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -101,7 +115,7 @@ export default {
         this.batchRejectVisible = false
       })
     },
-    approved (e, row) {
+    approved(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let arr = []
       arr.push(row.id)
@@ -115,11 +129,11 @@ export default {
           type: 'success'
         })
         this.fetchData()
-      this.rejectVisible = false
-      this.detailVisible = false
+        this.rejectVisible = false
+        this.detailVisible = false
       })
     },
-    batchRejectRemark (e) {
+    batchRejectRemark(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -130,7 +144,7 @@ export default {
       this.audit.remark = '资料不属实'
       this.batchRejectVisible = true
     },
-    batchReject () {
+    batchReject() {
       let params = {
         'memberId': this.selectionDatas,
         'auditStatus': 2,
@@ -145,7 +159,7 @@ export default {
       })
       this.batchRejectVisible = false
     },
-    rejectRemark (e, row) {
+    rejectRemark(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       if (row.id !== undefined) {
         this.audit.id = row.id
@@ -153,7 +167,7 @@ export default {
       this.audit.remark = '资料不属实'
       this.rejectVisible = true
     },
-    reject () {
+    reject() {
       let params = {
         'auditStatus': 2,
         'remark': this.audit.remark
@@ -175,10 +189,10 @@ export default {
       this.rejectVisible = false
       this.detailVisible = false
     },
-    handlerChange (value) {
+    handlerChange(value) {
       this.query.tradeType = value[value.length - 1]
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {

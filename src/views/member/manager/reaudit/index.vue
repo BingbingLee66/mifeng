@@ -57,9 +57,10 @@
           <div v-if="scope.row.auditStatus == 0">待审核</div>
           <div v-if="scope.row.auditStatus == 1">已通过</div>
           <div v-if="scope.row.auditStatus == 2">已驳回</div>
-        </template>
+        </template> `12345 89 qwertyuiop[]ASDFGHJKL;'
+        Zxcv`
       </el-table-column>
-      <el-table-column label="操作" >
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="text" @click="detail($event, scope.row)">详情</el-button>
           <el-button type="text" @click="approved($event, scope.row)" :actionid="getId('', '通过')" v-if="has('', '通过') && scope.row.auditStatus == 0">通过</el-button>
@@ -67,20 +68,9 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-      :page-sizes="pageSizes"
-      :page-size="limit"
-      :total="total"
-      :current-page.sync="currentpage"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+    <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange">
     </el-pagination>
-    <el-dialog
-      title="驳回理由"
-      :visible.sync="rejectVisible"
-      width="30%">
+    <el-dialog title="驳回理由" :visible.sync="rejectVisible" width="30%">
       <el-form ref="form" :model="audit" label-position="left" label-width="50px">
         <el-row>
           <el-col :span="24">
@@ -101,10 +91,7 @@
         <el-button type="primary" @click="reject">确定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="驳回理由"
-      :visible.sync="batchRejectVisible"
-      width="30%">
+    <el-dialog title="驳回理由" :visible.sync="batchRejectVisible" width="30%">
       <el-form ref="form" :model="audit" label-position="left" label-width="50px">
         <el-row>
           <el-col :span="24">
@@ -116,6 +103,8 @@
                 <el-row>
                   <el-radio label="其他">其他</el-radio>
                 </el-row>
+                <el-input v-if="audit.remark==='其他' " type="textarea" placeholder="请输入内容" v-model="rejectionReason" maxlength="20" show-word-limit>
+                </el-input>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -125,122 +114,7 @@
         <el-button type="primary" @click="batchReject">确定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="详情"
-      :visible.sync="detailVisible"
-      width="60%">
-      <el-form ref="form" label-position="right" label-width="150px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="会员姓名：">
-              {{detailObj.name}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="手机号：">
-              {{detailObj.phone}}
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="头像：">
-              <div class="portrait-box"><img :src="detailObj.portrait" /></div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="昵称：">
-              {{detailObj.nickname}}
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="22">
-            <el-form-item label="个人履历：">
-              <div class="text-box">{{detailObj.resume}}</div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="公司LOGO：">
-              <div class="license-box"><img :src="detailObj.companyLogo" /></div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="办公地址：">
-              {{detailObj.companyAddress}}
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="职务：">
-              {{detailObj.companyPosition}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="联系电话：">
-              {{detailObj.companyPhone}}
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="22">
-            <el-form-item label="公司简介：">
-              <div class="text-box">{{detailObj.companyIntroduction}}</div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="22">
-            <el-form-item label="发展历程：">
-              <div class="text-box">{{detailObj.companyHistory}}</div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="22">
-            <el-form-item label="荣誉资质：">
-              <div class="text-box">{{detailObj.companyHonor}}</div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row v-if="detailObj.auditStatus != 0">
-          <hr/>
-        </el-row>
-        <div style="font-size: 18px;">
-          <el-row v-if="detailObj.auditStatus != 0">
-            <el-col :offset="2" :span="6">
-              审核结果：
-              <span v-if="detailObj.auditStatus == 1">通过</span>
-              <span v-if="detailObj.auditStatus == 2">已驳回</span>
-            </el-col>
-            <el-col v-if="detailObj.auditStatus == 2" :span="8">
-              驳回理由：{{detailObj.rejectRemark}}
-            </el-col>
-            <el-col :span="8">
-              审核人：{{detailObj.auditor}}
-            </el-col>
-          </el-row>
-          <el-row v-if="detailObj.auditStatus != 0">
-            <el-col :offset="2" :span="8">审核时间：{{detailObj.auditedTs}}</el-col>
-            <el-col :span="8">提交时间：{{detailObj.createdTs}}</el-col>
-          </el-row>
-        </div>
-
-      </el-form>
-      <span slot="footer" class="dialog-footer" v-if="detailObj.auditStatus == 0">
-        <el-button type="primary" @click="approved($event, detailObj)" :actionid="getId('', '通过')" v-if="has('', '通过')">通过</el-button>
-        <el-button @click="rejectRemark($event, detailObj)" :actionid="getId('', '驳回')" v-if="has('', '驳回')">驳回</el-button>
-        <el-button @click.native="detailVisible = false">关闭</el-button>
-      </span>
-      <span slot="footer" class="dialog-footer" v-if="detailObj.auditStatus != 0">
-        <el-button type="primary" @click.native="detailVisible = false">关闭</el-button>
-      </span>
-    </el-dialog>
+    <DetailDialog ref="detailDialog" title="详情" @monitorRefusal="monitorRefusal"></DetailDialog>
   </div>
 </template>
 
@@ -250,29 +124,29 @@
   @import "src/styles/common.scss";
 </style>
 <style>
-.portrait-box {
-  width: 100px;
-  height: 100px;
-  border-color: #409EFF;
-}
-.portrait-box img {
-  width: 100%;
-  height: 100%;
-}
-.license-box {
-  width: 180px;
-  height: 100px;
-  border-color: #409EFF;
-}
-.license-box img {
-  width: 100%;
-  height: 100%;
-}
-.text-box {
-  border: 1px solid #333;
-  padding: 5px;
-  min-height: 50px;
-  max-height: 300px;
-  overflow-y: auto;
-}
+  .portrait-box {
+    width: 100px;
+    height: 100px;
+    border-color: #409eff;
+  }
+  .portrait-box img {
+    width: 100%;
+    height: 100%;
+  }
+  .license-box {
+    width: 180px;
+    height: 100px;
+    border-color: #409eff;
+  }
+  .license-box img {
+    width: 100%;
+    height: 100%;
+  }
+  .text-box {
+    border: 1px solid #333;
+    padding: 5px;
+    min-height: 50px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
 </style>

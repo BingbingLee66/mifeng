@@ -5,7 +5,7 @@
         <el-form ref="form" :model="formObj" :rules="rules" label-position="left">
           <el-form-item label="入会类型：">
             <el-radio-group v-model="formObj.type">
-              <el-radio :label="1">企业入会</el-radio>
+              <el-radio :label="1">企业/团体入会</el-radio>
               <el-radio :label="0">个人入会</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -24,6 +24,10 @@
             <el-form-item label="联系电话：" prop="companyPhone">
               <el-input v-model="formObj.companyPhone"></el-input>
             </el-form-item>
+
+            <el-form-item label="联系人姓名：" prop="contactName">
+              <el-input placeholder="请输入联系人姓名" v-model.trim="formObj.contactName" maxLength="20"></el-input>
+            </el-form-item>
           </div>
           <div v-else>
             <el-form-item label="姓名：" prop="name">
@@ -33,6 +37,11 @@
               <el-input v-model="formObj.phone"></el-input>
             </el-form-item>
           </div>
+          <el-form-item label="会内职位：" prop="memberPostId">
+            <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
+              <el-option v-for="post in memberPostOptions" :label="post.label" :value="post.value" :key="post.value"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item label="所在部门：">
             <el-cascader clearable :show-all-levels="false" :options="departmentOptions" :props="{expandTrigger:'click',emitPath:false, multiple: true, checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList',disable:'disabled' }" v-model="departmentCas" placeholder="请选择部门" @change="handlerDepartmentChange">
             </el-cascader>

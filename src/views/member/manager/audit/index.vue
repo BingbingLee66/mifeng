@@ -35,9 +35,9 @@
             <img style="width: 44px;height: 44px;border-radius: 50%;" :src="scope.row.type == 0 ? scope.row.portrait : scope.row.companyLogo">
           </template>
         </el-table-column>
-        <el-table-column label="姓名/企业名称" width="180px">
+        <el-table-column label="会员姓名/联系人姓名" width="180px">
           <template slot-scope="scope">
-            {{scope.row.type == 0 ? scope.row.name : scope.row.companyName}}
+            {{scope.row.type == 0 ? scope.row.name : scope.row.contactName}}
           </template>
         </el-table-column>
         <el-table-column label="手机号/联系方式" width="180px">
@@ -48,6 +48,16 @@
         <el-table-column label="入会类型" width="120px">
           <template slot-scope="scope">
             {{scope.row.type == 0 ? '个人' : '企业'}}
+          </template>
+        </el-table-column>
+        <el-table-column label="会内职位" width="120px">
+          <template slot-scope="scope">
+            {{ scope.row.postName }}
+          </template>
+        </el-table-column>
+        <el-table-column label="企业名称" width="120px">
+          <template slot-scope="scope">
+            {{ scope.row.postName }}
           </template>
         </el-table-column>
         <el-table-column label="所在部门" width="180px">
@@ -70,8 +80,8 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <!-- <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">详情</el-button> -->
-            <el-button type="success" :loading="approveLoading"  @click="approved($event, scope.row)" :actionid="getId('', '通过')" v-if="has('', '通过') && scope.row.auditStatus == 0">通过</el-button>
-            <el-button type="warning" :loading="rejectLoading"  @click="rejectRemark($event, scope.row)" :actionid="getId('', '驳回')" v-if="has('', '驳回') && scope.row.auditStatus == 0">驳回</el-button>
+            <el-button type="success" :loading="approveLoading" @click="approved($event, scope.row)" :actionid="getId('', '通过')" v-if="has('', '通过') && scope.row.auditStatus == 0">通过</el-button>
+            <el-button type="warning" :loading="rejectLoading" @click="rejectRemark($event, scope.row)" :actionid="getId('', '驳回')" v-if="has('', '驳回') && scope.row.auditStatus == 0">驳回</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -139,5 +149,5 @@
 <script src="./audit.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import 'src/styles/common.scss';
+  @import "src/styles/common.scss";
 </style>

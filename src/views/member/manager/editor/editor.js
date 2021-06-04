@@ -84,7 +84,21 @@ export default {
           required: true,
           message: '联系方式不能为空',
           trigger: 'blur'
-        }]
+        }],
+        memberPostId: [
+          {
+            required: true,
+            message: '请选择会内职位',
+            trigger: 'change'
+          }
+        ],
+        contactName: [
+          {
+            required: true,
+            message: '请输入联系人姓名',
+            trigger: 'change'
+          }
+        ],
       },
       personalRules: {
         name: [{
@@ -99,7 +113,14 @@ export default {
         }, {
           validator: checkPhone,
           trigger: 'change'
-        }]
+        }],
+        memberPostId: [
+          {
+            required: true,
+            message: '请选择会内职位',
+            trigger: 'change'
+          }
+        ]
       },
       departmentOptions: [],
       departmentCas: []
