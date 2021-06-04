@@ -34,12 +34,8 @@
             </el-form-item>
           </div>
           <el-form-item label="所在部门：">
-            <el-cascader ref="cascaderAddr" clearable :show-all-levels="false" :options="departmentOptions" :props="{ multiple: true, checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList',disable:'disabled' }" v-model="departmentCas" placeholder="请选择部门" @change="handlerDepartmentChange">
+            <el-cascader clearable :show-all-levels="false" :options="departmentOptions" :props="{expandTrigger:'click',emitPath:false, multiple: true, checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList',disable:'disabled' }" v-model="departmentCas" placeholder="请选择部门" @change="handlerDepartmentChange">
             </el-cascader>
-            <!--  <el-cascader
-              :options="options"
-              :props="{ multiple: true, checkStrictly: true }"
-              clearable></el-cascader>  -->
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-dbClick @click="save">保存</el-button>
