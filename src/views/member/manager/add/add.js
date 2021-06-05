@@ -44,7 +44,6 @@ export default {
         memberPostId: ''
       },
       type: 'add',
-      //会内职位
       memberPostOptions: null,
       rules: {
         companyName: [{
@@ -97,7 +96,6 @@ export default {
   },
 
   created() {
-    console.log('allParentId:', this.$route.query.allParentId)
     if (this.$route.query.sign) {
       if (typeof this.$route.query.allParentId === 'number') {
         this.departmentCas.push(this.$route.query.allParentId)
@@ -140,7 +138,6 @@ export default {
         'parentId': 0
       }
       getDepartmentList(params).then(res => {
-        console.log('部门列表：', res.data.data[0].departmentRespList)
         if (res.state === 1) {
           this.departmentOptions = res.data.data[0].departmentRespList
           this.setData(this.departmentOptions)
@@ -172,6 +169,8 @@ export default {
     * */
     handlerDepartmentChange(ids) {
       this.ids = ids
+      const departmentStr = ids.join(',')
+      this.formObj.departmentId = departmentStr
     },
 
     /**
@@ -187,12 +186,11 @@ export default {
           this.currentItem = item.departmentRespList
           this.parentIds = item.allParentId.split(',')
           this.parentIds.shift()
+          this.allParentIds = this.parentIds
           this.parentIds.pop()
           this.parentIds = this.parentIds.map(item => {
             return parseInt(item)
           })
-          console.log('当前item父id', this.parentIds)
-          console.log('当前item：', this.currentItem)
         } else {
           // this.parentIds = []
         }
@@ -221,7 +219,7 @@ export default {
     /**
      * 递归设置当前item项父亲项的disabled属性为true
      */
-    handleItemParentForEach(parentIds, treeDatas) {
+    handleItemParentForEach(parentIds, treeDatas, allParentIds) {
       const ids = []
       if (parentIds.length > 0) {
         parentIds.forEach(val => {
@@ -229,13 +227,15 @@ export default {
         })
       }
       treeDatas.forEach((item, index) => {
-        if (ids.includes(item.id)) {
-          this.$set(item, 'disabled', true)
+        if (!ids.includes(allParentIds)) {
+          if (ids.includes(item.id)) {
+            this.$set(item, 'disabled', true)
+          }
         } else {
           this.$set(item, 'disabled', false)
         }
         if (item.departmentRespList.length > 0) {
-          this.handleItemParentForEach(parentIds, item.departmentRespList)
+          this.handleItemParentForEach(parentIds, item.departmentRespList, allParentIds)
         }
       })
     },
@@ -279,7 +279,6 @@ export default {
         if (this.formObj.type === 1) {
           this.formObj.phone = this.formObj.companyPhone
         }
-        console.log('提交的参数：', this.formObj)
         if (valid) {
           if (this.type === 'add') {
             this.formObj['ckey'] = this.$store.getters.ckey
@@ -335,7 +334,7 @@ export default {
         }
       }
     },
-    //拉取会内职位
+    // 拉取会内职位
     getMemberType() {
       const params = {
         ckey: this.$store.getters.ckey
@@ -343,29 +342,9 @@ export default {
       getMemberOptions(params).then(response => {
         this.memberPostOptions = response.data.data
       })
-    },
+    }
   },
-  // for (const i in treeDatas) {
-  //   console.log(treeDatas[i].id)
-  //   if (treeDatas[i].departmentRespList.length > 0) {
-  //     console.log('执行了')
-  //     this.setData(treeDatas[i].departmentRespList)
-  //   }
-  // }
-  // let cid = []
-  // for (const j in ids) {
-  //   for (const k in ids[j]) {
-  //     cid.push(ids[j][k])
-  //   }
-  // }
-  // for (const i in treeDatas) {
-  //   console.log(treeDatas[i].id)
-  //   cid = [...new Set(cid)]
-  //   console.log('cid', cid)
-  //   if (treeDatas[i].departmentRespList.length > 0) {
-  //     this.setData(treeDatas[i].departmentRespList)
-  //   }
-  // }
+
   watch: {
     formObj: {
       handler(val) {
@@ -386,7 +365,6 @@ export default {
           if (!oldVal.includes(items)) return items
         })
         const currentId = currentIds[0]
-        console.log('currentId', currentId)
         this.handleCurrentItemForEach(currentId, this.departmentOptions)
         this.handleItemParentForEach(this.parentIds, this.departmentOptions)
         this.handleItemSonForEach(currentId, this.currentItem)
