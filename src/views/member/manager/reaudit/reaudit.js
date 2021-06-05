@@ -22,7 +22,9 @@ export default {
       listLoading: false,
       selectionDatas: [],
       //驳回理由
-      rejectionReason: ""
+      rejectionReason: "",
+      //当前正在操作的会员
+      currentRow: null,
     }
   },
   components: {
@@ -74,20 +76,21 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       // window.localStorage.setItem('memberaudit', this.$route.path)
       // this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '2' } })
-      this.$refs['detailDialog'].open()
-      return;
+      // this.$refs['detailDialog'].open()
+
       let params =
       {
         'memberId': row.id,
-        'type': 2
+        'type': row.type
       }
+      this.currentRow = row;
       getMemberAuditDetail(params).then(response => {
-        let memberList = response.data.dtl
-        if (memberList !== null) {
-          this.detailObj = memberList[0]
-        }
+        // let memberList = response.data.dtl
+        // if (memberList !== null) {
+        //   this.detailObj = memberList[0]
+        // }
       })
-      this.detailVisible = true
+      // this.detailVisible = true
     },
     monitorRefusal() {
       console.log("子组件有驳回");
@@ -125,6 +128,17 @@ export default {
       }
       this.updateReauditFunc(params)
     },
+    //会员审核信息详情
+    getMemberAuditDetailFunc(params) {
+      getMemberAuditDetail(params).then(response => {
+        let memberList = response.data.dtl
+        if (memberList !== null) {
+          this.detailObj = memberList[0]
+        }
+      })
+      this.detailVisible = true
+    },
+
     //通过
     updateReauditFunc(params) {
       updateReaudit(params).then(response => {

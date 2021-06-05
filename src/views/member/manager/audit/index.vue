@@ -57,7 +57,7 @@
         </el-table-column>
         <el-table-column label="企业名称" width="120px">
           <template slot-scope="scope">
-            {{ scope.row.postName }}
+            {{ scope.row.companyName }}
           </template>
         </el-table-column>
         <el-table-column label="所在部门" width="180px">
