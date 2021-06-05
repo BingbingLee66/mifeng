@@ -68,8 +68,8 @@
           </div>
           <el-row>
             <el-col :span="7">
-              <el-form-item label="所在部门：" prop="department">
-                <el-cascader :show-all-levels="false" :options="departmentOptions" :props="{ checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList' }" v-model="departmentCas" placeholder="请选择部门" @change="handlerDepartmentChange">
+              <el-form-item label="所在部门：">
+                <el-cascader clearable :show-all-levels="false" :options="departmentOptions" :props="{expandTrigger:'click',emitPath:false, multiple: true, checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList',disable:'disabled' }" v-model="departmentCas" placeholder="请选择部门" @change="handlerDepartmentChange">
                 </el-cascader>
               </el-form-item>
             </el-col>

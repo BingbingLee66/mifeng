@@ -37,6 +37,10 @@ export default {
     }
     return {
       memberId: '',
+      currentItem: null,
+      ids: [],
+      parentIds: [],
+      currentId: null,
       formObj: {
         type: 1,
         name: '',
@@ -184,10 +188,8 @@ export default {
         'memberId': this.memberId
       }
       memberMe(params).then(response => {
-        console.log('会员信息：', response)
         this.formObj = response.data.data
         this.editFlagNum(this.formObj.tradeId)
-        // this.formObj.tradeCas = [[6,13],[6,12]] // element 需要[[6,13],[6,12]]这种格式才能回显
         this.formObj['nativeCas'] = this.transNativePlace(this.formObj) // 籍贯回显
         if (this.formObj.companyPhone === null) {
           this.formObj.companyPhone = ''
@@ -204,18 +206,106 @@ export default {
         'parentId': 0
       }
       getDepartmentList(params).then(res => {
-        console.log('部门列表：', res.data.data[0].departmentRespList)
         if (res.state === 1) {
           this.departmentOptions = res.data.data[0].departmentRespList
+          this.setData(this.departmentOptions)
         }
       })
     },
 
     /*
+    * 递归遍历部门树结构，添加disabled属性
+    * */
+    setData(treeDatas) {
+      for (const i in treeDatas) {
+        this.$set(treeDatas[i], 'disabled', false)
+        if (treeDatas[i].departmentRespList.length > 0) {
+          this.setData(treeDatas[i].departmentRespList)
+        }
+      }
+    },
+
+    /*
+    * 递归遍历部门树结构，改变disabled属性
+    * */
+    changeData(ids, treeDatas) {
+      this.ids = ids
+    },
+
+    /*
     * 选择部门
     * */
-    handlerDepartmentChange(val) {
-      this.formObj.departmentId = [...val].pop()
+    handlerDepartmentChange(ids) {
+      this.ids = ids
+      const departmentStr = ids.join(',')
+      this.formObj.departmentId = departmentStr
+    },
+
+    /**
+     * 递归找出当前item项
+     */
+    handleCurrentItemForEach(currentId, treeDatas) {
+      treeDatas.forEach((item, index) => {
+        if (!currentId) {
+          this.parentIds = []
+          return
+        }
+        if (item.id === currentId) {
+          this.currentItem = item.departmentRespList
+          this.parentIds = item.allParentId.split(',')
+          this.parentIds.shift()
+          this.allParentIds = this.parentIds
+          this.parentIds.pop()
+          this.parentIds = this.parentIds.map(item => {
+            return parseInt(item)
+          })
+        } else {
+          // this.parentIds = []
+        }
+        if (item.departmentRespList.length > 0) {
+          this.handleCurrentItemForEach(currentId, item.departmentRespList)
+        }
+      })
+    },
+
+    /**
+     * 递归设置当前item项所有儿子的disabled属性为true
+     */
+    handleItemSonForEach(currentId, treeDatas) {
+      treeDatas.forEach(item => {
+        if (currentId && treeDatas.length > 0) {
+          this.$set(item, 'disabled', true)
+        } else {
+          this.$set(item, 'disabled', false)
+        }
+        if (item.departmentRespList.length > 0) {
+          this.handleItemSonForEach(currentId, item.departmentRespList)
+        }
+      })
+    },
+
+    /**
+     * 递归设置当前item项父亲项的disabled属性为true
+     */
+    handleItemParentForEach(parentIds, treeDatas, allParentIds) {
+      const ids = []
+      if (parentIds.length > 0) {
+        parentIds.forEach(val => {
+          ids.push(val)
+        })
+      }
+      treeDatas.forEach((item, index) => {
+        if (!ids.includes(allParentIds)) {
+          if (ids.includes(item.id)) {
+            this.$set(item, 'disabled', true)
+          }
+        } else {
+          this.$set(item, 'disabled', false)
+        }
+        if (item.departmentRespList.length > 0) {
+          this.handleItemParentForEach(parentIds, item.departmentRespList, allParentIds)
+        }
+      })
     },
 
     transNativePlace(obj) {
@@ -500,6 +590,18 @@ export default {
           this.rules = this.personalRules
           this.$refs['form'].clearValidate()
         }
+      },
+      deep: true
+    },
+    ids: {
+      handler(newVal, oldVal) {
+        const currentIds = newVal.filter(items => {
+          if (!oldVal.includes(items)) return items
+        })
+        const currentId = currentIds[0]
+        this.handleCurrentItemForEach(currentId, this.departmentOptions)
+        this.handleItemParentForEach(this.parentIds, this.departmentOptions)
+        this.handleItemSonForEach(currentId, this.currentItem)
       },
       deep: true
     }
