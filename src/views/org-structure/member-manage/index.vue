@@ -43,7 +43,7 @@
           </el-table-column>
           <el-table-column label="姓名" width="200">
             <template slot-scope="scope">
-              {{ scope.row.name ? scope.row.name : '-' }}
+              {{ scope.row.type===0 ? scope.row.name :  scope.row.contactName}}
             </template>
           </el-table-column>
           <!-- <el-table-column
@@ -58,7 +58,10 @@
               {{ scope.row.companyName ? scope.row.companyName : '-' }}
             </template>
           </el-table-column>
-          <el-table-column label="入会类型" width="200" prop="intype">
+          <el-table-column label="入会类型" width="200" prop="type">
+            <template slot-scope="scope">
+              {{ scope.row.type===0 ? '个人入会' : '企业入会' }}
+            </template>
           </el-table-column>
           <el-table-column label="职位" width="200">
             <template slot-scope="scope">

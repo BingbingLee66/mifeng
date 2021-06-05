@@ -66,7 +66,9 @@
           <td width="8%">生日</td>
           <td width="30%">{{member.birthday}}</td>
           <td width="8%">身份证照</td>
-          <td width="30%"><el-button type="text" @click="idCardDetail(member)">详情</el-button></td>
+          <td width="30%">
+            <el-button type="text" @click="idCardDetail(member)">详情</el-button>
+          </td>
         </tr>
         <tr align="center" height="45">
           <td width="8%">手机号码</td>
@@ -76,7 +78,8 @@
         </tr>
         <tr align="center" height="45">
           <td width="8%">个人简历</td>
-          <td align="left" height="150" colspan="10">{{resumeCp(member.resume)}} <el-button type="text" @click="resumeDetail(member.resume)">详情</el-button></td>
+          <td align="left" height="150" colspan="10">{{resumeCp(member.resume)}} <el-button type="text" @click="resumeDetail(member.resume)">详情</el-button>
+          </td>
         </tr>
         <tr align="left" height="45">
           <td width="100%" colspan="5">
@@ -93,8 +96,15 @@
           <td width="30%">{{member.companyPosition}}</td>
         </tr>
         <tr align="center" height="45">
-          <td width="8%">行业</td>
-          <td width="30%">{{member.tradeName}}</td>
+          <template v-if="member.type===1">
+            <td width="8%">联系人姓名</td>
+            <td width="30%">{{member.concatName}}</td>
+          </template>
+          <template v-else>
+            <td width="8%">行业</td>
+            <td width="30%">{{member.tradeName}}</td>
+          </template>
+
           <td width="8%">联系方式</td>
           <td width="30%">{{member.companyPhone}}</td>
         </tr>
@@ -102,11 +112,19 @@
           <td width="8%">办公地址</td>
           <td width="30%">{{member.companyAddress}}</td>
           <td width="8%">营业执照</td>
-          <td width="30%"><el-button type="text" @click="licenseDetail(member)">详情</el-button></td>
+          <td width="30%">
+            <el-button type="text" @click="licenseDetail(member)">详情</el-button>
+          </td>
+        </tr>
+        <tr align="center" height="45" v-if="member.type===1">
+          <td width="8%">行业</td>
+          <td align="left" height="150" colspan="10">{{member.tradeName}}
+          </td>
         </tr>
         <tr align="center" height="45">
           <td width="8%">企业简介</td>
-          <td align="left" height="150" colspan="10">{{companyInstrodCp(member.companyIntroduction)}} <el-button type="text" @click="companyIntroductionDetail(member.companyIntroduction)">详情</el-button></td>
+          <td align="left" height="150" colspan="10">{{companyInstrodCp(member.companyIntroduction)}} <el-button type="text" @click="companyIntroductionDetail(member.companyIntroduction)">详情</el-button>
+          </td>
         </tr>
       </table>
       <div v-if="type == 2" style="font-size: 20px;">
@@ -137,49 +155,38 @@
         </el-col>
       </div>
     </div>
-    <el-dialog
-      title="身份证照"
-      :visible.sync="idCardVisible"
-      width="50%">
+    <el-dialog title="身份证照" :visible.sync="idCardVisible" width="50%">
       <el-row>身份证头像面</el-row>
-      <el-row><img class="idcard-prv" :src="idCardImage.frontOfIdCard"/></el-row>
+      <el-row><img class="idcard-prv" :src="idCardImage.frontOfIdCard" /></el-row>
       <el-row>身份证国徽面</el-row>
-      <el-row><img class="idcard-prv" :src="idCardImage.backOfIdCard"/></el-row>
+      <el-row><img class="idcard-prv" :src="idCardImage.backOfIdCard" /></el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click.native="idCardVisible = false">确定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="营业执照"
-      :visible.sync="licenseVisible"
-      width="50%">
-      <el-row><img class="idcard-prv" :src="licenseImage"/></el-row>
+    <el-dialog title="营业执照" :visible.sync="licenseVisible" width="50%">
+      <el-row><img class="idcard-prv" :src="licenseImage" /></el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click.native="licenseVisible = false">确定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="个人履历"
-      :visible.sync="resumeVisible"
-      width="50%">
-      <el-row><div class="text-detail">{{resume}}</div></el-row>
+    <el-dialog title="个人履历" :visible.sync="resumeVisible" width="50%">
+      <el-row>
+        <div class="text-detail">{{resume}}</div>
+      </el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click.native="resumeVisible = false">确定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="公司介绍"
-      :visible.sync="companyIntroductionVisible"
-      width="50%">
-      <el-row><div class="text-detail">{{companyIntroduction}}</div></el-row>
+    <el-dialog title="公司介绍" :visible.sync="companyIntroductionVisible" width="50%">
+      <el-row>
+        <div class="text-detail">{{companyIntroduction}}</div>
+      </el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click.native="companyIntroductionVisible = false">确定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="驳回理由"
-      :visible.sync="rejectVisible"
-      width="30%">
+    <el-dialog title="驳回理由" :visible.sync="rejectVisible" width="30%">
       <el-form ref="form" :model="audit" label-position="left" label-width="50px">
         <el-row>
           <el-col :span="24">
@@ -216,14 +223,14 @@
 </style>
 <style lang="scss">
   .wx-col {
-    border: 1px solid #DCDFE6;
+    border: 1px solid #dcdfe6;
     border-right: 0;
     border-radius: 0 !important;
     line-height: 40px;
     text-align: center;
   }
   .wx-col:last-child {
-    border: 1px solid #DCDFE6;
+    border: 1px solid #dcdfe6;
   }
   .col-title {
     background-color: #b7f0ff;
@@ -241,7 +248,7 @@
     border: 1px solid black;
     border-radius: 50%;
   }
-  .head-portrait>img {
+  .head-portrait > img {
     position: absolute;
     height: 100%;
     width: 100%;
@@ -264,15 +271,15 @@
     margin: 20px 0 40px 0;
     height: 10px;
   }
-  .table_style{
-    table{
-      border-top: 1px solid #DCDFE6;
-      border-right: 1px solid #DCDFE6;
+  .table_style {
+    table {
+      border-top: 1px solid #dcdfe6;
+      border-right: 1px solid #dcdfe6;
       border-spacing: 0px;
-      tr{
-        td{
-          border-bottom: 1px solid #DCDFE6;
-          border-left: 1px solid #DCDFE6;
+      tr {
+        td {
+          border-bottom: 1px solid #dcdfe6;
+          border-left: 1px solid #dcdfe6;
         }
       }
     }

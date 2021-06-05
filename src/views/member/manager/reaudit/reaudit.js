@@ -123,6 +123,10 @@ export default {
         'memberId': arr,
         'auditStatus': 1
       }
+      this.updateReauditFunc(params)
+    },
+    //通过
+    updateReauditFunc(params) {
       updateReaudit(params).then(response => {
         this.$message({
           message: '已通过',

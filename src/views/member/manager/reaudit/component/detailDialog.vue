@@ -150,7 +150,7 @@
         //状态
         reject: null,
         reslove: null,
-        detailVisible: true,
+        detailVisible: false,
         //父级传过来的数据
         item: null,
       };

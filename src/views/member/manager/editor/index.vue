@@ -85,11 +85,11 @@
           </el-row>
           <div class="title_block">其他信息</div>
           <el-row v-if="formObj.type === 1">
-            <!-- <el-col :span="7">
+            <el-col :span="7">
               <el-form-item label="姓名：" prop="name">
                 <el-input v-model.trim="formObj.name" maxLength="100"></el-input>
               </el-form-item>
-            </el-col> -->
+            </el-col>
             <el-col :span="7">
               <el-form-item label="手机号：" prop="phone">
                 <el-input v-model="formObj.phone" :readonly=true></el-input>

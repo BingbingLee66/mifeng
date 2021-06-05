@@ -50,9 +50,9 @@
             <img style="width: 88px;height: 88px;border-radius: 50%;" :src="scope.row.type == 0 ? scope.row.portrait : scope.row.companyLogo">
           </template>
         </el-table-column>
-        <el-table-column label="姓名/企业名称" width="180px">
+        <el-table-column label="会员姓名/联系人姓名" width="180px">
           <template slot-scope="scope">
-            {{ scope.row.type == 0 ? scope.row.name : scope.row.companyName }}
+            {{ scope.row.type == 0 ? scope.row.name : scope.row.contactName }}
           </template>
         </el-table-column>
         <el-table-column label="手机号/联系方式" width="180px">

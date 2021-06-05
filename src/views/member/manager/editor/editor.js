@@ -96,9 +96,10 @@ export default {
           {
             required: true,
             message: '请输入联系人姓名',
-            trigger: 'change'
+            trigger: 'blur'
           }
         ],
+
       },
       personalRules: {
         name: [{
@@ -128,6 +129,9 @@ export default {
   },
 
   created() {
+    this.$nextTick(() => {
+      this.$refs['form'].clearValidate()
+    })
   },
 
   mounted() {
@@ -145,6 +149,8 @@ export default {
       this.type = 'edit'
       this.init()
     }
+
+
   },
 
   methods: {
