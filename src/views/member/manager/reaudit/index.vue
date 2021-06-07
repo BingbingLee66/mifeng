@@ -70,27 +70,6 @@
     </el-table>
     <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange">
     </el-pagination>
-    <el-dialog title="驳回理由" :visible.sync="rejectVisible" width="30%">
-      <el-form ref="form" :model="audit" label-position="left" label-width="50px">
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="">
-              <el-radio-group v-model="audit.remark">
-                <el-row>
-                  <el-radio label="资料不属实">资料不属实</el-radio>
-                </el-row>
-                <el-row>
-                  <el-radio label="其他">其他</el-radio>
-                </el-row>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="reject">确定</el-button>
-      </span>
-    </el-dialog>
     <el-dialog title="驳回理由" :visible.sync="batchRejectVisible" width="30%">
       <el-form ref="form" :model="audit" label-position="left" label-width="50px">
         <el-row>
@@ -103,7 +82,7 @@
                 <el-row>
                   <el-radio label="其他">其他</el-radio>
                 </el-row>
-                <el-input v-if="audit.remark==='其他' " type="textarea" placeholder="请输入内容" v-model="rejectionReason" maxlength="20" show-word-limit>
+                <el-input type="textarea" placeholder="请输入内容" v-model="rejectionReason" maxlength="20" show-word-limit>
                 </el-input>
               </el-radio-group>
             </el-form-item>
@@ -114,7 +93,7 @@
         <el-button type="primary" @click="batchReject">确定</el-button>
       </span>
     </el-dialog>
-    <DetailDialog ref="detailDialog" title="详情" @monitorRefusal="monitorRefusal"></DetailDialog>
+    <DetailDialog ref="detailDialog" title="详情" @monitorPassFunc="monitorPassFunc" @monitorRefusal="monitorRefusal"></DetailDialog>
   </div>
 </template>
 

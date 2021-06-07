@@ -25,6 +25,8 @@ export default {
       rejectionReason: "",
       //当前正在操作的会员
       currentRow: null,
+      //是否批量操作
+      ifBatch: true,
     }
   },
   components: {
@@ -73,18 +75,23 @@ export default {
     detail(e, row) {
       console.log('e', e);
       console.log('row', row)
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      // window.localStorage.setItem('memberaudit', this.$route.path)
-      // this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '2' } })
-      // this.$refs['detailDialog'].open()
-
+      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'));
+      const self = this;
       let params =
       {
         'memberId': row.id,
-        'type': row.type
+        'type': 2
       }
       this.currentRow = row;
-      getMemberAuditDetail(params).then(response => {
+      if (row.id !== undefined) {
+        this.audit.id = row.id
+      }
+      this.ifBatch = false;
+      getMemberAuditDetail(params).then(res => {
+        console.log('res', res.data);
+        self.$refs['detailDialog'].open(res.data).then(data => {
+
+        })
         // let memberList = response.data.dtl
         // if (memberList !== null) {
         //   this.detailObj = memberList[0]
@@ -92,10 +99,18 @@ export default {
       })
       // this.detailVisible = true
     },
+    //子组件有驳回
     monitorRefusal() {
-      console.log("子组件有驳回");
       this.batchRejectVisible = true;
-      //驳回成功后
+    },
+    //子组件通过
+    monitorPassFunc() {
+      let arr = [this.currentRow.id]
+      let params = {
+        'memberId': arr,
+        'auditStatus': 1
+      }
+      this.updateReauditFunc(params)
     },
     batchApproved(e) {
       if (this.selectionDatas.length === 0) {
@@ -147,8 +162,9 @@ export default {
           type: 'success'
         })
         this.fetchData()
-        this.rejectVisible = false
-        this.detailVisible = false
+        this.rejectVisible = false;
+        this.detailVisible = false;
+        this.$refs['detailDialog'].close()
       })
     },
     batchRejectRemark(e) {
@@ -159,23 +175,9 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.audit.remark = '资料不属实'
+      this.audit.remark = '资料不属实';
+      this.ifBatch = true;
       this.batchRejectVisible = true
-    },
-    batchReject() {
-      let params = {
-        'memberId': this.selectionDatas,
-        'auditStatus': 2,
-        'remark': this.audit.remark
-      }
-      updateReaudit(params).then(response => {
-        this.$message({
-          message: '已驳回',
-          type: 'success'
-        })
-        this.fetchData()
-      })
-      this.batchRejectVisible = false
     },
     rejectRemark(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -183,20 +185,28 @@ export default {
         this.audit.id = row.id
       }
       this.audit.remark = '资料不属实'
-      this.rejectVisible = true
+      this.ifBatch = false;
+      this.batchRejectVisible = true
     },
-    reject() {
+    //点击确定驳回
+    batchReject() {
+      // this.selectionDatas.push(this.currentRow.id)
       let params = {
         'auditStatus': 2,
-        'remark': this.audit.remark
-      }
-      let arr = []
-      if (this.audit.id !== '') {
-        arr.push(this.audit.id)
+        'remark': this.rejectionReason ? this.audit.remark + '，' + this.rejectionReason : this.audit.remark
+      };
+      let selectionDatas = [];
+      console.log("selectionDatas")
+      let arr = [];
+      console.log("this.audit", this.audit);
+      if (this.ifBatch) {
+        selectionDatas = this.selectionDatas;
       } else {
-        arr = this.selectionDatas
+        selectionDatas.push(this.audit.id)
       }
-      params['memberId'] = arr
+
+      params['memberId'] = selectionDatas;
+      console.log("params", params)
       updateReaudit(params).then(response => {
         this.$message({
           message: '已驳回',
@@ -205,7 +215,13 @@ export default {
         this.fetchData()
       })
       this.rejectVisible = false
-      this.detailVisible = false
+      this.detailVisible = false;
+      this.batchRejectVisible = false;
+      this.$refs['detailDialog'].close()
+    },
+    //驳回
+    rejectFunc() {
+
     },
     handlerChange(value) {
       this.query.tradeType = value[value.length - 1]
@@ -215,7 +231,8 @@ export default {
       this.selectionDatas = []
       for (let data of datas) {
         this.selectionDatas.push(data.id)
-      }
+      };
+      console.log("this.selectionDatas", this.selectionDatas)
     }
   }
 }
