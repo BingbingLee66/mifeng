@@ -10,15 +10,108 @@
           <th>修改前</th>
           <th>修改后</th>
         </tr>
-        <tr>
-          <td>会员姓名</td>
-          <td>医疗</td>
-          <td>教育</td>
+        <tr v-if="afterRevision.companyName!=beforeRevision.companyName">
+          <td>企业名称</td>
+          <td>{{beforeRevision.companyName}}</td>
+          <td>{{afterRevision.companyName}}</td>
         </tr>
-        <tr>
+        <tr v-if="afterRevision.contactName!=beforeRevision.contactName">
+          <td>联系人姓名</td>
+          <td>{{beforeRevision.contactName}}</td>
+          <td>{{afterRevision.contactName}}</td>
+        </tr>
+
+        <tr v-if="afterRevision.contactPhone!=beforeRevision.contactPhone">
+          <td>联系人电话</td>
+          <td>{{beforeRevision.contactPhone}}</td>
+          <td>{{afterRevision.contactPhone}}</td>
+        </tr>
+        <tr v-if="afterRevision.companyLogo!=beforeRevision.companyLogo">
           <td>企业logo</td>
-          <td>http://www.baidu.com/</td>
-          <td>搜索</td>
+          <td>{{beforeRevision.companyLogo}}</td>
+          <td>{{afterRevision.companyLogo}}</td>
+        </tr>
+        <tr v-if="afterRevision.postName!=beforeRevision.postName">
+          <td>会内职位</td>
+          <td>{{beforeRevision.postName}}</td>
+          <td>{{afterRevision.postName}}</td>
+        </tr>
+
+        <tr v-if="afterRevision.name!=beforeRevision.name">
+          <td>姓名</td>
+          <td>{{beforeRevision.name}}</td>
+          <td>{{afterRevision.name}}</td>
+        </tr>
+
+        <tr v-if="afterRevision.birthday!=beforeRevision.birthday">
+          <td>生日</td>
+          <td>{{beforeRevision.birthday}}</td>
+          <td>{{afterRevision.birthday}}</td>
+        </tr>
+
+        <tr v-if="afterRevision.gender!=beforeRevision.gender">
+          <td>性别</td>
+          <td>
+            <span v-if="beforeRevision.gender==1">男</span>
+            <span v-else>女</span>
+          </td>
+          <td>
+            <span v-if="afterRevision.gender==1">男</span>
+            <span v-else>女</span>
+          </td>
+        </tr>
+
+        <tr v-if="afterRevision.nativePlace!=beforeRevision.nativePlace">
+          <td>籍贯</td>
+          <td>{{beforeRevision.nativePlace}}</td>
+          <td>{{afterRevision.nativePlace}}</td>
+        </tr>
+        <tr v-if="afterRevision.idCard!=beforeRevision.idCard">
+          <td>身份证号码</td>
+          <td>{{beforeRevision.idCard}}</td>
+          <td>{{afterRevision.idCard}}</td>
+        </tr>
+        <tr v-if="afterRevision.license!=beforeRevision.license">
+          <td>营业执照</td>
+          <td>
+            <img class="updateImg" :src="beforeRevision.license" />
+          </td>
+          <td>
+            <img class="updateImg" :src="afterRevision.license" />
+          </td>
+        </tr>
+        <tr v-if="afterRevision.backOfIdCard!=beforeRevision.backOfIdCard || afterRevision.frontOfIdCard !=beforeRevision.frontOfIdCard">
+          <td>身份证照片</td>
+          <td>
+            <img class="updateImg" :src="afterRevision.backOfIdCard" />
+            <img class="updateImg" :src="afterRevision.frontOfIdCard" />
+          </td>
+          <td>
+            <img class="updateImg" :src="afterRevision.backOfIdCard" />
+            <img class="updateImg" :src="afterRevision.frontOfIdCard" />
+          </td>
+        </tr>
+        <tr v-if="afterRevision.tradeName!=beforeRevision.tradeName">
+          <td>职位</td>
+          <td>{{beforeRevision.tradeName}}</td>
+          <td>{{afterRevision.tradeName}}</td>
+        </tr>
+
+        <tr v-if="afterRevision.companyIntroduction!=beforeRevision.companyIntroduction">
+          <td>企业简介</td>
+          <td>{{beforeRevision.companyIntroduction}}</td>
+          <td>{{afterRevision.companyIntroduction}}</td>
+        </tr>
+
+        <tr v-if="afterRevision.resume!=beforeRevision.resume">
+          <td>个人简介</td>
+          <td>{{beforeRevision.resume}}</td>
+          <td>{{afterRevision.resume}}</td>
+        </tr>
+        <tr v-if="afterRevision.companyAddress!=beforeRevision.companyAddress">
+          <td>办公地址</td>
+          <td>{{beforeRevision.companyAddress}}</td>
+          <td>{{afterRevision.companyAddress}}</td>
         </tr>
 
       </table>
@@ -153,17 +246,40 @@
         detailVisible: false,
         //父级传过来的数据
         item: null,
+        //修改后对象
+        afterRevision: null,
+        //修改前对象
+        beforeRevision: null,
       };
     },
     methods: {
       //打开
       open(item) {
+        const self = this;
         return new Promise((reslove, reject) => {
           this.reslove = reslove;
           this.reject = reject;
-          this.item = item;
+          let afterRevision = self.handleNullFunc(item.dtl);
+          this.afterRevision = afterRevision;
+          let beforeRevision = self.handleNullFunc(item.member);
+          this.beforeRevision = beforeRevision;
+          console.log("afterRevision", this.afterRevision);
+          console.log("beforeRevision", this.beforeRevision);
+          // this.item = item;
           this.show();
         });
+      },
+      //工具类函数  给对象的null置为空串
+      handleNullFunc(obj) {
+        console.log("handleNull");
+        console.log("obj", obj);
+        for (var i in obj) {
+          if (!obj[i]) {
+            obj[i] = "";
+          }
+        }
+        console.log("pbj", obj);
+        return obj;
       },
       //展示
       show() {
@@ -174,10 +290,11 @@
         this.detailVisible = false;
       },
       //通过
-      approved() {},
+      approved() {
+        this.$emit("monitorPassFunc");
+      },
       //驳回
       rejectRemark() {
-        console.log("驳回啦");
         this.$emit("monitorRefusal");
       },
     },
@@ -212,5 +329,9 @@
       font-weight: 600;
       line-height: 20px;
     }
+  }
+  .updateImg {
+    width: 50px;
+    height: 50px;
   }
 </style>
