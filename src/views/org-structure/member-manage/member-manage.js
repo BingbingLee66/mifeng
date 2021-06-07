@@ -234,7 +234,6 @@ export default {
     },
 
     handlerDepartmentChange(val) {
-      console.log('hshsjshjhdsjhsdjjhjshdjhs jhsdjs ', val)
       if (val === -1 || val === null) {
         this.finalDepartmentId = 0
       } else {
