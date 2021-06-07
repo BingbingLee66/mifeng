@@ -128,7 +128,7 @@ export default {
         ]
       },
       departmentOptions: [],
-      departmentCas: []
+      departmentCas: null
     }
   },
 
@@ -153,8 +153,6 @@ export default {
       this.type = 'edit'
       this.init()
     }
-
-
   },
 
   methods: {
@@ -193,10 +191,20 @@ export default {
       const params = {
         'memberId': this.memberId
       }
-      memberMe(params).then(response => {
-        this.formObj = response.data.data
+      memberMe(params).then(res => {
+        this.formObj = res.data.data
+        // 行业回显
         this.editFlagNum(this.formObj.tradeId)
-        this.formObj['nativeCas'] = this.transNativePlace(this.formObj) // 籍贯回显
+        // 籍贯回显
+        this.formObj['nativeCas'] = this.transNativePlace(this.formObj)
+        // 部门回显
+        if (!res.data.departmentId) {
+          this.formObj.departmentId = ''
+        } else {
+          const did = parseInt(res.data.departmentId.split(',')[0])
+          this.departmentCas = did
+          this.formObj.departmentId = did + ''
+        }
         if (this.formObj.companyPhone === null) {
           this.formObj.companyPhone = ''
         }
@@ -242,9 +250,11 @@ export default {
     * 选择部门
     * */
     handlerDepartmentChange(ids) {
-      this.ids = ids
-      const departmentStr = ids.join(',')
-      this.formObj.departmentId = departmentStr
+      // console.log(typeof ids)
+      // this.ids = ids
+      // const departmentStr = ids.join(',')
+      console.log(ids)
+      this.formObj.departmentId = ids + ''
     },
 
     /**
@@ -383,7 +393,7 @@ export default {
       }
       recursionCategory(this.tradeOptions) // 调用递归
       this.bindTradeIds = echoTreeArr
-      console.log(this.bindTradeIds, '处理后将要回显的数组')
+      // console.log(this.bindTradeIds, '处理后将要回显的数组')
     },
     transTrade(obj) {
       const trade = this.formObj['tradeId']
@@ -599,6 +609,7 @@ export default {
       },
       deep: true
     },
+
     ids: {
       handler(newVal, oldVal) {
         const currentIds = newVal.filter(items => {
