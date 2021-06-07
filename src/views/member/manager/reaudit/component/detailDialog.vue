@@ -28,8 +28,10 @@
         </tr>
         <tr v-if="afterRevision.companyLogo!=beforeRevision.companyLogo">
           <td>企业logo</td>
-          <td>{{beforeRevision.companyLogo}}</td>
-          <td>{{afterRevision.companyLogo}}</td>
+          <!-- <img class="updateImg" :src="afterRevision.backOfIdCard" />
+          <img class="updateImg" :src="afterRevision.frontOfIdCard" /> -->
+          <td><img class="updateImg" :src="beforeRevision.companyLogo" /></td>
+          <td><img class="updateImg" :src="afterRevision.companyLogo" /></td>
         </tr>
         <tr v-if="afterRevision.postName!=beforeRevision.postName">
           <td>会内职位</td>
@@ -116,10 +118,31 @@
 
       </table>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="approved()">通过</el-button>
-        <el-button @click="rejectRemark()">驳回</el-button>
+        <span v-if="afterRevision.auditStatus===0">
+          <el-button type="primary" @click="approved()">通过</el-button>
+          <el-button @click="rejectRemark()">驳回</el-button>
+        </span>
         <el-button @click.native="detailVisible = false">关闭</el-button>
       </span>
+      <div v-if="afterRevision.auditStatus!=0" class="audit-result-view" style="font-size: 15px;">
+        <el-row>
+          <el-col :offset="2" :span="6">
+            审核结果：
+            <span v-if="afterRevision.auditStatus===1">通过</span>
+            <span v-else-if="afterRevision.auditStatus===2">已驳回</span>
+          </el-col>
+          <el-col :span="8" v-if="afterRevision.auditStatus===2">
+            驳回理由：{{afterRevision.rejectRemark}}
+          </el-col>
+          <el-col :span="4">
+            审核人：{{afterRevision.auditor}}
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :offset="2" :span="8">审核时间：{{afterRevision.auditedTs}}</el-col>
+          <el-col :span="8">提交时间：{{afterRevision.createdTs}}</el-col>
+        </el-row>
+      </div>
       <!-- <el-form ref="form" label-position="right" label-width="150px">
         <el-row>
           <el-col :span="12">
@@ -250,6 +273,9 @@
         afterRevision: null,
         //修改前对象
         beforeRevision: null,
+        detailObj: {
+          auditStatus: 1,
+        },
       };
     },
     methods: {
@@ -274,7 +300,7 @@
         console.log("handleNull");
         console.log("obj", obj);
         for (var i in obj) {
-          if (!obj[i]) {
+          if (obj[i] === null) {
             obj[i] = "";
           }
         }
@@ -301,6 +327,8 @@
   };
 </script>
 <style lang="scss" scoped>
+  .audit-result-view {
+  }
   table {
     th,
     td {

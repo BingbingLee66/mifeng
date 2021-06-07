@@ -32,17 +32,17 @@
           {{scope.row.id}}
         </template>
       </el-table-column> -->
-      <el-table-column label="会员名字">
+      <el-table-column label="会员名字/联系人姓名">
         <template slot-scope="scope">
-          {{scope.row.name}}
+          {{ scope.row.type===0 ? scope.row.name :  scope.row.contactName}}
         </template>
       </el-table-column>
-      <el-table-column label="手机号" width="120px">
+      <el-table-column label="手机号/联系方式" width="120px">
         <template slot-scope="scope">
           {{scope.row.phone}}
         </template>
       </el-table-column>
-      <el-table-column label="商会职位">
+      <el-table-column label="会内职位">
         <template slot-scope="scope">
           {{scope.row.postName}}
         </template>

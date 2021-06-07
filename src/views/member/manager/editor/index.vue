@@ -8,7 +8,7 @@
             <el-col :span="10">
               <el-form-item label="入会类型：">
                 <el-radio-group v-model="formObj.type">
-                  <el-radio :label="1">企业团体入会</el-radio>
+                  <el-radio :label="1">企业/团体入会</el-radio>
                   <el-radio :label="0">个人入会</el-radio>
                 </el-radio-group>
               </el-form-item>
@@ -90,7 +90,7 @@
                 <el-input v-model.trim="formObj.name" maxLength="100"></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="7">
+            <el-col :span="7" :offset="1">
               <el-form-item label="手机号：" prop="phone">
                 <el-input v-model="formObj.phone" :readonly=true></el-input>
               </el-form-item>

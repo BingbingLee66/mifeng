@@ -41,7 +41,7 @@
         <el-table :header-cell-style="{background:'rgba(245,245,245,0.5)',color:'#000',fontSize:'15px'}" ref="multipleTable" :data="memberData" tooltip-effect="dark" style="width: 100%" @row-click="skipToDetail" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55">
           </el-table-column>
-          <el-table-column label="姓名" width="200">
+          <el-table-column label="姓名/联系人姓名" width="200">
             <template slot-scope="scope">
               {{ scope.row.type===0 ? scope.row.name :  scope.row.contactName}}
             </template>
@@ -63,7 +63,7 @@
               {{ scope.row.type===0 ? '个人入会' : '企业入会' }}
             </template>
           </el-table-column>
-          <el-table-column label="职位" width="200">
+          <el-table-column label="会内职位" width="200">
             <template slot-scope="scope">
               {{ scope.row.postName ? scope.row.postName : '-' }}
             </template>
