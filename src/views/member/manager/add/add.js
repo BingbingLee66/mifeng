@@ -168,9 +168,10 @@ export default {
     * 选择部门
     * */
     handlerDepartmentChange(ids) {
-      this.ids = ids
-      const departmentStr = ids.join(',')
-      this.formObj.departmentId = departmentStr
+      // console.log(typeof ids)
+      // this.ids = ids
+      // const departmentStr = ids.join(',')
+      this.formObj.departmentId = ids + ''
     },
 
     /**
@@ -359,6 +360,7 @@ export default {
       },
       deep: true
     },
+
     ids: {
       handler(newVal, oldVal) {
         const currentIds = newVal.filter(items => {

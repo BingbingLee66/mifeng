@@ -43,7 +43,23 @@
             </el-select>
           </el-form-item>
           <el-form-item label="所在部门：">
-            <el-cascader clearable :show-all-levels="false" :options="departmentOptions" :props="{expandTrigger:'click',emitPath:false, multiple: true, checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList',disable:'disabled' }" v-model="departmentCas" placeholder="请选择部门" @change="handlerDepartmentChange">
+            <el-cascader
+              v-model="departmentCas"
+              placeholder="请选择部门"
+              clearable
+              :show-all-levels="false"
+              :options="departmentOptions"
+              :props="{
+                expandTrigger:'click',
+                emitPath:false,
+                multiple: false,
+                checkStrictly: true ,
+                value:'id',
+                label:'departmentName',
+                children:'departmentRespList',
+                disable:'disabled'
+              }"
+              @change="handlerDepartmentChange">
             </el-cascader>
           </el-form-item>
           <el-form-item>

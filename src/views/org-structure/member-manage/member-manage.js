@@ -7,7 +7,6 @@ import {
 export default {
   data() {
     return {
-      currentKey: 0,
       departmentTree: [], // 组织架构树
       memberData: [], // 成员数据
 
@@ -26,7 +25,7 @@ export default {
 
       showDialog: false, // 控制调整部门弹窗
       departmentOptions: [],
-      departmentCas: [],
+      departmentCas: null,
       memberIds: '', // 会员id
       firstDepartmentId: 0, // 调整前部门id
       finalDepartmentId: 0, // 调整后部门id
@@ -53,13 +52,15 @@ export default {
       }
       getDepartmentList(params).then(res => {
         console.log('部门树结构：', res)
+        let newArry = []
+        // 深拷贝数组
+        newArry = JSON.parse(JSON.stringify(res.data.data))
         if (res.state === 1) {
-          this.departmentOptions = res.data.data[0].departmentRespList
-          this.departmentTree = res.data.data
+          this.departmentOptions = newArry
+          this.departmentTree = newArry
           this.departmentTree[0]['departmentName'] = this.departmentTree[0].name
           this.departmentTree[0]['peopleCount'] = this.departmentTree[0].count
-          this.departmentTree[0]['id'] = this.departmentTree[0].chamberId
-          this.currentKey = this.departmentTree[0].chamberId
+          this.departmentTree[0]['id'] = -1
           this.departmentName = this.departmentTree[0].name
           this.getMemberList()
         }
@@ -78,7 +79,7 @@ export default {
         'pageSize': this.pageSize
       }
       getMemberList(params).then(res => {
-        console.log('成员列表：', res)
+        // console.log('成员列表：', res)
         if (res.state === 1 && JSON.stringify(res.data) !== '{}') {
           this.memberData = res.data.page.list
           this.totalPages = res.data.page.totalRows
@@ -109,7 +110,7 @@ export default {
       console.log('当前部门', data)
       this.currentpage = 1
       this.page = 1
-      if (this.currentKey === data.id) {
+      if (data.id === -1) {
         this.departmentId = 0
       } else {
         this.departmentId = data.id
@@ -210,10 +211,18 @@ export default {
     * 调整部门
     * */
     handleOpenAdjustDialog() {
-      this.departmentCas = []
       if (this.memberIds.length === 0) return this.$message.error('请先选择部门成员')
+      if (this.departmentId === 0) {
+        this.departmentCas = -1
+      } else {
+        this.departmentCas = this.departmentId
+      }
       this.showDialog = true
     },
+
+    /*
+    * 选择成员
+    * */
     handleSelectionChange(val) {
       let arr = []
       let index
@@ -225,17 +234,22 @@ export default {
     },
 
     handlerDepartmentChange(val) {
-      this.finalDepartmentId = [...val].pop()
+      if (val === -1 || val === null) {
+        this.finalDepartmentId = 0
+      } else {
+        this.finalDepartmentId = val + ''
+      }
     },
 
     save() {
+      console.log(this.departmentId)
+      // if(this.departmentId)
       const params = {
         'finalDepartmentId': this.finalDepartmentId, // 调整后的部门
         'firstDepartmentId': this.departmentId, // 调整前的部门
         'memberIds': this.memberIds
       }
       updateDepartment(params).then(res => {
-        console.log('调整部门：', res)
         if (res.state === 1) {
           this.memberData = []
           this.$message.success('操作成功')
