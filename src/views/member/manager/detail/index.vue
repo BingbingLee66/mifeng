@@ -87,7 +87,7 @@
           </td>
         </tr>
         <tr align="center" height="45">
-          <td width="24%" rowspan="4">
+          <td width="24%" rowspan="5">
             <div class="head-portrait"><img :src="member.companyLogo" v-if="member.companyLogo != ''" /></div>
           </td>
           <td width="8%">企业名称</td>

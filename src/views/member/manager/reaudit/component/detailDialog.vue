@@ -267,12 +267,10 @@
         reject: null,
         reslove: null,
         detailVisible: false,
-        //父级传过来的数据
-        item: null,
         //修改后对象
-        afterRevision: null,
+        afterRevision: {},
         //修改前对象
-        beforeRevision: null,
+        beforeRevision: {},
         detailObj: {
           auditStatus: 1,
         },
@@ -289,22 +287,17 @@
           this.afterRevision = afterRevision;
           let beforeRevision = self.handleNullFunc(item.member);
           this.beforeRevision = beforeRevision;
-          console.log("afterRevision", this.afterRevision);
-          console.log("beforeRevision", this.beforeRevision);
           // this.item = item;
           this.show();
         });
       },
       //工具类函数  给对象的null置为空串
       handleNullFunc(obj) {
-        console.log("handleNull");
-        console.log("obj", obj);
         for (var i in obj) {
           if (obj[i] === null) {
             obj[i] = "";
           }
         }
-        console.log("pbj", obj);
         return obj;
       },
       //展示
@@ -314,6 +307,8 @@
       //关闭
       close() {
         this.detailVisible = false;
+        this.reject = null;
+        this.reslove = null;
       },
       //通过
       approved() {
