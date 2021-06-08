@@ -38,8 +38,8 @@
             </el-row>
             <el-row>
               <el-col :span="7">
-                <el-form-item label="联系方式：" prop="companyPhone">
-                  <el-input v-model="formObj.companyPhone"></el-input>
+                <el-form-item label="联系人电话：" prop="contactPhone">
+                  <el-input v-model="formObj.contactPhone"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -220,8 +220,8 @@
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="7" v-if="formObj.type === 0">
-              <el-form-item label="联系方式：" prop="companyPhone">
-                <el-input v-model="formObj.companyPhone"></el-input>
+              <el-form-item label="联系人电话：" prop="contactPhone">
+                <el-input v-model="formObj.contactPhone"></el-input>
               </el-form-item>
             </el-col>
           </el-row>

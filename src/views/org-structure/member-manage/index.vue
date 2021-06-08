@@ -93,7 +93,7 @@
           </el-table-column>
           <el-table-column prop="companyPhone" label="联系电话" show-overflow-tooltip>
             <template slot-scope="scope">
-              {{ scope.row.companyPhone ? scope.row.companyPhone : '-' }}
+              {{ scope.row.contactPhone ? scope.row.contactPhone : '-' }}
             </template>
           </el-table-column>
         </el-table>

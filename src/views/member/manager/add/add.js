@@ -38,7 +38,7 @@ export default {
         name: '',
         phone: '',
         companyName: '',
-        companyPhone: '',
+        contactPhone: '',
         companyLogo: '',
         departmentId: '',
         memberPostId: ''
@@ -56,9 +56,9 @@ export default {
           message: '公司logo必须上传',
           trigger: 'blur'
         }],
-        companyPhone: [{
+        contactPhone: [{
           required: true,
-          message: '联系方式不能为空',
+          message: '联系人电话不能为空',
           trigger: 'blur'
         }, {
           validator: checkTel,
@@ -248,8 +248,8 @@ export default {
       }
       memberMe(params).then(response => {
         this.formObj = response.data.data
-        if (this.formObj.companyPhone === null) {
-          this.formObj.companyPhone = ''
+        if (this.formObj.contactPhone === null) {
+          this.formObj.contactPhone = ''
         }
       })
     },
@@ -278,7 +278,7 @@ export default {
     save() {
       this.$refs['form'].validate((valid) => {
         if (this.formObj.type === 1) {
-          this.formObj.phone = this.formObj.companyPhone
+          this.formObj.phone = this.formObj.contactPhone
         }
         if (valid) {
           if (this.type === 'add') {
@@ -355,7 +355,7 @@ export default {
         } else {
           this.$refs['form'].clearValidate(['companyName'])
           this.$refs['form'].clearValidate(['companyLogo'])
-          this.$refs['form'].clearValidate(['companyPhone'])
+          this.$refs['form'].clearValidate(['contactPhone'])
         }
       },
       deep: true

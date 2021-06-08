@@ -55,9 +55,9 @@
             {{ scope.row.type == 0 ? scope.row.name : scope.row.contactName }}
           </template>
         </el-table-column>
-        <el-table-column label="手机号/联系方式" width="180px">
+        <el-table-column label="手机号/联系人电话" width="180px">
           <template slot-scope="scope">
-            {{ scope.row.phone }}
+            {{ scope.row.type == 0 ? scope.row.phone : scope.row.contactPhone }}
           </template>
         </el-table-column>
         <el-table-column label="入会类型" width="120px">
