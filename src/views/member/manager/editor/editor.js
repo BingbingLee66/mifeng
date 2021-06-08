@@ -46,7 +46,7 @@ export default {
         name: '',
         phone: '',
         companyName: '',
-        companyPhone: '',
+        contactPhone: '',
         companyLogo: '',
         portrait: '',
         nativePlace: '',
@@ -84,7 +84,7 @@ export default {
           message: '公司logo必须上传',
           trigger: 'blur'
         }],
-        companyPhone: [{
+        contactPhone: [{
           required: true,
           message: '联系方式不能为空',
           trigger: 'blur'
@@ -205,8 +205,8 @@ export default {
           this.departmentCas = did
           this.formObj.departmentId = did + ''
         }
-        if (this.formObj.companyPhone === null) {
-          this.formObj.companyPhone = ''
+        if (this.formObj.contactPhone === null) {
+          this.formObj.contactPhone = ''
         }
       })
     },

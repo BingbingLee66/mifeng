@@ -143,6 +143,7 @@ export default {
         params['endTs'] = this.query.date[1]
       }
       list(params).then(response => {
+        console.log('商协会成员列表数据：', response)
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
         this.listLoading = false
