@@ -105,8 +105,8 @@
             <td width="30%">{{member.tradeName}}</td>
           </template>
 
-          <td width="8%">联系方式</td>
-          <td width="30%">{{member.companyPhone}}</td>
+          <td width="8%">联系人电话</td>
+          <td width="30%">{{member.contactPhone}}</td>
         </tr>
         <tr align="center" height="45">
           <td width="8%">办公地址</td>
