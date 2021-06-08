@@ -85,8 +85,8 @@
         <tr v-if="afterRevision.backOfIdCard!=beforeRevision.backOfIdCard || afterRevision.frontOfIdCard !=beforeRevision.frontOfIdCard">
           <td>身份证照片</td>
           <td>
-            <img class="updateImg" :src="afterRevision.backOfIdCard" />
-            <img class="updateImg" :src="afterRevision.frontOfIdCard" />
+            <img class="updateImg" :src="beforeRevision.backOfIdCard" />
+            <img class="updateImg" :src="beforeRevision.frontOfIdCard" />
           </td>
           <td>
             <img class="updateImg" :src="afterRevision.backOfIdCard" />
