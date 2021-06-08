@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## [1.6.0] - 2021-06-08
+
+### Added
+- 企业入会，增加【联系人姓名】、【会内职位】两个必填字段；个人入会，增加【会内职位】一个必填字段；[#98](https://gitlab.kd/yunshanghui/backend/api/-/issues/98)
+- 优化会员修改记录审核：点详情弹窗：只拿已修改的数据，修改前和修改后的，需分别显示[#99](https://gitlab.kd/yunshanghui/backend/api/-/issues/99)
+- 【商/协会成员】列表字段调整：原字段“姓名/企业名称”，改为“会员姓名/联系人姓名”； “会员姓名”为个人入会时填写； “联系人姓名”为企业入会时填写的”；[#100](https://gitlab.kd/yunshanghui/backend/api/-/issues/100)
+- 成员详情 “姓名”： 如果是个人入会，则获取“会员姓名”； 如果是企业入会，则获取“联系人姓名”；[#101](https://gitlab.kd/yunshanghui/backend/api/-/issues/101)
+- 修改成员 [#102](https://gitlab.kd/yunshanghui/backend/api/-/issues/102)
+- 成员管理 【姓名】数据改动，增加【企业名称】、【入会类型】字段；[#104](https://gitlab.kd/yunshanghui/backend/api/-/issues/104)
+
+### Fixed
+* 商会后台，编辑其他资料之后，部门会消失 [#106](https://gitlab.kd/yunshanghui/backend/api/-/issues/106)
+* 商会后台-成员管理，调整部门时，无法选择商会那一层 [#107](https://gitlab.kd/yunshanghui/backend/api/-/issues/107)
+* 入会资料调整-小程序上传的企业logo显示成URL [#110](https://gitlab.kd/yunshanghui/backend/api/-/issues/110)
+* 成员详情页面，企业简介的布局按个人简历一样摆放 [#111](https://gitlab.kd/yunshanghui/backend/api/-/issues/111)
+* 企业入会，联系电话和姓名的位置反了 [#112](https://gitlab.kd/yunshanghui/backend/api/-/issues/112)
+* 会员资料修改审核页面，审核详情弹框没有审核结果等内容 [#115](https://gitlab.kd/yunshanghui/backend/api/-/issues/115)
+* 总后台-商会管理-编辑，联系人手机号，暂时不能让支持修改 [#117](https://gitlab.kd/yunshanghui/backend/api/-/issues/117)
+* 商会后台-成员管理，调整部门时，需支持选择【商会】这一层 [#118](https://gitlab.kd/yunshanghui/backend/api/-/issues/118)
+
 ## [1.5.0] - 2021-05-31
 
 ### Added
