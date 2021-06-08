@@ -36,6 +36,13 @@
                 </el-form-item>
               </el-col>
             </el-row>
+              <el-row>
+              <el-col :span="7">
+                <el-form-item label="联系人姓名：" prop="contactName">
+                  <el-input v-model="formObj.contactName" maxLength="20" placeholder="请填写真实姓名"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-row>
               <el-col :span="7">
                 <el-form-item label="联系人电话：" prop="contactPhone">
@@ -44,13 +51,7 @@
               </el-col>
             </el-row>
 
-            <el-row>
-              <el-col :span="7">
-                <el-form-item label="联系人姓名：" prop="contactName">
-                  <el-input v-model="formObj.contactName" maxLength="20" placeholder="请填写真实姓名"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
+          
           </div>
           <div v-else>
             <el-row>

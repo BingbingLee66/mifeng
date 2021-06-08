@@ -76,29 +76,33 @@
         <tr v-if="afterRevision.license!=beforeRevision.license">
           <td>营业执照</td>
           <td>
-            <img class="updateImg" :src="beforeRevision.license" />
+            <img v-if="beforeRevision.license" class="updateImg" :src="beforeRevision.license" />
           </td>
           <td>
-            <img class="updateImg" :src="afterRevision.license" />
+            <img v-if="afterRevision.license" class="updateImg" :src="afterRevision.license" />
           </td>
         </tr>
         <tr v-if="afterRevision.backOfIdCard!=beforeRevision.backOfIdCard || afterRevision.frontOfIdCard !=beforeRevision.frontOfIdCard">
           <td>身份证照片</td>
           <td>
-            <img class="updateImg" :src="beforeRevision.backOfIdCard" />
-            <img class="updateImg" :src="beforeRevision.frontOfIdCard" />
+            <img v-if="beforeRevision.backOfIdCard" class="updateImg" :src="beforeRevision.backOfIdCard" />
+            <img v-if="beforeRevision.frontOfIdCard" class="updateImg" :src="beforeRevision.frontOfIdCard" />
           </td>
           <td>
-            <img class="updateImg" :src="afterRevision.backOfIdCard" />
-            <img class="updateImg" :src="afterRevision.frontOfIdCard" />
+            <img v-if="afterRevision.backOfIdCard" class="updateImg" :src="afterRevision.backOfIdCard" />
+            <img v-if="afterRevision.frontOfIdCard" class="updateImg" :src="afterRevision.frontOfIdCard" />
           </td>
         </tr>
         <tr v-if="afterRevision.tradeName!=beforeRevision.tradeName">
-          <td>职位</td>
+          <td>行业</td>
           <td>{{beforeRevision.tradeName}}</td>
           <td>{{afterRevision.tradeName}}</td>
         </tr>
-
+        <tr v-if="afterRevision.companyPosition!=beforeRevision.companyPosition">
+          <td>企业职位</td>
+          <td>{{beforeRevision.companyPosition}}</td>
+          <td>{{afterRevision.companyPosition}}</td>
+        </tr>
         <tr v-if="afterRevision.companyIntroduction!=beforeRevision.companyIntroduction">
           <td>企业简介</td>
           <td>{{beforeRevision.companyIntroduction}}</td>
@@ -356,5 +360,6 @@
   .updateImg {
     width: 50px;
     height: 50px;
+    vertical-align: middle;
   }
 </style>

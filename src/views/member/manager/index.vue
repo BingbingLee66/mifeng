@@ -62,7 +62,7 @@
         </el-table-column>
         <el-table-column label="入会类型" width="120px">
           <template slot-scope="scope">
-            {{ scope.row.type == 0 ? '个人' : '企业' }}
+            {{ scope.row.type == 0 ? '个人' : '企业/团体' }}
           </template>
         </el-table-column>
         <el-table-column label="会内职位" width="120px">
