@@ -98,7 +98,7 @@
         <tr align="center" height="45">
           <template v-if="member.type===1">
             <td width="8%">联系人姓名</td>
-            <td width="30%">{{member.concatName}}</td>
+            <td width="30%">{{member.contactName}}</td>
           </template>
           <template v-else>
             <td width="8%">行业</td>
