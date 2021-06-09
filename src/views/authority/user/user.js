@@ -1,8 +1,8 @@
 import { getList, updateStatus, save, delRole } from '@/api/authority/user'
 import { getOptions } from '@/api/authority/manager'
-
+import { mapState } from 'vuex'
 export default {
-  data () {
+  data() {
     var checkUserName = (rule, value, callback) => {
       if (!/(^[a-zA-Z]{1}[a-zA-Z0-9]{5,11}$)|(^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$)/.test(value)) {
         return callback(new Error('账号只能为字母和数字，且以字母开头，长度为6-12个字符！或为11位手机号码'))
@@ -38,7 +38,7 @@ export default {
         password: '',
         remark: '',
         roleId: '',
-        ckey: this.$store.getters.ckey === null ? '' : this.$store.getters.ckey 
+        ckey: this.$store.getters.ckey === null ? '' : this.$store.getters.ckey
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -71,7 +71,8 @@ export default {
     }
   },
   computed: {
-    roleName (row) {
+
+    roleName(row) {
       return function (row) {
         for (let v of this.roleOptions) {
           if (v.value === row.roleId) {
@@ -80,19 +81,24 @@ export default {
         }
         return '未知角色'
       }
-    }
+    },
+    ...mapState({
+      ckey: state => state.user.ckey
+    })
+
+
   },
-  created () {
+  created() {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    hasPermission (tabName, actionName) {
+    hasPermission(tabName, actionName) {
       this.$store.dispatch('permission/hasPermission', { tabName, actionName })
     },
     handleSizeChange(val) {
@@ -106,11 +112,11 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    init () {
+    init() {
       this.fetchData()
       this.getRoleOptions()
     },
-    getRoleOptions () {
+    getRoleOptions() {
       let params = {
         'ckey': this.$store.getters.ckey === null ? '' : this.$store.getters.ckey
       }
@@ -118,7 +124,7 @@ export default {
         this.roleOptions = response.data.data
       })
     },
-    fetchData () {
+    fetchData() {
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
@@ -134,7 +140,7 @@ export default {
         this.listLoading = false
       })
     },
-    add (e) {
+    add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.type = 'add'
       this.formObj = {
@@ -148,7 +154,7 @@ export default {
       }
       this.visible = true
     },
-    edit (e, row) {
+    edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.type = 'edit'
       this.formObj = {
@@ -157,14 +163,14 @@ export default {
         'password': row.password,
         'remark': row.remark,
         'roleId': row.roleId,
-        'ckey': row.ckey 
+        'ckey': row.ckey
       }
       if (!this.formObj.ckey) {
         this.formObj.ckey = ''
       }
       this.visible = true
     },
-    save (row) {
+    save(row) {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           save(this.formObj).then(response => {
@@ -180,7 +186,7 @@ export default {
         }
       })
     },
-    updateStatus (e, row) {
+    updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'id': row.id,
@@ -201,7 +207,7 @@ export default {
         this.fetchData()
       })
     },
-    delRole (e, row) {
+    delRole(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$confirm('', '确定删除？', {
         confirmButtonText: '确定',
@@ -224,7 +230,7 @@ export default {
         })
       })
     },
-    setup (row) {
+    setup(row) {
       this.$router.push({ name: '权限设置', params: { 'roleId': row.id } })
     }
   }

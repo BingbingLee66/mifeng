@@ -55,21 +55,10 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-      :page-sizes="pageSizes"
-      :page-size="limit"
-      :total="total"
-      :current-page.sync="currentpage"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+    <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange">
     </el-pagination>
 
-    <el-dialog
-      title="新增/编辑成员"
-      :visible.sync="visible"
-      width="50%">
+    <el-dialog title="新增/编辑成员" :visible.sync="visible" width="50%">
       <el-form v-if="visible" ref="form" :model="formObj" :rules="users" label-position="left" label-width="150px">
         <el-row>
           <el-col :offset="2" :span="20">
@@ -108,14 +97,16 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <!-- 
         <el-row>
-          <el-col :offset="2" :span="20">
+          <el-col :offset="2" :span="20" v-if="ckey">
             <el-form-item label="商会标识：" prop="ckey">
-              <!-- <el-input v-if="formObj.ckey" v-model="formObj.ckey" disabled></el-input> -->
+            <el-input v-if="formObj.ckey" v-model="formObj.ckey" disabled></el-input> 
               <el-input v-model="formObj.ckey" placeholder="若角色为商会管理人员，需添加商会标识"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+        -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" v-dbClick @click="save">确定</el-button>

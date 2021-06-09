@@ -21,7 +21,7 @@ export default {
       }
     }
     var checkTel = (rule, value, callback) => {
-      if (!/^$|^((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)/.test(value)) {
+      if (!(/^1[3456789]\d{9}$/.test(value))) {
         return callback(new Error('电话号码格式不正确'))
       } else {
         return callback()
