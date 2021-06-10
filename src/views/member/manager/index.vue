@@ -98,6 +98,9 @@
             <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">
               详情
             </el-button>
+            <el-button type="text" @click="goEdit($event, scope.row)">
+              修改
+            </el-button>
             <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '冻结')" v-if="has('', '冻结') && scope.row.status == 1">冻结
             </el-button>
             <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '解冻')" v-if="has('', '解冻') && scope.row.status == 0">解冻

@@ -28,10 +28,15 @@
         </tr>
         <tr v-if="afterRevision.companyLogo!=beforeRevision.companyLogo">
           <td>企业logo</td>
-          <!-- <img class="updateImg" :src="afterRevision.backOfIdCard" />
-          <img class="updateImg" :src="afterRevision.frontOfIdCard" /> -->
-          <td><img class="updateImg" :src="beforeRevision.companyLogo" /></td>
-          <td><img class="updateImg" :src="afterRevision.companyLogo" /></td>
+
+          <td>
+            <el-image v-if="beforeRevision.companyLogo" class="updateImg" :src="beforeRevision.companyLogo" :preview-src-list="[beforeRevision.companyLogo]">
+            </el-image>
+          </td>
+          <td>
+            <el-image v-if="afterRevision.companyLogo" class="updateImg" :src="afterRevision.companyLogo" :preview-src-list="[afterRevision.companyLogo]">
+            </el-image>
+          </td>
         </tr>
         <tr v-if="afterRevision.postName!=beforeRevision.postName">
           <td>会内职位</td>
@@ -76,21 +81,29 @@
         <tr v-if="afterRevision.license!=beforeRevision.license">
           <td>营业执照</td>
           <td>
-            <img v-if="beforeRevision.license" class="updateImg" :src="beforeRevision.license" />
+            <el-image v-if="beforeRevision.license" class="updateImg" :src="beforeRevision.license" :preview-src-list="[beforeRevision.license]">
+            </el-image>
           </td>
           <td>
-            <img v-if="afterRevision.license" class="updateImg" :src="afterRevision.license" />
+            <el-image v-if="afterRevision.license" class="updateImg" :src="afterRevision.license" :preview-src-list="[afterRevision.license]">
+            </el-image>
+
           </td>
         </tr>
         <tr v-if="afterRevision.backOfIdCard!=beforeRevision.backOfIdCard || afterRevision.frontOfIdCard !=beforeRevision.frontOfIdCard">
           <td>身份证照片</td>
           <td>
-            <img v-if="beforeRevision.backOfIdCard" class="updateImg" :src="beforeRevision.backOfIdCard" />
-            <img v-if="beforeRevision.frontOfIdCard" class="updateImg" :src="beforeRevision.frontOfIdCard" />
+            <el-image v-if="beforeRevision.backOfIdCard" class="updateImg" :src="beforeRevision.backOfIdCard" :preview-src-list="[beforeRevision.backOfIdCard]">
+            </el-image>
+            <el-image v-if="beforeRevision.frontOfIdCard" class="updateImg" :src="beforeRevision.frontOfIdCard" :preview-src-list="[beforeRevision.frontOfIdCard]">
+            </el-image>
           </td>
           <td>
-            <img v-if="afterRevision.backOfIdCard" class="updateImg" :src="afterRevision.backOfIdCard" />
-            <img v-if="afterRevision.frontOfIdCard" class="updateImg" :src="afterRevision.frontOfIdCard" />
+            <el-image class="updateImg" :src="afterRevision.backOfIdCard" :preview-src-list="[afterRevision.backOfIdCard]">
+            </el-image>
+            <el-image class="updateImg" :src="afterRevision.frontOfIdCard" :preview-src-list="[afterRevision.frontOfIdCard]">
+            </el-image>
+
           </td>
         </tr>
         <tr v-if="afterRevision.tradeName!=beforeRevision.tradeName">
@@ -317,6 +330,7 @@
       //通过
       approved() {
         this.$emit("monitorPassFunc");
+        //异步请求添加
       },
       //驳回
       rejectRemark() {

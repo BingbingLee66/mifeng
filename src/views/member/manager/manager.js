@@ -1,8 +1,8 @@
-import {list, updateStatus, transferPresident} from '@/api/member/manager'
-import {getMemberOptions} from '@/api/member/post'
-import {getTradeOptions} from '@/api/system/trade'
-import {exportJson2Excel} from '@/utils/exportExcel'
-import {getDepartmentList} from '@/api/org-structure/org'
+import { list, updateStatus, transferPresident } from '@/api/member/manager'
+import { getMemberOptions } from '@/api/member/post'
+import { getTradeOptions } from '@/api/system/trade'
+import { exportJson2Excel } from '@/utils/exportExcel'
+import { getDepartmentList } from '@/api/org-structure/org'
 
 export default {
   data() {
@@ -39,8 +39,8 @@ export default {
       formObj: {},
       rules: {
         password: [
-          {required: true, message: '账号密码不能为空', trigger: 'blur'},
-          {validator: checkPass, trigger: 'change'}
+          { required: true, message: '账号密码不能为空', trigger: 'blur' },
+          { validator: checkPass, trigger: 'change' }
         ]
       }
     }
@@ -63,10 +63,14 @@ export default {
   },
   methods: {
     has(tabName, actionName) {
-      return this.$store.getters.has({tabName, actionName})
+      return this.$store.getters.has({ tabName, actionName })
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({tabName, actionName})
+      return this.$store.getters.getId({ tabName, actionName })
+    },
+    goEdit(e, row) {
+      console.log('event', row)
+      this.$router.push({ name: '编辑会员', params: { 'memberId': row.id, 'querytype': 2 } })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -87,7 +91,7 @@ export default {
       getMemberOptions(params).then(response => {
         console.log('会内职位数据', response.data.data)
         this.memberPostOptions = response.data.data
-        this.memberPostOptions.unshift({'label': '全部', 'value': -1})
+        this.memberPostOptions.unshift({ 'label': '全部', 'value': -1 })
       })
     },
 
@@ -98,7 +102,7 @@ export default {
       getTradeOptions(params).then(response => {
         console.log('行业数据：', response.data.data)
         this.tradeOptions = response.data.data
-        this.tradeOptions.unshift({'label': '全部', 'value': -1})
+        this.tradeOptions.unshift({ 'label': '全部', 'value': -1 })
       })
     },
 
@@ -111,7 +115,7 @@ export default {
         console.log('部门列表：', res.data.data[0].departmentRespList)
         if (res.state === 1) {
           this.departmentOptions = res.data.data[0].departmentRespList
-          this.departmentOptions.unshift({'departmentName': '全部', 'id': -1})
+          this.departmentOptions.unshift({ 'departmentName': '全部', 'id': -1 })
         }
       })
     },
@@ -152,12 +156,12 @@ export default {
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('membereditor', this.$route.path)
-      this.$router.push({name: '添加会员'})
+      this.$router.push({ name: '添加会员' })
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('membereditor', this.$route.path)
-      this.$router.push({name: '会员详情', params: {'memberDetail': row, 'querytype': '0'}})
+      this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '0' } })
     },
     updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))

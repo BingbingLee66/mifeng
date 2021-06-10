@@ -1,7 +1,9 @@
 <template>
-  <div class="dashboard-container" id="dashboard">
-    <div class="dashboard-text">欢迎光临:{{name}} </div>
-
+  <div class="dashboard-container" style="background-color: #ffffff;" id="dashboard">
+    <div class="dashboard-container-view">
+      <div class="dashboard-text">欢迎光临:{{name}} </div>
+      <img class="dashboard-img" src="@/assets/img/home.png">
+    </div>
     <!-- <el-row :gutter="20">
       <el-col :span="6">
         <el-card class="box-card">
@@ -122,55 +124,69 @@
 
 <script src="./dashboard.js"></script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .el-row{
+  .dashboard-container-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 49px;
+    .dashboard-text {
+      font-size: 24px;
+      color: #222222;
+      margin-bottom: 39px;
+    }
+    .dashboard-img {
+      width: 205px;
+      height: 113px;
+    }
+  }
+  .el-row {
     margin-bottom: 20px;
     &:last-child {
       margin-bottom: 0;
     }
   }
 
-.dashboard {
-
-  &-container {
-    padding: 15px;
-    background-color: #f0f2f5;
+  .dashboard {
+    &-container {
+      padding: 15px;
+      background-color: #f0f2f5;
+    }
+    &-text {
+      font-size: 14px;
+      line-height: 22px;
+      padding-bottom: 15px;
+    }
   }
-  &-text {
-    font-size: 14px;
-    line-height: 22px;
-    padding-bottom:15px;
+  .echarts {
+    width: 100%;
+    height: 100%;
   }
-}
-.echarts{
-  width: 100%;
-  height: 100%;
-}
-.box-card{
-  height:108px;
-}
-  .chart{
+  .box-card {
+    height: 108px;
+  }
+  .chart {
     height: 350px;
   }
-  .section{
-    padding:20px;
+  .section {
+    padding: 20px;
     background-color: white;
     border: 1px solid #ebeef5;
-    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
   }
 
-  .box-card > div >div > .svg-icon {
+  .box-card > div > div > .svg-icon {
     width: 4em;
     height: 4em;
-    color:#34bfa3;
+    color: #34bfa3;
   }
-  .card-panel-text{
-    padding-top:10px;
-    font-size:16px;
-    color:gray;
+  .card-panel-text {
+    padding-top: 10px;
+    font-size: 16px;
+    color: gray;
   }
-  .card-panel-num{
-    padding-top:10px;
-    font-size:20px;
+  .card-panel-num {
+    padding-top: 10px;
+    font-size: 20px;
     font-weight: bold;
   }
 </style>

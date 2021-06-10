@@ -71,7 +71,6 @@ export default {
     }
   },
   computed: {
-
     roleName(row) {
       return function (row) {
         for (let v of this.roleOptions) {
