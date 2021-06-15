@@ -47,8 +47,10 @@
         </el-table-column>
         <el-table-column label="头像/企业logo" width="180px">
           <template slot-scope="scope">
-            <img style="width: 88px;height: 88px;border-radius: 50%;" src="@/assets/img/nologo.png" v-if="scope.row.type == 0" />
-            <img v-else style="width: 88px;height: 88px;border-radius: 50%;" :src="scope.row.companyLogo">
+            <div v-if="scope.row.companyLogo ||  scope.row.portrait">
+              <img style="width: 88px;height: 88px;border-radius: 50%;" :src="scope.row.type == 0 ? scope.row.portrait :  scope.row.companyLogo" />
+            </div>
+            <img v-else style="width: 88px;height: 88px;border-radius: 50%;" src="@/assets/img/nologo.png" />
           </template>
         </el-table-column>
         <el-table-column label="会员姓名/联系人姓名" width="180px">
