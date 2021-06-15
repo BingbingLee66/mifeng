@@ -67,7 +67,10 @@
           color: #ffffff;
           font-weight: bold;
           font-size: 35px;
-          margin-top: 12px
+          margin-top: 12px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
 
         .erweima {
