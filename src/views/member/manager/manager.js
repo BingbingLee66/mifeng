@@ -200,8 +200,8 @@ export default {
       this.selectionDatas = []
       for (let data of datas) {
         let new_data = {
-          '姓名/企业名称': data.name ? data.name : data.companyName,
-          '手机号/联系方式': data.phone ? data.phone : data.companyPhone,
+          '会员姓名/联系人姓名': data.type === 0 ? data.name : data.companyName,
+          '手机号/联系人电话': data.type === 0 ? data.phone : data.contactPhone,
           '会内职位': data.postName,
           '行业': data.tradeName,
           '部门': data.departmentName,
@@ -209,6 +209,7 @@ export default {
           '入会时间': data.joinedTs,
           '状态': data.status == 1 ? '正常' : '已冻结'
         }
+        console.log("ew_data", new_data)
         this.selectionDatas.push(new_data)
       }
     },
