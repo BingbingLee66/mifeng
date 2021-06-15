@@ -1,4 +1,4 @@
-import { refreshGetInfo, getInfo, getPostUrl } from '@/api/system/property'
+import {refreshGetInfo, getInfo, getPostUrl} from '@/api/system/property'
 import html2canvas from 'html2canvas'
 import domtoimage from 'dom-to-image'
 
@@ -11,22 +11,25 @@ export default {
       isLoading: false
     }
   },
-
   created() {
     this.init()
   },
   methods: {
     has(tabName, actionName) {
-      return this.$store.getters.has({tabName, actionName})
+      return this.$store.getters.has({
+        tabName, actionName
+      })
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({tabName, actionName})
+      return this.$store.getters.getId({
+        tabName, actionName
+      })
     },
     init() {
       this.fetchData()
     },
     fetchData() {
-      let params = {
+      const params = {
         ckey: this.$store.getters.ckey
       }
       getInfo(params).then(response => {
@@ -34,21 +37,22 @@ export default {
       })
     },
     refresh() {
-      let params = {
+      const params = {
         ckey: this.$store.getters.ckey
       }
       refreshGetInfo(params).then(response => {
         this.property = response.data.data
+        this.$router.go(0)
       })
     },
     getPost(file) {
-      let posterDTO = {
+      const posterDTO = {
         ckey: this.$store.getters.ckey,
         file
       }
       getPostUrl(posterDTO).then(res => {
         if (res.state === 1) {
-          let ImgUrl = res.data.filePath.systemPosterUrl
+          const ImgUrl = res.data.filePath.systemPosterUrl
           var a = document.createElement('a')
           a.download = '商会二维码'
           a.href = ImgUrl
@@ -80,12 +84,9 @@ export default {
         }).then(canvas => {
           const imgUrl = canvas.toDataURL('image/png')
           this.dataURL = imgUrl
-          console.log('000000:', this.dataURL)
           setTimeout(() => {
             var a = document.createElement('a')
             a.download = '商会二维码'
-            console.log('1111111:', this.dataURL)
-            console.log('imgUrl:', imgUrl === this.dataURL)
             a.href = this.dataURL
             a.click()
             this.isLoading = false
@@ -95,7 +96,7 @@ export default {
       })
     },
     domtoimage() {
-      let _this = this
+      const _this = this
       this.isLoading = true
       const node = document.getElementById('postdiv')
       domtoimage.toPng(node)
@@ -106,7 +107,7 @@ export default {
           a.click()
           _this.isLoading = false
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error('oops, something went wrong!', error)
           _this.isLoading = false
         })

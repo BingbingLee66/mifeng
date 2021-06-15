@@ -51,6 +51,7 @@ export default {
           this.chamberName = res.data.data.chamberName
           this.departmentName = res.data.data.departmentName
           this.qrcode = res.data.data.systemJoinQrcode
+          this.$router.go(0)
         }
       })
     },

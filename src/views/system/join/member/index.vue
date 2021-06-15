@@ -4,7 +4,7 @@
       <div class="title">邀请入会专属二维码:</div>
       <div class="post">
         <div id="postdiv" ref="postRefs" class="post-wrap">
-          <p class="tit-1">{{property.name}}</p>
+          <p class="tit-1">{{property.name}}是的发送的富士达胜多负少的胜多负少的</p>
           <p class="tit-2">邀请您加入</p>
           <div class="erweima">
             <img :src="property.systemJoinQrcode"/>
@@ -55,6 +55,9 @@
           font-weight: bold;
           font-size: 42px;
           font-style: italic;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
           overflow: hidden;
         }
 

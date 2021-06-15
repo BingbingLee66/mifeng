@@ -42,7 +42,7 @@
     .post {
       .post-wrap {
         width: 375px;
-        height: 667px;
+        min-height: 667px;
         background-image: url("../../../../public/img/admin-entyr-poster-bg-1.png");
         background-size: 100% 100%;
         padding: 40px 16px 16px 16px;
@@ -55,6 +55,9 @@
           font-weight: bold;
           font-size: 42px;
           font-style: italic;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
           overflow: hidden;
         }
 
