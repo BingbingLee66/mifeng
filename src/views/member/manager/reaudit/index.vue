@@ -37,9 +37,9 @@
           {{ scope.row.type===0 ? scope.row.name :  scope.row.contactName}}
         </template>
       </el-table-column>
-      <el-table-column label="手机号/联系方式" width="120px">
+      <el-table-column label="手机号/联系方式" width="150px">
         <template slot-scope="scope">
-             {{ scope.row.type===0 ? scope.row.phone :  scope.row.contactPhone}}
+          {{ scope.row.type===0 ? scope.row.phone :  scope.row.contactPhone}}
         </template>
       </el-table-column>
       <el-table-column label="会内职位">

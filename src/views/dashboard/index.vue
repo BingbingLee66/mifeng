@@ -124,19 +124,24 @@
 
 <script src="./dashboard.js"></script>
 <style rel="stylesheet/scss" lang="scss" scoped>
+  .dashboard-container {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .dashboard-container-view {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 49px;
     .dashboard-text {
       font-size: 24px;
       color: #222222;
       margin-bottom: 39px;
     }
     .dashboard-img {
-      width: 205px;
-      height: 113px;
+      width: 524px;
+      height: 288px;
     }
   }
   .el-row {
