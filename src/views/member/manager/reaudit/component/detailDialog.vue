@@ -106,7 +106,7 @@
 
           </td>
         </tr>
-        <tr v-if="afterRevision.tradeName!=beforeRevision.tradeName">
+        <tr v-if="afterRevision.tradeId!=beforeRevision.tradeId">
           <td>行业</td>
           <td>{{beforeRevision.tradeName}}</td>
           <td>{{afterRevision.tradeName}}</td>
@@ -131,6 +131,11 @@
           <td>办公地址</td>
           <td>{{beforeRevision.companyAddress}}</td>
           <td>{{afterRevision.companyAddress}}</td>
+        </tr>
+        <tr v-if="afterRevision.joinedTs!=beforeRevision.joinedTs">
+          <td>入会时间</td>
+          <td>{{beforeRevision.joinedTs}}</td>
+          <td>{{afterRevision.joinedTs}}</td>
         </tr>
 
       </table>
