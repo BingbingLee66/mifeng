@@ -88,6 +88,9 @@ export default {
           required: true,
           message: '联系方式不能为空',
           trigger: 'blur'
+        }, {
+          validator: checkPhone,
+          trigger: 'blur'
         }],
         memberPostId: [
           {
