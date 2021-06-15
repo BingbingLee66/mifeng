@@ -60,11 +60,11 @@
           <td>性别</td>
           <td>
             <span v-if="beforeRevision.gender==1">男</span>
-            <span v-else>女</span>
+            <span v-else-if="beforeRevision.gender==2">女</span>
           </td>
           <td>
             <span v-if="afterRevision.gender==1">男</span>
-            <span v-else>女</span>
+            <span v-else-if="afterRevision.gender==2">女</span>
           </td>
         </tr>
 
