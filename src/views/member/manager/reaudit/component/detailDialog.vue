@@ -137,6 +137,11 @@
           <td>{{beforeRevision.joinedTs}}</td>
           <td>{{afterRevision.joinedTs}}</td>
         </tr>
+        <tr v-if="afterRevision.companyPhone!=beforeRevision.companyPhone">
+          <td>联系方式</td>
+          <td>{{beforeRevision.companyPhone}}</td>
+          <td>{{afterRevision.companyPhone}}</td>
+        </tr>
 
       </table>
       <span slot="footer" class="dialog-footer">
