@@ -3,7 +3,7 @@
     <div class="block">
       <el-form ref="query" label-width="auto" label-position="right" :model="query">
         <el-row>
-          <el-col :span="7">
+          <el-col :span="5">
             <el-form-item label="文章来源：">
               <el-select v-model="query.publishType">
                 <el-option label="所有" :value="-1"></el-option>
@@ -12,7 +12,16 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :offset="1" :span="7">
+          <el-col :offset="1" :span="5">
+            <el-form-item label="状态：">
+              <el-select v-model="query.auditType">
+                <el-option label="待审核" :value="1"></el-option>
+                <el-option label="审核通过" :value="2"></el-option>
+                <el-option label="审核不通过" :value="3"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :offset="1" :span="5">
             <el-form-item label="发布时间：">
               <el-select v-model="query.publishTimeType">
                 <el-option label="24h内" :value="1"></el-option>
@@ -24,7 +33,8 @@
           </el-col>
           <el-col :span="2">
             <el-form-item label=" ">
-              <el-button type="primary" @click="fetchData($event)" :actionid="getId('', '查询')" v-if="has('', '查询')">查询</el-button>
+              <el-button type="primary" @click="fetchData($event)" :actionid="getId('', '查询')" v-if="has('', '查询')">查询
+              </el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -32,33 +42,36 @@
     </div>
     <br/>
     <el-row>
-      <el-button type="primary" @click="batchPassThrough($event)" :actionid="getId('', '通过')" v-if="has('', '通过')">通过</el-button>
-      <el-button type="danger" @click="openBatchReject($event)" :actionid="getId('', '不通过')" v-if="has('', '不通过')">不通过</el-button>
+      <el-button type="primary" @click="batchPassThrough($event)" :actionid="getId('', '通过')" v-if="has('', '通过')">通过
+      </el-button>
+      <el-button type="danger" @click="openBatchReject($event)" :actionid="getId('', '不通过')" v-if="has('', '不通过')">不通过
+      </el-button>
     </el-row>
-    <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55px">
-      </el-table-column>
-      <!-- <el-table-column type="index" label="序号" width="60px">
-      </el-table-column> -->
-      <!-- <el-table-column label="ID">
-        <template slot-scope="scope">
-          {{scope.row.id}}
-        </template>
-      </el-table-column> -->
+    <el-table
+      id="out-table"
+      :data="list"
+      v-loading="listLoading"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="55px"></el-table-column>
       <el-table-column label="标题">
         <template slot-scope="scope">
-          {{!scope.row.title ? scope.row.contentColumn : scope.row.title}}
+          {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
         </template>
       </el-table-column>
       <el-table-column label="文章来源">
         <template slot-scope="scope">
-          <div v-if="scope.row.publishType == 1">{{scope.row.chamberName}}</div>
-          <div v-if="scope.row.publishType == 2">{{scope.row.companyName}}</div>
+          <div v-if="scope.row.publishType == 1">{{ scope.row.chamberName }}</div>
+          <div v-if="scope.row.publishType == 2">{{ scope.row.companyName }}</div>
         </template>
       </el-table-column>
       <el-table-column label="发布时间" width="200px">
         <template slot-scope="scope">
-          {{scope.row.publishTs}}
+          {{ scope.row.publishTs }}
         </template>
       </el-table-column>
       <el-table-column label="状态" width="100px">
@@ -90,13 +103,17 @@
       width="80%">
       <div class="d-preview-wrap">
         <div class="d-preview-area">
-          <div class="d-article-title">{{detailObj.title}}</div>
+          <div class="d-article-title">{{ detailObj.title }}</div>
           <div class="d-article-content" v-html="detailObj.contentHtml"></div>
         </div>
       </div>
       <el-col :offset="10" :span="8">
-        <el-button type="primary" @click.native="passThrough($event)" :actionid="getId('', '通过')" v-if="has('', '通过')">通过</el-button>
-        <el-button type="danger" @click.native="openReject($event)" :actionid="getId('', '不通过')" v-if="has('', '不通过')">不通过</el-button>
+        <el-button type="primary" @click.native="passThrough($event)" :actionid="getId('', '通过')" v-if="has('', '通过')">
+          通过
+        </el-button>
+        <el-button type="danger" @click.native="openReject($event)" :actionid="getId('', '不通过')" v-if="has('', '不通过')">
+          不通过
+        </el-button>
       </el-col>
       <span slot="footer" class="dialog-footer">
       </span>
@@ -161,7 +178,7 @@
 <script src="./audit.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import "src/styles/common.scss";
 </style>
 <style>
 .d-preview-wrap {
@@ -169,6 +186,7 @@
   height: auto;
   min-height: 500px;
 }
+
 .d-preview-area {
   width: 100%;
   min-height: 500px;
@@ -176,19 +194,22 @@
   border: 1px solid #d9dde2;
   overflow-y: auto;
 }
+
 .d-article-title {
   text-align: center;
   font-size: 24px;
   font-weight: 700;
   margin: 40px 40px 20px 40px;
 }
+
 .d-article-content {
   font-size: 16px;
   font-weight: 500;
   line-height: 1.8;
   margin: 0 40px 20px 40px;
 }
-.d-article-content>p>img {
+
+.d-article-content > p > img {
   margin: 20px 10%;
   width: 80% !important;
   height: auto !important;
