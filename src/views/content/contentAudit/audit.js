@@ -1,4 +1,6 @@
-import { getAuditList, getDetail, updateAudit } from '@/api/content/article'
+import {
+  getAuditList, getDetail, updateAudit
+} from '@/api/content/article'
 
 export default {
   data() {
@@ -9,6 +11,7 @@ export default {
       query: {
         publishType: -1,
         publishTimeType: 2
+        // auditType: -1
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -25,17 +28,16 @@ export default {
       remark: '内容违规'
     }
   },
-  computed: {
-  },
+  computed: {},
   created() {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
-      return this.$store.getters.has({ tabName, actionName })
+    has(tabName, actionName) {
+      return this.$store.getters.has({tabName, actionName})
     },
-    getId (tabName, actionName) {
-      return this.$store.getters.getId({ tabName, actionName })
+    getId(tabName, actionName) {
+      return this.$store.getters.getId({tabName, actionName})
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -70,7 +72,7 @@ export default {
         this.listLoading = false
       })
     },
-    detail (row) {
+    detail(row) {
       this.selectId = row.id
       let params = {
         id: this.selectId
@@ -82,7 +84,7 @@ export default {
       })
       this.visible = true
     },
-    passThrough (e) {
+    passThrough(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let ids = []
       ids.push(this.selectId)
@@ -99,12 +101,12 @@ export default {
         this.fetchData()
       })
     },
-    openReject (e) {
+    openReject(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.rejectVisible = true
       this.remark = '内容违规'
     },
-    reject () {
+    reject() {
       let ids = []
       ids.push(this.selectId)
       let params = {
@@ -122,7 +124,7 @@ export default {
         this.fetchData()
       })
     },
-    batchPassThrough (e) {
+    batchPassThrough(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -143,7 +145,7 @@ export default {
         this.fetchData()
       })
     },
-    openBatchReject (e) {
+    openBatchReject(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -154,7 +156,7 @@ export default {
       this.batchRejectVisible = true
       this.remark = '内容违规'
     },
-    batchReject () {
+    batchReject() {
       let params = {
         'articleIds': this.selectionDatas,
         'auditStatus': 2,
@@ -170,10 +172,10 @@ export default {
         this.fetchData()
       })
     },
-    handlerChange (value) {
+    handlerChange(value) {
       this.query.tradeType = value[value.length - 1]
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
