@@ -11,7 +11,7 @@
           </el-col>
           <el-col :offset="7" :span="5">
             <el-form-item :span="12" label="状态：">
-              <el-select v-model="query.auditStatus" placeholder="请选择状态" @change="fetchData">
+              <el-select v-model="query.auditStatus" placeholder="请选择状态" @change="changeFetchData">
                 <el-option label="所有" :value="-1"></el-option>
                 <el-option label="待审核" :value="0"></el-option>
                 <el-option label="已通过" :value="1"></el-option>

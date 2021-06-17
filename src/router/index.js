@@ -156,7 +156,7 @@ export const constantRoutes = [
         name: '添加会员',
         component: () => import('@/views/member/manager/add/index'),
         hidden: true,
-        meta: { title: '添加会员' }
+        meta: { title: '添加会员', keepAlive: true }
       },
       {
         path: '/member/detail',

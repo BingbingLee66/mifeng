@@ -12,6 +12,7 @@ import {
 } from '@/api/org-structure/org'
 
 export default {
+
   data() {
     var checkPhone = (rule, value, callback) => {
       if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(value)) {
@@ -94,7 +95,12 @@ export default {
       departmentCas: []
     }
   },
-
+  activated() {
+    console.log("-----activated------");
+  },
+  deactivated() {
+    console.log("-----deactivated------");
+  },
   created() {
     if (this.$route.query.sign) {
       if (typeof this.$route.query.allParentId === 'number') {
@@ -281,8 +287,11 @@ export default {
           this.formObj.phone = this.formObj.contactPhone
         }
         if (valid) {
+          this.formObj['memberPostId'] = this.formObj['memberPostId'].join(',');
           if (this.type === 'add') {
-            this.formObj['ckey'] = this.$store.getters.ckey
+            //将会内职位数组变为字符串
+            console.log("this.formObj['memberPostId']", this.formObj['memberPostId'])
+            this.formObj['ckey'] = this.$store.getters.ckey;
             add(this.formObj).then(response => {
               this.$message({
                 message: '操作成功',

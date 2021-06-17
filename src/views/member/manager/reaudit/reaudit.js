@@ -58,6 +58,10 @@ export default {
     init() {
       this.fetchData()
     },
+    changeFetchData() {
+      this.currentpage = 1;
+      this.fetchData()
+    },
     fetchData() {
       this.listLoading = true
       let params = {

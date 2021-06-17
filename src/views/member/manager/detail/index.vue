@@ -40,7 +40,10 @@
         </tr>
         <tr align="center" height="45">
           <td width="24%" rowspan="6">
-            <div class="head-portrait"><img :src="member.portrait" /></div>
+            <div>
+              <img v-if="member.portrait" :src="member.portrait" />
+              <img v-else src="@/assets/img/nologo.png" />
+            </div>
           </td>
           <td width="8%">姓名</td>
           <td width="30%">{{member.name}}</td>
@@ -88,7 +91,9 @@
         </tr>
         <tr align="center" height="45">
           <td width="24%" rowspan="5">
-            <div class="head-portrait"><img :src="member.companyLogo" v-if="member.companyLogo != ''" /></div>
+            <!-- <div class="head-portrait"> -->
+            <img :src="member.companyLogo" v-if="member.companyLogo != ''" />
+            <!-- </div> -->
           </td>
           <td width="8%">企业名称</td>
           <td width="30%">{{member.companyName}}</td>

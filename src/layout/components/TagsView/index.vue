@@ -114,12 +114,14 @@
         });
       },
       refreshSelectedTag(view) {
+        console.log("refreshSelectedTag");
         this.$store.dispatch("tagsView/delCachedView", view).then(() => {
           const { fullPath } = view;
           this.$nextTick(() => {
             this.$router.replace({
               path: "/redirect" + fullPath,
             });
+            console.log("地址啦", "/redirect" + fullPath);
           });
         });
       },
@@ -164,6 +166,7 @@
         }
       },
       openMenu(tag, e) {
+        console.log("点击啦");
         const menuMinWidth = 105;
         const offsetLeft = this.$el.getBoundingClientRect().left; // container margin left
         const offsetWidth = this.$el.offsetWidth; // container width

@@ -38,18 +38,12 @@
             </el-form-item>
           </div>
           <el-form-item label="会内职位：" prop="memberPostId">
-            <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
+            <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位" multiple>
               <el-option v-for="post in memberPostOptions" :label="post.label" :value="post.value" :key="post.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="所在部门：">
-            <el-cascader
-              v-model="departmentCas"
-              placeholder="请选择部门"
-              clearable
-              :show-all-levels="false"
-              :options="departmentOptions"
-              :props="{
+            <el-cascader v-model="departmentCas" placeholder="请选择部门" clearable :show-all-levels="false" :options="departmentOptions" :props="{
                 expandTrigger:'click',
                 emitPath:false,
                 multiple: false,
@@ -58,8 +52,7 @@
                 label:'departmentName',
                 children:'departmentRespList',
                 disable:'disabled'
-              }"
-              @change="handlerDepartmentChange">
+              }" @change="handlerDepartmentChange">
             </el-cascader>
           </el-form-item>
           <el-form-item>
