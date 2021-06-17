@@ -167,7 +167,7 @@
         </el-row>
         <el-row>
           <el-col :offset="2" :span="8">审核时间：{{afterRevision.auditedTs}}</el-col>
-          <el-col :span="8">提交时间：{{afterRevision.updatedTs}}</el-col>
+          <el-col :span="8">提交时间：{{afterRevision.createdTs}}</el-col>
         </el-row>
       </div>
       <!-- <el-form ref="form" label-position="right" label-width="150px">

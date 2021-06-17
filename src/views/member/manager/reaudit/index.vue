@@ -49,7 +49,7 @@
       </el-table-column>
       <el-table-column label="提交时间">
         <template slot-scope="scope">
-          {{scope.row.updatedTs}}
+          {{scope.row.createdTs}}
         </template>
       </el-table-column>
       <el-table-column label="状态" width="100px">
