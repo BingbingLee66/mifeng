@@ -51,7 +51,7 @@
               </el-col>
             </el-row>
 
-          
+
           </div>
           <div v-else>
             <el-row>
@@ -251,13 +251,13 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <!-- <el-row>
             <el-col :span="15">
               <el-form-item label="企业简介：" prop="companyIntroduction">
                 <el-input type="textarea" :rows="8" v-model="formObj.companyIntroduction" maxLength="1000"></el-input>
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row> -->
           <el-form-item>
             <el-button type="primary" v-dbClick @click="save">保存</el-button>
             <el-button @click="closeTab">取消</el-button>
