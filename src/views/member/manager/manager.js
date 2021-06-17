@@ -5,7 +5,7 @@ import { exportJson2Excel } from '@/utils/exportExcel'
 import { getDepartmentList } from '@/api/org-structure/org'
 
 export default {
-  name: 'member',
+  name: '商/协会成员',
   data() {
     var checkPass = (rule, value, callback) => {
       if (!/^\w*$/.test(value)) {
