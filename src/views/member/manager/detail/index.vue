@@ -252,10 +252,9 @@
 
 .head-portrait {
   position: relative;
-  width: 200px;
-  height: 200px;
-  margin: 0 auto;
-  border: 1px solid black;
+  width: 150px;
+  height: 150px;
+  margin: 20px auto;
   border-radius: 50%;
 }
 
