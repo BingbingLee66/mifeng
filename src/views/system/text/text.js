@@ -1,11 +1,11 @@
-import { getList, getDetail, updateStatus, save } from '@/api/system/text'
+import {getList, getDetail, updateStatus, save} from '@/api/system/text'
 import Ckeditor from '@/components/CKEditor'
 
 export default {
   components: {
     Ckeditor
   },
-  data () {
+  data() {
     var checkTitle = (rule, value, callback) => {
       if (!/^\S{1,50}$/.test(value)) {
         return callback(new Error('标题长度为1-50个字！'))
@@ -29,40 +29,40 @@ export default {
       listLoading: false,
       rules: {
         title: [
-          { required: true, message: '标题不能为空', trigger: 'blur' },
-          { validator: checkTitle, trigger: 'change' }
+          {required: true, message: '标题不能为空', trigger: 'blur'},
+          {validator: checkTitle, trigger: 'change'}
         ],
         content: [
-          { required: true, message: '内容详情不能为空', trigger: 'blur' },
-          { validator: checkContent, trigger: 'change' }
+          {required: true, message: '内容详情不能为空', trigger: 'blur'},
+          {validator: checkContent, trigger: 'change'}
         ]
       }
     }
   },
   computed: {},
-  mounted () {
+  mounted() {
     this.init()
   },
-  created () {
+  created() {
   },
   methods: {
-    has (tabName, actionName) {
-      return this.$store.getters.has({ tabName, actionName })
+    has(tabName, actionName) {
+      return this.$store.getters.has({tabName, actionName})
     },
-    getId (tabName, actionName) {
-      return this.$store.getters.getId({ tabName, actionName })
+    getId(tabName, actionName) {
+      return this.$store.getters.getId({tabName, actionName})
     },
-    init () {
+    init() {
       this.fetchData()
     },
-    fetchData () {
+    fetchData() {
       this.listLoading = true
       getList().then(response => {
         this.list = response.data.data
         this.listLoading = false
       })
     },
-    add (e) {
+    add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.formObj = {
         'title': '',
@@ -70,9 +70,12 @@ export default {
         'status': 1
       }
       this.visible = true
-      this.$refs.ckeditor1.initHtml(this.formObj.content === null ? '' : this.formObj.content)
+      this.$refs.ckeditor1.init()
+      setTimeout(() => {
+        this.$refs.ckeditor1.initHtml(this.formObj.content === null ? '' : this.formObj.content)
+      }, 500)
     },
-    edit (e, row) {
+    edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'id': row.id
@@ -80,10 +83,13 @@ export default {
       getDetail(params).then(response => {
         this.formObj = response.data.dtl
         this.visible = true
-        this.$refs.ckeditor1.initHtml(this.formObj.content === null ? '' : this.formObj.content)
+        this.$refs.ckeditor1.init()
+        setTimeout(() => {
+          this.$refs.ckeditor1.initHtml(this.formObj.content === null ? '' : this.formObj.content)
+        }, 500)
       })
     },
-    save (row) {
+    save(row) {
       save(this.formObj).then(response => {
         this.$message({
           message: '操作成功',
@@ -93,7 +99,7 @@ export default {
         this.fetchData()
       })
     },
-    updateStatus (e, row) {
+    updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'id': row.id,
@@ -114,7 +120,7 @@ export default {
         this.fetchData()
       })
     },
-    getHtml (htmlStr) {
+    getHtml(htmlStr) {
       this.formObj.content = htmlStr
     }
   }

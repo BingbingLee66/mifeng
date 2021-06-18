@@ -55,9 +55,10 @@ export default {
       this.articleId = this.$route.params.articleId
       this.init()
     } else {
-      this.$nextTick(() => {
+      this.$refs.ckeditor1.init()
+      setTimeout(() => {
         this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      })
+      }, 500)
     }
   },
   computed: {},
@@ -142,9 +143,10 @@ export default {
             'status': dataObj.status,
             'istop': dataObj.istop
           }
-          this.$nextTick(() => {
+          this.$refs.ckeditor1.init()
+          setTimeout(() => {
             this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
-          })
+          }, 500)
         }).catch(error => {
           reject(error)
         })
