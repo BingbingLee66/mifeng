@@ -10,12 +10,17 @@
             </el-radio-group>
           </el-form-item>
           <div v-if="formObj.type === 1">
-            <el-form-item label="企业名称：" prop="companyName">
+            <el-form-item label="企业/团体名称：" prop="companyName">
               <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
             </el-form-item>
-            <el-form-item label="企业logo：" prop="companyLogo" class="avatar_style">
-              <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUpload"
-                         :http-request="uploadLogo">
+            <el-form-item label="企业/团体logo：" prop="companyLogo" class="avatar_style">
+              <el-upload
+                class="avatar-uploader"
+                action="/"
+                :show-file-list="false"
+                :before-upload="beforeAvatarUpload"
+                :http-request="uploadLogo"
+              >
                 <img v-if="formObj.companyLogo" :src="formObj.companyLogo" class="avatar avatar-tips">
                 <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
                 </i>
@@ -40,8 +45,12 @@
           </div>
           <el-form-item label="会内职位：" prop="memberPostId">
             <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位" multiple>
-              <el-option v-for="post in memberPostOptions" :label="post.label" :value="post.value"
-                         :key="post.value"></el-option>
+              <el-option
+                v-for="post in memberPostOptions"
+                :label="post.label"
+                :value="post.value"
+                :key="post.value"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="所在部门：">

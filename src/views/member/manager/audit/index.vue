@@ -30,7 +30,7 @@
         <el-table-column type="selection" width="55px">
         </el-table-column>
 
-        <el-table-column label="头像/企业logo" width="180px">
+        <el-table-column label="头像/企业(团体)logo" width="180px">
           <template slot-scope="scope">
             <img style="width: 44px;height: 44px;border-radius: 50%;" :src="scope.row.type == 0 ? scope.row.portrait : scope.row.companyLogo">
           </template>
@@ -47,7 +47,7 @@
         </el-table-column>
         <el-table-column label="入会类型" width="120px">
           <template slot-scope="scope">
-            {{scope.row.type == 0 ? '个人' : '企业'}}
+            {{scope.row.type == 0 ? '个人' : '企业/团体'}}
           </template>
         </el-table-column>
         <el-table-column label="会内职位" width="120px">
@@ -55,7 +55,7 @@
             {{ scope.row.postName }}
           </template>
         </el-table-column>
-        <el-table-column label="企业名称" width="120px">
+        <el-table-column label="企业/团体名称" width="120px">
           <template slot-scope="scope">
             {{ scope.row.companyName }}
           </template>

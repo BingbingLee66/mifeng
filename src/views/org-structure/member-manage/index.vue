@@ -73,14 +73,14 @@
               {{ scope.row.companyName ? scope.row.companyName : '-' }}
             </template>
           </el-table-column> -->
-          <el-table-column label="企业名称" width="200">
+          <el-table-column label="企业/团体名称" width="200">
             <template slot-scope="scope">
               {{ scope.row.companyName ? scope.row.companyName : '-' }}
             </template>
           </el-table-column>
           <el-table-column label="入会类型" width="200" prop="type">
             <template slot-scope="scope">
-              {{ scope.row.type === 0 ? '个人入会' : '企业入会' }}
+              {{ scope.row.type === 0 ? '个人入会' : '企业/团体入会' }}
             </template>
           </el-table-column>
           <el-table-column label="会内职位" width="200">

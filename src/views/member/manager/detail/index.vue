@@ -97,9 +97,9 @@
               <img :src="member.companyLogo" v-if="member.companyLogo != ''"/>
             </div>
           </td>
-          <td width="8%">企业名称</td>
+          <td width="8%">企业/团体名称</td>
           <td width="30%">{{ member.companyName }}</td>
-          <td width="8%">企业职位</td>
+          <td width="8%">企业/团体职位</td>
           <td width="30%">{{ member.companyPosition }}</td>
         </tr>
         <tr align="center" height="45">
