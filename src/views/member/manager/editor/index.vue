@@ -79,7 +79,7 @@
                   :props="{
                     expandTrigger:'click',
                     emitPath:false,
-                    multiple: false,
+                    multiple: true,
                     checkStrictly: true ,
                     value:'id',
                     label:'departmentName',

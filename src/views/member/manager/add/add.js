@@ -173,11 +173,12 @@ export default {
     /*
     * 选择部门
     * */
-    handlerDepartmentChange(ids) {
+    handlerDepartmentChange(val) {
       // console.log(typeof ids)
       // this.ids = ids
-      // const departmentStr = ids.join(',')
-      this.formObj.departmentId = ids + ''
+      const departmentStr = val.join(',')
+      this.formObj.departmentId = departmentStr
+      console.log('this.formObj.departmentId', this.formObj.departmentId)
     },
 
     /**
