@@ -18,6 +18,7 @@ import '@/permission' // permission control
 import Print from '@/utils/print' // 打印
 import VueClipboard from 'vue-clipboard2' // 复制内容
 import DbClick from '@/utils/dbClick' // 防止重复点击
+import { formatDateTime, formatDate } from '@/utils/date' // 格式化时间戳
 
 Vue.use(Print)
 Vue.use(DbClick)
@@ -49,3 +50,15 @@ new Vue({
 window.ysh = {
   baseApiUrl: process.env.VUE_APP_BASE_API
 }
+/**
+ *时间戳过滤器
+ */
+Vue.filter('dateFormat', (dataStr) => {
+  return dataStr === null ? '' : formatDateTime(new Date(dataStr), 'yyyy-MM-dd hh:mm:ss')
+})
+/**
+ *时间戳过滤器
+ */
+Vue.filter('dateFormat2', (dataStr) => {
+  return dataStr === null ? '' : formatDate(new Date(dataStr), 'yyyy-MM-dd')
+})
