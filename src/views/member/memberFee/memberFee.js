@@ -183,10 +183,10 @@ export default {
             let obj = {
               'chamberName': data.chamberName,
               'memberId': data.id,
-              'memberName': data.name,
+              'memberName': data.type === 0 ? data.name : data.contactName,
               'memberPostId': this.memberQuery.memberPostType.id,
               'memberPostName': this.memberQuery.memberPostType.postName,
-              'phone': data.type === 0 ? data.phone : data.companyPhone
+              'phone': data.type === 0 ? data.phone : data.contactPhone
             }
             dto.push(obj)
           }

@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column label="会员姓名/联系人姓名">
         <template slot-scope="scope">
-          {{scope.row.memberName}}
+          {{scope.row.memberName }}
         </template>
       </el-table-column>
       <el-table-column label="手机号/联系人电话">
@@ -129,7 +129,7 @@
         </el-table-column>
         <el-table-column label="会员姓名/联系人姓名">
           <template slot-scope="scope">
-            {{scope.row.name}}
+            {{scope.row.type == 0 ? scope.row.memberName : scope.row.contactName}}
           </template>
         </el-table-column>
         <el-table-column label="手机号/联系人电话">

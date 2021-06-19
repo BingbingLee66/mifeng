@@ -125,56 +125,63 @@
         </el-row>
         <el-row v-if="formObj.specType == 0">
           <el-col :span="22">
-            <el-form-item label="价格及库存：" size="mini">
-              <div class="sku-table-box">
-                <el-row class="sku-table-th">
-                  <el-col :span="8" class="sku-table-content">单买价（元）</el-col>
-                  <el-col :span="8" class="sku-table-content">拼单价（元）</el-col>
-                  <el-col :span="8" class="sku-table-content">库存数（件）</el-col>
-                </el-row>
-                <el-row class="sku-table-td" v-for="(sku, index) in formObj.singleSku" :key="index">
-                  <el-col :span="8" class="sku-table-content sku-table-input">
-                    <el-input v-model="sku.price" placeholder="单买价" maxLength="10">
+            <div class="dy-form-label">
+              <span style="color: #F56C6C;padding: 5px;">*</span><span>价格及库存：</span>
+            </div>
+            <div class="sku-table-box">
+              <el-row class="sku-table-th">
+                <el-col :span="8" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>单买价（元）</el-col>
+                <el-col :span="8" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>拼单价（元）</el-col>
+                <el-col :span="8" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>库存数（件）</el-col>
+              </el-row>
+              <el-row class="sku-table-td">
+                <el-col :span="8" class="sku-table-content sku-table-input">
+                  <el-form-item label-width="0" size="mini" :prop="'singleSku[0].price'" :rules="rules.price">
+                    <el-input v-model="formObj.singleSku[0].price" placeholder="单买价" maxLength="10">
                     </el-input>
-                  </el-col>
-                  <el-col :span="8" class="sku-table-content sku-table-input">
-                    <el-input v-model="sku.fightPrice" placeholder="拼单价" maxLength="10">
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8" class="sku-table-content sku-table-input">
+                  <el-form-item label-width="0" size="mini" :prop="'singleSku[0].fightPrice'" :rules="rules.fightPrice">
+                    <el-input v-model="formObj.singleSku[0].fightPrice" placeholder="拼单价" maxLength="10">
                     </el-input>
-                  </el-col>
-                  <el-col :span="8" class="sku-table-content sku-table-input">
-                    <el-input v-model="sku.stock" placeholder="库存数" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode || event.which))) || event.which === 8" maxLength="10">
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8" class="sku-table-content sku-table-input">
+                  <el-form-item label-width="0" size="mini" :prop="'singleSku[0].stock'" :rules="rules.stock">
+                    <el-input v-model="formObj.singleSku[0].stock" placeholder="库存数" maxLength="10">
                     </el-input>
-                  </el-col>
-                </el-row>
-                <el-row style="margin-left: -45px;">
-                  <el-col :span="8">
-                    <el-form-item label="商品市场价：" prop="singleSku[0].marketingPrice" size="mini">
-                      <el-input v-model="formObj.singleSku[0].marketingPrice" maxLength="10">
-                        <template slot="append">元</template>
-                      </el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="商品供货价：" prop="singleSku[0].supplyPrice" size="mini">
-                      <el-input v-model="formObj.singleSku[0].supplyPrice" maxLength="10">
-                        <template slot="append">元</template>
-                      </el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="虚拟销量：" prop="salesVolume" size="mini">
-                      <el-input v-model="formObj.salesVolume" maxLength="10">
-                        <template slot="append">件</template>
-                      </el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <hr size="1" style="margin: 0 -20px;"/>
-                <el-row>
-                  <div class="sku-tip">价格设定规则：供货价＜拼单价＜单买价＜市场价</div>
-                </el-row>
-              </div>
-            </el-form-item>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row style="margin-left: -45px;">
+                <el-col :span="8">
+                  <el-form-item label="商品市场价：" size="mini" :prop="'singleSku[0].marketingPrice'" :rules="rules.marketingPrice">
+                    <el-input v-model="formObj.singleSku[0].marketingPrice" maxLength="10">
+                      <template slot="append">元</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="商品供货价：" size="mini" :prop="'singleSku[0].supplyPrice'" :rules="rules.supplyPrice">
+                    <el-input v-model="formObj.singleSku[0].supplyPrice" maxLength="10">
+                      <template slot="append">元</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="虚拟销量：" prop="salesVolume" size="mini">
+                    <el-input v-model="formObj.salesVolume" maxLength="10">
+                      <template slot="append">件</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <hr size="1" style="margin: 0 -20px;"/>
+              <el-row>
+                <div class="sku-tip">价格设定规则：供货价＜拼单价＜单买价＜市场价</div>
+              </el-row>
+            </div>
           </el-col>
         </el-row>
 
@@ -261,112 +268,123 @@
 
         <el-row v-if="formObj.specType == 1">
           <el-col :span="22">
-            <el-form-item label="价格及库存：" prop="portrait" size="mini">
-              <div class="sku-table-box">
-                <div class="dy-form-tip">批量设置在下方栏中选择内容进行批量填充，记得点确定哦</div>
-                <el-row>
-                  <el-col :span="4" class="mul-set">
-                    <el-input v-model="uniSetting.price" placeholder="单买价" maxLength="10">
-                      <template slot="append">元</template>
-                    </el-input>
-                  </el-col>
-                  <el-col :span="4" class="mul-set">
-                    <el-input v-model="uniSetting.fightPrice" placeholder="拼单价" maxLength="10">
-                      <template slot="append">元</template>
-                    </el-input>
-                  </el-col>
-                  <el-col :span="4" class="mul-set">
-                    <el-input v-model="uniSetting.marketingPrice" placeholder="商品市场价" maxLength="10">
-                      <template slot="append">元</template>
-                    </el-input>
-                  </el-col>
-                  <el-col :span="4" class="mul-set">
-                    <el-input v-model="uniSetting.supplyPrice" placeholder="商品供货价" maxLength="10">
-                      <template slot="append">元</template>
-                    </el-input>
-                  </el-col>
-                  <el-col :span="4"class="mul-set">
-                    <el-input v-model="uniSetting.stock" placeholder="库存数" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode || event.which))) || event.which === 8" maxLength="10">
-                      <template slot="append">件</template>
-                    </el-input>
-                  </el-col>
-                  <el-col :span="2">
-                    <el-button type="danger" @click="mulUpdate">确定</el-button>
-                  </el-col>
-                </el-row>
-                <el-row class="sku-table-th">
-                  <el-col :span="formObj.attr2 != undefined ? 3 : 6" class="sku-table-content">{{!!formObj.attr1.attrName ? formObj.attr1.attrName : '规格1'}}</el-col>
-                  <el-col :span="3" class="sku-table-content" v-if="formObj.attr2 != undefined">{{!!formObj.attr2.attrName ? formObj.attr2.attrName : '规格2'}}</el-col>
-                  <el-col :span="3" class="sku-table-content">单买价(元)</el-col>
-                  <el-col :span="3" class="sku-table-content">拼单价(元)</el-col>
-                  <el-col :span="3" class="sku-table-content">商品市场价(元)</el-col>
-                  <el-col :span="3" class="sku-table-content">商品进货价(元)</el-col>
-                  <el-col :span="3" class="sku-table-content">库存数(件)</el-col>
-                  <el-col :span="2" class="sku-table-content">图片</el-col>
-                  <el-col :span="1" class="sku-table-content">&nbsp;</el-col>
-                </el-row>
-                <el-row class="sku-table-td" v-for="(sku, index) in formObj.multiSku">
-                  <el-col :span="formObj.attr2 != undefined ? 3 : 6" class="sku-table-content sku-table-img">{{sku.codeName.split(',')[0]}}</el-col>
-                  <el-col :span="3" class="sku-table-content sku-table-img" v-if="formObj.attr2 != undefined">{{sku.codeName.split(',')[1]}}</el-col>
-                  <el-col :span="3" class="sku-table-content sku-table-img">
+            <div class="dy-form-label">
+              <span style="color: #F56C6C;padding: 5px;">*</span><span>价格及库存：</span>
+            </div>
+            <div class="sku-table-box">
+              <div class="dy-form-tip">批量设置在下方栏中选择内容进行批量填充，记得点确定哦</div>
+              <el-row>
+                <el-col :span="4" class="mul-set">
+                  <el-input v-model="uniSetting.price" size="mini" placeholder="单买价" maxLength="10">
+                    <template slot="append">元</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="4" class="mul-set">
+                  <el-input v-model="uniSetting.fightPrice" size="mini" placeholder="拼单价" maxLength="10">
+                    <template slot="append">元</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="4" class="mul-set">
+                  <el-input v-model="uniSetting.marketingPrice" size="mini" placeholder="商品市场价" maxLength="10">
+                    <template slot="append">元</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="4" class="mul-set">
+                  <el-input v-model="uniSetting.supplyPrice" size="mini" placeholder="商品供货价" maxLength="10">
+                    <template slot="append">元</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="4"class="mul-set">
+                  <el-input v-model="uniSetting.stock" size="mini" placeholder="库存数" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode || event.which))) || event.which === 8" maxLength="10">
+                    <template slot="append">件</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="2">
+                  <el-button type="danger" size="mini" @click="mulUpdate">确定</el-button>
+                </el-col>
+              </el-row>
+              <el-row class="sku-table-th">
+                <el-col :span="formObj.attr2 != undefined ? 3 : 6" class="sku-table-content">{{!!formObj.attr1.attrName ? formObj.attr1.attrName : '规格1'}}</el-col>
+                <el-col :span="3" class="sku-table-content" v-if="formObj.attr2 != undefined">{{!!formObj.attr2.attrName ? formObj.attr2.attrName : '规格2'}}</el-col>
+                <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>单买价(元)</el-col>
+                <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>拼单价(元)</el-col>
+                <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>商品市场价(元)</el-col>
+                <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>商品进货价(元)</el-col>
+                <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>库存数(件)</el-col>
+                <el-col :span="2" class="sku-table-content">图片</el-col>
+                <el-col :span="1" class="sku-table-content">&nbsp;</el-col>
+              </el-row>
+              <el-row class="sku-table-td" v-for="(sku, index) in formObj.multiSku">
+                <el-col :span="formObj.attr2 != undefined ? 3 : 6" class="sku-table-content sku-table-img">{{sku.codeName.split(',')[0]}}</el-col>
+                <el-col :span="3" class="sku-table-content sku-table-img" v-if="formObj.attr2 != undefined">{{sku.codeName.split(',')[1]}}</el-col>
+                <el-col :span="3" class="sku-table-content sku-table-img">
+                  <el-form-item label-width="0" size="mini" :prop="'multiSku[' + index + '].price'" :rules="rules.price" style="margin-top: 15px;">
                     <el-input v-model="sku.price" size="mini" placeholder="单买价" maxLength="10">
                       </el-input>
-                  </el-col>
-                  <el-col :span="3" class="sku-table-content sku-table-img">
+                  </el-form-item>
+                </el-col>
+                <el-col :span="3" class="sku-table-content sku-table-img">
+                  <el-form-item label-width="0" size="mini" :prop="'multiSku[' + index + '].fightPrice'" :rules="rules.fightPrice" style="margin-top: 15px;">
                     <el-input v-model="sku.fightPrice" size="mini" placeholder="拼单价" maxLength="10">
                       </el-input>
-                  </el-col>
-                  <el-col :span="3" class="sku-table-content sku-table-img">
+                  </el-form-item>
+                </el-col>
+                <el-col :span="3" class="sku-table-content sku-table-img">
+                  <el-form-item label-width="0" size="mini" :prop="'multiSku[' + index + '].marketingPrice'" :rules="rules.marketingPrice" style="margin-top: 15px;">
                     <el-input v-model="sku.marketingPrice" size="mini" placeholder="商品市场价" maxLength="10">
-                      </el-input>
-                  </el-col>
-                  <el-col :span="3" class="sku-table-content sku-table-img">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="3" class="sku-table-content sku-table-img">
+                  <el-form-item label-width="0" size="mini" :prop="'multiSku[' + index + '].supplyPrice'" :rules="rules.supplyPrice" style="margin-top: 15px;">
                     <el-input v-model="sku.supplyPrice" size="mini" placeholder="商品进货价" maxLength="10">
-                      </el-input>
-                  </el-col>
-                  <el-col :span="3" class="sku-table-content sku-table-img">
-                    <el-input v-model="sku.stock" size="mini" placeholder="库存数" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode || event.which))) || event.which === 8" maxLength="10">
-                      </el-input>
-                  </el-col>
-                  <el-col :span="2" class="sku-table-content sku-table-img">
-                    <el-upload
-                      class="sku-avatar-uploader-1"
-                      action="/"
-                      :show-file-list="false"
-                      :before-upload="beforeAvatarUpload"
-                      :http-request="function (content) { return uploadSku(content, index) }"
-                      v-if="!sku.skuImgUrl">
-                      <i class="el-icon-plus sku-avatar-uploader-icon-1"></i>
-                    </el-upload>
-                    <div class="sku-pre-1" v-if="sku.skuImgUrl">
-                      <div>
-                        <i class="el-icon-error" @click="clearSkuImg1(index)"></i>
-                        <img :src="sku.skuImgUrl" class="sku-avatar-1">
-                        <div class="sku-pre-btn-1" @click="openPreviewModal(sku.skuImgUrl)">预览</div>
-                      </div>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="3" class="sku-table-content sku-table-img">
+                  <el-form-item label-width="0" size="mini" :prop="'multiSku[' + index + '].stock'" :rules="rules.stock" style="margin-top: 15px;">
+                    <el-input v-model="sku.stock" size="mini" placeholder="库存数" maxLength="10">
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2" class="sku-table-content sku-table-img">
+                  <el-upload
+                    class="sku-avatar-uploader-1"
+                    action="/"
+                    :show-file-list="false"
+                    :before-upload="beforeAvatarUpload"
+                    :http-request="function (content) { return uploadSku(content, index) }"
+                    v-if="!sku.skuImgUrl">
+                    <i class="el-icon-plus sku-avatar-uploader-icon-1"></i>
+                  </el-upload>
+                  <div class="sku-pre-1" v-if="sku.skuImgUrl">
+                    <div>
+                      <i class="el-icon-error" @click="clearSkuImg1(index)"></i>
+                      <img :src="sku.skuImgUrl" class="sku-avatar-1">
+                      <div class="sku-pre-btn-1" @click="openPreviewModal(sku.skuImgUrl)">预览</div>
                     </div>
-                  </el-col>
-                  <el-col :span="1" class="sku-table-content">
-                    <div class="sku-table-btn">
-                      <i class="el-icon-delete" style="color:red; text-align: center;cursor: pointer;" @click="delSku(index)"></i>
-                    </div>
-                  </el-col>
-                </el-row>
-                <el-row style="margin-left: -45px;">
-                  <el-col :span="8">
-                    <el-form-item label="虚拟销量：" prop="salesVolume" size="mini">
-                      <el-input v-model="formObj.salesVolume" maxLength="10">
-                        <template slot="append">件</template>
-                      </el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <hr size="1" style="margin: 0 -20px;"/>
-                <el-row>
-                  <div class="sku-tip">价格设定规则：供货价＜拼单价＜单买价＜市场价</div>
-                </el-row>
-              </div>
-            </el-form-item>
+                  </div>
+                </el-col>
+                <el-col :span="1" class="sku-table-content">
+                  <div class="sku-table-btn">
+                    <i class="el-icon-delete" style="color:red; text-align: center;cursor: pointer;" @click="delSku(index)"></i>
+                  </div>
+                </el-col>
+              </el-row>
+              <el-row style="margin-left: -45px;">
+                <el-col :span="8">
+                  <el-form-item label="虚拟销量：" prop="salesVolume" size="mini">
+                    <el-input v-model="formObj.salesVolume" maxLength="10">
+                      <template slot="append">件</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <hr size="1" style="margin: 0 -20px;"/>
+              <el-row>
+                <div class="sku-tip">价格设定规则：供货价＜拼单价＜单买价＜市场价</div>
+              </el-row>
+            </div>
           </el-col>
         </el-row>
 
@@ -472,7 +490,7 @@
   text-align: center;
 }
 .sku-table-box {
-  width: 100%;
+  margin-left: 150px;
   background: inherit;
   background-color: rgba(242, 242, 242, 1);
   -moz-box-shadow: none;
@@ -483,6 +501,7 @@
 }
 .sku-table-th {
   border: 1px solid #333;
+  line-height: 30px;
   background-color: #b7f0ff;
   font-size: 10px;
 }

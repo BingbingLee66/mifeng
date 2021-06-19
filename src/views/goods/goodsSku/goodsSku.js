@@ -97,6 +97,18 @@ export default {
         specType: [
           { required: true, message: '请选择商品规格', trigger: 'change' }
         ],
+        price: [
+          { required: true, message: '单买价不能为空', trigger: 'blur' },
+          { validator: checkFee, trigger: 'change' }
+        ],
+        fightPrice: [
+          { required: true, message: '拼单价不能为空', trigger: 'blur' },
+          { validator: checkFee, trigger: 'change' }
+        ],
+        stock: [
+          { required: true, message: '库存不能为空', trigger: 'blur' },
+          { validator: checkNumber, trigger: 'change' }
+        ],
         marketingPrice: [
           { required: true, message: '商品市场价不能为空', trigger: 'blur' },
           { validator: checkFee, trigger: 'change' }
@@ -734,13 +746,15 @@ export default {
             'name': this.formObj.name,
             'supplierId': this.formObj.supplierId,
             'salesVolume': this.formObj.salesVolume,
-            'limitTimeStart': this.formObj.limitTime[0],
-            'limitTimeEnd': this.formObj.limitTime[1],
             'limitAmount': this.formObj.limitAmount,
             'specType': this.formObj.specType,
             'attr1': attr1,
             'attr2': attr2,
             'sku': sku
+          }
+          if (!!this.formObj.limitTime) {
+            obj['limitTimeStart'] = this.formObj.limitTime[0]
+            obj['limitTimeEnd'] = this.formObj.limitTime[1]
           }
           if (this.type === 'add') {
             add(obj).then(response => {
