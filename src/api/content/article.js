@@ -48,6 +48,14 @@ export function getAuditList(params) {
   })
 }
 
+export function getCompanyAuditList(params) {
+  return request({
+    url: '/api/ec/companyAudit/companyAudit-list',
+    method: 'get',
+    params
+  })
+}
+
 export function save(params) {
   return request({
     url: '/ec/article/save',
@@ -100,12 +108,12 @@ export function uploadRichhtmlImg(params) {
   return request({
     url: '/ec/upload/richhtml-img',
     method: 'post',
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: {'Content-Type': 'multipart/form-data'},
     data: params
   })
 }
 
-export function updateAudit (params) {
+export function updateAudit(params) {
   return request({
     url: '/ec/article/audit-status',
     method: 'put',
@@ -113,21 +121,30 @@ export function updateAudit (params) {
   })
 }
 
-export function getTopList () {
+// 驳回企业官网资料修改
+export function updateCompanyAudit(params) {
+  return request({
+    url: '/api/ec/companyAudit/audit-status',
+    method: 'put',
+    data: params
+  })
+}
+
+export function getTopList() {
   return request({
     url: '/ec/article/top-list',
     method: 'get'
   })
 }
 
-export function countTop () {
+export function countTop() {
   return request({
     url: '/ec/article/count-top',
     method: 'get'
   })
 }
 
-export function setTop (params) {
+export function setTop(params) {
   return request({
     url: '/ec/article/set-top',
     method: 'put',
@@ -135,7 +152,7 @@ export function setTop (params) {
   })
 }
 
-export function cancelTop (params) {
+export function cancelTop(params) {
   return request({
     url: '/ec/article/cancel-top',
     method: 'put',
@@ -147,7 +164,7 @@ export function uploadCoverImg(params) {
   return request({
     url: '/ec/upload/article-cover-img',
     method: 'post',
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: {'Content-Type': 'multipart/form-data'},
     data: params
   })
 }
