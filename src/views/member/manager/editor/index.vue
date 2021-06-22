@@ -16,15 +16,15 @@
           </el-row>
           <div v-if="formObj.type === 1">
             <el-row>
-              <el-col :span="7">
-                <el-form-item label="企业/团体名称：" prop="companyName">
+              <el-col :span="10">
+                <el-form-item label="企业/团体名称：" label-width="130px"  prop="companyName">
                   <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="7">
-                <el-form-item label="企业/团体logo：" prop="companyLogo">
+                <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
                   <el-upload
                     class="avatar-uploader"
                     action="/"
@@ -59,8 +59,6 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
-
           </div>
           <div v-else>
             <el-row>
@@ -78,6 +76,16 @@
               </el-col>
             </el-row>
           </div>
+          <el-row>
+            <el-col :span="7">
+              <el-form-item label="会内职位：" prop="memberPostId">
+                <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
+                  <el-option v-for="post in memberPostOptions" :label="post.label" :value="post.value"
+                             :key="post.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-row>
             <el-col :span="7">
               <el-form-item label="所在部门：">
@@ -99,16 +107,6 @@
                   placeholder="请选择部门"
                   @change="handlerDepartmentChange">
                 </el-cascader>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="7">
-              <el-form-item label="会内职位：" prop="memberPostId">
-                <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
-                  <el-option v-for="post in memberPostOptions" :label="post.label" :value="post.value"
-                             :key="post.value"></el-option>
-                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
