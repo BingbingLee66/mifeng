@@ -96,6 +96,15 @@ export function getDetail(params) {
   })
 }
 
+export function getCompanyDetail(params) {
+  return request({
+    url: '/api/ec/companyAudit/companyAudit-one',
+    method: 'get',
+    params
+  })
+}
+
+
 export function getUpdateDetail(params) {
   return request({
     url: '/ec/article/update-detail',

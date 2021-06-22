@@ -1,11 +1,12 @@
 import {
   getAuditList,
   getDetail,
+  getCompanyDetail,
   updateAudit,
   updateCompanyAudit,
   getCompanyAuditList
 } from '@/api/content/article'
-import {getCollectList, getRecycleList} from "@/api/content/crawler";
+// import {getCollectList, getRecycleList} from "@/api/content/crawler";
 
 export default {
   data() {
@@ -131,12 +132,22 @@ export default {
       const params = {
         id: this.selectId
       }
-      getDetail(params).then(response => {
-        this.detailObj = response.data.dtl
-      }).catch(error => {
-        reject(error)
-      })
-      this.visible = true
+      if (this.activeName === '1') {
+        getDetail(params).then(response => {
+          this.detailObj = response.data.dtl
+        }).catch(error => {
+          console.log(error)
+        })
+        this.visible = true
+      } else if (this.activeName === '2') {
+        getCompanyDetail(params).then(res => {
+          // this.detailObj = response.data.dtl
+          this.detailObj = res.data.companyAudit
+        }).catch(error => {
+          console.log(error)
+        })
+        this.visible = true
+      }
     },
 
     rowPass(row) {
@@ -154,7 +165,9 @@ export default {
      * 通过资料修改
      */
     passThrough(e) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      if (e !== undefined) {
+        window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      }
       const ids = []
       ids.push(this.selectId)
       if (this.activeName === '1') {
@@ -188,7 +201,9 @@ export default {
 
     // 驳回资料修改
     openReject(e) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      if (e !== undefined) {
+        window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      }
       this.rejectVisible = true
       this.remark = '内容违规'
     },
@@ -238,7 +253,9 @@ export default {
         })
         return
       }
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      if (e !== undefined) {
+        window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      }
       if (this.activeName === '1') {
         const params = {
           'articleIds': this.selectionDatas,
@@ -274,7 +291,9 @@ export default {
         })
         return
       }
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      if (e !== undefined) {
+        window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      }
       this.batchRejectVisible = true
       this.remark = '内容违规'
     },

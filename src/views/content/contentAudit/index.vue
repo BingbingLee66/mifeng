@@ -12,8 +12,8 @@
               <el-form-item label="文章来源：">
                 <el-select v-model="query.publishType">
                   <el-option label="所有" :value="-1"></el-option>
-                  <el-option label="商会" :value="1"></el-option>
-                  <el-option label="企业" :value="2"></el-option>
+                  <el-option label="商会后台" :value="1"></el-option>
+                  <el-option label="小程序" :value="2"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -88,6 +88,7 @@
       <el-button type="danger" @click="openBatchReject($event)" :actionid="getId('', '不通过')" v-if="has('', '不通过')">不通过
       </el-button>
     </el-row> -->
+    <div style="width:100%;margin-bottom: 20px;text-align: right;color: #ccc;">待审核指通过了微信内容安全审核，待审核的内容前端可见，人工审核不通过之后，前端不可见。</div>
     <el-table
       id="out-table"
       :data="list"
@@ -125,10 +126,10 @@
       <el-table-column label="发布时间" width="200px">
         <template slot-scope="scope">
           <span v-if="activeName == '1'">
-            {{ scope.row.publishTs }}
+            {{ scope.row.updatedTs }}
           </span>
           <span v-else>
-            {{ scope.row.createdTs }}
+            {{ scope.row.updatedTs }}
           </span>
         </template>
       </el-table-column>
@@ -170,8 +171,14 @@
       width="80%">
       <div class="d-preview-wrap">
         <div class="d-preview-area">
-          <div class="d-article-title">{{ detailObj.title }}</div>
-          <div class="d-article-content" v-html="detailObj.contentHtml"></div>
+          <div class="d-article-title">
+            <span v-if="activeName == '1'">{{ detailObj.title }}</span>
+            <span v-else>{{
+                detailObj.contentType === 1 ? '企业简介' : detailObj.contentType === 2 ? '发展历程' : detailObj.contentType === 3 ? '荣誉资质' : '联系我们'
+              }}</span>
+          </div>
+          <div v-if="activeName == '1'" class="d-article-content" v-html="detailObj.contentHtml"></div>
+          <div v-else class="d-article-content" v-html="detailObj.content"></div>
         </div>
         <div v-if="detailObj.auditStatus===0" style="height:50px;">
           <el-col :offset="10" :span="8">
@@ -196,8 +203,8 @@
         <div v-else style="height:150px;">
           <el-col :offset="10" :span="8">
             <p>状态：{{ detailObj.auditStatus === 1 ? '审核通过' : detailObj.auditStatus === 2 ? '审核不通过' : '' }}</p>
-            <p>不通过原因：{{ detailObj.auditRemark }}</p>
-            <p>操作人：{{ detailObj.operator }}</p>
+            <p v-if="detailObj.auditStatus===2">不通过原因：{{activeName == '1' ? detailObj.auditRemark : detailObj.rejectRemark }}</p>
+            <p>操作人：{{activeName == '1' ? detailObj.operator : detailObj.auditor }}</p>
             <p>操作时间：{{ detailObj.updatedTs }}</p>
             <el-button
               type="success"
