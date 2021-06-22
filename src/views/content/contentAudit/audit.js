@@ -18,7 +18,7 @@ export default {
       query: {
         publishType: -1,
         publishTimeType: 4,
-        auditStatus: -1
+        auditStatus: 0
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -68,7 +68,7 @@ export default {
       this.query = {
         publishType: -1,
         publishTimeType: 4,
-        auditStatus: -1
+        auditStatus: 0
       }
       this.currentpage = 1
       this.limit = 10
