@@ -126,7 +126,7 @@
       <el-table-column label="发布时间" width="200px">
         <template slot-scope="scope">
           <span v-if="activeName == '1'">
-            {{ scope.row.updatedTs }}
+            {{ scope.row.publishTs }}
           </span>
           <span v-else>
             {{ scope.row.updatedTs }}
