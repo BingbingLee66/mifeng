@@ -44,7 +44,7 @@
             </el-form-item>
           </div>
           <el-form-item label="会内职位：" prop="memberPostId">
-            <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位" multiple>
+            <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
               <el-option
                 v-for="post in memberPostOptions"
                 :label="post.label"

@@ -288,11 +288,11 @@ export default {
           this.formObj.phone = this.formObj.contactPhone
         }
         if (valid) {
-          this.formObj['memberPostId'] = this.formObj['memberPostId'].join(',');
+          // this.formObj['memberPostId'] = this.formObj['memberPostId'].join(',');
           if (this.type === 'add') {
-            //将会内职位数组变为字符串
-            console.log("this.formObj['memberPostId']", this.formObj['memberPostId'])
-            this.formObj['ckey'] = this.$store.getters.ckey;
+            // 将会内职位数组变为字符串
+            // console.log("this.formObj['memberPostId']", this.formObj['memberPostId'])
+            this.formObj['ckey'] = this.$store.getters.ckey
             add(this.formObj).then(response => {
               this.$message({
                 message: '操作成功',
