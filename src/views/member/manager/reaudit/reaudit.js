@@ -84,7 +84,8 @@ export default {
       let params =
       {
         'memberId': row.id,
-        'type': 2
+        'type': 2,
+        'memberAuditLogsId': row.memberAuditLogsId
       }
       this.currentRow = row;
       if (row.id !== undefined) {

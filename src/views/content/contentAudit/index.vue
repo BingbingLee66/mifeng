@@ -40,23 +40,14 @@
         </el-row>
       </el-form>
     </div>
-    <br/>
+    <br />
     <el-row>
       <el-button type="primary" @click="batchPassThrough($event)" :actionid="getId('', '通过')" v-if="has('', '通过')">通过
       </el-button>
       <el-button type="danger" @click="openBatchReject($event)" :actionid="getId('', '不通过')" v-if="has('', '不通过')">不通过
       </el-button>
     </el-row>
-    <el-table
-      id="out-table"
-      :data="list"
-      v-loading="listLoading"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row
-      @selection-change="handleSelectionChange"
-    >
+    <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55px"></el-table-column>
       <el-table-column label="标题">
         <template slot-scope="scope">
@@ -76,6 +67,7 @@
       </el-table-column>
       <el-table-column label="状态" width="100px">
         <template slot-scope="scope">
+          <div v-if="scope.row.auditStatus == -1">全部</div>
           <div v-if="scope.row.auditStatus == 0">待审核</div>
           <div v-if="scope.row.auditStatus == 1">审核通过</div>
           <div v-if="scope.row.auditStatus == 2">审核不通过</div>
@@ -87,20 +79,9 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-      :page-sizes="pageSizes"
-      :page-size="limit"
-      :total="total"
-      :current-page.sync="currentpage"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+    <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange">
     </el-pagination>
-    <el-dialog
-      title=""
-      :visible.sync="visible"
-      width="80%">
+    <el-dialog title="" :visible.sync="visible" width="80%">
       <div class="d-preview-wrap">
         <div class="d-preview-area">
           <div class="d-article-title">{{ detailObj.title }}</div>
@@ -118,10 +99,7 @@
       <span slot="footer" class="dialog-footer">
       </span>
     </el-dialog>
-    <el-dialog
-      title="不通过原因"
-      :visible.sync="batchRejectVisible"
-      width="30%">
+    <el-dialog title="不通过原因" :visible.sync="batchRejectVisible" width="30%">
       <el-form ref="form" label-position="left" label-width="50px">
         <el-row>
           <el-col :span="24">
@@ -145,10 +123,7 @@
         <el-button type="primary" @click="batchReject">确定</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="不通过原因"
-      :visible.sync="rejectVisible"
-      width="30%">
+    <el-dialog title="不通过原因" :visible.sync="rejectVisible" width="30%">
       <el-form ref="form" label-position="left" label-width="50px">
         <el-row>
           <el-col :span="24">
@@ -178,41 +153,41 @@
 <script src="./audit.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import "src/styles/common.scss";
+  @import "src/styles/common.scss";
 </style>
 <style>
-.d-preview-wrap {
-  width: 95%;
-  height: auto;
-  min-height: 500px;
-}
+  .d-preview-wrap {
+    width: 95%;
+    height: auto;
+    min-height: 500px;
+  }
 
-.d-preview-area {
-  width: 100%;
-  min-height: 500px;
-  margin: 30px 20px;
-  border: 1px solid #d9dde2;
-  overflow-y: auto;
-}
+  .d-preview-area {
+    width: 100%;
+    min-height: 500px;
+    margin: 30px 20px;
+    border: 1px solid #d9dde2;
+    overflow-y: auto;
+  }
 
-.d-article-title {
-  text-align: center;
-  font-size: 24px;
-  font-weight: 700;
-  margin: 40px 40px 20px 40px;
-}
+  .d-article-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 40px 40px 20px 40px;
+  }
 
-.d-article-content {
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.8;
-  margin: 0 40px 20px 40px;
-}
+  .d-article-content {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.8;
+    margin: 0 40px 20px 40px;
+  }
 
-.d-article-content > p > img {
-  margin: 20px 10%;
-  width: 80% !important;
-  height: auto !important;
-  max-height: 100% !important;
-}
+  .d-article-content > p > img {
+    margin: 20px 10%;
+    width: 80% !important;
+    height: auto !important;
+    max-height: 100% !important;
+  }
 </style>
