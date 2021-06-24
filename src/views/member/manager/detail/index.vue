@@ -41,7 +41,7 @@
         </tr>
         <tr align="center" height="45">
           <td width="24%" rowspan="6">
-            <div class="head-portrait">
+            <div class="head_portrait">
               <img v-if="member.portrait" :src="member.portrait"/>
               <img v-else src="@/assets/img/nologo.png"/>
             </div>
@@ -93,7 +93,7 @@
         </tr>
         <tr align="center" height="45">
           <td width="24%" rowspan="5">
-            <div class="head-portrait">
+            <div class="head_portrait">
               <img :src="member.companyLogo" v-if="member.companyLogo != ''"/>
             </div>
           </td>
@@ -227,8 +227,6 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
-</style>
-<style lang="scss">
 .wx-col {
   border: 1px solid #dcdfe6;
   border-right: 0;
@@ -250,7 +248,7 @@
   font-weight: 800;
 }
 
-.head-portrait {
+.head_portrait {
   position: relative;
   width: 150px;
   height: 150px;
@@ -258,7 +256,7 @@
   border-radius: 50%;
 }
 
-.head-portrait > img {
+.head_portrait > img {
   position: absolute;
   height: 100%;
   width: 100%;
@@ -300,3 +298,4 @@
   }
 }
 </style>
+
