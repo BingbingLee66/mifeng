@@ -6,8 +6,8 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-          <img class="user-avatar" :src="systemLogo">
-          <i class="el-icon-caret-bottom"/>
+          <img class="user-avatar" :src="systemLogo ? systemLogo : imgUrl">
+          <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <!-- <router-link to="/account/profile">
@@ -22,48 +22,44 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <div class="login-name">{{user.remark}}</div>
+    <div class="login-name">{{remark}}</div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
-import imgUrl from '@/assets/img/avatar.gif'
+  import { mapGetters } from "vuex";
+  import Breadcrumb from "@/components/Breadcrumb";
+  import Hamburger from "@/components/Hamburger";
+  import imgUrl from "@/assets/img/avatar.gif";
 
-export default {
-  data() {
-    return {
-      user: {},
-      systemLogo: !this.$store.getters.systemLogo ? imgUrl : this.$store.getters.systemLogo
-    }
-  },
-  components: {
-    Breadcrumb,
-    Hamburger
-  },
-  computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar'
-    ])
-  },
-  mounted () {
-    this.user = this.$store.state.user.profile
-  },
-  methods: {
-    toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+  export default {
+    data() {
+      return {
+        user: {},
+        imgUrl: imgUrl,
+        // systemLogo: !this.$store.getters.systemLogo ? imgUrl : this.$store.getters.systemLogo
+      };
     },
-    async logout() {
-      await this.$store.dispatch('user/logout')
-      // 退出时清除所有tab
-      this.$store.dispatch('tagsView/delAllViews')
-      this.$router.push(`/login`)
-    }
-  }
-}
+    components: {
+      Breadcrumb,
+      Hamburger,
+    },
+    computed: {
+      ...mapGetters(["sidebar", "avatar", "name", "remark", "systemLogo"]),
+    },
+
+    methods: {
+      toggleSideBar() {
+        this.$store.dispatch("app/toggleSideBar");
+      },
+      async logout() {
+        await this.$store.dispatch("user/logout");
+        // 退出时清除所有tab
+        this.$store.dispatch("tagsView/delAllViews");
+        this.$router.push(`/login`);
+      },
+    },
+  };
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
@@ -81,7 +77,7 @@ export default {
       float: left;
       padding: 0 10px;
     }
-    .breadcrumb-container{
+    .breadcrumb-container {
       float: left;
     }
     .errLog-container {
@@ -91,7 +87,7 @@ export default {
     .right-menu {
       float: right;
       height: 100%;
-      &:focus{
+      &:focus {
         outline: none;
       }
       .right-menu-item {
@@ -101,7 +97,7 @@ export default {
       .screenfull {
         height: 20px;
       }
-      .international{
+      .international {
         vertical-align: top;
       }
       .theme-switch {
