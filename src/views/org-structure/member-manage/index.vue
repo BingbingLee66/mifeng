@@ -51,8 +51,7 @@
       </div>
       <div class="content_item table_wrap">
         <el-table
-          style="width: 100%"
-          :header-cell-style="{background:'rgba(245,245,245,0.5)',color:'#000',fontSize:'15px'}"
+          :header-cell-style="{background:'rgba(245,245,245,0.5)',color:'#000',fontSize:'15px',width:'100%'}"
           ref="multipleTable"
           :data="memberData"
           tooltip-effect="dark"
@@ -261,6 +260,10 @@
     .table_wrap {
       height: 530px;
       overflow-y: auto;
+    }
+
+    .el-table::before {
+      height: 0 !important;
     }
   }
 

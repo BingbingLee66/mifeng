@@ -189,12 +189,12 @@
           </el-row>
           <el-row>
             <el-col :span="7" v-if="formObj.type === 0">
-              <el-form-item label="企业/团体名称：" prop="companyName">
+              <el-form-item label="企业/团体名称：" label-width="130px" prop="companyName">
                 <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="7" v-if="formObj.type === 0">
-              <el-form-item label="企业/团体logo：" prop="companyLogo">
+              <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
                 <el-upload class="avatar-uploader" action="/" :show-file-list="false"
                            :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
                   <img v-if="formObj.companyLogo" :src="formObj.companyLogo" style="height: 100px; width: 100px;"
@@ -246,7 +246,7 @@
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="7">
-              <el-form-item label="企业/团体职位：" prop="companyPositionId">
+              <el-form-item label="企业/团体职位：" label-width="130px" prop="companyPositionId">
                 <el-select v-model="formObj.companyPositionId" placeholder="请选择企业/团体职位">
                   <el-option
                     v-for="position in positionOptions"
