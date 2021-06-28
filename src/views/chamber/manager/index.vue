@@ -89,10 +89,10 @@
         <el-row>
           <el-col :offset="2" :span="20">
             <el-form-item label="商/协会logo：" prop="systemLogo">
-              <el-upload class="avatar-uploader systemLogo-uploader" action="/" :show-file-list="false"
+              <el-upload class="systemLogo_uploader" action="/" :show-file-list="false"
                          :before-upload="beforeSystemLogoUpload" :http-request="uploadSystemLogo">
-                <img v-if="formObj.systemLogo" :src="formObj.systemLogo" class="avatar system-logo">
-                <i v-else class="el-icon-plus avatar-uploader-icon systemLogo-uploader-icon"></i>
+                <img v-if="formObj.systemLogo" :src="formObj.systemLogo" class="system_logo">
+                <i v-else class="el-icon-plus systemLogo_uploader_icon"></i>
               </el-upload>
               <p style="margin: 0;padding: 0;">建议尺寸:88*88px; 格式:png/jpeg/jpg</p>
             </el-form-item>
@@ -254,7 +254,7 @@
   overflow: hidden;
 }
 
-.systemLogo-uploader .el-upload {
+.systemLogo_uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 50%;
   cursor: pointer;
@@ -275,7 +275,7 @@
   text-align: center;
 }
 
-.systemLogo-uploader-icon {
+.systemLogo_uploader_icon {
   font-size: 28px;
   color: #8c939d;
   width: 88px;
@@ -291,7 +291,7 @@
   display: block;
 }
 
-.system-logo {
+.system_logo {
   width: 88px;
   height: 88px;
   display: block;

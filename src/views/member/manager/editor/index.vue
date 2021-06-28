@@ -26,7 +26,7 @@
               <el-col :span="7">
                 <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
                   <el-upload
-                    class="avatar-uploader"
+                    class="avatar_uploader"
                     action="/"
                     :show-file-list="false"
                     :before-upload="beforeAvatarUpload"
@@ -35,12 +35,12 @@
                     <img
                       v-if="formObj.companyLogo"
                       :src="formObj.companyLogo"
-                      style="height: 100px; width: 100px;"
+                      style="height: 100px; width: 100px;border-radius:50%;"
                       class="avatar avatar-tips"
                     >
-                    <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
+                    <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;border-radius:50%;">
                     </i>
-                    <div v-if="!formObj.companyLogo" class="uploader-tips">上传LOGO</div>
+                      <div v-if="!formObj.companyLogo" class="uploader_tips">上传LOGO</div>
                   </el-upload>
                 </el-form-item>
               </el-col>
@@ -195,13 +195,13 @@
             </el-col>
             <el-col :offset="1" :span="7" v-if="formObj.type === 0">
               <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
-                <el-upload class="avatar-uploader" action="/" :show-file-list="false"
+                <el-upload class="avatar_uploader" action="/" :show-file-list="false"
                            :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
-                  <img v-if="formObj.companyLogo" :src="formObj.companyLogo" style="height: 100px; width: 100px;"
+                  <img v-if="formObj.companyLogo" :src="formObj.companyLogo" style="height: 100px; width: 100px;border-radius:50%;"
                        class="avatar avatar-tips">
-                  <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
+                  <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;border-radius:50%;">
                   </i>
-                  <div v-if="!formObj.companyLogo" class="uploader-tips">上传LOGO</div>
+                   <div v-if="!formObj.companyLogo" class="uploader_tips">上传LOGO</div>
                 </el-upload>
               </el-form-item>
             </el-col>
@@ -336,6 +336,18 @@
     overflow: hidden;
   }
 
+  .avatar_uploader .el-upload{
+    border: 1px dashed #d9d9d9;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar_uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+
   .avatar-uploader .el-upload:hover {
     border-color: #409eff;
   }
@@ -362,6 +374,13 @@
   .uploader-tips {
     line-height: 50px;
     margin-top: -34px;
+    font-size: 12px;
+    color: #8c939d;
+  }
+
+  .uploader_tips {
+    line-height: 50px;
+    margin-top: -50px;
     font-size: 12px;
     color: #8c939d;
   }
