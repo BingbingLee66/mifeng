@@ -5,7 +5,7 @@ import {
   getPlatformMallGoodsRank 
 } from '@/api/statistics/mallData'
 import { exportJson2Excel } from '@/utils/exportExcel'
-import { formatDate } from '@/utils/date' // 格式化时间戳
+import { formatDateTime } from '@/utils/date' // 格式化时间戳
 import { getChamberOptions } from '@/api/finance/finance'
 
 // import { mapGetters } from 'vuex'
@@ -172,6 +172,8 @@ export default {
     fetchData1 () {
       this.listLoading1 = true
       let params = {
+        'startTime': this.query1.date[0],
+        'endTime': this.query1.date[1],
         'pageSize': this.limit1,
         'page': this.currentpage1
       }
@@ -184,6 +186,8 @@ export default {
     fetchData2 () {
       this.listLoading2 = true
       let params = {
+        'startTime': this.query2.date[0],
+        'endTime': this.query2.date[1],
         'pageSize': this.limit2,
         'page': this.currentpage2
       }
@@ -235,10 +239,12 @@ export default {
           }
         } else if (data.isOnSale === 2 || data.isOnSale === 4) {
           status = '下架'
+        } else if (data.isOnSale === 5) {
+          status = '平台下架'
         }
         let new_data = {
           '商品名称': data.goodsName,
-          '上架时间': data.createTime,
+          '上架时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
           '访客数': data.visitorsCount,
           '浏览量': data.viewingCount,
           '下单数': data.goodsOrderTotal,
@@ -270,7 +276,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas1)
+      exportJson2Excel('商会商城数据', this.selectionDatas1)
     },
     exportExcel2 (e) {
       if (this.selectionDatas2.length === 0) {
@@ -280,7 +286,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas2)
+      exportJson2Excel('商品排行榜', this.selectionDatas2)
     },
     exportExcel3 (e) {
       if (this.selectionDatas3.length === 0) {
@@ -290,7 +296,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas3)
+      exportJson2Excel('交易数据', this.selectionDatas3)
     }
   }
 }

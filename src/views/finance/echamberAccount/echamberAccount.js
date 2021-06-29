@@ -135,7 +135,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas)
+      exportJson2Excel('交易数据', this.selectionDatas)
     },
     exportExcel2 (e) {
       if (this.selectionDatas.length === 0) {
@@ -145,7 +145,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas)
+      exportJson2Excel('提现记录', this.selectionDatas)
     },
     detail (e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))

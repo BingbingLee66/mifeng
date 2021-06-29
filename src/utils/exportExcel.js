@@ -1,7 +1,7 @@
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 
-export function exportJson2Excel (data_json) {
+export function exportJson2Excel (table_name, data_json) {
   // 通过json生成工作簿对象
   // console.log(data_json)
   const worksheet = XLSX.utils.json_to_sheet(data_json)
@@ -21,7 +21,7 @@ export function exportJson2Excel (data_json) {
     //返回一个新创建的 Blob 对象，其内容由参数中给定的数组串联组成。
     new Blob([workbook_out], { type: 'application/octet-stream' }),
     //设置导出文件名称
-    '会员数据.xlsx'
+    table_name + '.xlsx'
     )
   } catch (e) {
     if (typeof console !== 'undefined') {

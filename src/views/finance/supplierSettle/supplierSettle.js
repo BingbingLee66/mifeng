@@ -100,7 +100,9 @@ export default {
         cancelButtonText: '取消'
       }).then(() => {
         let ids = []
-        ids.push(row.id)
+        row.id.split(',').forEach(o => {
+          ids.push(o)
+        })
         let params = {
           'ids': ids
         }
@@ -146,14 +148,16 @@ export default {
           '交易时间': formatDate(new Date(data.rptDateMin), 'yyyy-MM-dd') + '至' + formatDate(new Date(data.rptDateMax), 'yyyy-MM-dd'),
           '供货商': data.supplierName,
           '商品名称': data.goodsName,
-          '规格': data.codeName,
+          '规格': !data.codeName ? '无' : data.codeName,
           '供货价(元)': data.supplyPrice,
           '销量(件)': data.count,
           '待结算金额(元)': data.totalSupplyPrice,
           '状态': data.settlementStatus === 1 ? '已结算' : '未结算',
         }
         this.selectionDatas.push(new_data)
-        this.ids.push(data.id)
+        data.id.split(',').forEach(o => {
+          this.ids.push(o)
+        })
       }
     },
     exportExcel (e) {
@@ -164,7 +168,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas)
+      exportJson2Excel('供货商货款结算', this.selectionDatas)
     }
   }
 }

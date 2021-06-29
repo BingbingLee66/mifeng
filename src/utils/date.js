@@ -1,4 +1,7 @@
 export function formatDateTime (date, fmt) {
+  if (!date) {
+    return ''
+  }
   let o = {
     'M+': date.getMonth() + 1, // 月份
     'd+': date.getDate(), // 日
@@ -18,6 +21,9 @@ export function formatDateTime (date, fmt) {
   return fmt
 }
 export function formatDate (date, fmt) {
+  if (!date) {
+    return ''
+  }
   let o = {
     'M+': date.getMonth() + 1, // 月份
     'd+': date.getDate() // 日

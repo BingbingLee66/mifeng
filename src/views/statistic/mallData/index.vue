@@ -21,7 +21,7 @@
         <div class="h-cut-line"></div>
         <div class="m-card-box">
           <div class="card-box-3">
-            <div class="card-key">累计收益（商会分成）</div>
+            <div class="card-key">累计收入<el-tooltip class="item" effect="dark" content="收入=成交金额-平台服务费" placement="top"><i class="el-icon-question"></i></el-tooltip></div>
             <div class="card-value">{{pfStatistics.incomeTotal}}</div>
           </div>
         </div>
@@ -63,13 +63,14 @@
         value-format="yyyy-MM-dd"
         v-model="query1.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         @change="fetchData1"
         size="mini">
       </el-date-picker>
-      <el-button type="primary" size="mini" style="float: right;">导表</el-button>
+      <el-button type="primary" size="mini" style="float: right;" @click="exportExcel">导表</el-button>
     </div>
     <el-table :data="list1" v-loading="listLoading1" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55px">
@@ -91,9 +92,9 @@
           {{scope.row.realPrice}}
         </template>
       </el-table-column>
-      <el-table-column label="商会分成(元)">
+      <el-table-column label="收入(元)">
         <template slot-scope="scope">
-          {{scope.row.platformDeduction}}
+          {{scope.row.realPrice-scope.row.platformDeduction}}
         </template>
       </el-table-column>
     </el-table>
@@ -122,6 +123,7 @@
         value-format="yyyy-MM-dd"
         v-model="query2.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
@@ -140,32 +142,32 @@
           {{scope.row.goodsName}}
         </template>
       </el-table-column>
-      <el-table-column label="上架时间">
+      <el-table-column label="上架时间" prop="createTime" sortable>
         <template slot-scope="scope">
           {{scope.row.createTime | dateFormat}}
         </template>
       </el-table-column>
-      <el-table-column label="访客数">
+      <el-table-column label="访客数" prop="visitorsCount" sortable>
         <template slot-scope="scope">
           {{scope.row.visitorsCount}}
         </template>
       </el-table-column>
-      <el-table-column label="浏览量">
+      <el-table-column label="浏览量" prop="viewingCount" sortable>
         <template slot-scope="scope">
           {{scope.row.viewingCount}}
         </template>
       </el-table-column>
-      <el-table-column label="下单数">
+      <el-table-column label="下单数" prop="goodsOrderTotal" sortable>
         <template slot-scope="scope">
           {{scope.row.goodsOrderTotal}}
         </template>
       </el-table-column>
-      <el-table-column label="成交额(元)">
+      <el-table-column label="成交额(元)" prop="tradingTotal" sortable>
         <template slot-scope="scope">
           {{scope.row.tradingTotal}}
         </template>
       </el-table-column>
-      <el-table-column label="付款人数">
+      <el-table-column label="付款人数" prop="paidMembers" sortable>
         <template slot-scope="scope">
           {{scope.row.paidMembers}}
         </template>
@@ -174,6 +176,7 @@
         <template slot-scope="scope">
           <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售</div>
           <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">下架</div>
+          <div v-if="scope.row.isOnSale == 5">平台下架</div>
           <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock == 0">售罄</div>
         </template>
       </el-table-column>

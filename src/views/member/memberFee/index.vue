@@ -129,12 +129,12 @@
         </el-table-column>
         <el-table-column label="会员姓名/联系人姓名">
           <template slot-scope="scope">
-            {{scope.row.type == 0 ? scope.row.memberName : scope.row.contactName}}
+            {{scope.row.type == 0 ? scope.row.name : scope.row.contactName}}
           </template>
         </el-table-column>
         <el-table-column label="手机号/联系人电话">
           <template slot-scope="scope">
-            {{scope.row.type == 0 ? scope.row.phone : scope.row.companyPhone}}
+            {{scope.row.type == 0 ? scope.row.phone : scope.row.contactPhone}}
           </template>
         </el-table-column>
         <el-table-column label="会内职位">

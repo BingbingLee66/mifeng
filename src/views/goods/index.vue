@@ -10,7 +10,7 @@
           <el-row>
             <el-col :span="4">
               <el-form-item label="商品ID：">
-                <el-input v-model="query.id" placeholder="请输入商品ID"/>
+                <el-input v-model="query.id" type="number" placeholder="请输入商品ID"/>
               </el-form-item>
             </el-col>
             <el-col :span="4" style="margin-left:10px;">
@@ -24,6 +24,7 @@
                   <el-option label="所有" :value="-1"></el-option>
                   <el-option label="在售中" :value="1"></el-option>
                   <el-option label="已下架" :value="2"></el-option>
+                  <el-option label="平台下架" :value="6"></el-option>
                   <el-option label="已售罄" :value="5"></el-option>
                 </el-select>
               </el-form-item>
@@ -123,15 +124,16 @@
           <template slot-scope="scope">
             <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售中</div>
             <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">已下架</div>
+            <div v-if="scope.row.isOnSale == 5">平台下架</div>
             <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock == 0">已售罄</div>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="setTop($event, scope.row)" :actionid="getId('商品列表', '置顶')" v-if="has('商品列表', '置顶')">置顶</el-button>
+            <el-button type="text" @click="setTop($event, scope.row)" :actionid="getId('商品列表', '置顶')" v-if="has('商品列表', '置顶') && scope.row.isOnSale != 5">置顶</el-button>
             <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('商品列表', '编辑')" v-if="has('商品列表', '编辑')">编辑</el-button>
-            <el-button type="text" @click="updateStatus($event, scope.row.id, 1)" :actionid="getId('商品列表', '上架')" v-if="has('商品列表', '上架') && scope.row.isOnSale == 2">上架</el-button>
-            <el-button type="text" @click="updateStatus($event, scope.row.id, 2)" :actionid="getId('商品列表', '下架')" v-if="has('商品列表', '下架') && scope.row.isOnSale == 1">下架</el-button>
+            <el-button type="text" @click="updateStatus($event, scope.row.id, 1)" :actionid="getId('商品列表', '上架')" v-if="has('商品列表', '上架') && (scope.row.isOnSale == 2 || scope.row.isOnSale == 4)">上架</el-button>
+            <el-button type="text" @click="updateStatus($event, scope.row.id, 2)" :actionid="getId('商品列表', '下架')" v-if="has('商品列表', '下架') && (scope.row.isOnSale == 1 || scope.row.isOnSale == 3)">下架</el-button>
             <el-button type="text" @click="del($event, scope.row)" :actionid="getId('商品列表', '删除')" v-if="has('商品列表', '删除')">删除</el-button>
           </template>
         </el-table-column>
@@ -171,7 +173,7 @@
         </el-table-column>
         <el-table-column label="库存" width="100px">
           <template slot-scope="scope">
-            {{scope.row.stocks}}
+            {{scope.row.sumStock}}
           </template>
         </el-table-column>
         <el-table-column label="累计销量" width="100px">
@@ -193,6 +195,7 @@
           <template slot-scope="scope">
             <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售中</div>
             <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">已下架</div>
+            <div v-if="scope.row.isOnSale == 5">平台下架</div>
             <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock == 0">已售罄</div>
           </template>
         </el-table-column>

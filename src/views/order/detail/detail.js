@@ -6,7 +6,13 @@ export default {
   data() {
     return {
       chamberOptions: [],
-      detailObj: {},
+      detailObj: {
+        createTime: null,
+        payTime: '',
+        shippingTime: null,
+        fightTime: null,
+        confirmReceivingTime: null
+      },
       isChamber: true,
       orderSn: ''
     }
@@ -38,6 +44,8 @@ export default {
           return '待成团'
         } else if (status == 1) {
           return '待支付'
+        } else if (status == 0) {
+          return '取消订单'
         } else {
           return '未知状态'
         }

@@ -18,8 +18,8 @@
         <div class="cut-line"></div>
         <div class="card-box">
           <div class="card-box-3">
-            <div class="card-key">累计收益（商会分成）</div>
-            <div class="card-value">¥{{pfStatistics.cumulativeShopPrice - pfStatistics.cumulativePlatfromDeduction}}</div>
+            <div class="card-key">累计收入（元）<el-tooltip class="item" effect="dark" content="收入=成交金额-平台服务费" placement="top"><i class="el-icon-question"></i></el-tooltip></div>
+            <div class="card-value">¥{{pfStatistics.cumulativeShopPrice-pfStatistics.cumulativeShopDeduction}}</div>
           </div>
         </div>
         <div class="cut-line"></div>
@@ -51,6 +51,7 @@
         value-format="yyyy-MM-dd"
         v-model="query.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
@@ -60,8 +61,8 @@
       <el-button type="primary" size="mini" :actionid="getId('', '导表')" v-if="has('', '导表')" style="float: right;" @click="exportExcel($event)">导表</el-button>
     </div>
     <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-      <!-- <el-table-column type="selection" width="55px">
-      </el-table-column> -->
+      <el-table-column type="selection" width="55px">
+      </el-table-column>
       <!-- <el-table-column type="index" label="序号" width="60px">
       </el-table-column> --> 
       <el-table-column label="日期">
@@ -74,9 +75,9 @@
           {{scope.row.shopPrice}}
         </template>
       </el-table-column>
-      <el-table-column label="商会分成（元）">
+      <el-table-column label="收入">
         <template slot-scope="scope">
-          <span style="color: #FF0000;">{{scope.row.shopDeduction}}</span>
+          <span style="color: #FF0000;">{{scope.row.shopPrice-scope.row.shopDeduction}}</span>
         </template>
       </el-table-column>
     </el-table>

@@ -33,6 +33,22 @@ export function batchUpdateGoodsStatus(params) {
   })
 }
 
+export function adminUdateGoodsStatus(params) {
+  return request({
+    url: baseUrl + '/ec/mall/admin-change-good-status',
+    method: 'put',
+    data: params
+  })
+}
+
+export function batchAdminUpdateGoodsStatus(params) {
+  return request({
+    url: baseUrl + '/ec/mall/admin-batch-charge-good-status',
+    method: 'put',
+    data: params
+  })
+}
+
 export function del(params) {
   return request({
     url: baseUrl + '/ec/mall/delete-good',

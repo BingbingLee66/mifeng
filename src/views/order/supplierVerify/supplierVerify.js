@@ -66,10 +66,6 @@ export default {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
         this.listLoading = false
-        for (let obj of this.list) {
-          console.log(obj)
-          console.log(obj.totalOrderCount)
-        }
       })
     },
     handleSelectionChange (value) {
@@ -77,30 +73,20 @@ export default {
       this.selectionDatas = []
       this.orderSns = []
       for (let data of datas) {
-        let statusStr = '待发货'
-        if (data.status == 2) {
-          statusStr = '待发货'
-        } else if (data.status == 5) {
+        let statusStr = '未发货'
+        if (data.totalOrderCount == data.totalShipmentCount) {
           statusStr = '已发货'
-        } else if (data.status == 6) {
-          statusStr = '已完成'
-        } else if (data.status == 4) {
-          statusStr = '待成团'
-        } else if (data.status == 1) {
-          statusStr = '待支付'
         }
         let new_data = {
-          '订单号': data.orderSn,
-          '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
-          '商品名称': data.name,
-          '商品规格': data.codeName,
-          '单价(元)': data.price,
-          '下单数': data.count,
-          '实付金额(元)': data.realPrice,
-          '收件人': data.consignee,
-          '收件人手机号': data.mobile,
-          '收货地址': data.consigneeAddress,
           '供货商家': data.supplierName,
+          '商品名称': data.goodName,
+          '商品规格': !data.codeName ? '无' : data.codeName,
+          '供货价(元)': data.supplyPrice,
+          '下单数(件)': data.totalOrderCount,
+          '已发货(件)': data.totalShipmentCount,
+          '未发货(件)': data.totalUnshippedCount,
+          '实付金额(元)': data.totalPrice,
+          '下单时间': formatDateTime(new Date(data.minTime), 'yyyy-MM-dd hh:mm:ss') + '~' + formatDateTime(new Date(data.maxTime), 'yyyy-MM-dd hh:mm:ss'),
           '状态': statusStr
         }
         this.selectionDatas.push(new_data)
@@ -115,7 +101,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas)
+      exportJson2Excel('商家对货表', this.selectionDatas)
     }
   }
 }

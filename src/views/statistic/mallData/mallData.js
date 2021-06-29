@@ -1,6 +1,5 @@
 import { getMallStatistics, getMallTradeStatistics, getMallGoodsRank } from '@/api/statistics/mallData'
 import { exportJson2Excel } from '@/utils/exportExcel'
-import { formatDate } from '@/utils/date' // 格式化时间戳
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -105,6 +104,8 @@ export default {
     fetchData1 () {
       this.listLoading1 = true
       let params = {
+        'startTime': this.query1.date[0],
+        'endTime': this.query1.date[1],
         'pageSize': this.limit1,
         'page': this.currentpage1
       }
@@ -117,6 +118,8 @@ export default {
     fetchData2 () {
       this.listLoading2 = true
       let params = {
+        'startTime': this.query2.date[0],
+        'endTime': this.query2.date[1],
         'pageSize': this.limit2,
         'page': this.currentpage2
       }
@@ -147,7 +150,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJsonExcel(this.selectionDatas)
-    },
+      exportJson2Excel('交易数据', this.selectionDatas)
+    }
   }
 }

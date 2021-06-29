@@ -50,6 +50,7 @@
         v-model="query.date"
         type="daterange"
         range-separator="至"
+        :clearable="false"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         @change="fetchData"

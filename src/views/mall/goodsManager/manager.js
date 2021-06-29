@@ -1,5 +1,5 @@
 import { getList, updateStatus, batchUpdateStatus } from '@/api/mall/mall'
-import { updateGoodsStatus, batchUpdateGoodsStatus } from '@/api/goods/goods'
+import { adminUdateGoodsStatus, batchAdminUpdateGoodsStatus } from '@/api/goods/goods'
 import { getChamberOptions } from '@/api/finance/finance'
 
 // import { mapGetters } from 'vuex'
@@ -77,9 +77,11 @@ export default {
         'page': this.currentpage,
         'goodsName': this.query.goodsName,
         'status': this.query.status,
-        'ckey': this.query.ckey,
-        'startTime': this.query.date[0],
-        'endTime': this.query.date[1]
+        'ckey': this.query.ckey
+      }
+      if (this.query.date) {
+        params['startTime'] = this.query.date[0]
+        params['endTime'] = this.query.date[1]
       }
       // const objList = [{
       //   id: 2242,
@@ -116,7 +118,7 @@ export default {
         'goodId': id,
         'status': status
       }
-      updateGoodsStatus(params).then(response => {
+      adminUdateGoodsStatus(params).then(response => {
         if (status === 1) {
           this.$message({
             message: '上架成功',
@@ -143,17 +145,31 @@ export default {
         'goodsIds': this.selectionDatas,
         'status': status
       }
-      batchUpdateGoodsStatus(params).then(response => {
+      batchAdminUpdateGoodsStatus(params).then(response => {
         if (status === 1) {
-          this.$message({
-            message: '上架成功',
-            type: 'success'
-          })
+          if (response.data.flagStatus) { // 部分成功
+            this.$message({
+              message: '部分商品上架成功，' + response.data.msg,
+              type: 'warning'
+            })
+          } else {
+            this.$message({
+              message: '上架成功',
+              type: 'success'
+            })
+          }
         } else if (status === 2) {
-          this.$message({
-            message: '下架成功',
-            type: 'success'
-          })
+          if (response.data.flagStatus) { // 部分成功
+            this.$message({
+              message: '部分商品下架成功，' + response.data.msg,
+              type: 'warning'
+            })
+          } else {
+            this.$message({
+              message: '下架成功',
+              type: 'success'
+            })
+          }
         }
         this.fetchData()
       })

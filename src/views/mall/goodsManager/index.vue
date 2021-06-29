@@ -13,14 +13,15 @@
               <el-select v-model="query.status" placeholder="请选择状态">
                 <el-option label="所有" :value="-1"></el-option>
                 <el-option label="在售中" :value="1"></el-option>
-                <el-option label="已下架" :value="2"></el-option>
+                <el-option label="已下架" :value="6"></el-option>
+                <el-option label="商会下架" :value="2"></el-option>
                 <el-option label="已售罄" :value="5"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left:10px;">
             <el-form-item :span="12" label="商品来源：">
-              <el-select v-model="query.ckey" placeholder="请选择商品来源">
+              <el-select v-model="query.ckey" placeholder="请选择商品来源" clearable>
                 <el-option v-for="chamber in chamberOptions" :label="chamber.label" :value="chamber.value" :key="chamber.value"></el-option>
               </el-select>
             </el-form-item>
@@ -76,22 +77,22 @@
       </el-table-column>
       <el-table-column label="单买价(元)" width="100px">
         <template slot-scope="scope">
-          {{scope.row.price}}
+          {{scope.row.singlePriceMerge}}
         </template>
       </el-table-column>
       <el-table-column label="拼单价(元)" width="100px">
         <template slot-scope="scope">
-          {{scope.row.fightPrice}}
+          {{scope.row.fightPriceMerge}}
         </template>
       </el-table-column>
       <el-table-column label="供货价(元)" width="100px">
         <template slot-scope="scope">
-          {{scope.row.supplyPrice}}
+          {{scope.row.supplyPriceMerge}}
         </template>
       </el-table-column>
       <el-table-column label="库存" width="60px">
         <template slot-scope="scope">
-          {{scope.row.stocks}}
+          {{scope.row.sumStock}}
         </template>
       </el-table-column>
       <el-table-column label="累计销量" width="80px">
@@ -106,21 +107,24 @@
       </el-table-column>
       <el-table-column label="来源">
         <template slot-scope="scope">
-          {{chamberName(scope.row.chamberCkey)}}
+          <!-- {{chamberName(scope.row.chamberCkey)}} -->
+          {{scope.row.chamberName}}
         </template>
       </el-table-column>
       <el-table-column label="状态" width="80px">
         <template slot-scope="scope">
           <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售中</div>
-          <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">已下架</div>
+          <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">商会下架</div>
+          <div v-if="scope.row.isOnSale == 5">已下架</div>
           <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock == 0">已售罄</div>
         </template>
       </el-table-column>
       <el-table-column label="操作" >
         <template slot-scope="scope">
           <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">详情</el-button>
-          <el-button type="text" @click="updateStatus($event, scope.row.id, 1)" :actionid="getId('', '上架')" v-if="has('', '上架') && scope.row.isOnSale == 2">上架</el-button>
-          <el-button type="text" @click="updateStatus($event, scope.row.id, 2)" :actionid="getId('', '下架')" v-if="has('', '下架') && scope.row.isOnSale == 1">下架</el-button>
+          <el-button type="text" @click="updateStatus($event, scope.row.id, 1)" :actionid="getId('', '上架')" v-if="has('', '上架') && scope.row.isOnSale == 2 || scope.row.isOnSale == 4" :disabled="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">上架</el-button>
+          <el-button type="text" @click="updateStatus($event, scope.row.id, 1)" :actionid="getId('', '上架')" v-if="has('', '上架') && scope.row.isOnSale == 5">上架</el-button>
+          <el-button type="text" @click="updateStatus($event, scope.row.id, 2)" :actionid="getId('', '下架')" v-if="has('', '下架') && (scope.row.isOnSale == 1 || scope.row.isOnSale == 3)">下架</el-button>
         </template>
       </el-table-column>
     </el-table>

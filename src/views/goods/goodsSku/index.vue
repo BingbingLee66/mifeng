@@ -13,7 +13,7 @@
           </el-col>
           <el-col :span="18">
             <el-form-item label="供货商家：" prop="supplierId">
-              <el-select v-model="formObj.supplierId" placeholder="请选择商品的供货商家">
+              <el-select v-model="formObj.supplierId" placeholder="请选择商品的供货商家" @visible-change="addSupplier">
                 <el-option v-for="sp in supplierOptions" :label="sp.label" :value="sp.value" :key="sp.value"></el-option>
               </el-select>
             </el-form-item>
@@ -21,37 +21,41 @@
         </el-row>
         <hr size="1"/>
         <el-row>
-          <el-col :span="20">
+          <el-col :span="22">
             <div class="dy-form-label">
               <span style="color: #F56C6C;padding: 5px;">*</span><span>商品轮播图：</span>
             </div>
-            <span class="dy-form-tip">支持图片/视频。图片大小不能超过2M，建议尺寸800X800，支持JPG、PNG</span>
+            <span class="dy-form-tip">支持图片/视频。图片大小不能超过2M，建议尺寸375X287，支持JPG、PNG。视频大小不能超过200M，只支持MP4</span>
           </el-col>
         </el-row>
         <el-row>
           <el-form-item label="">
-            <div v-for="(gal, index) in formObj.gallery" :key="index">
-              <el-upload
-                class="goods-avatar-uploader"
-                action="/"
-                :show-file-list="false"
-                :before-upload="beforeAvatarUploadGallery"
-                :http-request="function (content) { return uploadGallery(content, index) }"
-                v-if="!gal">
-                <i class="el-icon-plus goods-avatar-uploader-icon"></i>
-              </el-upload>
-              <div class="goods-pre" v-if="gal">
-                <i class="el-icon-error" @click="clearGalleryImg(index)"></i>
-                <img :src="gal" class="goods-avatar" 
-                  v-if="gal.indexOf('.jpeg') != -1 
-                  || gal.indexOf('.jpg') != -1
-                  || gal.indexOf('.png') != -1" />
-                <img :src="videoPreview" class="goods-avatar" v-else />
-                <div class="goods-pre-btn" @click="openPreviewModal(gal)">预览</div>
-              </div>
-            </div>
+            <draggable v-model="formObj.gallery" ghost-class="ghost" group="gallery" animation="500" @start="galleryStart" @end="galleryEnd">
+              <transition-group>
+                <div v-for="(gal, index) in formObj.gallery" :key="index" style="float:left;">
+                  <el-upload
+                    class="goods-avatar-uploader"
+                    action="/"
+                    :show-file-list="false"
+                    :before-upload="beforeAvatarUploadGallery"
+                    :http-request="function (content) { return uploadGallery(content, index) }"
+                    v-if="!gal">
+                    <i class="el-icon-plus goods-avatar-uploader-icon"></i>
+                  </el-upload>
+                  <div class="goods-pre" v-if="gal">
+                    <i class="el-icon-error" @click="clearGalleryImg(index)"></i>
+                    <img :src="gal" class="goods-avatar" 
+                      v-if="gal.indexOf('.jpeg') != -1 
+                      || gal.indexOf('.jpg') != -1
+                      || gal.indexOf('.png') != -1" />
+                    <img :src="videoPreview" class="goods-avatar" v-else />
+                    <div class="goods-pre-btn" @click="openPreviewModal(gal)">预览</div>
+                  </div>
+                </div>
+              </transition-group>
+            </draggable>
           </el-form-item>
-          <div style="margin-left: 150px;">已上传<span style="color: #F56C6C;">（{{formObj.gallery.length - 1}}/10）</span></div>
+          <div style="margin-left: 150px;">已上传<span style="color: #F56C6C;">（{{effectiveLength(formObj.gallery)}}/{{galleryLimit}}）</span></div>
           <div style="margin: 5px 0 0 150px;" v-show="!galleryValid"><span style="color: #F56C6C; font-size: 13px;">至少上传1张图片</span></div>
         </el-row>
         <el-row>
@@ -59,27 +63,29 @@
             <div class="dy-form-label">
               <span style="color: #F56C6C;padding: 5px;">*</span><span>商品列表图：</span>
             </div>
-            <span class="dy-form-tip">图片大小不能超过2M，建议尺寸800X800，支持JPG、PNG</span>
+            <span class="dy-form-tip">图片大小不能超过2M，建议尺寸108X82，支持JPG、PNG</span>
           </el-col>
         </el-row>
         <el-row>
           <el-form-item label="">
-            <el-upload
-              class="goods-avatar-uploader"
-              action="/"
-              :show-file-list="false"
-              :before-upload="beforeAvatarUpload"
-              :http-request="function (content) { return uploadDescript(content) }"
-              v-if="!formObj.descript">
-              <i class="el-icon-plus goods-avatar-uploader-icon"></i>
-            </el-upload>
-            <div class="goods-pre" v-if="formObj.descript">
-              <i class="el-icon-error" @click="clearDescriptImg"></i>
-              <img :src="formObj.descript" class="goods-avatar">
-              <div class="goods-pre-btn" @click="openPreviewModal(formObj.descript)">预览</div>
+            <div style="float:left;">
+              <el-upload
+                class="goods-avatar-uploader"
+                action="/"
+                :show-file-list="false"
+                :before-upload="beforeAvatarUpload"
+                :http-request="function (content) { return uploadDescript(content) }"
+                v-if="!formObj.descript">
+                <i class="el-icon-plus goods-avatar-uploader-icon"></i>
+              </el-upload>
+              <div class="goods-pre" v-if="formObj.descript">
+                <i class="el-icon-error" @click="clearDescriptImg"></i>
+                <img :src="formObj.descript" class="goods-avatar">
+                <div class="goods-pre-btn" @click="openPreviewModal(formObj.descript)">预览</div>
+              </div>
             </div>
           </el-form-item>
-          <div style="margin-left: 150px;">已上传<span style="color: #F56C6C;">（{{formObj.descript === '' ? 0 : 1}}/1）</span></div>
+          <div style="margin-left: 150px;">已上传<span style="color: #F56C6C;">（{{formObj.descript == '' ? 0 : 1}}/{{descriptLimit}}）</span></div>
           <div style="margin: 5px 0 0 150px;" v-show="!descriptValid"><span style="color: #F56C6C; font-size: 13px;">至少上传1张图片</span></div>
         </el-row>
         <el-row>
@@ -92,24 +98,28 @@
         </el-row>
         <el-row>
           <el-form-item label="">
-            <div v-for="(dtl, index) in formObj.detail" :key="index">
-              <el-upload
-                class="goods-avatar-uploader"
-                action="/"
-                :show-file-list="false"
-                :before-upload="beforeAvatarUpload"
-                :http-request="function (content) { return uploadDetail(content, index) }"
-                v-if="!dtl">
-                <i class="el-icon-plus goods-avatar-uploader-icon"></i>
-              </el-upload>
-              <div class="goods-pre" v-if="dtl">
-                <i class="el-icon-error" @click="clearDetailImg(index)"></i>
-                <img :src="dtl" class="goods-avatar">
-                <div class="goods-pre-btn" @click="openPreviewModal(dtl)">预览</div>
-              </div>
-            </div>
+            <draggable :list="formObj.detail" forceFallback="true" group="detail" animation="1000" @start="detailStart" @end="detailEnd">
+              <transition-group>
+                <div v-for="(dtl, index) in formObj.detail" :key="index" style="float:left;">
+                  <el-upload
+                    class="goods-avatar-uploader"
+                    action="/"
+                    :show-file-list="false"
+                    :before-upload="beforeAvatarUpload"
+                    :http-request="function (content) { return uploadDetail(content, index) }"
+                    v-if="!dtl">
+                    <i class="el-icon-plus goods-avatar-uploader-icon"></i>
+                  </el-upload>
+                  <div class="goods-pre" v-if="dtl">
+                    <i class="el-icon-error" @click="clearDetailImg(index)"></i>
+                    <img :src="dtl" class="goods-avatar">
+                    <div class="goods-pre-btn" @click="openPreviewModal(dtl)">预览</div>
+                  </div>
+                </div>
+              </transition-group>
+            </draggable>
           </el-form-item>
-          <div style="margin-left: 150px;">已上传<span style="color: #F56C6C;">（{{formObj.detail.length - 1}}/20）</span></div>
+          <div style="margin-left: 150px;">已上传<span style="color: #F56C6C;">（{{effectiveLength(formObj.detail)}}/{{detailLimit}}）</span></div>
           <div style="margin: 5px 0 0 150px;" v-show="!detailValid"><span style="color: #F56C6C; font-size: 13px;">至少上传1张图片</span></div>
         </el-row>
 
@@ -135,20 +145,20 @@
                 <el-col :span="8" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>库存数（件）</el-col>
               </el-row>
               <el-row class="sku-table-td">
-                <el-col :span="8" class="sku-table-content sku-table-input">
-                  <el-form-item label-width="0" size="mini" :prop="'singleSku[0].price'" :rules="rules.price">
+                <el-col :span="8" class="sku-table-content sku-table-img">
+                  <el-form-item label-width="0" size="mini" :prop="'singleSku[0].price'" :rules="rules.price" style="margin-top: 15px;">
                     <el-input v-model="formObj.singleSku[0].price" placeholder="单买价" maxLength="10">
                     </el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="8" class="sku-table-content sku-table-input">
-                  <el-form-item label-width="0" size="mini" :prop="'singleSku[0].fightPrice'" :rules="rules.fightPrice">
+                <el-col :span="8" class="sku-table-content sku-table-img">
+                  <el-form-item label-width="0" size="mini" :prop="'singleSku[0].fightPrice'" :rules="rules.fightPrice" style="margin-top: 15px;">
                     <el-input v-model="formObj.singleSku[0].fightPrice" placeholder="拼单价" maxLength="10">
                     </el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="8" class="sku-table-content sku-table-input">
-                  <el-form-item label-width="0" size="mini" :prop="'singleSku[0].stock'" :rules="rules.stock">
+                <el-col :span="8" class="sku-table-content sku-table-img">
+                  <el-form-item label-width="0" size="mini" :prop="'singleSku[0].stock'" :rules="rules.stock" style="margin-top: 15px;">
                     <el-input v-model="formObj.singleSku[0].stock" placeholder="库存数" maxLength="10">
                     </el-input>
                   </el-form-item>
@@ -163,14 +173,14 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="商品供货价：" size="mini" :prop="'singleSku[0].supplyPrice'" :rules="rules.supplyPrice">
+                  <el-form-item label="商品进货价：" size="mini" :prop="'singleSku[0].supplyPrice'" :rules="rules.supplyPrice">
                     <el-input v-model="formObj.singleSku[0].supplyPrice" maxLength="10">
                       <template slot="append">元</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="虚拟销量：" prop="salesVolume" size="mini">
+                  <el-form-item label="虚拟销量：" size="mini">
                     <el-input v-model="formObj.salesVolume" maxLength="10">
                       <template slot="append">件</template>
                     </el-input>
@@ -179,7 +189,7 @@
               </el-row>
               <hr size="1" style="margin: 0 -20px;"/>
               <el-row>
-                <div class="sku-tip">价格设定规则：供货价＜拼单价＜单买价＜市场价</div>
+                <div class="sku-tip"><span style="color: #F56C6C;padding: 5px;">*</span><span :style="{ color: computedColor }">价格设定规则：进货价＜拼单价＜单买价＜市场价</span></div>
               </el-row>
             </div>
           </el-col>
@@ -192,7 +202,7 @@
               <div class="sku-box">
                 <el-row class="sku-th">
                   <div style="float: left; margin-left: -60px;">
-                    <el-form-item label="规格1：" prop="id">
+                    <el-form-item label="规格1：" :prop="'attr1.attrName'" :rules="rules.attrName">
                       <el-select v-model="formObj.attr1.attrName" size="mini" placeholder="请选择规格" :disabled="formObj.attr1.id == '' ? false : true">
                         <el-option v-for="item in skuOptions"
                           :key="item.value"
@@ -209,8 +219,8 @@
                 <el-row class="sku-td">
                   <el-radio-group v-model="attrRatio1" style="width: 100%;">
                     <el-col :offset="index % 3 != 0 ? 2 : 0" :span="6" v-for="(attr, index) in formObj.attr1.value" :key="index" style="margin-bottom: 10px;">
-                      <el-radio :label="index">
-                        <el-input v-model="attr.attrVal" placeholder="请输入规格名称" size="mini" @blur="addAttrSku1(attr.attrVal, index)" onKeypress="return (/[^,]/.test(String.fromCharCode(event.keyCode || event.which))) || event.which === 8"></el-input><i class="el-icon-close" style="color: red;" @click="delAttrVal1(index)" v-if="index != formObj.attr1.value.length - 1"></i>
+                      <el-radio :label="index" :disabled="!attr.attrVal" style="width: 100%;">
+                        <el-input v-model.trim="attr.attrVal" placeholder="请输入规格名称" size="mini" @blur="addAttrSku1(attr.attrVal, index)" onKeypress="return (/[^,]/.test(String.fromCharCode(event.keyCode || event.which))) || event.which === 8" maxLength="18"></el-input><i class="el-icon-close" style="color: red;" @click="delAttrVal1(index)" v-if="index != formObj.attr1.value.length - 1"></i>
                         <el-upload
                           class="sku-avatar-uploader"
                           action="/"
@@ -237,7 +247,7 @@
               <div class="sku-box" style="margin-top: 20px;" v-else>
                 <el-row class="sku-th">
                   <div style="float: left; margin-left: -60px;">
-                    <el-form-item label="规格2：" prop="gender">
+                    <el-form-item label="规格2：" :prop="'attr2.attrName'" :rules="rules.attrName">
                       <el-select v-model="formObj.attr2.attrName" size="mini" placeholder="请选择规格" :disabled="formObj.attr2.id == '' ? false : true">
                         <el-option v-for="item in skuOptions"
                           :key="item.value"
@@ -254,8 +264,8 @@
                 <el-row class="sku-td">
                   <el-radio-group v-model="attrRatio2" style="width: 100%;">
                     <el-col :offset="index % 3 != 0 ? 2 : 0" :span="6" v-for="(attr, index) in formObj.attr2.value" :key="index" style="margin-bottom: 10px;">
-                      <el-radio :label="index">
-                        <el-input v-model="attr.attrVal" placeholder="请输入规格" size="mini" @blur="addAttrSku2(attr.attrVal, index)" onKeypress="return (/[^,]/.test(String.fromCharCode(event.keyCode || event.which))) || event.which === 8"></el-input><i class="el-icon-close" style="color: red;" @click="delAttrVal2(index)" v-if="index != formObj.attr2.value.length - 1"></i>
+                      <el-radio :label="index" :disabled="!attr.attrVal" style="width: 100%;">
+                        <el-input v-model.trim="attr.attrVal" placeholder="请输入规格名称" size="mini" @blur="addAttrSku2(attr.attrVal, index)" onKeypress="return (/[^,]/.test(String.fromCharCode(event.keyCode || event.which))) || event.which === 8" maxLength="18"></el-input><i class="el-icon-close" style="color: red;" @click="delAttrVal2(index)" v-if="index != formObj.attr2.value.length - 1"></i>
                       </el-radio>
                     </el-col>
                   </el-radio-group>
@@ -290,7 +300,7 @@
                   </el-input>
                 </el-col>
                 <el-col :span="4" class="mul-set">
-                  <el-input v-model="uniSetting.supplyPrice" size="mini" placeholder="商品供货价" maxLength="10">
+                  <el-input v-model="uniSetting.supplyPrice" size="mini" placeholder="商品进货价" maxLength="10">
                     <template slot="append">元</template>
                   </el-input>
                 </el-col>
@@ -373,7 +383,7 @@
               </el-row>
               <el-row style="margin-left: -45px;">
                 <el-col :span="8">
-                  <el-form-item label="虚拟销量：" prop="salesVolume" size="mini">
+                  <el-form-item label="虚拟销量：" size="mini">
                     <el-input v-model="formObj.salesVolume" maxLength="10">
                       <template slot="append">件</template>
                     </el-input>
@@ -382,7 +392,7 @@
               </el-row>
               <hr size="1" style="margin: 0 -20px;"/>
               <el-row>
-                <div class="sku-tip">价格设定规则：供货价＜拼单价＜单买价＜市场价</div>
+                <div class="sku-tip"><span style="color: #F56C6C;padding: 5px;">*</span><span :style="{ color: computedColor }">价格设定规则：进货价＜拼单价＜单买价＜市场价</span></div>
               </el-row>
             </div>
           </el-col>
@@ -406,11 +416,11 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="单次限购：" prop="limitAmount">
+            <el-form-item label="单人限购：" prop="limitAmount">
               <el-input v-model="formObj.limitAmount" maxLength="10">
                 <template slot="append">件</template>
               </el-input>
-              注：0为不限购
+              <!-- 注：0为不限购 -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -530,8 +540,11 @@
   height: 40px;
 }
 .sku-table-img {
+  display: flex;
+  align-items: center;
   height: 60px;
-  line-height: 60px;
+  justify-content: center;
+  /*line-height: 60px;*/
 }
 .sku-table-btn {
   height: 60px;
@@ -589,7 +602,7 @@
   border-radius: 6px;
   position: relative;
   overflow: hidden;
-  float: left;
+  /*float: left;*/
   margin-right: 10px;
 }
 .goods-pre .el-icon-error {
@@ -637,7 +650,7 @@
   color: #8c939d;
   width: 100px;
   height: 100px;
-  line-height: 100px;
+  line-height: 80px;
   text-align: center;
 }
 .sku-avatar {
@@ -647,7 +660,7 @@
 }
 .sku-uploader-tips {
   line-height: 50px;
-  margin-top: -50px;
+  margin-top: -54px;
   font-size: 12px;
   color: #8c939d;
 }
@@ -696,7 +709,9 @@
 .sku-pre:hover .el-icon-error {
   display: block;
 }
-
+.sku-avatar-uploader-1 {
+  height: 60px;
+}
 .sku-avatar-uploader-1 .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 4px;
@@ -767,5 +782,9 @@
 }
 .sku-pre-1:hover .el-icon-error {
   display: block;
+}
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
 }
 </style>

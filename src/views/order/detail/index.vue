@@ -9,7 +9,7 @@
           付款方式：{{payType(detailObj.payType)}}
         </el-col>
         <el-col :span="8">
-          买家：{{detailObj.userPhone}}
+          买家：{{detailObj.wxUserName}}
         </el-col>
       </el-row>
       <el-row>
@@ -25,7 +25,7 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          付款时间：{{detailObj.payTime | dateFormat}}
+          付款时间：{{detailObj.payTime}}
         </el-col>
         <el-col :span="8">
           发货时间：{{detailObj.shippingTime | dateFormat}}
@@ -69,13 +69,13 @@
       </el-row>
       <el-row class="o-table-td">
         <el-col :span="3" class="o-table-content o-table-input">
-          {{detailObj.id}}
+          {{detailObj.idGoods}}
         </el-col>
         <el-col :span="6" class="o-table-content o-table-input">
           {{detailObj.name}}
         </el-col>
         <el-col :span="3" class="o-table-content o-table-input">
-          {{detailObj.codeName}}
+          {{!detailObj.codeName ? '无' : detailObj.codeName}}
         </el-col>
         <el-col :span="3" class="o-table-content o-table-input">
           ¥{{detailObj.price}}

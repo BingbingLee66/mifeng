@@ -142,8 +142,8 @@ export default {
       for (let data of datas) {
         let new_data = {
           '日期': formatDate(new Date(data.rptDate), 'yyyy-MM-dd'),
-          '交易额': data.shopPrice,
-          '商会分成': data.shopDeduction
+          '缴费人数': data.memberCount,
+          '缴费金额(元)': data.memberPrice
         }
         this.selectionDatas1.push(new_data)
       }
@@ -170,7 +170,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas1)
+      exportJson2Excel('会员缴费数据', this.selectionDatas1)
     },
     exportExcel2 (e) {
       if (this.selectionDatas2.length === 0) {
@@ -180,7 +180,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas2)
+      exportJson2Excel('会员缴费详情', this.selectionDatas2)
     },
     goSettle () {
       this.$router.push({ name: '结算提现' })

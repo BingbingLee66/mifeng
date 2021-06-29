@@ -3,8 +3,8 @@ import { getSetting, updateSetting } from '@/api/system/setting'
 export default {
   data() {
     var checkRatio = (rule, value, callback) => {
-      if (!/^[0, 1]$|^[0]\.\d{1,3}$/.test(value)) {
-        return callback(new Error('可以为0-1的最多3位小数'))
+      if (!/^(([1-9]\d|\d)(\.\d{1,3})?|100)$/.test(value)) {
+        return callback(new Error('可以为0-100，最多3位小数的数'))
       } else {
         return callback()
       }
@@ -53,14 +53,15 @@ export default {
     init () {
       this.getWechatFeeRatio()
       this.getMallFeeRatio()
-      // this.getMemberFeeRatio()
+      this.getMemberFeeRatio()
     },
     getWechatFeeRatio () {
       let params = {
         key: 'wechatFeeRatio'
       }
       getSetting(params).then(response => {
-        this.formObj1.wechatFeeRatio = response.data.value
+        const wechatFeeRatio = response.data.value
+        this.formObj1.wechatFeeRatio = wechatFeeRatio * 100
       })
     },
     getMallFeeRatio () {
@@ -68,7 +69,8 @@ export default {
         key: 'mallFeeRatio'
       }
       getSetting(params).then(response => {
-        this.formObj2.mallFeeRatio = response.data.value
+        const mallFeeRatio = response.data.value
+        this.formObj2.mallFeeRatio = mallFeeRatio * 100
       })
     },
     getMemberFeeRatio () {
@@ -76,7 +78,8 @@ export default {
         key: 'memberFeeRatio'
       }
       getSetting(params).then(response => {
-        this.formObj3.memberFeeRatio = response.data.value
+        const memberFeeRatio = response.data.value
+        this.formObj3.memberFeeRatio = memberFeeRatio * 100
       })
     },
     update1 (e) {
@@ -87,7 +90,7 @@ export default {
       }).then(() => {
         let params = {
           key: 'wechatFeeRatio',
-          value: this.formObj1.wechatFeeRatio
+          value: Math.floor(this.formObj1.wechatFeeRatio * 100) / 10000
         }
         updateSetting(params).then(response => {
           this.$message({
@@ -112,7 +115,7 @@ export default {
       }).then(() => {
         let params = {
           key: 'mallFeeRatio',
-          value: this.formObj2.mallFeeRatio
+          value: this.formObj2.mallFeeRatio / 100
         }
         updateSetting(params).then(response => {
           this.$message({
@@ -137,7 +140,7 @@ export default {
       }).then(() => {
         let params = {
           key: 'memberFeeRatio',
-          value: this.formObj3.memberFeeRatio
+          value: this.formObj3.memberFeeRatio / 100
         }
         updateSetting(params).then(response => {
           this.$message({

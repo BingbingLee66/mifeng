@@ -55,6 +55,7 @@
         value-format="yyyy-MM-dd"
         v-model="query.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"

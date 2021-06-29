@@ -87,10 +87,12 @@ export default {
         'status': this.query.status,
         'consignee': this.query.consignee,
         'consigneeMobile': this.query.consigneeMobile,
-        'startTime': this.query.date[0],
-        'endTime': this.query.date[1],
         'pageSize': this.limit,
         'page': this.currentpage
+      }
+      if (this.query.date) {
+        params['startTime'] = this.query.date[0]
+        params['endTime'] = this.query.date[1]
       }
       getAllList(params).then(response => {
         this.list = response.data.data.list
@@ -125,12 +127,14 @@ export default {
           statusStr = '待成团'
         } else if (data.status == 1) {
           statusStr = '待支付'
+        } else if (data.status == 0) {
+          statusStr = '取消订单'
         }
         let new_data = {
           '订单号': data.orderSn,
           '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
           '商品名称': data.name,
-          '商品规格': data.codeName,
+          '商品规格': !data.codeName ? '无' : data.codeName,
           '单价(元)': data.price,
           '下单数': data.count,
           '实付金额(元)': data.realPrice,
@@ -152,7 +156,8 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas)
+      // exportJson2Excel('订单管理', this.selectionDatas)
+      exportJson2Excel('订单列表', this.selectionDatas)
     },
     detail (e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))

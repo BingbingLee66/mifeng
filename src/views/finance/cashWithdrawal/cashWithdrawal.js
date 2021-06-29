@@ -1,4 +1,4 @@
-import { getChamberFinanceData, getChamberFinanceWithdraw, applyWithdrawalAdd, getBank, updateBank } from '@/api/finance/finance'
+import { getChamberFinanceData, getChamberFinanceWithdraw, applyWithdrawalAdd, getBank, updateBank, getChamberOptions } from '@/api/finance/finance'
 import { exportJson2Excel } from '@/utils/exportExcel'
 import { formatDate } from '@/utils/date' // 格式化时间戳
 // import { mapGetters } from 'vuex'
@@ -29,6 +29,7 @@ export default {
       limit: 10,
       listLoading: false,
       selectionDatas: [],
+      chamberOptions: [],
       rules: {
         chamberName: [
           { required: true, message: '商会名称不能为空', trigger: 'blur' }
@@ -47,8 +48,21 @@ export default {
   },
   computed: {
     // ...mapGetters(['has'])
+    chamberName () {
+      return function(ckey) {
+        let chamberName = ''
+        for (let chamber of this.chamberOptions) {
+          if (ckey === chamber.value) {
+            chamberName = chamber.label
+            break
+          }
+        }
+        return chamberName
+      }
+    }
   },
   created() {
+    this.getChamberOptions()
     this.init()
   },
   methods: {
@@ -75,6 +89,11 @@ export default {
       this.currentpage = 1
       this.limit = 10
       this.fetchData()
+    },
+    getChamberOptions () {
+      getChamberOptions().then(response => {
+        this.chamberOptions = response.data.data
+      })
     },
     init() {
       this.initDatePicker()
@@ -114,6 +133,14 @@ export default {
       } else if (this.activeName === '11') {
         getBank().then(response => {
           this.cardSet = response.data.theBank
+          if (this.cardSet === null) {
+            this.cardSet = {
+              chamberName: this.chamberName(this.$store.getters.ckey),
+              user: '',
+              bank: '',
+              account: ''
+            }
+          }
         })
       }
     },
@@ -169,7 +196,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas)
+      exportJson2Excel('提现记录', this.selectionDatas)
     },
     detail (e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))

@@ -55,6 +55,7 @@
         value-format="yyyy-MM-dd"
         v-model="query1.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
@@ -104,6 +105,7 @@
         value-format="yyyy-MM-dd"
         v-model="query2.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
@@ -158,6 +160,7 @@
         value-format="yyyy-MM-dd"
         v-model="query3.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
@@ -196,7 +199,7 @@
             {{scope.row.wechatPrice}}
           </template>
         </el-table-column>
-        <!-- <el-table-column label="平台服务费((元)">
+        <!-- <el-table-column label="平台服务费(元)">
           <template slot-scope="scope">
             {{scope.row.platfromPrice}}
           </template>
@@ -213,7 +216,7 @@
         </el-table-column>
         <el-table-column label="操作" >
           <template slot-scope="scope">
-            <el-button type="text" @click="detail($event, scope.row)">详情</el-button>
+            <el-button type="text" @click="detail(scope.row)">详情</el-button>
           </template>
         </el-table-column>
     </el-table>

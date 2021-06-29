@@ -68,7 +68,7 @@
       </el-table-column>
       <el-table-column label="规格" width="120px">
         <template slot-scope="scope">
-          {{scope.row.codeName}}
+          {{!scope.row.codeName ? '无' : scope.row.codeName}}
         </template>
       </el-table-column>
       <el-table-column label="供货价(元)" width="120px">

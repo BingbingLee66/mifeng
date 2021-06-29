@@ -125,7 +125,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas)
+      exportJson2Excel('收益数据', this.selectionDatas)
     },
     goSettle () {
       this.$router.push({ name: '结算提现' })

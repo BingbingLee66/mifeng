@@ -44,6 +44,7 @@
         value-format="yyyy-MM-dd"
         v-model="query1.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
@@ -62,14 +63,14 @@
           {{scope.row.rptDate | dateFormat2}}
         </template>
       </el-table-column>
-      <el-table-column label="交易额（元）">
+      <el-table-column label="缴费人数">
         <template slot-scope="scope">
-          {{scope.row.shopPrice}}
+          {{scope.row.memberCount}}
         </template>
       </el-table-column>
-      <el-table-column label="商会分成（元）">
+      <el-table-column label="缴费金额(元)">
         <template slot-scope="scope">
-          {{scope.row.shopDeduction}}
+          {{scope.row.memberPrice}}
         </template>
       </el-table-column>
     </el-table>
@@ -98,6 +99,7 @@
         value-format="yyyy-MM-dd"
         v-model="query2.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"

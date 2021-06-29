@@ -47,7 +47,7 @@
               </el-col>
             </el-form> 
           </el-row>
-          <!-- <el-row style="margin-top: -20px;">
+          <el-row style="margin-top: -20px;">
             <el-form ref="form3" :model="formObj3" :rules="rules3" label-position="left" label-width="auto">
               <el-col :offset="4" :span="12">
                 <el-form-item label="会费服务费：" prop="memberFeeRatio">
@@ -62,7 +62,7 @@
                 </el-form-item>
               </el-col>
             </el-form>
-          </el-row> -->
+          </el-row>
         </td>
       </tr>
     </table>

@@ -25,7 +25,7 @@ export default {
     },
     fetchData () {
       let params = {
-        key: 'autoDeliver'
+        key: 'autoReceipt'
       }
       getSetting(params).then(response => {
         this.day = response.data.value
@@ -41,7 +41,7 @@ export default {
         inputErrorMessage: '只能输入7-30的数字'
       }).then(({ value }) => {
         let params = {
-          key: 'autoDeliver',
+          key: 'autoReceipt',
           value: value
         }
         updateSetting(params).then(response => {
@@ -53,10 +53,10 @@ export default {
         })
       }).catch((err) => {
         console.log(err)
-        this.$message({
-          type: 'info',
-          message: '取消删除'
-        })
+        // this.$message({
+        //   type: 'info',
+        //   message: '取消删除'
+        // })
       })
     }
   }

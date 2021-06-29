@@ -73,9 +73,11 @@ export default {
           'page': this.currentpage,
           'goodId': this.query.id,
           'goodsName': this.query.name,
-          'status': this.query.status,
-          'startTime': this.query.date[0],
-          'endTime': this.query.date[1]
+          'status': this.query.status
+        }
+        if (this.query.date) {
+          params['startTime'] = this.query.date[0]
+          params['endTime'] = this.query.date[1]
         }
         getList(params).then(response => {
           this.list = response.data.data.list
@@ -140,15 +142,29 @@ export default {
       }
       batchUpdateGoodsStatus(params).then(response => {
         if (status === 1) {
-          this.$message({
-            message: '上架成功',
-            type: 'success'
-          })
+          if (response.data.flagStatus) { // 部分成功
+            this.$message({
+              message: '部分商品上架成功，' + response.data.msg,
+              type: 'warning'
+            })
+          } else {
+            this.$message({
+              message: '上架成功',
+              type: 'success'
+            })
+          }
         } else if (status === 2) {
-          this.$message({
-            message: '下架成功',
-            type: 'success'
-          })
+          if (response.data.flagStatus) { // 部分成功
+            this.$message({
+              message: '部分商品下架成功，' + response.data.msg,
+              type: 'warning'
+            })
+          } else {
+            this.$message({
+              message: '下架成功',
+              type: 'success'
+            })
+          }
         }
         this.fetchData()
       })
@@ -235,8 +251,8 @@ export default {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             inputValue: row.typeName,
-            inputPattern: /^[0-9]{1,2}$/,
-            inputErrorMessage: '只能填数字'
+            inputPattern: /^[1-9][0-9]{0,1}$/,
+            inputErrorMessage: '只能1-99的数字'
           }).then(({ value }) => {
             let params = {
               'goodId': row.id,
@@ -278,8 +294,8 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputValue: row.typeName,
-        inputPattern: /^[0-9]{1,2}$/,
-        inputErrorMessage: '只能填数字'
+        inputPattern: /^[1-9][0-9]{0,1}$/,
+        inputErrorMessage: '只能1-99的数字'
       }).then(({ value }) => {
         let params = {
           'goodId': row.id,

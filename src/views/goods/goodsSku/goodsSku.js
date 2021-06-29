@@ -8,12 +8,16 @@ import { getSupplierOptions } from '@/api/goods/supplier.js'
 import { getSetting } from '@/api/system/setting'
 import area from '@/utils/area'
 import videoPreview from '@/assets/img/video-pre.jpg'
+import draggable from 'vuedraggable' // 拖拽组件
 
 export default {
+  components: {
+    draggable
+  },
   data() {
     var checkFee = (rule, value, callback) => {
-      if (!/^[0]$|^(([1-9]\d*)|[0]\.\d{1,2}|([1-9]\d*)\.\d{1,2})$/.test(value)) {
-        return callback(new Error('可以为0或最多两位小数的正数'))
+      if (!/^(([1-9]\d*)|[0]\.([1-9]|[0-9][1-9])|([1-9]\d*)\.([1-9]|[0-9][1-9]))$/.test(value)) {
+        return callback(new Error('最多两位小数的正数'))
       } else {
         return callback()
       }
@@ -32,12 +36,23 @@ export default {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
     }
+    var checkLimitAmount = (rule, value, callback) => {
+      if (!/^$|^([1-9]\d*)$/.test(value)) {
+        return callback(new Error('必须是大于0的整数'))
+      } else {
+        callback() // 必须加上这个，不然一直塞在验证状态
+      }
+    }
     return {
+      flag: true,
       videoPreview: videoPreview,
       previewImgVisible: false,
       previewUrl: '',
       goodsId: '',
       type: 'add',
+      galleryLimit: 10,
+      descriptLimit: 1,
+      detailLimit: 20,
       galleryValid: true,
       descriptValid: true,
       detailValid: true,
@@ -48,6 +63,7 @@ export default {
         'name': '',
         'supplierId': '',
         'salesVolume': '',
+        'limitTime': '',
         'limitTimeStart': '',
         'limitTimeEnd': '',
         'limitAmount': '',
@@ -86,6 +102,9 @@ export default {
       attrIds2: 'abcdefghijklmnopqrstuvwxyz',
       attrId1: 0,
       attrId2: 0,
+      galleryDrag: false,
+      detailDrag: false,
+      priceVerify: true,
       rules: {
         name: [
           { required: true, message: '商品名称不能为空', trigger: 'blur' },
@@ -107,31 +126,39 @@ export default {
         ],
         stock: [
           { required: true, message: '库存不能为空', trigger: 'blur' },
-          { validator: checkNumber, trigger: 'change' }
+          { validator: checkNumber2, trigger: 'change' }
         ],
         marketingPrice: [
-          { required: true, message: '商品市场价不能为空', trigger: 'blur' },
+          { required: true, message: '市场价不能为空', trigger: 'blur' },
           { validator: checkFee, trigger: 'change' }
         ],
         supplyPrice: [
-          { required: true, message: '商品供货价不能为空', trigger: 'blur' },
+          { required: true, message: '供货价不能为空', trigger: 'blur' },
           { validator: checkFee, trigger: 'change' }
         ],
         salesVolume: [
           { required: true, message: '虚拟销量不能为空', trigger: 'blur' },
-          { validator: checkNumber, trigger: 'change' }
+          { validator: checkNumber2, trigger: 'change' }
         ],
         limitTime: [
           { required: true, message: '请选择限时购买日期', trigger: 'change' }
         ],
         limitAmount: [
-          { required: true, message: '单次限购不能为空', trigger: 'blur' },
-          { validator: checkNumber2, trigger: 'change' }
+          // { required: true, message: '单次限购不能为空', trigger: 'blur' },
+          { validator: checkLimitAmount, trigger: 'change' }
+        ],
+        attrName: [
+          { required: true, message: '规格类型不能为空', trigger: 'change' }
         ]
       }
     }
   },
   mounted () {
+    // 防止火狐浏览器拖拽的时候以新标签打开
+    document.body.ondrop = function(event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
     if (this.$route.params.goodsId) {
       this.goodsId = this.$route.params.goodsId
       this.init()
@@ -143,8 +170,28 @@ export default {
     this.getAttrOptions()
   },
   computed: {
+    effectiveLength () {
+      return function (obj) {
+        let length = 0
+        obj.forEach((o) => {
+          if (o !== '') {
+            length++
+          }
+        })
+        return length
+      }
+    },
+    computedColor () {
+      this.verifyPrice()
+      return this.priceVerify ? '#999' : '#F56C6C'
+    }
   },
   created () {
+    // 监听刷新时间
+    // window.addEventListener('beforeunload', e => this.refreshView(e))
+  },
+  destroyed () {
+    // window.removeEventListener('beforeunload', e => this.refreshView(e))
   },
   methods: {
     closeTab () {
@@ -200,10 +247,14 @@ export default {
         const obj = response.data.goodsDetail
         this.formObj = obj
         this.formObj['gallery'] = obj.gallery.split(',')
-        this.formObj['gallery'].push('')
+        if (this.formObj.gallery.length !== this.galleryLimit) {
+          this.formObj['gallery'].push('')
+        }
         this.formObj['descript'] = obj.descript
         this.formObj['detail'] = obj.detail.split(',')
-        this.formObj['detail'].push('')
+        if (this.formObj.detail.length !== this.detailLimit) {
+          this.formObj['detail'].push('')
+        }
         if (this.formObj.attr1 === null) {
           this.formObj.attr1 = {
             'id': '',
@@ -230,10 +281,33 @@ export default {
           this.attrId2 = this.attrId2 + 1
         }
         let limitTime = []
-        limitTime.push(obj.limitTimeStart)
-        limitTime.push(obj.limitTimeEnd)
-        this.formObj['limitTime'] = limitTime
+        if (!!obj.limitTimeStart && !!obj.limitTimeEnd) {
+          limitTime.push(obj.limitTimeStart)
+          limitTime.push(obj.limitTimeEnd)
+          // this.formObj['limitTime'] = limitTime
+        } 
+        this.$set(this.formObj, 'limitTime', limitTime)
+        if (this.formObj.salesVolume === 0) {
+          this.formObj.salesVolume = ''
+        }
+        if (this.formObj.limitAmount === 0) {
+          this.formObj.limitAmount = ''
+        }
       })
+    },
+    addSupplier (val) {
+      if (val) {
+        if (this.supplierOptions.length === 0) {
+          this.$confirm('你还未添加供货商家，添加后才可发布商品哦！', '提示', {
+            confirmButtonText: '立即添加',
+            cancelButtonText: '取消'
+          }).then(() => {
+            this.$router.push({ name: '供货商家管理' })
+          }).catch((err) => {
+            console.log(err)
+          })
+        }
+      }
     },
     setSku () {
       if (this.formObj.specType === 1) { // 多规格
@@ -276,6 +350,7 @@ export default {
     },
     beforeAvatarUploadGallery (file) {
       let result = true
+        console.log(file)
       if (file.type.indexOf('image/') !== -1) { // 图片
         if (file.type !== 'image/jpeg' &&
               file.type !== 'image/jpg' &&
@@ -287,18 +362,19 @@ export default {
           this.$message.error('上传图片大小不能超过 2MB!')
           result = false
         }
-      } else if (file.type.indexOf('video/') !== -1) { // 图片
-        if (file.type !== 'video/mp4' &&
-              file.type !== 'video/rmvb' &&
-              file.type !== 'video/avi') {
-          this.$message.error('上传视频只能是 MP4 、 RMVB 、 或 AVI 格式!')
+      } else if (file.type.indexOf('video/') !== -1) { // 视频
+        if (file.type !== 'video/mp4') {
+          this.$message.error('上传视频只能是 MP4 格式!')
           result = false
         }
-        if (file.size > 1024 * 1024 * 10) {
-          this.$message.error('上传视频大小不能超过 10MB!')
+        if (file.size > 1024 * 1024 * 200) {
+          this.$message.error('上传视频大小不能超过 200MB!')
           result = false
         }
-      } 
+      } else {
+        result = false
+        this.$message.error('不支持的文件格式!')
+      }
       return result
     },
     uploadGallery (content, index) {
@@ -306,7 +382,9 @@ export default {
       formData.append('file', content.file)
       uploadGoodsImg(formData).then(response => {
         this.formObj.gallery.splice(index, 1, response.data.filePath)
-        if (this.formObj.gallery.length - 1 === index) {
+        if (this.formObj.gallery.length === this.galleryLimit) {
+          // 上传达到限制不添加
+        } else {
           this.formObj.gallery.push('')
         }
         this.galleryValid = true
@@ -325,7 +403,9 @@ export default {
       formData.append('file', content.file)
       uploadGoodsImg(formData).then(response => {
         this.formObj.detail.splice(index, 1, response.data.filePath)
-        if (this.formObj.detail.length - 1 === index) {
+        if (this.formObj.detail.length === this.detailLimit) {
+          // 上传达到限制不添加
+        } else if (this.formObj.detail.length - 1 === index) {
           this.formObj.detail.push('')
         }
         this.detailValid = true
@@ -407,13 +487,19 @@ export default {
       this.previewUrl = url
     },
     clearGalleryImg (index) {
-      this.formObj.gallery.splice(index, 1, '')
+      this.formObj.gallery.splice(index, 1)
+      if (this.formObj.gallery[this.formObj.gallery.length - 1] !== '') {
+        this.formObj.gallery.push('')
+      }
     },
     clearDescriptImg () {
       this.formObj.descript = ''
     },
     clearDetailImg (index) {
-      this.formObj.detail.splice(index, 1, '')
+      this.formObj.detail.splice(index, 1)
+      if (this.formObj.detail[this.formObj.detail.length - 1] !== '') {
+        this.formObj.detail.push('')
+      }
     },
     clearSkuImg (index) {
       this.formObj.attr1.value[index].imgUrl = ''
@@ -459,6 +545,7 @@ export default {
           //   this.attrId1 = this.attrId1 + 1
           // } else {
             this.formObj.attr1.value.splice(index, 1)
+            this.attrRatio1 = -1
           // }
         }).catch((err) => {
           console.log(err)
@@ -503,8 +590,8 @@ export default {
           //   this.attrId2 = this.attrId2 + 1
           // } else {
             this.formObj.attr2.value.splice(index, 1)
+            this.attrRatio2 = -1
           // }
-          this.formObj.attr2.value.splice(index, 1)
         }).catch((err) => {
           console.log(err)
         })
@@ -542,7 +629,7 @@ export default {
       }
       if (this.formObj.attr2 !== null) {
         for (let attr of this.formObj.attr2.value) {
-          for (let sku of this.this.formObj.multiSku) {
+          for (let sku of this.formObj.multiSku) {
             let splitStr = sku.codeName.split(',')
             for (let str of splitStr) {
               if (str === attr.attrVal) {
@@ -572,6 +659,8 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.attrRatio1 = -1
+          this.attrRatio2 = -1
           this.attrId1 = 0
           this.attrId2 = 0
           this.formObj.attr1 = {
@@ -629,9 +718,16 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          for (let ind in this.formObj.multiSku) {
+            if (!!this.formObj.multiSku[ind].code && this.formObj.multiSku[ind].code.indexOf(',') === -1) {
+              continue
+            }
+            this.formObj.multiSku.splice(ind, 1)
+          }
+          this.attrRatio2 = -1
           this.attrId2 = 0
           this.formObj.attr2 = null
-          this.formObj.multiSku = []
+          // this.formObj.multiSku = []
         }).catch((err) => {
           console.log(err)
           return
@@ -658,10 +754,13 @@ export default {
       let attrValue2 = this.attrRatio2 === -1 ? {} : this.formObj.attr2.value[this.attrRatio2]
       let code = ''
       let codeName = attrValue1.attrVal
+      let singleCode = ''
       if (!!attrValue1.id) {
         code = code + attrValue1.id
+        singleCode = attrValue1.id
       } else {
         code = code + attrValue1.fakeId
+        singleCode = attrValue1.fakeId
       }
       if (this.attrRatio2 > -1) {
         if (!!attrValue2.id) {
@@ -670,6 +769,22 @@ export default {
         } else {
           code = code + ',' + attrValue2.fakeId
           codeName = codeName + ',' + attrValue2.attrVal
+        }
+      }
+      for (let obj of this.formObj.multiSku) {
+        if (obj.code === code) {
+          this.$message({
+            message: '不能重复添加',
+            type: 'info'
+          })
+          return
+        }
+        if (singleCode === obj.code) {
+          this.$message({
+            message: '同一个名称不能单双规格共存',
+            type: 'info'
+          })
+          return
         }
       }
       let sku = {
@@ -698,26 +813,81 @@ export default {
         })
       })
     },
+    verifyPrice () {
+      // 供货价＜拼单价＜单买价＜市场价
+      let valid = true
+      if (this.formObj.specType === 0) { // 单品
+        if (parseFloat(this.formObj.singleSku[0].supplyPrice) < parseFloat(this.formObj.singleSku[0].fightPrice) &&
+          parseFloat(this.formObj.singleSku[0].fightPrice) < parseFloat(this.formObj.singleSku[0].price) &&
+          parseFloat(this.formObj.singleSku[0].price) < parseFloat(this.formObj.singleSku[0].marketingPrice)) {
+          this.priceVerify = true
+          valid = true
+        } else {
+          this.priceVerify = false
+          valid = false
+        }
+      } else if (this.formObj.specType === 1) { // 多规格
+        this.formObj.multiSku.forEach( obj => {
+          if (parseFloat(obj.supplyPrice) < parseFloat(obj.fightPrice) &&
+            parseFloat(obj.fightPrice) < parseFloat(obj.price) &&
+            parseFloat(obj.price) < parseFloat(obj.marketingPrice)) {
+            this.priceVerify = true
+            valid = true
+          } else {
+            this.priceVerify = false
+            valid = false
+          }
+        })
+      }
+      return valid
+    },
     save () {
       this.$refs['form'].validate((valid) => {
         if (this.formObj.gallery.length === 1) {
           this.galleryValid = false
           valid = false
+          this.$message({
+            type: 'info',
+            message: '至少上传一张商品轮播图'
+          })
         }
         if (this.formObj.descript.length === 0) {
           this.descriptValid = false
           valid = false
+          this.$message({
+            type: 'info',
+            message: '至少上传一张商品列表图'
+          })
         }
         if (this.formObj.detail.length === 1) {
           this.detailValid = false
           valid = false
+          this.$message({
+            type: 'info',
+            message: '至少上传一张商品详情图'
+          })
+        }
+        if (!this.verifyPrice()) {
+          valid = false
+          this.$message({
+            type: 'info',
+            message: '请注意价格规则：供货价<拼单价<单买价<市场价。'
+          })
         }
         if (valid) {
           let galleryArr = this.formObj.gallery
-          galleryArr.pop()
+          for (let index in galleryArr) {
+            if (galleryArr[index] === '') {
+              galleryArr.splice(index, 1)
+            }
+          }
           const gallery = galleryArr.join(',')
           let detailArr = this.formObj.detail
-          detailArr.pop()
+          for (let index in detailArr) {
+            if (detailArr[index] === '') {
+              detailArr.splice(index, 1)
+            }
+          }
           const detail = detailArr.join(',')
           let attr1 = {}
           let attr2 = {}
@@ -738,6 +908,11 @@ export default {
               attr2.value = attrTransf2
             }
           }
+          sku.forEach( o => {
+            if (o.supplyPrice === '') {
+              o.supplyPrice = 0
+            }
+          })
           let obj = {
             'id': this.formObj.id,
             'gallery': gallery,
@@ -745,8 +920,8 @@ export default {
             'detail': detail,
             'name': this.formObj.name,
             'supplierId': this.formObj.supplierId,
-            'salesVolume': this.formObj.salesVolume,
-            'limitAmount': this.formObj.limitAmount,
+            'salesVolume': this.formObj.salesVolume === '' ? 0 : this.formObj.salesVolume,
+            'limitAmount': this.formObj.limitAmount === '' ? 0 : this.formObj.limitAmount,
             'specType': this.formObj.specType,
             'attr1': attr1,
             'attr2': attr2,
@@ -777,6 +952,45 @@ export default {
           return false
         }
       })
+    },
+    galleryStart () {
+      this.galleryDrag = true
+    },
+    galleryEnd (evt) {
+      this.galleryDrag = false
+      // evt.item; //可以知道拖动的本身
+      // evt.to; // 可以知道拖动的目标列表
+      // evt.from; // 可以知道之前的列表
+      // evt.oldIndex; // 可以知道拖动前的位置
+      // evt.newIndex; // 可以知道拖动后的位置
+    },
+    detailStart () {
+      this.detailDrag = true
+    },
+    detailEnd (evt) {
+      this.detailDrag = false
+      // evt.item; //可以知道拖动的本身
+      // evt.to; // 可以知道拖动的目标列表
+      // evt.from; // 可以知道之前的列表
+      // evt.oldIndex; // 可以知道拖动前的位置
+      // evt.newIndex; // 可以知道拖动后的位置
+    },
+    refreshView (e) {
+      e.returnValue = false
+      // this.$confirm('系统可能不会保存您所做的修改', '重新加载此网站？', {
+      //   confirmButtonText: '重新加载',
+      //   cancelButtonText: '取消'
+      // }).then(() => {
+      //   if (this.$route.params.goodsId) {
+      //     this.goodsId = this.$route.params.goodsId
+      //     this.init()
+      //     this.type = 'edit'
+      //   } else {
+      //     this.type = 'add'
+      //   }
+      // }).catch((err) => {
+      //   console.log(err)
+      // })
     }
   }
 }

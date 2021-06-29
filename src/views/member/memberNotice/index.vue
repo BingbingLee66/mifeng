@@ -4,12 +4,12 @@
       <el-form ref="query" label-position="left" :model="query">
         <el-row>
           <el-col :span="5">
-            <el-form-item label="会员姓名：" label-width="100px">
+            <el-form-item label="会员姓名/联系人姓名：" label-width="100px">
               <el-input v-model="query.memberName" placeholder="请输入会员姓名"/>
             </el-form-item>
           </el-col>
           <el-col :span="5" style="margin-left: 10px;">
-            <el-form-item label="手机号：" label-width="100px">
+            <el-form-item label="手机号/联系人电话：" label-width="100px">
               <el-input v-model="query.phone" placeholder="请输入手机号"/>
             </el-form-item>
           </el-col>
@@ -40,7 +40,7 @@
       <el-button type="primary" @click="openSmsVisible($event)" :actionid="getId('', '发短信')" v-if="has('', '发短信')">发短信</el-button>
       <el-button type="primary" @click="smsRecords($event)" :actionid="getId('', '短信记录')" v-if="has('', '短信记录')">短信记录</el-button>
     </el-row>
-    <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+    <el-table id="out-table" ref="membertable" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55px">
       </el-table-column>
       <!-- <el-table-column type="index" label="序号" width="60px">
@@ -50,12 +50,12 @@
           {{scope.row.id}}
         </template>
       </el-table-column> -->
-      <el-table-column label="会员姓名">
+      <el-table-column label="会员姓名/联系人姓名">
         <template slot-scope="scope">
           {{scope.row.memberName}}
         </template>
       </el-table-column>
-      <el-table-column label="手机号">
+      <el-table-column label="手机号/联系人电话">
         <template slot-scope="scope">
           {{scope.row.phone}}
         </template>

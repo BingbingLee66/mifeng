@@ -5,42 +5,49 @@
         概览
       </div>
       <div class="data-card">
-        <div class="m-card-box">
+        <div class="cm-card-box">
           <div class="card-box-3">
             <div class="card-key">在售商品数</div>
             <div class="card-value">{{pfStatistics.activeGoodsTotal}}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
-        <div class="m-card-box">
+        <div class="cm-card-box">
           <div class="card-box-3">
             <div class="card-key">累计上架商品数</div>
             <div class="card-value">{{pfStatistics.goodsTotal}}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
-        <div class="m-card-box">
+        <div class="cm-card-box">
           <div class="card-box-3">
-            <div class="card-key">累计收益（商会分成）</div>
+            <div class="card-key">累计商会收入</div>
+            <div class="card-value">{{pfStatistics.tradingTotal-pfStatistics.incomeTotal}}</div>
+          </div>
+        </div>
+        <div class="h-cut-line"></div>
+        <div class="cm-card-box">
+          <div class="card-box-3">
+            <div class="card-key">累计平台收益</div>
             <div class="card-value">{{pfStatistics.incomeTotal}}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
-        <div class="m-card-box">
+        <div class="cm-card-box">
           <div class="card-box-3">
             <div class="card-key">累计成交金额</div>
             <div class="card-value">{{pfStatistics.tradingTotal}}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
-        <div class="m-card-box">
+        <div class="cm-card-box">
           <div class="card-box-3">
             <div class="card-key">累计订单数</div>
             <div class="card-value">{{pfStatistics.goodsOrderTotal}}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
-        <div class="m-card-box">
+        <div class="cm-card-box">
           <div class="card-box-3">
             <div class="card-key">累计访问人数</div>
             <div class="card-value" style="color: #FF0000;">{{pfStatistics.accessTotal}}</div>
@@ -63,6 +70,7 @@
         value-format="yyyy-MM-dd"
         v-model="query1.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
@@ -81,24 +89,24 @@
           {{chamberName(scope.row.ckey)}}
         </template>
       </el-table-column>
-      <el-table-column label="上架商品数">
+      <el-table-column label="上架商品数" prop="goodsTotal" sortable>
         <template slot-scope="scope">
           {{scope.row.goodsTotal}}
         </template>
       </el-table-column>
-      <el-table-column label="订单数">
+      <el-table-column label="订单数" prop="goodsOrderTotal" sortable>
         <template slot-scope="scope">
           {{scope.row.goodsOrderTotal}}
         </template>
       </el-table-column>
-      <el-table-column label="成交额(元)">
+      <el-table-column label="成交额(元)" prop="tradingTotal" sortable>
         <template slot-scope="scope">
           {{scope.row.tradingTotal}}
         </template>
       </el-table-column>
-      <el-table-column label="商会分成(元)">
+      <el-table-column label="商会收入(元)">
         <template slot-scope="scope">
-          {{scope.row.platformDeduction}}
+          {{scope.row.tradingTotal-scope.row.platformDeduction}}
         </template>
       </el-table-column>
       <el-table-column label="付款人数">
@@ -132,6 +140,7 @@
         value-format="yyyy-MM-dd"
         v-model="query2.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
@@ -150,32 +159,32 @@
           {{scope.row.goodsName}}
         </template>
       </el-table-column>
-      <el-table-column label="上架时间">
+      <el-table-column label="上架时间" prop="createTime" sortable>
         <template slot-scope="scope">
           {{scope.row.createTime | dateFormat}}
         </template>
       </el-table-column>
-      <el-table-column label="访客数">
+      <el-table-column label="访客数" prop="visitorsCount" sortable>
         <template slot-scope="scope">
           {{scope.row.visitorsCount}}
         </template>
       </el-table-column>
-      <el-table-column label="浏览量">
+      <el-table-column label="浏览量" prop="viewingCount" sortable>
         <template slot-scope="scope">
           {{scope.row.viewingCount}}
         </template>
       </el-table-column>
-      <el-table-column label="下单数">
+      <el-table-column label="下单数" prop="goodsOrderTotal" sortable>
         <template slot-scope="scope">
           {{scope.row.goodsOrderTotal}}
         </template>
       </el-table-column>
-      <el-table-column label="成交额(元)">
+      <el-table-column label="成交额(元)" prop="tradingTotal" sortable>
         <template slot-scope="scope">
           {{scope.row.tradingTotal}}
         </template>
       </el-table-column>
-      <el-table-column label="付款人数">
+      <el-table-column label="付款人数" prop="paidMembers" sortable>
         <template slot-scope="scope">
           {{scope.row.paidMembers}}
         </template>
@@ -184,6 +193,7 @@
         <template slot-scope="scope">
           <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售</div>
           <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">下架</div>
+          <div v-if="scope.row.isOnSale == 5">平台下架</div>
           <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock == 0">售罄</div>
         </template>
       </el-table-column>
@@ -213,6 +223,7 @@
         value-format="yyyy-MM-dd"
         v-model="query3.date"
         type="daterange"
+        :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
@@ -272,9 +283,9 @@
   border-radius: 2px;
   border: 1px solid #ccc;
 }
-.m-card-box {
+.cm-card-box {
   float: left;
-  width: 16.6%;
+  width: 14.2%;
   height: 100%;
   text-align: center;
   display: table;

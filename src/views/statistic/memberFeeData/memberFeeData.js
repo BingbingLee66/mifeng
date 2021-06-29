@@ -102,7 +102,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel(this.selectionDatas)
+      exportJson2Excel('会员缴费数据', this.selectionDatas)
     }
   }
 }

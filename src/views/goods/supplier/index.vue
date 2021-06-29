@@ -70,7 +70,7 @@
         <el-row>
           <el-col :offset="2" :span="20">
             <el-form-item label="供货商家名称：" prop="supplierName">
-              <el-input v-model="formObj.supplierName" placeholder="请填写供货商家名称"></el-input>
+              <el-input v-model.trim="formObj.supplierName" placeholder="请填写供货商家名称"></el-input>
             </el-form-item>
           </el-col>
         </el-row>

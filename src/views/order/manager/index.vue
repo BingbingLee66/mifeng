@@ -5,7 +5,7 @@
         <el-row>
           <el-col :span="4">
             <el-form-item label="订单号：">
-              <el-input v-model="query.orderSn" placeholder="请输入订单号"/>
+              <el-input v-model.trim="query.orderSn" placeholder="请输入订单号"/>
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left:10px;">
@@ -15,14 +15,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4" style="margin-left:10px;">
+<!--           <el-col :span="4" style="margin-left:10px;">
             <el-form-item label="商品ID：">
-              <el-input v-model="query.goodId" placeholder="请输入商品ID"/>
+              <el-input v-model.trim="query.goodId" type="number" placeholder="请输入商品ID"/>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="4" style="margin-left:10px;">
             <el-form-item label="商品名称：">
-              <el-input v-model="query.goodName" placeholder="请输入商品名称"/>
+              <el-input v-model.trim="query.goodName" placeholder="请输入商品名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left:10px;">
@@ -34,17 +34,18 @@
                 <el-option label="已完成" :value="6"></el-option>
                 <el-option label="待成团" :value="4"></el-option>
                 <el-option label="待支付" :value="1"></el-option>
+                <el-option label="取消订单" :value="0"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left:10px;">
             <el-form-item label="收货人姓名：">
-              <el-input v-model="query.consignee" placeholder="请输入收货人姓名"/>
+              <el-input v-model.trim="query.consignee" placeholder="请输入收货人姓名"/>
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left:10px;">
             <el-form-item label="收货人手机号：">
-              <el-input v-model="query.consigneeMobile" placeholder="请输入收货人手机号"/>
+              <el-input v-model.trim="query.consigneeMobile" placeholder="请输入收货人手机号"/>
             </el-form-item>
           </el-col>
           <el-col :span="8" style="margin-left:10px;">
@@ -104,7 +105,7 @@
       </el-table-column>
       <el-table-column label="商品规格" width="80px">
         <template slot-scope="scope">
-          {{scope.row.codeName}}
+          {{!scope.row.codeName ? '无' : scope.row.codeName}}
         </template>
       </el-table-column>
       <el-table-column label="单价(元)" width="80px">
@@ -149,6 +150,7 @@
           <div v-if="scope.row.status == 6">已完成</div>
           <div v-if="scope.row.status == 4">待成团</div>
           <div v-if="scope.row.status == 1">待支付</div>
+          <div v-if="scope.row.status == 0">取消订单</div>
         </template>
       </el-table-column>
       <el-table-column label="操作" >

@@ -146,6 +146,7 @@ export default {
               type: 'success'
             })
             this.selectionDatas = []
+            this.$refs.membertable.clearSelection() // 取消多选
             this.smsVisible = false
           })
         } else {
