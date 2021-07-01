@@ -87,7 +87,8 @@
       :total="total1"
       :current-page.sync="currentpage1"
       @size-change="handleSizeChange1"
-      @current-change="handleCurrentChange1">
+      @current-change="handleCurrentChange1"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
 
     <el-tabs>
@@ -142,7 +143,8 @@
       :total="total2"
       :current-page.sync="currentpage2"
       @size-change="handleSizeChange2"
-      @current-change="handleCurrentChange2">
+      @current-change="handleCurrentChange2"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
 
     <el-tabs>
@@ -228,7 +230,8 @@
       :total="total3"
       :current-page.sync="currentpage3"
       @size-change="handleSizeChange3"
-      @current-change="handleCurrentChange3">
+      @current-change="handleCurrentChange3"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
     <el-dialog
       title="提现详情"

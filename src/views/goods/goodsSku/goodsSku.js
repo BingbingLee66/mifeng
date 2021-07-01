@@ -22,6 +22,13 @@ export default {
         return callback()
       }
     }
+    var checkFee2 = (rule, value, callback) => {
+      if (!/^[0]$|^(([1-9]\d*)|[0]\.([1-9]|[0-9][1-9])|([1-9]\d*)\.([1-9]|[0-9][1-9]))$/.test(value)) {
+        return callback(new Error('最多两位小数的正数'))
+      } else {
+        return callback()
+      }
+    }
     var checkNumber = (rule, value, callback) => {
       if (!/^([1-9]\d*)$/.test(value)) {
         return callback(new Error('必须是大于0的整数'))
@@ -80,7 +87,7 @@ export default {
             'codeName': '',
             'price': '',
             'fightPrice': '',
-            'supplyPrice': '',
+            'supplyPrice': 0,
             'marketingPrice': '',
             'stock': ''
           }
@@ -133,8 +140,8 @@ export default {
           { validator: checkFee, trigger: 'change' }
         ],
         supplyPrice: [
-          { required: true, message: '供货价不能为空', trigger: 'blur' },
-          { validator: checkFee, trigger: 'change' }
+          { required: true, message: '进货价不能为空', trigger: 'blur' },
+          { validator: checkFee2, trigger: 'change' }
         ],
         salesVolume: [
           { required: true, message: '虚拟销量不能为空', trigger: 'blur' },
@@ -320,7 +327,6 @@ export default {
           })
           this.attrId1 = this.attrId1 + 1
         }
-        console.log(this.formObj.attr1)
       } else if (this.formObj.specType === 0) { // 单品
         if (this.formObj.singleSku.length === 0) {
           let sku = {
@@ -328,7 +334,7 @@ export default {
             'codeName': '',
             'price': '',
             'fightPrice': '',
-            'supplyPrice': '',
+            'supplyPrice': 0,
             'marketingPrice': '',
             'stock': ''
           }
@@ -337,6 +343,11 @@ export default {
       }
     },
     beforeAvatarUpload (file) {
+      const reg = new RegExp('^/.jpg|.jpeg|.png/$')
+      if (reg.test(file.name)) {
+        this.$message.error('不支持的文件格式!')
+        return false
+      }
       if (file.type !== 'image/jpeg' &&
             file.type !== 'image/jpg' &&
             file.type !== 'image/png') {
@@ -350,30 +361,35 @@ export default {
     },
     beforeAvatarUploadGallery (file) {
       let result = true
-        console.log(file)
-      if (file.type.indexOf('image/') !== -1) { // 图片
-        if (file.type !== 'image/jpeg' &&
-              file.type !== 'image/jpg' &&
-              file.type !== 'image/png') {
-          this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
-          result = false
-        }
-        if (file.size > 1024 * 1024 * 2) {
-          this.$message.error('上传图片大小不能超过 2MB!')
-          result = false
-        }
-      } else if (file.type.indexOf('video/') !== -1) { // 视频
-        if (file.type !== 'video/mp4') {
-          this.$message.error('上传视频只能是 MP4 格式!')
-          result = false
-        }
-        if (file.size > 1024 * 1024 * 200) {
-          this.$message.error('上传视频大小不能超过 200MB!')
-          result = false
-        }
-      } else {
+      const reg = new RegExp('^/.jpg|.jpeg|.png/$')
+      if (reg.test(file.name)) {
         result = false
         this.$message.error('不支持的文件格式!')
+      } else {
+        if (file.type.indexOf('image/') !== -1) { // 图片
+          if (file.type !== 'image/jpeg' &&
+                file.type !== 'image/jpg' &&
+                file.type !== 'image/png') {
+            this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+            result = false
+          }
+          if (file.size > 1024 * 1024 * 2) {
+            this.$message.error('上传图片大小不能超过 2MB!')
+            result = false
+          }
+        } else if (file.type.indexOf('video/') !== -1) { // 视频
+          if (file.type !== 'video/mp4') {
+            this.$message.error('上传视频只能是 MP4 格式!')
+            result = false
+          }
+          if (file.size > 1024 * 1024 * 200) {
+            this.$message.error('上传视频大小不能超过 200MB!')
+            result = false
+          }
+        } else {
+          result = false
+          this.$message.error('不支持的文件格式!')
+        }
       }
       return result
     },
@@ -426,6 +442,15 @@ export default {
       })
     },
     addAttrSku1 (val, index) {
+      if (val === '') {
+        this.attrRatio1 = -1
+        this.$message({
+          message: '规格名称不能为空',
+          type: 'info'
+        })
+        val = '规格名称' + (index + 1)
+        this.formObj.attr1.value[index].attrVal = val
+      }
       let attr = this.formObj.attr1.value[index]
       for (let sku of this.formObj.multiSku) {
         let splitStr = sku.code.split(',')
@@ -450,6 +475,15 @@ export default {
       }
     },
     addAttrSku2 (val, index) {
+      if (val === '') {
+        this.attrRatio2 = -1
+        this.$message({
+          message: '规格名称不能为空',
+          type: 'info'
+        })
+        val = '规格名称' + (index + 1)
+        this.formObj.attr2.value[index].attrVal = val
+      }
       let attr = this.formObj.attr2.value[index]
       for (let sku of this.formObj.multiSku) {
         let splitStr = sku.code.split(',')
@@ -771,6 +805,12 @@ export default {
           codeName = codeName + ',' + attrValue2.attrVal
         }
       }
+      this.attrRatio1 = -1
+      this.attrRatio2 = -1
+      let isSingle = false
+      if (singleCode == code) {
+        isSingle = true
+      }
       for (let obj of this.formObj.multiSku) {
         if (obj.code === code) {
           this.$message({
@@ -779,9 +819,16 @@ export default {
           })
           return
         }
-        if (singleCode === obj.code) {
+        if (isSingle && singleCode == obj.code.split(',')[0]) { // 单规格匹配多规格
           this.$message({
-            message: '同一个名称不能单双规格共存',
+            message: '已存在多规格，请删除后再添加',
+            type: 'info'
+          })
+          return
+        }
+        if (!isSingle && obj.code.split(',').length === 1 && singleCode == obj.code) { // 双规格匹配单规格
+          this.$message({
+            message: '已存在单规格，请删除后再添加',
             type: 'info'
           })
           return
@@ -792,7 +839,7 @@ export default {
         'codeName': codeName,
         'price': '',
         'fightPrice': '',
-        'supplyPrice': '',
+        'supplyPrice': 0,
         'marketingPrice': '',
         'stock': '',
         'skuImgUrl': ''

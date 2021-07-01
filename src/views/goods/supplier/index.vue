@@ -60,7 +60,8 @@
       :total="total"
       :current-page.sync="currentpage"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+      @current-change="handleCurrentChange"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
     <el-dialog
       title="新增/编辑供货商家"

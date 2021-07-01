@@ -22,12 +22,12 @@
       </el-table-column>
       <el-table-column label="合计(元)" width="180px">
         <template slot-scope="scope">
-          {{scope.row.cumulativeShopPrice + scope.row.cumulativeMemberPrice}}
+          {{Math.floor((scope.row.cumulativeShopPrice + scope.row.cumulativeMemberPrice) * 100) / 100}}
         </template>
       </el-table-column>
       <el-table-column label="待提现(元)" width="180px">
         <template slot-scope="scope">
-          {{scope.row.cumulativeMemberDeduction + scope.row.cumulativeShopDeduction}}
+          {{Math.floor((scope.row.cumulativeMemberDeduction + scope.row.cumulativeShopDeduction) * 100) / 100}}
         </template>
       </el-table-column>
       <!-- <el-table-column label="操作人">
@@ -49,7 +49,8 @@
       :total="total"
       :current-page.sync="currentpage"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+      @current-change="handleCurrentChange"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
   </div>
 

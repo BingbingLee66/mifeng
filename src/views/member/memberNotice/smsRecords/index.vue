@@ -44,7 +44,8 @@
       :total="total"
       :current-page.sync="currentpage"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+      @current-change="handleCurrentChange"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
     <el-dialog
       title="短信详情"
@@ -109,7 +110,8 @@
         :total="total2"
         :current-page.sync="currentpage2"
         @size-change="handleSizeChange2"
-        @current-change="handleCurrentChange2">
+        @current-change="handleCurrentChange2"
+        :style="{'padding-top': '15px'}">
       </el-pagination>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click.native="visible = false">关闭</el-button>

@@ -94,7 +94,7 @@ export default {
         console.log(err)
         this.$message({
           type: 'info',
-          message: '取消删除'
+          message: '取消打款'
         })
       })
     },

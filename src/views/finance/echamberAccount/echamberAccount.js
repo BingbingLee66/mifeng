@@ -105,7 +105,7 @@ export default {
           '日期': formatDate(new Date(data.rptDate), 'yyyy-MM-dd'),
           '商城交易额(元）': data.cumulativeShopPrice,
           '会费交易额（元）': data.cumulativeMemberPrice,
-          '合计（元）': data.cumulativeShopPrice + data.cumulativeMemberPrice
+          '合计（元）': Math.floor((data.cumulativeShopPrice + data.cumulativeMemberPrice) * 100) / 100
         }
         this.selectionDatas.push(new_data)
       }

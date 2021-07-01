@@ -94,7 +94,7 @@
       </el-table-column>
       <el-table-column label="收入(元)">
         <template slot-scope="scope">
-          {{scope.row.realPrice-scope.row.platformDeduction}}
+          {{Math.floor((scope.row.realPrice-scope.row.platformDeduction) * 100) / 100}}
         </template>
       </el-table-column>
     </el-table>
@@ -106,7 +106,8 @@
       :total="total1"
       :current-page.sync="currentpage1"
       @size-change="handleSizeChange1"
-      @current-change="handleCurrentChange1">
+      @current-change="handleCurrentChange1"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
     <el-tabs>
       <el-tab-pane label="商品排行榜"></el-tab-pane>
@@ -189,7 +190,8 @@
       :total="total2"
       :current-page.sync="currentpage2"
       @size-change="handleSizeChange2"
-      @current-change="handleCurrentChange2">
+      @current-change="handleCurrentChange2"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
   </div>
 </template>

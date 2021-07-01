@@ -271,7 +271,8 @@
                   </el-radio-group>
                 </el-row>
               </div>
-              <el-button type="danger" style="margin-top: 20px;" v-if="attrRatio1 != -1 && (formObj.attr2 == null ? true : attrRatio2 != -1)" @click="addGoodsSku">添加</el-button>
+              <!-- <el-button type="danger" style="margin-top: 20px;" v-if="attrRatio1 != -1 && (formObj.attr2 == null ? true : attrRatio2 != -1)" @click="addGoodsSku">添加</el-button> -->
+              <el-button type="danger" style="margin-top: 20px;" v-if="attrRatio1 != -1" @click="addGoodsSku">添加</el-button>
             </el-form-item>
           </el-col>
         </el-row>

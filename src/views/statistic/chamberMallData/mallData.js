@@ -220,7 +220,7 @@ export default {
           '上架商品数': data.goodsTotal,
           '订单数': data.goodsOrderTotal,
           '成交额(元)': data.tradingTotal,
-          '商会分成(元)': data.platformDeduction,
+          '商会收入(元)': Math.floor((data.tradingTotal-data.platformDeduction) * 100) / 100,
           '付款人数': data.paidMembers
         }
         this.selectionDatas1.push(new_data)

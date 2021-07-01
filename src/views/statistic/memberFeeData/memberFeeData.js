@@ -88,7 +88,7 @@ export default {
       for (let data of datas) {
         let new_data = {
           '日期': data.date,
-          '缴费人数': data.memberTotal,
+          '缴费次数': data.memberTotal,
           '缴费金额(元)': data.amountTotal
         }
         this.selectionDatas.push(new_data)

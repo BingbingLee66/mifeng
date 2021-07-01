@@ -22,7 +22,7 @@
         <div class="cm-card-box">
           <div class="card-box-3">
             <div class="card-key">累计商会收入</div>
-            <div class="card-value">{{pfStatistics.tradingTotal-pfStatistics.incomeTotal}}</div>
+            <div class="card-value">{{Math.floor((pfStatistics.tradingTotal-pfStatistics.incomeTotal) * 100) / 100}}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
@@ -106,7 +106,7 @@
       </el-table-column>
       <el-table-column label="商会收入(元)">
         <template slot-scope="scope">
-          {{scope.row.tradingTotal-scope.row.platformDeduction}}
+          {{Math.floor((scope.row.tradingTotal-scope.row.platformDeduction) * 100) / 100}}
         </template>
       </el-table-column>
       <el-table-column label="付款人数">
@@ -123,7 +123,8 @@
       :total="total1"
       :current-page.sync="currentpage1"
       @size-change="handleSizeChange1"
-      @current-change="handleCurrentChange1">
+      @current-change="handleCurrentChange1"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
     <el-tabs>
       <el-tab-pane label="商品排行榜"></el-tab-pane>
@@ -206,7 +207,8 @@
       :total="total2"
       :current-page.sync="currentpage2"
       @size-change="handleSizeChange2"
-      @current-change="handleCurrentChange2">
+      @current-change="handleCurrentChange2"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
     <el-tabs>
       <el-tab-pane label="交易数据"></el-tab-pane>
@@ -266,7 +268,8 @@
       :total="total3"
       :current-page.sync="currentpage3"
       @size-change="handleSizeChange3"
-      @current-change="handleCurrentChange3">
+      @current-change="handleCurrentChange3"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
   </div>
 </template>

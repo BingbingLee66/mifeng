@@ -90,7 +90,8 @@
       :total="total"
       :current-page.sync="currentpage"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+      @current-change="handleCurrentChange"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
     <el-dialog
       title="添加缴费记录"
@@ -151,7 +152,8 @@
         :total="total1"
         :current-page.sync="currentpage1"
         @size-change="handleSizeChange1"
-        @current-change="handleCurrentChange1">
+        @current-change="handleCurrentChange1"
+        :style="{'padding-top': '15px'}">
       </el-pagination>
       <el-divider></el-divider>
       <el-form ref="form" :model="formObj" :rules="rules" label-position="left">
@@ -175,7 +177,7 @@
         <el-row>
           <el-col :span="5">
             <el-form-item :span="12" label="缴费金额：">
-              {{memberFee}}元
+              {{memberFee * formObj.years}}元
             </el-form-item>
           </el-col>
         </el-row>

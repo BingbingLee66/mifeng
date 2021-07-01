@@ -34,7 +34,7 @@
           {{scope.row.date}}
         </template>
       </el-table-column>
-      <el-table-column label="缴费人数">
+      <el-table-column label="缴费次数">
         <template slot-scope="scope">
           {{scope.row.memberTotal}}
         </template>
@@ -53,7 +53,8 @@
       :total="total"
       :current-page.sync="currentpage"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+      @current-change="handleCurrentChange"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
     <div style="font-weight: 600; font-size: 16px;margin: 20px 0;">
       商会会员缴费数据
@@ -69,7 +70,7 @@
           {{scope.row.date}}
         </template>
       </el-table-column>
-      <el-table-column label="缴费人数">
+      <el-table-column label="缴费次数">
         <template slot-scope="scope">
           {{scope.row.memberTotal}}
         </template>

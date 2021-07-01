@@ -86,7 +86,7 @@
       </el-table-column>
       <el-table-column label="合计（元）">
         <template slot-scope="scope">
-          {{scope.row.shopPrice + scope.row.memberPrice}}
+          {{Math.floor((scope.row.shopPrice + scope.row.memberPrice) * 100) / 100}}
         </template>
       </el-table-column>
     </el-table>
@@ -98,7 +98,8 @@
       :total="total"
       :current-page.sync="currentpage"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+      @current-change="handleCurrentChange"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
   </div>
 </template>

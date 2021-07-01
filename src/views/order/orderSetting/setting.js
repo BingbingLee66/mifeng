@@ -53,10 +53,10 @@ export default {
         })
       }).catch((err) => {
         console.log(err)
-        // this.$message({
-        //   type: 'info',
-        //   message: '取消删除'
-        // })
+        this.$message({
+          type: 'info',
+          message: '取消修改'
+        })
       })
     }
   }

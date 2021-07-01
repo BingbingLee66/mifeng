@@ -186,14 +186,15 @@ export default {
               'memberName': data.type === 0 ? data.name : data.contactName,
               'memberPostId': this.memberQuery.memberPostType.id,
               'memberPostName': this.memberQuery.memberPostType.postName,
-              'phone': data.type === 0 ? data.phone : data.contactPhone
+              'phone': data.type === 0 ? data.phone : data.contactPhone,
+              'wxUserId': data.auditorId
             }
             dto.push(obj)
           }
           let param = {
             'date': this.formObj.date,
             'years': this.formObj.years,
-            'memberFee': this.memberFee,
+            'memberFee': this.memberFee * this.formObj.years,
             'dto': dto
           }
           memberFeePay(param).then(response => {

@@ -82,7 +82,8 @@
       :total="total"
       :current-page.sync="currentpage"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+      @current-change="handleCurrentChange"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
     <el-tabs>
       <el-tab-pane label="会员画像"></el-tab-pane>

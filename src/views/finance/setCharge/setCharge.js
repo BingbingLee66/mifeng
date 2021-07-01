@@ -103,7 +103,7 @@ export default {
         console.log(err)
         this.$message({
           type: 'info',
-          message: '取消删除'
+          message: '取消修改'
         })
       })
     },
@@ -115,7 +115,7 @@ export default {
       }).then(() => {
         let params = {
           key: 'mallFeeRatio',
-          value: this.formObj2.mallFeeRatio / 100
+          value: Math.floor(this.formObj2.mallFeeRatio * 100) / 10000
         }
         updateSetting(params).then(response => {
           this.$message({
@@ -128,7 +128,7 @@ export default {
         console.log(err)
         this.$message({
           type: 'info',
-          message: '取消删除'
+          message: '取消修改'
         })
       })
     },
@@ -140,7 +140,7 @@ export default {
       }).then(() => {
         let params = {
           key: 'memberFeeRatio',
-          value: this.formObj3.memberFeeRatio / 100
+          value: Math.floor(this.formObj3.memberFeeRatio * 100) / 10000
         }
         updateSetting(params).then(response => {
           this.$message({
@@ -153,7 +153,7 @@ export default {
         console.log(err)
         this.$message({
           type: 'info',
-          message: '取消删除'
+          message: '取消修改'
         })
       })
     }

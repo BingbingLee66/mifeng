@@ -193,7 +193,6 @@ export default {
     detail (row) {
       this.detailVisible = true
       this.detailObj = row
-      console.log(this.detailObj)
     }
   }
 }

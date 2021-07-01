@@ -39,6 +39,7 @@ export default {
   },
   created() {
     this.init()
+    this.initDateTimePicker()
   },
   methods: {
     has (tabName, actionName) {
@@ -58,10 +59,18 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    init() {
+    init () {
       if (this.has('', '查询')) {
         this.fetchData()
       }
+    },
+    initDateTimePicker () {
+      // 初始化1个月
+      const end = new Date()
+      end.setTime(end.getTime() - 3600 * 1000 * 24 * 1)
+      const start = new Date()
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 31)
+      this.$set(this.query, 'date', [start, end])
     },
     batchConfirm (e) {
       if (this.selectionDatas.length === 0) {
@@ -89,7 +98,7 @@ export default {
         console.log(err)
         this.$message({
           type: 'info',
-          message: '取消删除'
+          message: '取消结算'
         })
       })
     },
@@ -108,7 +117,7 @@ export default {
         }
         updateSupplierSettlement(params).then(response => {
           this.$message({
-            message: '确认结算成功',
+            message: '确定结算成功',
             type: 'success'
           })
           this.fetchData()
@@ -116,7 +125,7 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '取消删除'
+          message: '取消确定结算'
         })
       })
     },
@@ -130,8 +139,10 @@ export default {
         'page': this.currentpage,
         'supplier': this.query.supplier,
         'settlementStatus': this.query.settlementStatus,
-        'startTime': this.query.date[0],
-        'endTime': this.query.date[1]
+      }
+      if (this.query.date) {
+        params['startTime'] = this.query.date[0]
+        params['endTime'] = this.query.date[1]
       }
       getSupplierSettlementList(params).then(response => {
         this.list = response.data.data.list
@@ -145,13 +156,14 @@ export default {
       this.ids = []
       for (let data of datas) {
         let new_data = {
-          '交易时间': formatDate(new Date(data.rptDateMin), 'yyyy-MM-dd') + '至' + formatDate(new Date(data.rptDateMax), 'yyyy-MM-dd'),
+          '完成时间': formatDate(new Date(data.rptDateMin), 'yyyy-MM-dd') + '至' + formatDate(new Date(data.rptDateMax), 'yyyy-MM-dd'),
           '供货商': data.supplierName,
           '商品名称': data.goodsName,
           '规格': !data.codeName ? '无' : data.codeName,
           '供货价(元)': data.supplyPrice,
           '销量(件)': data.count,
-          '待结算金额(元)': data.totalSupplyPrice,
+          '待结算金额(元)': data.unsettledSupplyPrice,
+          '总金额(元)': data.totalSupplyPrice,
           '状态': data.settlementStatus === 1 ? '已结算' : '未结算',
         }
         this.selectionDatas.push(new_data)

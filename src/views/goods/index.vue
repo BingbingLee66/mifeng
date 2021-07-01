@@ -6,20 +6,20 @@
     </el-tabs>
     <div v-if="activeName == '8'">
       <div class="block">
-        <el-form ref="query" label-width="auto" label-position="left" :model="query">
+        <el-form ref="query" label-position="left" :model="query">
           <el-row>
-            <el-col :span="4">
-              <el-form-item label="商品ID：">
+            <el-col :span="4" style="margin-left: 10px;">
+              <el-form-item label-width="90px" label="商品ID：">
                 <el-input v-model="query.id" type="number" placeholder="请输入商品ID"/>
               </el-form-item>
             </el-col>
-            <el-col :span="4" style="margin-left:10px;">
-              <el-form-item label="商品名称：">
+            <el-col :span="4" style="margin-left: 10px;">
+              <el-form-item label-width="90px" label="商品名称：">
                 <el-input v-model="query.name" placeholder="请输入商品名称"/>
               </el-form-item>
             </el-col>
-            <el-col :span="4">
-              <el-form-item :span="12" label="状态：">
+            <el-col :span="4" style="margin-left: 10px;">
+              <el-form-item label-width="60px" :span="12" label="状态：">
                 <el-select v-model="query.status" placeholder="请选择状态">
                   <el-option label="所有" :value="-1"></el-option>
                   <el-option label="在售中" :value="1"></el-option>
@@ -29,8 +29,8 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="8" style="margin-left:10px;">
-              <el-form-item label="添加时间：">
+            <el-col :span="11" style="margin-left: 10px;">
+              <el-form-item label-width="90px" label="添加时间：" style="float: left;">
                 <el-date-picker
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
@@ -41,9 +41,7 @@
                   end-placeholder="结束日期">
                 </el-date-picker>
               </el-form-item>
-            </el-col>
-            <el-col :span="2">
-              <el-form-item label=" ">
+              <el-form-item label=" " style="float: left;margin-left: 10px;">
                 <el-button type="primary" :actionid="getId('商品列表', '查询')" v-if="has('商品列表', '查询')" @click="fetchData($event)">查询</el-button>
               </el-form-item>
             </el-col>
@@ -65,17 +63,17 @@
         </el-table-column>
         <!-- <el-table-column type="index" label="序号" width="60px">
         </el-table-column> --> 
-        <el-table-column label="商品ID">
+        <el-table-column label="商品ID" width="80px">
           <template slot-scope="scope">
             {{scope.row.id}}
           </template>
         </el-table-column>
-        <el-table-column label="商品图片" width="120px">
+        <el-table-column label="商品图片" width="100px">
           <template slot-scope="scope">
-            <img class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
+            <img class="m-goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
           </template>
         </el-table-column>
-        <el-table-column label="商品名称" width="150px">
+        <el-table-column label="商品名称" width="100px">
           <template slot-scope="scope">
             {{scope.row.name}}
           </template>
@@ -95,12 +93,12 @@
             {{scope.row.supplyPriceMerge == null ?  '-' : scope.row.supplyPriceMerge}}
           </template>
         </el-table-column>
-        <el-table-column label="库存" width="60px">
+        <el-table-column label="库存" width="100px">
           <template slot-scope="scope">
             {{scope.row.sumStock}}
           </template>
         </el-table-column>
-        <el-table-column label="累计销量" width="80px">
+        <el-table-column label="累计销量" width="100px">
           <template slot-scope="scope">
             {{scope.row.salesVolume}}
           </template>
@@ -120,7 +118,7 @@
             {{scope.row.operator}}
           </template>
         </el-table-column> -->
-        <el-table-column label="状态" width="80px">
+        <el-table-column label="状态" width="100px">
           <template slot-scope="scope">
             <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售中</div>
             <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">已下架</div>
@@ -130,11 +128,11 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="setTop($event, scope.row)" :actionid="getId('商品列表', '置顶')" v-if="has('商品列表', '置顶') && scope.row.isOnSale != 5">置顶</el-button>
-            <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('商品列表', '编辑')" v-if="has('商品列表', '编辑')">编辑</el-button>
-            <el-button type="text" @click="updateStatus($event, scope.row.id, 1)" :actionid="getId('商品列表', '上架')" v-if="has('商品列表', '上架') && (scope.row.isOnSale == 2 || scope.row.isOnSale == 4)">上架</el-button>
-            <el-button type="text" @click="updateStatus($event, scope.row.id, 2)" :actionid="getId('商品列表', '下架')" v-if="has('商品列表', '下架') && (scope.row.isOnSale == 1 || scope.row.isOnSale == 3)">下架</el-button>
-            <el-button type="text" @click="del($event, scope.row)" :actionid="getId('商品列表', '删除')" v-if="has('商品列表', '删除')">删除</el-button>
+            <el-button type="text" style="margin-left:0px;" @click="setTop($event, scope.row)" :actionid="getId('商品列表', '置顶')" v-if="has('商品列表', '置顶') && scope.row.isOnSale != 5">置顶</el-button>
+            <el-button type="text" style="margin-left:0px;" @click="edit($event, scope.row)" :actionid="getId('商品列表', '编辑')" v-if="has('商品列表', '编辑')">编辑</el-button>
+            <el-button type="text" style="margin-left:0px;" @click="updateStatus($event, scope.row.id, 1)" :actionid="getId('商品列表', '上架')" v-if="has('商品列表', '上架') && (scope.row.isOnSale == 2 || scope.row.isOnSale == 4)">上架</el-button>
+            <el-button type="text" style="margin-left:0px;" @click="updateStatus($event, scope.row.id, 2)" :actionid="getId('商品列表', '下架')" v-if="has('商品列表', '下架') && (scope.row.isOnSale == 1 || scope.row.isOnSale == 3)">下架</el-button>
+            <el-button type="text" style="margin-left:0px;" @click="del($event, scope.row)" :actionid="getId('商品列表', '删除')" v-if="has('商品列表', '删除')">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -146,7 +144,8 @@
         :total="total"
         :current-page.sync="currentpage"
         @size-change="handleSizeChange"
-        @current-change="handleCurrentChange">
+        @current-change="handleCurrentChange"
+        :style="{'padding-top': '15px'}">
       </el-pagination>
     </div>
 
@@ -163,7 +162,7 @@
         </el-table-column>
         <el-table-column label="商品图片" width="120px">
           <template slot-scope="scope">
-            <img class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
+            <img class="m-goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
           </template>
         </el-table-column>
         <el-table-column label="商品名称">
@@ -234,10 +233,10 @@
   @import "src/styles/common.scss";
 </style>
 <style>
-.goods-preview {
-  width: 100%;
-  height: auto;
-  border: 1px solid #999;
+.m-goods-preview {
+  width: 76px;
+  height: 56px;
+  border: 1px solid #ddd !important;
   cursor: pointer;
 }
 </style>

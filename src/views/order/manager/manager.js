@@ -146,7 +146,6 @@ export default {
         }
         this.selectionDatas.push(new_data)
       }
-      console.log(this.selectionDatas)
     },
     exportExcel (e) {
       if (this.selectionDatas.length === 0) {

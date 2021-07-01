@@ -19,7 +19,8 @@
         <div class="card-box">
           <div class="card-box-3">
             <div class="card-key">累计收入（元）<el-tooltip class="item" effect="dark" content="收入=成交金额-平台服务费" placement="top"><i class="el-icon-question"></i></el-tooltip></div>
-            <div class="card-value">¥{{pfStatistics.cumulativeShopPrice-pfStatistics.cumulativeShopDeduction}}</div>
+            <div class="card-value">¥
+            {{Math.floor((pfStatistics.cumulativeShopPrice-pfStatistics.cumulativeShopDeduction) * 100) / 100}}</div>
           </div>
         </div>
         <div class="cut-line"></div>
@@ -70,14 +71,14 @@
           {{scope.row.rptDate | dateFormat2}}
         </template>
       </el-table-column>
-      <el-table-column label="交易额（元）">
+      <el-table-column label="交易额(元)">
         <template slot-scope="scope">
           {{scope.row.shopPrice}}
         </template>
       </el-table-column>
-      <el-table-column label="收入">
+      <el-table-column label="收入(元)">
         <template slot-scope="scope">
-          <span style="color: #FF0000;">{{scope.row.shopPrice-scope.row.shopDeduction}}</span>
+          <span style="color: #FF0000;">{{Math.floor((scope.row.shopPrice-scope.row.shopDeduction) * 100) / 100}}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -89,7 +90,8 @@
       :total="total"
       :current-page.sync="currentpage"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
+      @current-change="handleCurrentChange"
+      :style="{'padding-top': '15px'}">
     </el-pagination>
   </div>
 </template>

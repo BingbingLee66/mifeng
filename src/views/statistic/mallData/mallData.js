@@ -5,7 +5,14 @@ import { exportJson2Excel } from '@/utils/exportExcel'
 export default {
   data() {
     return {
-      pfStatistics: {},
+      pfStatistics: {
+        activeGoodsTotal: 0,
+        goodsTotal: 0,
+        incomeTotal: 0,
+        tradingTotal: 0,
+        goodsOrderTotal: 0,
+        accessTotal: 0
+      },
       query1: {
         days: 7,
         date: ''
@@ -100,6 +107,7 @@ export default {
         this.pfStatistics.goodsOrderTotal = response.data.goodsOrderTotal
         this.pfStatistics.accessTotal = response.data.accessTotal
       })
+      console.log(this.pfStatistics)
     },
     fetchData1 () {
       this.listLoading1 = true
@@ -137,7 +145,7 @@ export default {
           '日期': data.date,
           '订单总数': data.orderTotal,
           '成交总额(元)': data.realPrice,
-          '商会分成(元)': data.platformDeduction
+          '收入(元)': Math.floor((data.realPrice-data.platformDeduction) * 100) / 100
         }
         this.selectionDatas.push(new_data)
       }

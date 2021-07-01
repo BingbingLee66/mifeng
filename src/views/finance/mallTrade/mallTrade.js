@@ -111,8 +111,8 @@ export default {
       for (let data of datas) {
         let new_data = {
           '日期': formatDate(new Date(data.rptDate), 'yyyy-MM-dd'),
-          '交易额': data.shopPrice,
-          '商会分成': data.shopDeduction
+          '交易额(元)': data.shopPrice,
+          '收入(元)': Math.floor((data.shopPrice-data.shopDeduction) * 100) / 100
         }
         this.selectionDatas.push(new_data)
       }
