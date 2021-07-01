@@ -77,6 +77,8 @@ export default {
     fetchData(e) {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+        this.limit = 10
+        this.currentpage = 1
       }
       this.listLoading = true
       let params = {

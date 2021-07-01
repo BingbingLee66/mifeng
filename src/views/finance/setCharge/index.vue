@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
-    <table class="table-box">
+    <table class="table-box" border="1" cellspacing="0">
       <th class="table-b-th">
-        <td>微信手续费设置</td>
+        <div style="text-align:center;">微信手续费设置</div>
       </th>
       <tr>
-        <td>
+        <td align="center">
           <el-row style="margin-top: 20px;">
             <el-form ref="form1" :model="formObj1" :rules="rules1" label-position="left" label-width="auto">
               <el-col :offset="4" :span="12">
@@ -25,9 +25,9 @@
         </td>
       </tr>
     </table>
-    <table class="table-box">
+    <table class="table-box" border="1" cellspacing="0">
       <th class="table-b-th">
-        <td>平台服务费设置</td>
+        <div style="text-align:center;">平台服务费设置</div>
       </th>
       <tr>
         <td>
@@ -76,14 +76,20 @@
 </style>
 <style>
 .table-box {
-  width: 94%;
+  width: 92%;
   margin: 20px 3%;
   border: 1px solid #ccc;
 }
+.table-box td {
+  border: 0px;
+}
 .table-b-th {
   height: 60px;
+  /*width: 100%;*/
   vertical-align: middle;
-  background-color: #ddd;
-  padding-left: 30px;
+  background-color: #f4f4f4;
+  border: 0px;
+  border-bottom: 1px solid #ccc;
+  /*padding-left: 30px;*/
 }
 </style>

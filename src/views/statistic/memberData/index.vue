@@ -89,8 +89,8 @@
       <el-tab-pane label="会员画像"></el-tab-pane>
     </el-tabs>
     <el-row>
-      <el-col :span="22">
-        <v-chart :options="tradeBarData" class="chart section" ref="barChart" style="width: 100%;" />
+      <el-col :span="24">
+        <v-chart :options="tradeBarData" class="chart section" ref="barChart" :style="{'width': '100%'}" />
       </el-col>
     </el-row>
     <el-row>
@@ -102,7 +102,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="22">
+      <el-col :span="24">
         <v-chart :options="yearsBarData" class="chart section" ref="barChart" style="width: 100%;" />
       </el-col>
     </el-row>

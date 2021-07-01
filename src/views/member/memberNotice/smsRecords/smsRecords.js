@@ -97,6 +97,12 @@ export default {
         this.total2 = response.data.data.totalRows
         this.listLoading2 = false
       })
+    },
+    memberDetail (detail) {
+      const row = {
+        'id': detail.memberId
+      }
+      this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '0' } })
     }
   }
 }

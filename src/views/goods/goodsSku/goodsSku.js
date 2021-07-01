@@ -918,8 +918,21 @@ export default {
           valid = false
           this.$message({
             type: 'info',
-            message: '请注意价格规则：供货价<拼单价<单买价<市场价。'
+            message: '请注意价格规则：供货价<拼单价<单买价<市场价'
           })
+        }
+        if (this.formObj.specType === 1) { // 多规格
+          let attrTransf = this.formObj.attr1.value
+          for (let i = 0; i < attrTransf.length - 1; i++) {
+            if (!attrTransf[i].imgUrl) {
+              this.$message({
+                type: 'info',
+                message: '规格一的图片必须上传'
+              })
+              valid = false
+              break
+            }
+          }
         }
         if (valid) {
           let galleryArr = this.formObj.gallery

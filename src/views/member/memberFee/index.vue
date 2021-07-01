@@ -101,7 +101,7 @@
         <el-row>
           <el-col :span="5">
             <el-form-item :span="12" label="会员职位：" label-width="100px">
-              <el-select v-model="memberQuery.memberPostType" value-key="id" @change="changeFee" placeholder="请选择职业类型">
+              <el-select v-model="memberQuery.memberPostType" value-key="id" @change="changeFee" placeholder="请选择会员职位">
                 <el-option v-for="post in memberPostOptions" :label="post.postName" :value="post" :key="post.id"></el-option>
               </el-select>
             </el-form-item>

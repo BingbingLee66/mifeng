@@ -58,8 +58,11 @@ export default {
   created() {
     if (this.$route.params.ckey) {
       this.ckey = this.$route.params.ckey
-      this.init()
+      window.localStorage.setItem('captial-detail', this.ckey)
+    } else {
+      this.ckey = window.localStorage.getItem('captial-detail')
     }
+    this.init()
   },
   methods: {
     has (tabName, actionName) {

@@ -57,7 +57,7 @@
         </el-col>
       </el-row>
     </div>
-    <div class="block form-border o-table-box">
+    <div class="block o-table-box">
       <el-row class="o-table-th">
         <el-col :span="3" class="o-table-content">商品ID</el-col>
         <el-col :span="6" class="o-table-content">商品名称</el-col>

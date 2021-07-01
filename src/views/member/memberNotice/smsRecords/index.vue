@@ -101,6 +101,11 @@
             <div v-if="scope.row.smsStatus != 'DELIVRD' && scope.row.smsStatus != 'SUBBMITED'">{{scope.row.smsStatus}}</div>
           </template>
         </el-table-column>
+        <el-table-column label="操作" width="100px">
+          <template slot-scope="scope">
+            <el-button type="text" @click="memberDetail(scope.row)">详情</el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <el-pagination
         background

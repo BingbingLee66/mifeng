@@ -70,6 +70,7 @@ export default {
   },
   created() {
     this.getMemberType()
+    this.initDateTimePicker()
     this.init()
   },
   methods: {
@@ -118,9 +119,18 @@ export default {
         this.fetchData()
       }
     },
+    initDateTimePicker () {
+      // 初始化1年
+      const end = new Date()
+      const start = new Date()
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
+      this.$set(this.query, 'date', [start, end])
+    },
     fetchData(e) {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+        this.limit = 10
+        this.currentpage = 1
       }
       this.listLoading = true
       let params = {
@@ -198,10 +208,20 @@ export default {
             'dto': dto
           }
           memberFeePay(param).then(response => {
-            this.$message({
-              message: '操作成功',
-              type: 'success'
-            })
+            let memberNameResp = response.data.memberName
+            console.log(memberNameResp)
+            if (memberNameResp.length === 0) {
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+            } else {
+              this.$alert(memberNameResp, '以下会员的缴费记录添加失败', {
+                confirmButtonText: '确定',
+                callback: action => {
+                }
+              })
+            }
             this.fetchData()
             this.visible = false
           })

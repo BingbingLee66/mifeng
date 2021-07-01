@@ -1,15 +1,15 @@
 <template>
   <div class="app-container">
     <div class="block">
-      <el-form ref="query" label-width="auto" label-position="left" :model="query">
+      <el-form ref="query" label-position="left" :model="query">
         <el-row>
           <el-col :span="4">
-            <el-form-item label="商品名称：">
+            <el-form-item label-width="100px" label="商品名称：">
               <el-input v-model="query.goodsName" placeholder="请输入商品名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left:10px;">
-            <el-form-item :span="12" label="商品状态：">
+            <el-form-item label-width="100px" :span="12" label="商品状态：">
               <el-select v-model="query.status" placeholder="请选择状态">
                 <el-option label="所有" :value="-1"></el-option>
                 <el-option label="在售中" :value="1"></el-option>
@@ -20,14 +20,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left:10px;">
-            <el-form-item :span="12" label="商品来源：">
+            <el-form-item label-width="100px" :span="12" label="商品来源：">
               <el-select v-model="query.ckey" placeholder="请选择商品来源" clearable>
                 <el-option v-for="chamber in chamberOptions" :label="chamber.label" :value="chamber.value" :key="chamber.value"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8" style="margin-left:10px;">
-            <el-form-item label="添加时间：">
+            <el-form-item label-width="100px" label="添加时间：" style="float:left;">
               <el-date-picker
                 format="yyyy-MM-dd"
                 value-format="yyyy-MM-dd"
@@ -38,9 +38,7 @@
                 end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
-          </el-col>
-          <el-col :span="2">
-            <el-form-item label=" ">
+            <el-form-item label=" " style="float:left;margin-left:10px;">
               <el-button type="primary" :actionid="getId('', '查询')" v-if="has('', '查询')" @click="fetchData($event)">查询</el-button>
             </el-form-item>
           </el-col>
@@ -60,17 +58,17 @@
       </el-table-column>
       <!-- <el-table-column type="index" label="序号" width="60px">
       </el-table-column> --> 
-      <el-table-column label="商品ID">
+      <el-table-column label="商品ID" width="80px">
         <template slot-scope="scope">
           {{scope.row.id}}
         </template>
       </el-table-column>
-      <el-table-column label="商品图片" width="120px">
+      <el-table-column label="商品图片" width="100px">
         <template slot-scope="scope">
           <img class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
         </template>
       </el-table-column>
-      <el-table-column label="商品名称" width="150px">
+      <el-table-column label="商品名称" width="100px">
         <template slot-scope="scope">
           {{scope.row.name}}
         </template>
@@ -90,12 +88,12 @@
           {{scope.row.supplyPriceMerge}}
         </template>
       </el-table-column>
-      <el-table-column label="库存" width="60px">
+      <el-table-column label="库存" width="100px">
         <template slot-scope="scope">
           {{scope.row.sumStock}}
         </template>
       </el-table-column>
-      <el-table-column label="累计销量" width="80px">
+      <el-table-column label="累计销量" width="100px">
         <template slot-scope="scope">
           {{scope.row.salesVolume}}
         </template>
@@ -105,7 +103,7 @@
           {{scope.row.createTime | dateFormat}}
         </template>
       </el-table-column>
-      <el-table-column label="来源">
+      <el-table-column label="来源" width="100px">
         <template slot-scope="scope">
           <!-- {{chamberName(scope.row.chamberCkey)}} -->
           {{scope.row.chamberName}}
@@ -155,8 +153,8 @@
 </style>
 <style>
 .goods-preview {
-  width: 100%;
-  height: auto;
+  width: 76px;
+  height: 56px;
   border: 1px solid #999;
   cursor: pointer;
 }
