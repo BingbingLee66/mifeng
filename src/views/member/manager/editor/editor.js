@@ -204,9 +204,9 @@ export default {
         if (!res.data.departmentId) {
           this.formObj.departmentId = ''
         } else {
-          const did = parseInt(res.data.departmentId.split(',')[0])
+          const did = res.data.departmentId.split(',')
           this.departmentCas = did
-          this.formObj.departmentId = did + ''
+          this.formObj.departmentId = res.data.departmentId
         }
         if (this.formObj.contactPhone === null) {
           this.formObj.contactPhone = ''
@@ -252,15 +252,14 @@ export default {
     /*
     * 选择部门
     * */
-    handlerDepartmentChange(ids) {
-      // console.log(typeof ids)
+    handlerDepartmentChange(val) {
       // this.ids = ids
       // const departmentStr = ids.join(',')
-      console.log(ids)
-      this.formObj.departmentId = ids + ''
+      const departmentStr = val.join(',')
+      this.formObj.departmentId = departmentStr
     },
 
-    /**
+    /*
      * 递归找出当前item项
      */
     handleCurrentItemForEach(currentId, treeDatas) {
@@ -530,17 +529,15 @@ export default {
       const formData = new FormData()
       formData.append('file', content.file)
       uploadLicense(formData).then(response => {
-        console.log(response.data.filePath)
         this.formObj['license'] = response.data.filePath
       })
-      console.log(this.formObj.license)
     },
 
     handlerChange(val) {
       if (val !== undefined) {
         if (val.length >= 5) {
           this.bindTradeIds = this.bindTradeIds.reverse().slice(0, 5)
-          console.log('删除后', this.bindTradeIds)
+          // console.log('删除后', this.bindTradeIds)
           return this.$message.error('最多只能选择5个行业')
         }
         const ids = []
@@ -583,7 +580,7 @@ export default {
               this.closeTab()
             })
           } else if (this.type === 'edit') {
-            console.log('修改后提交的参数：', this.formObj)
+            // console.log('修改后提交的参数：', this.formObj)
             update(this.formObj).then(response => {
               this.$message({
                 message: '操作成功',

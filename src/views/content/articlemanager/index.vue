@@ -22,7 +22,8 @@
           <el-col :span="4" style="margin-left: 10px;">
             <el-form-item :span="12" label="栏目：">
               <el-select v-model="query.contentColumnId">
-                <el-option v-for="cc in contentColumnOptions" :label="cc.label" :value="cc.value" :key="cc.value"></el-option>
+                <el-option v-for="cc in contentColumnOptions" :label="cc.label" :value="cc.value"
+                           :key="cc.value"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -38,7 +39,8 @@
           </el-col>
           <el-col :span="2">
             <el-form-item label=" ">
-              <el-button type="primary" @click="fetchData($event)" :actionid="getId('', '查询')" v-if="has('', '查询')">查询</el-button>
+              <el-button type="primary" @click="fetchData($event)" :actionid="getId('', '查询')" v-if="has('', '查询')">查询
+              </el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -46,40 +48,44 @@
     </div>
     <br/>
     <el-row>
-      <el-button type="danger" @click="batchDelArticle($event)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除</el-button>
-      <el-button type="danger" @click="batchUpdateStatus($event)" :actionid="getId('', '冻结')" v-if="has('', '冻结')">冻结</el-button>
-      <el-button type="primary" @click="goSettop($event)" :actionid="getId('', '置顶管理')" v-if="has('', '置顶管理')">置顶管理</el-button>
+      <el-button type="danger" @click="batchDelArticle($event)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除
+      </el-button>
+      <el-button type="danger" @click="batchUpdateStatus($event)" :actionid="getId('', '冻结')" v-if="has('', '冻结')">冻结
+      </el-button>
+      <el-button type="primary" @click="goSettop($event)" :actionid="getId('', '置顶管理')" v-if="has('', '置顶管理')">置顶管理
+      </el-button>
     </el-row>
-    <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+    <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit
+              highlight-current-row @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55px">
       </el-table-column>
       <!-- <el-table-column type="index" label="序号" width="60px">
       </el-table-column> -->
       <el-table-column label="ID" width="80px">
         <template slot-scope="scope">
-          {{scope.row.id}}
+          {{ scope.row.id }}
         </template>
       </el-table-column>
       <el-table-column label="文章">
         <template slot-scope="scope">
-          {{!scope.row.title ? scope.row.contentColumn : scope.row.title}}
+          {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
         </template>
       </el-table-column>
       <el-table-column label="栏目" width="100px">
         <template slot-scope="scope">
-          {{scope.row.contentColumn}}
+          {{ scope.row.contentColumn }}
         </template>
       </el-table-column>
       <el-table-column label="来源" width="180px">
         <template slot-scope="scope">
-          <div v-if="scope.row.publishType == 1">{{scope.row.chamberName}}</div>
-          <div v-if="scope.row.publishType == 2 || scope.row.publishType == 5">{{scope.row.companyName}}</div>
-          <div v-if="scope.row.publishType == 3 || scope.row.publishType == 4">{{scope.row.sourceName}}</div>
+          <div v-if="scope.row.publishType == 1">{{ scope.row.chamberName }}</div>
+          <div v-if="scope.row.publishType == 2 || scope.row.publishType == 5">{{ scope.row.companyName }}</div>
+          <div v-if="scope.row.publishType == 3 || scope.row.publishType == 4">{{ scope.row.sourceName }}</div>
         </template>
       </el-table-column>
       <el-table-column label="发布时间" width="180px">
         <template slot-scope="scope">
-          {{scope.row.publishTs}}
+          {{ scope.row.publishTs }}
         </template>
       </el-table-column>
       <el-table-column label="文章状态" width="100px">
@@ -98,13 +104,62 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="text" @click="top($event, scope.row)" :actionid="getId('', '置顶')" v-if="!(!scope.row.title) && has('', '置顶')">置顶</el-button>
-          <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">详情</el-button>
-          <el-button type="text" @click="edit(scope.row)" :actionid="getId('', '编辑')" v-if="has('', '编辑')">编辑</el-button>
-          <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '冻结')" v-if="has('', '冻结') && scope.row.status == 1">冻结</el-button>
-          <el-button type="text" v-if="has('', '解冻') && scope.row.status == 0" disabled>解冻</el-button>
-          <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '解冻')" v-if="has('', '解冻') && scope.row.status == 3">解冻</el-button>
-          <el-button type="text" @click="delArticle($event, scope.row)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除</el-button>
+          <el-button
+            type="text"
+            @click="top($event, scope.row)"
+            :actionid="getId('', '置顶')"
+            v-if="!(!scope.row.title) && has('', '置顶')"
+          >
+            置顶
+          </el-button>
+          <el-button
+            type="text"
+            @click="detail($event, scope.row)"
+            :actionid="getId('', '详情')"
+            v-if="has('', '详情')"
+          >
+            详情
+          </el-button>
+          <el-button
+            type="text"
+            :disabled="scope.row.publishType===1 || scope.row.publishType===2 ? true : false"
+            @click="edit(scope.row)"
+            :actionid="getId('', '编辑')"
+            v-if="has('', '编辑')"
+          >
+            编辑
+          </el-button>
+          <el-button
+            type="text"
+            @click="updateStatus($event, scope.row)"
+            :actionid="getId('', '冻结')"
+            v-if="has('', '冻结') && scope.row.status == 1"
+          >
+            冻结
+          </el-button>
+          <el-button
+            type="text"
+            v-if="has('', '解冻') && scope.row.status == 0"
+            disabled
+          >
+            解冻
+          </el-button>
+          <el-button
+            type="text"
+            @click="updateStatus($event, scope.row)"
+            :actionid="getId('', '解冻')"
+            v-if="has('', '解冻') && scope.row.status == 3"
+          >
+            解冻
+          </el-button>
+          <el-button
+            type="text"
+            @click="delArticle($event, scope.row)"
+            :actionid="getId('', '删除')"
+            v-if="has('', '删除')"
+          >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -123,9 +178,11 @@
       :visible.sync="visible"
       width="80%">
       <div class="m-preview-wrap">
-        <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="m-article-remark">不通过理由：{{detailObj.auditRemark}}</div>
+        <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="m-article-remark">
+          不通过理由：{{ detailObj.auditRemark }}
+        </div>
         <div class="m-preview-area">
-          <div class="m-article-title">{{detailObj.title}}</div>
+          <div class="m-article-title">{{ detailObj.title }}</div>
           <div class="m-article-content" v-html="detailObj.contentHtml"></div>
         </div>
       </div>
@@ -136,7 +193,7 @@
 <script src="./manager.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import "src/styles/common.scss";
 </style>
 <style>
 .m-preview-wrap {
@@ -144,6 +201,7 @@
   height: auto;
   min-height: 500px;
 }
+
 .m-preview-area {
   width: 100%;
   min-height: 500px;
@@ -151,24 +209,28 @@
   border: 1px solid #d9dde2;
   overflow-y: auto;
 }
+
 .m-article-remark {
   font-size: 19px;
   font-weight: 500;
   margin: 0px 20px;
 }
+
 .m-article-title {
   text-align: center;
   font-size: 24px;
   font-weight: 700;
   margin: 40px 40px 20px 40px;
 }
+
 .m-article-content {
   font-size: 16px;
   font-weight: 500;
   line-height: 1.8;
   margin: 0 40px 20px 40px;
 }
-.m-article-content>p>img {
+
+.m-article-content > p > img {
   margin: 20px 10%;
   width: 80% !important;
   height: auto !important;

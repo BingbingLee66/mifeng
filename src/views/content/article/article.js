@@ -1,6 +1,6 @@
-import { getUpdateDetail, save, uploadCoverImg } from '@/api/content/article'
-import { getContentColumnOptions, getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
-import { getOptions } from '@/api/content/articleSource'
+import {getUpdateDetail, save, uploadCoverImg} from '@/api/content/article'
+import {getContentColumnOptions, getContentColumnOptionsWithCkey} from '@/api/content/columnsetup'
+import {getOptions} from '@/api/content/articleSource'
 import Ckeditor from '@/components/CKEditor'
 import PreviewPh from '@/components/ArticlePreview'
 
@@ -21,49 +21,52 @@ export default {
         // publishType: 0,
         coverImgs: [],
         status: 1,
-        istop: false
+        istop: false,
+        sourceId: null
       },
       articleId: '',
       uploadIndex: 0,
       rules: {
         title: [
-          { required: true, message: '文章标题不能为空', trigger: 'blur' },
-          { min: 6, max: 50, message: '限输入6-50个字的标题', trigger: 'blur' }
+          {required: true, message: '文章标题不能为空', trigger: 'blur'},
+          {min: 6, max: 50, message: '限输入6-50个字的标题', trigger: 'blur'}
         ],
         sourceId: [
-          { required: true, message: '文章来源不能为空', trigger: 'blur' }
+          {required: true, message: '文章来源不能为空', trigger: 'blur'}
         ],
         contentColumnId: [
-          { required: true, message: '对应栏目不能为空', trigger: 'blur' }
+          {required: true, message: '对应栏目不能为空', trigger: 'blur'}
         ],
         coverImg1: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+          {required: true, message: '封面图片必须上传', trigger: 'blur'}
         ],
         coverImg2: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+          {required: true, message: '封面图片必须上传', trigger: 'blur'}
         ],
         coverImg3: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+          {required: true, message: '封面图片必须上传', trigger: 'blur'}
         ]
       }
     }
   },
-  mounted () {
+  mounted() {
     this.getArticleSourceType()
     if (this.$route.params.articleId) {
       this.articleId = this.$route.params.articleId
       this.init()
     } else {
       this.getContentColumnType()
-      this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      this.$refs.ckeditor1.init()
+      setTimeout(() => {
+        this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      }, 500)
     }
   },
-  computed: {
-  },
-  created () {
+  computed: {},
+  created() {
   },
   methods: {
-    closeTab () {
+    closeTab() {
       // 退出当前tab, 打开指定tab
       let openPath = window.localStorage.getItem('articleeditor')
       let tagsViews = this.$store.state.tagsView.visitedViews
@@ -71,26 +74,26 @@ export default {
       for (let view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
-            this.$router.push({ path: openPath })
+            this.$router.push({path: openPath})
           })
           break
         }
       }
     },
-    has (tabName, actionName) {
-      return this.$store.getters.has({ tabName, actionName })
+    has(tabName, actionName) {
+      return this.$store.getters.has({tabName, actionName})
     },
-    getId (tabName, actionName) {
-      return this.$store.getters.getId({ tabName, actionName })
+    getId(tabName, actionName) {
+      return this.$store.getters.getId({tabName, actionName})
     },
-    init () {
+    init() {
       this.fetchData()
     },
-    beforeAvatarUpload (file, index) {
+    beforeAvatarUpload(file, index) {
       this.uploadIndex = index
       if (file.type !== 'image/jpeg' &&
-            file.type !== 'image/jpg' &&
-            file.type !== 'image/png') {
+        file.type !== 'image/jpg' &&
+        file.type !== 'image/png') {
         this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
         return false
       }
@@ -99,21 +102,21 @@ export default {
         return false
       }
     },
-    upload (content) {
+    upload(content) {
       let formData = new FormData()
       formData.append('file', content.file)
       uploadCoverImg(formData).then(response => {
         this.formObj.coverImgs.splice(this.uploadIndex, 1, response.data.filePath)
       })
     },
-    resetCoverImgs (type) {
+    resetCoverImgs(type) {
       if (type === 1) {
         this.formObj.coverImgs = ['']
       } else if (type === 2) {
         this.formObj.coverImgs = ['', '', '']
       }
     },
-    getContentColumnType () {
+    getContentColumnType() {
       if (!!this.formObj.ckey) {
         let contentModuleId = 7
         if (this.formObj.contentModuleId === 5) {
@@ -121,7 +124,7 @@ export default {
         } else if (this.formObj.contentModuleId === 6) {
           contentModuleId = 4
         }
-        let params = {
+        const params = {
           ckey: this.formObj.ckey,
           contentModuleId: contentModuleId
         }
@@ -134,14 +137,14 @@ export default {
         })
       }
     },
-    getArticleSourceType () {
+    getArticleSourceType() {
       getOptions().then(response => {
         this.articleSourceOptions = response.data.data
       })
     },
-    fetchData () {
+    fetchData() {
       return new Promise((resolve, reject) => {
-        let params = {
+        const params = {
           id: this.articleId
         }
         getUpdateDetail(params).then(response => {
@@ -156,16 +159,20 @@ export default {
             // 'publishType': dataObj.publishType,
             'coverImgs': dataObj.coverImgUrl,
             'status': dataObj.status,
-            'istop': dataObj.istop
+            'istop': dataObj.istop,
+            'sourceId': dataObj.sourceId
           }
           this.getContentColumnType()
-          this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
+          this.$refs.ckeditor1.init()
+          setTimeout(() => {
+            this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
+          }, 500)
         }).catch(error => {
           reject(error)
         })
       })
     },
-    save () {
+    save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.formObj.coverType === 0) {
@@ -183,7 +190,7 @@ export default {
         }
       })
     },
-    getHtml (htmlStr) {
+    getHtml(htmlStr) {
       this.formObj.contentHtml = htmlStr
     }
   }

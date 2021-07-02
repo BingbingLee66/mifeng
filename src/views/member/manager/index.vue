@@ -14,7 +14,7 @@
           <el-select v-model="query.type" placeholder="请选择入会类型">
             <el-option label="全部" :value="-1"></el-option>
             <el-option label="个人" :value="0"></el-option>
-            <el-option label="企业" :value="1"></el-option>
+            <el-option label="企业/团体" :value="1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="行业：">
@@ -45,7 +45,7 @@
       <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55px">
         </el-table-column>
-        <el-table-column label="头像/企业logo" width="180px">
+        <el-table-column label="头像/企业(团体)logo" width="180px">
           <template slot-scope="scope">
             <div v-if="scope.row.companyLogo ||  scope.row.portrait">
               <img style="width: 88px;height: 88px;border-radius: 50%;" :src="scope.row.type == 0 ? scope.row.portrait :  scope.row.companyLogo" />

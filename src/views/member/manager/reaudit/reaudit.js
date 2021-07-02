@@ -58,6 +58,10 @@ export default {
     init() {
       this.fetchData()
     },
+    changeFetchData() {
+      this.currentpage = 1;
+      this.fetchData()
+    },
     fetchData() {
       this.listLoading = true
       let params = {
@@ -80,7 +84,8 @@ export default {
       let params =
       {
         'memberId': row.id,
-        'type': 2
+        'type': 2,
+        'memberAuditLogsId': row.memberAuditLogsId
       }
       this.currentRow = row;
       if (row.id !== undefined) {

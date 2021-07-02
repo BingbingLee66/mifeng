@@ -1,6 +1,7 @@
-import {getMemberDetail, getMemberAuditDetail, updateAudit, updateReaudit} from '@/api/member/manager'
+import { getMemberDetail, getMemberAuditDetail, updateAudit, updateReaudit } from '@/api/member/manager'
 
 export default {
+  name: 'memebrDetails',
   data() {
     return {
       type: '', // 0会员 1提交审核 2修改审核
@@ -45,6 +46,12 @@ export default {
       }
     }
   },
+  activated() {
+    console.log('缓存')
+  },
+  deactivated() {
+    console.log("出去缓存")
+  },
   mounted() {
     if (this.$route.params.memberDetail) {
       this.memberDetail = this.$route.params.memberDetail
@@ -73,7 +80,7 @@ export default {
       for (let view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
-            this.$router.push({path: openPath})
+            this.$router.push({ path: openPath })
           })
           break
         }
@@ -116,7 +123,7 @@ export default {
       this.companyIntroductionVisible = true
     },
     goEdit() {
-      this.$router.push({name: '编辑会员', params: {'memberId': this.memberDetail.id, 'querytype': this.type}})
+      this.$router.push({ name: '编辑会员', params: { 'memberId': this.memberDetail.id, 'querytype': this.type } })
     },
     approved(row) {
       let arr = []

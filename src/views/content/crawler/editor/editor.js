@@ -1,4 +1,4 @@
-import { getDetail, save } from '@/api/content/crawler'
+import {getDetail, save} from '@/api/content/crawler'
 import Ckeditor from '@/components/CKEditor'
 import PreviewPh from '@/components/ArticlePreview'
 
@@ -17,26 +17,28 @@ export default {
       articleId: '',
       rules: {
         title: [
-          { required: true, message: '文章标题不能为空', trigger: 'blur' },
-          { min: 5, max: 60, message: '限输入5-60个字的标题', trigger: 'blur' }
+          {required: true, message: '文章标题不能为空', trigger: 'blur'},
+          {min: 5, max: 60, message: '限输入5-60个字的标题', trigger: 'blur'}
         ]
       }
     }
   },
-  mounted () {
+  mounted() {
     if (this.$route.params.articleId) {
       this.articleId = this.$route.params.articleId
       this.init()
     } else {
-      this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      this.$refs.ckeditor1.init()
+      setTimeout(() => {
+        this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      }, 500)
     }
   },
-  computed: {
-  },
-  created () {
+  computed: {},
+  created() {
   },
   methods: {
-    closeTab () {
+    closeTab() {
       // 退出当前tab, 打开指定tab
       let openPath = window.localStorage.getItem('crawlermanager')
       let tagsViews = this.$store.state.tagsView.visitedViews
@@ -44,16 +46,16 @@ export default {
       for (let view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
-            this.$router.push({ path: openPath })
+            this.$router.push({path: openPath})
           })
           break
         }
       }
     },
-    init () {
+    init() {
       this.fetchData()
     },
-    fetchData () {
+    fetchData() {
       return new Promise((resolve, reject) => {
         let params = {
           id: this.articleId
@@ -61,13 +63,16 @@ export default {
         getDetail(params).then(response => {
           this.formObj = response.data.dtl
           const htmlObj = this.formObj.webContent
-          this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
+          this.$refs.ckeditor1.init()
+          setTimeout(() => {
+            this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
+          }, 500)
         }).catch(error => {
           reject(error)
         })
       })
     },
-    save () {
+    save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           save(this.formObj).then(response => {
@@ -82,7 +87,7 @@ export default {
         }
       })
     },
-    getHtml (htmlStr) {
+    getHtml(htmlStr) {
       this.formObj.webContent = htmlStr
     }
   }
