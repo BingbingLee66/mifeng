@@ -322,8 +322,8 @@
                 <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>商品市场价(元)</el-col>
                 <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>商品进货价(元)</el-col>
                 <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>库存数(件)</el-col>
-                <el-col :span="2" class="sku-table-content">图片</el-col>
-                <el-col :span="1" class="sku-table-content">&nbsp;</el-col>
+                <!-- <el-col :span="2" class="sku-table-content">图片</el-col> -->
+                <el-col :span="3" class="sku-table-content">删除</el-col>
               </el-row>
               <el-row class="sku-table-td" v-for="(sku, index) in formObj.multiSku">
                 <el-col :span="formObj.attr2 != undefined ? 3 : 6" class="sku-table-content sku-table-img">{{sku.codeName.split(',')[0]}}</el-col>
@@ -358,7 +358,7 @@
                     </el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="2" class="sku-table-content sku-table-img">
+                <!-- <el-col :span="2" class="sku-table-content sku-table-img">
                   <el-upload
                     class="sku-avatar-uploader-1"
                     action="/"
@@ -375,8 +375,8 @@
                       <div class="sku-pre-btn-1" @click="openPreviewModal(sku.skuImgUrl)">预览</div>
                     </div>
                   </div>
-                </el-col>
-                <el-col :span="1" class="sku-table-content">
+                </el-col> -->
+                <el-col :span="3" class="sku-table-content">
                   <div class="sku-table-btn">
                     <i class="el-icon-delete" style="color:red; text-align: center;cursor: pointer;" @click="delSku(index)"></i>
                   </div>

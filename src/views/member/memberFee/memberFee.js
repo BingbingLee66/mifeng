@@ -209,7 +209,6 @@ export default {
           }
           memberFeePay(param).then(response => {
             let memberNameResp = response.data.memberName
-            console.log(memberNameResp)
             if (memberNameResp.length === 0) {
               this.$message({
                 message: '操作成功',

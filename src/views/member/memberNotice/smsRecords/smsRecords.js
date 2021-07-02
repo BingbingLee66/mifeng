@@ -52,12 +52,12 @@ export default {
       console.log(`每页 ${val} 条`)
       this.limit2 = val
       this.currentpage2 = 1
-      this.fetchData()
+      this.fetchData2()
     },
     handleCurrentChange2(val) {
       console.log(`当前页: ${val}`)
       this.currentpage2 = val
-      this.fetchData()
+      this.fetchData2()
     },
     init() {
       this.fetchData()
