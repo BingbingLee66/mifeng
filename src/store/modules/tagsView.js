@@ -80,6 +80,7 @@ const actions = {
     commit('ADD_VISITED_VIEW', view)
   },
   addCachedView({ commit }, view) {
+    console.log('view', view)
     commit('ADD_CACHED_VIEW', view)
   },
 

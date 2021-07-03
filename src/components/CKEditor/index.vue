@@ -14,9 +14,9 @@ export default {
   },
   components: {},
   computed: {},
-  mounted() {
+  /* mounted() {
     this.init()
-  },
+  }, */
   methods: {
     // setData是异步的，如果先初始化，然后再传值进来有可能无法显示富文本内容
     init() {

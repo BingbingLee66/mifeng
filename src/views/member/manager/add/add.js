@@ -12,6 +12,7 @@ import {
 } from '@/api/org-structure/org'
 
 export default {
+
   data() {
     var checkPhone = (rule, value, callback) => {
       if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(value)) {
@@ -94,7 +95,12 @@ export default {
       departmentCas: []
     }
   },
-
+  activated() {
+    console.log("-----activated------");
+  },
+  deactivated() {
+    console.log("-----deactivated------");
+  },
   created() {
     if (this.$route.query.sign) {
       if (typeof this.$route.query.allParentId === 'number') {
@@ -167,11 +173,12 @@ export default {
     /*
     * 选择部门
     * */
-    handlerDepartmentChange(ids) {
+    handlerDepartmentChange(val) {
       // console.log(typeof ids)
       // this.ids = ids
-      // const departmentStr = ids.join(',')
-      this.formObj.departmentId = ids + ''
+      const departmentStr = val.join(',')
+      this.formObj.departmentId = departmentStr
+      console.log('this.formObj.departmentId', this.formObj.departmentId)
     },
 
     /**
@@ -281,7 +288,10 @@ export default {
           this.formObj.phone = this.formObj.contactPhone
         }
         if (valid) {
+          // this.formObj['memberPostId'] = this.formObj['memberPostId'].join(',');
           if (this.type === 'add') {
+            // 将会内职位数组变为字符串
+            // console.log("this.formObj['memberPostId']", this.formObj['memberPostId'])
             this.formObj['ckey'] = this.$store.getters.ckey
             add(this.formObj).then(response => {
               this.$message({

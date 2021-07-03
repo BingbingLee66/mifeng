@@ -5,6 +5,7 @@ import { exportJson2Excel } from '@/utils/exportExcel'
 import { getDepartmentList } from '@/api/org-structure/org'
 
 export default {
+  name: '商/协会成员',
   data() {
     var checkPass = (rule, value, callback) => {
       if (!/^\w*$/.test(value)) {
@@ -56,6 +57,8 @@ export default {
     }
   },
   created() {
+    console.log("this.$router", this.$router);
+    console.log("this.$route", this.$route)
     this.getMemberType() // 获取商会职位数据
     this.getTradeType() // 获取行业数据
     this.getdepartmentType() // 获取部门数据
@@ -196,18 +199,19 @@ export default {
     },
 
     handleSelectionChange(value) {
+      console.log('value', value)
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
         let new_data = {
-          '会员姓名/联系人姓名': data.type === 0 ? data.name : data.companyName,
+          '会员姓名/联系人姓名': data.type + data.type === 0 ? data.name : data.contactName,
           '手机号/联系人电话': data.type === 0 ? data.phone : data.contactPhone,
           '会内职位': data.postName,
           '行业': data.tradeName,
           '部门': data.departmentName,
           '入会类型': data.type == 0 ? '个人' : '企业',
           '入会时间': data.joinedTs,
-          '状态': data.status == 1 ? '正常' : '已冻结'
+          '状态': data.status == 1 ? '正常' : '已冻结',
         }
         console.log("ew_data", new_data)
         this.selectionDatas.push(new_data)

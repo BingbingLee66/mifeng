@@ -11,7 +11,7 @@
           </el-col>
           <el-col :offset="7" :span="5">
             <el-form-item :span="12" label="状态：">
-              <el-select v-model="query.auditStatus" placeholder="请选择状态" @change="fetchData">
+              <el-select v-model="query.auditStatus" placeholder="请选择状态" @change="changeFetchData">
                 <el-option label="所有" :value="-1"></el-option>
                 <el-option label="待审核" :value="0"></el-option>
                 <el-option label="已通过" :value="1"></el-option>
@@ -37,7 +37,7 @@
           {{ scope.row.type===0 ? scope.row.name :  scope.row.contactName}}
         </template>
       </el-table-column>
-      <el-table-column label="手机号/联系方式" width="150px">
+      <el-table-column label="手机号/联系人电话" width="150px">
         <template slot-scope="scope">
           {{ scope.row.type===0 ? scope.row.phone :  scope.row.contactPhone}}
         </template>
@@ -49,7 +49,7 @@
       </el-table-column>
       <el-table-column label="提交时间">
         <template slot-scope="scope">
-          {{scope.row.updatedTs}}
+          {{scope.row.createdTs}}
         </template>
       </el-table-column>
       <el-table-column label="状态" width="100px">

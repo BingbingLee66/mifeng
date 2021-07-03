@@ -12,6 +12,7 @@ const state = {
   ckey: '',
   chambername: '',
   systemlogo: ''
+  // remark: ''
 }
 
 const mutations = {
@@ -39,6 +40,9 @@ const mutations = {
   SET_SYSTEMLOGO: (state, systemlogo) => {
     state.systemlogo = systemlogo
   }
+  // SET_REMARK: (state, remark) => {
+  //   state.remark = remark
+  // }
 }
 
 const actions = {
@@ -92,7 +96,7 @@ const actions = {
           reject('Verification failed, please Login again.')
         }
         const { profile } = data
-        let getroles = []
+        const getroles = []
         getroles.push(profile.roleName)
         commit('SET_NAME', profile.remark)
         commit('SET_PROFILE', profile)
@@ -100,6 +104,7 @@ const actions = {
         commit('SET_CKEY', profile.ckey)
         commit('SET_CHAMBERNAME', profile.chamberName)
         commit('SET_SYSTEMLOGO', profile.systemLogo)
+        // commit('SET_REMARK', profile.remark)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -119,6 +124,7 @@ const actions = {
         commit('SET_CHAMBERNAME', '')
         commit('SET_SYSTEMLOGO', '')
         commit('SET_PERMISSIONS', [])
+        // commit('SET_REMARK', '')
         removeToken()
         resetRouter()
         resolve()

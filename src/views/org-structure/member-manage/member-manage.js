@@ -79,11 +79,28 @@ export default {
         'pageSize': this.pageSize
       }
       getMemberList(params).then(res => {
-        // console.log('成员列表：', res)
         if (res.state === 1 && JSON.stringify(res.data) !== '{}') {
           this.memberData = res.data.page.list
           this.totalPages = res.data.page.totalRows
-          // console.log(res.data)
+        }
+      })
+    },
+
+    /*
+    * 获取成员管理列表
+    * */
+    getMemberLists() {
+      const params = {
+        'ckey': this.$store.getters.ckey,
+        'departmentId': this.departmentId,
+        'memberName': '',
+        'page': this.page,
+        'pageSize': this.pageSize
+      }
+      getMemberList(params).then(res => {
+        if (res.state === 1 && JSON.stringify(res.data) !== '{}') {
+          this.memberData = res.data.page.list
+          this.totalPages = res.data.page.totalRows
         }
       })
     },
@@ -92,15 +109,13 @@ export default {
     * 分页查询
     * */
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.page = 1
       this.pageSize = val
-      this.getMemberList()
+      this.getMemberLists()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.page = val
-      this.getMemberList()
+      this.getMemberLists()
     },
 
     /*

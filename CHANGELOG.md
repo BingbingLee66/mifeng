@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## [1.8.1] - 2021-06-29
+
+### Fixed
+* 编辑会员页面，企业/团体logo是方形 [#181](https://gitlab.kd/yunshanghui/backend/api/-/issues/181)
+* 总后台-添加/编辑商会，商会logo显示方形 [#180](https://gitlab.kd/yunshanghui/backend/api/-/issues/180)
+* 商协会成员详情页面的头像变形 [#179](https://gitlab.kd/yunshanghui/backend/api/-/issues/179)
+* 商会后台ui修改部分 [#164](https://gitlab.kd/yunshanghui/backend/api/-/issues/164)
+* 切换登录账号，右上角的头像和名称没有变 [#163](https://gitlab.kd/yunshanghui/backend/api/-/issues/163)
+
+
 ## [1.6.0] - 2021-06-08
 
 ### Added

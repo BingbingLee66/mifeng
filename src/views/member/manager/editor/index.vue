@@ -16,27 +16,36 @@
           </el-row>
           <div v-if="formObj.type === 1">
             <el-row>
-              <el-col :span="7">
-                <el-form-item label="企业名称：" prop="companyName">
+              <el-col :span="10">
+                <el-form-item label="企业/团体名称：" label-width="130px"  prop="companyName">
                   <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="7">
-                <el-form-item label="企业logo：" prop="companyLogo">
-                  <el-upload class="avatar-uploader" action="/" :show-file-list="false"
-                             :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
-                    <img v-if="formObj.companyLogo" :src="formObj.companyLogo" style="height: 100px; width: 100px;"
-                         class="avatar avatar-tips">
-                    <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
+                <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
+                  <el-upload
+                    class="avatar_uploader"
+                    action="/"
+                    :show-file-list="false"
+                    :before-upload="beforeAvatarUpload"
+                    :http-request="uploadLogo"
+                  >
+                    <img
+                      v-if="formObj.companyLogo"
+                      :src="formObj.companyLogo"
+                      style="height: 100px; width: 100px;border-radius:50%;"
+                      class="avatar avatar-tips"
+                    >
+                    <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;border-radius:50%;">
                     </i>
-                    <div v-if="!formObj.companyLogo" class="uploader-tips">上传LOGO</div>
+                      <div v-if="!formObj.companyLogo" class="uploader_tips">上传LOGO</div>
                   </el-upload>
                 </el-form-item>
               </el-col>
             </el-row>
-              <el-row>
+            <el-row>
               <el-col :span="7">
                 <el-form-item label="联系人姓名：" prop="contactName">
                   <el-input v-model="formObj.contactName" maxLength="20" placeholder="请填写真实姓名"></el-input>
@@ -50,8 +59,6 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
-          
           </div>
           <div v-else>
             <el-row>
@@ -71,6 +78,16 @@
           </div>
           <el-row>
             <el-col :span="7">
+              <el-form-item label="会内职位：" prop="memberPostId">
+                <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
+                  <el-option v-for="post in memberPostOptions" :label="post.label" :value="post.value"
+                             :key="post.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="7">
               <el-form-item label="所在部门：">
                 <el-cascader
                   clearable
@@ -79,7 +96,7 @@
                   :props="{
                     expandTrigger:'click',
                     emitPath:false,
-                    multiple: false,
+                    multiple: true,
                     checkStrictly: true ,
                     value:'id',
                     label:'departmentName',
@@ -90,16 +107,6 @@
                   placeholder="请选择部门"
                   @change="handlerDepartmentChange">
                 </el-cascader>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="7">
-              <el-form-item label="会内职位：" prop="memberPostId">
-                <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
-                  <el-option v-for="post in memberPostOptions" :label="post.label" :value="post.value"
-                             :key="post.value"></el-option>
-                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
@@ -182,19 +189,19 @@
           </el-row>
           <el-row>
             <el-col :span="7" v-if="formObj.type === 0">
-              <el-form-item label="企业名称：" prop="companyName">
+              <el-form-item label="企业/团体名称：" label-width="130px" prop="companyName">
                 <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="7" v-if="formObj.type === 0">
-              <el-form-item label="企业logo：" prop="companyLogo">
-                <el-upload class="avatar-uploader" action="/" :show-file-list="false"
+              <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
+                <el-upload class="avatar_uploader" action="/" :show-file-list="false"
                            :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
-                  <img v-if="formObj.companyLogo" :src="formObj.companyLogo" style="height: 100px; width: 100px;"
+                  <img v-if="formObj.companyLogo" :src="formObj.companyLogo" style="height: 100px; width: 100px;border-radius:50%;"
                        class="avatar avatar-tips">
-                  <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
+                  <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;border-radius:50%;">
                   </i>
-                  <div v-if="!formObj.companyLogo" class="uploader-tips">上传LOGO</div>
+                   <div v-if="!formObj.companyLogo" class="uploader_tips">上传LOGO</div>
                 </el-upload>
               </el-form-item>
             </el-col>
@@ -229,16 +236,23 @@
           <el-row>
             <el-col :span="7">
               <el-form-item label="入会时间：" prop="joinedTs">
-                <el-date-picker format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="formObj.joinedTs" type="date"
-                                placeholder="选择日期">
+                <el-date-picker
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  v-model="formObj.joinedTs"
+                  type="date"
+                  placeholder="选择日期">
                 </el-date-picker>
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="7">
-              <el-form-item label="企业职位：" prop="companyPositionId">
-                <el-select v-model="formObj.companyPositionId" placeholder="请选择企业职位">
-                  <el-option v-for="position in positionOptions" :label="position.label" :value="position.value"
-                             :key="position.value">
+              <el-form-item label="企业/团体职位：" label-width="130px" prop="companyPositionId">
+                <el-select v-model="formObj.companyPositionId" placeholder="请选择企业/团体职位">
+                  <el-option
+                    v-for="position in positionOptions"
+                    :label="position.label"
+                    :value="position.value"
+                    :key="position.value">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -251,13 +265,13 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <!-- <el-row>
             <el-col :span="15">
               <el-form-item label="企业简介：" prop="companyIntroduction">
                 <el-input type="textarea" :rows="8" v-model="formObj.companyIntroduction" maxLength="1000"></el-input>
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row> -->
           <el-form-item>
             <el-button type="primary" v-dbClick @click="save">保存</el-button>
             <el-button @click="closeTab">取消</el-button>
@@ -322,6 +336,18 @@
     overflow: hidden;
   }
 
+  .avatar_uploader .el-upload{
+    border: 1px dashed #d9d9d9;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar_uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+
   .avatar-uploader .el-upload:hover {
     border-color: #409eff;
   }
@@ -348,6 +374,13 @@
   .uploader-tips {
     line-height: 50px;
     margin-top: -34px;
+    font-size: 12px;
+    color: #8c939d;
+  }
+
+  .uploader_tips {
+    line-height: 50px;
+    margin-top: -50px;
     font-size: 12px;
     color: #8c939d;
   }

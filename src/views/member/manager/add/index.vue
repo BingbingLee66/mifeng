@@ -10,11 +10,17 @@
             </el-radio-group>
           </el-form-item>
           <div v-if="formObj.type === 1">
-            <el-form-item label="企业名称：" prop="companyName">
+            <el-form-item label="企业/团体名称：" prop="companyName">
               <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
             </el-form-item>
-            <el-form-item label="企业logo：" prop="companyLogo" class="avatar_style">
-              <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
+            <el-form-item label="企业/团体logo：" prop="companyLogo" class="avatar_style">
+              <el-upload
+                class="avatar-uploader"
+                action="/"
+                :show-file-list="false"
+                :before-upload="beforeAvatarUpload"
+                :http-request="uploadLogo"
+              >
                 <img v-if="formObj.companyLogo" :src="formObj.companyLogo" class="avatar avatar-tips">
                 <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
                 </i>
@@ -39,7 +45,12 @@
           </div>
           <el-form-item label="会内职位：" prop="memberPostId">
             <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
-              <el-option v-for="post in memberPostOptions" :label="post.label" :value="post.value" :key="post.value"></el-option>
+              <el-option
+                v-for="post in memberPostOptions"
+                :label="post.label"
+                :value="post.value"
+                :key="post.value"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="所在部门：">
@@ -52,15 +63,15 @@
               :props="{
                 expandTrigger:'click',
                 emitPath:false,
-                multiple: false,
+                multiple: true,
                 checkStrictly: true ,
                 value:'id',
                 label:'departmentName',
                 children:'departmentRespList',
                 disable:'disabled'
               }"
-              @change="handlerDepartmentChange">
-            </el-cascader>
+              @change="handlerDepartmentChange"
+            ></el-cascader>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" v-dbClick @click="save">保存</el-button>
@@ -75,55 +86,55 @@
 <script src="./add.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import "src/styles/common.scss";
 </style>
 <style lang="scss">
-  .form-border {
-    margin: 20px 50px;
-    border: 1px solid #bfc5d0;
+.form-border {
+  margin: 20px 50px;
+  border: 1px solid #bfc5d0;
+}
+
+.add_form_container {
+  padding: 50px 0 100px 100px;
+  width: 50%;
+
+  .el-cascader {
+    width: 100%;
   }
 
-  .add_form_container {
-    padding: 50px 0 100px 100px;
-    width: 50%;
-
-    .el-cascader {
-      width: 100%;
-    }
-
-    .avatar_style {
-      .el-form-item__label {
-        float: none;
-      }
-    }
-
-    .avatar-uploader .el-upload {
-      width: 132px;
-      height: 132px;
-      border: 1px dashed #d9d9d9;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      border-radius: 50%;
-    }
-
-    .avatar-uploader .el-upload:hover {
-      border-color: #409eff;
-    }
-
-    .avatar-uploader-icon {
-      font-size: 28px;
-      color: #8c939d;
-      width: 132px;
-      height: 132px;
-      line-height: 132px;
-      text-align: center;
-    }
-
-    .avatar {
-      width: 132px;
-      height: 132px;
-      display: block;
+  .avatar_style {
+    .el-form-item__label {
+      float: none;
     }
   }
+
+  .avatar-uploader .el-upload {
+    width: 132px;
+    height: 132px;
+    border: 1px dashed #d9d9d9;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 132px;
+    height: 132px;
+    line-height: 132px;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 132px;
+    height: 132px;
+    display: block;
+  }
+}
 </style>
