@@ -107,7 +107,7 @@
         @change="fetchData2"
         size="mini">
       </el-date-picker>
-      <el-button type="primary" size="mini" :actionid="getId('', '导表')" v-if="has('', '导表')" style="float: right;" @click="fetchData2($event)">导表</el-button>
+      <el-button type="primary" size="mini" :actionid="getId('', '导表')" v-if="has('', '导表')" style="float: right;" @click="exportExcel2($event)">导表</el-button>
     </div>
     <el-table :data="list2" v-loading="listLoading2" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange2">
       <el-table-column type="selection" width="55px">

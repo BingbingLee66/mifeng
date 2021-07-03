@@ -1,5 +1,6 @@
 import { getMemberFeeNoticeList, sendSms } from '@/api/member/memberFee'
 import { getMemberOptions } from '@/api/member/post'
+import { getSetting } from '@/api/system/setting'
 
 export default {
   data() {
@@ -49,6 +50,7 @@ export default {
   created() {
     this.getMemberType()
     this.init()
+    this.getMemberFeeMsg()
   },
   methods: {
     has (tabName, actionName) {
@@ -111,9 +113,6 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.formObj = {
-        msg: ''
-      }
       this.smsVisible = true
     },
     handleSelectionChange (value) {
@@ -122,6 +121,14 @@ export default {
       for (let data of datas) {
         this.selectionDatas.push(data)
       }
+    },
+    getMemberFeeMsg () {
+      let params = {
+        key: 'memberFeeMsg'
+      }
+      getSetting(params).then(response => {
+        this.formObj.msg = response.data.value
+      })
     },
     sendSms () {
       this.$refs['form'].validate((valid) => {
@@ -158,7 +165,6 @@ export default {
     },
     closeVisible () {
       this.smsVisible = false
-      this.selectionDatas = []
     },
     smsRecords (e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))

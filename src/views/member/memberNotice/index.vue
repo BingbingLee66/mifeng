@@ -102,7 +102,7 @@
         <el-row>
           <el-col :span="20">
             <el-form-item label="短信内容：" prop="msg">
-              <el-input type="textarea" :rows="8" v-model="formObj.msg"></el-input>
+              <el-input type="textarea" :rows="8" v-model="formObj.msg" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
         </el-row>

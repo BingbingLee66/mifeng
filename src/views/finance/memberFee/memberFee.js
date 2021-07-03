@@ -5,7 +5,7 @@ import {
   getChamberFinanceMemberFeeList 
 } from '@/api/finance/finance'
 import { exportJson2Excel } from '@/utils/exportExcel'
-import { formatDate } from '@/utils/date' // 格式化时间戳
+import { formatDate, formatDateTime } from '@/utils/date' // 格式化时间戳
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -153,11 +153,11 @@ export default {
       this.selectionDatas2 = []
       for (let data of datas) {
         let new_data = {
-          '会员名字': data.shopPrice,
-          '职位': data.shopPrice,
-          '手机号': data.shopDeduction,
-          '缴费时间': formatDate(new Date(data.rptDate), 'yyyy-MM-dd'),
-          '缴费金额(元)': data.shopDeduction
+          '会员名字': data.memberName,
+          '职位': data.memberPostName,
+          '手机号': data.phone,
+          '缴费时间': formatDateTime(new Date(data.createdTs), 'yyyy-MM-dd hh:mm:ss'),
+          '缴费金额(元)': data.feeAmount
         }
         this.selectionDatas2.push(new_data)
       }
