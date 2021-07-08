@@ -21,12 +21,16 @@ export default {
       tradeCas: -1,
       departmentCas: -1,
       query: {
-        mulValue: '',
-        memberPostType: -1,
-        type: -1,
-        tradeType: -1,
-        date: '',
-        department: -1
+        name: '', // 会员姓名
+        phone: '', // 会员手机号
+        contactName: '', // 联系人姓名
+        contactPhone: '', // 联系人电话
+        companyName: '', // 企业/团体名称
+        memberPostType: -1, // 职位
+        department: -1, // 部门
+        type: -1, // 入会类型
+        tradeType: -1, // 行业
+        date: '' // 入会时间
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -48,7 +52,7 @@ export default {
   },
   computed: {
     nativePlaceStr() {
-      return function (str) {
+      return function(str) {
         if (str === null) {
           return ''
         }
@@ -57,8 +61,6 @@ export default {
     }
   },
   created() {
-    console.log("this.$router", this.$router);
-    console.log("this.$route", this.$route)
     this.getMemberType() // 获取商会职位数据
     this.getTradeType() // 获取行业数据
     this.getdepartmentType() // 获取部门数据
@@ -72,17 +74,17 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     goEdit(e, row) {
-      console.log('event', row)
-      this.$router.push({ name: '编辑会员', params: { 'memberId': row.id, 'querytype': 2 } })
+      this.$router.push({
+        name: '编辑会员',
+        params: { 'memberId': row.id, 'querytype': 2 }
+      })
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
       this.fetchData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
       this.fetchData()
     },
@@ -92,7 +94,6 @@ export default {
         ckey: this.$store.getters.ckey
       }
       getMemberOptions(params).then(response => {
-        console.log('会内职位数据', response.data.data)
         this.memberPostOptions = response.data.data
         this.memberPostOptions.unshift({ 'label': '全部', 'value': -1 })
       })
@@ -103,7 +104,6 @@ export default {
         ckey: this.$store.getters.ckey
       }
       getTradeOptions(params).then(response => {
-        console.log('行业数据：', response.data.data)
         this.tradeOptions = response.data.data
         this.tradeOptions.unshift({ 'label': '全部', 'value': -1 })
       })
@@ -115,7 +115,6 @@ export default {
         'parentId': 0
       }
       getDepartmentList(params).then(res => {
-        console.log('部门列表：', res.data.data[0].departmentRespList)
         if (res.state === 1) {
           this.departmentOptions = res.data.data[0].departmentRespList
           this.departmentOptions.unshift({ 'departmentName': '全部', 'id': -1 })
@@ -135,6 +134,11 @@ export default {
       this.listLoading = true
       const params = {
         'ckey': this.$store.getters.ckey,
+        'companyName': this.query.companyName,
+        'contactName': this.query.contactName,
+        'contactPhone': this.query.contactPhone,
+        'name': this.query.name,
+        'phone': this.query.phone,
         'memberPostType': this.query.memberPostType,
         'type': this.query.type,
         'tradeType': this.query.tradeType,
@@ -142,15 +146,11 @@ export default {
         'pageSize': this.limit,
         'page': this.currentpage
       }
-      if (this.query.mulValue) {
-        params['mulValue'] = this.query.mulValue
-      }
       if (this.query.date) {
         params['startTs'] = this.query.date[0]
         params['endTs'] = this.query.date[1]
       }
       list(params).then(response => {
-        console.log('商协会成员列表数据：', response)
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
         this.listLoading = false
@@ -164,7 +164,10 @@ export default {
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('membereditor', this.$route.path)
-      this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '0' } })
+      this.$router.push({
+        name: '会员详情',
+        params: { 'memberDetail': row, 'querytype': '0' }
+      })
     },
     updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -209,11 +212,10 @@ export default {
           '会内职位': data.postName,
           '行业': data.tradeName,
           '部门': data.departmentName,
-          '入会类型': data.type == 0 ? '个人' : '企业',
+          '入会类型': data.type === 0 ? '个人' : '企业',
           '入会时间': data.joinedTs,
-          '状态': data.status == 1 ? '正常' : '已冻结',
+          '状态': data.status === 1 ? '正常' : '已冻结'
         }
-        console.log("ew_data", new_data)
         this.selectionDatas.push(new_data)
       }
     },
