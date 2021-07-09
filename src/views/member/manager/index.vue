@@ -19,11 +19,7 @@
         </el-form-item>
         <el-form-item label="职位：" class="query_form_item_1">
           <el-select v-model="query.memberPostType" placeholder="请选择职业类型">
-            <el-option
-              v-for="post in memberPostOptions"
-              :label="post.label"
-              :value="post.value"
-              :key="post.value"></el-option>
+            <el-option v-for="post in memberPostOptions" :label="post.label" :value="post.value" :key="post.value"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="部门：" class="query_form_item_1">
@@ -85,9 +81,7 @@
         <el-table-column label="头像/企业(团体)logo" width="150px">
           <template slot-scope="scope">
             <div v-if="scope.row.companyLogo ||  scope.row.portrait">
-              <img
-                style="width: 88px;height: 88px;border-radius: 50%;"
-                :src="scope.row.type == 0 ? scope.row.portrait :  scope.row.companyLogo"/>
+              <img style="width: 88px;height: 88px;border-radius: 50%;" :src="scope.row.type == 0 ? scope.row.portrait :  scope.row.companyLogo"/>
             </div>
             <img v-else style="width: 88px;height: 88px;border-radius: 50%;" src="@/assets/img/nologo.png"/>
           </template>
@@ -131,10 +125,16 @@
         </el-table-column>
         <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
-            <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">详情</el-button>
+            <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">
+              详情
+            </el-button>
             <el-button type="text" @click="goEdit($event, scope.row)">修改</el-button>
-            <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '冻结')" v-if="has('', '冻结') && scope.row.status == 1">冻结</el-button>
-            <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '解冻')" v-if="has('', '解冻') && scope.row.status == 0">解冻</el-button>
+            <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '冻结')" v-if="has('', '冻结') && scope.row.status == 1">
+              冻结
+            </el-button>
+            <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '解冻')" v-if="has('', '解冻') && scope.row.status == 0">
+              解冻
+            </el-button>
             <!-- <el-button type="text" @click="openTransfer(scope.row)" :actionid="getId('', '转让')" v-if="has('', '转让')">转让</el-button> -->
           </template>
         </el-table-column>
@@ -151,6 +151,7 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange">
     </el-pagination>
+
     <el-dialog title="转让商会会长" :visible.sync="transferVisible" width="50%">
       <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="150px">
         <el-row>

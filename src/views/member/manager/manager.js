@@ -129,6 +129,8 @@ export default {
     },
     fetchData(e) {
       if (e !== undefined) {
+        console.log('4444',e.currentTarget.getAttribute('actionid'))
+        this.currentpage = 1
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       this.listLoading = true
