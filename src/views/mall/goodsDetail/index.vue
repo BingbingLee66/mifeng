@@ -57,7 +57,7 @@
             <el-form-item label="">
               <div class="goods-pre">
                 <img :src="detailObj.descript" class="goods-avatar">
-                <div class="goods-pre-btn" @click="openPreviewModal(des)">预览</div>
+                <div class="goods-pre-btn" @click="openPreviewModal(detailObj.descript)">预览</div>
               </div>
             </el-form-item>
           </el-col>
