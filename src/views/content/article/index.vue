@@ -97,8 +97,8 @@
               :show-file-list="false"
               :before-upload="function (file) { return beforeAvatarUpload(file, 1) }"
               :http-request="upload">
-              <img  :src="formObj.coverImgs[1]" class="avatar">
-              <i  class="el-icon-plus avatar-uploader-icon"></i>
+              <img v-if="formObj.coverImgs[1]" :src="formObj.coverImgs[1]" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
         </el-col>
