@@ -12,8 +12,7 @@ import {
 import { getContentColumnOptions } from '@/api/content/columnsetup'
 
 export default {
-  components: {
-  },
+  components: {},
   data() {
     return {
       detailVisible: false,
@@ -49,25 +48,24 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     let activename = window.localStorage.getItem('activenamec')
     if (!!activename) {
       this.activeName = activename
     }
     this.init()
   },
-  computed: {
-  },
+  computed: {},
   created() {
     this.getWebNameType()
     this.getChannelType()
     this.getContentColumnType()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -81,7 +79,7 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    handleClick () {
+    handleClick() {
       window.localStorage.setItem('activenamec', this.activeName)
       this.init()
     },
@@ -100,19 +98,19 @@ export default {
         this.fetchData()
       }
     },
-    getWebNameType () {
+    getWebNameType() {
       getWebnameOptions().then(response => {
         this.crawlerOptions = response.data.data
         this.crawlerOptions.unshift({ 'label': '所有', 'value': -1 })
       })
     },
-    getChannelType () {
+    getChannelType() {
       getChannelOptions().then(response => {
         this.channelOptions = response.data.data
         this.channelOptions.unshift({ 'label': '所有', 'value': '-1' })
       })
     },
-    getContentColumnType () {
+    getContentColumnType() {
       getContentColumnOptions().then(response => {
         this.contentColumnOptions = response.data.data
       })
@@ -142,7 +140,7 @@ export default {
         })
       }
     },
-    openPublish (e, row) {
+    openPublish(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.formObj = {
         'id': row.id,
@@ -153,7 +151,7 @@ export default {
       }
       this.publishVisible = true
     },
-    openPublishBatch (e) {
+    openPublishBatch(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -169,7 +167,7 @@ export default {
       }
       this.publishVisible = true
     },
-    publish (e) {
+    publish(e) {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           let ids = []
@@ -185,10 +183,17 @@ export default {
             'publishTs': this.formObj.publishTs
           }
           publish(params).then(response => {
-            this.$message({
-              message: '发布成功',
-              type: 'success'
-            })
+            if (response.state === 1) {
+              this.$message({
+                message: '发布成功',
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: response.msg,
+                type: 'error'
+              })
+            }
             this.fetchData()
           })
           this.publishVisible = false
@@ -197,7 +202,7 @@ export default {
         }
       })
     },
-    toRecycleBin (e, row) {
+    toRecycleBin(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let ids = []
       ids.push(row.id)
@@ -212,7 +217,7 @@ export default {
         this.fetchData()
       })
     },
-    batchToRecycleBin (e) {
+    batchToRecycleBin(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -231,7 +236,7 @@ export default {
         this.fetchData()
       })
     },
-    toCollectionResult (e, row) {
+    toCollectionResult(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'id': row.id
@@ -244,11 +249,11 @@ export default {
         this.fetchData()
       })
     },
-    delArticle (e, row) {
+    delArticle(e, row) {
       let actionid = e.currentTarget.getAttribute('actionid')
       const h = this.$createElement
       this.$msgbox({
-        title: '确定删除文章？', 
+        title: '确定删除文章？',
         message: h('p', null, [
           h('p', null, '此删除会把文章直接从数据库删除'),
           h('p', null, '不可恢复，请谨慎操作')
@@ -274,10 +279,10 @@ export default {
         this.$message({
           type: 'info',
           message: '已取消删除'
-        })   
+        })
       })
     },
-    batchDelArticle (e) {
+    batchDelArticle(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -287,7 +292,7 @@ export default {
       let actionid = e.currentTarget.getAttribute('actionid')
       const h = this.$createElement
       this.$msgbox({
-        title: '确定删除文章？', 
+        title: '确定删除文章？',
         message: h('p', null, [
           h('p', null, '此删除会把文章直接从数据库删除'),
           h('p', null, '不可恢复，请谨慎操作')
@@ -311,16 +316,16 @@ export default {
         this.$message({
           type: 'info',
           message: '已取消删除'
-        })   
+        })
       })
-      
+
     },
-    edit (e, row) {
+    edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('crawlermanager', this.$route.path)
       this.$router.push({ name: '编辑采文', params: { 'articleId': row.id } })
     },
-    detail (e, row) {
+    detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.selectId = row.id
       let params = {
@@ -334,7 +339,7 @@ export default {
       })
       this.detailVisible = true
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
