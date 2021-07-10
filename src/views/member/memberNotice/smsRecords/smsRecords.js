@@ -25,16 +25,15 @@ export default {
       listLoading2: false
     }
   },
-  computed: {
-  },
+  computed: {},
   created() {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -74,7 +73,8 @@ export default {
         this.listLoading = false
       })
     },
-    detail (row) {
+    detail(row) {
+      console.log(row, 8989)
       this.detailObj = {
         'bid': row.bid,
         'msg': row.msg,
@@ -85,7 +85,7 @@ export default {
       this.visible = true
       this.fetchData2()
     },
-    fetchData2 () {
+    fetchData2() {
       this.listLoading2 = true
       let params = {
         'bid': this.detailObj.bid,
@@ -98,7 +98,7 @@ export default {
         this.listLoading2 = false
       })
     },
-    memberDetail (detail) {
+    memberDetail(detail) {
       const row = {
         'id': detail.memberId
       }

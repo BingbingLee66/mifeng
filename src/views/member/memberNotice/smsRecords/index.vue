@@ -79,14 +79,14 @@
             {{scope.row.id}}
           </template>
         </el-table-column> -->
-        <el-table-column label="会员名字">
+        <el-table-column label="会员名字/联系人姓名">
           <template slot-scope="scope">
-            {{scope.row.memberName}}
+            {{scope.row.type ===1 ? scope.row.contactName : scope.row.memberName }}
           </template>
         </el-table-column>
-        <el-table-column label="手机号" width="200px">
+        <el-table-column label="会员手机号/联系人电话" width="200px">
           <template slot-scope="scope">
-            {{scope.row.mobile}}
+            {{scope.row.type ===1 ? scope.row.contactPhone : scope.row.mobile }}
           </template>
         </el-table-column>
         <el-table-column label="职位" width="120px">
