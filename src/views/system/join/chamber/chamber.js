@@ -8,7 +8,7 @@ export default {
   },
   computed: {},
   created() {
-    this.init()
+    // this.init()
   },
   methods: {
     has(tabName, actionName) {
