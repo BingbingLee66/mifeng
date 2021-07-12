@@ -1,8 +1,8 @@
-import { 
-  getChamberFinanceData, 
-  getChamberFinanceMemberThisMonth, 
-  getChamberFinanceMemberDay, 
-  getChamberFinanceMemberFeeList 
+import {
+  getChamberFinanceData,
+  getChamberFinanceMemberThisMonth,
+  getChamberFinanceMemberDay,
+  getChamberFinanceMemberFeeList
 } from '@/api/finance/finance'
 import { exportJson2Excel } from '@/utils/exportExcel'
 import { formatDate, formatDateTime } from '@/utils/date' // 格式化时间戳
@@ -44,10 +44,10 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange1(val) {
@@ -77,7 +77,7 @@ export default {
       this.initDatePicker2()
       this.getStatistics()
     },
-    initDatePicker1 () {
+    initDatePicker1() {
       const endDateNs = new Date()
       const startDateNs = new Date()
       startDateNs.setTime(startDateNs.getTime() - 3600 * 1000 * 24 * this.query1.days)
@@ -87,7 +87,7 @@ export default {
       this.query1.date = [defalutStartTime, defalutEndTime]
       this.fetchData1()
     },
-    initDatePicker2 () {
+    initDatePicker2() {
       const endDateNs = new Date()
       const startDateNs = new Date()
       startDateNs.setTime(startDateNs.getTime() - 3600 * 1000 * 24 * this.query2.days)
@@ -97,7 +97,7 @@ export default {
       this.query2.date = [defalutStartTime, defalutEndTime]
       this.fetchData2()
     },
-    getStatistics () {
+    getStatistics() {
       let params = {
         // 'ckey': this.$store.getters.ckey
       }
@@ -108,7 +108,7 @@ export default {
         this.pfStatistics = response.data.financeFullDataResp
       })
     },
-    fetchData1 () {
+    fetchData1() {
       this.listLoading1 = true
       let params = {
         'pageSize': this.limit1,
@@ -122,7 +122,7 @@ export default {
         this.listLoading1 = false
       })
     },
-    fetchData2 () {
+    fetchData2() {
       this.listLoading2 = true
       let params = {
         'pageSize': this.limit2,
@@ -136,7 +136,7 @@ export default {
         this.listLoading2 = false
       })
     },
-    handleSelectionChange1 (value) {
+    handleSelectionChange1(value) {
       let datas = value
       this.selectionDatas1 = []
       for (let data of datas) {
@@ -148,7 +148,7 @@ export default {
         this.selectionDatas1.push(new_data)
       }
     },
-    handleSelectionChange2 (value) {
+    handleSelectionChange2(value) {
       let datas = value
       this.selectionDatas2 = []
       for (let data of datas) {
@@ -162,7 +162,7 @@ export default {
         this.selectionDatas2.push(new_data)
       }
     },
-    exportExcel1 (e) {
+    exportExcel1(e) {
       if (this.selectionDatas1.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -172,7 +172,7 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       exportJson2Excel('会员缴费数据', this.selectionDatas1)
     },
-    exportExcel2 (e) {
+    exportExcel2(e) {
       if (this.selectionDatas2.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -182,7 +182,7 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       exportJson2Excel('会员缴费详情', this.selectionDatas2)
     },
-    goSettle () {
+    goSettle() {
       this.$router.push({ name: '结算提现' })
     }
   }
