@@ -66,18 +66,17 @@ export default {
       }
     }
   },
-  computed: {
-  },
+  computed: {},
   created() {
     this.getMemberType()
     this.initDateTimePicker()
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -102,7 +101,7 @@ export default {
       this.currentpage1 = val
       this.getMember()
     },
-    getMemberType () {
+    getMemberType() {
       let params = {
         ckey: this.$store.getters.ckey
       }
@@ -119,12 +118,12 @@ export default {
         this.fetchData()
       }
     },
-    initDateTimePicker () {
+    initDateTimePicker() {
       // 初始化1年
-      const end = new Date()
-      const start = new Date()
-      start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
-      this.$set(this.query, 'date', [start, end])
+      // const end = new Date()
+      // const start = new Date()
+      // start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
+      // this.$set(this.query, 'date', [start, end])
     },
     fetchData(e) {
       if (e !== undefined) {
@@ -143,18 +142,19 @@ export default {
         params['startTime'] = this.query.date[0]
         params['endTime'] = this.query.date[1]
       }
+      console.log('params', params)
       getMemberFeeList(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
         this.listLoading = false
       })
     },
-    openVisible (e) {
+    openVisible(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.visible = true
       this.getMember()
     },
-    getMember () {
+    getMember() {
       this.listLoading1 = true
       let params = {
         'memberPostId': this.memberQuery.memberPostType.id,
@@ -169,17 +169,17 @@ export default {
         this.listLoading1 = false
       })
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
         this.selectionDatas.push(data)
       }
     },
-    changeFee (post) {
+    changeFee(post) {
       this.memberFee = post.memberFee
     },
-    addMemberFee () {
+    addMemberFee() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.selectionDatas.length === 0) {
@@ -229,7 +229,7 @@ export default {
         }
       })
     },
-    closeVisible () {
+    closeVisible() {
       this.memberQuery = {
         memberPostType: { id: 0 },
         memberName: '',
