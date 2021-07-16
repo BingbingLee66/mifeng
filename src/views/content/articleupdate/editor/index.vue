@@ -9,13 +9,16 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8">
+        <div>
+          <el-col :span="8">
           <el-form-item label="对应栏目：" prop="contentColumnId">
-            <el-select v-model="formObj.contentColumnId" placeholder="请选择对应栏目">
+            <el-select v-model="formObj.contentColumnId" placeholder="请选择对应栏目" style="display: inline-block">
               <el-option v-for="cc in contentColumnOptions" :label="cc.label" :value="cc.value" :key="cc.value"></el-option>
             </el-select>
-          </el-form-item>
+          </el-form-item>  
         </el-col>
+        </div>
+        <el-button @click="addColumnFunc" type="primary" style="margin-left:10px">添加栏目</el-button>
       </el-row>
       <el-row>
         <el-col :span="18">
@@ -147,6 +150,7 @@
         </el-col>
       </el-form-item>
     </el-form>
+    <addColumn ref="addColumnRef"></addColumn>
   </div>
 
 </template>
