@@ -1,6 +1,6 @@
-import {getUpdateDetail, save, uploadCoverImg} from '@/api/content/article'
-import {getContentColumnOptions, getContentColumnOptionsWithCkey} from '@/api/content/columnsetup'
-import {getOptions} from '@/api/content/articleSource'
+import { getUpdateDetail, save, uploadCoverImg } from '@/api/content/article'
+import { getContentColumnOptions, getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
+import { getOptions } from '@/api/content/articleSource'
 import Ckeditor from '@/components/CKEditor'
 import PreviewPh from '@/components/ArticlePreview'
 
@@ -28,23 +28,23 @@ export default {
       uploadIndex: 0,
       rules: {
         title: [
-          {required: true, message: '文章标题不能为空', trigger: 'blur'},
-          {min: 6, max: 50, message: '限输入6-50个字的标题', trigger: 'blur'}
+          { required: true, message: '文章标题不能为空', trigger: 'blur' },
+          { min: 6, max: 50, message: '限输入6-50个字的标题', trigger: 'blur' }
         ],
         sourceId: [
-          {required: true, message: '文章来源不能为空', trigger: 'blur'}
+          { required: true, message: '文章来源不能为空', trigger: 'blur' }
         ],
         contentColumnId: [
-          {required: true, message: '对应栏目不能为空', trigger: 'blur'}
+          { required: true, message: '对应栏目不能为空', trigger: 'blur' }
         ],
         coverImg1: [
-          {required: true, message: '封面图片必须上传', trigger: 'blur'}
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
         ],
         coverImg2: [
-          {required: true, message: '封面图片必须上传', trigger: 'blur'}
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
         ],
         coverImg3: [
-          {required: true, message: '封面图片必须上传', trigger: 'blur'}
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
         ]
       }
     }
@@ -70,21 +70,21 @@ export default {
       // 退出当前tab, 打开指定tab
       let openPath = window.localStorage.getItem('articleeditor')
       let tagsViews = this.$store.state.tagsView.visitedViews
-      let selectView = null
+      // let selectView = null
       for (let view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
-            this.$router.push({path: openPath})
+            this.$router.push({ path: openPath })
           })
           break
         }
       }
     },
     has(tabName, actionName) {
-      return this.$store.getters.has({tabName, actionName})
+      return this.$store.getters.has({ tabName, actionName })
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({tabName, actionName})
+      return this.$store.getters.getId({ tabName, actionName })
     },
     init() {
       this.fetchData()
@@ -148,6 +148,7 @@ export default {
           id: this.articleId
         }
         getUpdateDetail(params).then(response => {
+          console.log('文章详情：', response)
           const dataObj = response.data.dtl
           const htmlObj = dataObj.contentHtml
           this.formObj = {
@@ -161,6 +162,9 @@ export default {
             'status': dataObj.status,
             'istop': dataObj.istop,
             'sourceId': dataObj.sourceId
+          }
+          if (dataObj.status === 4) {
+            this.formObj['publishTs'] = dataObj.publishTs
           }
           this.getContentColumnType()
           this.$refs.ckeditor1.init()

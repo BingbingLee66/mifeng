@@ -185,6 +185,41 @@ export const constantRoutes = [
         component: () => import('@/views/org-structure/invite-member/index'),
         hidden: true,
         meta: { title: '邀请成员' }
+      },
+      {
+        path: '/goods/goodsSku',
+        name: '发布新商品/编辑商品',
+        component: () => import('@/views/goods/goodsSku/index'),
+        hidden: true,
+        meta: { title: '发布新商品/编辑商品' }
+      },
+      {
+        path: '/finance/chamberCapital/detail',
+        name: '交易详情',
+        component: () => import('@/views/finance/chamberCapital/detail/index'),
+        hidden: true,
+        meta: { title: '交易详情' }
+      },
+      {
+        path: '/mall/goodsDetail',
+        name: '商品详情',
+        component: () => import('@/views/mall/goodsDetail/index'),
+        hidden: true,
+        meta: { title: '商品详情' }
+      },
+      {
+        path: '/order/orderDetail',
+        name: '订单详情',
+        component: () => import('@/views/order/detail/index'),
+        hidden: true,
+        meta: { title: '订单详情' }
+      },
+      {
+        path: '/member/smsRecords',
+        name: '短信记录',
+        component: () => import('@/views/member/memberNotice/smsRecords/index'),
+        hidden: true,
+        meta: { title: '短信记录' }
       }
     ]
   }

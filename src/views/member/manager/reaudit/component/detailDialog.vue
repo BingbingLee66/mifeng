@@ -2,8 +2,9 @@
   <div>
     <el-dialog title="详情" :visible.sync="detailVisible" width="50%">
       <div slot="title" class="header-title">
-                    <span class="title-name">{{title}} </span>
-                </div>
+                    <span class="title-name">{{ title }} </span>
+               
+      </div>
       <table border="1" style="border-collapse: collapse;">
         <tr>
           <th class="th_title">修改项</th>
@@ -12,19 +13,19 @@
         </tr>
         <tr v-if="afterRevision.companyName!=beforeRevision.companyName">
           <td class="th_title">企业/团体名称</td>
-          <td>{{beforeRevision.companyName}}</td>
-          <td>{{afterRevision.companyName}}</td>
+          <td>{{ beforeRevision.companyName }}</td>
+          <td>{{ afterRevision.companyName }}</td>
         </tr>
         <tr v-if="afterRevision.contactName!=beforeRevision.contactName">
           <td class="th_title">联系人姓名</td>
-          <td>{{beforeRevision.contactName}}</td>
-          <td>{{afterRevision.contactName}}</td>
+          <td>{{ beforeRevision.contactName }}</td>
+          <td>{{ afterRevision.contactName }}</td>
         </tr>
 
         <tr v-if="afterRevision.contactPhone!=beforeRevision.contactPhone">
           <td class="th_title">联系人电话</td>
-          <td>{{beforeRevision.contactPhone}}</td>
-          <td>{{afterRevision.contactPhone}}</td>
+          <td>{{ beforeRevision.contactPhone }}</td>
+          <td>{{ afterRevision.contactPhone }}</td>
         </tr>
         <tr v-if="afterRevision.companyLogo!=beforeRevision.companyLogo">
           <td class="th_title">企业/团体logo</td>
@@ -40,20 +41,20 @@
         </tr>
         <tr v-if="afterRevision.postName!=beforeRevision.postName">
           <td class="th_title">会内职位</td>
-          <td>{{beforeRevision.postName}}</td>
-          <td>{{afterRevision.postName}}</td>
+          <td>{{ beforeRevision.postName }}</td>
+          <td>{{ afterRevision.postName }}</td>
         </tr>
 
         <tr v-if="afterRevision.name!=beforeRevision.name">
           <td class="th_title">姓名</td>
-          <td>{{beforeRevision.name}}</td>
-          <td>{{afterRevision.name}}</td>
+          <td>{{ beforeRevision.name }}</td>
+          <td>{{ afterRevision.name }}</td>
         </tr>
 
         <tr v-if="afterRevision.birthday!=beforeRevision.birthday">
           <td class="th_title">生日</td>
-          <td>{{beforeRevision.birthday}}</td>
-          <td>{{afterRevision.birthday}}</td>
+          <td>{{ beforeRevision.birthday }}</td>
+          <td>{{ afterRevision.birthday }}</td>
         </tr>
 
         <tr v-if="afterRevision.gender!=beforeRevision.gender">
@@ -70,13 +71,13 @@
 
         <tr v-if="afterRevision.nativePlace!=beforeRevision.nativePlace">
           <td class="th_title">籍贯</td>
-          <td>{{beforeRevision.nativePlace}}</td>
-          <td>{{afterRevision.nativePlace}}</td>
+          <td>{{ beforeRevision.nativePlace }}</td>
+          <td>{{ afterRevision.nativePlace }}</td>
         </tr>
         <tr v-if="afterRevision.idCard!=beforeRevision.idCard">
           <td class="th_title">身份证号码</td>
-          <td>{{beforeRevision.idCard}}</td>
-          <td>{{afterRevision.idCard}}</td>
+          <td>{{ beforeRevision.idCard }}</td>
+          <td>{{ afterRevision.idCard }}</td>
         </tr>
         <tr v-if="afterRevision.license!=beforeRevision.license">
           <td class="th_title">营业执照</td>
@@ -108,39 +109,40 @@
         </tr>
         <tr v-if="afterRevision.tradeId!=beforeRevision.tradeId">
           <td class="th_title">行业</td>
-          <td>{{beforeRevision.tradeName}}</td>
-          <td>{{afterRevision.tradeName}}</td>
+          <td>{{ beforeRevision.tradeName }}</td>
+          <td>{{ afterRevision.tradeName }}</td>
         </tr>
         <tr v-if="afterRevision.companyPosition!=beforeRevision.companyPosition">
           <td class="th_title">企业/团体职位</td>
-          <td>{{beforeRevision.companyPosition}}</td>
-          <td>{{afterRevision.companyPosition}}</td>
+          <td>{{ beforeRevision.companyPosition }}</td>
+          <td>{{ afterRevision.companyPosition }}</td>
         </tr>
-        <tr v-if="afterRevision.companyIntroduction!=beforeRevision.companyIntroduction">
+
+        <!-- <tr v-if="afterRevision.companyIntroduction!=beforeRevision.companyIntroduction">
           <td class="th_title">企业/团体简介</td>
           <td>{{beforeRevision.companyIntroduction}}</td>
           <td>{{afterRevision.companyIntroduction}}</td>
-        </tr>
+        </tr> -->
 
         <tr v-if="afterRevision.resume!=beforeRevision.resume">
           <td class="th_title">个人简介</td>
-          <td>{{beforeRevision.resume}}</td>
-          <td>{{afterRevision.resume}}</td>
+          <td>{{ beforeRevision.resume }}</td>
+          <td>{{ afterRevision.resume }}</td>
         </tr>
         <tr v-if="afterRevision.companyAddress!=beforeRevision.companyAddress">
           <td class="th_title">办公地址</td>
-          <td>{{beforeRevision.companyAddress}}</td>
-          <td>{{afterRevision.companyAddress}}</td>
+          <td>{{ beforeRevision.companyAddress }}</td>
+          <td>{{ afterRevision.companyAddress }}</td>
         </tr>
         <tr v-if="afterRevision.joinedTs!=beforeRevision.joinedTs">
           <td class="th_title">入会时间</td>
-          <td>{{beforeRevision.joinedTs}}</td>
-          <td>{{afterRevision.joinedTs}}</td>
+          <td>{{ beforeRevision.joinedTs }}</td>
+          <td>{{ afterRevision.joinedTs }}</td>
         </tr>
         <tr v-if="afterRevision.companyPhone!=beforeRevision.companyPhone">
           <td class="th_title">联系方式</td>
-          <td>{{beforeRevision.companyPhone}}</td>
-          <td>{{afterRevision.companyPhone}}</td>
+          <td>{{ beforeRevision.companyPhone }}</td>
+          <td>{{ afterRevision.companyPhone }}</td>
         </tr>
 
       </table>
@@ -159,14 +161,14 @@
           <span v-else-if="afterRevision.auditStatus===2">已驳回</span>
         </div>
         <div v-if="afterRevision.auditStatus===2" class="linemargin">
-          驳回理由：{{afterRevision.rejectRemark}}
+          驳回理由：{{ afterRevision.rejectRemark }}
         </div>
         <div class="linemargin">
-          审核人：{{afterRevision.auditor}}
+          审核人：{{ afterRevision.auditor }}
         </div>
 
-        <div class="linemargin">审核时间：{{afterRevision.auditedTs}}</div>
-        <div class="linemargin">提交时间：{{afterRevision.createdTs}}</div>
+        <div class="linemargin">审核时间：{{ afterRevision.auditedTs }}</div>
+        <div class="linemargin">提交时间：{{ afterRevision.createdTs }}</div>
 
       </div>
       <!-- <el-form ref="form" label-position="right" label-width="150px">
@@ -285,112 +287,119 @@
 </template>
 
 <script>
-  export default {
-    props: ["title"],
-    data() {
-      return {
-        //状态
-        reject: null,
-        reslove: null,
-        detailVisible: false,
-        //修改后对象
-        afterRevision: {},
-        //修改前对象
-        beforeRevision: {},
-        detailObj: {
-          auditStatus: 1,
-        },
-      };
-    },
-    methods: {
-      //打开
-      open(item) {
-        const self = this;
-        return new Promise((reslove, reject) => {
-          this.reslove = reslove;
-          this.reject = reject;
-          let afterRevision = self.handleNullFunc(item.dtl);
-          this.afterRevision = afterRevision;
-          let beforeRevision = self.handleNullFunc(item.member);
-          this.beforeRevision = beforeRevision;
-          // this.item = item;
-          this.show();
-        });
+export default {
+  props: ["title"],
+  data() {
+    return {
+      //状态
+      reject: null,
+      reslove: null,
+      detailVisible: false,
+      //修改后对象
+      afterRevision: {},
+      //修改前对象
+      beforeRevision: {},
+      detailObj: {
+        auditStatus: 1,
       },
-      //工具类函数  给对象的null置为空串
-      handleNullFunc(obj) {
-        for (var i in obj) {
-          if (obj[i] === null) {
-            obj[i] = "";
-          }
+    };
+  },
+  methods: {
+    //打开
+    open(item) {
+      const self = this;
+      return new Promise((reslove, reject) => {
+        this.reslove = reslove;
+        this.reject = reject;
+        let afterRevision = self.handleNullFunc(item.dtl);
+        this.afterRevision = afterRevision;
+        let beforeRevision = self.handleNullFunc(item.member);
+        this.beforeRevision = beforeRevision;
+        // this.item = item;
+        this.show();
+      });
+    },
+    //工具类函数  给对象的null置为空串
+    handleNullFunc(obj) {
+      for (var i in obj) {
+        if (obj[i] === null) {
+          obj[i] = "";
         }
-        return obj;
-      },
-      //展示
-      show() {
-        this.detailVisible = true;
-      },
-      //关闭
-      close() {
-        this.detailVisible = false;
-        this.reject = null;
-        this.reslove = null;
-      },
-      //通过
-      approved() {
-        this.$emit("monitorPassFunc");
-        //异步请求添加
-      },
-      //驳回
-      rejectRemark() {
-        this.$emit("monitorRefusal");
-      },
+      }
+      return obj;
     },
-  };
+    //展示
+    show() {
+      this.detailVisible = true;
+    },
+    //关闭
+    close() {
+      this.detailVisible = false;
+      this.reject = null;
+      this.reslove = null;
+    },
+    //通过
+    approved() {
+      this.$emit("monitorPassFunc");
+      //异步请求添加
+    },
+    //驳回
+    rejectRemark() {
+      this.$emit("monitorRefusal");
+    },
+  },
+};
 </script>
 <style lang="scss" scoped>
-  .audit-result-view {
-    margin-left: 50px;
-    .linemargin {
-      margin-bottom: 5px;
-    }
+.audit-result-view {
+  margin-left: 50px;
+
+  .linemargin {
+    margin-bottom: 5px;
   }
-  .th_title {
-    width: 100px;
-  }
-  table {
-    th,
-    td {
-      height: 45px;
-      line-height: 45px;
-      border: 1px solid #ccc;
-      text-align: center;
-      min-width: 100px;
-    }
-    th {
-      background: #ccc;
-    }
-    width: 90%;
-    margin: 10px auto;
-    border-collapse: collapse; /*合并内外边距*/
+}
+
+.th_title {
+  width: 100px;
+}
+
+table {
+  th,
+  td {
+    height: 45px;
+    line-height: 45px;
+    border: 1px solid #ccc;
+    text-align: center;
+    min-width: 100px;
   }
 
-  /deep/.el-dialog__header {
-    border-bottom: 1px solid #e6e6e6;
-    margin: 0 30px;
-    padding: 20px 0 !important;
+  th {
+    background: #ccc;
   }
-  .header-title {
-    .title-name {
-      color: #4d82f3;
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 20px;
-    }
+
+  width: 90%;
+  margin: 10px auto;
+  border-collapse: collapse; /*合并内外边距*/
+}
+
+/deep/ .el-dialog__header {
+  border-bottom: 1px solid #e6e6e6;
+  margin: 0 30px;
+  padding: 20px 0 !important;
+}
+
+.header-title {
+  .title-name {
+    color: #4d82f3;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 20px;
   }
-  .updateImg {
-    width: 50px;
-    height: 50px;
-    vertical-align: middle;
-  }
+}
+
+.updateImg {
+  width: 50px;
+  height: 50px;
+  vertical-align: middle;
+}
 </style>

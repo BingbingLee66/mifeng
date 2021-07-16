@@ -2,7 +2,7 @@ import { getList, save, updateStatus, del } from '@/api/system/position'
 // import { mapGetters } from 'vuex'
 
 export default {
-  data () {
+  data() {
     var checkNumber = (rule, value, callback) => {
       if (!/^([1-9]\d*)$/.test(value)) {
         return callback(new Error('必须是大于0的整数'))
@@ -28,29 +28,28 @@ export default {
       }
     }
   },
-  computed: {
-  },
-  created () {
+  computed: {},
+  created() {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    init () {
+    init() {
       this.fetchData()
     },
-    fetchData () {
+    fetchData() {
       this.listLoading = true
       getList().then(response => {
         this.list = response.data.data
         this.listLoading = false
       })
     },
-    add (e) {
+    add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.formObj = {
         'position': '',
@@ -60,7 +59,7 @@ export default {
       this.type = 'add'
       this.visible = true
     },
-    edit (e, row) {
+    edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.type = 'edit'
       this.formObj = {
@@ -71,7 +70,14 @@ export default {
       }
       this.visible = true
     },
-    save () {
+    save() {
+      if (this.formObj.position.trim() === '') {
+        this.$message({
+          message: '职位名称不能为空',
+          type: 'error'
+        })
+        return
+      }
       this.$refs['form'].validate((valid) => {
         if (valid) {
           save(this.formObj).then(response => {
@@ -87,7 +93,7 @@ export default {
         }
       })
     },
-    del (e, row) {
+    del(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$confirm('', '确定删除？', {
         confirmButtonText: '确定',
@@ -110,7 +116,7 @@ export default {
         })
       })
     },
-    updateStatus (e, row) {
+    updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'id': row.id,

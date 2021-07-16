@@ -1,4 +1,4 @@
-import {getList, getDetail, updateStatus, save} from '@/api/system/text'
+import { getList, getDetail, updateStatus, save } from '@/api/system/text'
 import Ckeditor from '@/components/CKEditor'
 
 export default {
@@ -29,12 +29,12 @@ export default {
       listLoading: false,
       rules: {
         title: [
-          {required: true, message: '标题不能为空', trigger: 'blur'},
-          {validator: checkTitle, trigger: 'change'}
+          { required: true, message: '标题不能为空', trigger: 'blur' },
+          { validator: checkTitle, trigger: 'change' }
         ],
         content: [
-          {required: true, message: '内容详情不能为空', trigger: 'blur'},
-          {validator: checkContent, trigger: 'change'}
+          { required: true, message: '内容详情不能为空', trigger: 'blur' },
+          { validator: checkContent, trigger: 'change' }
         ]
       }
     }
@@ -47,10 +47,10 @@ export default {
   },
   methods: {
     has(tabName, actionName) {
-      return this.$store.getters.has({tabName, actionName})
+      return this.$store.getters.has({ tabName, actionName })
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({tabName, actionName})
+      return this.$store.getters.getId({ tabName, actionName })
     },
     init() {
       this.fetchData()
@@ -83,10 +83,9 @@ export default {
       getDetail(params).then(response => {
         this.formObj = response.data.dtl
         this.visible = true
-        this.$refs.ckeditor1.init()
-        setTimeout(() => {
+        this.$nextTick(() => {
           this.$refs.ckeditor1.initHtml(this.formObj.content === null ? '' : this.formObj.content)
-        }, 500)
+        })
       })
     },
     save(row) {

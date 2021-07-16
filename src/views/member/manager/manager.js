@@ -230,7 +230,7 @@ export default {
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       console.log(this.selectionDatas)
-      exportJson2Excel(this.selectionDatas)
+      exportJson2Excel('商会会员', this.selectionDatas)
     },
     openTransfer(row) {
       this.formObj = row

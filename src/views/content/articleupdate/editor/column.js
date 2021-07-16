@@ -33,10 +33,9 @@ export default {
       this.formObj['columnContent'] = article.contentColumn === null ? '-' : article.contentColumn
       console.log(!!article.contentHtml)
       if (this.activeName === '7') {
-        this.formObj['contentHtml'] = !!article.contentHtml ? article.contentHtml :
-          '<p>商会地址：</p><p></p><p>官网网址：</p><p>会长：</p><p>秘书处：</p><p>座机：</p><p>商会微信：</p>'
+        this.formObj['contentHtml'] = article.contentHtml ? article.contentHtml : ''
       } else {
-        this.formObj['contentHtml'] = !!article.contentHtml ? article.contentHtml : ''
+        this.formObj['contentHtml'] = article.contentHtml ? article.contentHtml : ''
       }
     }
     this.init()
