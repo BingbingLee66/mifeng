@@ -71,9 +71,19 @@
           {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
         </template>
       </el-table-column>
-      <el-table-column label="栏目" width="100px">
+      <el-table-column label="栏目" width="120px">
         <template slot-scope="scope">
           {{ scope.row.contentColumn }}
+        </template>
+      </el-table-column>
+      <el-table-column label="点赞量" width="120px">
+        <template slot-scope="scope">
+          {{scope.row.commentLikeNums}}
+        </template>
+      </el-table-column>
+      <el-table-column label="评论量" width="120px">
+        <template slot-scope="scope">
+          {{scope.row.commentNums}}
         </template>
       </el-table-column>
       <el-table-column label="来源" width="180px">
