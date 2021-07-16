@@ -56,6 +56,22 @@ export function getCompanyAuditList(params) {
   })
 }
 
+export function getArticleCommentList(params) {
+  return request({
+    url: '/api/ec/articleComment/getArticleCommentList',
+    method: 'post',
+    params
+  })
+}
+
+export function updateCommentStatus(params) {
+  return request({
+    url: '/api/ec/articleComment/updateStatus',
+    method: 'put',
+    params
+  })
+}
+
 export function save(params) {
   return request({
     url: '/ec/article/save',
@@ -103,7 +119,6 @@ export function getCompanyDetail(params) {
     params
   })
 }
-
 
 export function getUpdateDetail(params) {
   return request({

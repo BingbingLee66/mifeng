@@ -4,8 +4,11 @@ import {
   getCompanyDetail,
   updateAudit,
   updateCompanyAudit,
-  getCompanyAuditList
+  getCompanyAuditList,
+  getArticleCommentList,
+  updateCommentStatus
 } from '@/api/content/article'
+import { logger } from "runjs/lib/common";
 // import {getCollectList, getRecycleList} from "@/api/content/crawler";
 
 export default {
@@ -20,6 +23,12 @@ export default {
         publishTimeType: 4,
         auditStatus: 0
       },
+      queryComment: {
+        commentKey: '', // 评论关键字
+        uname: '', // 发布者
+        status: -1
+      },
+      queryDate: '',
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
@@ -32,7 +41,9 @@ export default {
         contentHtml: ''
       },
       selectId: '',
-      remark: '内容违规'
+      remark: '内容违规',
+      OffVisible: false,
+      delVisible:false
     }
   },
 
@@ -72,27 +83,24 @@ export default {
       }
       this.currentpage = 1
       this.limit = 10
-      if (this.activeName === '1') {
-        this.fetchData()
-      } else if (this.activeName === '2') {
-        this.fetchData()
-      }
+      this.total = 0
+      this.fetchData()
     },
 
     handleClick(e) {
+      console.log(e)
+      console.log(this.activeName, 666)
       window.localStorage.setItem('activenamec', this.activeName)
       this.init()
     },
 
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
       this.fetchData()
     },
 
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
       this.fetchData()
     },
@@ -110,18 +118,31 @@ export default {
         'auditStatus': this.query.auditStatus
       }
       if (this.activeName === '1') {
-        console.log('params', params)
         getAuditList(params).then(response => {
-          console.log('文章内容审核列表：', response)
           this.list = response.data.data.list
           this.total = response.data.data.totalRows
           this.listLoading = false
         })
       } else if (this.activeName === '2') {
         getCompanyAuditList(params).then(response => {
-          console.log('企业内容审核列表：', response)
           this.list = response.data.page.list
           this.total = response.data.page.totalRows
+          this.listLoading = false
+        })
+      } else if (this.activeName === '3') {
+        this.queryComment['pageSize'] = this.limit
+        this.queryComment['page'] = this.currentpage
+        if (this.queryDate) {
+          this.queryComment['startTs'] = this.queryDate[0]
+          this.queryComment['endTs'] = this.queryDate[1]
+        }
+        getArticleCommentList(this.queryComment).then(res => {
+          if (res.state === 1) {
+            this.list = res.data.list
+            this.total = res.data.totalRows
+          }
+          this.listLoading = false
+        }).catch(() => {
           this.listLoading = false
         })
       }
@@ -141,11 +162,14 @@ export default {
         this.visible = true
       } else if (this.activeName === '2') {
         getCompanyDetail(params).then(res => {
-          // this.detailObj = response.data.dtl
           this.detailObj = res.data.companyAudit
         }).catch(error => {
           console.log(error)
         })
+        this.visible = true
+      } else if (this.activeName === '3') {
+        this.detailObj['title'] = '评论详情'
+        this.detailObj['contentHtml'] = row.commentContent
         this.visible = true
       }
     },
@@ -159,6 +183,62 @@ export default {
       this.selectId = row.id
       this.remark = '内容违规'
       this.rejectVisible = true
+    },
+
+    rowOff(row) {
+      this.selectId = row.id
+      this.OffVisible = true
+    },
+
+    comfirmOff() {
+      const params = {
+        id: this.selectId,
+        status: 0
+      }
+      updateCommentStatus(params).then(res => {
+        if (res.state === 1) {
+          this.OffVisible = false
+          this.fetchData()
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+
+    rowDel(row) {
+      this.selectId = row.id
+      this.delVisible = true
+    },
+
+    comfirmDel() {
+      const params = {
+        id: this.selectId,
+        status: 2
+      }
+      updateCommentStatus(params).then(res => {
+        if (res.state === 1) {
+          this.delVisible = false
+          this.fetchData()
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+
+    rowON(row) {
+      this.selectId = row.id
+      const params = {
+        id: row.id,
+        status: 1
+      }
+      updateCommentStatus(params).then(res => {
+        if (res.state === 1) {
+          this.OffVisible = false
+          this.fetchData()
+        }
+      }).catch(error => {
+        console.log(error)
+      })
     },
 
     /**
