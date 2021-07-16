@@ -75,6 +75,16 @@
             {{scope.row.contentColumn}}
           </template>
         </el-table-column>
+        <el-table-column label="点赞量" width="180px">
+          <template slot-scope="scope">
+            {{scope.row.commentLikeNums}}
+          </template>
+        </el-table-column>
+        <el-table-column label="评论量" width="180px">
+          <template slot-scope="scope">
+            {{scope.row.commentNums}}
+          </template>
+        </el-table-column>
         <el-table-column label="添加时间" width="160px">
           <template slot-scope="scope">
             {{scope.row.createdTs}}

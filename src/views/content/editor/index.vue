@@ -57,7 +57,7 @@
           {{scope.row.id}}
         </template>
       </el-table-column> -->
-      <el-table-column label="文章">
+      <el-table-column label="文章" show-overflow-tooltip>
         <template slot-scope="scope">
           {{scope.row.title}}
         </template>
@@ -65,6 +65,16 @@
       <el-table-column label="对应栏目" width="200px">
         <template slot-scope="scope">
           {{scope.row.contentColumn}}
+        </template>
+      </el-table-column>
+      <el-table-column label="点赞量" width="200px">
+        <template slot-scope="scope">
+          {{scope.row.commentLikeNums}}
+        </template>
+      </el-table-column>
+      <el-table-column label="评论量" width="200px">
+        <template slot-scope="scope">
+          {{scope.row.commentNums}}
         </template>
       </el-table-column>
       <el-table-column label="添加人" width="120px">
