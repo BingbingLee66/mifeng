@@ -82,6 +82,7 @@ this.$refs['form'].validate((valid=>{
     if (valid) {
       this.formObj['ckey'] = this.$store.getters.ckey;
       this.formObj['contentModuleId'] = this.activeName
+      this.formObj['columnName']=this.formObj['columnName'].replace(/\s*/g,"");
              save(this.formObj).then(response => {
             this.$message({
               message: '操作成功',
