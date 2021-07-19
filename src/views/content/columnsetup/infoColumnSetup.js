@@ -85,6 +85,7 @@ export default {
     save () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          console.log('formObj',this.formObj)
           save(this.formObj).then(response => {
             this.$message({
               message: '操作成功',
