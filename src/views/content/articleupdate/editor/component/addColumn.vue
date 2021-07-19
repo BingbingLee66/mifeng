@@ -23,7 +23,7 @@
         <el-form-item>
           <el-col :offset="4" :span="16">
             <el-button type="primary" v-dbClick @click="save">保存</el-button>
-            <el-button @click.native="visible = false">取消</el-button>
+            <el-button @click.native="close">取消</el-button>
           </el-col>
         </el-form-item>
       </el-form>
