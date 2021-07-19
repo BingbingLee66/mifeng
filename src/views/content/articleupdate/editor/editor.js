@@ -2,11 +2,12 @@ import {getUpdateDetail, uploadCoverImg, save} from '@/api/content/article'
 import {getContentColumnOptionsWithCkey} from '@/api/content/columnsetup'
 import Ckeditor from '@/components/CKEditor'
 import PreviewPh from '@/components/ArticlePreview'
-
+import addColumn from '../editor/component/addColumn'
 export default {
   components: {
     Ckeditor,
-    PreviewPh
+    PreviewPh,
+    addColumn
   },
   data() {
     return {
@@ -60,11 +61,24 @@ export default {
         this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
       }, 500)
     }
+   
   },
   computed: {},
   created() {
   },
   methods: {
+    addColumnFunc(){
+      let contentModuleId = 3
+      if (this.activeName === '5') {
+        contentModuleId = 3
+      } else if (this.activeName === '6') {
+        contentModuleId = 4
+      }
+      this.$refs['addColumnRef'].open(contentModuleId).then(res=>{
+        console.log("添加成功");
+        this.getContentColumnType()
+      })
+    },
     closeTab() {
       // 退出当前tab, 打开指定tab
       let openPath = window.localStorage.getItem('articleupdate')
