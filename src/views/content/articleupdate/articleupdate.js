@@ -1,8 +1,9 @@
 import { getChamberContentList, getAboutChamberList, getContactUs, save, updateStatus } from '@/api/content/article'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
-
+import addColumn from './editor/component/addColumn'
 export default {
   components: {
+    addColumn
   },
   data() {
     return {
@@ -29,23 +30,23 @@ export default {
       activeName: '5'
     }
   },
-  mounted () {
+  mounted() {
   },
   computed: {
   },
   created() {
     let activename = window.localStorage.getItem('activename')
-    if (!!activename) {
+    if (activename) {
       this.activeName = activename
     }
     this.getContentColumnType()
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -59,7 +60,7 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    handleClick () {
+    handleClick() {
       this.total = 0
       this.list = []
       this.currentpage = 1
@@ -76,7 +77,7 @@ export default {
         this.fetchData()
       }
     },
-    getContentColumnType () {
+    getContentColumnType() {
       let contentModuleId = 7
       if (this.activeName === '5') {
         contentModuleId = 3
@@ -128,10 +129,10 @@ export default {
         })
       }
     },
-    openVisible (row) {
+    openVisible(row) {
       this.formObj = row
     },
-    updateStatus (e, row) {
+    updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'id': row.id,
@@ -152,25 +153,25 @@ export default {
         this.fetchData()
       })
     },
-    add (e) {
+    add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('articleupdate', this.$route.path)
-      this.$router.push({ name: '添加/修改文章', params: { 'activeName': this.activeName } })
+      this.$router.push({ name: '添加/修改文章', params: { 'activeName': this.activeName }})
     },
-    edit (e, row) {
+    edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('articleupdate', this.$route.path)
-      this.$router.push({ name: '添加/修改文章', params: { 'activeName': this.activeName, 'articleId': row.id } })
+      this.$router.push({ name: '添加/修改文章', params: { 'activeName': this.activeName, 'articleId': row.id }})
     },
-    editColumn (e, row) {
+    editColumn(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '修改栏目内容', params: { 'activeName': this.activeName, 'articleObj': row } })
+      this.$router.push({ name: '修改栏目内容', params: { 'activeName': this.activeName, 'articleObj': row }})
     },
-    detail (e, row) {
+    detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '文章详情', params: { 'articleId': row.id } })
+      this.$router.push({ name: '文章详情', params: { 'articleId': row.id }})
     },
-    save () {
+    save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.formObj['ckey'] = this.$store.getters.ckey
@@ -188,7 +189,19 @@ export default {
         }
       })
     },
-    openDetail (row) {
+    addCloumn() {
+      let contentModuleId = 7
+      if (this.activeName === '5') {
+        contentModuleId = 3
+      } else if (this.activeName === '6') {
+        contentModuleId = 4
+      }
+      this.$refs['addColumnRef'].open(contentModuleId).then(res => {
+        console.log('添加成功')
+        this.fetchData()
+      })
+    },
+    openDetail(row) {
       this.detailObj.contentHtml = row.contentHtml
       this.detailObj.auditStatus = row.auditStatus
       this.detailObj.auditRemark = row.auditRemark
