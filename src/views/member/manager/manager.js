@@ -214,10 +214,10 @@ export default {
           '会员手机号': data.phone,
           '联系人电话': data.contactPhone,
           '企业/团体名称': data.companyName,
+          '入会类型': data.type === 0 ? '个人' : '企业',
           '会内职位': data.postName,
           '行业': data.tradeName,
           '部门': data.departmentName,
-          '入会类型': data.type === 0 ? '个人' : '企业',
           '入会时间': data.joinedTs,
           '状态': data.status === 1 ? '正常' : '已冻结',
 
