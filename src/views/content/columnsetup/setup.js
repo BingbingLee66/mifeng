@@ -97,6 +97,15 @@ export default {
         if (valid) {
           this.formObj['ckey'] = this.$store.getters.ckey
           this.formObj['contentModuleId'] = this.activeName
+          this.formObj['columnName'] = this.formObj['columnName'].replace(/\s*/g, '')
+          console.log('formObj', this.formObj)
+          if (this.formObj['columnName'].length < 1) {
+            this.$message({
+              message: '栏目名称不能为空',
+              type: 'error'
+            })
+            return
+          }
           save(this.formObj).then(response => {
             this.$message({
               message: '操作成功',
