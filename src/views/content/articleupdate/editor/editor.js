@@ -1,5 +1,5 @@
-import {getUpdateDetail, uploadCoverImg, save} from '@/api/content/article'
-import {getContentColumnOptionsWithCkey} from '@/api/content/columnsetup'
+import { getUpdateDetail, uploadCoverImg, save } from '@/api/content/article'
+import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import Ckeditor from '@/components/CKEditor'
 import PreviewPh from '@/components/ArticlePreview'
 import addColumn from '../editor/component/addColumn'
@@ -28,20 +28,20 @@ export default {
       activeName: '5',
       rules: {
         title: [
-          {required: true, message: '文章标题不能为空', trigger: 'blur'},
-          {min: 5, max: 60, message: '限输入5-60个字的标题', trigger: 'blur'}
+          { required: true, message: '文章标题不能为空', trigger: 'blur' },
+          { min: 5, max: 60, message: '限输入5-60个字的标题', trigger: 'blur' }
         ],
         contentColumnId: [
-          {required: true, message: '对应栏目不能为空', trigger: 'blur'}
+          { required: true, message: '对应栏目不能为空', trigger: 'blur' }
         ],
         coverImg1: [
-          {required: true, message: '封面图片必须上传', trigger: 'blur'}
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
         ],
         coverImg2: [
-          {required: true, message: '封面图片必须上传', trigger: 'blur'}
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
         ],
         coverImg3: [
-          {required: true, message: '封面图片必须上传', trigger: 'blur'}
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
         ]
       }
     }
@@ -61,21 +61,20 @@ export default {
         this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
       }, 500)
     }
-   
   },
   computed: {},
   created() {
   },
   methods: {
-    addColumnFunc(){
+    addColumnFunc() {
       let contentModuleId = 3
       if (this.activeName === '5') {
         contentModuleId = 3
       } else if (this.activeName === '6') {
         contentModuleId = 4
       }
-      this.$refs['addColumnRef'].open(contentModuleId).then(res=>{
-        console.log("添加成功");
+      this.$refs['addColumnRef'].open(contentModuleId).then(res => {
+        console.log('添加成功')
         this.getContentColumnType()
       })
     },
@@ -83,11 +82,11 @@ export default {
       // 退出当前tab, 打开指定tab
       let openPath = window.localStorage.getItem('articleupdate')
       let tagsViews = this.$store.state.tagsView.visitedViews
-      let selectView = null
+      // let selectView = null
       for (let view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
-            this.$router.push({path: openPath})
+            this.$router.push({ path: openPath })
           })
           break
         }

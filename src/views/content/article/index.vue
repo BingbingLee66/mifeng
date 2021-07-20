@@ -4,7 +4,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item v-if="!(this.articleId && !this.formObj.title)" label="文章标题：" prop="title">
-            <el-input v-model="formObj.title" maxlength="60" placeholder="限输入5-60个字的标题"></el-input>
+            <el-input v-model="formObj.title" maxlength="60" placeholder="限输入5-60个字的标题" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -12,14 +12,14 @@
         <el-col :span="8">
           <el-form-item v-if="this.formObj.publishType != 1 && this.formObj.publishType != 2" label="文章来源：" prop="sourceId">
             <el-select v-model="formObj.sourceId" placeholder="请选择文章来源">
-              <el-option v-for="as in articleSourceOptions" :label="as.label" :value="as.value" :key="as.value"></el-option>
+              <el-option v-for="as in articleSourceOptions" :key="as.value" :label="as.label" :value="as.value" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item v-if="this.formObj.publishType != 2 && this.formObj.contentModuleId != 7" label="对应栏目：" prop="contentColumnId">
             <el-select v-model="formObj.contentColumnId" placeholder="请选择对应栏目">
-              <el-option v-for="cc in contentColumnOptions" :label="cc.label" :value="cc.value" :key="cc.value"></el-option>
+              <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label" :value="cc.value" />
             </el-select>
           </el-form-item>
         </el-col>
@@ -27,11 +27,11 @@
       <el-row>
         <el-col :span="18">
           <el-form-item label="文章内容：">
-            <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor>
+            <Ckeditor ref="ckeditor1" @getHtml="getHtml" />
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <preview-ph :title="formObj.title" :htmlObj="formObj.contentHtml"></preview-ph>
+          <preview-ph :title="formObj.title" :html-obj="formObj.contentHtml" />
         </el-col>
       </el-row>
       <el-row>
@@ -68,9 +68,10 @@
               action="/"
               :show-file-list="false"
               :before-upload="function (file) { return beforeAvatarUpload(file, 0) }"
-              :http-request="upload">
+              :http-request="upload"
+            >
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
           </el-form-item>
         </el-col>
@@ -83,9 +84,10 @@
               action="/"
               :show-file-list="false"
               :before-upload="function (file) { return beforeAvatarUpload(file, 0) }"
-              :http-request="upload">
+              :http-request="upload"
+            >
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
           </el-form-item>
         </el-col>
@@ -96,9 +98,10 @@
               action="/"
               :show-file-list="false"
               :before-upload="function (file) { return beforeAvatarUpload(file, 1) }"
-              :http-request="upload">
+              :http-request="upload"
+            >
               <img v-if="formObj.coverImgs[1]" :src="formObj.coverImgs[1]" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
           </el-form-item>
         </el-col>
@@ -109,9 +112,10 @@
               action="/"
               :show-file-list="false"
               :before-upload="function (file) { return beforeAvatarUpload(file, 2) }"
-              :http-request="upload">
+              :http-request="upload"
+            >
               <img v-if="formObj.coverImgs[2]" :src="formObj.coverImgs[2]" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
           </el-form-item>
         </el-col>
@@ -125,15 +129,15 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="formObj.status == 4">
+        <el-col v-if="formObj.status == 4" :span="8">
           <el-form-item label="" prop="publishTs" label-width="0">
             <el-date-picker
+              v-model="formObj.publishTs"
               format="yyyy-MM-dd HH:mm:ss"
               value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="formObj.publishTs"
               type="datetime"
-              placeholder="选择日期时间">
-            </el-date-picker>
+              placeholder="选择日期时间"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -149,7 +153,7 @@
       </el-row> -->
       <el-form-item>
         <el-col :span="8">
-          <el-button type="primary" v-dbClick @click="save">确定</el-button>
+          <el-button v-dbClick type="primary" @click="save">确定</el-button>
           <!-- <el-button>取消</el-button> -->
         </el-col>
       </el-form-item>

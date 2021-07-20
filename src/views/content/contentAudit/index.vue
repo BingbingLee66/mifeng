@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="文章" name="1"></el-tab-pane>
-      <el-tab-pane label="企业官网" name="2"></el-tab-pane>
-      <el-tab-pane label="评论" name="3"></el-tab-pane>
+      <el-tab-pane label="文章" name="1" />
+      <el-tab-pane label="企业官网" name="2" />
+      <el-tab-pane label="评论" name="3" />
     </el-tabs>
 
     <div v-if="activeName == '1'">
@@ -13,35 +13,35 @@
             <el-col :span="5">
               <el-form-item label="文章来源：">
                 <el-select v-model="query.publishType">
-                  <el-option label="所有" :value="-1"></el-option>
-                  <el-option label="商会后台" :value="1"></el-option>
-                  <el-option label="小程序" :value="2"></el-option>
+                  <el-option label="所有" :value="-1" />
+                  <el-option label="商会后台" :value="1" />
+                  <el-option label="小程序" :value="2" />
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="5">
               <el-form-item label="审核状态：">
                 <el-select v-model="query.auditStatus">
-                  <el-option label="所有" :value="-1"></el-option>
-                  <el-option label="待审核" :value="0"></el-option>
-                  <el-option label="审核通过" :value="1"></el-option>
-                  <el-option label="审核不通过" :value="2"></el-option>
+                  <el-option label="所有" :value="-1" />
+                  <el-option label="待审核" :value="0" />
+                  <el-option label="审核通过" :value="1" />
+                  <el-option label="审核不通过" :value="2" />
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="5">
               <el-form-item label="发布时间：">
                 <el-select v-model="query.publishTimeType">
-                  <el-option label="24h内" :value="1"></el-option>
-                  <el-option label="3天内" :value="2"></el-option>
-                  <el-option label="7天内" :value="3"></el-option>
-                  <el-option label="一个月内" :value="4"></el-option>
+                  <el-option label="24h内" :value="1" />
+                  <el-option label="3天内" :value="2" />
+                  <el-option label="7天内" :value="3" />
+                  <el-option label="一个月内" :value="4" />
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="2">
               <el-form-item label=" ">
-                <el-button type="primary" @click="fetchData($event)" :actionid="getId('文章', '查询')" v-if="has('', '查询')">
+                <el-button v-if="has('', '查询')" type="primary" :actionid="getId('文章', '查询')" @click="fetchData($event)">
                   查询
                 </el-button>
               </el-form-item>
@@ -57,26 +57,26 @@
             <el-col :span="5">
               <el-form-item label="审核状态：">
                 <el-select v-model="query.auditStatus">
-                  <el-option label="所有" :value="-1"></el-option>
-                  <el-option label="待审核" :value="0"></el-option>
-                  <el-option label="审核通过" :value="1"></el-option>
-                  <el-option label="审核不通过" :value="2"></el-option>
+                  <el-option label="所有" :value="-1" />
+                  <el-option label="待审核" :value="0" />
+                  <el-option label="审核通过" :value="1" />
+                  <el-option label="审核不通过" :value="2" />
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="5">
               <el-form-item label="发布时间：">
                 <el-select v-model="query.publishTimeType">
-                  <el-option label="24h内" :value="1"></el-option>
-                  <el-option label="3天内" :value="2"></el-option>
-                  <el-option label="7天内" :value="3"></el-option>
-                  <el-option label="一个月内" :value="4"></el-option>
+                  <el-option label="24h内" :value="1" />
+                  <el-option label="3天内" :value="2" />
+                  <el-option label="7天内" :value="3" />
+                  <el-option label="一个月内" :value="4" />
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="2">
               <el-form-item label=" ">
-                <el-button type="primary" @click="fetchData($event)" :actionid="getId('', '查询')" v-if="has('', '查询')">查询
+                <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
                 </el-button>
               </el-form-item>
             </el-col>
@@ -88,31 +88,31 @@
       <div class="block">
         <el-form ref="queryComment" label-width="110px" :inline="true" label-position="right" :model="queryComment">
           <el-form-item label="评论关键字：" class="query_form_item_c">
-            <el-input v-model="queryComment.commentKey"/>
+            <el-input v-model="queryComment.commentKey" />
           </el-form-item>
           <el-form-item label="发布者：" class="query_form_item_c">
-            <el-input v-model="queryComment.uname"/>
+            <el-input v-model="queryComment.uname" />
           </el-form-item>
           <el-form-item label="状态：" class="query_form_item_c">
             <el-select v-model="queryComment.status">
-              <el-option label="所有" :value='-1'></el-option>
-              <el-option label="已下架" :value="0"></el-option>
-              <el-option label="已发布" :value="1"></el-option>
+              <el-option label="所有" :value="-1" />
+              <el-option label="已下架" :value="0" />
+              <el-option label="已发布" :value="1" />
             </el-select>
           </el-form-item>
           <el-form-item label="发布时间：" class="query_form_item_t">
             <el-date-picker
+              v-model="queryDate"
               format="yyyy-MM-dd"
               value-format="yyyy-MM-dd"
-              v-model="queryDate"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
+              end-placeholder="结束日期"
+            />
           </el-form-item>
           <el-form-item label=" " class="query_form_item_c">
-            <el-button type="primary" @click="fetchData($event)" :actionid="getId('', '查询')" v-if="has('', '查询')">查询
+            <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
             </el-button>
           </el-form-item>
         </el-form>
@@ -130,18 +130,18 @@
       待审核指通过了微信内容安全审核，待审核的内容前端可见，人工审核不通过之后，前端不可见。
     </div>
     <div v-if="activeName == '1' || activeName == '2'">
-      <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+      <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
         <!-- <el-table-column type="selection" width="55px"></el-table-column> -->
         <el-table-column label="标题">
           <template slot-scope="scope">
-          <span v-if="activeName == '1'">
-            {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
-          </span>
+            <span v-if="activeName == '1'">
+              {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
+            </span>
             <span v-else>
-            {{
+              {{
                 scope.row.contentType === 1 ? '企业简介' : scope.row.contentType === 2 ? '发展历程' : scope.row.contentType === 3 ? '荣誉资质' : '联系我们'
               }}
-          </span>
+            </span>
           </template>
         </el-table-column>
         <el-table-column label="文章来源">
@@ -157,12 +157,12 @@
         </el-table-column>
         <el-table-column label="发布时间" width="200px">
           <template slot-scope="scope">
-          <span v-if="activeName == '1'">
-            {{ scope.row.publishTs }}
-          </span>
+            <span v-if="activeName == '1'">
+              {{ scope.row.publishTs }}
+            </span>
             <span v-else>
-            {{ scope.row.updatedTs }}
-          </span>
+              {{ scope.row.updatedTs }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column label="状态" width="150px">
@@ -186,12 +186,13 @@
       </el-table>
     </div>
     <div v-if="activeName == '3'">
-      <el-table id="out-table-1" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-        <el-table-column label="评论内容" prop="commentContent" show-overflow-tooltip></el-table-column>
-        <el-table-column label="发布者" prop="uname"></el-table-column>
-        <el-table-column label="发布时间" prop="createdTs"></el-table-column>
+      <el-table id="out-table-1" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+        <el-table-column label="评论内容" prop="commentContent" show-overflow-tooltip />
+        <el-table-column label="发布者" prop="uname" />
+        <el-table-column label="发布时间" prop="createdTs" />
         <el-table-column label="状态">
           <template slot-scope="scope">
+
             <div v-if="scope.row.status == 0">已下架</div>
             <div v-if="scope.row.status == 1">已发布</div>
           </template>
@@ -199,17 +200,16 @@
         <el-table-column label="操作" width="200px">
           <template slot-scope="scope">
             <el-button type="text" @click="detail(scope.row)">详情</el-button>
-            <el-button type="text" @click="rowON(scope.row)" v-if="scope.row.status == 0" style="color: #ccc;">上架
+            <el-button v-if="scope.row.status == 0" type="text" style="color: #ccc;" @click="rowON(scope.row)">上架
             </el-button>
-            <el-button type="text" @click="rowOff(scope.row)" v-if="scope.row.status == 1">下架</el-button>
+            <el-button v-if="scope.row.status == 1" type="text" @click="rowOff(scope.row)">下架</el-button>
             <el-button type="text" @click="rowDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div style="margin-top: 20px">
-      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange">
-      </el-pagination>
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
     <el-dialog title="" :visible.sync="visible" width="80%">
       <div class="d-preview-wrap">
@@ -217,19 +217,18 @@
           <div class="d-article-title">
             <span v-if="activeName == '1' || activeName == '3'">{{ detailObj.title }}</span>
             <span v-else>{{
-                detailObj.contentType === 1 ? '企业简介' : detailObj.contentType === 2 ? '发展历程' : detailObj.contentType === 3 ? '荣誉资质' : '联系我们'
-              }}</span>
+              detailObj.contentType === 1 ? '企业简介' : detailObj.contentType === 2 ? '发展历程' : detailObj.contentType === 3 ? '荣誉资质' : '联系我们'
+            }}</span>
           </div>
-          <div v-if=" activeName== '1' || activeName == '3'" class="d-article-content" v-html="detailObj.contentHtml">
-          </div>
-          <div v-else class="d-article-content" v-html="detailObj.content"></div>
+          <div v-if=" activeName== '1' || activeName == '3'" class="d-article-content" v-html="detailObj.contentHtml" />
+          <div v-else class="d-article-content" v-html="detailObj.content" />
         </div>
         <div v-if="detailObj.auditStatus===0" style="height:50px;">
           <el-col :offset="10" :span="8">
-            <el-button type="primary" @click.native="passThrough($event)" :actionid="getId('', '通过')" v-if="has('', '通过')">
+            <el-button v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
               通过
             </el-button>
-            <el-button type="danger" @click.native="openReject($event)" :actionid="getId('', '不通过')" v-if="has('', '不通过')">
+            <el-button v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
               不通过
             </el-button>
           </el-col>

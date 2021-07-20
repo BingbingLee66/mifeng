@@ -129,7 +129,7 @@ export default {
     },
     fetchData(e) {
       if (e !== undefined) {
-        console.log('4444',e.currentTarget.getAttribute('actionid'))
+        console.log('4444', e.currentTarget.getAttribute('actionid'))
         this.currentpage = 1
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
@@ -209,14 +209,18 @@ export default {
       this.selectionDatas = []
       for (let data of datas) {
         let new_data = {
-          '会员姓名/联系人姓名': data.type + data.type === 0 ? data.name : data.contactName,
-          '手机号/联系人电话': data.type === 0 ? data.phone : data.contactPhone,
+          '会员姓名': data.name,
+          '联系人姓名': data.contactName,
+          '会员手机号': data.phone,
+          '联系人电话': data.contactPhone,
+          '企业/团体名称': data.companyName,
           '会内职位': data.postName,
           '行业': data.tradeName,
           '部门': data.departmentName,
           '入会类型': data.type === 0 ? '个人' : '企业',
           '入会时间': data.joinedTs,
-          '状态': data.status === 1 ? '正常' : '已冻结'
+          '状态': data.status === 1 ? '正常' : '已冻结',
+
         }
         this.selectionDatas.push(new_data)
       }

@@ -8,7 +8,7 @@ import {
   getArticleCommentList,
   updateCommentStatus
 } from '@/api/content/article'
-import { logger } from "runjs/lib/common";
+import moment from 'moment'
 // import {getCollectList, getRecycleList} from "@/api/content/crawler";
 
 export default {
@@ -43,7 +43,7 @@ export default {
       selectId: '',
       remark: '内容违规',
       OffVisible: false,
-      delVisible:false
+      delVisible: false
     }
   },
 
@@ -105,7 +105,7 @@ export default {
       this.fetchData()
     },
 
-    fetchData(e) {
+    async fetchData(e) {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
@@ -118,13 +118,13 @@ export default {
         'auditStatus': this.query.auditStatus
       }
       if (this.activeName === '1') {
-        getAuditList(params).then(response => {
+        await getAuditList(params).then(response => {
           this.list = response.data.data.list
           this.total = response.data.data.totalRows
           this.listLoading = false
         })
       } else if (this.activeName === '2') {
-        getCompanyAuditList(params).then(response => {
+        await getCompanyAuditList(params).then(response => {
           this.list = response.data.page.list
           this.total = response.data.page.totalRows
           this.listLoading = false
@@ -136,7 +136,7 @@ export default {
           this.queryComment['startTs'] = this.queryDate[0]
           this.queryComment['endTs'] = this.queryDate[1]
         }
-        getArticleCommentList(this.queryComment).then(res => {
+        await getArticleCommentList(this.queryComment).then(res => {
           if (res.state === 1) {
             this.list = res.data.list
             this.total = res.data.totalRows
@@ -146,8 +146,21 @@ export default {
           this.listLoading = false
         })
       }
+      // 过滤发布时间秒
+      this.fitterSecond()
     },
-
+    fitterSecond() {
+      let arr = this.list
+      if (arr.length < 1) { return }
+      arr.forEach(item => {
+        if (item.createdTs) {
+          let now = item.createdTs
+          item.createdTs = moment(now).format('YYYY-MM-DD HH:mm')
+          console.log('element.createdTs', item.createdTs)
+        }
+      })
+      this.list = JSON.parse(JSON.stringify(arr))
+    },
     detail(row) {
       this.selectId = row.id
       const params = {

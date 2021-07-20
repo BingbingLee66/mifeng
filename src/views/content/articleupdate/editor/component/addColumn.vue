@@ -2,27 +2,32 @@
   <div>
     <el-dialog title="详情" :visible.sync="detailVisible" width="50%">
       <div slot="title" class="header-title">
-                    <span class="title-name">添加栏目 </span>
-               
-      </div>    
-    <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
+        <span class="title-name">添加栏目 </span>
+      </div>
+      <el-form
+        ref="form"
+        :model="formObj"
+        :rules="rules"
+        label-position="right"
+        label-width="100px"
+      >
         <el-row>
           <el-col :offset="2" :span="20">
             <el-form-item label="栏目名称：" prop="columnName">
-              <el-input v-model="formObj.columnName" maxLength="100"></el-input>
+              <el-input v-model="formObj.columnName" max-length="100" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row >
+        <el-row>
           <el-col :offset="2" :span="20">
             <el-form-item label="排序：" prop="level">
-              <el-input v-model="formObj.level"></el-input>
+              <el-input v-model="formObj.level" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item>
           <el-col :offset="4" :span="16">
-            <el-button type="primary" v-dbClick @click="save">保存</el-button>
+            <el-button v-dbClick type="primary" @click="save">保存</el-button>
             <el-button @click.native="close">取消</el-button>
           </el-col>
         </el-form-item>
@@ -34,7 +39,7 @@
 <script>
 import { save } from '@/api/content/columnsetup'
 export default {
-  props: ["title"],
+  props: ['title'],
   data() {
     var checkNumber = (rule, value, callback) => {
       if (!/^([1-9]\d*)$/.test(value)) {
@@ -44,82 +49,89 @@ export default {
       }
     }
     return {
-      //状态
+      // 状态
       reject: null,
       reslove: null,
       detailVisible: false,
-     formObj:{
-       columnName:null,
-       level:null, 
-     },
+      formObj: {
+        columnName: null,
+        level: null,
+      },
       activeName: '3',
-     rules:{
+      rules: {
         columnName: [
-            { required: true, message: '请输入栏目名称', trigger: 'blur' },
-          
-          ],
-          level: [
-            { required: true, message: '请选择排序', trigger: 'blur' },
-             { validator: checkNumber, trigger: 'change' }
-          ],
-     },
-    };
+          { required: true, message: '请输入栏目名称', trigger: 'blur' },
+
+        ],
+        level: [
+          { required: true, message: '请选择排序', trigger: 'blur' },
+          { validator: checkNumber, trigger: 'change' }
+        ],
+      },
+    }
   },
   methods: {
-    //打开
+    // 打开
     open(item) {
-      const self = this;
+      const self = this
       return new Promise((reslove, reject) => {
-        this.reslove = reslove;
-        this.reject = reject;
-        this.activeName=item
-        this.show();
-      });
+        this.reslove = reslove
+        this.reject = reject
+        this.activeName = item
+        this.show()
+      })
     },
-    save(){
-      let self=this;
-this.$refs['form'].validate((valid=>{
-    if (valid) {
-      this.formObj['ckey'] = this.$store.getters.ckey;
-      this.formObj['contentModuleId'] = this.activeName
-      this.formObj['columnName']=this.formObj['columnName'].replace(/\s*/g,"");
-             save(this.formObj).then(response => {
+    save() {
+      let self = this
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          this.formObj['ckey'] = this.$store.getters.ckey
+          this.formObj['contentModuleId'] = this.activeName
+          this.formObj['columnName'] = this.formObj['columnName'].replace(/\s*/g, '')
+          if (this.formObj['columnName'].length < 1) {
+            this.$message({
+              message: '栏目名称不能为空',
+              type: 'error'
+            })
+            return
+          }
+          save(this.formObj).then(response => {
             this.$message({
               message: '操作成功',
               type: 'success'
             })
-            self.reslove();
+            self.reslove()
             self.close()
             // this.fetchData()
             // this.visible = false
           })
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-}))
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
-    //展示
+    // 展示
     show() {
-      this.detailVisible = true;
+      this.detailVisible = true
     },
-    //关闭
+    // 关闭
     close() {
-      this.detailVisible = false;
-      this.reject = null;
-      this.reslove = null;
+      this.detailVisible = false
+      this.reject = null
+      this.reslove = null
     },
-    //通过
+    // 通过
     approved() {
-      this.$emit("monitorPassFunc");
-      //异步请求添加
+      this.$emit('monitorPassFunc')
+      // 异步请求添加
     },
-    //驳回
+    // 驳回
     rejectRemark() {
-      this.$emit("monitorRefusal");
+      this.$emit('monitorRefusal')
     },
   },
-};
+}
 </script>
 <style lang="scss" scoped>
 .audit-result-view {

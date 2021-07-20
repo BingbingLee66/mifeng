@@ -32,13 +32,13 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    handleClick () {
+    handleClick() {
       this.fetchData()
     },
     init() {
@@ -55,7 +55,7 @@ export default {
         this.listLoading = false
       })
     },
-    openVisible (e, row) {
+    openVisible(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.formObj = {
         id: row.id,
@@ -65,7 +65,7 @@ export default {
       }
       this.visible = true
     },
-    updateStatus (e, row) {
+    updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'id': row.id,
@@ -86,13 +86,13 @@ export default {
         this.fetchData()
       })
     },
-    add (e) {
+    add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.formObj = {}
       // this.formObj.level = null
       this.visible = true
     },
-    save () {
+    save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.formObj['ckey'] = this.$store.getters.ckey

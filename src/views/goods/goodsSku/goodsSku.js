@@ -1,18 +1,16 @@
-import { 
-  getSkuOptions,
+import {
   getGoodsDetail,
   uploadGoodsImg,
   add,
   update } from '@/api/goods/goodsSku'
 import { getSupplierOptions } from '@/api/goods/supplier.js'
 import { getSetting } from '@/api/system/setting'
-import area from '@/utils/area'
 import videoPreview from '@/assets/img/video-pre.jpg'
-import draggable from 'vuedraggable' // 拖拽组件
+// import draggable from 'draggable' // 拖拽组件
 
 export default {
   components: {
-    draggable
+    // draggable
   },
   data() {
     var checkFee = (rule, value, callback) => {
@@ -160,7 +158,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     // 防止火狐浏览器拖拽的时候以新标签打开
     document.body.ondrop = function(event) {
       event.preventDefault()
@@ -177,8 +175,8 @@ export default {
     this.getAttrOptions()
   },
   computed: {
-    effectiveLength () {
-      return function (obj) {
+    effectiveLength() {
+      return function(obj) {
         let length = 0
         obj.forEach((o) => {
           if (o !== '') {
@@ -188,20 +186,20 @@ export default {
         return length
       }
     },
-    computedColor () {
+    computedColor() {
       this.verifyPrice()
       return this.priceVerify ? '#999' : '#F56C6C'
     }
   },
-  created () {
+  created() {
     // 监听刷新时间
     // window.addEventListener('beforeunload', e => this.refreshView(e))
   },
-  destroyed () {
+  destroyed() {
     // window.removeEventListener('beforeunload', e => this.refreshView(e))
   },
   methods: {
-    closeTab () {
+    closeTab() {
       // 退出当前tab, 打开指定tab
       let openPath = window.localStorage.getItem('goodsSku')
       let tagsViews = this.$store.state.tagsView.visitedViews
@@ -215,10 +213,10 @@ export default {
         }
       }
     },
-    init () {
+    init() {
       this.fetchData()
     },
-    getSupplierOptions () {
+    getSupplierOptions() {
       getSupplierOptions().then(response => {
         let objArr = response.data.lst
         this.supplierOptions = []
@@ -231,7 +229,7 @@ export default {
         }
       })
     },
-    getAttrOptions () {
+    getAttrOptions() {
       let params = {
         key: 'skuKeyName'
       }
@@ -246,7 +244,7 @@ export default {
         }
       })
     },
-    fetchData () {
+    fetchData() {
       let params = {
         'id': this.goodsId
       }
@@ -292,7 +290,7 @@ export default {
           limitTime.push(obj.limitTimeStart)
           limitTime.push(obj.limitTimeEnd)
           // this.formObj['limitTime'] = limitTime
-        } 
+        }
         this.$set(this.formObj, 'limitTime', limitTime)
         if (this.formObj.salesVolume === 0) {
           this.formObj.salesVolume = ''
@@ -302,7 +300,7 @@ export default {
         }
       })
     },
-    addSupplier (val) {
+    addSupplier(val) {
       if (val) {
         if (this.supplierOptions.length === 0) {
           this.$confirm('你还未添加供货商家，添加后才可发布商品哦！', '提示', {
@@ -316,7 +314,7 @@ export default {
         }
       }
     },
-    setSku () {
+    setSku() {
       if (this.formObj.specType === 1) { // 多规格
         if (this.formObj.attr1.value.length === 0) {
           this.formObj.attr1.value.push({
@@ -342,7 +340,7 @@ export default {
         }
       }
     },
-    beforeAvatarUpload (file) {
+    beforeAvatarUpload(file) {
       const reg = new RegExp('^/.jpg|.jpeg|.png/$')
       if (reg.test(file.name)) {
         this.$message.error('不支持的文件格式!')
@@ -359,7 +357,7 @@ export default {
         return false
       }
     },
-    beforeAvatarUploadGallery (file) {
+    beforeAvatarUploadGallery(file) {
       let result = true
       const reg = new RegExp('^/.jpg|.jpeg|.png/$')
       if (reg.test(file.name)) {
@@ -393,7 +391,7 @@ export default {
       }
       return result
     },
-    uploadGallery (content, index) {
+    uploadGallery(content, index) {
       let formData = new FormData()
       formData.append('file', content.file)
       uploadGoodsImg(formData).then(response => {
@@ -406,7 +404,7 @@ export default {
         this.galleryValid = true
       })
     },
-    uploadDescript (content) {
+    uploadDescript(content) {
       let formData = new FormData()
       formData.append('file', content.file)
       uploadGoodsImg(formData).then(response => {
@@ -414,7 +412,7 @@ export default {
         this.descriptValid = true
       })
     },
-    uploadDetail (content, index) {
+    uploadDetail(content, index) {
       let formData = new FormData()
       formData.append('file', content.file)
       uploadGoodsImg(formData).then(response => {
@@ -427,21 +425,21 @@ export default {
         this.detailValid = true
       })
     },
-    uploadAttr1 (content, index) {
+    uploadAttr1(content, index) {
       let formData = new FormData()
       formData.append('file', content.file)
       uploadGoodsImg(formData).then(response => {
         this.formObj.attr1.value[index].imgUrl = response.data.filePath
       })
     },
-    uploadSku (content, index) {
+    uploadSku(content, index) {
       let formData = new FormData()
       formData.append('file', content.file)
       uploadGoodsImg(formData).then(response => {
         this.formObj.multiSku[index].skuImgUrl = response.data.filePath
       })
     },
-    addAttrSku1 (val, index) {
+    addAttrSku1(val, index) {
       if (val === '') {
         this.attrRatio1 = -1
         this.$message({
@@ -474,7 +472,7 @@ export default {
         this.formObj.attr1.value.push(attVal)
       }
     },
-    addAttrSku2 (val, index) {
+    addAttrSku2(val, index) {
       if (val === '') {
         this.attrRatio2 = -1
         this.$message({
@@ -507,7 +505,7 @@ export default {
         this.formObj.attr2.value.push(attVal)
       }
     },
-    mulUpdate () {
+    mulUpdate() {
       for (let sku of this.formObj.multiSku) {
         sku.price = this.uniSetting.price
         sku.fightPrice = this.uniSetting.fightPrice
@@ -516,32 +514,32 @@ export default {
         sku.stock = this.uniSetting.stock
       }
     },
-    openPreviewModal (url) {
+    openPreviewModal(url) {
       this.previewImgVisible = true
       this.previewUrl = url
     },
-    clearGalleryImg (index) {
+    clearGalleryImg(index) {
       this.formObj.gallery.splice(index, 1)
       if (this.formObj.gallery[this.formObj.gallery.length - 1] !== '') {
         this.formObj.gallery.push('')
       }
     },
-    clearDescriptImg () {
+    clearDescriptImg() {
       this.formObj.descript = ''
     },
-    clearDetailImg (index) {
+    clearDetailImg(index) {
       this.formObj.detail.splice(index, 1)
       if (this.formObj.detail[this.formObj.detail.length - 1] !== '') {
         this.formObj.detail.push('')
       }
     },
-    clearSkuImg (index) {
+    clearSkuImg(index) {
       this.formObj.attr1.value[index].imgUrl = ''
     },
-    clearSkuImg1 (index) {
+    clearSkuImg1(index) {
       this.formObj.multiSku[index].skuImgUrl = ''
     },
-    delAttrVal1 (index) {
+    delAttrVal1(index) {
       let flag = false
       let attr = this.formObj.attr1.value[index]
       for (let sku of this.formObj.multiSku) {
@@ -578,15 +576,15 @@ export default {
           //   })
           //   this.attrId1 = this.attrId1 + 1
           // } else {
-            this.formObj.attr1.value.splice(index, 1)
-            this.attrRatio1 = -1
+          this.formObj.attr1.value.splice(index, 1)
+          this.attrRatio1 = -1
           // }
         }).catch((err) => {
           console.log(err)
         })
       }
     },
-    delAttrVal2 (index) {
+    delAttrVal2(index) {
       let flag = false
       let attr = this.formObj.attr2.value[index]
       for (let sku of this.formObj.multiSku) {
@@ -623,15 +621,15 @@ export default {
           //   })
           //   this.attrId2 = this.attrId2 + 1
           // } else {
-            this.formObj.attr2.value.splice(index, 1)
-            this.attrRatio2 = -1
+          this.formObj.attr2.value.splice(index, 1)
+          this.attrRatio2 = -1
           // }
         }).catch((err) => {
           console.log(err)
         })
       }
     },
-    delAttr1 () {
+    delAttr1() {
       // 点击删除规格1，同时删除规格1和规格2
       let flag = false
       for (let attr of this.formObj.attr1.value) {
@@ -717,7 +715,7 @@ export default {
         })
       }
     },
-    delAttr2 () {
+    delAttr2() {
       // 点击删除规格2，只删除规格2
       let flag = false
       for (let attr of this.formObj.attr2.value) {
@@ -768,7 +766,7 @@ export default {
         })
       }
     },
-    addAttr2 () {
+    addAttr2() {
       this.formObj.attr2 = {
         'id': '',
         'attrName': '',
@@ -783,13 +781,13 @@ export default {
       }
       this.attrId2 = this.attrId2 + 1
     },
-    addGoodsSku () {
+    addGoodsSku() {
       let attrValue1 = this.formObj.attr1.value[this.attrRatio1]
       let attrValue2 = this.attrRatio2 === -1 ? {} : this.formObj.attr2.value[this.attrRatio2]
       let code = ''
       let codeName = attrValue1.attrVal
       let singleCode = ''
-      if (!!attrValue1.id) {
+      if (attrValue1.id) {
         code = code + attrValue1.id
         singleCode = attrValue1.id
       } else {
@@ -797,7 +795,7 @@ export default {
         singleCode = attrValue1.fakeId
       }
       if (this.attrRatio2 > -1) {
-        if (!!attrValue2.id) {
+        if (attrValue2.id) {
           code = code + ',' + attrValue2.id
           codeName = codeName + ',' + attrValue2.attrVal
         } else {
@@ -846,7 +844,7 @@ export default {
       }
       this.formObj.multiSku.push(sku)
     },
-    delSku (index) {
+    delSku(index) {
       this.$confirm('确定删除？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -860,7 +858,7 @@ export default {
         })
       })
     },
-    verifyPrice () {
+    verifyPrice() {
       // 供货价＜拼单价＜单买价＜市场价
       let valid = true
       if (this.formObj.specType === 0) { // 单品
@@ -874,7 +872,7 @@ export default {
           valid = false
         }
       } else if (this.formObj.specType === 1) { // 多规格
-        this.formObj.multiSku.forEach( obj => {
+        this.formObj.multiSku.forEach(obj => {
           if (parseFloat(obj.supplyPrice) < parseFloat(obj.fightPrice) &&
             parseFloat(obj.fightPrice) < parseFloat(obj.price) &&
             parseFloat(obj.price) < parseFloat(obj.marketingPrice)) {
@@ -888,7 +886,7 @@ export default {
       }
       return valid
     },
-    save () {
+    save() {
       this.$refs['form'].validate((valid) => {
         if (this.formObj.gallery.length === 1) {
           this.galleryValid = false
@@ -968,7 +966,7 @@ export default {
               attr2.value = attrTransf2
             }
           }
-          sku.forEach( o => {
+          sku.forEach(o => {
             if (o.supplyPrice === '') {
               o.supplyPrice = 0
             }
@@ -987,7 +985,7 @@ export default {
             'attr2': attr2,
             'sku': sku
           }
-          if (!!this.formObj.limitTime) {
+          if (this.formObj.limitTime) {
             obj['limitTimeStart'] = this.formObj.limitTime[0]
             obj['limitTimeEnd'] = this.formObj.limitTime[1]
           }
@@ -1013,10 +1011,10 @@ export default {
         }
       })
     },
-    galleryStart () {
+    galleryStart() {
       this.galleryDrag = true
     },
-    galleryEnd (evt) {
+    galleryEnd(evt) {
       this.galleryDrag = false
       // evt.item; //可以知道拖动的本身
       // evt.to; // 可以知道拖动的目标列表
@@ -1024,10 +1022,10 @@ export default {
       // evt.oldIndex; // 可以知道拖动前的位置
       // evt.newIndex; // 可以知道拖动后的位置
     },
-    detailStart () {
+    detailStart() {
       this.detailDrag = true
     },
-    detailEnd (evt) {
+    detailEnd(evt) {
       this.detailDrag = false
       // evt.item; //可以知道拖动的本身
       // evt.to; // 可以知道拖动的目标列表
@@ -1035,7 +1033,7 @@ export default {
       // evt.oldIndex; // 可以知道拖动前的位置
       // evt.newIndex; // 可以知道拖动后的位置
     },
-    refreshView (e) {
+    refreshView(e) {
       e.returnValue = false
       // this.$confirm('系统可能不会保存您所做的修改', '重新加载此网站？', {
       //   confirmButtonText: '重新加载',
