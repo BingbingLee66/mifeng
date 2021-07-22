@@ -22,7 +22,9 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <div class="login-name">{{ name }}</div>
+    <div class="login-name">
+      <img src="../../../public/img/chamber-icon.png" alt="" /> <span style="margin-right: 30px">{{chamberName}}</span>
+      <img src="../../../public/img/manager-icon.png" alt="" /> {{ name }}</div>
   </div>
 </template>
 
@@ -45,7 +47,7 @@ export default {
     Hamburger
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'name', 'systemLogo'])
+    ...mapGetters(['sidebar', 'avatar', 'name', 'systemLogo', 'chamberName'])
   },
 
   methods: {
@@ -66,6 +68,14 @@ export default {
 .login-name {
   float: right;
   margin-right: 20px;
+  font-size: 16px;
+  font-family: PingFangSC-Regular;
+  color: #333333;
+  img{
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+  }
 }
 
 .navbar {
