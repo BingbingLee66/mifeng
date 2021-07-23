@@ -7,6 +7,7 @@ export default {
     return {
       memberPostOptions: [],
       query: {
+        uname: '',
         memberName: '',
         phone: '',
         type: -1,
@@ -53,10 +54,10 @@ export default {
     this.getMemberFeeMsg()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -70,7 +71,7 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    getMemberType () {
+    getMemberType() {
       let params = {
         ckey: this.$store.getters.ckey
       }
@@ -79,12 +80,12 @@ export default {
         this.memberPostOptions.unshift({ 'label': '全部', 'value': -1 })
       })
     },
-    init () {
+    init() {
       if (this.has('', '查询')) {
         this.fetchData()
       }
     },
-    fetchData (e) {
+    fetchData(e) {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
         this.limit = 10
@@ -92,6 +93,7 @@ export default {
       }
       this.listLoading = true
       let params = {
+        'uname': this.query.uname,
         'memberName': this.query.memberName,
         'phone': this.query.phone,
         'type': this.query.type,
@@ -105,7 +107,7 @@ export default {
         this.listLoading = false
       })
     },
-    openSmsVisible (e) {
+    openSmsVisible(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -115,14 +117,14 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.smsVisible = true
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
         this.selectionDatas.push(data)
       }
     },
-    getMemberFeeMsg () {
+    getMemberFeeMsg() {
       let params = {
         key: 'memberFeeMsg'
       }
@@ -130,7 +132,7 @@ export default {
         this.formObj.msg = response.data.value
       })
     },
-    sendSms () {
+    sendSms() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.selectionDatas.length === 0) {
@@ -163,10 +165,10 @@ export default {
         }
       })
     },
-    closeVisible () {
+    closeVisible() {
       this.smsVisible = false
     },
-    smsRecords (e) {
+    smsRecords(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '短信记录' })
     }
