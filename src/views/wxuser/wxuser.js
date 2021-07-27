@@ -64,6 +64,9 @@ export default {
       if (this.query.chamberName) {
         params['chamberName'] = this.query.chamberName
       }
+      if (this.query.uname) {
+        params['uname'] = this.query.uname
+      }
       if (this.query.date) {
         params['startTs'] = this.query.date[0]
         params['endTs'] = this.query.date[1]
