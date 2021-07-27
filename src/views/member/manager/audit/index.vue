@@ -34,7 +34,7 @@
             <img style="width: 44px;height: 44px;border-radius: 50%;" :src="scope.row.type == 0 ? scope.row.portrait : scope.row.companyLogo">
           </template>
         </el-table-column> -->
-        <el-table-column label="用户头像" width="180px" prop="uavatar">
+        <el-table-column label="用户头像" width="110px" prop="uavatar">
           <template slot-scope="scope">
             <img style="width: 44px;height: 44px;border-radius: 50%;" :src="scope.row.uavatar">
           </template>
@@ -86,7 +86,7 @@
             <div v-if="scope.row.auditStatus == 2">已驳回</div>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
             <!-- <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">详情</el-button> -->
             <el-button v-if="has('', '通过') && scope.row.auditStatus == 0" type="success" :loading="approveLoading" :actionid="getId('', '通过')" @click="approved($event, scope.row)">通过</el-button>
