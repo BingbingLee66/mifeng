@@ -21,6 +21,7 @@ export default {
       tradeCas: -1,
       departmentCas: -1,
       query: {
+        uname: '', // 用户名
         name: '', // 会员姓名
         phone: '', // 会员手机号
         contactName: '', // 联系人姓名
@@ -135,6 +136,7 @@ export default {
       }
       this.listLoading = true
       const params = {
+        'uname': this.query.uname,
         'ckey': this.$store.getters.ckey,
         'companyName': this.query.companyName,
         'contactName': this.query.contactName,
@@ -209,6 +211,7 @@ export default {
       this.selectionDatas = []
       for (let data of datas) {
         let new_data = {
+          '用户名': data.uname,
           '会员姓名': data.name,
           '联系人姓名': data.contactName,
           '会员手机号': data.phone,
