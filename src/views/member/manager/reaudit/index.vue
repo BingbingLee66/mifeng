@@ -31,7 +31,7 @@
           {{scope.row.id}}
         </template>
       </el-table-column> -->
-      <el-table-column label="会内职位">
+      <el-table-column label="用户名">
         <template slot-scope="scope">
           {{ scope.row.uname }}
         </template>
