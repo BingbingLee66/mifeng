@@ -2,6 +2,9 @@
   <div class="app-container">
     <div class="block query_form">
       <el-form ref="query" :inline="true" :model="query">
+        <el-form-item label="用户名：" class="query_form_item_1">
+          <el-input v-model="query.uname " />
+        </el-form-item>
         <el-form-item label="会员名字：" class="query_form_item_1">
           <el-input v-model="query.name" />
         </el-form-item>
@@ -77,14 +80,15 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55px" />
-        <el-table-column label="头像/企业(团体)logo" width="150px">
+        <el-table-column label="用户头像" width="150px">
           <template slot-scope="scope">
-            <div v-if="scope.row.companyLogo || scope.row.portrait">
-              <img style="width: 88px;height: 88px;border-radius: 50%;" :src="scope.row.type == 0 ? scope.row.portrait : scope.row.companyLogo">
+            <div v-if="scope.row.uavatar">
+              <img style="width: 88px;height: 88px;border-radius: 50%;" :src="scope.row.uavatar">
             </div>
             <img v-else style="width: 88px;height: 88px;border-radius: 50%;" src="@/assets/img/nologo.png">
           </template>
         </el-table-column>
+        <el-table-column label="用户名" width="180px" prop="uname" />
         <el-table-column label="会员姓名" width="180px">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>

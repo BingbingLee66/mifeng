@@ -1,7 +1,7 @@
 import { getUserList, updateUserStatus } from '@/api/member/manager'
 
 export default {
-  data () {
+  data() {
     return {
       listLoading: false,
       pageSizes: [10, 20, 50, 100, 500],
@@ -11,6 +11,7 @@ export default {
       limit: 10,
       typeOptions: [],
       query: {
+        uname: '',
         mulValue: '',
         userType: -1,
         chamberName: '',
@@ -20,14 +21,14 @@ export default {
     }
   },
   computed: {},
-  created () {
+  created() {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -41,12 +42,12 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    init () {
+    init() {
       if (this.has('', '查询')) {
         this.fetchData()
       }
     },
-    fetchData (e) {
+    fetchData(e) {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
@@ -63,6 +64,9 @@ export default {
       if (this.query.chamberName) {
         params['chamberName'] = this.query.chamberName
       }
+      if (this.query.uname) {
+        params['uname'] = this.query.uname
+      }
       if (this.query.date) {
         params['startTs'] = this.query.date[0]
         params['endTs'] = this.query.date[1]
@@ -73,11 +77,11 @@ export default {
         this.listLoading = false
       })
     },
-    detail (e, row) {
+    detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '用户详情', params: { 'userDetail': row } })
+      this.$router.push({ name: '用户详情', params: { 'userDetail': row }})
     },
-    updateStatus (e, row) {
+    updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'userId': row.id,

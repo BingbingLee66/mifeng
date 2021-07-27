@@ -2,15 +2,14 @@
   <div class="menber_manager_container">
     <div class="menu_tree">
       <div class="search_wrap">
-        <el-input placeholder="搜索人员姓名" prefix-icon="el-icon-search" v-model="searchValue" @input="handleValueChange">
-        </el-input>
+        <el-input v-model="searchValue" placeholder="搜索人员用户名、姓名、联系人姓名、企业名称" prefix-icon="el-icon-search" @input="handleValueChange" />
       </div>
-      <div ref="searchBox" class="search-result" v-show="showFlag">
+      <div v-show="showFlag" ref="searchBox" class="search-result">
         <div class="member-list">
           <div v-if="searchResult.length>0">
-            <div class="member-item" v-for="item in searchResult" :key="item.id" @click="goDetail(item.id)">
+            <div v-for="item in searchResult" :key="item.id" class="member-item" @click="goDetail(item.id)">
               <!-- <div class="avatar"></div> -->
-              <i class="el-icon-s-custom"></i>
+              <i class="el-icon-s-custom" />
               <div class="name">{{ item.name }}</div>
             </div>
           </div>
@@ -19,7 +18,7 @@
           </div>
         </div>
       </div>
-      <div class="department-list" v-show="!showFlag">
+      <div v-show="!showFlag" class="department-list">
         <el-tree
           :data="departmentTree"
           node-key="id"
@@ -33,8 +32,8 @@
         >
           <template slot-scope="{ node, data }">
             <span style="font-size: 16px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{
-                data.departmentName
-              }} ({{ data.peopleCount }})</span>
+              data.departmentName
+            }} ({{ data.peopleCount }})</span>
           </template>
         </el-tree>
       </div>
@@ -42,7 +41,7 @@
     <div class="content_wrap">
       <div class="name">{{ departmentName }}</div>
       <div class="content_item operation">
-        <div class="ico"><i class="el-icon-s-custom"></i>成员</div>
+        <div class="ico"><i class="el-icon-s-custom" />成员</div>
         <div>
           <el-button type="primary" @click="add">添加成员</el-button>
           <el-button type="warning" @click="handleOpenAdjustDialog">调整部门</el-button>
@@ -51,15 +50,15 @@
       </div>
       <div class="content_item table_wrap">
         <el-table
-          :header-cell-style="{background:'rgba(245,245,245,0.5)',color:'#000',fontSize:'15px',width:'100%'}"
           ref="multipleTable"
+          :header-cell-style="{background:'rgba(245,245,245,0.5)',color:'#000',fontSize:'15px',width:'100%'}"
           :data="memberData"
           tooltip-effect="dark"
           @row-click="skipToDetail"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55">
-          </el-table-column>
+          <el-table-column type="selection" width="55" />
+          <el-table-column label="用户名" prop="uname" />
           <el-table-column label="姓名/联系人姓名" width="200">
             <template slot-scope="scope">
               {{ scope.row.type === 0 ? scope.row.name : scope.row.contactName }}
@@ -103,13 +102,13 @@
         <el-pagination
           :hide-on-single-page="false"
           background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
           :current-page.sync="currentpage"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="totalPages">
-        </el-pagination>
+          :total="totalPages"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
       </div>
     </div>
 
@@ -120,6 +119,7 @@
           <div class="from_item">
             <div class="from_item_label">选择部门：</div>
             <el-cascader
+              v-model="departmentCas"
               clearable
               :show-all-levels="false"
               :options="departmentOptions"
@@ -130,14 +130,13 @@
                 label:'departmentName',
                 children:'departmentRespList'
               }"
-              v-model="departmentCas"
               placeholder="请选择部门"
-              @change="handlerDepartmentChange">
-            </el-cascader>
+              @change="handlerDepartmentChange"
+            />
           </div>
           <div class="from_item" style="padding-left: 80px">
             <el-button @click.native="showDialog = false">取消</el-button>
-            <el-button type="primary" v-dbClick @click="save">保存</el-button>
+            <el-button v-dbClick type="primary" @click="save">保存</el-button>
           </div>
         </div>
       </el-dialog>

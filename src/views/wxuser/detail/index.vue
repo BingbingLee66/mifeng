@@ -39,10 +39,10 @@
         </tr>
         <tr align="center" height="45">
           <td width="24%" rowspan="6">
-            <div class="head-portrait"><img :src="member.portrait"/></div>
+            <div class="head-portrait"><img :src="member.portrait"></div>
           </td>
-          <td width="8%">姓名</td>
-          <td width="30%">{{ member.name }}</td>
+          <td width="8%">用户名</td>
+          <td width="30%">{{ member.uname }}</td>
           <td width="8%">入会时间</td>
           <td width="30%">{{ member.createdTs }}</td>
         </tr>
@@ -72,7 +72,7 @@
         <tr align="center" height="45">
           <td width="8%">手机号码</td>
           <td colspan="1">{{ member.phone }}</td>
-          <td colspan="2"></td>
+          <td colspan="2" />
         </tr>
         <tr align="center" height="45">
           <td width="8%">个人履历</td>
@@ -87,7 +87,7 @@
         </tr>
         <tr align="center" height="45">
           <td width="24%" rowspan="4">
-            <div class="head-portrait"><img :src="member.companyLogo"/></div>
+            <div class="head-portrait"><img :src="member.companyLogo"></div>
           </td>
           <td width="8%">公司名称</td>
           <td width="30%">{{ member.companyName }}</td>
@@ -114,7 +114,7 @@
             <el-button type="text" @click="licenseDetail(member)">详情</el-button>
           </td>
         </tr>
-        <tr align="center" height="45" v-if="member.type===1">
+        <tr v-if="member.type===1" align="center" height="45">
           <td width="8%">行业</td>
           <td align="left" height="150" colspan="10">{{ member.tradeName }}
           </td>
@@ -124,11 +124,12 @@
     <el-dialog
       title="身份证照"
       :visible.sync="idCardVisible"
-      width="50%">
+      width="50%"
+    >
       <el-row>身份证头像面</el-row>
-      <el-row><img :src="idCardImage.frontOfIdCard"/></el-row>
+      <el-row><img :src="idCardImage.frontOfIdCard"></el-row>
       <el-row>身份证头像面</el-row>
-      <el-row><img :src="idCardImage.backOfIdCard"/></el-row>
+      <el-row><img :src="idCardImage.backOfIdCard"></el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click.native="idCardVisible = false">确定</el-button>
       </span>
@@ -136,8 +137,9 @@
     <el-dialog
       title="营业执照"
       :visible.sync="licenseVisible"
-      width="50%">
-      <el-row><img :src="licenseImage"/></el-row>
+      width="50%"
+    >
+      <el-row><img :src="licenseImage"></el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click.native="licenseVisible = false">确定</el-button>
       </span>
@@ -145,7 +147,8 @@
     <el-dialog
       title="个人履历"
       :visible.sync="resumeVisible"
-      width="50%">
+      width="50%"
+    >
       <el-row>
         <div class="text-detail">{{ resume }}</div>
       </el-row>
@@ -156,7 +159,8 @@
     <el-dialog
       title="公司介绍"
       :visible.sync="companyIntroductionVisible"
-      width="50%">
+      width="50%"
+    >
       <el-row>
         <div class="text-detail">{{ companyIntroduction }}</div>
       </el-row>

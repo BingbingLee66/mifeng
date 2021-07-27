@@ -6,6 +6,7 @@ export default {
     return {
       memberPostOptions: [],
       query: {
+        uname: '',
         memberName: '',
         phone: '',
         date: ''
@@ -18,6 +19,7 @@ export default {
       listLoading: false,
       visible: false,
       memberQuery: {
+        uname: '',
         memberPostType: { id: 0 },
         memberName: '',
         phone: ''
@@ -133,6 +135,7 @@ export default {
       }
       this.listLoading = true
       let params = {
+        'uname': this.query.uname,
         'memberName': this.query.memberName,
         'phone': this.query.phone,
         'pageSize': this.limit,
@@ -157,6 +160,7 @@ export default {
     getMember() {
       this.listLoading1 = true
       let params = {
+        'uname': this.memberQuery.uname,
         'memberPostId': this.memberQuery.memberPostType.id,
         'memberName': this.memberQuery.memberName,
         'phone': this.memberQuery.phone,
@@ -191,6 +195,7 @@ export default {
           let dto = []
           for (let data of this.selectionDatas) {
             let obj = {
+              'uname': data.uname,
               'chamberName': data.chamberName,
               'memberId': data.id,
               'memberName': data.type === 0 ? data.name : data.contactName,
