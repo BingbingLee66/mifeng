@@ -34,8 +34,16 @@
             <img style="width: 44px;height: 44px;border-radius: 50%;" :src="scope.row.type == 0 ? scope.row.portrait : scope.row.companyLogo">
           </template>
         </el-table-column> -->
-        <el-table-column label="用户头像" width="180px" prop="uavatar" />
-        <el-table-column label="用户名" width="130px" prop="uname " />
+        <el-table-column label="用户头像" width="180px" prop="uavatar">
+          <template slot-scope="scope">
+            <img style="width: 44px;height: 44px;border-radius: 50%;" :src="scope.row.uavatar">
+          </template>
+        </el-table-column>
+        <el-table-column label="用户名" width="130px" prop="uname ">
+          <template slot-scope="scope">
+            {{ scope.row.uname }}
+          </template>
+        </el-table-column>
         <el-table-column label="会员姓名/联系人姓名" width="180px">
           <template slot-scope="scope">
             {{ scope.row.type == 0 ? scope.row.name : scope.row.contactName }}
