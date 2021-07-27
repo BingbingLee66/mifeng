@@ -147,8 +147,9 @@
         <el-table-column label="文章来源">
           <template slot-scope="scope">
             <div v-if="activeName == '1'">
+              <span>{{ scope.row.sourceName }}</span>
               <!-- <span v-if="scope.row.publishType == 1">{{ scope.row.chamberName }}</span> -->
-              <span v-if="scope.row.publishType == 2 || scope.row.publishType == 5">{{ scope.row.uname }}</span>
+              <!-- <span v-if="scope.row.publishType == 2 || scope.row.publishType == 5">{{ scope.row.uname }}</span> -->
             </div>
             <div v-else>
               <span>{{ scope.row.uname }}</span>

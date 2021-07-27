@@ -9,7 +9,7 @@
           {{scope.row.id}}
         </template>
       </el-table-column> -->
-      <el-table-column label="用户名" prop="uname" width="200px" />
+      <!-- <el-table-column label="用户名" prop="uname" width="200px" /> -->
       <el-table-column label="短信内容">
         <template slot-scope="scope">
           {{ scope.row.msg }}
