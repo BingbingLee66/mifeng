@@ -22,7 +22,7 @@ export default {
       formObj: {}
     }
   },
-  mounted () {
+  mounted() {
   },
   computed: {
   },
@@ -31,10 +31,10 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -48,7 +48,7 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    handleClick () {
+    handleClick() {
       this.fetchData()
     },
     init() {
@@ -56,11 +56,18 @@ export default {
         this.fetchData()
       }
     },
-    getContentColumnType () {
+    getContentColumnType() {
       getContentColumnOptions().then(response => {
         this.contentColumnOptions = response.data.data
         this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
       })
+    },
+    queryData(e) {
+      if (e !== undefined) {
+        window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      }
+      this.currentpage = 1
+      this.fetchData(e)
     },
     fetchData(e) {
       if (e !== undefined) {
@@ -84,10 +91,10 @@ export default {
         this.listLoading = false
       })
     },
-    openVisible (row) {
+    openVisible(row) {
       this.formObj = row
     },
-    updateStatus (e, row) {
+    updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let ids = []
       ids.push(row.id)
@@ -110,23 +117,23 @@ export default {
         this.fetchData()
       })
     },
-    add () {
+    add() {
       window.localStorage.setItem('articleeditor', this.$route.path)
       this.$router.push({ name: '添加或编辑文章' })
     },
-    edit (row) {
+    edit(row) {
       window.localStorage.setItem('articleeditor', this.$route.path)
-      this.$router.push({ name: '添加或编辑文章', params: { 'articleId': row.id } })
+      this.$router.push({ name: '添加或编辑文章', params: { 'articleId': row.id }})
     },
-    articleSourceManager (e, row) {
+    articleSourceManager(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '文章来源管理' })
     },
-    detail (e, row) {
+    detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '文章详情', params: { 'articleId': row.id } })
+      this.$router.push({ name: '文章详情', params: { 'articleId': row.id }})
     },
-    save () {
+    save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           save(this.formObj).then(response => {

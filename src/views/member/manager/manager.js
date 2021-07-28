@@ -134,7 +134,7 @@ export default {
         this.currentpage = 1
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
-      this.listLoading = true
+      // this.listLoading = true
       const params = {
         'uname': this.query.uname,
         'ckey': this.$store.getters.ckey,
@@ -155,8 +155,13 @@ export default {
         params['endTs'] = this.query.date[1]
       }
       list(params).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.totalRows
+        if (Object.keys(response.data).length > 0) {
+          console.log('33')
+          this.list = response.data.data.list
+          this.total = response.data.data.totalRows
+        } else {
+          this.list = []
+        }
         this.listLoading = false
       })
     },
