@@ -39,7 +39,7 @@
           </el-col>
           <el-col :span="2">
             <el-form-item label=" ">
-              <el-button type="primary" @click="fetchData($event)" :actionid="getId('', '查询')" v-if="has('', '查询')">查询
+              <el-button type="primary" @click="queryData($event)" :actionid="getId('', '查询')" v-if="has('', '查询')">查询
               </el-button>
             </el-form-item>
           </el-col>

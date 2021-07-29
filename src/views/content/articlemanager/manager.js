@@ -62,6 +62,13 @@ export default {
         this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
       })
     },
+    queryData(e) {
+      if (e !== undefined) {
+        window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      }
+      this.currentpage = 1
+      this.fetchData(e)
+    },
     fetchData(e) {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -75,7 +82,6 @@ export default {
         'status': this.query.status,
         'publishTimeType': this.query.publishTimeType
       }
-      console.log(this.query.publishTimeType, 5656)
       getManagerList(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
