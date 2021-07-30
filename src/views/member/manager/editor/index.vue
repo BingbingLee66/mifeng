@@ -71,7 +71,7 @@
             <el-row>
               <el-col :span="7">
                 <el-form-item label="会员手机号：" prop="phone">
-                  <el-input v-model="formObj.phone" :readonly="true" />
+                  <el-input v-model="formObj.phone" />
                 </el-form-item>
               </el-col>
             </el-row>

@@ -72,8 +72,7 @@ export default {
       positionOptions: [], // 企业职位选择列表
       nativeOptions: [],
       type: 'add',
-      rules: {},
-      companyRules: {
+      rules: {
         companyName: [{
           required: true,
           message: '企业名称不能为空',
@@ -106,9 +105,6 @@ export default {
             trigger: 'blur'
           }
         ],
-
-      },
-      personalRules: {
         name: [{
           required: true,
           message: '姓名不能为空',
@@ -122,13 +118,12 @@ export default {
           validator: checkPhone,
           trigger: 'change'
         }],
-        memberPostId: [
-          {
-            required: true,
-            message: '请选择会内职位',
-            trigger: 'change'
-          }
-        ]
+      },
+      companyRules: {
+
+      },
+      personalRules: {
+
       },
       departmentOptions: [],
       departmentCas: null
@@ -142,11 +137,11 @@ export default {
   },
 
   mounted() {
-    if (this.formObj.type === 1) {
-      this.rules = this.companyRules
-    } else {
-      this.rules = this.personalRules
-    }
+    // if (this.formObj.type === 1) {
+    //   this.rules = this.companyRules
+    // } else {
+    //   this.rules = this.personalRules
+    // }
     this.getNativeOptions()
     this.getMemberType()
     this.getPositionType()
@@ -599,13 +594,14 @@ export default {
   watch: {
     formObj: {
       handler(val) {
-        if (val.type === 1) {
-          this.rules = this.companyRules
-          this.$refs['form'].clearValidate()
-        } else {
-          this.rules = this.personalRules
-          this.$refs['form'].clearValidate()
-        }
+        console.log('val', val)
+        // if (val.type === 1) {
+        //   this.rules = this.companyRules
+        this.$refs['form'].clearValidate()
+        // } else {
+        //   this.rules = this.personalRules
+        //   this.$refs['form'].clearValidate()
+        // }
       },
       deep: true
     },

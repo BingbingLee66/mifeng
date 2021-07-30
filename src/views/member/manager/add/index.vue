@@ -10,10 +10,10 @@
             </el-radio-group>
           </el-form-item>
           <div v-if="formObj.type === 1">
-            <el-form-item label="企业/团体名称：" prop="companyName">
-              <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
+            <el-form-item label="企业名称：" prop="companyName">
+              <el-input v-model.trim="formObj.companyName" max-length="200" />
             </el-form-item>
-            <el-form-item label="企业/团体logo：" prop="companyLogo" class="avatar_style">
+            <!-- <el-form-item label="企业/团体logo：" prop="companyLogo" class="avatar_style">
               <el-upload
                 class="avatar-uploader"
                 action="/"
@@ -25,32 +25,32 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;">
                 </i>
               </el-upload>
-              <!--              <div style="color: #999">格式:jpg/png/jpeg  尺寸:132*132px</div>-->
-            </el-form-item>
+                        <div style="color: #999">格式:jpg/png/jpeg  尺寸:132*132px</div>
+            </el-form-item> -->
 
             <el-form-item label="联系人姓名：" prop="contactName">
-              <el-input placeholder="请输入联系人姓名" v-model.trim="formObj.contactName" maxLength="20"></el-input>
+              <el-input v-model.trim="formObj.contactName" placeholder="请输入联系人姓名" max-length="20" />
             </el-form-item>
             <el-form-item label="联系人电话：" prop="contactPhone">
-              <el-input v-model="formObj.contactPhone" placeholder="请输入联系电话"></el-input>
+              <el-input v-model="formObj.contactPhone" placeholder="请输入联系电话" />
             </el-form-item>
           </div>
           <div v-else>
             <el-form-item label="姓名：" prop="name">
-              <el-input v-model.trim="formObj.name" maxLength="100"></el-input>
+              <el-input v-model.trim="formObj.name" max-length="100" />
             </el-form-item>
             <el-form-item label="手机号：" prop="phone">
-              <el-input v-model="formObj.phone"></el-input>
+              <el-input v-model="formObj.phone" />
             </el-form-item>
           </div>
           <el-form-item label="会内职位：" prop="memberPostId">
             <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
               <el-option
                 v-for="post in memberPostOptions"
+                :key="post.value"
                 :label="post.label"
                 :value="post.value"
-                :key="post.value"
-              ></el-option>
+              />
             </el-select>
           </el-form-item>
           <el-form-item label="所在部门：">
@@ -71,10 +71,10 @@
                 disable:'disabled'
               }"
               @change="handlerDepartmentChange"
-            ></el-cascader>
+            />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" v-dbClick @click="save">保存</el-button>
+            <el-button v-dbClick type="primary" @click="save">保存</el-button>
             <el-button @click="closeTab">取消</el-button>
           </el-form-item>
         </el-form>
