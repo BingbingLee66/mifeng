@@ -16,15 +16,15 @@
           </el-row>
           <div v-if="formObj.type === 1">
             <el-row>
-              <el-col :span="10">
-                <el-form-item label="企业/团体名称：" label-width="130px"  prop="companyName">
-                  <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
+              <el-col :span="7">
+                <el-form-item label="企业名称：" prop="companyName">
+                  <el-input v-model.trim="formObj.companyName" max-length="200" />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="7">
-                <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
+                <!-- <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
                   <el-upload
                     class="avatar_uploader"
                     action="/"
@@ -42,20 +42,20 @@
                     </i>
                       <div v-if="!formObj.companyLogo" class="uploader_tips">上传LOGO</div>
                   </el-upload>
-                </el-form-item>
+                </el-form-item> -->
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="7">
                 <el-form-item label="联系人姓名：" prop="contactName">
-                  <el-input v-model="formObj.contactName" maxLength="20" placeholder="请填写真实姓名"></el-input>
+                  <el-input v-model="formObj.contactName" max-length="20" placeholder="请填写真实姓名" />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="7">
                 <el-form-item label="联系人电话：" prop="contactPhone">
-                  <el-input v-model="formObj.contactPhone"></el-input>
+                  <el-input v-model="formObj.contactPhone" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -63,15 +63,15 @@
           <div v-else>
             <el-row>
               <el-col :span="7">
-                <el-form-item label="姓名：" prop="name" class="form_content">
-                  <el-input v-model.trim="formObj.name" maxLength="100"></el-input>
+                <el-form-item label="会员姓名：" prop="name" class="form_content">
+                  <el-input v-model.trim="formObj.name" max-length="100" />
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="7">
-                <el-form-item label="手机号：" prop="phone">
-                  <el-input v-model="formObj.phone" :readonly=true></el-input>
+                <el-form-item label="会员手机号：" prop="phone">
+                  <el-input v-model="formObj.phone" :readonly="true" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -80,8 +80,12 @@
             <el-col :span="7">
               <el-form-item label="会内职位：" prop="memberPostId">
                 <el-select v-model="formObj.memberPostId" placeholder="请选择会内职位">
-                  <el-option v-for="post in memberPostOptions" :label="post.label" :value="post.value"
-                             :key="post.value"></el-option>
+                  <el-option
+                    v-for="post in memberPostOptions"
+                    :key="post.value"
+                    :label="post.label"
+                    :value="post.value"
+                  />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -90,6 +94,7 @@
             <el-col :span="7">
               <el-form-item label="所在部门：">
                 <el-cascader
+                  v-model="departmentCas"
                   clearable
                   :show-all-levels="false"
                   :options="departmentOptions"
@@ -103,168 +108,206 @@
                     children:'departmentRespList',
                     disable:'disabled'
                   }"
-                  v-model="departmentCas"
                   placeholder="请选择部门"
-                  @change="handlerDepartmentChange">
-                </el-cascader>
+                  @change="handlerDepartmentChange"
+                />
               </el-form-item>
             </el-col>
           </el-row>
           <div class="title_block">其他信息</div>
-          <el-row v-if="formObj.type === 1">
+          <!-- <el-row v-if="formObj.type === 1">
             <el-col :span="7">
               <el-form-item label="姓名：" prop="name">
-                <el-input v-model.trim="formObj.name" maxLength="100"></el-input>
+                <el-input v-model.trim="formObj.name" max-length="100" />
               </el-form-item>
             </el-col>
             <el-col :span="7" :offset="1">
               <el-form-item label="手机号：" prop="phone">
-                <el-input v-model="formObj.phone" :readonly=true></el-input>
+                <el-input v-model="formObj.phone" :readonly="true" />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
+          </el-row> -->
+          <!-- <el-row>
             <el-col :span="7">
               <el-form-item label="生日：" prop="birthday">
-                <el-date-picker format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="formObj.birthday" type="date"
-                                placeholder="选择日期">
-                </el-date-picker>
+                <el-date-picker
+                  v-model="formObj.birthday"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd"
+                  type="date"
+                  placeholder="选择日期"
+                />
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="7">
               <el-form-item label="性别：" prop="gender">
                 <el-select v-model="formObj.gender" placeholder="请选择性别类型">
-                  <el-option label="男" :value="1"></el-option>
-                  <el-option label="女" :value="2"></el-option>
+                  <el-option label="男" :value="1" />
+                  <el-option label="女" :value="2" />
                 </el-select>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
+          </el-row> -->
+          <!-- <el-row>
             <el-col :span="7">
               <el-form-item label="籍贯：" prop="nativeCas">
-                <el-cascader ref="cascaderAddr" :options="nativeOptions" v-model="formObj.nativeCas"
-                             @change="handleItemChange">
-                </el-cascader>
+                <el-cascader
+                  ref="cascaderAddr"
+                  v-model="formObj.nativeCas"
+                  :options="nativeOptions"
+                  @change="handleItemChange"
+                />
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="7">
               <el-form-item label="身份证号：" prop="idCard">
-                <el-input v-model="formObj.idCard" maxLength="18"></el-input>
+                <el-input v-model="formObj.idCard" max-length="18" />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
+          </el-row> -->
+          <!-- <el-row>
             <div
-              style="text-align: left;font-weight: 700;vertical-align: middle;font-size: 14px;color: #606266;line-height: 40px;padding: 0 12px 0 0;-webkit-box-sizing: border-box;box-sizing: border-box;">
+              style="text-align: left;font-weight: 700;vertical-align: middle;font-size: 14px;color: #606266;line-height: 40px;padding: 0 12px 0 0;-webkit-box-sizing: border-box;box-sizing: border-box;"
+            >
               身份证照片：
             </div>
             <el-col :span="3">
               <el-form-item label="" prop="frontOfIdCard">
-                <el-upload class="avatar-uploader" action="/" :show-file-list="false"
-                           :before-upload="beforeAvatarUpload" :http-request="uploadFrontOfIdCard">
+                <el-upload
+                  class="avatar-uploader"
+                  action="/"
+                  :show-file-list="false"
+                  :before-upload="beforeAvatarUpload"
+                  :http-request="uploadFrontOfIdCard"
+                >
                   <img v-if="formObj.frontOfIdCard" :src="formObj.frontOfIdCard" class="avatar avatar-tips">
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  <i v-else class="el-icon-plus avatar-uploader-icon" />
                   <div v-if="!formObj.frontOfIdCard" class="uploader-tips">上传身份证头像面</div>
                 </el-upload>
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="5">
               <el-form-item label="" prop="backOfIdCard">
-                <el-upload class="avatar-uploader" action="/" :show-file-list="false"
-                           :before-upload="beforeAvatarUpload" :http-request="uploadBackOfIdCard">
+                <el-upload
+                  class="avatar-uploader"
+                  action="/"
+                  :show-file-list="false"
+                  :before-upload="beforeAvatarUpload"
+                  :http-request="uploadBackOfIdCard"
+                >
                   <img v-if="formObj.backOfIdCard" :src="formObj.backOfIdCard" class="avatar avatar-tips">
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                  <i v-else class="el-icon-plus avatar-uploader-icon" />
                   <div v-if="!formObj.backOfIdCard" class="uploader-tips">上传身份证国徽面</div>
                 </el-upload>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
+          </el-row> -->
+          <!-- <el-row>
             <el-col :span="15">
               <el-form-item label="个人简介：" prop="resume" class="flex_style">
-                <el-input type="textarea" :rows="8" v-model="formObj.resume" maxLength="1000"></el-input>
+                <el-input v-model="formObj.resume" type="textarea" :rows="8" max-length="1000" />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="7" v-if="formObj.type === 0">
+          </el-row> -->
+          <!-- <el-row>
+            <el-col v-if="formObj.type === 0" :span="7">
               <el-form-item label="企业/团体名称：" label-width="130px" prop="companyName">
-                <el-input v-model.trim="formObj.companyName" maxLength="200"></el-input>
+                <el-input v-model.trim="formObj.companyName" max-length="200" />
               </el-form-item>
             </el-col>
-            <el-col :offset="1" :span="7" v-if="formObj.type === 0">
+            <el-col v-if="formObj.type === 0" :offset="1" :span="7">
               <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
-                <el-upload class="avatar_uploader" action="/" :show-file-list="false"
-                           :before-upload="beforeAvatarUpload" :http-request="uploadLogo">
-                  <img v-if="formObj.companyLogo" :src="formObj.companyLogo" style="height: 100px; width: 100px;border-radius:50%;"
-                       class="avatar avatar-tips">
-                  <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;border-radius:50%;">
-                  </i>
-                   <div v-if="!formObj.companyLogo" class="uploader_tips">上传LOGO</div>
+                <el-upload
+                  class="avatar_uploader"
+                  action="/"
+                  :show-file-list="false"
+                  :before-upload="beforeAvatarUpload"
+                  :http-request="uploadLogo"
+                >
+                  <img
+                    v-if="formObj.companyLogo"
+                    :src="formObj.companyLogo"
+                    style="height: 100px; width: 100px;border-radius:50%;"
+                    class="avatar avatar-tips"
+                  >
+                  <i v-else class="el-icon-plus avatar-uploader-icon" style="height: 100px; width: 100px;border-radius:50%;" />
+                  <div v-if="!formObj.companyLogo" class="uploader_tips">上传LOGO</div>
                 </el-upload>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
+          </el-row> -->
+          <!-- <el-row>
             <el-col :span="7">
               <el-form-item label="行业：" prop="tradeCas">
-                <el-cascader :show-all-levels="false" :options="tradeOptions" v-model="bindTradeIds"
-                             placeholder="请选择行业类型" :props="{ multiple: true, checkStrictly: false }"
-                             @change="handlerChange">
-                </el-cascader>
+                <el-cascader
+                  v-model="bindTradeIds"
+                  :show-all-levels="false"
+                  :options="tradeOptions"
+                  placeholder="请选择行业类型"
+                  :props="{ multiple: true, checkStrictly: false }"
+                  @change="handlerChange"
+                />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="7">
-              <el-form-item label="营业执照：" prop="license">
-                <el-upload class="avatar-uploader" action="/" :show-file-list="false"
-                           :before-upload="beforeAvatarUpload" :http-request="uploadLicense">
-                  <img v-if="formObj.license" :src="formObj.license" class="avatar avatar-tips">
-                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                  <div v-if="!formObj.license" class="uploader-tips">上传公司营业执照</div>
-                </el-upload>
-              </el-form-item>
-            </el-col>
-            <el-col :offset="1" :span="7" v-if="formObj.type === 0">
-              <el-form-item label="联系人电话：" prop="contactPhone">
-                <el-input v-model="formObj.contactPhone"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          </el-row> -->
           <el-row>
             <el-col :span="7">
               <el-form-item label="入会时间：" prop="joinedTs">
                 <el-date-picker
+                  v-model="formObj.joinedTs"
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd"
-                  v-model="formObj.joinedTs"
                   type="date"
-                  placeholder="选择日期">
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :offset="1" :span="7">
-              <el-form-item label="企业/团体职位：" label-width="130px" prop="companyPositionId">
-                <el-select v-model="formObj.companyPositionId" placeholder="请选择企业/团体职位">
-                  <el-option
-                    v-for="position in positionOptions"
-                    :label="position.label"
-                    :value="position.value"
-                    :key="position.value">
-                  </el-option>
-                </el-select>
+                  placeholder="选择日期"
+                />
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <div v-if="formObj.type === 1">
+            <el-row>
+              <el-row>
+                <el-col :span="7">
+                  <el-form-item label="营业执照：" prop="license">
+                    <el-upload
+                      class="avatar-uploader"
+                      action="/"
+                      :show-file-list="false"
+                      :before-upload="beforeAvatarUpload"
+                      :http-request="uploadLicense"
+                    >
+                      <img v-if="formObj.license" :src="formObj.license" class="avatar avatar-tips">
+                      <i v-else class="el-icon-plus avatar-uploader-icon" />
+                      <div v-if="!formObj.license" class="uploader-tips">上传公司营业执照</div>
+                    </el-upload>
+                  </el-form-item>
+                </el-col>
+                <!-- <el-col v-if="formObj.type === 0" :offset="1" :span="7">
+              <el-form-item label="联系人电话：" prop="contactPhone">
+                <el-input v-model="formObj.contactPhone" />
+              </el-form-item>
+            </el-col> -->
+              </el-row>
+              <el-col :span="7">
+                <el-form-item label="企业职位：" prop="companyPositionId">
+                  <el-select v-model="formObj.companyPositionId" placeholder="请选择企业/团体职位">
+                    <el-option
+                      v-for="position in positionOptions"
+                      :key="position.value"
+                      :label="position.label"
+                      :value="position.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+          <!-- <el-row>
             <el-col :span="15">
               <el-form-item label="办公地址：" prop="companyAddress" class="adress_style">
-                <el-input v-model.trim="formObj.companyAddress" maxLength="200"></el-input>
+                <el-input v-model.trim="formObj.companyAddress" max-length="200" />
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row> -->
           <!-- <el-row>
             <el-col :span="15">
               <el-form-item label="企业简介：" prop="companyIntroduction">
@@ -273,7 +316,7 @@
             </el-col>
           </el-row> -->
           <el-form-item>
-            <el-button type="primary" v-dbClick @click="save">保存</el-button>
+            <el-button v-dbClick type="primary" @click="save">保存</el-button>
             <el-button @click="closeTab">取消</el-button>
           </el-form-item>
         </el-form>
