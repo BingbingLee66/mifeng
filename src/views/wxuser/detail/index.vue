@@ -22,48 +22,105 @@
         </el-col>
       </el-row>
     </div>
+    <div>
+      <el-row>
+        <span class="row-title">个人信息</span>
+      </el-row>
+      <table border="1" width="100%" align="center" cellspacing="0">
+        <tr align="center" height="45">
+          <td width="24%" rowspan="6">
+            <div class="head-portrait"><img :src="userInfo.uavatar"></div>
+          </td>
+          <td width="8%">用户名</td>
+          <td width="30%">{{ userInfo.uname }}</td>
+          <td width="8%">手机号码</td>
+          <td width="30%">{{ userInfo.phone }}</td>
+        </tr>
+        <tr align="center" height="45">
+          <td width="8%">性别</td>
+          <td width="30%">
+            <div v-if="userInfo.ugender == 1">男</div>
+            <div v-if="userInfo.ugender == 2">女</div>
+          </td>
+          <td width="8%">生日</td>
+          <td width="30%">{{ userInfo.birthday }}</td>
+        </tr>
+        <tr align="center" height="45">
+          <td width="8%">籍贯</td>
+          <td width="30%">{{ userInfo.nativePlace }}</td>
+          <td width="8%">简介</td>
+          <td align="left" height="50" colspan="10">{{ resumeCp(userInfo.introduction) }}
+            <el-button type="text" @click="resumeDetail(userInfo.introduction)">详情</el-button>
+          </td>
+        </tr>
+      </table>
+    </div>
     <div style="margin-top: 20px;">
       <el-row>
         <span class="row-title">已加入商会（{{ count }}）</span>
       </el-row>
       <table v-for="(member, index) in memberList" border="1" width="100%" align="center" cellspacing="0">
         <tr align="center" height="45">
-          <td width="100%" colspan="5">
+          <td width="100%" colspan="6">
             <div style="font-size: 18px; font-weight: 800;">{{ member.chamberName }}</div>
           </td>
         </tr>
         <tr align="left" height="45">
-          <td width="100%" colspan="5">
-            <div style="margin-left: 15px; font-size: 18px; font-weight: 800;">个人信息</div>
+          <td width="100%" colspan="6">
+            <div style="margin-left: 15px; font-size: 18px; font-weight: 800;">入会信息</div>
           </td>
         </tr>
         <tr align="center" height="45">
+          <td width="15%">企业名称</td>
+          <td width="35%">{{ member.companyName }}</td>
+          <td width="15%">联系人姓名</td>
+          <td width="35%">{{ member.contactName }}</td>
+
+        </tr>
+        <tr align="center" height="45">
+          <td width="8%">联系人电话</td>
+          <td width="30%">{{ member.contactPhone }}
+          </td>
+          <td width="8%">会内职位</td>
+          <td width="30%">{{ member.postName }}</td>
+        </tr>
+        <tr align="center" height="45">
+          <td width="8%">所在部门</td>
+          <td width="30%">{{ member.departmentName }}</td>
+        </tr>
+        <!-- <tr align="center" height="45">
           <td width="24%" rowspan="6">
             <div class="head-portrait"><img :src="member.portrait"></div>
           </td>
           <td width="8%">用户名</td>
           <td width="30%">{{ member.uname }}</td>
-          <td width="8%">入会时间</td>
-          <td width="30%">{{ member.createdTs }}</td>
-        </tr>
-        <tr align="center" height="45">
+          <td width="8%">手机号码</td>
+          <td width="30%">{{ member.phone }}</td>
+        </tr> -->
+        <!-- <tr align="center" height="45">
           <td width="8%">性别</td>
           <td width="30%">
             <div v-if="member.gender == 1">男</div>
             <div v-if="member.gender == 2">女</div>
           </td>
-          <td width="8%">商会职位</td>
-          <td width="30%">{{ member.postName }}</td>
-        </tr>
-        <tr align="center" height="45">
-          <td width="8%">籍贯</td>
-          <td width="30%">{{ member.nativePlace }}</td>
-          <td width="8%">身份证号码</td>
-          <td width="30%">{{ member.idCard }}</td>
-        </tr>
-        <tr align="center" height="45">
           <td width="8%">生日</td>
           <td width="30%">{{ member.birthday }}</td>
+
+          <td width="8%">商会职位</td>
+          <td width="30%">{{ member.postName }}</td>
+        </tr> -->
+        <!-- <tr align="center" height="45">
+          <td width="8%">籍贯</td>
+          <td width="30%">{{ member.nativePlace }}</td>
+          <td width="8%">简介</td>
+          <td align="left" height="50" colspan="10">{{ resumeCp(member.resume) }}
+            <el-button type="text" @click="resumeDetail(member.resume)">详情</el-button>
+          </td>
+          <td width="8%">身份证号码</td>
+          <td width="30%">{{ member.idCard }}</td>
+        </tr> -->
+        <!-- <tr align="center" height="45">
+
           <td width="8%">身份证照</td>
           <td width="30%">
             <el-button type="text" @click="idCardDetail(member)">详情</el-button>
@@ -79,13 +136,25 @@
           <td align="left" height="150" colspan="10">{{ resumeCp(member.resume) }}
             <el-button type="text" @click="resumeDetail(member.resume)">详情</el-button>
           </td>
-        </tr>
+        </tr> -->
         <tr align="left" height="45">
-          <td width="100%" colspan="5">
-            <div style="margin-left: 15px; font-size: 18px; font-weight: 800;">公司信息</div>
+          <td width="100%" colspan="6">
+            <div style="margin-left: 15px; font-size: 18px; font-weight: 800;">其他信息</div>
           </td>
         </tr>
-        <tr align="center" height="45">
+        <tr align="center" height="45" width="100%">
+          <td width="5%">入会时间</td>
+          <td width="20%">{{ member.joinedTs }}</td>
+          <td width="5%">营业执照</td>
+          <td width="20%">  <el-button type="text" @click="licenseDetail(member)">详情</el-button></td>
+          <!-- <td width="5%">企业职位</td>
+          <td width="25%">{{ member.companyPosition }}</td> -->
+        </tr>
+        <tr align="center" height="45" width="100%">
+          <td width="5%">企业职位</td>
+          <td width="25%">{{ member.companyPosition }}</td>
+        </tr>
+        <!-- <tr align="center" height="45">
           <td width="24%" rowspan="4">
             <div class="head-portrait"><img :src="member.companyLogo"></div>
           </td>
@@ -118,7 +187,7 @@
           <td width="8%">行业</td>
           <td align="left" height="150" colspan="10">{{ member.tradeName }}
           </td>
-        </tr>
+        </tr> -->
       </table>
     </div>
     <el-dialog

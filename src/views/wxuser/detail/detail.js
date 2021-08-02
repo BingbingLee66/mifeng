@@ -1,7 +1,7 @@
 import { getUserDetail } from '@/api/member/manager'
 
 export default {
-  data () {
+  data() {
     return {
       userDetail: {},
       memberList: {},
@@ -16,12 +16,13 @@ export default {
       companyIntroductionVisible: false,
       companyIntroduction: '',
       resumeVisible: false,
-      resume: ''
+      resume: '',
+      userInfo: {}
     }
   },
   computed: {
-    resumeCp () {
-      return function (msg) {
+    resumeCp() {
+      return function(msg) {
         let result = msg
         if (!!msg && msg.length > 100) {
           result = msg.substring(0, 100) + '...'
@@ -29,8 +30,8 @@ export default {
         return result
       }
     },
-    companyInstrodCp () {
-      return function (msg) {
+    companyInstrodCp() {
+      return function(msg) {
         let result = msg
         if (!!msg && msg.length > 100) {
           result = msg.substring(0, 100) + '...'
@@ -39,7 +40,8 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
+    console.log('this.$route.params', this.$route.params)
     if (this.$route.params.userDetail) {
       this.userDetail = this.$route.params.userDetail
       window.localStorage.setItem('detail-user', this.userDetail)
@@ -49,13 +51,13 @@ export default {
     }
     this.init()
   },
-  created () {
+  created() {
   },
   methods: {
-    init () {
+    init() {
       this.fetchData()
     },
-    fetchData () {
+    fetchData() {
       this.listLoading = true
       let params = {
         'phone': this.userDetail.phone
@@ -63,22 +65,24 @@ export default {
       getUserDetail(params).then(response => {
         this.memberList = response.data.dtl
         this.count = this.memberList.length
+        this.userInfo = response.data.userInfo
+        console.log('userInfo', this.userInfo)
       })
     },
-    idCardDetail (row) {
+    idCardDetail(row) {
       this.idCardImage.frontOfIdCard = row.frontOfIdCard
       this.idCardImage.backOfIdCard = row.backOfIdCard
       this.idCardVisible = true
     },
-    licenseDetail (row) {
+    licenseDetail(row) {
       this.licenseImage = row.license
       this.licenseVisible = true
     },
-    resumeDetail (msg) {
+    resumeDetail(msg) {
       this.resume = msg
       this.resumeVisible = true
     },
-    companyIntroductionDetail (msg) {
+    companyIntroductionDetail(msg) {
       this.companyIntroduction = msg
       this.companyIntroductionVisible = true
     }

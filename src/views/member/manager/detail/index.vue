@@ -19,7 +19,8 @@
           <span v-if="memberDetail.registerType == 1">微信小程序</span>
           <!-- <span v-if="memberDetail.registerType == 2">凯迪网</span> -->
           <span
-            v-if="memberDetail.registerType != 0 && memberDetail.registerType != 1 && memberDetail.registerType != 2">空</span>
+            v-if="memberDetail.registerType != 0 && memberDetail.registerType != 1 && memberDetail.registerType != 2"
+          >空</span>
         </el-col>
       </el-row>
     </div>
@@ -34,6 +35,7 @@
             <div style="font-size: 18px; font-weight: 800;">{{ member.chamberName }}</div>
           </td>
         </tr>
+
         <tr align="left" height="45">
           <td width="100%" colspan="5">
             <div style="margin-left: 15px; font-size: 18px; font-weight: 800;">个人信息</div>
@@ -42,14 +44,14 @@
         <tr align="center" height="45">
           <td width="24%" rowspan="6">
             <div class="head_portrait">
-              <img v-if="member.portrait" :src="member.portrait"/>
-              <img v-else src="@/assets/img/nologo.png"/>
+              <img v-if="member.portrait" :src="member.portrait">
+              <img v-else src="@/assets/img/nologo.png">
             </div>
           </td>
-          <td width="8%">姓名</td>
-          <td width="30%">{{ member.name }}</td>
-          <td width="8%">入会时间</td>
-          <td width="30%">{{ member.joinedTs }}</td>
+          <td width="8%">用户名</td>
+          <td width="30%">{{ member.uname }}</td>
+          <td width="8%">手机号</td>
+          <td width="30%">{{ member.phone }}</td>
         </tr>
         <tr align="center" height="45">
           <td width="8%">性别</td>
@@ -57,36 +59,41 @@
             <div v-if="member.gender == 1">男</div>
             <div v-if="member.gender == 2">女</div>
           </td>
-          <td width="8%">会内职位</td>
-          <td width="30%">{{ member.postName }}</td>
+          <td width="8%">生日</td>
+          <td width="30%">{{ member.birthday }}</td>
+          <!-- <td width="8%">会内职位</td>
+          <td width="30%">{{ member.postName }}</td> -->
         </tr>
         <tr align="center" height="45">
           <td width="8%">籍贯</td>
           <td width="30%">{{ member.nativePlace }}</td>
-          <td width="8%">身份证号码</td>
-          <td width="30%">{{ member.idCard }}</td>
+          <td width="8%">个人简历</td>
+          <td align="left" height="150" colspan="10">{{ resumeCp(member.resume) }}
+            <el-button type="text" @click="resumeDetail(member.resume)">详情</el-button>
+          </td>
         </tr>
-        <tr align="center" height="45">
+
+        <!-- <tr align="center" height="45">
           <td width="8%">生日</td>
           <td width="30%">{{ member.birthday }}</td>
           <td width="8%">身份证照</td>
           <td width="30%">
             <el-button type="text" @click="idCardDetail(member)">详情</el-button>
           </td>
-        </tr>
-        <tr align="center" height="45">
+        </tr> -->
+        <!-- <tr align="center" height="45">
           <td width="8%">手机号码</td>
           <td colspan="1">{{ member.phone }}</td>
           <td width="8%">部门</td>
           <td colspan="2">{{ member.departmentName }}</td>
-        </tr>
-        <tr align="center" height="45">
+        </tr> -->
+        <!-- <tr align="center" height="45">
           <td width="8%">个人简历</td>
           <td align="left" height="150" colspan="10">{{ resumeCp(member.resume) }}
             <el-button type="text" @click="resumeDetail(member.resume)">详情</el-button>
           </td>
-        </tr>
-        <tr align="left" height="45">
+        </tr> -->
+        <!-- <tr align="left" height="45">
           <td width="100%" colspan="5">
             <div style="margin-left: 15px; font-size: 18px; font-weight: 800;">公司信息</div>
           </td>
@@ -94,7 +101,7 @@
         <tr align="center" height="45">
           <td width="24%" rowspan="5">
             <div class="head_portrait">
-              <img :src="member.companyLogo" v-if="member.companyLogo != ''"/>
+              <img v-if="member.companyLogo != ''" :src="member.companyLogo">
             </div>
           </td>
           <td width="8%">企业/团体名称</td>
@@ -123,20 +130,79 @@
             <el-button type="text" @click="licenseDetail(member)">详情</el-button>
           </td>
         </tr>
-        <tr align="center" height="45" v-if="member.type===1">
+        <tr v-if="member.type===1" align="center" height="45">
           <td width="8%">行业</td>
           <td align="left" height="150" colspan="10">{{ member.tradeName }}
           </td>
-        </tr>
+        </tr> -->
         <!-- <tr align="center" height="45">
           <td width="8%">企业简介</td>
           <td align="left" height="150" colspan="10">{{companyInstrodCp(member.companyIntroduction)}} <el-button type="text" @click="companyIntroductionDetail(member.companyIntroduction)">详情</el-button>
           </td>
         </tr> -->
+
+      </table>
+      <table width="100%">
+        <tr align="left" height="45">
+          <td width="100%" colspan="5">
+            <div style="font-size: 18px; font-weight: 800;">入会信息</div>
+          </td>
+        </tr>
+        <tr v-if="type===1" height="45" align="center">
+          <td width="8%">姓名</td>
+          <td width="30%">{{ member.postName }}</td>
+          <td width="8%">手机号</td>
+          <td width="30%">{{ member.departmentName }}</td>
+        </tr>
+        <tr height="45" align="center">
+          <td width="8%">会内职位</td>
+          <td width="30%">{{ member.postName }}</td>
+          <td width="8%">所在部门</td>
+          <td width="30%">{{ member.departmentName }}</td>
+        </tr>
+        <!-- 所在部门 -->
+        <div v-if="member.type===1">
+          <tr height="45" align="center">
+            <td width="8%">企业名称</td>
+            <td width="30%">{{ member.companyName }}</td>
+            <td width="8%">联系人姓名</td>
+            <td width="30%">{{ member.contactName }}</td>
+          </tr>
+          <tr height="45" align="center">
+            <td width="8%">联系人电话</td>
+            <td width="30%">{{ member.contactPhone }}</td>
+          </tr>
+        </div>
+        <!-- <div > -->
+        <tr v-else height="45" align="center">
+          <td width="8%">姓名</td>
+          <td width="30%">{{ member.name }}</td>
+          <td width="8%">手机号</td>
+          <td width="30%">{{ member.phone }}</td>
+        </tr>
+        <!-- </div> -->
+      </table>
+      <table width="100%">
+        <tr align="left" height="45">
+          <td width="100%" colspan="5">
+            <div style="font-size: 18px; font-weight: 800;">其他信息</div>
+          </td>
+        </tr>
+        <tr height="45" align="center">
+          <td width="8%">入会时间</td>
+          <td width="20%">{{ member.joinedTs }}</td>
+          <td width="8%">营业执照</td>
+          <td width="20%"> <el-button type="text" @click="licenseDetail(member)">详情</el-button></td>
+
+        </tr>
+        <tr height="45" align="center">
+          <td width="8%">企业职位</td>
+          <td width="20%" style="border-right: 1px solid #dcdfe6">{{ member.companyPosition }}</td>
+        </tr>
+
       </table>
       <div v-if="type == 2" style="font-size: 20px;">
-        <el-row>
-        </el-row>
+        <el-row />
         <el-row v-if="member.auditStatus != 0">
           <el-col :span="8">
             审核结果：
@@ -155,7 +221,7 @@
           <el-col :span="8">提交时间：{{ member.createdTs }}</el-col>
         </el-row>
       </div>
-      <div class="d-btn-box" v-if="(type == 1 || type == 2) && member.auditStatus == 0">
+      <div v-if="(type == 1 || type == 2) && member.auditStatus == 0" class="d-btn-box">
         <el-col :offset="10" :span="8">
           <el-button type="primary" @click="approved(member)">通过</el-button>
           <el-button @click="rejectRemark(member)">驳回</el-button>
@@ -164,15 +230,15 @@
     </div>
     <el-dialog title="身份证照" :visible.sync="idCardVisible" width="50%">
       <el-row>身份证头像面</el-row>
-      <el-row><img class="idcard-prv" :src="idCardImage.frontOfIdCard"/></el-row>
+      <el-row><img class="idcard-prv" :src="idCardImage.frontOfIdCard"></el-row>
       <el-row>身份证国徽面</el-row>
-      <el-row><img class="idcard-prv" :src="idCardImage.backOfIdCard"/></el-row>
+      <el-row><img class="idcard-prv" :src="idCardImage.backOfIdCard"></el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click.native="idCardVisible = false">确定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="营业执照" :visible.sync="licenseVisible" width="50%">
-      <el-row><img class="idcard-prv" :src="licenseImage"/></el-row>
+      <el-row><img class="idcard-prv" :src="licenseImage"></el-row>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click.native="licenseVisible = false">确定</el-button>
       </span>
