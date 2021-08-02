@@ -72,11 +72,11 @@
           {{ scope.row.uname }}
         </template>
       </el-table-column>
-      <el-table-column label="名字">
+      <!-- <el-table-column label="名字">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="手机号" width="120px">
         <template slot-scope="scope">
           {{ scope.row.phone }}

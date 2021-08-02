@@ -148,38 +148,51 @@
             <div style="font-size: 18px; font-weight: 800;">入会信息</div>
           </td>
         </tr>
-        <tr v-if="type===1" height="45" align="center">
-          <td width="8%">姓名</td>
-          <td width="30%">{{ member.postName }}</td>
-          <td width="8%">手机号</td>
-          <td width="30%">{{ member.departmentName }}</td>
-        </tr>
-        <tr height="45" align="center">
-          <td width="8%">会内职位</td>
-          <td width="30%">{{ member.postName }}</td>
-          <td width="8%">所在部门</td>
-          <td width="30%">{{ member.departmentName }}</td>
-        </tr>
-        <!-- 所在部门 -->
-        <div v-if="member.type===1">
-          <tr height="45" align="center">
-            <td width="8%">企业名称</td>
-            <td width="30%">{{ member.companyName }}</td>
-            <td width="8%">联系人姓名</td>
-            <td width="30%">{{ member.contactName }}</td>
-          </tr>
-          <tr height="45" align="center">
-            <td width="8%">联系人电话</td>
-            <td width="30%">{{ member.contactPhone }}</td>
-          </tr>
-        </div>
-        <!-- <div > -->
-        <tr v-else height="45" align="center">
+        <!-- <div v-if="member.type===0"> -->
+        <tr v-if="member.type===0" height="45" align="center">
           <td width="8%">姓名</td>
           <td width="30%">{{ member.name }}</td>
           <td width="8%">手机号</td>
           <td width="30%">{{ member.phone }}</td>
         </tr>
+        <tr v-if="member.type===0" height="45" align="center">
+          <td width="8%">会内职位</td>
+          <td width="30%">{{ member.postName }}</td>
+          <td width="8%">所在部门</td>
+          <td width="30%">{{ member.departmentName }}</td>
+        </tr>
+        <!-- </div> -->
+
+        <!-- <block v-else> -->
+        <tr v-if="member.type===1" height="45" align="center">
+          <td width="8%">企业名称</td>
+          <td width="30%">{{ member.companyName }}</td>
+          <td width="8%">联系人姓名</td>
+          <td width="30%">{{ member.contactName }}</td>
+        </tr>
+        <tr v-if="member.type===1" height="45" align="center">
+          <td width="8%">联系人电话</td>
+          <td width="30%">{{ member.contactPhone }}</td>
+          <td width="8%">会内职位</td>
+          <td width="30%">{{ member.postName }}</td>
+
+        </tr>
+        <!-- </block> -->
+        <!-- 所在部门 -->
+        <!-- <div v-if="member.type===1"> -->
+
+        <tr v-if="member.type===1" height="45" align="center">
+          <td width="8%">所在部门</td>
+          <td width="30%">{{ member.departmentName }}</td>
+        </tr>
+        <!-- </div> -->
+        <!-- <div > -->
+        <!-- <tr v-else height="45" align="center">
+          <td width="8%">姓名</td>
+          <td width="30%">{{ member.name }}</td>
+          <td width="8%">手机号</td>
+          <td width="30%">{{ member.phone }}</td>
+        </tr> -->
         <!-- </div> -->
       </table>
       <table width="100%">
@@ -193,12 +206,13 @@
           <td width="20%">{{ member.joinedTs }}</td>
           <td width="8%">营业执照</td>
           <td width="20%"> <el-button type="text" @click="licenseDetail(member)">详情</el-button></td>
-
+          <td width="8%">企业职位</td>
+          <td width="20%" style="border: 1px solid #dcdfe6">{{ member.companyPosition }}</td>
         </tr>
-        <tr height="45" align="center">
+        <!-- <tr height="45" align="center">
           <td width="8%">企业职位</td>
           <td width="20%" style="border-right: 1px solid #dcdfe6">{{ member.companyPosition }}</td>
-        </tr>
+        </tr> -->
 
       </table>
       <div v-if="type == 2" style="font-size: 20px;">
