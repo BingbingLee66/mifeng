@@ -44,7 +44,7 @@
         <tr align="center" height="45">
           <td width="24%" rowspan="6">
             <div class="head_portrait">
-              <img v-if="member.uavatar" :src="userInfo.uavatar">
+              <img v-if="userInfo.uavatar" :src="userInfo.uavatar">
               <img v-else src="@/assets/img/nologo.png">
             </div>
           </td>
@@ -66,7 +66,7 @@
         </tr>
         <tr align="center" height="45">
           <td width="8%">籍贯</td>
-          <td width="30%">{{ member.nativePlace }}</td>
+          <td width="30%">{{ userInfo.nativePlace }}</td>
           <td width="8%">个人简历</td>
           <td align="left" height="150" colspan="10">{{ resumeCp(member.resume) }}
             <el-button type="text" @click="resumeDetail(member.resume)">详情</el-button>
