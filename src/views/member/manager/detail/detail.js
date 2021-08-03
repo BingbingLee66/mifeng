@@ -98,7 +98,11 @@ export default {
       if (this.type === '0') {
         getMemberDetail(params).then(response => {
           this.member = response.data.dtl[0]
-          this.userInfo = response.data.userInfo
+          if (response.data.userInfo) {
+            this.userInfo = response.data.userInfo
+          }
+
+          console.log('member', this.member)
         })
       } else {
         params['type'] = this.type

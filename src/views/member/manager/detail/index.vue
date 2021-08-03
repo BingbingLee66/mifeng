@@ -145,7 +145,7 @@
       <table width="100%">
         <tr align="left" height="45">
           <td width="100%" colspan="5">
-            <div style="font-size: 18px; font-weight: 800;">入会信息</div>
+            <div style="font-size: 18px; font-weight: 800;">入会信息 </div>
           </td>
         </tr>
         <!-- <div v-if="member.type===0"> -->
