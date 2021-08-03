@@ -90,9 +90,11 @@ export default {
   filters: {
     dateFormat(value) {
       if (value) {
-        let myDate = new Date(value)
+        var myDate = new Date(value.replace('-', '/').replace('-', '/'))
+        // let myDate = new Date(value)
         console.log('myDate', myDate)
         console.log('value', value)
+
         return myDate.getFullYear() + '年' + (myDate.getMonth() + 1) + '月' + (myDate.getDay() + 1) + '日'
       } return ''
     }
