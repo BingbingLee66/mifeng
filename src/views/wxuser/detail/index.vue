@@ -95,12 +95,13 @@
           <td width="8%">会内职位</td>
           <td width="30%">{{ member.postName }}</td>
           <td width="8%">所在部门</td>
-          <td width="30%">{{ member.departmentName }}
+          <td width="30%">
+            {{ member.departmentName }}
           </td>
         </tr>
-        <tr v-if="member.type===1" align="center" height="45">
+        <tr v-if="member.type===1" align="center" height="45" style="tline-height: 45px">
           <td width="8%">所在部门</td>
-          <td width="30%">{{ member.departmentName }}</td>
+          {{ member.departmentName }}
         </tr>
         <!-- <tr align="center" height="45">
           <td width="24%" rowspan="6">
@@ -164,9 +165,11 @@
           <!-- <td width="5%">企业职位</td>
           <td width="25%">{{ member.companyPosition }}</td> -->
         </tr>
-        <tr align="center" height="45" width="100%">
+        <tr align="center" height="45" width="100%" style="tline-height: 45px">
           <td width="5%">企业职位</td>
-          <td width="25%">{{ member.companyPosition }}</td>
+          <!-- <td width="25%"> -->
+          {{ member.companyPosition }}
+          <!-- </td> -->
         </tr>
         <!-- <tr align="center" height="45">
           <td width="24%" rowspan="4">
