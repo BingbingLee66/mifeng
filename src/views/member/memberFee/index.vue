@@ -50,12 +50,12 @@
       </el-table-column> -->
       <!-- <el-table-column type="index" label="序号" width="60px">
       </el-table-column> -->
-      <el-table-column label="用户名" prop="uname" width="150px" />
       <el-table-column label="ID" width="100px">
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>
       </el-table-column>
+      <el-table-column label="用户名" prop="uname" width="150px" />
       <el-table-column label="会员姓名/联系人姓名">
         <template slot-scope="scope">
           {{ scope.row.memberName }}
