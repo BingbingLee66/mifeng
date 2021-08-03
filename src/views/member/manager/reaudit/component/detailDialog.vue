@@ -3,7 +3,7 @@
     <el-dialog title="详情" :visible.sync="detailVisible" width="50%">
       <div slot="title" class="header-title">
                     <span class="title-name">{{ title }} </span>
-               
+
       </div>
       <table border="1" style="border-collapse: collapse;">
         <tr>
@@ -27,18 +27,15 @@
           <td>{{ beforeRevision.contactPhone }}</td>
           <td>{{ afterRevision.contactPhone }}</td>
         </tr>
-        <tr v-if="afterRevision.companyLogo!=beforeRevision.companyLogo">
+        <!-- <tr v-if="afterRevision.companyLogo!=beforeRevision.companyLogo">
           <td class="th_title">企业/团体logo</td>
 
-          <td>
-            <el-image v-if="beforeRevision.companyLogo" class="updateImg" :src="beforeRevision.companyLogo" :preview-src-list="[beforeRevision.companyLogo]">
-            </el-image>
+          <td /></td><td v-if="beforeRevision.companyLogo" class="updateImg" :src="beforeRevision.companyLogo" :preview-src-list="[beforeRevision.companyLogo]" />
           </td>
           <td>
-            <el-image v-if="afterRevision.companyLogo" class="updateImg" :src="afterRevision.companyLogo" :preview-src-list="[afterRevision.companyLogo]">
-            </el-image>
+            <el-image v-if="afterRevision.companyLogo" class="updateImg" :src="afterRevision.companyLogo" :preview-src-list="[afterRevision.companyLogo]" />
           </td>
-        </tr>
+        </tr> -->
         <tr v-if="afterRevision.postName!=beforeRevision.postName">
           <td class="th_title">会内职位</td>
           <td>{{ beforeRevision.postName }}</td>
@@ -82,28 +79,22 @@
         <tr v-if="afterRevision.license!=beforeRevision.license">
           <td class="th_title">营业执照</td>
           <td>
-            <el-image v-if="beforeRevision.license" class="updateImg" :src="beforeRevision.license" :preview-src-list="[beforeRevision.license]">
-            </el-image>
+            <el-image v-if="beforeRevision.license" class="updateImg" :src="beforeRevision.license" :preview-src-list="[beforeRevision.license]" />
           </td>
           <td>
-            <el-image v-if="afterRevision.license" class="updateImg" :src="afterRevision.license" :preview-src-list="[afterRevision.license]">
-            </el-image>
+            <el-image v-if="afterRevision.license" class="updateImg" :src="afterRevision.license" :preview-src-list="[afterRevision.license]" />
 
           </td>
         </tr>
         <tr v-if="afterRevision.backOfIdCard!=beforeRevision.backOfIdCard || afterRevision.frontOfIdCard !=beforeRevision.frontOfIdCard">
           <td class="th_title">身份证照片</td>
           <td>
-            <el-image v-if="beforeRevision.backOfIdCard" class="updateImg" :src="beforeRevision.backOfIdCard" :preview-src-list="[beforeRevision.backOfIdCard]">
-            </el-image>
-            <el-image v-if="beforeRevision.frontOfIdCard" class="updateImg" :src="beforeRevision.frontOfIdCard" :preview-src-list="[beforeRevision.frontOfIdCard]">
-            </el-image>
+            <el-image v-if="beforeRevision.backOfIdCard" class="updateImg" :src="beforeRevision.backOfIdCard" :preview-src-list="[beforeRevision.backOfIdCard]" />
+            <el-image v-if="beforeRevision.frontOfIdCard" class="updateImg" :src="beforeRevision.frontOfIdCard" :preview-src-list="[beforeRevision.frontOfIdCard]" />
           </td>
           <td>
-            <el-image v-if="afterRevision.backOfIdCard" class="updateImg" :src="afterRevision.backOfIdCard" :preview-src-list="[afterRevision.backOfIdCard]">
-            </el-image>
-            <el-image v-if="afterRevision.frontOfIdCard" class="updateImg" :src="afterRevision.frontOfIdCard" :preview-src-list="[afterRevision.frontOfIdCard]">
-            </el-image>
+            <el-image v-if="afterRevision.backOfIdCard" class="updateImg" :src="afterRevision.backOfIdCard" :preview-src-list="[afterRevision.backOfIdCard]" />
+            <el-image v-if="afterRevision.frontOfIdCard" class="updateImg" :src="afterRevision.frontOfIdCard" :preview-src-list="[afterRevision.frontOfIdCard]" />
 
           </td>
         </tr>
@@ -288,67 +279,67 @@
 
 <script>
 export default {
-  props: ["title"],
+  props: ['title'],
   data() {
     return {
-      //状态
+      // 状态
       reject: null,
       reslove: null,
       detailVisible: false,
-      //修改后对象
+      // 修改后对象
       afterRevision: {},
-      //修改前对象
+      // 修改前对象
       beforeRevision: {},
       detailObj: {
         auditStatus: 1,
       },
-    };
+    }
   },
   methods: {
-    //打开
+    // 打开
     open(item) {
-      const self = this;
+      const self = this
       return new Promise((reslove, reject) => {
-        this.reslove = reslove;
-        this.reject = reject;
-        let afterRevision = self.handleNullFunc(item.dtl);
-        this.afterRevision = afterRevision;
-        let beforeRevision = self.handleNullFunc(item.member);
-        this.beforeRevision = beforeRevision;
+        this.reslove = reslove
+        this.reject = reject
+        let afterRevision = self.handleNullFunc(item.dtl)
+        this.afterRevision = afterRevision
+        let beforeRevision = self.handleNullFunc(item.member)
+        this.beforeRevision = beforeRevision
         // this.item = item;
-        this.show();
-      });
+        this.show()
+      })
     },
-    //工具类函数  给对象的null置为空串
+    // 工具类函数  给对象的null置为空串
     handleNullFunc(obj) {
       for (var i in obj) {
         if (obj[i] === null) {
-          obj[i] = "";
+          obj[i] = ''
         }
       }
-      return obj;
+      return obj
     },
-    //展示
+    // 展示
     show() {
-      this.detailVisible = true;
+      this.detailVisible = true
     },
-    //关闭
+    // 关闭
     close() {
-      this.detailVisible = false;
-      this.reject = null;
-      this.reslove = null;
+      this.detailVisible = false
+      this.reject = null
+      this.reslove = null
     },
-    //通过
+    // 通过
     approved() {
-      this.$emit("monitorPassFunc");
-      //异步请求添加
+      this.$emit('monitorPassFunc')
+      // 异步请求添加
     },
-    //驳回
+    // 驳回
     rejectRemark() {
-      this.$emit("monitorRefusal");
+      this.$emit('monitorRefusal')
     },
   },
-};
+}
 </script>
 <style lang="scss" scoped>
 .audit-result-view {
