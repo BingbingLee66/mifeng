@@ -48,13 +48,13 @@
           <td>{{ afterRevision.name }}</td>
         </tr>
 
-        <tr v-if="afterRevision.birthday!=beforeRevision.birthday">
+        <!-- <tr v-if="afterRevision.birthday!=beforeRevision.birthday">
           <td class="th_title">生日</td>
           <td>{{ beforeRevision.birthday }}</td>
           <td>{{ afterRevision.birthday }}</td>
-        </tr>
+        </tr> -->
 
-        <tr v-if="afterRevision.gender!=beforeRevision.gender">
+        <!-- <tr v-if="afterRevision.gender!=beforeRevision.gender">
           <td class="th_title">性别</td>
           <td>
             <span v-if="beforeRevision.gender==1">男</span>
@@ -64,18 +64,18 @@
             <span v-if="afterRevision.gender==1">男</span>
             <span v-else-if="afterRevision.gender==2">女</span>
           </td>
-        </tr>
+        </tr> -->
 
-        <tr v-if="afterRevision.nativePlace!=beforeRevision.nativePlace">
+        <!-- <tr v-if="afterRevision.nativePlace!=beforeRevision.nativePlace">
           <td class="th_title">籍贯</td>
           <td>{{ beforeRevision.nativePlace }}</td>
           <td>{{ afterRevision.nativePlace }}</td>
-        </tr>
-        <tr v-if="afterRevision.idCard!=beforeRevision.idCard">
+        </tr> -->
+        <!-- <tr v-if="afterRevision.idCard!=beforeRevision.idCard">
           <td class="th_title">身份证号码</td>
           <td>{{ beforeRevision.idCard }}</td>
           <td>{{ afterRevision.idCard }}</td>
-        </tr>
+        </tr> -->
         <tr v-if="afterRevision.license!=beforeRevision.license">
           <td class="th_title">营业执照</td>
           <td>
@@ -86,7 +86,7 @@
 
           </td>
         </tr>
-        <tr v-if="afterRevision.backOfIdCard!=beforeRevision.backOfIdCard || afterRevision.frontOfIdCard !=beforeRevision.frontOfIdCard">
+        <!-- <tr v-if="afterRevision.backOfIdCard!=beforeRevision.backOfIdCard || afterRevision.frontOfIdCard !=beforeRevision.frontOfIdCard">
           <td class="th_title">身份证照片</td>
           <td>
             <el-image v-if="beforeRevision.backOfIdCard" class="updateImg" :src="beforeRevision.backOfIdCard" :preview-src-list="[beforeRevision.backOfIdCard]" />
@@ -97,17 +97,17 @@
             <el-image v-if="afterRevision.frontOfIdCard" class="updateImg" :src="afterRevision.frontOfIdCard" :preview-src-list="[afterRevision.frontOfIdCard]" />
 
           </td>
-        </tr>
-        <tr v-if="afterRevision.tradeId!=beforeRevision.tradeId">
+        </tr> -->
+        <!-- <tr v-if="afterRevision.tradeId!=beforeRevision.tradeId">
           <td class="th_title">行业</td>
           <td>{{ beforeRevision.tradeName }}</td>
           <td>{{ afterRevision.tradeName }}</td>
-        </tr>
-        <tr v-if="afterRevision.companyPosition!=beforeRevision.companyPosition">
+        </tr> -->
+        <!-- <tr v-if="afterRevision.companyPosition!=beforeRevision.companyPosition">
           <td class="th_title">企业/团体职位</td>
           <td>{{ beforeRevision.companyPosition }}</td>
           <td>{{ afterRevision.companyPosition }}</td>
-        </tr>
+        </tr> -->
 
         <!-- <tr v-if="afterRevision.companyIntroduction!=beforeRevision.companyIntroduction">
           <td class="th_title">企业/团体简介</td>
@@ -115,7 +115,7 @@
           <td>{{afterRevision.companyIntroduction}}</td>
         </tr> -->
 
-        <tr v-if="afterRevision.resume!=beforeRevision.resume">
+        <!-- <tr v-if="afterRevision.resume!=beforeRevision.resume">
           <td class="th_title">个人简介</td>
           <td>{{ beforeRevision.resume }}</td>
           <td>{{ afterRevision.resume }}</td>
@@ -124,17 +124,17 @@
           <td class="th_title">办公地址</td>
           <td>{{ beforeRevision.companyAddress }}</td>
           <td>{{ afterRevision.companyAddress }}</td>
-        </tr>
+        </tr> -->
         <tr v-if="afterRevision.joinedTs!=beforeRevision.joinedTs">
           <td class="th_title">入会时间</td>
           <td>{{ beforeRevision.joinedTs }}</td>
           <td>{{ afterRevision.joinedTs }}</td>
         </tr>
-        <tr v-if="afterRevision.companyPhone!=beforeRevision.companyPhone">
+        <!-- <tr v-if="afterRevision.companyPhone!=beforeRevision.companyPhone">
           <td class="th_title">联系方式</td>
           <td>{{ beforeRevision.companyPhone }}</td>
           <td>{{ afterRevision.companyPhone }}</td>
-        </tr>
+        </tr> -->
 
       </table>
       <span slot="footer" class="dialog-footer">
