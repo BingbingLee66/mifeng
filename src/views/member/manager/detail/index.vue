@@ -67,9 +67,9 @@
         <tr align="center" height="45">
           <td width="8%">籍贯</td>
           <td width="30%">{{ userInfo.nativePlace }}</td>
-          <td width="8%">个人简历</td>
-          <td align="left" height="150" colspan="10">{{ resumeCp(member.resume) }}
-            <el-button type="text" @click="resumeDetail(member.resume)">详情</el-button>
+          <td width="8%">个人简介</td>
+          <td align="left" height="150" colspan="10">{{ resumeCp(userInfo.resume) }}
+            <el-button type="text" @click="resumeDetail(userInfo.resume)">详情</el-button>
           </td>
         </tr>
 
