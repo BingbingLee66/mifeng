@@ -70,21 +70,35 @@
             <div style="margin-left: 15px; font-size: 18px; font-weight: 800;">入会信息</div>
           </td>
         </tr>
-        <tr align="center" height="45">
+        <tr v-if="member.type===0" align="center" height="45">
+          <td width="15%">姓名</td>
+          <td width="35%">{{ member.name }}</td>
+          <td width="15%">手机号</td>
+          <td width="35%">{{ member.phone }}</td>
+
+        </tr>
+        <tr v-else align="center" height="45">
           <td width="15%">企业名称</td>
           <td width="35%">{{ member.companyName }}</td>
           <td width="15%">联系人姓名</td>
           <td width="35%">{{ member.contactName }}</td>
 
         </tr>
-        <tr align="center" height="45">
+        <tr v-if="member.type===1" align="center" height="45">
           <td width="8%">联系人电话</td>
           <td width="30%">{{ member.contactPhone }}
           </td>
           <td width="8%">会内职位</td>
           <td width="30%">{{ member.postName }}</td>
         </tr>
-        <tr align="center" height="45">
+        <tr v-else align="center" height="45">
+          <td width="8%">会内职位</td>
+          <td width="30%">{{ member.postName }}</td>
+          <td width="8%">所在部门</td>
+          <td width="30%">{{ member.departmentName }}
+          </td>
+        </tr>
+        <tr v-if="member.type===1" align="center" height="45">
           <td width="8%">所在部门</td>
           <td width="30%">{{ member.departmentName }}</td>
         </tr>

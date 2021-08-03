@@ -44,23 +44,23 @@
         <tr align="center" height="45">
           <td width="24%" rowspan="6">
             <div class="head_portrait">
-              <img v-if="member.portrait" :src="member.portrait">
+              <img v-if="member.uavatar" :src="userInfo.uavatar">
               <img v-else src="@/assets/img/nologo.png">
             </div>
           </td>
           <td width="8%">用户名</td>
-          <td width="30%">{{ member.uname }}</td>
+          <td width="30%">{{ userInfo.uname }}</td>
           <td width="8%">手机号</td>
-          <td width="30%">{{ member.phone }}</td>
+          <td width="30%">{{ userInfo.phone }}</td>
         </tr>
         <tr align="center" height="45">
           <td width="8%">性别</td>
           <td width="30%">
-            <div v-if="member.gender == 1">男</div>
-            <div v-if="member.gender == 2">女</div>
+            <div v-if="userInfo.ugender == 1">男</div>
+            <div v-if="userInfo.ugender == 2">女</div>
           </td>
           <td width="8%">生日</td>
-          <td width="30%">{{ member.birthday }}</td>
+          <td width="30%">{{ userInfo.birthday }}</td>
           <!-- <td width="8%">会内职位</td>
           <td width="30%">{{ member.postName }}</td> -->
         </tr>

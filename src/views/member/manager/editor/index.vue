@@ -22,9 +22,9 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row>
-              <el-col :span="7">
-                <!-- <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
+            <!-- <el-row>
+              <el-col :span="7"> -->
+            <!-- <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
                   <el-upload
                     class="avatar_uploader"
                     action="/"
@@ -43,8 +43,8 @@
                       <div v-if="!formObj.companyLogo" class="uploader_tips">上传LOGO</div>
                   </el-upload>
                 </el-form-item> -->
-              </el-col>
-            </el-row>
+            <!-- </el-col>
+            </el-row> -->
             <el-row>
               <el-col :span="7">
                 <el-form-item label="联系人姓名：" prop="contactName">
@@ -52,7 +52,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row>
+            <el-row style="margin-bottom:15px">
               <el-col :span="7">
                 <el-form-item label="联系人电话：" prop="contactPhone">
                   <el-input v-model="formObj.contactPhone" />
@@ -63,12 +63,12 @@
           <div v-else>
             <el-row>
               <el-col :span="7">
-                <el-form-item label="会员姓名：" prop="name" class="form_content">
+                <el-form-item label="会员姓名：" prop="name">
                   <el-input v-model.trim="formObj.name" max-length="100" />
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row>
+            <el-row style="margin-bottom:15px">
               <el-col :span="7">
                 <el-form-item label="会员手机号：" prop="phone">
                   <el-input v-model="formObj.phone" />

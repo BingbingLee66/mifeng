@@ -23,12 +23,13 @@ export default {
       audit: {
         id: [],
         remark: '资料乱填',
-      }
+      },
+      userInfo: {}
     }
   },
   computed: {
     resumeCp() {
-      return function (msg) {
+      return function(msg) {
         let result = msg
         if (!!msg && msg.length > 100) {
           result = msg.substring(0, 100) + '...'
@@ -37,7 +38,7 @@ export default {
       }
     },
     companyInstrodCp() {
-      return function (msg) {
+      return function(msg) {
         let result = msg
         if (!!msg && msg.length > 100) {
           result = msg.substring(0, 100) + '...'
@@ -50,7 +51,7 @@ export default {
     console.log('缓存')
   },
   deactivated() {
-    console.log("出去缓存")
+    console.log('出去缓存')
   },
   mounted() {
     if (this.$route.params.memberDetail) {
@@ -97,6 +98,7 @@ export default {
       if (this.type === '0') {
         getMemberDetail(params).then(response => {
           this.member = response.data.dtl[0]
+          this.userInfo = response.data.userInfo
         })
       } else {
         params['type'] = this.type
@@ -123,7 +125,7 @@ export default {
       this.companyIntroductionVisible = true
     },
     goEdit() {
-      this.$router.push({ name: '编辑会员', params: { 'memberId': this.memberDetail.id, 'querytype': this.type } })
+      this.$router.push({ name: '编辑会员', params: { 'memberId': this.memberDetail.id, 'querytype': this.type }})
     },
     approved(row) {
       let arr = []
