@@ -43,7 +43,7 @@
             <div v-if="userInfo.ugender == 2">女</div>
           </td>
           <td width="8%">生日</td>
-          <td width="30%">{{ userInfo.birthday }}</td>
+          <td width="30%">{{ userInfo.birthday | dateFormat }}</td>
         </tr>
         <tr align="center" height="45">
           <td width="8%">籍贯</td>
