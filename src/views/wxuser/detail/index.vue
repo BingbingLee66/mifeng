@@ -99,7 +99,7 @@
             {{ member.departmentName }}
           </td>
         </tr>
-        <tr v-if="member.type===1" align="center" height="45" style="tline-height: 45px">
+        <tr v-if="member.type===1" align="center" height="45" style="line-height: 45px">
           <td width="8%">所在部门</td>
           {{ member.departmentName }}
         </tr>
@@ -165,7 +165,7 @@
           <!-- <td width="5%">企业职位</td>
           <td width="25%">{{ member.companyPosition }}</td> -->
         </tr>
-        <tr align="center" height="45" width="100%" style="tline-height: 45px">
+        <tr align="center" height="45" width="100%" style="line-height: 45px">
           <td width="5%">企业职位</td>
           <!-- <td width="25%"> -->
           {{ member.companyPosition }}
