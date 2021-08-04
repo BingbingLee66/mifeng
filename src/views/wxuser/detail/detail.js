@@ -45,11 +45,11 @@ export default {
     if (this.$route.params.userDetail) {
       this.userDetail = this.$route.params.userDetail
       window.localStorage.setItem('detail-user', this.userDetail)
+      this.init()
     }
     if (!this.userDetail) {
       this.userDetail = window.localStorage.getItem('detail-user')
     }
-    this.init()
   },
   created() {
   },
