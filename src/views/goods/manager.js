@@ -49,6 +49,7 @@ export default {
           let imgUrl = res.data.qrCode
           let alink = document.createElement('a')
           alink.href = imgUrl
+          alink.target = '_blank'
           alink.click()
         } else {
           console.log(res)
