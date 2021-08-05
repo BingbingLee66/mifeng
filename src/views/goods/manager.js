@@ -1,14 +1,15 @@
-import { 
-  getList, 
-  getTopList, 
-  updateGoodsStatus, 
-  batchUpdateGoodsStatus, 
-  del, 
-  batchDel, 
-  countTop, 
+import {
+  getGoodsQrcode,
+  getList,
+  getTopList,
+  updateGoodsStatus,
+  batchUpdateGoodsStatus,
+  del,
+  batchDel,
+  countTop,
   cancelSetTop,
   updateSetTop,
-  setTop 
+  setTop
 } from '@/api/goods/goods'
 // import { mapGetters } from 'vuex'
 
@@ -40,6 +41,21 @@ export default {
     this.init()
   },
   methods: {
+    // 生成商品小程序二维码
+    createCode(e, row) {
+      console.log(row.id)
+      getGoodsQrcode({ id: row.id }).then(res => {
+        if (res.state === 1) {
+          let imgUrl = res.data.qrCode
+          let alink = document.createElement('a')
+          alink.href = imgUrl
+          alink.click()
+        } else {
+          console.log(res)
+        }
+      })
+    },
+
     has (tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
