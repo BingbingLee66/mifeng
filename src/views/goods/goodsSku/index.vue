@@ -8,7 +8,7 @@
         <el-row>
           <el-col :span="18">
             <el-form-item label="商品名称：" prop="name">
-              <el-input maxlength="40" show-word-limit v-model.trim="formObj.name" maxLength="60" placeholder="请填写商品名称"></el-input>
+              <el-input maxlength="40" show-word-limit="true" v-model.trim="formObj.name" placeholder="请填写商品名称"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="18">
