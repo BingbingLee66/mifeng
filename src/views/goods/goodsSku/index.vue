@@ -8,7 +8,7 @@
         <el-row>
           <el-col :span="18">
             <el-form-item label="商品名称：" prop="name">
-              <el-input v-model.trim="formObj.name" maxLength="60" placeholder="请填写商品名称"></el-input>
+              <el-input maxlength="40" show-word-limit v-model.trim="formObj.name" maxLength="60" placeholder="请填写商品名称"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="18">
@@ -44,8 +44,8 @@
                   </el-upload>
                   <div class="goods-pre" v-if="gal">
                     <i class="el-icon-error" @click="clearGalleryImg(index)"></i>
-                    <img :src="gal" class="goods-avatar" 
-                      v-if="gal.indexOf('.jpeg') != -1 
+                    <img :src="gal" class="goods-avatar"
+                      v-if="gal.indexOf('.jpeg') != -1
                       || gal.indexOf('.jpg') != -1
                       || gal.indexOf('.png') != -1" />
                     <img :src="videoPreview" class="goods-avatar" v-else />
@@ -438,8 +438,8 @@
       title="预览"
       :visible.sync="previewImgVisible"
       width="50%">
-      <img :src="previewUrl" style="width: 100%; padding:20px;" 
-        v-if="previewUrl.indexOf('.jpeg') != -1 
+      <img :src="previewUrl" style="width: 100%; padding:20px;"
+        v-if="previewUrl.indexOf('.jpeg') != -1
           || previewUrl.indexOf('.jpg') != -1
           || previewUrl.indexOf('.png') != -1"/>
       <video :src="previewUrl" v-else style="width: 100%; padding:20px;" controls>
