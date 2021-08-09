@@ -2,6 +2,7 @@ import {
   getBookingList,
   getChamberAllList
 } from '@/api/goods/goods'
+import moment from 'moment'
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -22,6 +23,11 @@ export default {
       bookingList: [],
       listLoading: false,
       chamberOptions: []
+    }
+  },
+  filters: {
+    formatDate(val) {
+      return moment(val).format('yyyy-MM-DD HH:mm')
     }
   },
   created() {
@@ -71,7 +77,7 @@ export default {
         'status': this.query.status,
       }
       getBookingList(params).then(res => {
-        console.log('商品预约列表：', res);
+        console.log('商品预约列表：', res)
         if (res.state === 1) {
           this.bookingList = res.data.list
           this.total = res.data.totalRows

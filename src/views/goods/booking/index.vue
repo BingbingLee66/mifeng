@@ -52,12 +52,12 @@
       </el-table-column>
       <el-table-column label="所属商会" width="180px">
         <template slot-scope="scope">
-          {{scope.row.chamberName}}
+          {{scope.row.chamberName ? scope.row.chamberName : '-'}}
         </template>
       </el-table-column>
       <el-table-column label="预约时间" width="180px">
         <template slot-scope="scope">
-          {{scope.row.createTime | dateFormat}}
+          {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>
       <el-table-column label="预约状态" width="180px">

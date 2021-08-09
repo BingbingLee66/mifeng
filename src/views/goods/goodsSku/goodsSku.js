@@ -211,23 +211,12 @@ export default {
     // window.removeEventListener('beforeunload', e => this.refreshView(e))
   },
   methods: {
-    handleSwitchChange(e) {
-      if (e == 1 && this.formObj.isBooking == 1) {
-        this.formObj.isBooking = '1'
-        this.startDate = this.formObj.limitTimeStart
-      } else if (e == 0) {
-        this.formObj.isBooking = '0'
-        this.formObj.bookingTimeStart = ''
-      }
-    },
     handleSelectTime(e) {
       if (e) {
-        this.formObj.isBooking = 1
         this.showBooking = true
         let startDate = moment(e[0]).format('yyyy-MM-DD HH:mm:ss')
         this.startDate = startDate
       } else {
-        this.formObj.isBooking = '0'
         this.formObj.isBooking = false
         this.formObj.bookingTimeStart = ''
         this.startDate = ''
@@ -948,7 +937,7 @@ export default {
     },
     save() {
       this.$refs['form'].validate((valid) => {
-        if (this.formObj.gallery.length === 1) {
+        if (this.formObj.gallery.length === 0) {
           this.galleryValid = false
           valid = false
           this.$message({
@@ -964,7 +953,7 @@ export default {
             message: '至少上传一张商品列表图'
           })
         }
-        if (this.formObj.detail.length === 1) {
+        if (this.formObj.detail.length === 0) {
           this.detailValid = false
           valid = false
           this.$message({

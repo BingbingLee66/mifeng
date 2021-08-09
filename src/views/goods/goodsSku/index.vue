@@ -411,10 +411,18 @@
           <!-- v-if="showBooking" -->
           <el-col :span="10" v-if="showBooking">
             <div style="height: 40px;line-height: 40px;font-size: 14px;color: #606266;">
-              <el-switch v-model="formObj.isBooking" active-value="1" inactive-value="0" @change="handleSwitchChange"></el-switch> <span style="margin-left: 5px;">开启预约</span>
+              <el-switch v-model="formObj.isBooking" active-value="1" inactive-value="0"></el-switch> <span style="margin-left: 5px;">开启预约</span>
             </div>
           </el-col>
         </el-row>
+<!--        <el-row>-->
+<!--          <el-col :span="9">-->
+<!--            <el-form-item label="">-->
+<!--              <div>距离开售，还有0天0小时0分</div>-->
+<!--              <div>设置完限时购买的开始时间和结束时间后，可以设置商品是否开启预约期</div>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
         <!-- && showBooking -->
         <el-row v-if="formObj.isBooking==1 && showBooking">
           <el-col :span="10">
