@@ -1,15 +1,6 @@
 import {
   getBookingList,
-  getList,
-  getTopList,
-  updateGoodsStatus,
-  batchUpdateGoodsStatus,
-  del,
-  batchDel,
-  countTop,
-  cancelSetTop,
-  updateSetTop,
-  setTop
+  getChamberAllList
 } from '@/api/goods/goods'
 // import { mapGetters } from 'vuex'
 
@@ -22,7 +13,7 @@ export default {
         uname: '',
         phone: '',
         status: -1,
-        chamberName: ''
+        chamberId: -1
       },
       currentpage: 1,
       page: 1,
@@ -30,9 +21,11 @@ export default {
       total: 0,
       bookingList: [],
       listLoading: false,
+      chamberOptions: []
     }
   },
   created() {
+    this.getAllChamberList()
     if (this.$route.query.goodsId) {
       this.query.goodsId = this.$route.query.goodsId
       this.goodsName = this.$route.query.goodsName
@@ -52,6 +45,20 @@ export default {
       this.currentpage = val
       this.getBookingList()
     },
+    getAllChamberList() {
+      getChamberAllList().then(res => {
+        console.log('所有商会列表', res)
+        if (res.state === 1) {
+          this.chamberOptions = res.data.data
+          this.chamberOptions.unshift({ 'name': '全部', 'id': -1 })
+          this.aLLChamberlist
+          this.listLoading = false
+        } else {
+          console.log(res)
+          this.listLoading = false
+        }
+      })
+    },
     getBookingList(e) {
       this.listLoading = true
       let params = {
@@ -60,7 +67,7 @@ export default {
         'goodsId': this.query.goodsId,
         'uname': this.query.uname,
         'phone': this.query.phone,
-        'chamberName': this.query.chamberName,
+        'chamberId': this.query.chamberId,
         'status': this.query.status,
       }
       getBookingList(params).then(res => {

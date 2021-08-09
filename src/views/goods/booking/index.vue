@@ -16,7 +16,9 @@
           </el-col>
           <el-col :span="4" style="margin-left: 20px;">
             <el-form-item label-width="90px" label="所属商会：">
-              <el-input v-model="query.chamberName" placeholder="请输入所属商会" />
+              <el-select v-model="query.chamberId" placeholder="请选择职业类型">
+                <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left: 20px;">

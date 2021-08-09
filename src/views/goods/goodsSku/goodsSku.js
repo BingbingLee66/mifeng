@@ -213,10 +213,10 @@ export default {
   methods: {
     handleSwitchChange(e) {
       if (e == 1 && this.formObj.isBooking == 1) {
-        this.formObj.isBooking = 1
+        this.formObj.isBooking = '1'
         this.startDate = this.formObj.limitTimeStart
       } else if (e == 0) {
-        this.formObj.isBooking = 0
+        this.formObj.isBooking = '0'
         this.formObj.bookingTimeStart = ''
       }
     },

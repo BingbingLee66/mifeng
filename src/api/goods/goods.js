@@ -1,5 +1,14 @@
 import request from '@/utils/request'
 const baseUrl = process.env.VUE_APP_BASE_API_2
+const baseUrl1 = process.env.VUE_APP_BASE_API
+
+export function getChamberAllList(params) {
+  return request({
+    url: baseUrl1 + '/ec/chamber/all-list',
+    method: 'get',
+    params
+  })
+}
 
 export function getBookingList(params) {
   return request({
