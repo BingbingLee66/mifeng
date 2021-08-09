@@ -62,7 +62,7 @@
         <el-table-column type="selection" width="55px" key="activeName8">
         </el-table-column>
         <!-- <el-table-column type="index" label="序号" width="60px">
-        </el-table-column> --> 
+        </el-table-column> -->
         <el-table-column label="商品ID" width="80px">
           <template slot-scope="scope">
             {{scope.row.id}}
@@ -103,6 +103,11 @@
             {{scope.row.salesVolume}}
           </template>
         </el-table-column>
+        <el-table-column label="预约人数" width="100px">
+          <template slot-scope="scope">
+            {{scope.row.bookingNums}}
+          </template>
+        </el-table-column>
         <el-table-column label="供货商家" width="100px">
           <template slot-scope="scope">
             {{scope.row.supplierName}}
@@ -133,6 +138,7 @@
             <el-button type="text" style="margin-left:0px;" @click="updateStatus($event, scope.row.id, 1)" :actionid="getId('商品列表', '上架')" v-if="has('商品列表', '上架') && (scope.row.isOnSale == 2 || scope.row.isOnSale == 4)">上架</el-button>
             <el-button type="text" style="margin-left:0px;" @click="updateStatus($event, scope.row.id, 2)" :actionid="getId('商品列表', '下架')" v-if="has('商品列表', '下架') && (scope.row.isOnSale == 1 || scope.row.isOnSale == 3)">下架</el-button>
             <el-button type="text" style="margin-left:0px;" @click="del($event, scope.row)" :actionid="getId('商品列表', '删除')" v-if="has('商品列表', '删除')">删除</el-button>
+            <el-button type="text" style="margin-left:0px;" @click="goBookingList($event, scope.row)">查看预约列表</el-button>
           </template>
         </el-table-column>
       </el-table>

@@ -1,6 +1,14 @@
 import request from '@/utils/request'
 const baseUrl = process.env.VUE_APP_BASE_API_2
 
+export function getBookingList(params) {
+  return request({
+    url: baseUrl + '/ec/mall/goods-booking-list',
+    method: 'get',
+    params
+  })
+}
+
 export function getList(params) {
   return request({
     url: baseUrl + '/ec/mall/chamber-goods-list',
@@ -65,7 +73,7 @@ export function batchDel(params) {
   })
 }
 
-export function countTop () {
+export function countTop() {
   return request({
     url: baseUrl + '/ec/mall/top-count',
     method: 'get'

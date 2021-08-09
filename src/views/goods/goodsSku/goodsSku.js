@@ -6,6 +6,7 @@ import {
 import { getSupplierOptions } from '@/api/goods/supplier.js'
 import { getSetting } from '@/api/system/setting'
 import videoPreview from '@/assets/img/video-pre.jpg'
+import moment from 'moment'
 // import draggable from 'draggable' // 拖拽组件
 
 export default {
@@ -49,6 +50,15 @@ export default {
       }
     }
     return {
+      showBooking: false,
+      startDate: '',
+      pickerOptions: {
+        disabledDate: this.disabledGetTime,
+        // disableData: (time) => {
+        //   return time.getTime() > (this.formObj.limitTime[0]).getTime() // 选当前时间之前的时间
+        // },
+        selectableRange: '00:00:00 - 23:59:59'
+      },
       flag: true,
       videoPreview: videoPreview,
       previewImgVisible: false,
@@ -62,6 +72,8 @@ export default {
       descriptValid: true,
       detailValid: true,
       formObj: {
+        'bookingTimeStart': '',
+        'isBooking': 0,
         'gallery': [''],
         'descript': '',
         'detail': [''],
@@ -199,6 +211,42 @@ export default {
     // window.removeEventListener('beforeunload', e => this.refreshView(e))
   },
   methods: {
+    handleSwitchChange(e) {
+      if (e == 1 && this.formObj.isBooking == 1) {
+        this.formObj.isBooking = 1
+        this.startDate = this.formObj.limitTimeStart
+      } else if (e == 0) {
+        this.formObj.isBooking = 0
+        this.formObj.bookingTimeStart = ''
+      }
+    },
+    handleSelectTime(e) {
+      if (e) {
+        this.formObj.isBooking = 1
+        this.showBooking = true
+        let startDate = moment(e[0]).format('yyyy-MM-DD HH:mm:ss')
+        this.startDate = startDate
+      } else {
+        this.formObj.isBooking = '0'
+        this.formObj.isBooking = false
+        this.formObj.bookingTimeStart = ''
+        this.startDate = ''
+        this.showBooking = false
+      }
+    },
+    disabledGetTime(time) {
+      console.log('.......', this.formObj.limitTime[0])
+      if (this.formObj.limitTime.length > 0) {
+        if (this.type === 'edit') {
+          return time.getTime() > this.formObj.limitTime[0]
+        } else {
+          return time.getTime() > (this.formObj.limitTime[0]).getTime() // 选当前时间之前的时间
+        }
+      }
+      // disableData: (time) => {
+      //   return time.getTime() > (this.formObj.limitTime[0]).getTime() // 选当前时间之前的时间
+      // },
+    },
     closeTab() {
       // 退出当前tab, 打开指定tab
       let openPath = window.localStorage.getItem('goodsSku')
@@ -251,6 +299,17 @@ export default {
       getGoodsDetail(params).then(response => {
         const obj = response.data.goodsDetail
         this.formObj = obj
+        // 预约时间
+        if (obj.isBooking) {
+          this.showBooking = true
+          this.startDate = obj.limitTimeStart
+        } else {
+          this.formObj.bookingTimeStart = ''
+          this.startDate = ''
+        }
+        this.formObj['isBooking'] = obj.isBooking + ''
+        this.$set(this.formObj, 'bookingTimeStart', obj.bookingTimeStart)
+        // 预约时间
         this.formObj['gallery'] = obj.gallery.split(',')
         if (this.formObj.gallery.length !== this.galleryLimit) {
           this.formObj['gallery'].push('')
@@ -292,6 +351,7 @@ export default {
           // this.formObj['limitTime'] = limitTime
         }
         this.$set(this.formObj, 'limitTime', limitTime)
+        console.log('================', this.formObj.limitTime[0])
         if (this.formObj.salesVolume === 0) {
           this.formObj.salesVolume = ''
         }
@@ -971,7 +1031,14 @@ export default {
               o.supplyPrice = 0
             }
           })
+          if (this.formObj.isBooking == 1) {
+            if (!this.formObj.bookingTimeStart) {
+              return this.$message.error('请选择预约期')
+            }
+          }
           let obj = {
+            'bookingTimeStart': this.formObj.bookingTimeStart,
+            'isBooking': this.formObj.isBooking,
             'id': this.formObj.id,
             'gallery': gallery,
             'descript': this.formObj.descript,
@@ -989,6 +1056,7 @@ export default {
             obj['limitTimeStart'] = this.formObj.limitTime[0]
             obj['limitTimeEnd'] = this.formObj.limitTime[1]
           }
+          console.log('添加商品提交的参数：', obj)
           if (this.type === 'add') {
             add(obj).then(response => {
               this.$message({
@@ -1050,5 +1118,31 @@ export default {
       //   console.log(err)
       // })
     }
-  }
+  },
+  /* watch: {
+    'formObj.limitTime': {
+      handler(newValue, oldValue) {
+        if (newValue) {
+          let date = new Date()
+          let min = date.getMinutes()
+          date.setMinutes(min + 1) // 这里加1分钟，是为了解决值改变后，系统秒数就过期限制了，无法点击“此刻”按钮， 如果监听 “系统时间”的改变，则会影响性能。
+          let nowDate = moment(date).format('HH:mm:ss')
+          let st = ''
+          if (moment(date).format('yyyy-MM-DD') === moment(newValue).format('yyyy-MM-DD')) {
+            let hh1 = moment(newValue).format('HH:mm:ss')
+            if (hh1 > nowDate) {
+              this.formObj.bookingTimeStart = new Date()
+            }
+            st = nowDate
+          } else {
+            st = '23:59:59'
+          }
+          this.pickerOptions.selectableRange = '00:00:00 - ' + st
+          this.pickerOptions = this.pickerOptions
+        }
+      },
+      deep: true,
+      immediate: true,
+    }
+  }*/
 }

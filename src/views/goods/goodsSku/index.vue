@@ -8,7 +8,7 @@
         <el-row>
           <el-col :span="18">
             <el-form-item label="商品名称：" prop="name">
-              <el-input v-model.trim="formObj.name" maxLength="60" placeholder="请填写商品名称"></el-input>
+              <el-input maxlength="40" :show-word-limit=true v-model.trim="formObj.name" placeholder="请填写商品名称"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="18">
@@ -30,8 +30,8 @@
         </el-row>
         <el-row>
           <el-form-item label="">
-            <draggable v-model="formObj.gallery" ghost-class="ghost" group="gallery" animation="500" @start="galleryStart" @end="galleryEnd">
-              <transition-group>
+              <!-- <draggable v-model="formObj.gallery" ghost-class="ghost" group="gallery" animation="500" @start="galleryStart" @end="galleryEnd"> -->
+              <!-- <transition-group> -->
                 <div v-for="(gal, index) in formObj.gallery" :key="index" style="float:left;">
                   <el-upload
                     class="goods-avatar-uploader"
@@ -44,16 +44,16 @@
                   </el-upload>
                   <div class="goods-pre" v-if="gal">
                     <i class="el-icon-error" @click="clearGalleryImg(index)"></i>
-                    <img :src="gal" class="goods-avatar" 
-                      v-if="gal.indexOf('.jpeg') != -1 
+                    <img :src="gal" class="goods-avatar"
+                      v-if="gal.indexOf('.jpeg') != -1
                       || gal.indexOf('.jpg') != -1
                       || gal.indexOf('.png') != -1" />
                     <img :src="videoPreview" class="goods-avatar" v-else />
                     <div class="goods-pre-btn" @click="openPreviewModal(gal)">预览</div>
                   </div>
                 </div>
-              </transition-group>
-            </draggable>
+                <!-- </transition-group> -->
+                <!-- </draggable> -->
           </el-form-item>
           <div style="margin-left: 150px;">已上传<span style="color: #F56C6C;">（{{effectiveLength(formObj.gallery)}}/{{galleryLimit}}）</span></div>
           <div style="margin: 5px 0 0 150px;" v-show="!galleryValid"><span style="color: #F56C6C; font-size: 13px;">至少上传1张图片</span></div>
@@ -98,8 +98,8 @@
         </el-row>
         <el-row>
           <el-form-item label="">
-            <draggable :list="formObj.detail" forceFallback="true" group="detail" animation="1000" @start="detailStart" @end="detailEnd">
-              <transition-group>
+                <!-- <draggable :list="formObj.detail" forceFallback="true" group="detail" animation="1000" @start="detailStart" @end="detailEnd"> -->
+                <!-- <transition-group> -->
                 <div v-for="(dtl, index) in formObj.detail" :key="index" style="float:left;">
                   <el-upload
                     class="goods-avatar-uploader"
@@ -116,8 +116,8 @@
                     <div class="goods-pre-btn" @click="openPreviewModal(dtl)">预览</div>
                   </div>
                 </div>
-              </transition-group>
-            </draggable>
+                <!-- </transition-group> -->
+            <!-- </draggable> -->
           </el-form-item>
           <div style="margin-left: 150px;">已上传<span style="color: #F56C6C;">（{{effectiveLength(formObj.detail)}}/{{detailLimit}}）</span></div>
           <div style="margin: 5px 0 0 150px;" v-show="!detailValid"><span style="color: #F56C6C; font-size: 13px;">至少上传1张图片</span></div>
@@ -402,15 +402,27 @@
         <hr size="1"/>
         <el-row><div class="goods-bar-info"><span>3</span>购买设置</div></el-row>
         <el-row>
-          <el-col :span="10">
+          <el-col :span="9">
             <el-form-item label="限时购买：">
-              <el-date-picker
-                v-model="formObj.limitTime"
-                type="datetimerange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                align="right">
+              <el-date-picker @change="handleSelectTime" v-model="formObj.limitTime" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" align="right">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <!-- v-if="showBooking" -->
+          <el-col :span="10" v-if="showBooking">
+            <div style="height: 40px;line-height: 40px;font-size: 14px;color: #606266;">
+              <el-switch v-model="formObj.isBooking" active-value="1" inactive-value="0" @change="handleSwitchChange"></el-switch> <span style="margin-left: 5px;">开启预约</span>
+            </div>
+          </el-col>
+        </el-row>
+        <!-- && showBooking -->
+        <el-row v-if="formObj.isBooking==1 && showBooking">
+          <el-col :span="10">
+            <el-form-item label="预约期：">
+              <el-date-picker v-model="formObj.bookingTimeStart" type="datetime" :picker-options="pickerOptions" placeholder="选择日期时间">
+              </el-date-picker>
+              -
+              <el-date-picker :disabled="true" v-model="startDate" type="datetime" placeholder="选择日期时间">
               </el-date-picker>
             </el-form-item>
           </el-col>
@@ -438,8 +450,8 @@
       title="预览"
       :visible.sync="previewImgVisible"
       width="50%">
-      <img :src="previewUrl" style="width: 100%; padding:20px;" 
-        v-if="previewUrl.indexOf('.jpeg') != -1 
+      <img :src="previewUrl" style="width: 100%; padding:20px;"
+        v-if="previewUrl.indexOf('.jpeg') != -1
           || previewUrl.indexOf('.jpg') != -1
           || previewUrl.indexOf('.png') != -1"/>
       <video :src="previewUrl" v-else style="width: 100%; padding:20px;" controls>

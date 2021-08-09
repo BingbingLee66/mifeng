@@ -1,14 +1,14 @@
-import { 
-  getList, 
-  getTopList, 
-  updateGoodsStatus, 
-  batchUpdateGoodsStatus, 
-  del, 
-  batchDel, 
-  countTop, 
+import {
+  getList,
+  getTopList,
+  updateGoodsStatus,
+  batchUpdateGoodsStatus,
+  del,
+  batchDel,
+  countTop,
   cancelSetTop,
   updateSetTop,
-  setTop 
+  setTop
 } from '@/api/goods/goods'
 // import { mapGetters } from 'vuex'
 
@@ -315,6 +315,15 @@ export default {
           type: 'info',
           message: '取消输入'
         })
+      })
+    },
+    goBookingList(e, row) {
+      this.$router.push({
+        name: '商品预约列表',
+        query: {
+          goodsId: row.id,
+          goodsName: row.name
+        }
       })
     }
   }

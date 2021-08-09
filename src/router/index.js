@@ -194,6 +194,13 @@ export const constantRoutes = [
         meta: { title: '发布新商品/编辑商品' }
       },
       {
+        path: 'goods/booking',
+        name: '商品预约列表',
+        component: () => import('@/views/goods/booking/index'),
+        hidden: true,
+        meta: { title: '商品预约列表' }
+      },
+      {
         path: '/finance/chamberCapital/detail',
         name: '交易详情',
         component: () => import('@/views/finance/chamberCapital/detail/index'),
