@@ -10,12 +10,12 @@
           <el-row>
             <el-col :span="4" style="margin-left: 10px;">
               <el-form-item label-width="90px" label="商品ID：">
-                <el-input v-model="query.id" type="number" placeholder="请输入商品ID"/>
+                <el-input v-model="query.id" type="number" placeholder="请输入商品ID" />
               </el-form-item>
             </el-col>
             <el-col :span="4" style="margin-left: 10px;">
               <el-form-item label-width="90px" label="商品名称：">
-                <el-input v-model="query.name" placeholder="请输入商品名称"/>
+                <el-input v-model="query.name" placeholder="请输入商品名称" />
               </el-form-item>
             </el-col>
             <el-col :span="4" style="margin-left: 10px;">
@@ -31,14 +31,7 @@
             </el-col>
             <el-col :span="11" style="margin-left: 10px;">
               <el-form-item label-width="90px" label="添加时间：" style="float: left;">
-                <el-date-picker
-                  format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd"
-                  v-model="query.date"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期">
+                <el-date-picker format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="query.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
                 </el-date-picker>
               </el-form-item>
               <el-form-item label=" " style="float: left;margin-left: 10px;">
@@ -139,19 +132,11 @@
             <el-button type="text" style="margin-left:0px;" @click="updateStatus($event, scope.row.id, 2)" :actionid="getId('商品列表', '下架')" v-if="has('商品列表', '下架') && (scope.row.isOnSale == 1 || scope.row.isOnSale == 3)">下架</el-button>
             <el-button type="text" style="margin-left:0px;" @click="del($event, scope.row)" :actionid="getId('商品列表', '删除')" v-if="has('商品列表', '删除')">删除</el-button>
             <el-button type="text" style="margin-left:0px;" @click="goBookingList($event, scope.row)">查看预约列表</el-button>
+            <el-button type="text" style="margin-left:0px;" @click="createCode($event, scope.row)">生成二维码</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination
-        background
-        layout="total, sizes, prev, pager, next, jumper"
-        :page-sizes="pageSizes"
-        :page-size="limit"
-        :total="total"
-        :current-page.sync="currentpage"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :style="{'padding-top': '15px'}">
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange" :style="{'padding-top': '15px'}">
       </el-pagination>
     </div>
 
@@ -214,7 +199,7 @@
             {{scope.row.topLevel}}
           </template>
         </el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="cancelSetTop($event, scope.row)" :actionid="getId('置顶商品管理', '取消置顶')" v-if="has('置顶商品管理', '取消置顶')">取消置顶</el-button>
             <el-button type="text" @click="editSetTop($event, scope.row)" :actionid="getId('置顶商品管理', '编辑')" v-if="has('置顶商品管理', '编辑')">编辑</el-button>
@@ -222,11 +207,8 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog
-      title=""
-      :visible.sync="previewImgVisible"
-      width="50%">
-      <img :src="previewUrl" style="width: 100%; padding:20px;"/>
+    <el-dialog title="" :visible.sync="previewImgVisible" width="50%">
+      <img :src="previewUrl" style="width: 100%; padding:20px;" />
     </el-dialog>
 
   </div>
@@ -236,7 +218,7 @@
 <script src="./manager.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import 'src/styles/common.scss';
 </style>
 <style>
 .m-goods-preview {

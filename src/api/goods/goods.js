@@ -18,6 +18,14 @@ export function getBookingList(params) {
   })
 }
 
+export function getGoodsQrcode(params) {
+  return request({
+    url: baseUrl + '/ec/mall/get-goods-qrcode',
+    method: 'get',
+    params
+  })
+}
+
 export function getList(params) {
   return request({
     url: baseUrl + '/ec/mall/chamber-goods-list',

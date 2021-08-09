@@ -1,4 +1,5 @@
 import {
+  getGoodsQrcode,
   getList,
   getTopList,
   updateGoodsStatus,
@@ -40,10 +41,26 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    // 生成商品小程序二维码
+    createCode(e, row) {
+      console.log(row.id)
+      getGoodsQrcode({ id: row.id }).then(res => {
+        if (res.state === 1) {
+          let imgUrl = res.data.qrCode
+          let alink = document.createElement('a')
+          alink.href = imgUrl
+          alink.target = '_blank'
+          alink.click()
+        } else {
+          console.log(res)
+        }
+      })
+    },
+
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -95,18 +112,18 @@ export default {
         })
       }
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
         this.selectionDatas.push(data.id)
       }
     },
-    handleClick () {
+    handleClick() {
       this.total = 0
       this.list = []
       this.currentpage = 1
-      this.limit =10
+      this.limit = 10
       this.fetchData()
     },
     updateStatus(e, id, status) {
@@ -225,21 +242,21 @@ export default {
         })
       })
     },
-    addGoods (e) {
+    addGoods(e) {
       const actionId = e.currentTarget.getAttribute('actionid')
       window.localStorage.setItem('goodsSku', this.$route.path)
       this.$router.push({ name: '发布新商品/编辑商品' })
     },
-    edit (e, row) {
+    edit(e, row) {
       const actionId = e.currentTarget.getAttribute('actionid')
       window.localStorage.setItem('goodsSku', this.$route.path)
       this.$router.push({ name: '发布新商品/编辑商品', params: { 'goodsId': row.id } })
     },
-    openPreviewModal (url) {
+    openPreviewModal(url) {
       this.previewImgVisible = true
       this.previewUrl = url
     },
-    setTop (e, row) {
+    setTop(e, row) {
       const actionId = e.currentTarget.getAttribute('actionid')
       countTop().then(response => {
         const count = response.data.count
@@ -277,7 +294,7 @@ export default {
         }
       })
     },
-    cancelSetTop (e, row) {
+    cancelSetTop(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'goodId': row.id
@@ -290,7 +307,7 @@ export default {
         this.fetchData()
       })
     },
-    editSetTop (e, row) {
+    editSetTop(e, row) {
       const actionId = e.currentTarget.getAttribute('actionid')
       this.$prompt('设置置顶排序', '置顶商品', {
         confirmButtonText: '确定',

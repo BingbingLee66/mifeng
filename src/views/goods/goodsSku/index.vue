@@ -19,7 +19,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <hr size="1"/>
+        <hr size="1" />
         <el-row>
           <el-col :span="22">
             <div class="dy-form-label">
@@ -33,22 +33,15 @@
             <!-- <draggable v-model="formObj.gallery" ghost-class="ghost" group="gallery" animation="500" @start="galleryStart" @end="galleryEnd"> -->
             <!-- <transition-group> -->
             <div v-for="(gal, index) in formObj.gallery" :key="index" style="float:left;">
-              <el-upload
-                class="goods-avatar-uploader"
-                action="/"
-                :show-file-list="false"
-                :before-upload="beforeAvatarUploadGallery"
-                :http-request="function (content) { return uploadGallery(content, index) }"
-                v-if="!gal">
+              <el-upload class="goods-avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUploadGallery" :http-request="function (content) { return uploadGallery(content, index) }" v-if="!gal">
                 <i class="el-icon-plus goods-avatar-uploader-icon"></i>
               </el-upload>
               <div class="goods-pre" v-if="gal">
                 <i class="el-icon-error" @click="clearGalleryImg(index)"></i>
-                <img :src="gal" class="goods-avatar"
-                     v-if="gal.indexOf('.jpeg') != -1
+                <img :src="gal" class="goods-avatar" v-if="gal.indexOf('.jpeg') != -1
                       || gal.indexOf('.jpg') != -1
-                      || gal.indexOf('.png') != -1"/>
-                <img :src="videoPreview" class="goods-avatar" v-else/>
+                      || gal.indexOf('.png') != -1" />
+                <img :src="videoPreview" class="goods-avatar" v-else />
                 <div class="goods-pre-btn" @click="openPreviewModal(gal)">预览</div>
               </div>
             </div>
@@ -71,13 +64,7 @@
         <el-row>
           <el-form-item label="">
             <div style="float:left;">
-              <el-upload
-                class="goods-avatar-uploader"
-                action="/"
-                :show-file-list="false"
-                :before-upload="beforeAvatarUpload"
-                :http-request="function (content) { return uploadDescript(content) }"
-                v-if="!formObj.descript">
+              <el-upload class="goods-avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUpload" :http-request="function (content) { return uploadDescript(content) }" v-if="!formObj.descript">
                 <i class="el-icon-plus goods-avatar-uploader-icon"></i>
               </el-upload>
               <div class="goods-pre" v-if="formObj.descript">
@@ -105,13 +92,7 @@
             <!-- <draggable :list="formObj.detail" forceFallback="true" group="detail" animation="1000" @start="detailStart" @end="detailEnd"> -->
             <!-- <transition-group> -->
             <div v-for="(dtl, index) in formObj.detail" :key="index" style="float:left;">
-              <el-upload
-                class="goods-avatar-uploader"
-                action="/"
-                :show-file-list="false"
-                :before-upload="beforeAvatarUpload"
-                :http-request="function (content) { return uploadDetail(content, index) }"
-                v-if="!dtl">
+              <el-upload class="goods-avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUpload" :http-request="function (content) { return uploadDetail(content, index) }" v-if="!dtl">
                 <i class="el-icon-plus goods-avatar-uploader-icon"></i>
               </el-upload>
               <div class="goods-pre" v-if="dtl">
@@ -129,7 +110,7 @@
           </div>
         </el-row>
 
-        <hr size="1"/>
+        <hr size="1" />
         <el-row>
           <div class="goods-bar-info"><span>2</span>商品规格与库存</div>
         </el-row>
@@ -198,7 +179,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <hr size="1" style="margin: 0 -20px;"/>
+              <hr size="1" style="margin: 0 -20px;" />
               <el-row>
                 <div class="sku-tip">
                   <span style="color: #F56C6C;padding: 5px;">*</span><span :style="{ color: computedColor }">价格设定规则：进货价＜拼单价＜单买价＜市场价</span>
@@ -217,10 +198,7 @@
                   <div style="float: left; margin-left: -60px;">
                     <el-form-item label="规格1：" :prop="'attr1.attrName'" :rules="rules.attrName">
                       <el-select v-model="formObj.attr1.attrName" size="mini" placeholder="请选择规格" :disabled="formObj.attr1.id == '' ? false : true">
-                        <el-option v-for="item in skuOptions"
-                                   :key="item.value"
-                                   :label="item.label"
-                                   :value="item.value">
+                        <el-option v-for="item in skuOptions" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                       </el-select>
                     </el-form-item>
@@ -235,13 +213,7 @@
                       <el-radio :label="index" :disabled="!attr.attrVal" style="width: 100%;">
                         <el-input v-model.trim="attr.attrVal" placeholder="请输入规格名称" size="mini" @blur="addAttrSku1(attr.attrVal, index)" onKeypress="return (/[^,]/.test(String.fromCharCode(event.keyCode || event.which))) || event.which === 8" maxLength="18"></el-input>
                         <i class="el-icon-close" style="color: red;" @click="delAttrVal1(index)" v-if="index != formObj.attr1.value.length - 1"></i>
-                        <el-upload
-                          class="sku-avatar-uploader"
-                          action="/"
-                          :show-file-list="false"
-                          :before-upload="beforeAvatarUpload"
-                          :http-request="function (content) { return uploadAttr1(content, index) }"
-                          v-if="!attr.imgUrl">
+                        <el-upload class="sku-avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUpload" :http-request="function (content) { return uploadAttr1(content, index) }" v-if="!attr.imgUrl">
                           <i class="el-icon-plus sku-avatar-uploader-icon"></i>
                           <div class="sku-uploader-tips">上传图片</div>
                         </el-upload>
@@ -264,10 +236,7 @@
                   <div style="float: left; margin-left: -60px;">
                     <el-form-item label="规格2：" :prop="'attr2.attrName'" :rules="rules.attrName">
                       <el-select v-model="formObj.attr2.attrName" size="mini" placeholder="请选择规格" :disabled="formObj.attr2.id == '' ? false : true">
-                        <el-option v-for="item in skuOptions"
-                                   :key="item.value"
-                                   :label="item.label"
-                                   :value="item.value">
+                        <el-option v-for="item in skuOptions" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                       </el-select>
                     </el-form-item>
@@ -421,7 +390,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <hr size="1" style="margin: 0 -20px;"/>
+              <hr size="1" style="margin: 0 -20px;" />
               <el-row>
                 <div class="sku-tip">
                   <span style="color: #F56C6C;padding: 5px;">*</span><span :style="{ color: computedColor }">价格设定规则：进货价＜拼单价＜单买价＜市场价</span>
@@ -431,7 +400,7 @@
           </el-col>
         </el-row>
 
-        <hr size="1"/>
+        <hr size="1" />
         <el-row>
           <div class="goods-bar-info"><span>3</span>购买设置</div>
         </el-row>
@@ -468,14 +437,10 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-dialog
-      title="预览"
-      :visible.sync="previewImgVisible"
-      width="50%">
-      <img :src="previewUrl" style="width: 100%; padding:20px;"
-           v-if="previewUrl.indexOf('.jpeg') != -1
+    <el-dialog title="预览" :visible.sync="previewImgVisible" width="50%">
+      <img :src="previewUrl" style="width: 100%; padding:20px;" v-if="previewUrl.indexOf('.jpeg') != -1
           || previewUrl.indexOf('.jpg') != -1
-          || previewUrl.indexOf('.png') != -1"/>
+          || previewUrl.indexOf('.png') != -1" />
       <video :src="previewUrl" v-else style="width: 100%; padding:20px;" controls>
         您的浏览器不支持 video 标签。
       </video>
@@ -487,7 +452,7 @@
 <script src="./goodsSku.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import "src/styles/common.scss";
+@import 'src/styles/common.scss';
 </style>
 <style>
 .from-line {
@@ -640,7 +605,7 @@
 }
 
 .goods-avatar-uploader .el-upload:hover {
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 
 .goods-avatar-uploader-icon {
@@ -686,7 +651,7 @@
   position: absolute;
   text-align: center;
   z-index: 10;
-  background-color: rgba(0, 0, 0, .6);
+  background-color: rgba(0, 0, 0, 0.6);
   display: none;
 }
 
@@ -709,7 +674,7 @@
 }
 
 .sku-avatar-uploader .el-upload:hover {
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 
 .sku-avatar-uploader-icon {
@@ -774,7 +739,7 @@
   position: absolute;
   text-align: center;
   z-index: 10;
-  background-color: rgba(0, 0, 0, .6);
+  background-color: rgba(0, 0, 0, 0.6);
   display: none;
 }
 
@@ -801,7 +766,7 @@
 }
 
 .sku-avatar-uploader-1 .el-upload:hover {
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 
 .sku-avatar-uploader-icon-1 {
@@ -860,7 +825,7 @@
   position: absolute;
   text-align: center;
   z-index: 10;
-  background-color: rgba(0, 0, 0, .6);
+  background-color: rgba(0, 0, 0, 0.6);
   display: none;
 }
 
