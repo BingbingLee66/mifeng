@@ -40,37 +40,37 @@
     </div>
 
     <el-table :data="bookingList" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column label="用户名" width="180px">
+      <el-table-column label="用户名">
         <template slot-scope="scope">
           {{scope.row.uname}}
         </template>
       </el-table-column>
-      <el-table-column label="手机号" width="180px">
+      <el-table-column label="手机号">
         <template slot-scope="scope">
           {{scope.row.phone}}
         </template>
       </el-table-column>
-      <el-table-column label="所属商会" width="180px">
+      <el-table-column label="所属商会" >
         <template slot-scope="scope">
           {{scope.row.chamberName ? scope.row.chamberName : '-'}}
         </template>
       </el-table-column>
-      <el-table-column label="预约时间" width="180px">
+      <el-table-column label="预约时间">
         <template slot-scope="scope">
           {{scope.row.createTime | formatDate}}
         </template>
       </el-table-column>
-      <el-table-column label="预约状态" width="180px">
+      <el-table-column label="预约状态">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 1">已预约</div>
           <div v-if="scope.row.status == 0">已取消</div>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <!-- <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="text" style="margin-left:0px;" @click="detail($event, scope.row)">查看用户详情</el-button>
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-size="pageSize" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange" :style="{'padding-top': '15px'}">
     </el-pagination>

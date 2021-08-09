@@ -217,10 +217,16 @@ export default {
         let startDate = moment(e[0]).format('yyyy-MM-DD HH:mm:ss')
         this.startDate = startDate
       } else {
-        this.formObj.isBooking = false
+        this.showBooking = false
         this.formObj.bookingTimeStart = ''
         this.startDate = ''
-        this.showBooking = false
+      }
+    },
+    handleSelectTimeB(e) {
+      if (e) {
+        this.formObj.isBooking = 1
+      } else {
+        this.formObj.isBooking = 0
       }
     },
     disabledGetTime(time) {
@@ -340,7 +346,6 @@ export default {
           // this.formObj['limitTime'] = limitTime
         }
         this.$set(this.formObj, 'limitTime', limitTime)
-        console.log('================', this.formObj.limitTime[0])
         if (this.formObj.salesVolume === 0) {
           this.formObj.salesVolume = ''
         }

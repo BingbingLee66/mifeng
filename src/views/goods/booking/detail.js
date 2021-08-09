@@ -89,9 +89,11 @@ export default {
       })
     },
     detail(e, row) {
+      let rowObj = row
+      rowObj['id'] = row.uid
       this.$router.push({
         name: '会员详情',
-        params: { 'memberDetail': row, 'querytype': '0' }
+        params: { 'memberDetail': rowObj }
       })
     },
   }

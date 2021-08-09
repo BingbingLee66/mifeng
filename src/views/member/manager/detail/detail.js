@@ -55,7 +55,9 @@ export default {
   },
   mounted() {
     if (this.$route.params.memberDetail) {
+      console.log('this.$route.params.memberDetail', this.$route.params.memberDetail)
       this.memberDetail = this.$route.params.memberDetail
+      console.log('this.memberDetail.id', this.memberDetail.id)
       window.localStorage.setItem('detail-member', JSON.stringify(this.memberDetail))
     }
     if (!this.memberDetail.id) {
