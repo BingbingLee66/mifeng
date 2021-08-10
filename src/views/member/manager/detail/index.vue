@@ -8,7 +8,7 @@
         <el-col :span="1" class="wx-col col-title">ID</el-col>
         <el-col :span="2" class="wx-col">{{ memberDetail.id ? memberDetail.id : '空' }}</el-col>
         <el-col :span="2" class="wx-col col-title">微信</el-col>
-        <el-col :span="3" class="wx-col">{{ memberDetail.uname ? memberDetail.uname : '未绑定' }}</el-col>
+        <el-col :span="3" class="wx-col els-title">{{ memberDetail.uname ? memberDetail.uname : '未绑定' }}</el-col>
         <el-col :span="2" class="wx-col col-title">手机号</el-col>
         <el-col :span="3" class="wx-col">{{ memberDetail.phone ? memberDetail.phone : '空' }}</el-col>
         <el-col :span="2" class="wx-col col-title">注册时间</el-col>
@@ -321,6 +321,12 @@
 
 .col-title {
   background-color: #b7f0ff;
+}
+
+.els-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .row-title {

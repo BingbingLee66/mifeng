@@ -217,6 +217,7 @@ export default {
         let startDate = moment(e[0]).format('yyyy-MM-DD HH:mm:ss')
         this.startDate = startDate
       } else {
+        this.formObj.isBooking = 0
         this.showBooking = false
         this.formObj.bookingTimeStart = ''
         this.startDate = ''
