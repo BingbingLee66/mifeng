@@ -974,6 +974,11 @@ export default {
             message: '请注意价格规则：供货价<拼单价<单买价<市场价'
           })
         }
+        if (this.formObj.bookingTimeStart && this.formObj.limitTime[0]) {
+          if (this.formObj.bookingTimeStart >= this.formObj.limitTime[0]) {
+            return this.$message.error('预约开始时间要小于限时购买开始时间')
+          }
+        }
         if (this.formObj.specType === 1) { // 多规格
           let attrTransf = this.formObj.attr1.value
           for (let i = 0; i < attrTransf.length - 1; i++) {
@@ -1026,11 +1031,6 @@ export default {
               o.supplyPrice = 0
             }
           })
-          if (this.formObj.bookingTimeStart && this.formObj.limitTime[0]) {
-            if (this.formObj.bookingTimeStart >= this.formObj.limitTime[0]) {
-              return this.$message.error('预约开始时间要小于限时购买开始时间')
-            }
-          }
           let obj = {
             'bookingTimeStart': this.formObj.bookingTimeStart,
             'isBooking': this.formObj.isBooking,
