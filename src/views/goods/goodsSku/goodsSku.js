@@ -1025,9 +1025,9 @@ export default {
               o.supplyPrice = 0
             }
           })
-          if (this.formObj.isBooking == 1) {
-            if (!this.formObj.bookingTimeStart) {
-              return this.$message.error('请选择预约期')
+          if (this.formObj.bookingTimeStart && this.formObj.limitTime[0]) {
+            if (this.formObj.bookingTimeStart > this.formObj.limitTime[0]) {
+              return this.$message.error('预约开始时间不能大于限时购买开始时间')
             }
           }
           let obj = {

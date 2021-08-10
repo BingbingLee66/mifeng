@@ -56,7 +56,7 @@ export default {
         console.log('所有商会列表', res)
         if (res.state === 1) {
           this.chamberOptions = res.data.data
-          this.chamberOptions.unshift({ 'name': '全部', 'id': -1 })
+          this.chamberOptions.unshift({ 'name': '全部', 'id': -1 }, { 'name': '未加入商会', 'id': -2 })
           this.aLLChamberlist
           this.listLoading = false
         } else {

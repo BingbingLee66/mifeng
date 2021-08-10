@@ -49,7 +49,8 @@
           <td width="8%">籍贯</td>
           <td width="30%">{{ userInfo.nativePlace }}</td>
           <td width="8%">简介</td>
-          <td align="left" height="50" colspan="10">{{ resumeCp(userInfo.introduction) }}
+          <!-- {{ resumeCp(userInfo.introduction) }} -->
+          <td align="center" height="50" colspan="10">
             <el-button type="text" @click="resumeDetail(userInfo.introduction)">详情</el-button>
           </td>
         </tr>

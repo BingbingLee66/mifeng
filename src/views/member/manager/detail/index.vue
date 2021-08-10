@@ -60,7 +60,7 @@
             <div v-if="userInfo.ugender == 2">女</div>
           </td>
           <td width="8%">生日</td>
-          <td width="30%">{{ userInfo.birthday }}</td>
+          <td width="30%">{{ userInfo.birthday | dateFormat}}</td>
           <!-- <td width="8%">会内职位</td>
           <td width="30%">{{ member.postName }}</td> -->
         </tr>

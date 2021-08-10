@@ -27,6 +27,14 @@ export default {
       userInfo: {}
     }
   },
+  filters: {
+    dateFormat(value) {
+      if (value) {
+        var myDate = new Date(value.replace('-', '/').replace('-', '/'))
+        return myDate.getFullYear() + '年' + (myDate.getMonth() + 1) + '月' + (myDate.getDay() + 1) + '日'
+      } return ''
+    }
+  },
   computed: {
     resumeCp() {
       return function(msg) {
