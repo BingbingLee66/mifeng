@@ -1,8 +1,10 @@
 import { getUserList, updateUserStatus } from '@/api/member/manager'
+import { getChamberAllList } from '@/api/goods/goods'
 
 export default {
   data() {
     return {
+      chamberOptions: [],
       listLoading: false,
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -14,7 +16,7 @@ export default {
         uname: '',
         mulValue: '',
         userType: -1,
-        chamberName: '',
+        chamberId: -1,
         status: -1,
         date: ''
       }
@@ -22,6 +24,7 @@ export default {
   },
   computed: {},
   created() {
+    this.getAllChamberList()
     this.init()
   },
   methods: {
@@ -47,16 +50,32 @@ export default {
         this.fetchData()
       }
     },
+    getAllChamberList() {
+      getChamberAllList().then(res => {
+        console.log('所有商会列表：', res)
+        if (res.state === 1) {
+          this.chamberOptions = res.data.data
+          this.chamberOptions.unshift({ 'name': '全部', 'id': -1 }, { 'name': '未加入商会', 'id': -2 })
+          this.aLLChamberlist
+          this.listLoading = false
+        } else {
+          console.log(res)
+          this.listLoading = false
+        }
+      })
+    },
     fetchData(e) {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+        this.currentpage = 1
       }
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
         'page': this.currentpage,
         'userType': this.query.userType,
-        'status': this.query.status
+        'status': this.query.status,
+        'chamberId': this.query.chamberId
       }
       if (this.query.mulValue) {
         params['mulValue'] = this.query.mulValue
