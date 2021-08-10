@@ -60,7 +60,7 @@
       <el-row>
         <span class="row-title">已加入商会（{{ count }}）</span>
       </el-row>
-      <table v-for="(member, index) in memberList" border="1" width="100%" align="center" cellspacing="0">
+      <table style="margin-bottom: 20px;" v-for="(member, index) in memberList" :key="index" border="1" width="100%" align="center" cellspacing="0">
         <tr align="center" height="45">
           <td width="100%" colspan="6">
             <div style="font-size: 18px; font-weight: 800;">{{ member.chamberName }}</div>
