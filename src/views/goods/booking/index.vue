@@ -57,7 +57,7 @@
       </el-table-column>
       <el-table-column label="预约时间">
         <template slot-scope="scope">
-          {{scope.row.createTime | formatDate}}
+          {{scope.row.bookingStartTime | formatDate}}
         </template>
       </el-table-column>
       <el-table-column label="预约状态">
