@@ -41,14 +41,15 @@ export default {
   methods: {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
-      this.page = val
       this.page = 1
+      this.pageSize = val
       this.currentpage = 1
       this.getBookingList()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.currentpage = val
+      this.page = val
       this.getBookingList()
     },
     getAllChamberList() {
@@ -66,6 +67,11 @@ export default {
       })
     },
     getBookingList(e) {
+      console.log()
+      if (e !== undefined) {
+        this.page = 1
+        this.currentpage = 1
+      }
       this.listLoading = true
       let params = {
         'page': this.page,
