@@ -1,5 +1,94 @@
 # CHANGELOG
 
+## [Unreleased]
+## [1.14.0] - 2021-08-17
+
+### Added
+- icon菜单的修改[254](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/254)
+### Fixed
+- 总后台-内容管理-文章管理，”发布时间“增加选项”所有“，默认为”7天内“[63](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/63)
+- 总后台-商品管理，来源栏变窄[262](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/262)
+- 部分动态没有显示来源[261](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/261)
+- 总后台-商城管理、用户管理的图标需要放大一点点[260](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/260)
+
+## [Rreleased]
+## [1.13.0] - 2021-08-10
+
+### Added
+- 预约商品--预约列表和预约人数，新增商品修改[#243](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/243)
+
+### Fixed
+- 总后台-用户管理按所属商会查询优化[#246](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/246)
+
+## [Rreleased]
+## [1.12.1-hotfix] - 2021-08-05
+
+### Added
+- 预售商品
+
+### Fixed
+- 商品标题需要显示40个字[244](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/244)
+- 总后台-用户详情刷新后，按下图操作会提示系统故障[241](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/241)
+
+## [Rreleased]
+## [1.12.0] - 2021-08-03
+
+### Added
+- 用户资料调整 [228](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/228)
+- 商会后台入会资料调整 [229](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/229)
+- 添加成员和修改成员合并为一页 [230](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/230)
+
+### Fixed
+- 总后台-用户管理，隐藏“名字”字段 [218](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/218)
+- 商会后台-会员详情，企业入会的用户输入项按下图修改 [221](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/221)
+- 会员详情，个人入会的会员详情页，输入项的位置需要按下图修改 [220](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/220)
+
+## [Rreleased]
+## [1.11.1] - 2021-07-29
+
+### Fixed
+- 总后台-编辑台文章不能跨页搜索(文章管理页面存在相同问题)[213](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/213)
+
+## [Rreleased]
+## [1.11.0] - 2021-07-27
+
+### Added
+- 商会后台统一用户名和头像 [207](yunshanghui/frontend/shanghui-admin#207)
+- 总后台统一用户名和头像[208](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/208)
+
+## [Rreleased]
+## [1.10.0] - 2021-07-20
+
+### Added
+- 商会后台-文章更新-关于商会，增加”新增栏目“入口[191](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/191)
+- 商会后台-文章更新-商会资讯-添加文章/编辑，增加”新增栏目“入口[192](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/192)
+- 商会后台-商/协会成员页面，搜索功能调整[193](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/193)
+
+### Fixed
+- 商会后台-添加文章，文章中加栏目，可以增加空格[195](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/195)
+- 商会后台-添加文章，添加栏目点击取消需要收起弹窗[196](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/196)
+- 商会后台-商协会成员的导表内容未更新[198](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/198)
+- 商会后台-栏目设置，商会资讯、关于商会的新增栏目都可以增加空格[200](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/200)
+
+## [Rreleased]
+## [1.9.0] - 2021-07-13
+
+### Added
+- 接收商会二期、会拼分支  [#186](https://gitlab.kd/yunshanghui/backend/api/-/issues/186)
+
+### Fixed
+- 小程序没有企业简介，提交资料时，后台显示修改了简介
+- 商会后台-财务管理-会员会费，“会员缴费数据”和“会员缴费详情”分为两个tab
+- 后台发布定时文章，定时被清除
+- 总后台-用户管理，用户详情中，用户还显示公司介绍
+- 新闻爬虫，发布提示成功，但是文章实际未发布出去
+- 会员缴费记录-短信记录企业入会，会员姓名显示空
+- 总后台，商品列表预览，图片未显示出来
+- 总后台-职务可以添加空格
+- 总后台，编辑台发布三图的封面，样式有误
+- 文本管理，编辑框、文本内容会显示不出
+
+## [Rreleased]
 ## [1.8.1] - 2021-06-29
 
 ### Fixed
@@ -9,7 +98,7 @@
 * 商会后台ui修改部分 [#164](https://gitlab.kd/yunshanghui/backend/api/-/issues/164)
 * 切换登录账号，右上角的头像和名称没有变 [#163](https://gitlab.kd/yunshanghui/backend/api/-/issues/163)
 
-
+## [Rreleased]
 ## [1.6.0] - 2021-06-08
 
 ### Added
@@ -30,6 +119,7 @@
 * 总后台-商会管理-编辑，联系人手机号，暂时不能让支持修改 [#117](https://gitlab.kd/yunshanghui/backend/api/-/issues/117)
 * 商会后台-成员管理，调整部门时，需支持选择【商会】这一层 [#118](https://gitlab.kd/yunshanghui/backend/api/-/issues/118)
 
+## [Rreleased]
 ## [1.5.0] - 2021-05-31
 
 ### Added
@@ -52,7 +142,7 @@
 * 成员管理调整部门后，会记录上次操作的部门，且无法手动清掉  [#86](https://gitlab.kd/yunshanghui/backend/api/-/issues/86)
 * 商/协会成员，导出excel表缺少部门字段信息 [#87](https://gitlab.kd/yunshanghui/backend/api/-/issues/87)
 
-
+## [Rreleased]
 ## [1.4.0] - 2021-05-25
 
 ### Added
@@ -73,6 +163,7 @@
 - 编辑资料，手机号不允许修改[#58]
   (https://gitlab.kd/yunshanghui/backend/api/-/issues/58)
 
+## [Rreleased]
 ## [1.3.0] - 2021-05-18
 
 ### Added
