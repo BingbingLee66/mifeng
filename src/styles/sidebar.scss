@@ -80,13 +80,16 @@
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
+     
 
       &:hover {
         background-color: $subMenuHover !important;
       }
     }
   }
-
+  .el-submenu /deep/ .el-menu-item{
+  margin-left: 5rpx !important;
+}
   .hideSidebar {
     .sidebar-container {
       width: 54px !important;

@@ -81,6 +81,9 @@ const actions = {
   },
   addCachedView({ commit }, view) {
     console.log('view', view)
+    // if (view.name === 'Dashboard' && view.meta) {
+    //   view.meta.icon = 'homeicon'
+    // }
     commit('ADD_CACHED_VIEW', view)
   },
 
