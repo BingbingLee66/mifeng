@@ -16,7 +16,7 @@ export default {
     const { icon, title } = context.props
     const vnodes = []
     if (icon) {
-      vnodes.push(<svg-icon icon-class={icon}/>)
+      vnodes.push(<svg-icon width='50' height='50' icon-class={icon}/>)
       // vnodes.push(<svg-icon icon-class='icon-password'/>)
     }
 
