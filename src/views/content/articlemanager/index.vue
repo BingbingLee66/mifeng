@@ -101,8 +101,8 @@
       <el-table-column label="来源" width="180px">
         <template slot-scope="scope">
           <div v-if="scope.row.publishType == 1">{{ scope.row.chamberName }}</div>
-          <div v-if="scope.row.publishType == 2 || scope.row.publishType == 5">{{ scope.row.companyName }}</div>
-          <div v-if="scope.row.publishType == 3 || scope.row.publishType == 4 || scope.row.publishType == 6 || scope.row.publishType == 7">{{ scope.row.sourceName }}</div>
+          <div v-if="scope.row.publishType == 5">{{ scope.row.companyName }}</div>
+          <div v-if="scope.row.publishType == 3 || scope.row.publishType == 4 || scope.row.publishType == 6 || scope.row.publishType == 7 || scope.row.publishType == 2">{{ scope.row.sourceName }}</div>
         </template>
       </el-table-column>
       <el-table-column label="发布时间" width="180px">
