@@ -34,6 +34,7 @@
           <el-col :span="4" style="margin-left: 10px;">
             <el-form-item label="发布时间：">
               <el-select v-model="query.publishTimeType">
+                <el-option label="所有" :value="0" />
                 <el-option label="24小时内" :value="1" />
                 <el-option label="3天内" :value="2" />
                 <el-option label="7天内" :value="3" />
