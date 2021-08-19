@@ -6,19 +6,20 @@
     <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
       <el-table-column type="index" label="序号" width="60px">
       </el-table-column>
-<!--       <el-table-column label="文章ID" width="80px">
+       <el-table-column label="类型" width="80px">
         <template slot-scope="scope">
           {{scope.row.id}}
         </template>
-      </el-table-column> -->
-      <el-table-column label="文章标题">
+      </el-table-column> 
+      <el-table-column label="标题/ID" width="500px">
         <template slot-scope="scope">
+        {{scope.row.id}}<br />
           {{scope.row.title}}
         </template>
       </el-table-column>
-      <el-table-column label="图片">
+      <el-table-column label="图片" width="170px" height="80px">
         <template slot-scope="scope">
-          <img style="width: 80px; height: 35px;" :src="scope.row.img"/>
+          <img style="width: 153px; height: 60px;" :src="scope.row.img"/>
         </template>
       </el-table-column>
       <el-table-column label="更新时间" width="160px">
@@ -31,12 +32,12 @@
           {{scope.row.operator}}
         </template>
       </el-table-column>
-      <el-table-column label="排序" width="120px">
+      <el-table-column label="权重" width="120px">
         <template slot-scope="scope">
           {{scope.row.level}}
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="180px">
+      <el-table-column label="操作" >
         <template slot-scope="scope">
           <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('', '编辑')" v-if="has('', '编辑')">编辑</el-button>
           <el-button type="text" @click="del($event, scope.row)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除</el-button>
