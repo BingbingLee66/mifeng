@@ -29,11 +29,11 @@
         </el-col>
         <el-col :span="8">
           物流公司：{{ detailObj.shippingCompany ? detailObj.shippingCompany : '--' }}
-          <span style="color:#409eff;cursor: pointer" @click="showSendOutDialog=true">编辑</span>
+          <span style="color:#409eff;cursor: pointer" @click="showSendOut">编辑</span>
         </el-col>
         <el-col :span="8">
           物流单号：{{ detailObj.shippingSn ? detailObj.shippingSn : '--' }}
-          <span style="color:#409eff;cursor: pointer" @click="showSendOutDialog=true">编辑</span>
+          <span style="color:#409eff;cursor: pointer" @click="showSendOut">编辑</span>
         </el-col>
       </el-row>
       <el-row>

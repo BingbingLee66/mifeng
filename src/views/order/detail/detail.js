@@ -1,4 +1,4 @@
-import { getOrder, updateOrder } from '@/api/order/order'
+import { getOrder, updateOrder, updateShipping } from '@/api/order/order'
 import { getChamberOptions } from '@/api/finance/finance'
 // import { mapGetters } from 'vuex'
 
@@ -124,23 +124,28 @@ export default {
         this.detailObj = response.data.order
       })
     },
+    showSendOut() {
+      this.showSendOutDialog = true
+      this.shipping.shippingSn = this.detailObj.shippingSn
+      this.shipping.shippingCompany = this.detailObj.shippingCompany
+    },
     sendOut(shipping) {
       this.$refs[shipping].validate((valid) => {
         if (valid) {
-          alert('修改成功')
           let params = {
+            'orderId': this.detailObj.id,
             'shippingSn': this.shipping.shippingSn,
             'shippingCompany': this.shipping.shippingCompany,
           }
           console.log(params)
-          // updateOrder(params).then(response => {
-          //   this.$message({
-          //     message: '修改成功',
-          //     type: 'success'
-          //   })
-          //   this.showSendOutDialog = false
-          //   this.fetchData()
-          // })
+          updateShipping(params).then(response => {
+            this.$message({
+              message: '修改成功',
+              type: 'success'
+            })
+            this.showSendOutDialog = false
+            this.fetchData()
+          })
         } else {
           console.log('error submit!!')
           return false

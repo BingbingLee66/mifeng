@@ -25,6 +25,14 @@ export function getOrder(params) {
   })
 }
 
+export function updateShipping(params) {
+  return request({
+    url: baseUrl + '/ec/mall/update-shipping',
+    method: 'post',
+    params
+  })
+}
+
 export function updateOrder(params) {
   return request({
     url: baseUrl + '/ec/mall/update-order',
