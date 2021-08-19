@@ -189,10 +189,13 @@
     </el-dialog>
     <el-dialog title="权重" :visible.sync="showWeightDialog" width="30%">
       <el-form :model="numberValidateForm" ref="numberValidateForm" label-width="100px" class="demo-ruleForm">
-        <el-form-item label="权重" prop="weight" :rules="[
-      { required: true, message: '权重请控制在0-999，权重为0不在前台展示'},
-      { type: 'number', message: '权重请控制在0-999，权重为0不在前台展示'}
-    ]">
+        <el-form-item
+          label="权重"
+          prop="weight"
+          :rules="[
+            { required: true, message: '权重请控制在0-999，权重为0不在前台展示'},
+            { type: 'number', message: '权重请控制在0-999，权重为0不在前台展示'}
+          ]">
           <el-input type="age" v-model.number="numberValidateForm.weight" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item>

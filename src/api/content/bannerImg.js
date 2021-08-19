@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function editlevel(params) {
+  return request({
+    url: '/ec/bannerImg/editlevel',
+    method: 'put',
+    data: params
+  })
+}
+
 export function save(params) {
   return request({
     url: '/ec/bannerImg/save',
