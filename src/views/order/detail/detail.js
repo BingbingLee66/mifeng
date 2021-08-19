@@ -1,4 +1,4 @@
-import { getOrder } from '@/api/order/order'
+import { getOrder, updateOrder } from '@/api/order/order'
 import { getChamberOptions } from '@/api/finance/finance'
 // import { mapGetters } from 'vuex'
 
@@ -14,13 +14,26 @@ export default {
         confirmReceivingTime: null
       },
       isChamber: true,
-      orderSn: ''
+      orderSn: '',
+      showSendOutDialog: false,
+      shipping: {
+        shippingSn: '',
+        shippingCompany: ''
+      },
+      shippingRules: {
+        shippingSn: [
+          { required: true, message: '请输入物流单号', trigger: 'blur' },
+        ],
+        shippingCompany: [
+          { required: true, message: '请输入物流公司', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
     // ...mapGetters(['has'])
-    payType () {
-      return function (payType) {
+    payType() {
+      return function(payType) {
         if (payType === null) {
           return '未支付'
         } else {
@@ -32,8 +45,8 @@ export default {
         }
       }
     },
-    status () {
-      return function (status) {
+    status() {
+      return function(status) {
         if (status == 2) {
           return '待发货'
         } else if (status == 5) {
@@ -51,8 +64,8 @@ export default {
         }
       }
     },
-    buyType () {
-      return function (status) {
+    buyType() {
+      return function(status) {
         if (status == 1) {
           return '拼单'
         } else if (status == 0) {
@@ -64,7 +77,7 @@ export default {
         }
       }
     },
-    chamberName () {
+    chamberName() {
       return function(ckey) {
         let chamberName = ''
         for (let chamber of this.chamberOptions) {
@@ -88,16 +101,16 @@ export default {
     }
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     init() {
       this.fetchData()
     },
-    getChamberOptions () {
+    getChamberOptions() {
       getChamberOptions().then(response => {
         this.chamberOptions = response.data.data
       })
@@ -109,6 +122,29 @@ export default {
       }
       getOrder(params).then(response => {
         this.detailObj = response.data.order
+      })
+    },
+    sendOut(shipping) {
+      this.$refs[shipping].validate((valid) => {
+        if (valid) {
+          alert('修改成功')
+          let params = {
+            'shippingSn': this.shipping.shippingSn,
+            'shippingCompany': this.shipping.shippingCompany,
+          }
+          console.log(params)
+          // updateOrder(params).then(response => {
+          //   this.$message({
+          //     message: '修改成功',
+          //     type: 'success'
+          //   })
+          //   this.showSendOutDialog = false
+          //   this.fetchData()
+          // })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
       })
     }
   }

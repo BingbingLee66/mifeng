@@ -19,13 +19,13 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <hr size="1" />
+        <hr size="1"/>
         <el-row>
           <el-col :span="22">
             <div class="dy-form-label">
               <span style="color: #F56C6C;padding: 5px;">*</span><span>商品轮播图：</span>
             </div>
-            <span class="dy-form-tip">支持图片/视频。图片大小不能超过2M，建议尺寸375X287，支持JPG、PNG。视频大小不能超过200M，只支持MP4</span>
+            <span class="dy-form-tip">支持图片/视频。图片大小不能超过2M，建议尺寸800X800，支持JPG、PNG。视频大小不能超过200M，只支持MP4</span>
           </el-col>
         </el-row>
         <el-row>
@@ -40,8 +40,8 @@
                 <i class="el-icon-error" @click="clearGalleryImg(index)"></i>
                 <img :src="gal" class="goods-avatar" v-if="gal.indexOf('.jpeg') != -1
                       || gal.indexOf('.jpg') != -1
-                      || gal.indexOf('.png') != -1" />
-                <img :src="videoPreview" class="goods-avatar" v-else />
+                      || gal.indexOf('.png') != -1"/>
+                <img :src="videoPreview" class="goods-avatar" v-else/>
                 <div class="goods-pre-btn" @click="openPreviewModal(gal)">预览</div>
               </div>
             </div>
@@ -58,7 +58,7 @@
             <div class="dy-form-label">
               <span style="color: #F56C6C;padding: 5px;">*</span><span>商品列表图：</span>
             </div>
-            <span class="dy-form-tip">图片大小不能超过2M，建议尺寸108X82，支持JPG、PNG</span>
+            <span class="dy-form-tip">图片大小不能超过2M，建议尺寸300X300，支持JPG、PNG</span>
           </el-col>
         </el-row>
         <el-row>
@@ -110,7 +110,7 @@
           </div>
         </el-row>
 
-        <hr size="1" />
+        <hr size="1"/>
         <el-row>
           <div class="goods-bar-info"><span>2</span>商品规格与库存</div>
         </el-row>
@@ -179,7 +179,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <hr size="1" style="margin: 0 -20px;" />
+              <hr size="1" style="margin: 0 -20px;"/>
               <el-row>
                 <div class="sku-tip">
                   <span style="color: #F56C6C;padding: 5px;">*</span><span :style="{ color: computedColor }">价格设定规则：进货价＜拼单价＜单买价＜市场价</span>
@@ -390,7 +390,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <hr size="1" style="margin: 0 -20px;" />
+              <hr size="1" style="margin: 0 -20px;"/>
               <el-row>
                 <div class="sku-tip">
                   <span style="color: #F56C6C;padding: 5px;">*</span><span :style="{ color: computedColor }">价格设定规则：进货价＜拼单价＜单买价＜市场价</span>
@@ -400,7 +400,7 @@
           </el-col>
         </el-row>
 
-        <hr size="1" />
+        <hr size="1"/>
         <el-row>
           <div class="goods-bar-info"><span>3</span>购买设置</div>
         </el-row>
@@ -428,7 +428,57 @@
             </el-form-item>
           </el-col>
         </el-row>
-
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="立减优惠：" prop="discount">
+              <div class="discount-input">
+                <el-input-number v-model="formObj.discount" :min="0" :controls="false" :precision="2"></el-input-number>
+                <div class="input-prepend">元/件</div>
+              </div>
+              <!-- <div>支持输入大于0的数字，最多支持输入两位小数</div> -->
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <!-- 发货说明 -->
+        <hr size="1"/>
+        <el-row>
+          <div class="goods-bar-info"><span>4</span>发货说明</div>
+        </el-row>
+        <el-form-item :required="true" label="包邮：">
+          <el-col :span="10">
+            <el-input v-model="formObj.deliveryConfig1"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item :required="true" label="发货时间：">
+          <el-col :span="10">
+            <el-input v-model="formObj.deliveryConfig2"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item :required="true" label="发货说明：">
+          <el-col :span="10">
+            <el-input resize="none" type="textarea" v-model="formObj.deliveryConfig3"></el-input>
+          </el-col>
+        </el-form-item>
+        <!-- 服务保障 -->
+        <hr size="1"/>
+        <el-row>
+          <div class="goods-bar-info"><span>5</span>服务保障</div>
+        </el-row>
+        <el-form-item :required="true" label="商会企业供货：">
+          <el-col :span="10">
+            <el-input v-model="formObj.serviceConfig1"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item :required="true" label="品质保证：">
+          <el-col :span="10">
+            <el-input v-model="formObj.serviceConfig2"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item :required="true" label="坏了包赔：">
+          <el-col :span="10">
+            <el-input resize="none" type="textarea" v-model="formObj.serviceConfig3"></el-input>
+          </el-col>
+        </el-form-item>
         <el-form-item>
           <el-col :offset="8" :span="8">
             <el-button type="primary" v-dbClick @click="save">保存</el-button>
@@ -438,9 +488,7 @@
       </el-form>
     </div>
     <el-dialog title="预览" :visible.sync="previewImgVisible" width="50%">
-      <img :src="previewUrl" style="width: 100%; padding:20px;" v-if="previewUrl.indexOf('.jpeg') != -1
-          || previewUrl.indexOf('.jpg') != -1
-          || previewUrl.indexOf('.png') != -1" />
+      <img :src="previewUrl" style="width: 100%; padding:20px;" v-if="previewUrl.indexOf('.jpeg') != -1 || previewUrl.indexOf('.jpg') != -1 || previewUrl.indexOf('.png') != -1"/>
       <video :src="previewUrl" v-else style="width: 100%; padding:20px;" controls>
         您的浏览器不支持 video 标签。
       </video>
@@ -454,7 +502,32 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import 'src/styles/common.scss';
 </style>
-<style>
+<style lang="scss">
+.discount-input {
+  display: flex;
+
+  .el-input__inner {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.input-prepend {
+  height: 40px;
+  background-color: #F5F7FA;
+  color: #909399;
+  vertical-align: middle;
+  display: table-cell;
+  position: relative;
+  border: 1px solid #DCDFE6;
+  border-radius: 4px;
+  padding: 0 20px;
+  white-space: nowrap;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0;
+}
+
 .from-line {
   text-align: center;
 }

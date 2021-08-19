@@ -1,8 +1,11 @@
 import { getList } from '@/api/mall/mall'
-
+import { getChamberOptions } from '@/api/finance/finance'
 export default {
   data() {
     return {
+      activeName: 'first',
+      previewImgVisible: false,
+      previewUrl: '',
       query: {
         ckey: '',
         goodsName: '',
@@ -15,10 +18,38 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: []
+      selectionDatas: [],
+      chamberOptions: [],
+      showWeightDialog: false,
+      showAddDialog: false,
+      numberValidateForm: {
+        weight: 0
+      }
     }
   },
+  computed: {
+    // ...mapGetters(['has'])
+    chamberName() {
+      return function (ckey) {
+        let chamberName = ''
+        for (let chamber of this.chamberOptions) {
+          if (ckey === chamber.value) {
+            chamberName = chamber.label
+            break
+          }
+        }
+        return chamberName
+      }
+    }
+  },
+  created() {
+    this.getChamberOptions()
+    this.fetchData()
+  },
   methods: {
+    handleClick(tab, event) {
+      console.log(tab, event);
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
       this.limit = val
@@ -29,6 +60,17 @@ export default {
       console.log(`当前页: ${val}`)
       this.currentpage = val
       this.fetchData()
+    },
+    has(tabName, actionName) {
+      return this.$store.getters.has({ tabName, actionName })
+    },
+    getId(tabName, actionName) {
+      return this.$store.getters.getId({ tabName, actionName })
+    },
+    getChamberOptions() {
+      getChamberOptions().then(response => {
+        this.chamberOptions = response.data.data
+      })
     },
     fetchData() {
       this.listLoading = true
@@ -55,6 +97,16 @@ export default {
       for (let data of datas) {
         this.selectionDatas.push(data.id)
       }
-    }
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!');
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
   }
 }

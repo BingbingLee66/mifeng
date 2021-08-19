@@ -2,7 +2,8 @@ import {
   getGoodsDetail,
   uploadGoodsImg,
   add,
-  update } from '@/api/goods/goodsSku'
+  update
+} from '@/api/goods/goodsSku'
 import { getSupplierOptions } from '@/api/goods/supplier.js'
 import { getSetting } from '@/api/system/setting'
 import videoPreview from '@/assets/img/video-pre.jpg'
@@ -72,6 +73,7 @@ export default {
       descriptValid: true,
       detailValid: true,
       formObj: {
+        'discount': '', // 立减优惠
         'bookingTimeStart': '',
         'isBooking': 0,
         'gallery': [''],
@@ -402,8 +404,8 @@ export default {
         return false
       }
       if (file.type !== 'image/jpeg' &&
-            file.type !== 'image/jpg' &&
-            file.type !== 'image/png') {
+        file.type !== 'image/jpg' &&
+        file.type !== 'image/png') {
         this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
         return false
       }
@@ -421,8 +423,8 @@ export default {
       } else {
         if (file.type.indexOf('image/') !== -1) { // 图片
           if (file.type !== 'image/jpeg' &&
-                file.type !== 'image/jpg' &&
-                file.type !== 'image/png') {
+            file.type !== 'image/jpg' &&
+            file.type !== 'image/png') {
             this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
             result = false
           }
@@ -1032,6 +1034,7 @@ export default {
             }
           })
           let obj = {
+            'discount': this.formObj.discount,
             'bookingTimeStart': this.formObj.bookingTimeStart,
             'isBooking': this.formObj.isBooking,
             'id': this.formObj.id,

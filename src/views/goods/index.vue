@@ -51,101 +51,81 @@
           </el-col>
         </el-row>
       </div>
-      <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55px" key="activeName8">
-        </el-table-column>
-        <!-- <el-table-column type="index" label="序号" width="60px">
-        </el-table-column> -->
-        <el-table-column label="商品ID" width="80px">
-          <template slot-scope="scope">
-            {{scope.row.id}}
-          </template>
-        </el-table-column>
-        <el-table-column label="商品图片" width="100px">
-          <template slot-scope="scope">
-            <img class="m-goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
-          </template>
-        </el-table-column>
-        <el-table-column label="商品名称" width="100px">
-          <template slot-scope="scope">
-            {{scope.row.name}}
-          </template>
-        </el-table-column>
-        <el-table-column label="单买价(元)" width="100px">
-          <template slot-scope="scope">
-            {{scope.row.singlePriceMerge == null ?  '-' : scope.row.singlePriceMerge}}
-          </template>
-        </el-table-column>
-        <el-table-column label="拼单价(元)" width="100px">
-          <template slot-scope="scope">
-            {{scope.row.fightPriceMerge == null ?  '-' : scope.row.fightPriceMerge}}
-          </template>
-        </el-table-column>
-        <el-table-column label="供货价(元)" width="100px">
-          <template slot-scope="scope">
-            {{scope.row.supplyPriceMerge == null ?  '-' : scope.row.supplyPriceMerge}}
-          </template>
-        </el-table-column>
-        <el-table-column label="库存" width="100px">
-          <template slot-scope="scope">
-            {{scope.row.sumStock}}
-          </template>
-        </el-table-column>
-        <el-table-column label="累计销量" width="100px">
-          <template slot-scope="scope">
-            {{scope.row.salesVolume}}
-          </template>
-        </el-table-column>
-        <el-table-column label="预约人数" width="100px">
-          <template slot-scope="scope">
-            {{scope.row.bookingNums}}
-          </template>
-        </el-table-column>
-        <el-table-column label="供货商家" width="100px">
-          <template slot-scope="scope">
-            {{scope.row.supplierName}}
-          </template>
-        </el-table-column>
-        <el-table-column label="添加时间" width="100px">
-          <template slot-scope="scope">
-            {{scope.row.createTime | dateFormat}}
-          </template>
-        </el-table-column>
-        <!-- <el-table-column label="操作人">
-          <template slot-scope="scope">
-            {{scope.row.operator}}
-          </template>
-        </el-table-column> -->
-        <el-table-column label="状态" width="100px">
-          <template slot-scope="scope">
-            <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售中</div>
-            <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">已下架</div>
-            <div v-if="scope.row.isOnSale == 5">平台下架</div>
-            <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock == 0">已售罄</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button type="text" style="margin-left:0px;" @click="setTop($event, scope.row)" :actionid="getId('商品列表', '置顶')" v-if="has('商品列表', '置顶') && scope.row.isOnSale != 5">置顶</el-button>
-            <el-button type="text" style="margin-left:0px;" @click="edit($event, scope.row)" :actionid="getId('商品列表', '编辑')" v-if="has('商品列表', '编辑')">编辑</el-button>
-            <el-button type="text" style="margin-left:0px;" @click="updateStatus($event, scope.row.id, 1)" :actionid="getId('商品列表', '上架')" v-if="has('商品列表', '上架') && (scope.row.isOnSale == 2 || scope.row.isOnSale == 4)">上架</el-button>
-            <el-button type="text" style="margin-left:0px;" @click="updateStatus($event, scope.row.id, 2)" :actionid="getId('商品列表', '下架')" v-if="has('商品列表', '下架') && (scope.row.isOnSale == 1 || scope.row.isOnSale == 3)">下架</el-button>
-            <el-button type="text" style="margin-left:0px;" @click="del($event, scope.row)" :actionid="getId('商品列表', '删除')" v-if="has('商品列表', '删除')">删除</el-button>
-            <el-button type="text" style="margin-left:0px;" @click="goBookingList($event, scope.row)">查看预约列表</el-button>
-            <el-button type="text" style="margin-left:0px;" @click="createCode($event, scope.row)">生成二维码</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="block-table">
+        <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55px" key="activeName8">
+          </el-table-column>
+          <el-table-column label="商品ID/名称" width="250px">
+            <template slot-scope="scope">
+              <div class="red-label">{{ scope.row.id }}</div>
+              <div> {{ scope.row.name }}</div>
+              <el-button type="text" style="margin-left:0px;" @click="setTop($event, scope.row)" :actionid="getId('商品列表', '置顶')" v-if="has('商品列表', '置顶') && scope.row.isOnSale != 5">置顶</el-button>
+              <el-button type="text" style="margin-left:0px;" @click="createCode($event, scope.row)">生成二维码</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="商品图片" width="115px">
+            <template slot-scope="scope">
+              <img class="m-goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
+            </template>
+          </el-table-column>
+          <el-table-column label="商品价格信息（元）" width="160px">
+            <template slot-scope="scope">
+              <div>【单买价】{{scope.row.singlePriceMerge == null ?  '-' : scope.row.singlePriceMerge}}</div>
+              <div>【拼单价】<span class="red-label">{{scope.row.fightPriceMerge == null ?  '-' : scope.row.fightPriceMerge}}</span></div>
+              <div>【供货价】{{scope.row.supplyPriceMerge == null ?  '-' : scope.row.supplyPriceMerge}}</div>
+              <div>【立减优惠】50</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="商品库存" width="100px">
+            <template slot-scope="scope">
+              {{scope.row.sumStock}}
+            </template>
+          </el-table-column>
+          <el-table-column label="累计销量" width="100px">
+            <template slot-scope="scope">
+              {{scope.row.salesVolume}}
+            </template>
+          </el-table-column>
+          <el-table-column label="预约人数" width="120px">
+            <template slot-scope="scope">
+              <div> {{scope.row.bookingNums}}</div>
+              <el-button type="text" style="margin-left:0px;" @click="goBookingList($event, scope.row)">查看预约列表</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="供货商家" width="200px">
+            <template slot-scope="scope">
+              {{scope.row.supplierName}}
+            </template>
+          </el-table-column>
+          <el-table-column label="创建时间" width="200px">
+            <template slot-scope="scope">
+              {{scope.row.createTime | dateFormat}}
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" width="100px">
+            <template slot-scope="scope">
+              <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售中</div>
+              <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">已下架</div>
+              <div v-if="scope.row.isOnSale == 5">平台下架</div>
+              <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock == 0">已售罄</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" fixed="right">
+            <template slot-scope="scope">
+              <el-button type="text" style="margin-left:0px;" @click="edit($event, scope.row)" :actionid="getId('商品列表', '编辑')" v-if="has('商品列表', '编辑')">编辑</el-button>
+              <el-button type="text" style="margin-left:0px;" @click="updateStatus($event, scope.row.id, 1)" :actionid="getId('商品列表', '上架')" v-if="has('商品列表', '上架') && (scope.row.isOnSale == 2 || scope.row.isOnSale == 4)">上架</el-button>
+              <el-button type="text" style="margin-left:0px;" @click="updateStatus($event, scope.row.id, 2)" :actionid="getId('商品列表', '下架')" v-if="has('商品列表', '下架') && (scope.row.isOnSale == 1 || scope.row.isOnSale == 3)">下架</el-button>
+              <el-button type="text" style="margin-left:0px;" @click="del($event, scope.row)" :actionid="getId('商品列表', '删除')" v-if="has('商品列表', '删除')">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange" :style="{'padding-top': '15px'}">
       </el-pagination>
     </div>
 
     <div v-if="activeName == '9'">
       <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
-        <!-- <el-table-column type="selection" width="55px">
-        </el-table-column> -->
-        <!-- <el-table-column type="index" label="序号" width="60px">
-        </el-table-column> -->
         <el-table-column label="商品ID" width="100px" key="activeName9">
           <template slot-scope="scope">
             {{scope.row.id}}
@@ -176,11 +156,6 @@
             {{scope.row.createTime | dateFormat}}
           </template>
         </el-table-column>
-        <!-- <el-table-column label="操作人">
-          <template slot-scope="scope">
-            {{scope.row.operator}}
-          </template>
-        </el-table-column> -->
         <el-table-column label="状态" width="150px">
           <template slot-scope="scope">
             <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售中</div>
@@ -219,12 +194,19 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import 'src/styles/common.scss';
-</style>
-<style>
 .m-goods-preview {
-  width: 76px;
-  height: 56px;
-  border: 1px solid #ddd !important;
+  width: 90px;
+  height: 90px;
   cursor: pointer;
+  object-fit: cover;
+}
+.block-table .el-button {
+  margin-left: 0;
+  margin-right: 10px;
+}
+
+.red-label {
+  color: #FF0000;
 }
 </style>
+

@@ -26,7 +26,21 @@ export default {
       limit: 10,
       listLoading: false,
       selectionDatas: [],
-      orderSns: []
+      orderSns: [],
+      rowData: {},
+      showSendOutDialog: false,
+      shipping: {
+        shippingSn: '',
+        shippingCompany: ''
+      },
+      shippingRules: {
+        shippingSn: [
+          { required: true, message: '请输入物流单号', trigger: 'blur' },
+        ],
+        shippingCompany: [
+          { required: true, message: '请输入物流公司', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -37,10 +51,10 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -54,7 +68,7 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    getSupplierOptions () {
+    getSupplierOptions() {
       getAllSupplierList().then(response => {
         this.chamberOptions = response.data.data
       })
@@ -93,7 +107,7 @@ export default {
         this.listLoading = false
       })
     },
-    reset () {
+    reset() {
       this.query = {
         orderSn: '',
         ckey: '',
@@ -105,7 +119,7 @@ export default {
         date: ''
       }
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       this.orderSns = []
@@ -142,7 +156,7 @@ export default {
         this.orderSns.push(data.orderSn)
       }
     },
-    exportExcel (e) {
+    exportExcel(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -153,7 +167,7 @@ export default {
       // exportJson2Excel('订单列表', this.selectionDatas)
       exportJson2Excel('订单管理', this.selectionDatas)
     },
-    detail (e, row) {
+    detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '订单详情', params: { 'orderSn': row.orderSn, 'isChamber': false } })
     },
@@ -177,20 +191,36 @@ export default {
         this.fetchData()
       })
     },
-    sendOut(e, row) {
+    // 发货前填写物流单号
+    openSendOutDialog(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let orders = []
-      orders.push(row.orderSn)
-      let params = {
-        'orderSnList': orders,
-        'status': 5
-      }
-      updateOrder(params).then(response => {
-        this.$message({
-          message: '发货成功',
-          type: 'success'
-        })
-        this.fetchData()
+      this.rowData = row
+      this.showSendOutDialog = true
+    },
+
+    sendOut(shipping) {
+      this.$refs[shipping].validate((valid) => {
+        if (valid) {
+          let orders = []
+          orders.push(this.rowData.orderSn)
+          let params = {
+            'orderSnList': orders,
+            'status': 5,
+            'shippingSn': this.shipping.shippingSn,
+            'shippingCompany': this.shipping.shippingCompany,
+          }
+          updateOrder(params).then(response => {
+            this.$message({
+              message: '发货成功',
+              type: 'success'
+            })
+            this.showSendOutDialog = false
+            this.fetchData()
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
       })
     }
   }

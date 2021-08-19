@@ -16,11 +16,11 @@
               <el-input v-model="query.supplierName" placeholder="请输入供货商家"/>
             </el-form-item>
           </el-col>
-<!--           <el-col :span="4" style="margin-left:10px;">
-            <el-form-item label="商品ID：">
-              <el-input v-model="query.goodId" type="number" placeholder="请输入商品ID"/>
-            </el-form-item>
-          </el-col> -->
+          <!--           <el-col :span="4" style="margin-left:10px;">
+                      <el-form-item label="商品ID：">
+                        <el-input v-model="query.goodId" type="number" placeholder="请输入商品ID"/>
+                      </el-form-item>
+                    </el-col> -->
           <el-col :span="5">
             <el-form-item label-width="110px" label="商品名称：">
               <el-input v-model.trim="query.goodName" placeholder="请输入商品名称"/>
@@ -64,7 +64,8 @@
               </el-date-picker>
             </el-form-item>
             <el-form-item label=" " style="float: left;margin-left: 10px;">
-              <el-button type="primary" :actionid="getId('', '查询')" v-if="has('', '查询')" @click="fetchData($event)">查询</el-button>
+              <el-button type="primary" :actionid="getId('', '查询')" v-if="has('', '查询')" @click="fetchData($event)">查询
+              </el-button>
               <el-button type="primary" @click="reset($event)">重置</el-button>
             </el-form-item>
           </el-col>
@@ -74,69 +75,71 @@
     <div class="block">
       <el-row>
         <el-col :span="24">
-          <el-button type="primary" size="small" :actionid="getId('', '发货')" v-if="has('', '发货')" @click.native="batchSendOut($event)">发货</el-button>
-          <el-button type="primary" size="small" :actionid="getId('', '导表')" v-if="has('', '导表')" @click.native="exportExcel($event)">导表</el-button>
+          <!--  <el-button type="primary" size="small" :actionid="getId('', '发货')" v-if="has('', '发货')" @click.native="batchSendOut($event)">发货</el-button>  -->
+          <el-button type="primary" size="small" :actionid="getId('', '导表')" v-if="has('', '导表')" @click.native="exportExcel($event)">
+            导表
+          </el-button>
         </el-col>
       </el-row>
     </div>
     <el-table size="mini" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="50px">
-      </el-table-column>
+      <!-- <el-table-column type="selection" width="50px">
+      </el-table-column> -->
       <!-- <el-table-column type="index" label="序号" width="60px">
-      </el-table-column> --> 
+      </el-table-column> -->
       <el-table-column label="订单号" width="70px">
         <template slot-scope="scope">
-          {{scope.row.orderSn}}
+          {{ scope.row.orderSn }}
         </template>
       </el-table-column>
       <el-table-column label="下单时间" width="90px">
         <template slot-scope="scope">
-          {{scope.row.createTime | dateFormat}}
+          {{ scope.row.createTime | dateFormat }}
         </template>
       </el-table-column>
       <el-table-column label="商品名称">
         <template slot-scope="scope">
-          {{scope.row.name}}
+          {{ scope.row.name }}
         </template>
       </el-table-column>
       <el-table-column label="商品规格" width="80px">
         <template slot-scope="scope">
-          {{!scope.row.codeName ? '无' : scope.row.codeName}}
+          {{ !scope.row.codeName ? '无' : scope.row.codeName }}
         </template>
       </el-table-column>
       <el-table-column label="单价(元)" width="80px">
         <template slot-scope="scope">
-          {{scope.row.price}}
+          {{ scope.row.price }}
         </template>
       </el-table-column>
       <el-table-column label="下单数" width="80px">
         <template slot-scope="scope">
-          {{scope.row.count}}
+          {{ scope.row.count }}
         </template>
       </el-table-column>
       <el-table-column label="实付金额(元)" width="100px">
         <template slot-scope="scope">
-          {{scope.row.realPrice}}
+          {{ scope.row.realPrice }}
         </template>
       </el-table-column>
       <el-table-column label="收件人" width="80px">
         <template slot-scope="scope">
-          {{scope.row.consignee}}
+          {{ scope.row.consignee }}
         </template>
       </el-table-column>
       <el-table-column label="收件人手机号" width="100px">
         <template slot-scope="scope">
-          {{scope.row.mobile}}
+          {{ scope.row.mobile }}
         </template>
       </el-table-column>
       <el-table-column label="收货地址">
         <template slot-scope="scope">
-          {{scope.row.consigneeAddress}}
+          {{ scope.row.consigneeAddress }}
         </template>
       </el-table-column>
       <el-table-column label="供货商家">
         <template slot-scope="scope">
-          {{scope.row.supplierName}}
+          {{ scope.row.supplierName }}
         </template>
       </el-table-column>
       <el-table-column label="状态" width="80px">
@@ -151,8 +154,12 @@
       </el-table-column>
       <el-table-column label="操作" width="100px">
         <template slot-scope="scope">
-          <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">详情</el-button>
-           <el-button type="text" @click="sendOut($event, scope.row)" :actionid="getId('', '发货')" v-if="has('', '发货')" :disabled="scope.row.status != 2">发货</el-button>
+          <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">
+            详情
+          </el-button>
+          <el-button type="text" @click="openSendOutDialog($event, scope.row)" :actionid="getId('', '发货')" v-if="has('', '发货')" :disabled="scope.row.status != 2">
+            发货
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -167,11 +174,44 @@
       @current-change="handleCurrentChange"
       :style="{'padding-top': '15px'}">
     </el-pagination>
+
+    <el-dialog title="发货" :visible.sync="showSendOutDialog" width="25%">
+      <el-form ref="shipping" label-position="right" :model="shipping" :rules="shippingRules">
+        <el-form-item label-width="110px" label="物流公司：" prop="shippingCompany">
+          <el-col :span="20">
+            <el-select v-model="shipping.shippingCompany" placeholder="请选择">
+              <el-option label="顺丰速运" :value="'顺丰速运'"></el-option>
+              <el-option label="京东快递" :value="'京东快递'"></el-option>
+              <el-option label="EMS" :value="'EMS'"></el-option>
+              <el-option label="申通快递" :value="'申通快递'"></el-option>
+              <el-option label="圆通速递" :value="'圆通速递'"></el-option>
+              <el-option label="中通快递" :value="'中通快递'"></el-option>
+              <el-option label="韵达速递" :value="'韵达速递'"></el-option>
+              <el-option label="天天快递" :value="'天天快递'"></el-option>
+              <el-option label="百世快递" :value="'百世快递'"></el-option>
+              <el-option label="宅急送" :value="'宅急送'"></el-option>
+              <el-option label="其他" :value="'其他'"></el-option>
+            </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item label-width="110px" label="物流单号：" prop="shippingSn">
+          <el-col :span="20">
+            <el-input v-model.trim="shipping.shippingSn" placeholder="请输入"/>
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-col :offset="6" :span="20">
+            <el-button type="primary" @click="sendOut('shipping')">发布</el-button>
+            <el-button>取消</el-button>
+          </el-col>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script src="./order.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import "src/styles/common.scss";
 </style>

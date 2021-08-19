@@ -1,29 +1,70 @@
 import { getList } from '@/api/mall/mall'
+import { getSetting, updateSetting } from '@/api/system/setting'
 
 export default {
   data() {
     return {
-      list: []
+      showDeliveryConfig: false,
+      showServiceConfig: false,
+      deliveryConfig: {},
+      serviceConfig: {}
     }
   },
+  created() {
+    this.getDeliveryConfig()
+    this.getServiceConfig()
+  },
   methods: {
-    fetchData() {
-      this.listLoading = true
+    getDeliveryConfig() {
       let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'goodsName': this.query.goodsName,
-        'status': this.query.status,
-        'ckey': this.query.ckey
+        key: 'deliveryConfig'
       }
-      if (this.query.date) {
-        params['startTime'] = this.query.date[0]
-        params['endTime'] = this.query.date[1]
+      getSetting(params).then(res => {
+        if (res.state === 1) {
+          this.deliveryConfig = JSON.parse(res.data.value)
+        }
+      })
+    },
+    getServiceConfig() {
+      let params = {
+        key: 'serviceConfig'
       }
-      getList(params).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.totalRows
-        this.listLoading = false
+      getSetting(params).then(res => {
+        if (res.state === 1) {
+          this.serviceConfig = JSON.parse(res.data.value)
+        }
+      })
+    },
+    updateDeliveryConfig() {
+      let params = {
+        key: 'deliveryConfig',
+        value: JSON.stringify(this.deliveryConfig)
+      }
+      updateSetting(params).then(res => {
+        if (res.state === 1) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          this.showDeliveryConfig = false
+          this.getDeliveryConfig()
+        }
+      })
+    },
+    updateServiceConfig() {
+      let params = {
+        key: 'serviceConfig',
+        value: JSON.stringify(this.serviceConfig)
+      }
+      updateSetting(params).then(res => {
+        if (res.state === 1) {
+          this.$message({
+            message: '修改成功',
+            type: 'success'
+          })
+          this.showServiceConfig = false
+          this.getServiceConfig()
+        }
       })
     }
   }
