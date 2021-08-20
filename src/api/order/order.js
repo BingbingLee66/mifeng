@@ -29,7 +29,7 @@ export function updateShipping(params) {
   return request({
     url: baseUrl + '/ec/mall/update-shipping',
     method: 'post',
-    params
+    data: params
   })
 }
 
