@@ -55,9 +55,6 @@ export default {
       startDate: '',
       pickerOptions: {
         disabledDate: this.disabledGetTime,
-        // disableData: (time) => {
-        //   return time.getTime() > (this.formObj.limitTime[0]).getTime() // 选当前时间之前的时间
-        // },
         selectableRange: '00:00:00 - 23:59:59'
       },
       flag: true,
@@ -73,6 +70,12 @@ export default {
       descriptValid: true,
       detailValid: true,
       formObj: {
+        'serviceConfig1': '', // 商会企业供货
+        'serviceConfig2': '', // 品质保证
+        'serviceConfig3': '', // 坏了包赔
+        'deliveryConfig1': '', // 包邮
+        'deliveryConfig2': '', // 发货时间
+        'deliveryConfig3': '', // 发货说明
         'discount': '', // 立减优惠
         'bookingTimeStart': '',
         'isBooking': 0,
@@ -168,7 +171,25 @@ export default {
         ],
         attrName: [
           { required: true, message: '规格类型不能为空', trigger: 'change' }
-        ]
+        ],
+        deliveryConfig1: [
+          { required: true, message: '包邮不能为空', trigger: 'blur' }
+        ],
+        deliveryConfig2: [
+          { required: true, message: '发货时间不能为空', trigger: 'blur' }
+        ],
+        deliveryConfig3: [
+          { required: true, message: '发货说明不能为空', trigger: 'blur' }
+        ],
+        serviceConfig1: [
+          { required: true, message: '商会企业供货不能为空', trigger: 'blur' }
+        ],
+        serviceConfig2: [
+          { required: true, message: '品质保证不能为空', trigger: 'blur' }
+        ],
+        serviceConfig3: [
+          { required: true, message: '坏了包赔不能为空', trigger: 'blur' }
+        ],
       }
     }
   },
@@ -184,6 +205,8 @@ export default {
       this.type = 'edit'
     } else {
       this.type = 'add'
+      this.getDeliveryConfig()
+      this.getServiceConfig()
     }
     this.getSupplierOptions()
     this.getAttrOptions()
@@ -290,6 +313,34 @@ export default {
         }
       })
     },
+    // 获取发货说明
+    getDeliveryConfig() {
+      let params = {
+        key: 'deliveryConfig'
+      }
+      getSetting(params).then(res => {
+        if (res.state === 1) {
+          const resData = JSON.parse(res.data.value)
+          this.formObj.deliveryConfig1 = resData['包邮']
+          this.formObj.deliveryConfig2 = resData['发货时间']
+          this.formObj.deliveryConfig3 = resData['发货说明']
+        }
+      })
+    },
+    // 获取服务保障
+    getServiceConfig() {
+      let params = {
+        key: 'serviceConfig'
+      }
+      getSetting(params).then(res => {
+        if (res.state === 1) {
+          const resData = JSON.parse(res.data.value)
+          this.formObj.serviceConfig1 = resData['商会企业供货']
+          this.formObj.serviceConfig2 = resData['品质保证']
+          this.formObj.serviceConfig3 = resData['坏了包赔']
+        }
+      })
+    },
     fetchData() {
       let params = {
         'id': this.goodsId
@@ -297,6 +348,20 @@ export default {
       getGoodsDetail(params).then(response => {
         const obj = response.data.goodsDetail
         this.formObj = obj
+        // <-- 发货说明和服务保障
+        if (obj.deliveryConfig) {
+          const deliveryConfigData = JSON.parse(obj.deliveryConfig)
+          this.formObj.deliveryConfig1 = deliveryConfigData['包邮']
+          this.formObj.deliveryConfig2 = deliveryConfigData['发货时间']
+          this.formObj.deliveryConfig3 = deliveryConfigData['发货说明']
+        }
+        if (obj.serviceConfig) {
+          const serviceConfigData = JSON.parse(obj.serviceConfig)
+          this.formObj.serviceConfig1 = serviceConfigData['商会企业供货']
+          this.formObj.serviceConfig2 = serviceConfigData['品质保证']
+          this.formObj.serviceConfig3 = serviceConfigData['坏了包赔']
+        }
+        // 发货说明和服务保障 -->
         // 预约时间
         if (obj.isBooking) {
           this.showBooking = true
@@ -1033,7 +1098,19 @@ export default {
               o.supplyPrice = 0
             }
           })
+          let _deliveryConfig = {
+            '包邮': this.formObj.deliveryConfig1,
+            '发货时间': this.formObj.deliveryConfig2,
+            '发货说明': this.formObj.deliveryConfig3,
+          }
+          let _serviceConfig = {
+            '商会企业供货': this.formObj.serviceConfig1,
+            '品质保证': this.formObj.serviceConfig2,
+            '坏了包赔': this.formObj.serviceConfig3,
+          }
           let obj = {
+            'deliveryConfig': JSON.stringify(_deliveryConfig),
+            'serviceConfig': JSON.stringify(_serviceConfig),
             'discount': this.formObj.discount,
             'bookingTimeStart': this.formObj.bookingTimeStart,
             'isBooking': this.formObj.isBooking,

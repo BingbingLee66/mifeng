@@ -444,17 +444,17 @@
         <el-row>
           <div class="goods-bar-info"><span>4</span>发货说明</div>
         </el-row>
-        <el-form-item :required="true" label="包邮：">
+        <el-form-item label="包邮：" prop="deliveryConfig1">
           <el-col :span="10">
             <el-input v-model="formObj.deliveryConfig1"></el-input>
           </el-col>
         </el-form-item>
-        <el-form-item :required="true" label="发货时间：">
+        <el-form-item label="发货时间：" prop="deliveryConfig2">
           <el-col :span="10">
             <el-input v-model="formObj.deliveryConfig2"></el-input>
           </el-col>
         </el-form-item>
-        <el-form-item :required="true" label="发货说明：">
+        <el-form-item label="发货说明：" prop="deliveryConfig3">
           <el-col :span="10">
             <el-input resize="none" type="textarea" v-model="formObj.deliveryConfig3"></el-input>
           </el-col>
@@ -464,17 +464,17 @@
         <el-row>
           <div class="goods-bar-info"><span>5</span>服务保障</div>
         </el-row>
-        <el-form-item :required="true" label="商会企业供货：">
+        <el-form-item label="商会企业供货：" prop="serviceConfig1">
           <el-col :span="10">
             <el-input v-model="formObj.serviceConfig1"></el-input>
           </el-col>
         </el-form-item>
-        <el-form-item :required="true" label="品质保证：">
+        <el-form-item label="品质保证：" prop="serviceConfig2">
           <el-col :span="10">
             <el-input v-model="formObj.serviceConfig2"></el-input>
           </el-col>
         </el-form-item>
-        <el-form-item :required="true" label="坏了包赔：">
+        <el-form-item label="坏了包赔：" prop="serviceConfig3">
           <el-col :span="10">
             <el-input resize="none" type="textarea" v-model="formObj.serviceConfig3"></el-input>
           </el-col>
