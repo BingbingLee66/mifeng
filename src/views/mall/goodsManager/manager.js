@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     // ...mapGetters(['has'])
-    chamberName () {
+    chamberName() {
       return function(ckey) {
         let chamberName = ''
         for (let chamber of this.chamberOptions) {
@@ -40,15 +40,15 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.getChamberOptions()
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -62,7 +62,7 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    getChamberOptions () {
+    getChamberOptions() {
       getChamberOptions().then(response => {
         this.chamberOptions = response.data.data
       })
@@ -70,7 +70,10 @@ export default {
     init() {
       this.fetchData()
     },
-    fetchData() {
+    fetchData(e) {
+      if (e !== undefined) {
+        this.currentpage = 1
+      }
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
@@ -105,7 +108,7 @@ export default {
         this.listLoading = false
       })
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
@@ -174,11 +177,11 @@ export default {
         this.fetchData()
       })
     },
-    detail (e, row) {
+    detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '商品详情', params: { goodsId: row.id } })
     },
-    openPreviewModal (url) {
+    openPreviewModal(url) {
       this.previewImgVisible = true
       this.previewUrl = url
     }
