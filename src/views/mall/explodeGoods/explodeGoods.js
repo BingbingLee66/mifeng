@@ -4,7 +4,7 @@ import { getChamberOptions } from '@/api/finance/finance'
 export default {
   data() {
     var checkNumber = (rule, value, callback) => {
-      if (!/^(?:0|[1-9][0-9][0-9]?|9)$/.test(value)) {
+      if (!/^([0-9]{0,3})$/.test(value)) {
         return callback(new Error('必须是0-999的整数'))
       } else {
         callback() // 必须加上这个，不然一直塞在验证状态
