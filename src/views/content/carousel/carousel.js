@@ -17,6 +17,16 @@ export default {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
     }
+    var checkName = (rule, value, callback) => {
+      if (!/^$|^([1-9]\d*)$/.test(value)) {
+        return callback(new Error('必须是大于0的整数'))
+      }else if(value.trim() > 30){
+        return callback(new Error('sss'))
+      }
+       else {
+        callback() // 必须加上这个，不然一直塞在验证状态
+      }
+    }
     return {
       list: [],
       listLoading: false,
@@ -35,7 +45,8 @@ export default {
           { validator: checkId, trigger: 'change' }
         ],
         title: [
-          { required: true, message: '文章标题不能为空', trigger: 'blur' }
+          { required: true, message: '文章标题不能为空', trigger: 'blur' },
+          { validator: checkName, trigger: 'blur' }
         ],
         level: [
           { required: true, message: '权重不能为空', trigger: 'blur' },
