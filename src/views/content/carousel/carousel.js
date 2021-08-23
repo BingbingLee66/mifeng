@@ -148,7 +148,7 @@ export default {
         title: row.title,
         articleId: row.articleId,
         level: row.level,
-        type: row.type === 0 ? 0 : row.type,
+        type: row.type === '' ? 0 : row.type,
         img: row.img
       }
       if (!this.formObj.articleId) {
