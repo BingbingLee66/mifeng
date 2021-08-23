@@ -77,7 +77,7 @@
             <div>【单买价】{{ scope.row.singlePriceMerge }}</div>
             <div>【拼单价】<span class="red-label">{{ scope.row.fightPriceMerge }}</span></div>
             <div>【供货价】{{ scope.row.supplyPriceMerge }}</div>
-            <div>【立减优惠】50</div>
+            <div>【立减优惠】{{scope.row.discount}}</div>
           </template>
         </el-table-column>
         <el-table-column label="库存" width="100px">
