@@ -25,7 +25,7 @@
             <div class="dy-form-label">
               <span style="color: #F56C6C;padding: 5px;">*</span><span>商品轮播图：</span>
             </div>
-            <span class="dy-form-tip">支持图片/视频。图片大小不能超过2M，建议尺寸800X800，支持JPG、PNG。视频大小不能超过200M，只支持MP4</span>
+            <span class="dy-form-tip">支持图片/视频。图片大小不能超过2M，建议尺寸750X750，支持JPG、PNG。视频大小不能超过200M，只支持MP4</span>
           </el-col>
         </el-row>
         <el-row>
