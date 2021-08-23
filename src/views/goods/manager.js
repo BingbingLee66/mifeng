@@ -22,7 +22,7 @@ export default {
       query: {
         id: '',
         name: '',
-        status: '',
+        status: -1,
         date: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
