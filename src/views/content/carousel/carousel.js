@@ -29,7 +29,7 @@ export default {
       listLoading: false,
       ckey: this.$store.getters.ckey === null ? '' : this.$store.getters.ckey,
       formObj: {
-        type: 0,
+        type: null,
         title: '',
         articleId: '',
         level: '',
@@ -118,8 +118,7 @@ export default {
     add(e) {
       let actionid = e.currentTarget.getAttribute('actionid')
       let params = {
-        'ckey': this.ckey,
-        'type': 1
+        'ckey': this.ckey
       }
       checkUpperLimit(params).then(response => {
         const count = response.data.count
@@ -134,7 +133,7 @@ export default {
             articleId: '',
             level: '',
             img: '',
-            type: ''
+            type: null
           }
           this.visible = true
         }
@@ -147,7 +146,7 @@ export default {
         title: row.title,
         articleId: row.articleId,
         level: row.level,
-        type: row.type === '' ? 0 : row.type,
+        type: row.type === 0 ? null : row.type,
         img: row.img
       }
       if (!this.formObj.articleId) {
@@ -161,8 +160,9 @@ export default {
           // 编辑
           if (this.formObj.id) {
             this.formObj['ckey'] = this.ckey
-            this.formObj.articleId = this.formObj.articleId.trim()
-            this.formObj.title = this.formObj.title.trim()
+            if (this.formObj.type === null) {
+              this.formObj.type = 0
+            }
             save(this.formObj).then(response => {
               if (response.state === 1) {
                 this.$message({
@@ -183,8 +183,7 @@ export default {
           } else {
             // 添加
             let params = {
-              'ckey': this.ckey,
-              'type': 1
+              'ckey': this.ckey
             }
             checkUpperLimit(params).then(response => {
               const count = response.data.count
@@ -192,11 +191,10 @@ export default {
                 this.$alert('轮播图数量已达上限10张', {
                   confirmButtonText: '确定'
                 })
+                return
               } else {
                 this.formObj['ckey'] = this.ckey
-                this.formObj.articleId = this.formObj.articleId.trim()
-                this.formObj.title = this.formObj.title.trim()
-                if (this.formObj.type === '') {
+                if (this.formObj.type === null) {
                   this.formObj.type = 0
                 }
                 save(this.formObj).then(response => {
@@ -247,6 +245,14 @@ export default {
           message: '取消删除'
         })
       })
+    },
+
+    handleClear(e) {
+      if (e === undefined) {
+        this.formObj.type = null
+        this.formObj.articleId = ''
+        this.formObj.title = ''
+      }
     },
 
     // 修改权重

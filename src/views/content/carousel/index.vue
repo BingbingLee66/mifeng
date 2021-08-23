@@ -57,7 +57,7 @@
         <el-row>
           <el-col :offset="2" :span="10">
             <el-form-item label="关联内容：">
-              <el-select v-model="formObj.type" placeholder="请选择" clearable>
+              <el-select v-model="formObj.type" placeholder="请选择" clearable @clear="handleClear">
                 <el-option label="文章" :value="1"></el-option>
                 <el-option label="商品" :value="2"></el-option>
               </el-select>
