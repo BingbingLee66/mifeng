@@ -18,10 +18,8 @@ export default {
       }
     }
     var checkName = (rule, value, callback) => {
-      if (!/^$|^([1-9]\d*)$/.test(value)) {
-        return callback(new Error('必须是大于0的整数'))
-      } else if (value.trim() > 30) {
-        return callback(new Error('sss'))
+      if (value.trim() === '') {
+        return callback(new Error('标题不能为空'))
       } else {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
@@ -41,14 +39,15 @@ export default {
       rules: {
         articleId: [
           { required: true, message: '文章ID不能为空', trigger: 'blur' },
-          { validator: checkId, trigger: 'change' }
+          { validator: checkId, trigger: 'blur' }
         ],
         title: [
-          { required: true, message: '文章标题不能为空', trigger: 'blur' }
+          { required: true, message: '文章标题不能为空', trigger: 'blur' },
+          { validator: checkName, trigger: 'blur' }
         ],
         level: [
           { required: true, message: '权重不能为空', trigger: 'blur' },
-          { validator: checkNumber, trigger: 'change' }
+          { validator: checkNumber, trigger: 'blur' }
         ],
         img: [
           { required: true, message: '图片必须上传', trigger: 'blur' }
@@ -162,6 +161,8 @@ export default {
           // 编辑
           if (this.formObj.id) {
             this.formObj['ckey'] = this.ckey
+            this.formObj.articleId = this.formObj.articleId.trim()
+            this.formObj.title = this.formObj.title.trim()
             save(this.formObj).then(response => {
               if (response.state === 1) {
                 this.$message({
@@ -193,6 +194,8 @@ export default {
                 })
               } else {
                 this.formObj['ckey'] = this.ckey
+                this.formObj.articleId = this.formObj.articleId.trim()
+                this.formObj.title = this.formObj.title.trim()
                 if (this.formObj.type === '') {
                   this.formObj.type = 0
                 }

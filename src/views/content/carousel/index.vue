@@ -74,7 +74,7 @@
         <el-row v-if="formObj.type==1 || formObj.type==2">
           <el-col :offset="2" :span="20">
             <el-form-item :label="formObj.type==1?'文章标题：':'商品标题：'" prop="title">
-              <el-input v-model="formObj.title" show-word-limit maxlength="60" placeholder="60字内"></el-input>
+              <el-input v-model="formObj.title" show-word-limit :maxlength="formObj.type==1?60:30" :placeholder="formObj.type==1?'60字内':'30字内'"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
