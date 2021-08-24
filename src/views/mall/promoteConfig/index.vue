@@ -87,19 +87,30 @@
       <el-dialog
         title="生成渠道码"
         :visible.sync="channelCodeDialog"
-        width="625px">
-        <div style="border: 1px solid #d6d5d5;border-radius: 20px;">
+        width="600px">
+        <div style="width: 505px;margin: 0 auto">
           <div id="postdiv" class="channel-code-wrap">
             <div class="channel-code-img">
               <img class="qr-code" :src="channelCode">
             </div>
-            <div class="channel-code-info">推广渠道：<span style="color: #222222;">{{ rowData.channelName }}</span></div>
-            <div class="channel-code-info">推广商品：<span style="color: #222222;">{{ rowData.goodsName }}</span></div>
-            <div class="channel-code-info">来源商会：<span style="color: #222222;">{{ rowData.chamberName }}</span></div>
+            <div class="channel-code-info">
+              <div class="item">
+                <div class="tit">推广渠道：</div>
+                <div class="txt">{{ rowData.channelName }}</div>
+              </div>
+              <div class="item">
+                <div class="tit">推广商品：</div>
+                <div class="txt">{{ rowData.goodsName }}</div>
+              </div>
+              <div class="item">
+                <div class="tit">来源商会：</div>
+                <div class="txt txt-1">{{ rowData.chamberName }}</div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div style="text-align: center;margin-top: 5px">
-          <el-button type="primary" @click="downloadCode" :loading="isLoading">保存</el-button>
+          <div style="text-align: center;margin-top: 5px">
+            <el-button type="primary" @click="downloadCode" :loading="isLoading">保存</el-button>
+          </div>
         </div>
       </el-dialog>
     </div>
@@ -167,23 +178,22 @@
 @import "src/styles/common.scss";
 
 .channel-code-wrap {
-  width: 580px;
-  height: 740px;
+  width: 502px;
+  height: 702px;
   background: #fff;
+  border: 1px solid #d6d5d5;
   border-radius: 20px;
-  padding: 40px;
-  box-sizing: border-box;
   font-size: 16px;
   font-family: PingFang SC, PingFang SC-Regular;
   color: #999999;
+  overflow: hidden;
 
   .channel-code-img {
     width: 500px;
     height: 500px;
     background: #ffffff;
-    border: 1px solid #d6d5d5;
+    border-bottom: 1px solid #d6d5d5;
     border-radius: 1px;
-    margin-bottom: 34px;
 
     .qr-code {
       width: 100%;
@@ -192,7 +202,29 @@
   }
 
   .channel-code-info {
-    margin-top: 18px;
+    padding: 20px 33px 33px 33px;
+    box-sizing: border-box;
+
+    .item {
+      display: flex;
+      margin-top: 18px;
+
+      .tit {
+        width: 80px;
+        flex-shrink: 0;
+        line-height: 24px;
+      }
+
+      .txt {
+        font-weight: bold;
+        color: #222222;
+        line-height: 24px;
+      }
+
+      .txt-1 {
+        color: #dc0000;
+      }
+    }
   }
 }
 
