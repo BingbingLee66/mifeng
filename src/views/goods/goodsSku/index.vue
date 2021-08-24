@@ -165,7 +165,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="商品进货价：" size="mini" :prop="'singleSku[0].supplyPrice'" :rules="rules.supplyPrice">
+                  <el-form-item label="商品供货价：" size="mini" :prop="'singleSku[0].supplyPrice'" :rules="rules.supplyPrice">
                     <el-input v-model="formObj.singleSku[0].supplyPrice" maxLength="10">
                       <template slot="append">元</template>
                     </el-input>
@@ -182,7 +182,7 @@
               <hr size="1" style="margin: 0 -20px;"/>
               <el-row>
                 <div class="sku-tip">
-                  <span style="color: #F56C6C;padding: 5px;">*</span><span :style="{ color: computedColor }">价格设定规则：进货价＜拼单价＜单买价＜市场价</span>
+                  <span style="color: #F56C6C;padding: 5px;">*</span><span :style="{ color: computedColor }">价格设定规则：供货价＜=拼单价＜单买价＜市场价</span>
                 </div>
               </el-row>
             </div>
@@ -287,7 +287,7 @@
                   </el-input>
                 </el-col>
                 <el-col :span="4" class="mul-set">
-                  <el-input v-model="uniSetting.supplyPrice" size="mini" placeholder="商品进货价" maxLength="10">
+                  <el-input v-model="uniSetting.supplyPrice" size="mini" placeholder="商品供货价" maxLength="10">
                     <template slot="append">元</template>
                   </el-input>
                 </el-col>
@@ -313,7 +313,7 @@
                 </el-col>
                 <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>商品市场价(元)
                 </el-col>
-                <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>商品进货价(元)
+                <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>商品供货价(元)
                 </el-col>
                 <el-col :span="3" class="sku-table-content"><span style="color: #F56C6C;padding: 5px;">*</span>库存数(件)
                 </el-col>
@@ -347,7 +347,7 @@
                 </el-col>
                 <el-col :span="3" class="sku-table-content sku-table-img">
                   <el-form-item label-width="0" size="mini" :prop="'multiSku[' + index + '].supplyPrice'" :rules="rules.supplyPrice" style="margin-top: 15px;">
-                    <el-input v-model="sku.supplyPrice" size="mini" placeholder="商品进货价" maxLength="10">
+                    <el-input v-model="sku.supplyPrice" size="mini" placeholder="商品供货价" maxLength="10">
                     </el-input>
                   </el-form-item>
                 </el-col>
@@ -393,7 +393,7 @@
               <hr size="1" style="margin: 0 -20px;"/>
               <el-row>
                 <div class="sku-tip">
-                  <span style="color: #F56C6C;padding: 5px;">*</span><span :style="{ color: computedColor }">价格设定规则：进货价＜拼单价＜单买价＜市场价</span>
+                  <span style="color: #F56C6C;padding: 5px;">*</span><span :style="{ color: computedColor }">价格设定规则：供货价＜=拼单价＜单买价＜市场价</span>
                 </div>
               </el-row>
             </div>
