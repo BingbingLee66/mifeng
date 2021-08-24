@@ -83,6 +83,27 @@
       <img :src="previewUrl" style="width: 100%; padding:20px;">
     </el-dialog>
 
+    <div class="code-dialog">
+      <el-dialog
+        title="生成渠道码"
+        :visible.sync="channelCodeDialog"
+        width="625px">
+        <div style="border: 1px solid #d6d5d5;border-radius: 20px;">
+          <div id="postdiv" class="channel-code-wrap">
+            <div class="channel-code-img">
+              <img class="qr-code" :src="channelCode">
+            </div>
+            <div class="channel-code-info">推广渠道：<span style="color: #222222;">{{ rowData.channelName }}</span></div>
+            <div class="channel-code-info">推广商品：<span style="color: #222222;">{{ rowData.goodsName }}</span></div>
+            <div class="channel-code-info">来源商会：<span style="color: #222222;">{{ rowData.chamberName }}</span></div>
+          </div>
+        </div>
+        <div style="text-align: center;margin-top: 5px">
+          <el-button type="primary" @click="downloadCode" :loading="isLoading">保存</el-button>
+        </div>
+      </el-dialog>
+    </div>
+
     <el-dialog
       title="生成短链接"
       :visible.sync="channelLinkDialog"
@@ -144,6 +165,37 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
+
+.channel-code-wrap {
+  width: 580px;
+  height: 740px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px;
+  box-sizing: border-box;
+  font-size: 16px;
+  font-family: PingFang SC, PingFang SC-Regular;
+  color: #999999;
+
+  .channel-code-img {
+    width: 500px;
+    height: 500px;
+    background: #ffffff;
+    border: 1px solid #d6d5d5;
+    border-radius: 1px;
+    margin-bottom: 34px;
+
+    .qr-code {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .channel-code-info {
+    margin-top: 18px;
+  }
+}
+
 </style>
 <style lang="scss">
 .goods-preview {
@@ -160,5 +212,11 @@
 
 .red-label {
   color: #FF0000;
+}
+
+.code-dialog {
+  .el-dialog {
+    margin-top: 2vh !important;
+  }
 }
 </style>

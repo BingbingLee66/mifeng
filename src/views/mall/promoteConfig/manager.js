@@ -8,6 +8,7 @@ import {
 } from '@/api/mall/channel'
 import { adminUdateGoodsStatus, batchAdminUpdateGoodsStatus, getGoodsQrcode } from '@/api/goods/goods'
 import { getGoodsDetail } from '@/api/goods/goodsSku'
+import domtoimage from 'dom-to-image'
 
 // import { mapGetters } from 'vuex'
 
@@ -21,14 +22,18 @@ export default {
       }
     }
     return {
+      isLoading: false,
       channelList: [], // 关联渠道列表
       goodsDetail: {}, // 商品详情
       channelLink: '',
+      channelCode: '',
       promoteChannelDialog: false,
       channelLinkDialog: false,
+      channelCodeDialog: false,
       showGoodIdsDetail: false,
       delDialog: false,
       rowIds: [],
+      rowData: [],
       promoteForm: {
         channelId: '',
         goodsId: ''
@@ -157,17 +162,38 @@ export default {
 
     // 生成渠道码
     createCode(e, row) {
+      this.channelCodeDialog = true
+      this.rowData = row
       getGoodsQrcode({ id: row.goodsId }).then(res => {
         if (res.state === 1) {
-          let imgUrl = res.data.qrCode
+          this.channelCode = res.data.qrCode
+          /* let imgUrl = res.data.qrCode
           let alink = document.createElement('a')
           alink.href = imgUrl
           alink.target = '_blank'
-          alink.click()
+          alink.click()*/
         } else {
           console.log(res)
         }
       })
+    },
+
+    downloadCode() {
+      const _this = this
+      this.isLoading = true
+      const node = document.getElementById('postdiv')
+      domtoimage.toPng(node)
+        .then((dataUrl) => {
+          var a = document.createElement('a')
+          a.download = '渠道码'
+          a.href = dataUrl
+          a.click()
+          _this.isLoading = false
+        })
+        .catch(function(error) {
+          console.error('oops, something went wrong!', error)
+          _this.isLoading = false
+        })
     },
 
     // 生成短连接
@@ -175,7 +201,6 @@ export default {
       this.channelLinkDialog = true
       getChannelPromoteLink({ id: row.id }).then(res => {
         if (res.state === 1) {
-          console.log(res)
           this.channelLink = res.data
         } else {
           console.log(res)
