@@ -1018,6 +1018,43 @@ export default {
       }
       return valid
     },
+    verifyDiscountPrice() {
+      // 立减优惠＜拼单价
+      let valid = true
+      if (this.formObj.specType === 0) { // 单品
+        if (parseFloat(this.formObj.singleSku[0].fightPrice) > parseFloat(this.formObj.discount)) {
+          this.priceVerify = true
+          valid = true
+        } else {
+          this.priceVerify = false
+          valid = false
+        }
+      } else if (this.formObj.specType === 1) { // 多规格
+        const that = this
+        const falg = this.formObj.multiSku.every((item, index, array) => {
+          return parseFloat(item.fightPrice) > parseFloat(that.formObj.discount)
+        })
+        if (falg) {
+          this.priceVerify = true
+          valid = true
+        } else {
+          this.priceVerify = false
+          valid = false
+        }
+        /* this.formObj.multiSku.forEach(obj => {
+          console.log('多规格多规格多规格：', obj)
+
+          if (parseFloat(obj.fightPrice) > ) {
+            this.priceVerify = true
+            valid = true
+          } else {
+            this.priceVerify = false
+            valid = false
+          }
+        }) */
+      }
+      return valid
+    },
     save() {
       this.$refs['form'].validate((valid) => {
         if (this.formObj.gallery.length === 0) {
@@ -1049,6 +1086,13 @@ export default {
           this.$message({
             type: 'info',
             message: '请注意价格规则：供货价<=拼单价<单买价<市场价'
+          })
+        }
+        if (!this.verifyDiscountPrice()) {
+          valid = false
+          this.$message({
+            type: 'info',
+            message: '请注意价格规则：立减优惠＜拼单价'
           })
         }
         if (this.formObj.bookingTimeStart && this.formObj.limitTime[0]) {

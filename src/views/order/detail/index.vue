@@ -22,7 +22,7 @@
           订单状态：{{ status(detailObj.status) }}
         </el-col>
         <el-col :span="8">
-          付款时间：{{ detailObj.payTime }}
+          付款时间：{{ detailObj.payTime ? detailObj.payTime : '- -' }}
         </el-col>
       </el-row>
       <el-row>
