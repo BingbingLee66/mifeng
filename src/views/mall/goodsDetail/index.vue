@@ -235,6 +235,19 @@
           </el-col>
         </el-row>
 
+        <el-row>
+          <el-col :span="2">
+            <div class="dy-form-label">
+              <span>立减优惠：</span>
+            </div>
+          </el-col>
+          <el-col :span="20">
+            <el-form-item label="">
+              {{ detailObj.discount }}
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <hr size="1"/>
         <el-row>
           <div class="goods-bar-info"><span>4</span>发货说明</div>
