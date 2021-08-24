@@ -127,6 +127,7 @@ export default {
       this.promoteChannelDialog = true
       this.promoteForm.goodsId = ''
       this.promoteForm.channelId = ''
+      this.goodsDetail = {}
     },
 
     handleInput(e) {

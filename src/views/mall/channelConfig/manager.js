@@ -27,7 +27,7 @@ export default {
       },
       rules: {
         channelName: [
-          { required: true, message: '供货商家名称不能为空', trigger: 'blur' },
+          { required: true, message: '渠道名称不能为空', trigger: 'blur' },
           { validator: checkChannelName, trigger: 'blur' }
         ],
       }
