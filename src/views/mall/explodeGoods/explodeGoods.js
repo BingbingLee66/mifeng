@@ -183,6 +183,10 @@ export default {
       }
       addExplodeGoods(this.allGoodsIdList).then(res => {
         if (res.state === 1) {
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          })
           this.getAllGoodsLists()
         }
       })
