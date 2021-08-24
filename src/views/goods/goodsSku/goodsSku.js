@@ -156,7 +156,7 @@ export default {
           { validator: checkFee, trigger: 'change' }
         ],
         supplyPrice: [
-          { required: true, message: '进货价不能为空', trigger: 'blur' },
+          { required: true, message: '供货价不能为空', trigger: 'blur' },
           { validator: checkFee2, trigger: 'change' }
         ],
         salesVolume: [
@@ -988,10 +988,10 @@ export default {
       })
     },
     verifyPrice() {
-      // 供货价＜拼单价＜单买价＜市场价
+      // 供货价＜=拼单价＜单买价＜市场价
       let valid = true
       if (this.formObj.specType === 0) { // 单品
-        if (parseFloat(this.formObj.singleSku[0].supplyPrice) < parseFloat(this.formObj.singleSku[0].fightPrice) &&
+        if (parseFloat(this.formObj.singleSku[0].supplyPrice) <= parseFloat(this.formObj.singleSku[0].fightPrice) &&
           parseFloat(this.formObj.singleSku[0].fightPrice) < parseFloat(this.formObj.singleSku[0].price) &&
           parseFloat(this.formObj.singleSku[0].price) < parseFloat(this.formObj.singleSku[0].marketingPrice)) {
           this.priceVerify = true
@@ -1002,7 +1002,7 @@ export default {
         }
       } else if (this.formObj.specType === 1) { // 多规格
         this.formObj.multiSku.forEach(obj => {
-          if (parseFloat(obj.supplyPrice) < parseFloat(obj.fightPrice) &&
+          if (parseFloat(obj.supplyPrice) <= parseFloat(obj.fightPrice) &&
             parseFloat(obj.fightPrice) < parseFloat(obj.price) &&
             parseFloat(obj.price) < parseFloat(obj.marketingPrice)) {
             this.priceVerify = true
@@ -1045,7 +1045,7 @@ export default {
           valid = false
           this.$message({
             type: 'info',
-            message: '请注意价格规则：供货价<拼单价<单买价<市场价'
+            message: '请注意价格规则：供货价<=拼单价<单买价<市场价'
           })
         }
         if (this.formObj.bookingTimeStart && this.formObj.limitTime[0]) {

@@ -121,13 +121,13 @@
                     {{ detailObj.singleSku[0].fightPrice }}
                   </el-col>
                   <el-col style="width: 20%;" class="dtl-sku-table-content dtl-sku-table-input">
-                    {{ detailObj.singleSku[0].stock }}
-                  </el-col>
-                  <el-col style="width: 20%;" class="dtl-sku-table-content dtl-sku-table-input">
                     {{ detailObj.singleSku[0].marketingPrice }}
                   </el-col>
                   <el-col style="width: 20%;" class="dtl-sku-table-content dtl-sku-table-input">
                     {{ detailObj.singleSku[0].supplyPrice }}
+                  </el-col>
+                  <el-col style="width: 20%;" class="dtl-sku-table-content dtl-sku-table-input">
+                    {{ detailObj.singleSku[0].stock }}
                   </el-col>
                 </el-row>
                 <el-row>
@@ -159,7 +159,7 @@
                   <el-col :span="3" class="dtl-sku-table-content">单买价(元)</el-col>
                   <el-col :span="3" class="dtl-sku-table-content">拼单价(元)</el-col>
                   <el-col :span="3" class="dtl-sku-table-content">商品市场价(元)</el-col>
-                  <el-col :span="3" class="dtl-sku-table-content">商品进货价(元)</el-col>
+                  <el-col :span="3" class="dtl-sku-table-content">商品供货价(元)</el-col>
                   <el-col :span="3" class="dtl-sku-table-content">库存数(件)</el-col>
                   <el-col :span="3" class="dtl-sku-table-content">图片</el-col>
                 </el-row>
