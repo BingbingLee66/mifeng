@@ -121,13 +121,13 @@
                     {{ detailObj.singleSku[0].fightPrice }}
                   </el-col>
                   <el-col style="width: 20%;" class="dtl-sku-table-content dtl-sku-table-input">
-                    {{ detailObj.singleSku[0].stock }}
-                  </el-col>
-                  <el-col style="width: 20%;" class="dtl-sku-table-content dtl-sku-table-input">
                     {{ detailObj.singleSku[0].marketingPrice }}
                   </el-col>
                   <el-col style="width: 20%;" class="dtl-sku-table-content dtl-sku-table-input">
                     {{ detailObj.singleSku[0].supplyPrice }}
+                  </el-col>
+                  <el-col style="width: 20%;" class="dtl-sku-table-content dtl-sku-table-input">
+                    {{ detailObj.singleSku[0].stock }}
                   </el-col>
                 </el-row>
                 <el-row>
