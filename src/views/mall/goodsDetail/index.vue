@@ -217,7 +217,8 @@
             </div>
           </el-col>
           <el-col :span="20">
-            <el-form-item label="">
+            <el-form-item label="" v-if="detailObj.limitTimeStart == null && detailObj.limitTimeEnd == null ">无</el-form-item>
+            <el-form-item label="" v-if="detailObj.limitTimeStart != null && detailObj.limitTimeEnd != null ">
               {{ detailObj.limitTimeStart | dateFormat }}至{{ detailObj.limitTimeEnd | dateFormat }}
             </el-form-item>
           </el-col>
@@ -225,7 +226,7 @@
         <el-row>
           <el-col :span="2">
             <div class="dy-form-label">
-              <span>单次限购：</span>
+              <span>单人限购：</span>
             </div>
           </el-col>
           <el-col :span="20">
