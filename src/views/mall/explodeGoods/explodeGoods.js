@@ -183,6 +183,10 @@ export default {
       }
       addExplodeGoods(this.allGoodsIdList).then(res => {
         if (res.state === 1) {
+          this.$message({
+            message: '添加成功',
+            type: 'success'
+          })
           this.getAllGoodsLists()
           this.fetchData()
         }
@@ -193,11 +197,29 @@ export default {
       console.log(row)
       let delGoodsId = []
       delGoodsId.push(row.id)
-      deleteExplodeGoods(delGoodsId).then(res => {
-        if (res.state === 1) {
-          this.fetchData()
+      this.$confirm('', '确定移除？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
+        let params = {
+          'id': row.id
         }
+        deleteExplodeGoods(delGoodsId).then(res => {
+          if (res.state === 1) {
+            this.$message({
+              message: '移除成功',
+              type: 'success'
+            })
+            this.fetchData()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '移除删除'
+        })
       })
+
     },
     // 批量移除
     handleSelectionChange(value) {
