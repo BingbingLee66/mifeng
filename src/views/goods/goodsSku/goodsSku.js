@@ -993,7 +993,8 @@ export default {
       if (this.formObj.specType === 0) { // 单品
         if (parseFloat(this.formObj.singleSku[0].supplyPrice) <= parseFloat(this.formObj.singleSku[0].fightPrice) &&
           parseFloat(this.formObj.singleSku[0].fightPrice) < parseFloat(this.formObj.singleSku[0].price) &&
-          parseFloat(this.formObj.singleSku[0].price) < parseFloat(this.formObj.singleSku[0].marketingPrice)) {
+          parseFloat(this.formObj.singleSku[0].price) < parseFloat(this.formObj.singleSku[0].marketingPrice) &&
+          parseFloat(this.formObj.singleSku[0].fightPrice) > parseFloat(this.formObj.discount)) {
           this.priceVerify = true
           valid = true
         } else {
@@ -1001,10 +1002,12 @@ export default {
           valid = false
         }
       } else if (this.formObj.specType === 1) { // 多规格
+        const that = this
         this.formObj.multiSku.forEach(obj => {
           if (parseFloat(obj.supplyPrice) <= parseFloat(obj.fightPrice) &&
             parseFloat(obj.fightPrice) < parseFloat(obj.price) &&
-            parseFloat(obj.price) < parseFloat(obj.marketingPrice)) {
+            parseFloat(obj.price) < parseFloat(obj.marketingPrice) &&
+            parseFloat(obj.fightPrice) > parseFloat(that.formObj.discount)) {
             this.priceVerify = true
             valid = true
           } else {
