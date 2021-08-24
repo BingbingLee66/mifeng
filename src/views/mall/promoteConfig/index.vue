@@ -1,61 +1,63 @@
 <template>
   <div class="app-container">
-     <div class="block">
+    <div class="block">
       <el-row>
         <el-col :span="24">
-          <el-button type="primary" :actionid="getId('', '创建推广信息')" v-if="has('', '创建推广信息')" @click.native="addSupplier($event)">创建推广信息</el-button>
+          <el-button type="primary" :actionid="getId('', '创建推广信息')" v-if="has('', '创建推广信息')" @click.native="addPromoteChannel($event)">
+            创建推广信息
+          </el-button>
         </el-col>
       </el-row>
     </div>
     <div class="block-table">
-      <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-        <el-table-column label="推广ID">
+      <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
+        <el-table-column label="推广ID" width="100px">
           <template slot-scope="scope">
-            {{scope.row.id}}
+            {{ scope.row.id }}
           </template>
         </el-table-column>
-        <el-table-column label="关联渠道">
+        <el-table-column label="关联渠道" width="220px">
           <template slot-scope="scope">
-            <div> {{ scope.row.id }}</div>
-            <div> {{ scope.row.name }}</div>
+            <div> {{ scope.row.channelId }}</div>
+            <div> {{ scope.row.channelName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="关联商品" width="250px">
+        <el-table-column label="关联商品" width="220px">
           <template slot-scope="scope">
-            <div class="red-label">{{ scope.row.id }}</div>
-            <div> {{ scope.row.name }}</div>
+            <div class="red-label">{{ scope.row.goodsId }}</div>
+            <div> {{ scope.row.goodsName }}</div>
             <el-button type="text" style="margin-left:0px;" @click="detail($event, scope.row)">查看商品详情</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="商品图片" width="110px">
+        <el-table-column label="商品图片" width="115px">
           <template slot-scope="scope">
             <img class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
           </template>
         </el-table-column>
-        <el-table-column label="来源商会" width="100px">
-          <template slot-scope="scope">
-            {{ scope.row.sumStock }}
-          </template>
-        </el-table-column>
-        <el-table-column label="创建时间" width="200px">
-          <template slot-scope="scope">
-            {{ scope.row.createTime | dateFormat }}
-          </template>
-        </el-table-column>
-        <el-table-column label="操作人" width="300px">
+        <el-table-column label="来源商会" width="200px">
           <template slot-scope="scope">
             {{ scope.row.chamberName }}
           </template>
         </el-table-column>
+        <el-table-column label="创建时间" width="200px">
+          <template slot-scope="scope">
+            {{ scope.row.createdTs | dateFormat }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作人" width="150px">
+          <template slot-scope="scope">
+            {{ scope.row.operatorName }}
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
-            <el-button v-if="has('', '生成渠道码')" type="text" :actionid="getId('', '生成渠道码')" @click="detail($event, scope.row)">
+            <el-button v-if="has('', '生成渠道码')" type="text" :actionid="getId('', '生成渠道码')" @click="createCode($event, scope.row)">
               生成渠道码
             </el-button>
-            <el-button v-if="has('', '生产短链接')" type="text" :actionid="getId('', '生产短链接')" @click="detail($event, scope.row)">
-              生产短链接
+            <el-button v-if="has('', '生产短链接')" type="text" :actionid="getId('', '生产短链接')" @click="createLink($event, scope.row)">
+              生成短链接
             </el-button>
-            <el-button v-if="has('', '删除')" type="text" :actionid="getId('', '删除')" @click="detail($event, scope.row)">
+            <el-button v-if="has('', '删除')" type="text" :actionid="getId('', '删除')" @click="delChannels($event, scope.row)">
               删除
             </el-button>
           </template>
@@ -73,12 +75,67 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
+
     <el-dialog
       title=""
       :visible.sync="previewImgVisible"
-      width="50%"
-    >
+      width="50%">
       <img :src="previewUrl" style="width: 100%; padding:20px;">
+    </el-dialog>
+
+    <el-dialog
+      title="生成短链接"
+      :visible.sync="channelLinkDialog"
+      width="30%">
+      <el-row>
+        <el-col :span="3">短链接：</el-col>
+        <el-col :span="10">{{ channelLink }}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="3"></el-col>
+        <el-col :span="10" :offset="3"><span style="color: #409eff;cursor: pointer;" @click="copyUrl">复制链接</span>
+        </el-col>
+      </el-row>
+    </el-dialog>
+
+    <el-dialog
+      title="创建推广信息"
+      :visible.sync="promoteChannelDialog"
+      width="30%"
+    >
+      <el-form :model="promoteForm" ref="promoteForm" label-width="100px" :rules="promoteRules">
+        <el-form-item label="关联渠道：" prop="channelId">
+          <el-col :span="14">
+            <el-select v-model="promoteForm.channelId" placeholder="请选择" clearable>
+              <el-option v-for="item in channelList" :key="item.id" :label="item.channelName" :value="item.id"/>
+            </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="关联商品：" prop="goodsId">
+          <el-col :span="14">
+            <el-input v-model="promoteForm.goodsId" placeholder="商品ID" @blur="handleInput"></el-input>
+            <div v-show="showGoodIdsDetail">
+              <div class="chamber-name">{{ goodsDetail.chamberName }}</div>
+              <div class="goods-name">{{ goodsDetail.name }}</div>
+            </div>
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" :disabled="!goodsDetail.name" @click="submitPromote('promoteForm')">提交</el-button>
+          <el-button @click="promoteChannelDialog=false">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
+      title="提示"
+      :visible.sync="delDialog"
+      width="30%">
+      <span>确认删除吗？</span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="delDialog = false">取 消</el-button>
+    <el-button type="primary" @click="comfirmDel">确 定</el-button>
+  </span>
     </el-dialog>
   </div>
 </template>

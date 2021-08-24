@@ -9,13 +9,15 @@ export default {
       previewUrl: '',
       detailObj: {},
       goodsId: '',
-      supplierOptions: []
+      supplierOptions: [],
+      deliveryConfig: {},
+      serviceConfig: {}
     }
   },
   computed: {
     // ...mapGetters(['has'])
-    supplier () {
-      return function (supplierId) {
+    supplier() {
+      return function(supplierId) {
         let str = ''
         for (let obj of this.supplierOptions) {
           if (obj.value === supplierId) {
@@ -35,16 +37,16 @@ export default {
     }
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     init() {
       this.fetchData()
     },
-    getSupplierOptions () {
+    getSupplierOptions() {
       getSupplierOptions().then(response => {
         let objArr = response.data.lst
         this.supplierOptions = []
@@ -64,9 +66,13 @@ export default {
       }
       getGoodsDetail(params).then(response => {
         this.detailObj = response.data.goodsDetail
+        const deliveryConfig = JSON.parse(response.data.goodsDetail.deliveryConfig)
+        const serviceConfig = JSON.parse(response.data.goodsDetail.serviceConfig)
+        this.deliveryConfig = deliveryConfig
+        this.serviceConfig = serviceConfig
       })
     },
-    openPreviewModal (url) {
+    openPreviewModal(url) {
       this.previewImgVisible = true
       this.previewUrl = url
     }
