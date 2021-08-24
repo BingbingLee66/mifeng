@@ -29,9 +29,10 @@ export default {
         return callback()
       }
     }
-    var checkNumber = (rule, value, callback) => {
-      if (!/^([1-9]\d*)$/.test(value)) {
-        return callback(new Error('必须是大于0的整数'))
+    var checkName = (rule, value, callback) => {
+      console.log(rule)
+      if (value.trim() === '') {
+        return callback(new Error('请输入'))
       } else {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
@@ -173,22 +174,28 @@ export default {
           { required: true, message: '规格类型不能为空', trigger: 'change' }
         ],
         deliveryConfig1: [
-          { required: true, message: '包邮不能为空', trigger: 'blur' }
+          { required: true, message: '包邮不能为空', trigger: 'blur' },
+          { validator: checkName, trigger: 'blur' }
         ],
         deliveryConfig2: [
-          { required: true, message: '发货时间不能为空', trigger: 'blur' }
+          { required: true, message: '发货时间不能为空', trigger: 'blur' },
+          { validator: checkName, trigger: 'blur' }
         ],
         deliveryConfig3: [
-          { required: true, message: '发货说明不能为空', trigger: 'blur' }
+          { required: true, message: '发货说明不能为空', trigger: 'blur' },
+          { validator: checkName, trigger: 'blur' }
         ],
         serviceConfig1: [
-          { required: true, message: '商会企业供货不能为空', trigger: 'blur' }
+          { required: true, message: '商会企业供货不能为空', trigger: 'blur' },
+          { validator: checkName, trigger: 'blur' }
         ],
         serviceConfig2: [
-          { required: true, message: '品质保证不能为空', trigger: 'blur' }
+          { required: true, message: '品质保证不能为空', trigger: 'blur' },
+          { validator: checkName, trigger: 'blur' }
         ],
         serviceConfig3: [
-          { required: true, message: '坏了包赔不能为空', trigger: 'blur' }
+          { required: true, message: '坏了包赔不能为空', trigger: 'blur' },
+          { validator: checkName, trigger: 'blur' }
         ],
       }
     }
@@ -1099,14 +1106,14 @@ export default {
             }
           })
           let _deliveryConfig = {
-            '包邮': this.formObj.deliveryConfig1,
-            '发货时间': this.formObj.deliveryConfig2,
-            '发货说明': this.formObj.deliveryConfig3,
+            '包邮': this.formObj.deliveryConfig1.trim(),
+            '发货时间': this.formObj.deliveryConfig2.trim(),
+            '发货说明': this.formObj.deliveryConfig3.trim(),
           }
           let _serviceConfig = {
-            '商会企业供货': this.formObj.serviceConfig1,
-            '品质保证': this.formObj.serviceConfig2,
-            '坏了包赔': this.formObj.serviceConfig3,
+            '商会企业供货': this.formObj.serviceConfig1.trim(),
+            '品质保证': this.formObj.serviceConfig2.trim(),
+            '坏了包赔': this.formObj.serviceConfig3.trim(),
           }
           let obj = {
             'deliveryConfig': JSON.stringify(_deliveryConfig),

@@ -1,12 +1,38 @@
-import { getList, updateStatus, batchUpdateStatus } from '@/api/mall/mall'
-import { adminUdateGoodsStatus, batchAdminUpdateGoodsStatus } from '@/api/goods/goods'
-import { getChamberOptions } from '@/api/finance/finance'
+import {
+  getList,
+  getChannelPromoteList,
+  delChannelPromote,
+  addChannelPromote,
+  getChannelPromoteCode,
+  getChannelPromoteLink
+} from '@/api/mall/channel'
+import { adminUdateGoodsStatus, batchAdminUpdateGoodsStatus, getGoodsQrcode } from '@/api/goods/goods'
+import { getGoodsDetail } from '@/api/goods/goodsSku'
 
 // import { mapGetters } from 'vuex'
 
 export default {
   data() {
+    var checkId = (rule, value, callback) => {
+      if (!/^$|^([1-9]\d*)$/.test(value)) {
+        return callback(new Error('必须是大于0的整数'))
+      } else {
+        callback() // 必须加上这个，不然一直塞在验证状态
+      }
+    }
     return {
+      channelList: [], // 关联渠道列表
+      goodsDetail: {}, // 商品详情
+      channelLink: '',
+      promoteChannelDialog: false,
+      channelLinkDialog: false,
+      showGoodIdsDetail: false,
+      delDialog: false,
+      rowIds: [],
+      promoteForm: {
+        channelId: '',
+        goodsId: ''
+      },
       previewImgVisible: false,
       previewUrl: '',
       query: {
@@ -22,12 +48,21 @@ export default {
       limit: 10,
       listLoading: false,
       selectionDatas: [],
-      chamberOptions: []
+      chamberOptions: [],
+      promoteRules: {
+        channelId: [
+          { required: true, message: '请选择渠道', trigger: 'blur' }
+        ],
+        goodsId: [
+          { required: true, message: '请输入商品ID', trigger: 'blur' },
+          { validator: checkId, trigger: 'blur' }
+        ]
+      },
     }
   },
   computed: {
     // ...mapGetters(['has'])
-    chamberName () {
+    chamberName() {
       return function(ckey) {
         let chamberName = ''
         for (let chamber of this.chamberOptions) {
@@ -40,145 +75,146 @@ export default {
       }
     }
   },
-  created () {
-    this.getChamberOptions()
-    this.init()
+  created() {
+    this.getChannelList()
+    this.getChannelPromoteLists()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-      this.limit = val
-      this.currentpage = 1
-      this.fetchData()
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-      this.currentpage = val
-      this.fetchData()
-    },
-    getChamberOptions () {
-      getChamberOptions().then(response => {
-        this.chamberOptions = response.data.data
-      })
-    },
-    init() {
-      this.fetchData()
-    },
-    fetchData() {
+
+    // 获取商品推广配置列表
+    getChannelPromoteLists() {
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
         'page': this.currentpage,
-        'goodsName': this.query.goodsName,
-        'status': this.query.status,
-        'ckey': this.query.ckey
       }
-      if (this.query.date) {
-        params['startTime'] = this.query.date[0]
-        params['endTime'] = this.query.date[1]
-      }
-      // const objList = [{
-      //   id: 2242,
-      //   descript: 'https://std.17int.cn/ecfile/portrait/210325161549552-购物车.png',
-      //   name: '电暖器家用桌面式小型暖手脚台式迷你暖风电暖器',
-      //   price: '119.0-199.9',
-      //   fightPrice: '109.5-185.9',
-      //   supplyPrice: '99-169',
-      //   stocks: 968,
-      //   salesVolume: 787,
-      //   chamberName: '广东省江西商会',
-      //   createTime: '2021-03-27 14:57:00',
-      //   isOnSale: '1'
-      // }]
-      // this.list = objList
-      // this.total = 1
-      // this.listLoading = false
-      getList(params).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.totalRows
+      getChannelPromoteList(params).then(res => {
+        this.list = res.data.list
+        this.total = res.data.totalRows
         this.listLoading = false
       })
     },
-    handleSelectionChange (value) {
-      let datas = value
-      this.selectionDatas = []
-      for (let data of datas) {
-        this.selectionDatas.push(data.id)
-      }
+    handleSizeChange(val) {
+      this.limit = val
+      this.currentpage = 1
+      this.getChannelPromoteLists()
     },
-    updateStatus(e, id, status) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'goodId': id,
-        'status': status
-      }
-      adminUdateGoodsStatus(params).then(response => {
-        if (status === 1) {
-          this.$message({
-            message: '上架成功',
-            type: 'success'
-          })
-        } else if (status === 2) {
-          this.$message({
-            message: '下架成功',
-            type: 'success'
-          })
-        }
-        this.fetchData()
+    handleCurrentChange(val) {
+      this.currentpage = val
+      this.getChannelPromoteLists()
+    },
+
+    // 获取关联渠道列表
+    getChannelList() {
+      getList().then(res => {
+        this.channelList = res.data.list
       })
     },
-    batchUpdateStatus(e, status) {
-      if (this.selectionDatas.length === 0) {
-        this.$message.error({
-          message: '没有选择记录，操作失败'
+
+    // 创建推广信息
+    addPromoteChannel(e) {
+      this.promoteChannelDialog = true
+      this.promoteForm.goodsId = ''
+      this.promoteForm.channelId = ''
+    },
+
+    handleInput(e) {
+      // 查询商品详情
+      if (this.promoteForm.goodsId.trim() !== '' && /^$|^([1-9]\d*)$/.test(this.promoteForm.goodsId)) {
+        getGoodsDetail({ id: this.promoteForm.goodsId }).then(res => {
+          if (res.state === 1) {
+            console.log(res)
+            this.goodsDetail = res.data.goodsDetail
+            this.showGoodIdsDetail = true
+          }
         })
-        return
       }
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'goodsIds': this.selectionDatas,
-        'status': status
-      }
-      batchAdminUpdateGoodsStatus(params).then(response => {
-        if (status === 1) {
-          if (response.data.flagStatus) { // 部分成功
-            this.$message({
-              message: '部分商品上架成功，' + response.data.msg,
-              type: 'warning'
-            })
-          } else {
-            this.$message({
-              message: '上架成功',
-              type: 'success'
-            })
-          }
-        } else if (status === 2) {
-          if (response.data.flagStatus) { // 部分成功
-            this.$message({
-              message: '部分商品下架成功，' + response.data.msg,
-              type: 'warning'
-            })
-          } else {
-            this.$message({
-              message: '下架成功',
-              type: 'success'
-            })
-          }
+    },
+
+    // 提交创建推广信息
+    submitPromote(promoteForm) {
+      this.$refs[promoteForm].validate((valid) => {
+        if (valid) {
+          this.promoteForm.goodsId = parseInt(this.promoteForm.goodsId)
+          addChannelPromote(this.promoteForm).then(res => {
+            if (res.state === 1) {
+              this.currentpage = 1
+              this.getChannelPromoteLists()
+              this.promoteChannelDialog = false
+            }
+          })
+        } else {
+          return false
         }
-        this.fetchData()
       })
     },
-    detail (e, row) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '商品详情', params: { goodsId: row.id } })
+
+    // 生成渠道码
+    createCode(e, row) {
+      getGoodsQrcode({ id: row.goodsId }).then(res => {
+        if (res.state === 1) {
+          let imgUrl = res.data.qrCode
+          let alink = document.createElement('a')
+          alink.href = imgUrl
+          alink.target = '_blank'
+          alink.click()
+        } else {
+          console.log(res)
+        }
+      })
     },
-    openPreviewModal (url) {
+
+    // 生成短连接
+    createLink(e, row) {
+      this.channelLinkDialog = true
+      getChannelPromoteLink({ id: row.id }).then(res => {
+        if (res.state === 1) {
+          console.log(res)
+          this.channelLink = res.data
+        } else {
+          console.log(res)
+        }
+      })
+    },
+
+    copyUrl() {
+      let url = this.channelLink
+      let oInput = document.createElement('input')
+      oInput.value = url
+      document.body.appendChild(oInput)
+      oInput.select() // 选择对象
+      document.execCommand('Copy')
+      oInput.className = 'oInput'
+      oInput.style.display = 'none'
+      this.$message.success('链接已复制')
+    },
+
+    delChannels(e, row) {
+      let ids = []
+      ids.push(row.id)
+      this.rowIds = ids
+      this.delDialog = true
+    },
+
+    comfirmDel() {
+      delChannelPromote(this.rowIds).then(res => {
+        if (res.state === 1) {
+          this.getChannelPromoteLists()
+          this.delDialog = false
+        }
+      })
+    },
+    detail(e, row) {
+      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      this.$router.push({ name: '商品详情', params: { goodsId: row.goodsId } })
+    },
+    openPreviewModal(url) {
       this.previewImgVisible = true
       this.previewUrl = url
     }

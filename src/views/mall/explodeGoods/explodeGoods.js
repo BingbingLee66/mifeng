@@ -184,6 +184,7 @@ export default {
       addExplodeGoods(this.allGoodsIdList).then(res => {
         if (res.state === 1) {
           this.getAllGoodsLists()
+          this.fetchData()
         }
       })
     },
