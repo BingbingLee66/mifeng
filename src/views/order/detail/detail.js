@@ -1,5 +1,6 @@
 import { getOrder, updateOrder, updateShipping } from '@/api/order/order'
 import { getChamberOptions } from '@/api/finance/finance'
+import moment from 'moment'
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -28,6 +29,11 @@ export default {
           { required: true, message: '请输入物流公司', trigger: 'blur' }
         ]
       }
+    }
+  },
+  filters: {
+    formatDates(val) {
+      return moment(val).format('yyyy-MM-DD HH:mm:ss')
     }
   },
   computed: {

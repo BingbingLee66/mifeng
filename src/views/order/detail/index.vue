@@ -14,7 +14,9 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          下单时间：{{ detailObj.createTime | dateFormat }}
+          下单时间：
+          <span v-if="detailObj.createTime">{{ detailObj.createTime | formatDates }}</span>
+          <span v-else> - -</span>
         </el-col>
         <el-col :span="8">
           订单状态：{{ status(detailObj.status) }}
@@ -25,7 +27,9 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          发货时间：{{ detailObj.shippingTime | dateFormat }}
+          发货时间：
+          <span v-if="detailObj.shippingTime">{{ detailObj.shippingTime | formatDates}}</span>
+          <span v-else> - -</span>
         </el-col>
         <el-col :span="8">
           物流公司：{{ detailObj.shippingCompany ? detailObj.shippingCompany : '--' }}
@@ -41,7 +45,9 @@
           购买方式：{{ buyType(detailObj.fightStatus) }}
         </el-col>
         <el-col :span="8">
-          拼单成功时间：{{ detailObj.fightTime ? (detailObj.fightTime | dateFormat) : '- -' }}
+          拼单成功时间：
+          <span v-if="detailObj.fightTime">{{ detailObj.fightTime | formatDates}}</span>
+          <span v-else> - -</span>
         </el-col>
         <el-col :span="8">
           供货商家：{{ detailObj.supplierName }}
@@ -63,7 +69,9 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          收货时间：{{ detailObj.confirmReceivingTime ? (detailObj.confirmReceivingTime | dateFormat) : '- -' }}
+          收货时间：
+          <span v-if="detailObj.confirmReceivingTime">{{ detailObj.confirmReceivingTime | formatDates }}</span>
+          <span v-else> - -</span>
         </el-col>
       </el-row>
     </div>
