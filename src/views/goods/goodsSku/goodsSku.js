@@ -30,7 +30,7 @@ export default {
       }
     }
     var checkName = (rule, value, callback) => {
-      console.log(rule)
+      console.log(value)
       if (value.trim() === '') {
         return callback(new Error('请输入'))
       } else {
@@ -175,7 +175,7 @@ export default {
         ],
         deliveryConfig1: [
           { required: true, message: '包邮不能为空', trigger: 'blur' },
-          { validator: checkName, trigger: 'blur' }
+          // { validator: checkName, trigger: 'change' }
         ],
         deliveryConfig2: [
           { required: true, message: '发货时间不能为空', trigger: 'blur' },
@@ -358,15 +358,21 @@ export default {
         // <-- 发货说明和服务保障
         if (obj.deliveryConfig) {
           const deliveryConfigData = JSON.parse(obj.deliveryConfig)
-          this.formObj.deliveryConfig1 = deliveryConfigData['包邮']
-          this.formObj.deliveryConfig2 = deliveryConfigData['发货时间']
-          this.formObj.deliveryConfig3 = deliveryConfigData['发货说明']
+          this.$set(this.formObj, 'deliveryConfig1', deliveryConfigData['包邮'])
+          this.$set(this.formObj, 'deliveryConfig2', deliveryConfigData['发货时间'])
+          this.$set(this.formObj, 'deliveryConfig3', deliveryConfigData['发货说明'])
+          // this.formObj.deliveryConfig1 = deliveryConfigData['包邮']
+          // this.formObj.deliveryConfig2 = deliveryConfigData['发货时间']
+          // this.formObj.deliveryConfig3 = deliveryConfigData['发货说明']
         }
         if (obj.serviceConfig) {
           const serviceConfigData = JSON.parse(obj.serviceConfig)
-          this.formObj.serviceConfig1 = serviceConfigData['商会企业供货']
-          this.formObj.serviceConfig2 = serviceConfigData['品质保证']
-          this.formObj.serviceConfig3 = serviceConfigData['坏了包赔']
+          this.$set(this.formObj, 'serviceConfig1', serviceConfigData['商会企业供货'])
+          this.$set(this.formObj, 'serviceConfig2', serviceConfigData['品质保证'])
+          this.$set(this.formObj, 'serviceConfig3', serviceConfigData['坏了包赔'])
+          // this.formObj.serviceConfig1 = serviceConfigData['商会企业供货']
+          // this.formObj.serviceConfig2 = serviceConfigData['品质保证']
+          // this.formObj.serviceConfig3 = serviceConfigData['坏了包赔']
         }
         // 发货说明和服务保障 -->
         // 预约时间
