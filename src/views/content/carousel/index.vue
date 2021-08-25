@@ -52,7 +52,7 @@
     <el-dialog
       title="添加/编辑轮播图"
       :visible.sync="visible"
-      width="30%">
+      width="40%">
       <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
         <el-row>
           <el-col :offset="2" :span="10">
@@ -73,7 +73,7 @@
         </el-row>
         <el-row v-if="formObj.type==1 || formObj.type==2">
           <el-col :offset="2" :span="20">
-            <el-form-item :label="formObj.type==1?'文章标题：':'商品标题：'" prop="title">
+            <el-form-item :label="formObj.type==1?'文章标题：':'商品标题：'" prop="title" class="title-input">
               <el-input v-model="formObj.title" show-word-limit :maxlength="formObj.type==1?60:30" :placeholder="formObj.type==1?'60字内':'30字内'"></el-input>
             </el-form-item>
           </el-col>
@@ -133,6 +133,9 @@
 @import "src/styles/common.scss";
 </style>
 <style>
+.title-input .el-input__inner{
+  padding-right: 45px!important;
+}
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

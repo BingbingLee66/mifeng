@@ -155,8 +155,14 @@ export default {
       this.visible = true
     },
     save() {
+      const that = this
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          if (that.formObj.type === 1) {
+            if (that.formObj.title.trim().length > 60) return this.$message.error('60字内')
+          } else if (that.formObj.type === 2) {
+            if (that.formObj.title.trim().length > 30) return this.$message.error('30字内')
+          }
           // 编辑
           if (this.formObj.id) {
             this.formObj['ckey'] = this.ckey
