@@ -165,9 +165,10 @@ export default {
     createCode(e, row) {
       this.channelCodeDialog = true
       this.rowData = row
-      getGoodsQrcode({ id: row.goodsId }).then(res => {
+      getChannelPromoteCode({ id: row.id }).then(res => {
         if (res.state === 1) {
-          this.channelCode = res.data.qrCode
+          console.log(res)
+          this.channelCode = res.data
           /* let imgUrl = res.data.qrCode
           let alink = document.createElement('a')
           alink.href = imgUrl
