@@ -12,7 +12,7 @@ export default {
       query: {
         ckey: '',
         goodsName: '',
-        status: '',
+        status: -1,
         date: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
