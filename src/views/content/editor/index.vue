@@ -52,11 +52,11 @@
     <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
       <!-- <el-table-column type="index" label="序号" width="60px">
       </el-table-column> -->
-      <!--       <el-table-column label="文章ID" width="80px">
+       <el-table-column label="文章ID" width="80px">
         <template slot-scope="scope">
           {{scope.row.id}}
         </template>
-      </el-table-column> -->
+      </el-table-column> 
       <el-table-column label="文章" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.title }}
