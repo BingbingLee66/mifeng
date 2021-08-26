@@ -121,7 +121,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitLevel('levelForm')">提交</el-button>
-          <el-button @click="showWeightDialog=false">取消</el-button>
+          <el-button @click="showLevelDialog=false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
