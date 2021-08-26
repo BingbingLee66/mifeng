@@ -11,18 +11,18 @@
     </div>
     <div class="block-table">
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-        <el-table-column label="推广ID" width="100px">
+        <el-table-column label="推广ID" width="80px">
           <template slot-scope="scope">
             {{ scope.row.id }}
           </template>
         </el-table-column>
-        <el-table-column label="关联渠道" width="220px">
+        <el-table-column label="关联渠道" width="120px">
           <template slot-scope="scope">
             <div> {{ scope.row.channelId }}</div>
             <div> {{ scope.row.channelName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="关联商品" width="220px">
+        <el-table-column label="关联商品" width="200px">
           <template slot-scope="scope">
             <div class="red-label">{{ scope.row.goodsId }}</div>
             <div> {{ scope.row.goodsName }}</div>
@@ -34,12 +34,12 @@
             <img class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
           </template>
         </el-table-column>
-        <el-table-column label="来源商会" width="200px">
+        <el-table-column label="来源商会" width="150px">
           <template slot-scope="scope">
             {{ scope.row.chamberName }}
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" width="200px">
+        <el-table-column label="创建时间" width="100px">
           <template slot-scope="scope">
             {{ scope.row.createdTs | dateFormat }}
           </template>
@@ -116,13 +116,13 @@
     <el-dialog
       title="生成短链接"
       :visible.sync="channelLinkDialog"
-      width="30%">
+      width="500px">
       <el-row>
-        <el-col :span="3">短链接：</el-col>
-        <el-col :span="10">{{ channelLink }}</el-col>
+        <el-col style="width: 60px;">短链接：</el-col>
+        <el-col style="width: 400px;">{{ channelLink }}</el-col>
       </el-row>
       <el-row>
-        <el-col :span="3"></el-col>
+        <el-col style="width: 60px;"></el-col>
         <el-col :span="10" :offset="3"><span style="color: #409eff;cursor: pointer;" @click="copyUrl">复制链接</span>
         </el-col>
       </el-row>
