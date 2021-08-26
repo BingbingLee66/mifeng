@@ -44,7 +44,7 @@
             {{ scope.row.createdTs | dateFormat }}
           </template>
         </el-table-column>
-        <el-table-column label="操作人" width="150px">
+        <el-table-column label="操作人" width="100px">
           <template slot-scope="scope">
             {{ scope.row.operatorName }}
           </template>

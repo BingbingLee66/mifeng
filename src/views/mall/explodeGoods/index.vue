@@ -46,7 +46,7 @@
             <div> {{ scope.row.name }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="商品图片" width="110px">
+        <el-table-column label="商品图片" width="115px">
           <template slot-scope="scope">
             <img class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
           </template>

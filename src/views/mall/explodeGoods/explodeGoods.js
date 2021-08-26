@@ -1,4 +1,10 @@
-import { getAllGoodsList, getExplodeGoodsList, addExplodeGoods, deleteExplodeGoods, updateWeights} from '@/api/mall/mall'
+import {
+  getAllGoodsList,
+  getExplodeGoodsList,
+  addExplodeGoods,
+  deleteExplodeGoods,
+  updateWeights
+} from '@/api/mall/mall'
 import { getChamberOptions } from '@/api/finance/finance'
 
 export default {
@@ -139,6 +145,12 @@ export default {
 
     // 获取全部商品列表
     addExplodeGoods() {
+      this.allPage.page = 1
+      this.allPage.pageSize = 10
+      this.queryAll.goodsNam = ''
+      this.queryAll.goodsId = ''
+      this.queryAll.status = ''
+      this.queryAll.ckey = ''
       this.showAddDialog = true
       this.getAllGoodsLists()
     },
