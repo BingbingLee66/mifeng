@@ -19,7 +19,7 @@ export default {
     }
     var checkName = (rule, value, callback) => {
       if (value.trim() === '') {
-        return callback(new Error('标题不能为空'))
+        return callback(new Error('轮播图标题不能为空'))
       } else {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
@@ -36,13 +36,14 @@ export default {
         img: ''
       },
       visible: false,
+      addDialogTitle: '',
       rules: {
         articleId: [
-          { required: true, message: '文章ID不能为空', trigger: 'blur' },
+          { required: true, message: 'ID不能为空', trigger: 'blur' },
           { validator: checkId, trigger: 'blur' }
         ],
         title: [
-          { required: true, message: '文章标题不能为空', trigger: 'blur' },
+          { required: true, message: '轮播图标题不能为空', trigger: 'blur' },
           { validator: checkName, trigger: 'blur' }
         ],
         level: [
@@ -115,8 +116,9 @@ export default {
     openVisible(row) {
       this.formObj = row
     },
-    add(e) {
+    add(e, num) {
       let actionid = e.currentTarget.getAttribute('actionid')
+      this.addDialogTitle = '添加轮播图'
       let params = {
         'ckey': this.ckey
       }
@@ -141,6 +143,7 @@ export default {
     },
     edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      this.addDialogTitle = '编辑轮播图'
       this.formObj = {
         id: row.id,
         title: row.title,
@@ -270,7 +273,7 @@ export default {
     submitLevel(levelForm) {
       this.$refs[levelForm].validate((valid) => {
         if (valid) {
-          // this.levelForm.level = parseInt(this.levelForm.level)
+          this.levelForm.level = parseInt(this.levelForm.level)
           editlevel(this.levelForm).then(response => {
             if (response.state === 1) {
               this.$message({

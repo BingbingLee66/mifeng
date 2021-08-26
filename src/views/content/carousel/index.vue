@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-button type="primary" size="small" @click="add($event)" :actionid="getId('', '添加轮播图')" v-if="has('', '添加轮播图')">
+      <el-button type="primary" size="small" @click="add($event,1)" :actionid="getId('', '添加轮播图')" v-if="has('', '添加轮播图')">
         添加轮播图
       </el-button>
     </el-row>
@@ -52,10 +52,10 @@
     </div>
 
     <el-dialog
-      title="添加/编辑轮播图"
+      :title="addDialogTitle"
       :visible.sync="visible"
       width="40%">
-      <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
+      <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="120px">
         <el-row>
           <el-col :offset="2" :span="10">
             <el-form-item label="关联内容：">
@@ -75,7 +75,7 @@
         </el-row>
         <el-row v-if="formObj.type==1 || formObj.type==2">
           <el-col :offset="2" :span="20">
-            <el-form-item :label="formObj.type==1?'文章标题：':'商品标题：'" prop="title" class="title-input">
+            <el-form-item label="轮播图标题：" prop="title" class="title-input">
               <el-input v-model="formObj.title" show-word-limit :maxlength="formObj.type==1?60:30" :placeholder="formObj.type==1?'60字内':'30字内'"></el-input>
             </el-form-item>
           </el-col>
