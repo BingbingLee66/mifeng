@@ -6,11 +6,11 @@
       <el-tab-pane label="即将开售" name="3"></el-tab-pane>
     </el-tabs>
     <div class="from-block" style="margin:20px 0">
-      <el-form ref="query" label-position="left" :inline="true" :model="query">
-        <el-form-item label-width="100px" label="商品名称：">
+      <el-form ref="query" label-position="right" :inline="true" :model="query">
+        <el-form-item label="商品名称">
           <el-input v-model="query.goodsName" placeholder="请输入商品名称"/>
         </el-form-item>
-        <el-form-item label-width="100px" label="商品状态：">
+        <el-form-item label="商品状态">
           <el-select v-model="query.status" placeholder="请选择状态">
             <el-option label="所有" :value="-1"/>
             <el-option label="在售中" :value="1"/>
@@ -19,12 +19,12 @@
             <el-option label="已售罄" :value="5"/>
           </el-select>
         </el-form-item>
-        <el-form-item label-width="100px" label="商品来源：">
+        <el-form-item label="商品来源">
           <el-select v-model="query.ckey" placeholder="请选择商品来源" clearable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value"/>
           </el-select>
         </el-form-item>
-        <el-form-item label-width="100px" label="创建时间：">
+        <el-form-item label="创建时间">
           <el-date-picker v-model="query.date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"/>
         </el-form-item>
         <el-form-item label=" ">
@@ -223,6 +223,14 @@
 @import 'src/styles/common.scss';
 </style>
 <style lang="scss">
+.from-block .el-form-item {
+  margin-right: 40px;
+  .el-select {
+    .el-input__inner {
+      width: 185px;
+    }
+  }
+}
 .goods-preview {
   width: 90px;
   height: 90px;

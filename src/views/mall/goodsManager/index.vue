@@ -1,49 +1,39 @@
 <template>
   <div class="app-container">
-    <div class="block">
-      <el-form ref="query" label-position="left" :model="query">
-        <el-row>
-          <el-col :span="4">
-            <el-form-item label-width="100px" label="商品名称：">
-              <el-input v-model="query.goodsName" placeholder="请输入商品名称"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4" style="margin-left:10px;">
-            <el-form-item label-width="100px" :span="12" label="商品状态：">
-              <el-select v-model="query.status" placeholder="请选择状态">
-                <el-option label="所有" :value="-1"/>
-                <el-option label="在售中" :value="1"/>
-                <el-option label="已下架" :value="6"/>
-                <el-option label="商会下架" :value="2"/>
-                <el-option label="已售罄" :value="5"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4" style="margin-left:10px;">
-            <el-form-item label-width="100px" :span="12" label="商品来源：">
-              <el-select v-model="query.ckey" placeholder="请选择商品来源" clearable>
-                <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value"/>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8" style="margin-left:10px;">
-            <el-form-item label-width="100px" label="添加时间：" style="float:left;">
-              <el-date-picker
-                v-model="query.date"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                type="daterange"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-              />
-            </el-form-item>
-            <el-form-item label=" " style="float:left;margin-left:10px;">
-              <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
-              </el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
+    <div class="goods-manger-block">
+      <el-form ref="query" label-position="right" :inline="true" :model="query">
+        <el-form-item label="商品名称">
+          <el-input v-model="query.goodsName" placeholder="关键字"/>
+        </el-form-item>
+        <el-form-item label="商品状态">
+          <el-select v-model="query.status" placeholder="请选择">
+            <el-option label="所有" :value="-1"/>
+            <el-option label="在售中" :value="1"/>
+            <el-option label="已下架" :value="6"/>
+            <el-option label="商会下架" :value="2"/>
+            <el-option label="已售罄" :value="5"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="商品来源">
+          <el-select v-model="query.ckey" placeholder="请选择" clearable>
+            <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value"/>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="添加时间">
+          <el-date-picker
+            v-model="query.date"
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label=" ">
+          <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
+          </el-button>
+        </el-form-item>
       </el-form>
     </div>
     <div class="block">
@@ -77,7 +67,7 @@
             <div>【单买价】{{ scope.row.singlePriceMerge }}</div>
             <div>【拼单价】<span class="red-label">{{ scope.row.fightPriceMerge }}</span></div>
             <div>【供货价】{{ scope.row.supplyPriceMerge }}</div>
-            <div>【立减优惠】{{scope.row.discount}}</div>
+            <div>【立减优惠】{{ scope.row.discount }}</div>
           </template>
         </el-table-column>
         <el-table-column label="库存" width="100px">
@@ -154,6 +144,14 @@
 @import "src/styles/common.scss";
 </style>
 <style lang="scss">
+.goods-manger-block .el-form-item {
+  margin-right: 40px;
+  .el-select {
+    .el-input__inner {
+      width: 185px;
+    }
+  }
+}
 .goods-preview {
   width: 90px;
   height: 90px;
