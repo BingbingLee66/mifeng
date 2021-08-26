@@ -11,7 +11,7 @@
             <el-input v-model="query.id" type="number" placeholder="请输入商品ID"/>
           </el-form-item>
           <el-form-item label="商品名称：">
-            <el-input placeholder="请输入商品名称"/>
+            <el-input v-model="query.name" placeholder="请输入商品名称"/>
           </el-form-item>
           <el-form-item label="状态：">
             <el-select v-model="query.status" placeholder="请选择状态">

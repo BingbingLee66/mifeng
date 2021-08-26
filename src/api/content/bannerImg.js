@@ -4,7 +4,7 @@ export function editlevel(params) {
   return request({
     url: '/ec/bannerImg/editlevel',
     method: 'put',
-    data: params
+    params
   })
 }
 
