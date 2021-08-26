@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="goods-manger-block">
-      <el-form ref="query" label-position="right" :inline="true" :model="query">
+      <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="商品名称">
           <el-input v-model="query.goodsName" placeholder="关键字"/>
         </el-form-item>
@@ -19,7 +19,7 @@
             <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value"/>
           </el-select>
         </el-form-item>
-        <el-form-item label="添加时间">
+        <el-form-item label="添加时间" style="margin-right: 10px;">
           <el-date-picker
             v-model="query.date"
             format="yyyy-MM-dd"
@@ -30,7 +30,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label=" ">
+        <el-form-item label="" >
           <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
           </el-button>
         </el-form-item>
@@ -148,7 +148,7 @@
   margin-right: 40px;
   .el-select {
     .el-input__inner {
-      width: 185px;
+      width: 163px;
     }
   }
 }

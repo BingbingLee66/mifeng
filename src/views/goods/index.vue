@@ -6,7 +6,7 @@
     </el-tabs>
     <div v-if="activeName == '8'">
       <div class="froma-block ">
-        <el-form ref="query" :inline="true" label-position="right" :model="query">
+        <el-form ref="query" :inline="true" label-position="right" size="mini" :model="query">
           <el-form-item label="商品ID">
             <el-input v-model="query.id" type="number" placeholder="请输入商品ID"/>
           </el-form-item>
@@ -22,11 +22,11 @@
               <el-option label="已售罄" :value="5"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="添加时间：">
+          <el-form-item label="添加时间：" style="margin-right: 10px;">
             <el-date-picker format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="query.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>
-          <el-form-item label=" ">
+          <el-form-item label="">
             <el-button type="primary" :actionid="getId('商品列表', '查询')" v-if="has('商品列表', '查询')" @click="fetchData($event)">
               查询
             </el-button>
@@ -237,7 +237,7 @@
   margin-top: 20px;
   .el-select {
     .el-input__inner {
-      width: 185px;
+      width: 163px;
     }
   }
 }

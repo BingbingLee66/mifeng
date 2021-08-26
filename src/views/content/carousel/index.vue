@@ -5,49 +5,51 @@
         添加轮播图
       </el-button>
     </el-row>
-    <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column type="index" label="序号" width="80px">
-      </el-table-column>
-      <el-table-column label="关联内容" width="100px">
-        <template slot-scope="scope">
-          {{ scope.row.type == 1 ? '文章' : scope.row.type == 2 ? '商品' : '- -' }}
-        </template>
-      </el-table-column>
-      <el-table-column label="标题/ID" width="300px">
-        <template slot-scope="scope">
-          <div style="color: #ff0000;"> {{ scope.row.articleId }}</div>
-          <div> {{ scope.row.title ? scope.row.title : '- -' }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="图片" width="175px">
-        <template slot-scope="scope">
-          <img style="width: 153px; height: 60px;object-fit: cover;" :src="scope.row.img"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="更新时间" width="200px">
-        <template slot-scope="scope">
-          {{ scope.row.updatedTs }}
-        </template>
-      </el-table-column>
-      <el-table-column label="操作人" width="200px">
-        <template slot-scope="scope">
-          {{ scope.row.operator }}
-        </template>
-      </el-table-column>
-      <el-table-column label="权重" width="200px">
-        <template slot-scope="scope">
-          <span style="color: #409eff;cursor: pointer;" @click="showLevel(scope.row)">{{ scope.row.level }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作">
-        <template slot-scope="scope">
-          <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('', '编辑')" v-if="has('', '编辑')">编辑
-          </el-button>
-          <el-button type="text" @click="del($event, scope.row)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div class="t-block">
+      <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
+        <el-table-column type="index" label="序号" width="80px">
+        </el-table-column>
+        <el-table-column label="关联内容" width="80px">
+          <template slot-scope="scope">
+            {{ scope.row.type == 1 ? '文章' : scope.row.type == 2 ? '商品' : '- -' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="标题/ID" width="300px">
+          <template slot-scope="scope">
+            <div style="color: #ff0000;"> {{ scope.row.articleId }}</div>
+            <div> {{ scope.row.title ? scope.row.title : '- -' }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="图片" width="175px">
+          <template slot-scope="scope">
+            <img style="width: 153px; height: 60px;object-fit: cover;" :src="scope.row.img"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="更新时间" width="155px">
+          <template slot-scope="scope">
+            {{ scope.row.updatedTs }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作人" width="155px">
+          <template slot-scope="scope">
+            {{ scope.row.operator }}
+          </template>
+        </el-table-column>
+        <el-table-column label="权重" width="80px">
+          <template slot-scope="scope">
+            <span style="color: #409eff;cursor: pointer;" @click="showLevel(scope.row)">{{ scope.row.level }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right">
+          <template slot-scope="scope">
+            <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('', '编辑')" v-if="has('', '编辑')">编辑
+            </el-button>
+            <el-button type="text" @click="del($event, scope.row)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <el-dialog
       title="添加/编辑轮播图"
@@ -132,10 +134,16 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
 </style>
-<style>
-.title-input .el-input__inner{
-  padding-right: 45px!important;
+<style lang="scss">
+.t-block .el-button {
+  margin-left: 0;
+  margin-right: 10px;
 }
+
+.title-input .el-input__inner {
+  padding-right: 45px !important;
+}
+
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
