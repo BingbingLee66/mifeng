@@ -189,6 +189,7 @@ export default {
           })
           this.getAllGoodsLists()
           this.fetchData()
+          this.showAddDialog = false
         }
       })
     },
