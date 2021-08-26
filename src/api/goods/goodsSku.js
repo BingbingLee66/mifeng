@@ -37,7 +37,7 @@ export function add(params) {
 export function update(params) {
   return request({
     url: baseUrl + '/ec/mall/update-good',
-    method: 'put',
+    method: 'post',
     data: params
   })
 }
