@@ -159,9 +159,9 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (that.formObj.type === 1) {
-            if (that.formObj.title.trim().length > 60) return this.$message.error('60字内')
+            if (that.formObj.title.trim().length > 60) return this.$message.error('文章标题请控制在60字内')
           } else if (that.formObj.type === 2) {
-            if (that.formObj.title.trim().length > 30) return this.$message.error('30字内')
+            if (that.formObj.title.trim().length > 30) return this.$message.error('商品标题请控制在30字内')
           }
           // 编辑
           if (this.formObj.id) {
