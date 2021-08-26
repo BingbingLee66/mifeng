@@ -145,8 +145,6 @@ export default {
 
     // 获取全部商品列表
     addExplodeGoods() {
-      this.allPage.page = 1
-      this.allPage.pageSize = 10
       this.queryAll.goodsNam = ''
       this.queryAll.goodsId = ''
       this.queryAll.status = ''
