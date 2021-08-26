@@ -57,9 +57,7 @@
             <el-button v-if="has('', '生产短链接')" type="text" :actionid="getId('', '生产短链接')" @click="createLink($event, scope.row)">
               生成短链接
             </el-button>
-            <el-button v-if="has('', '删除')" type="text" :actionid="getId('', '删除')" @click="delChannels($event, scope.row)">
-              删除
-            </el-button>
+            <!-- <el-button v-if="has('', '删除')" type="text" :actionid="getId('', '删除')" @click="delChannels($event, scope.row)">删除 </el-button> -->
           </template>
         </el-table-column>
       </el-table>
