@@ -1,6 +1,29 @@
 # CHANGELOG
 
 ## [Unreleased]
+## [1.16.0] - 2021-09-07
+
+### Added
+
+### Fixed
+- 总后台，字段“所属商会”改为“订单所属商会”[328(https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/328)
+
+## [Released]
+## [1.15.0] - 2021-08-26
+
+### Added
+- 总后台--新增服务配置 [#263](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/263)
+- 总后台--商品管理页面优化 [#264](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/264)
+- 总后台--新增爆品必拼 [#265](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/265)
+- 商会后台--商品列表页面优化 [#266](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/266)
+- 商会后台--发布编辑商品新增字段（立减优惠和服务配置）[#267](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/267)
+- 商会后台-- 订单管理，订单详情新增物流信息 [#268](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/268)
+- 轮播图管理需求 [#270](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/270)
+- 总后台--新增渠道配置和商品推广配置 
+
+### Fixed
+
+## [Released]
 ## [1.14.0] - 2021-08-17
 
 ### Added

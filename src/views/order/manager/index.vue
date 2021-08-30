@@ -132,7 +132,7 @@
           {{scope.row.consigneeAddress}}
         </template>
       </el-table-column>
-      <el-table-column label="所属商会">
+      <el-table-column label="订单所属商会">
         <template slot-scope="scope">
           {{chamberName(scope.row.ckey)}}
         </template>
