@@ -54,9 +54,28 @@ a{
   padding: 0 !important;
 }
 .img-list {
-  display: block !important; 
+  display: block !important;
 }
 .img-list>div>img {
   position: static !important;
   transform: none !important;
+}
+
+.text-btn-style {
+  color: #409eff;
+  cursor: pointer;
+}
+
+.meaning-wrap .meaning-item {
+  margin-bottom: 20px;
+}
+
+.meaning-wrap .meaning-item .tit {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.meaning-wrap .meaning-item .sub {
+  font-size: 14px;
+  line-height: 22px;
 }

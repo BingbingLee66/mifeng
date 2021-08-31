@@ -62,6 +62,7 @@
           <el-button type="primary" size="small" :actionid="getId('', '导表')" v-if="has('', '导表')" @click.native="exportExcel($event)">
             导表
           </el-button>
+          <el-button type="danger" size="small" @click="openMulDialog"> 批量发货</el-button>
         </el-col>
       </el-row>
     </div>
@@ -189,6 +190,17 @@
           </el-col>
         </el-form-item>
       </el-form>
+    </el-dialog>
+
+    <el-dialog title="批量发货" :visible.sync="mulDialog" width="450px">
+      <div>第1步：下载批量发货模板 <span class="text-btn-style" @click="downloadExcel">点击下载</span></div>
+      <div style="margin-top: 20px;">第2步：
+        <el-button type="success">上传发货订单</el-button>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" @click="mulDialog = false">取 消</el-button>
+        <el-button size="small" type="primary" @click="mulDialog = false">确 定</el-button>
+      </span>
     </el-dialog>
   </div>
 </template>

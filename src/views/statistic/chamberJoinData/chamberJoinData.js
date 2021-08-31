@@ -1,10 +1,15 @@
-import { getPlatformMemberPaidData, getPlatformMemberJoinData, getPlatformChamberData } from '@/api/statistics/chamberJoinData'
+import {
+  getPlatformMemberPaidData,
+  getPlatformMemberJoinData,
+  getPlatformChamberData
+} from '@/api/statistics/chamberJoinData'
 import { exportJson2Excel } from '@/utils/exportExcel'
 // import { mapGetters } from 'vuex'
 
 export default {
   data() {
     return {
+      showMeaning: false,
       pfStatistics: {
         monthlyChamberJoin: 0,
         totalChambers: 0,
@@ -14,7 +19,8 @@ export default {
       },
       query: {
         days: 7,
-        date: ''
+        date: '',
+        ranges: 1
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -34,10 +40,10 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -56,7 +62,7 @@ export default {
       this.initDatePicker()
       this.fetchData2()
     },
-    initDatePicker () {
+    initDatePicker() {
       const endDateNs = new Date()
       const startDateNs = new Date()
       startDateNs.setTime(startDateNs.getTime() - 3600 * 1000 * 24 * this.query.days)
@@ -66,9 +72,11 @@ export default {
       this.query.date = [defalutStartTime, defalutEndTime]
       this.fetchData()
     },
-    getStatistics () {
-      let params = {
-      }
+    rangeDatePicker(val) {
+      console.log(val)
+    },
+    getStatistics() {
+      let params = {}
       getPlatformMemberPaidData(params).then(response => {
         this.pfStatistics.monthlyChamberJoin = response.data.monthlyChamberJoin
         this.pfStatistics.totalChambers = response.data.totalChambers
@@ -77,7 +85,7 @@ export default {
         this.pfStatistics.loginMembers = response.data.loginMembers
       })
     },
-    fetchData () {
+    fetchData() {
       this.listLoading = true
       let params = {
         'startTime': this.query.date[0],
@@ -91,16 +99,15 @@ export default {
         this.listLoading = false
       })
     },
-    fetchData2 () {
+    fetchData2() {
       this.listLoading2 = true
-      let params = {
-      }
+      let params = {}
       getPlatformChamberData(params).then(response => {
         this.list2 = response.data.list
         this.listLoading2 = false
       })
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
@@ -112,7 +119,7 @@ export default {
         this.selectionDatas.push(new_data)
       }
     },
-    exportExcel (e) {
+    exportExcel(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'

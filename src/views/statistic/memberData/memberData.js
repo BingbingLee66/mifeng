@@ -1,4 +1,11 @@
-import { getStatistics, getDailyStatistics, getTradeBar, getAgeBar, getGenderBar, getYearsBar } from '@/api/statistics/memberStatistics'
+import {
+  getStatistics,
+  getDailyStatistics,
+  getTradeBar,
+  getAgeBar,
+  getGenderBar,
+  getYearsBar
+} from '@/api/statistics/memberStatistics'
 import ECharts from 'vue-echarts/components/ECharts'
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/component/title'
@@ -7,6 +14,7 @@ import 'echarts/lib/component/title'
 export default {
   data() {
     return {
+      showMeaning: false,
       pfStatistics: {
         monthlyJoin: 0,
         totalMembers: 0,
@@ -157,10 +165,10 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -182,7 +190,7 @@ export default {
       this.getGenderBar()
       this.getYearsBar()
     },
-    initDatePicker () {
+    initDatePicker() {
       const endDateNs = new Date()
       const startDateNs = new Date()
       startDateNs.setTime(startDateNs.getTime() - 3600 * 1000 * 24 * this.query.days)
@@ -192,9 +200,8 @@ export default {
       this.query.date = [defalutStartTime, defalutEndTime]
       this.fetchData()
     },
-    getStatistics () {
-      let params = {
-      }
+    getStatistics() {
+      let params = {}
       getStatistics(params).then(response => {
         this.pfStatistics.monthlyJoin = response.data.monthlyJoin
         this.pfStatistics.totalMembers = response.data.totalMembers
@@ -216,36 +223,32 @@ export default {
         this.listLoading = false
       })
     },
-    getTradeBar () {
-      let params = {
-      }
+    getTradeBar() {
+      let params = {}
       getTradeBar(params).then(response => {
         this.tradeBarData.title.text = response.data.text
         this.tradeBarData.xAxis.data = response.data.xAxisData
         this.tradeBarData.series[0].data = response.data.seriesData
       })
     },
-    getAgeBar () {
-      let params = {
-      }
+    getAgeBar() {
+      let params = {}
       getAgeBar(params).then(response => {
         this.ageBarData.title.text = response.data.text
         this.ageBarData.xAxis.data = response.data.xAxisData
         this.ageBarData.series[0].data = response.data.seriesData
       })
     },
-    getGenderBar () {
-      let params = {
-      }
+    getGenderBar() {
+      let params = {}
       getGenderBar(params).then(response => {
         this.genderBarData.title.text = response.data.text
         this.genderBarData.xAxis.data = response.data.xAxisData
         this.genderBarData.series[0].data = response.data.seriesData
       })
     },
-    getYearsBar () {
-      let params = {
-      }
+    getYearsBar() {
+      let params = {}
       getYearsBar(params).then(response => {
         this.yearsBarData.title.text = response.data.text
         this.yearsBarData.xAxis.data = response.data.xAxisData

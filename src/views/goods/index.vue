@@ -8,13 +8,13 @@
       <div class="froma-block ">
         <el-form ref="query" :inline="true" label-position="right" size="mini" :model="query">
           <el-form-item label="商品ID">
-            <el-input v-model="query.id" type="number" placeholder="请输入商品ID"/>
+            <el-input v-model="query.id" type="number" />
           </el-form-item>
-          <el-form-item label="商品名称：">
-            <el-input v-model="query.name" placeholder="请输入商品名称"/>
+          <el-form-item label="商品名称">
+            <el-input v-model="query.name" placeholder="关键词"/>
           </el-form-item>
-          <el-form-item label="状态：">
-            <el-select v-model="query.status" placeholder="请选择状态">
+          <el-form-item label="状态">
+            <el-select v-model="query.status" placeholder="请选择">
               <el-option label="所有" :value="-1"></el-option>
               <el-option label="在售中" :value="1"></el-option>
               <el-option label="已下架" :value="2"></el-option>
@@ -22,7 +22,7 @@
               <el-option label="已售罄" :value="5"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="添加时间：" style="margin-right: 10px;">
+          <el-form-item label="添加时间" style="margin-right: 10px;">
             <el-date-picker format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="query.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
             </el-date-picker>
           </el-form-item>

@@ -1,8 +1,9 @@
 <template>
   <div class="app-container">
     <div class="block">
-      <div style="font-weight: 600; font-size: 18px;margin-bottom: 10px;">
-        商会入驻数据
+      <div style="height:20px;margin-bottom: 10px;">
+        <span style="font-weight: 600; font-size: 18px;float: left;">商会入驻数据</span>
+        <span style="float: right;" class="text-btn-style" @click="showMeaning=true">数据定义</span>
       </div>
       <div class="data-card">
         <div class="c-card-box">
@@ -21,14 +22,14 @@
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-key">本月商会会员入驻</div>
+            <div class="card-key">本月会员入驻</div>
             <div class="card-value">{{pfStatistics.monthlyMemberJoin}}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-key">累计商会会员</div>
+            <div class="card-key">累计会员入驻</div>
             <div class="card-value">{{pfStatistics.totalMembers}}</div>
           </div>
         </div>
@@ -41,9 +42,6 @@
         </div>
       </div>
     </div>
-    <el-tabs>
-      <el-tab-pane label="会员入驻数据"></el-tab-pane>
-    </el-tabs>
     <div class="block">
       <span style="color: #bbb;margin-right: 20px;">时间</span>
       <el-radio-group v-model="query.days" size="mini" @change="initDatePicker">
@@ -63,13 +61,16 @@
         @change="fetchData"
         size="mini">
       </el-date-picker>
+      <el-radio-group v-model="query.ranges" size="mini" @change="rangeDatePicker">
+        <el-radio-button :label="1" >日</el-radio-button>
+        <el-radio-button :label="2">周</el-radio-button>
+        <el-radio-button :label="3">月</el-radio-button>
+      </el-radio-group>
       <el-button type="primary" size="mini" style="float: right;" @click="exportExcel">导表</el-button>
     </div>
     <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55px">
       </el-table-column>
-      <!-- <el-table-column type="index" label="序号" width="60px">
-      </el-table-column> --> 
       <el-table-column label="日期">
         <template slot-scope="scope">
           {{scope.row.date}}
@@ -80,7 +81,37 @@
           {{scope.row.activeWxUserTotal}}
         </template>
       </el-table-column>
-      <el-table-column label="商会会员入驻">
+      <el-table-column label="入会总人数">
+        <template slot-scope="scope">
+          {{scope.row.joinedTotal}}
+        </template>
+      </el-table-column>
+      <el-table-column label="商会邀请入会人数">
+        <template slot-scope="scope">
+          {{scope.row.joinedTotal}}
+        </template>
+      </el-table-column>
+      <el-table-column label="自己申请入会人数">
+        <template slot-scope="scope">
+          {{scope.row.joinedTotal}}
+        </template>
+      </el-table-column>
+      <el-table-column label="会员邀请入会人数">
+        <template slot-scope="scope">
+          {{scope.row.joinedTotal}}
+        </template>
+      </el-table-column>
+      <el-table-column label="商会后台添加入会人数">
+        <template slot-scope="scope">
+          {{scope.row.joinedTotal}}
+        </template>
+      </el-table-column>
+      <el-table-column label="个人会员">
+        <template slot-scope="scope">
+          {{scope.row.joinedTotal}}
+        </template>
+      </el-table-column>
+      <el-table-column label="企业/团体">
         <template slot-scope="scope">
           {{scope.row.joinedTotal}}
         </template>
@@ -97,14 +128,10 @@
       @current-change="handleCurrentChange"
       :style="{'padding-top': '15px'}">
     </el-pagination>
-    <el-tabs>
+    <!-- <el-tabs>
       <el-tab-pane label="商会数据"></el-tab-pane>
     </el-tabs>
     <el-table :data="list2" v-loading="listLoading2" element-loading-text="Loading" border fit highlight-current-row>
-      <!-- <el-table-column type="selection" width="55px">
-      </el-table-column> -->
-      <!-- <el-table-column type="index" label="序号" width="60px">
-      </el-table-column> --> 
       <el-table-column label="商会">
         <template slot-scope="scope">
           {{scope.row.date}}
@@ -115,7 +142,42 @@
           {{scope.row.joinedTotal}}
         </template>
       </el-table-column>
-    </el-table>
+    </el-table>  -->
+    <el-dialog title="数据定义" :visible.sync="showMeaning" width="450px">
+      <div class="meaning-wrap">
+        <div class="meaning-item">
+          <div class="tit">入会总人数</div>
+          <div class="sub">在指定时间范围内，从不同渠道加入商会的总人数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">商会邀请入会人数</div>
+          <div class="sub">在指定时间范围内，通过商会邀请海报加入商会的人数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">自己申请入会人数</div>
+          <div class="sub">在指定时间范围内，自己通过小程序前端申请入会的人数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">会员邀请入会人数</div>
+          <div class="sub">在指定时间范围内，由老会员邀请入会的人数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">商会后台添加入会人数</div>
+          <div class="sub">在指定时间范围内，由商会管理员在后台添加入会的人数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">个人会员</div>
+          <div class="sub">在指定时间范围内，加入商会且入会类型为个人的会员。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">企业/团体</div>
+          <div class="sub">在指定时间范围内，加入商会且入会类型为企业/团体的会员。</div>
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <el-button type="primary" @click="showMeaning=false">我知道了</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 

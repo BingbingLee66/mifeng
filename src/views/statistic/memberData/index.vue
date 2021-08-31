@@ -1,35 +1,36 @@
 <template>
   <div class="app-container">
     <div class="block">
-      <div style="font-weight: 600; font-size: 18px;margin-bottom: 10px;">
-        会员数据
+      <div style="height:20px;margin-bottom: 10px;">
+        <span style="font-weight: 600; font-size: 18px;float: left;">会员数据</span>
+        <span style="float: right;" class="text-btn-style" @click="showMeaning=true">数据定义</span>
       </div>
       <div class="data-card">
         <div class="d-card-box">
           <div class="card-box-3">
             <div class="card-key">本月入会人数</div>
-            <div class="card-value">{{pfStatistics.monthlyJoin}}</div>
+            <div class="card-value">{{ pfStatistics.monthlyJoin }}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="d-card-box">
           <div class="card-box-3">
             <div class="card-key">累计会员数</div>
-            <div class="card-value">{{pfStatistics.totalMembers}}</div>
+            <div class="card-value">{{ pfStatistics.totalMembers }}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="d-card-box">
           <div class="card-box-3">
             <div class="card-key">逾期未缴会费人数</div>
-            <div class="card-value" style="color: #FF0000;">{{pfStatistics.unpaidMembers}}</div>
+            <div class="card-value" style="color: #FF0000;">{{ pfStatistics.unpaidMembers }}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="d-card-box">
           <div class="card-box-3">
             <div class="card-key">已缴会费人数</div>
-            <div class="card-value">{{pfStatistics.paidMembers}}</div>
+            <div class="card-value">{{ pfStatistics.paidMembers }}</div>
           </div>
         </div>
       </div>
@@ -40,7 +41,7 @@
     <div class="block">
       <span style="color: #bbb;margin-right: 20px;">时间</span>
       <el-radio-group v-model="query.days" size="mini" @change="initDatePicker">
-        <el-radio-button :label="7" >7天</el-radio-button>
+        <el-radio-button :label="7">7天</el-radio-button>
         <el-radio-button :label="14">14天</el-radio-button>
         <el-radio-button :label="30">30天</el-radio-button>
       </el-radio-group>
@@ -62,15 +63,45 @@
       <!-- <el-table-column type="selection" width="55px">
       </el-table-column> -->
       <!-- <el-table-column type="index" label="序号" width="60px">
-      </el-table-column> --> 
+      </el-table-column> -->
       <el-table-column label="日期">
         <template slot-scope="scope">
-          {{scope.row.date | dateFormat2}}
+          {{ scope.row.date | dateFormat2 }}
         </template>
       </el-table-column>
-      <el-table-column label="入会人数">
+      <el-table-column label="入会总人数">
         <template slot-scope="scope">
-          {{scope.row.joinedTotal}}
+          {{ scope.row.date | dateFormat2 }}
+        </template>
+      </el-table-column>
+      <el-table-column label="商会邀请入会人数">
+        <template slot-scope="scope">
+          {{ scope.row.joinedTotal }}
+        </template>
+      </el-table-column>
+      <el-table-column label="自己申请入会人数">
+        <template slot-scope="scope">
+          {{ scope.row.joinedTotal }}
+        </template>
+      </el-table-column>
+      <el-table-column label="会员邀请入会人数">
+        <template slot-scope="scope">
+          {{ scope.row.joinedTotal }}
+        </template>
+      </el-table-column>
+      <el-table-column label="商会后台添加入会人数">
+        <template slot-scope="scope">
+          {{ scope.row.joinedTotal }}
+        </template>
+      </el-table-column>
+      <el-table-column label="个人会员">
+        <template slot-scope="scope">
+          {{ scope.row.joinedTotal }}
+        </template>
+      </el-table-column>
+      <el-table-column label="企业/团体">
+        <template slot-scope="scope">
+          {{ scope.row.joinedTotal }}
         </template>
       </el-table-column>
     </el-table>
@@ -90,29 +121,65 @@
     </el-tabs>
     <el-row>
       <el-col :span="24">
-        <v-chart :options="tradeBarData" class="chart section" ref="barChart" :style="{'width': '100%'}" />
+        <v-chart :options="tradeBarData" class="chart section" ref="barChart" :style="{'width': '100%'}"/>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
-        <v-chart :options="ageBarData" class="chart section" ref="barChart" style="width: 100%;" />
+        <v-chart :options="ageBarData" class="chart section" ref="barChart" style="width: 100%;"/>
       </el-col>
       <el-col :span="12">
-        <v-chart :options="genderBarData" class="chart section" ref="barChart" style="width: 100%;" />
+        <v-chart :options="genderBarData" class="chart section" ref="barChart" style="width: 100%;"/>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="24">
-        <v-chart :options="yearsBarData" class="chart section" ref="barChart" style="width: 100%;" />
+        <v-chart :options="yearsBarData" class="chart section" ref="barChart" style="width: 100%;"/>
       </el-col>
     </el-row>
+
+    <el-dialog title="数据定义" :visible.sync="showMeaning" width="450px">
+      <div class="meaning-wrap">
+        <div class="meaning-item">
+          <div class="tit">入会总人数</div>
+          <div class="sub">在指定时间范围内，从不同渠道加入商会的总人数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">商会邀请入会人数</div>
+          <div class="sub">在指定时间范围内，通过商会邀请海报加入商会的人数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">自己申请入会人数</div>
+          <div class="sub">在指定时间范围内，自己通过小程序前端申请入会的人数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">会员邀请入会人数</div>
+          <div class="sub">在指定时间范围内，由老会员邀请入会的人数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">商会后台添加入会人数</div>
+          <div class="sub">在指定时间范围内，由商会管理员在后台添加入会的人数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">个人会员</div>
+          <div class="sub">在指定时间范围内，加入商会且入会类型为个人的会员。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">企业/团体</div>
+          <div class="sub">在指定时间范围内，加入商会且入会类型为企业/团体的会员。</div>
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <el-button type="primary" @click="showMeaning=false">我知道了</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script src="./memberData.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import "src/styles/common.scss";
 </style>
 <style>
 .data-card {
@@ -121,6 +188,7 @@
   border-radius: 2px;
   border: 1px solid #ccc;
 }
+
 .d-card-box {
   float: left;
   width: 24.5%;
@@ -128,18 +196,22 @@
   text-align: center;
   display: table;
 }
+
 .card-box-3 {
   width: 100%;
   display: table-cell;
   vertical-align: middle;
 }
+
 .card-key {
 }
+
 .card-value {
   margin-top: 10px;
   color: #008000;
   font-weight: 600;
 }
+
 .h-cut-line {
   float: left;
   width: 1px;

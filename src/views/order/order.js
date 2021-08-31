@@ -1,12 +1,13 @@
 import { getList, updateOrder } from '@/api/order/order'
 import { getAllSupplierList } from '@/api/supplier/supplier'
-import { exportJson2Excel } from '@/utils/exportExcel'
 import { formatDateTime } from '@/utils/date' // 格式化时间戳
+import { exportJson2Excel } from '@/utils/exportExcel'
 // import { mapGetters } from 'vuex'
 
 export default {
   data() {
     return {
+      mulDialog: false,
       query: {
         orderSn: '',
         // suppplierId: '',
@@ -222,6 +223,13 @@ export default {
           return false
         }
       })
+    },
+    openMulDialog() {
+      this.mulDialog = true
+    },
+    downloadExcel() {
+      let excelDatas = [{ '订单编号（必填）': '' }, { '物流公司（必填）': '' }, { '物流单号（必填）': '' }]
+      exportJson2Excel('发货模板', excelDatas)
     }
   }
 }

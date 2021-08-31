@@ -21,6 +21,7 @@ export default {
       tradeCas: -1,
       departmentCas: -1,
       query: {
+        status: 1, // 状态
         uname: '', // 用户名
         name: '', // 会员姓名
         phone: '', // 会员手机号

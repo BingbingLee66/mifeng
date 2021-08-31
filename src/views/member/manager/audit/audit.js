@@ -10,7 +10,11 @@ export default {
         remark: '资料乱填'
       },
       query: {
-        auditStatus: 0
+        auditStatus: 0,
+        phone: '',
+        type: '',
+        name: '',
+        uname: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -20,7 +24,9 @@ export default {
       listLoading: false,
       selectionDatas: [],
       approveLoading: false,
-      rejectLoading: false
+      rejectLoading: false,
+      showInput: false,
+      rejectReason: ''
     }
   },
   computed: {
@@ -35,10 +41,10 @@ export default {
   },
   methods: {
     has(tabName, actionName) {
-      return this.$store.getters.has({tabName, actionName})
+      return this.$store.getters.has({ tabName, actionName })
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({tabName, actionName})
+      return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -76,7 +82,7 @@ export default {
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('memberaudit', this.$route.path)
-      this.$router.push({name: '会员详情', params: {'memberDetail': row, 'querytype': '1'}})
+      this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '1' } })
     },
     batchApproved(e) {
       if (this.selectionDatas.length === 0) {
@@ -175,6 +181,12 @@ export default {
       this.selectionDatas = []
       for (const data of datas) {
         this.selectionDatas.push(data.id)
+      }
+    },
+    radioChange(val) {
+      console.log(val)
+      if (val === '其他') {
+        this.showInput = true
       }
     }
   }
