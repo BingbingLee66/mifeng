@@ -23,7 +23,8 @@ export default {
       },
       query: {
         days: 7,
-        date: ''
+        date: '',
+        type: 1,
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -31,135 +32,8 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: [],
-      tradeBarData: {
-        title: {
-          text: '',
-          show: true,
-          textStyle: {
-            color: '#999',
-            fontSize: 16
-          },
-          textAlign: 'left',
-          top: '0',
-          left: '50%'
-        },
-        xAxis: {
-          type: 'category',
-          data: []
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [{
-          data: [],
-          type: 'bar',
-          label: {
-            show: true,
-            position: 'top',
-            color: '#3D383A'
-            // formatter: "￥{c}"
-          }
-        }],
-        color: ["#64CDF0", "#F5686F"]
-      },
-      ageBarData: {
-        title: {
-          text: '',
-          show: true,
-          textStyle: {
-            color: '#999',
-            fontSize: 16
-          },
-          textAlign: 'left',
-          top: '0',
-          left: '50%'
-        },
-        xAxis: {
-          type: 'category',
-          data: []
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [{
-          data: [],
-          type: 'bar',
-          label: {
-            show: true,
-            position: 'top',
-            color: '#3D383A'
-            // formatter: "￥{c}"
-          }
-        }],
-        color: ["#64CDF0", "#F5686F"]
-      },
-      genderBarData: {
-        title: {
-          text: '',
-          show: true,
-          textStyle: {
-            color: '#999',
-            fontSize: 16
-          },
-          textAlign: 'left',
-          top: '0',
-          left: '50%'
-        },
-        xAxis: {
-          type: 'category',
-          data: []
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [{
-          data: [],
-          type: 'bar',
-          label: {
-            show: true,
-            position: 'top',
-            color: '#3D383A'
-            // formatter: "￥{c}"
-          }
-        }],
-        color: ["#64CDF0", "#F5686F"]
-      },
-      yearsBarData: {
-        title: {
-          text: '',
-          show: true,
-          textStyle: {
-            color: '#999',
-            fontSize: 16
-          },
-          textAlign: 'left',
-          top: '0',
-          left: '50%'
-        },
-        xAxis: {
-          type: 'category',
-          data: []
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [{
-          data: [],
-          type: 'bar',
-          label: {
-            show: true,
-            position: 'top',
-            color: '#3D383A'
-            // formatter: "￥{c}"
-          }
-        }],
-        color: ["#64CDF0", "#F5686F"]
-      }
+      selectionDatas: []
     }
-  },
-  computed: {
-    // ...mapGetters(['has'])
   },
   created() {
     this.init()
@@ -185,10 +59,6 @@ export default {
     init() {
       this.getStatistics()
       this.initDatePicker()
-      this.getTradeBar()
-      this.getAgeBar()
-      this.getGenderBar()
-      this.getYearsBar()
     },
     initDatePicker() {
       const endDateNs = new Date()
@@ -198,6 +68,11 @@ export default {
       const defalutStartTime = startDateNs.getFullYear() + '-' + ((startDateNs.getMonth() + 1) >= 10 ? (startDateNs.getMonth() + 1) : '0' + (startDateNs.getMonth() + 1)) + '-' + (startDateNs.getDate() >= 10 ? startDateNs.getDate() : '0' + startDateNs.getDate())
       const defalutEndTime = endDateNs.getFullYear() + '-' + ((endDateNs.getMonth() + 1) >= 10 ? (endDateNs.getMonth() + 1) : '0' + (endDateNs.getMonth() + 1)) + '-' + (endDateNs.getDate() >= 10 ? endDateNs.getDate() : '0' + endDateNs.getDate())
       this.query.date = [defalutStartTime, defalutEndTime]
+      this.fetchData()
+    },
+    typeDatePicker(val) {
+      console.log(val)
+      this.query.type = val
       this.fetchData()
     },
     getStatistics() {
@@ -214,6 +89,7 @@ export default {
       let params = {
         'startTime': this.query.date[0],
         'endTime': this.query.date[1],
+        'type': this.query.type,
         'pageSize': this.limit,
         'page': this.currentpage
       }
@@ -229,30 +105,6 @@ export default {
         this.tradeBarData.title.text = response.data.text
         this.tradeBarData.xAxis.data = response.data.xAxisData
         this.tradeBarData.series[0].data = response.data.seriesData
-      })
-    },
-    getAgeBar() {
-      let params = {}
-      getAgeBar(params).then(response => {
-        this.ageBarData.title.text = response.data.text
-        this.ageBarData.xAxis.data = response.data.xAxisData
-        this.ageBarData.series[0].data = response.data.seriesData
-      })
-    },
-    getGenderBar() {
-      let params = {}
-      getGenderBar(params).then(response => {
-        this.genderBarData.title.text = response.data.text
-        this.genderBarData.xAxis.data = response.data.xAxisData
-        this.genderBarData.series[0].data = response.data.seriesData
-      })
-    },
-    getYearsBar() {
-      let params = {}
-      getYearsBar(params).then(response => {
-        this.yearsBarData.title.text = response.data.text
-        this.yearsBarData.xAxis.data = response.data.xAxisData
-        this.yearsBarData.series[0].data = response.data.seriesData
       })
     }
   }

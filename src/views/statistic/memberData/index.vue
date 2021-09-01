@@ -35,9 +35,6 @@
         </div>
       </div>
     </div>
-    <el-tabs>
-      <el-tab-pane label="入会数据"></el-tab-pane>
-    </el-tabs>
     <div class="block">
       <span style="color: #bbb;margin-right: 20px;">时间</span>
       <el-radio-group v-model="query.days" size="mini" @change="initDatePicker">
@@ -57,13 +54,14 @@
         @change="fetchData"
         size="mini">
       </el-date-picker>
+      <el-radio-group v-model="query.type" size="mini" @change="typeDatePicker">
+        <el-radio-button :label="1">日</el-radio-button>
+        <el-radio-button :label="2">周</el-radio-button>
+        <el-radio-button :label="3">月</el-radio-button>
+      </el-radio-group>
       <!-- <el-button type="primary" size="mini" tyle="float: right;">导表</el-button> -->
     </div>
     <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
-      <!-- <el-table-column type="selection" width="55px">
-      </el-table-column> -->
-      <!-- <el-table-column type="index" label="序号" width="60px">
-      </el-table-column> -->
       <el-table-column label="日期">
         <template slot-scope="scope">
           {{ scope.row.date | dateFormat2 }}
@@ -71,37 +69,37 @@
       </el-table-column>
       <el-table-column label="入会总人数">
         <template slot-scope="scope">
-          {{ scope.row.date | dateFormat2 }}
+          {{ scope.row.joinedTotal > 0 ? scope.row.joinedTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="商会邀请入会人数">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.chamberInvitationTotal > 0 ? scope.row.chamberInvitationTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="自己申请入会人数">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.myselfApplyTotal > 0 ? scope.row.myselfApplyTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="会员邀请入会人数">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.memberInvitationTotal > 0 ? scope.row.memberInvitationTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="商会后台添加入会人数">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.chamberBackstageAddTotal > 0 ? scope.row.chamberBackstageAddTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="个人会员">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.personMemberTotal > 0 ? scope.row.personMemberTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="企业/团体">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.companyMemberTotal > 0 ? scope.row.companyMemberTotal : '--' }}
         </template>
       </el-table-column>
     </el-table>
@@ -116,27 +114,6 @@
       @current-change="handleCurrentChange"
       :style="{'padding-top': '15px'}">
     </el-pagination>
-    <el-tabs>
-      <el-tab-pane label="会员画像"></el-tab-pane>
-    </el-tabs>
-    <el-row>
-      <el-col :span="24">
-        <v-chart :options="tradeBarData" class="chart section" ref="barChart" :style="{'width': '100%'}"/>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="12">
-        <v-chart :options="ageBarData" class="chart section" ref="barChart" style="width: 100%;"/>
-      </el-col>
-      <el-col :span="12">
-        <v-chart :options="genderBarData" class="chart section" ref="barChart" style="width: 100%;"/>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="24">
-        <v-chart :options="yearsBarData" class="chart section" ref="barChart" style="width: 100%;"/>
-      </el-col>
-    </el-row>
 
     <el-dialog title="数据定义" :visible.sync="showMeaning" width="450px">
       <div class="meaning-wrap">
