@@ -1,10 +1,8 @@
 import {
   getPlatformMemberPaidData,
-  getPlatformMemberJoinData,
-  getPlatformChamberData
+  getPlatformMemberJoinData
 } from '@/api/statistics/chamberJoinData'
 import { exportJson2Excel } from '@/utils/exportExcel'
-// import { mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -20,7 +18,7 @@ export default {
       query: {
         days: 7,
         date: '',
-        ranges: 1
+        type: 1
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -28,9 +26,7 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: [],
-      listLoading2: false,
-      list2: []
+      selectionDatas: []
     }
   },
   computed: {
@@ -60,7 +56,6 @@ export default {
     init() {
       this.getStatistics()
       this.initDatePicker()
-      this.fetchData2()
     },
     initDatePicker() {
       const endDateNs = new Date()
@@ -72,9 +67,12 @@ export default {
       this.query.date = [defalutStartTime, defalutEndTime]
       this.fetchData()
     },
-    rangeDatePicker(val) {
+    typeDatePicker(val) {
       console.log(val)
+      this.query.type = val
+      this.fetchData()
     },
+    // 获取商会入驻数据
     getStatistics() {
       let params = {}
       getPlatformMemberPaidData(params).then(response => {
@@ -91,20 +89,13 @@ export default {
         'startTime': this.query.date[0],
         'endTime': this.query.date[1],
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        'type': this.query.type
       }
       getPlatformMemberJoinData(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
         this.listLoading = false
-      })
-    },
-    fetchData2() {
-      this.listLoading2 = true
-      let params = {}
-      getPlatformChamberData(params).then(response => {
-        this.list2 = response.data.list
-        this.listLoading2 = false
       })
     },
     handleSelectionChange(value) {
@@ -113,8 +104,14 @@ export default {
       for (let data of datas) {
         let new_data = {
           '日期': data.date,
-          '授权登录人数': data.activeWxUserTotal,
-          '商会会员入驻': data.joinedTotal
+          '授权登录人数': data.activeWxUserTotal > 0 ? data.activeWxUserTotal : '--',
+          '入会总人数': data.joinedTotal > 0 ? data.joinedTotal : '--',
+          '商会邀请入会人数': data.chamberInvitationTotal > 0 ? data.chamberInvitationTotal : '--',
+          '自己申请入会人数': data.myselfApplyTotal > 0 ? data.myselfApplyTotal : '--',
+          '会员邀请入会人数': data.memberInvitationTotal > 0 ? data.memberInvitationTotal : '--',
+          '商会后台添加入会人数': data.chamberBackstageAddTotal > 0 ? data.chamberBackstageAddTotal : '--',
+          '个人会员': data.personMemberTotal > 0 ? data.personMemberTotal : '--',
+          '企业/团体': data.companyMemberTotal > 0 ? data.companyMemberTotal : '--'
         }
         this.selectionDatas.push(new_data)
       }

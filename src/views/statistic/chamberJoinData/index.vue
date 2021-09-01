@@ -9,35 +9,35 @@
         <div class="c-card-box">
           <div class="card-box-3">
             <div class="card-key">本月商会入驻</div>
-            <div class="card-value">{{pfStatistics.monthlyChamberJoin}}</div>
+            <div class="card-value">{{ pfStatistics.monthlyChamberJoin }}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
             <div class="card-key">累计商会入驻</div>
-            <div class="card-value">{{pfStatistics.totalChambers}}</div>
+            <div class="card-value">{{ pfStatistics.totalChambers }}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
             <div class="card-key">本月会员入驻</div>
-            <div class="card-value">{{pfStatistics.monthlyMemberJoin}}</div>
+            <div class="card-value">{{ pfStatistics.monthlyMemberJoin }}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
             <div class="card-key">累计会员入驻</div>
-            <div class="card-value">{{pfStatistics.totalMembers}}</div>
+            <div class="card-value">{{ pfStatistics.totalMembers }}</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
             <div class="card-key">累计授权登录人数</div>
-            <div class="card-value">{{pfStatistics.loginMembers}}</div>
+            <div class="card-value">{{ pfStatistics.loginMembers }}</div>
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
     <div class="block">
       <span style="color: #bbb;margin-right: 20px;">时间</span>
       <el-radio-group v-model="query.days" size="mini" @change="initDatePicker">
-        <el-radio-button :label="7" >7天</el-radio-button>
+        <el-radio-button :label="7">7天</el-radio-button>
         <el-radio-button :label="14">14天</el-radio-button>
         <el-radio-button :label="30">30天</el-radio-button>
       </el-radio-group>
@@ -61,8 +61,8 @@
         @change="fetchData"
         size="mini">
       </el-date-picker>
-      <el-radio-group v-model="query.ranges" size="mini" @change="rangeDatePicker">
-        <el-radio-button :label="1" >日</el-radio-button>
+      <el-radio-group v-model="query.type" size="mini" @change="typeDatePicker">
+        <el-radio-button :label="1">日</el-radio-button>
         <el-radio-button :label="2">周</el-radio-button>
         <el-radio-button :label="3">月</el-radio-button>
       </el-radio-group>
@@ -73,50 +73,51 @@
       </el-table-column>
       <el-table-column label="日期">
         <template slot-scope="scope">
-          {{scope.row.date}}
+          {{ scope.row.date }}
         </template>
       </el-table-column>
       <el-table-column label="授权登录人数">
         <template slot-scope="scope">
-          {{scope.row.activeWxUserTotal}}
+          {{ scope.row.activeWxUserTotal > 0 ? scope.row.activeWxUserTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="入会总人数">
         <template slot-scope="scope">
-          {{scope.row.joinedTotal}}
+          {{ scope.row.joinedTotal > 0 ? scope.row.joinedTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="商会邀请入会人数">
         <template slot-scope="scope">
-          {{scope.row.joinedTotal}}
+          {{ scope.row.chamberInvitationTotal > 0 ? scope.row.chamberInvitationTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="自己申请入会人数">
         <template slot-scope="scope">
-          {{scope.row.joinedTotal}}
+          {{ scope.row.myselfApplyTotal	> 0 ? scope.row.myselfApplyTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="会员邀请入会人数">
         <template slot-scope="scope">
-          {{scope.row.joinedTotal}}
+          {{ scope.row.memberInvitationTotal > 0 ? scope.row.memberInvitationTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="商会后台添加入会人数">
         <template slot-scope="scope">
-          {{scope.row.joinedTotal}}
+          {{ scope.row.chamberBackstageAddTotal > 0 ? scope.row.chamberBackstageAddTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="个人会员">
         <template slot-scope="scope">
-          {{scope.row.joinedTotal}}
+          {{ scope.row.personMemberTotal > 0 ? scope.row.personMemberTotal : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="企业/团体">
         <template slot-scope="scope">
-          {{scope.row.joinedTotal}}
+          {{ scope.row.companyMemberTotal > 0 ? scope.row.companyMemberTotal : '--' }}
         </template>
       </el-table-column>
     </el-table>
+
     <el-pagination
       background
       layout="total, sizes, prev, pager, next, jumper"
@@ -128,21 +129,7 @@
       @current-change="handleCurrentChange"
       :style="{'padding-top': '15px'}">
     </el-pagination>
-    <!-- <el-tabs>
-      <el-tab-pane label="商会数据"></el-tab-pane>
-    </el-tabs>
-    <el-table :data="list2" v-loading="listLoading2" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column label="商会">
-        <template slot-scope="scope">
-          {{scope.row.date}}
-        </template>
-      </el-table-column>
-      <el-table-column label="累计商会会员">
-        <template slot-scope="scope">
-          {{scope.row.joinedTotal}}
-        </template>
-      </el-table-column>
-    </el-table>  -->
+
     <el-dialog title="数据定义" :visible.sync="showMeaning" width="450px">
       <div class="meaning-wrap">
         <div class="meaning-item">
@@ -184,7 +171,7 @@
 <script src="./chamberJoinData.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import "src/styles/common.scss";
 </style>
 <style>
 .data-card {
@@ -193,6 +180,7 @@
   border-radius: 2px;
   border: 1px solid #ccc;
 }
+
 .c-card-box {
   float: left;
   width: 19.5%;
@@ -200,18 +188,22 @@
   text-align: center;
   display: table;
 }
+
 .card-box-3 {
   width: 100%;
   display: table-cell;
   vertical-align: middle;
 }
+
 .card-key {
 }
+
 .card-value {
   margin-top: 10px;
   color: #008000;
   font-weight: 600;
 }
+
 .h-cut-line {
   float: left;
   width: 1px;
