@@ -11,7 +11,7 @@ export function getPlatformMemberPaidData(params) {
 
 export function getPlatformMemberJoinData(params) {
   return request({
-    url: baseUrl + '/ec/mall/platform-member-join-data',
+    url: baseUrl + '/ec/mall/memberdata-dailyStatistics',
     method: 'get',
     params
   })

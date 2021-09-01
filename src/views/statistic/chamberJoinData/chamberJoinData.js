@@ -93,8 +93,8 @@ export default {
         'type': this.query.type
       }
       getPlatformMemberJoinData(params).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.totalRows
+        this.list = response.data.list
+        this.total = response.data.totalRows
         this.listLoading = false
       })
     },

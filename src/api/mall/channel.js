@@ -1,6 +1,22 @@
 import request from '@/utils/request'
 
 const baseUrl = process.env.VUE_APP_BASE_API_2
+// 渠道推广数据统计
+export function getChannelStatistical(params) {
+  return request({
+    url: baseUrl + '/ec/mall/channel/channel-statistical-list',
+    method: 'get',
+    params
+  })
+}
+export function getChannelSummary(params) {
+  return request({
+    url: baseUrl + '/ec/mall/channel/channel-statistical-summary',
+    method: 'get',
+    params
+  })
+}
+
 
 // 渠道推广数据列表
 export function getChannelPromoteList(params) {

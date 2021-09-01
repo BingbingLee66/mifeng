@@ -94,8 +94,9 @@ export default {
         'page': this.currentpage
       }
       getDailyStatistics(params).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.totalRows
+        console.log('responseresponseresponse----', response)
+        this.list = response.data.list
+        this.total = response.data.totalRows
         this.listLoading = false
       })
     },

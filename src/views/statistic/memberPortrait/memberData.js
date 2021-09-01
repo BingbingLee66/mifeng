@@ -184,7 +184,7 @@ export default {
     },
     init() {
       this.getStatistics()
-      this.initDatePicker()
+      // this.initDatePicker()
       this.getTradeBar()
       this.getAgeBar()
       this.getGenderBar()

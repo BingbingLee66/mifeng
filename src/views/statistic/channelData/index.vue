@@ -8,49 +8,49 @@
       <div class="data-card">
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.monthlyChamberJoin }}</div>
+            <div class="card-value">{{ pfStatistics.channelNums }}</div>
             <div class="card-key">累计推广渠道</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.totalChambers }}</div>
+            <div class="card-value">{{ pfStatistics.goodsNums }}</div>
             <div class="card-key">累计推广商品数</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.monthlyMemberJoin }}</div>
+            <div class="card-value" style="color: #FF0000;">{{ pfStatistics.userNums }}</div>
             <div class="card-key">累计访问人数</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.totalMembers }}</div>
+            <div class="card-value">{{ pfStatistics.visitNums }}</div>
             <div class="card-key">累计访问次数</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.loginMembers }}</div>
+            <div class="card-value">{{ pfStatistics.payUserNums }}</div>
             <div class="card-key">累计支付人数</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.loginMembers }}</div>
+            <div class="card-value">{{ pfStatistics.payOrderNums }}</div>
             <div class="card-key">累计支付订单数</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.loginMembers }}</div>
+            <div class="card-value">{{ pfStatistics.successAmount }}</div>
             <div class="card-key">累计成交金额</div>
           </div>
         </div>
@@ -59,12 +59,13 @@
     <div class="block" style="height: 60px;display: flex;align-items:center;position: relative;">
       <div>
         <span style="color: #bbb;margin-right: 20px;">时间</span>
-        <el-radio-group v-model="query.days" size="mini" @change="initDatePicker">
+        <el-radio-group style="margin-right: 12px;" v-model="query.days" size="mini" @change="initDatePicker">
           <el-radio-button :label="7">7天</el-radio-button>
           <el-radio-button :label="14">14天</el-radio-button>
           <el-radio-button :label="30">30天</el-radio-button>
         </el-radio-group>
         <el-date-picker
+          style="margin-right: 15px;"
           format="yyyy-MM-dd"
           value-format="yyyy-MM-dd"
           v-model="query.date"
@@ -77,61 +78,71 @@
           size="mini">
         </el-date-picker>
       </div>
-      <div style="display: flex;align-items: center;">
-        <el-select v-model="query.id" placeholder="请选择" clearable size="mini">
+      <div class="query-wrap">
+        <el-select style="margin-right: 15px;" v-model="query.id" placeholder="请选择" clearable size="mini">
           <el-option v-for="item in channelList" :key="item.id" :label="item.channelName" :value="item.id"/>
         </el-select>
-        <el-input size="mini" placeholder="商品ID"></el-input>
-        <el-button size="mini" type="primary">查询</el-button>
+        <el-input style="margin-right: 15px;" size="mini" placeholder="商品ID" v-model="query.goodsId"></el-input>
+        <el-button size="mini" type="primary" @click="fetchData($event)">查询</el-button>
       </div>
       <el-button type="primary" size="mini" style="position: absolute;right: 0" @click="exportExcel">导表</el-button>
+    </div>
+    <div style="margin-bottom: 16px;">
+      <span style="font-weight: 700;margin-right: 20px;">【商品ID】220</span>
+      <span style="color: #ff0000;margin-right: 20px;">广东省江西商会</span>
+      <span>【凯迪20周年纪念酒】珍品酱香纯粮老酒（6瓶/箱）（72小时内发货）</span>
     </div>
     <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55px">
       </el-table-column>
       <el-table-column label="日期">
         <template slot-scope="scope">
-          {{ scope.row.date }}
+          {{ scope.row.dayTimeStr }}
         </template>
       </el-table-column>
-      <el-table-column label="授权登录人数">
+      <el-table-column label="推广渠道">
         <template slot-scope="scope">
-          {{ scope.row.activeWxUserTotal }}
+          {{ scope.row.channelNums }}
         </template>
       </el-table-column>
-      <el-table-column label="入会总人数">
+      <el-table-column label="推广商品数">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.goodsNums }}
         </template>
       </el-table-column>
-      <el-table-column label="商会邀请入会人数">
+      <el-table-column label="访问人数/uv">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.userNums }}
         </template>
       </el-table-column>
-      <el-table-column label="自己申请入会人数">
+      <el-table-column label="访问次数/pv">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.visitNums }}
         </template>
       </el-table-column>
-      <el-table-column label="会员邀请入会人数">
+      <el-table-column label="提交订单人数">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.orderNums }}
         </template>
       </el-table-column>
-      <el-table-column label="商会后台添加入会人数">
+      <el-table-column label="支付人数">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.payUserNums }}
         </template>
       </el-table-column>
-      <el-table-column label="个人会员">
-        <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
-        </template>
-      </el-table-column>
-      <el-table-column label="企业/团体">
+      <el-table-column label="提交订单数">
         <template slot-scope="scope">
           {{ scope.row.joinedTotal }}
+        </template>
+      </el-table-column>
+      <el-table-column label="支付订单数">
+        <template slot-scope="scope">
+          {{ scope.row.orderUserNums }}
+        </template>
+      </el-table-column>
+      <el-table-column label="成交金额">
+        <template slot-scope="scope">
+          {{ scope.row.successAmount }}
         </template>
       </el-table-column>
     </el-table>
@@ -146,50 +157,44 @@
       @current-change="handleCurrentChange"
       :style="{'padding-top': '15px'}">
     </el-pagination>
-    <!-- <el-tabs>
-      <el-tab-pane label="商会数据"></el-tab-pane>
-    </el-tabs>
-    <el-table :data="list2" v-loading="listLoading2" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column label="商会">
-        <template slot-scope="scope">
-          {{scope.row.date}}
-        </template>
-      </el-table-column>
-      <el-table-column label="累计商会会员">
-        <template slot-scope="scope">
-          {{scope.row.joinedTotal}}
-        </template>
-      </el-table-column>
-    </el-table>  -->
-    <el-dialog title="数据定义" :visible.sync="showMeaning" width="450px">
+
+    <el-dialog title="数据定义" :visible.sync="showMeaning" width="480px">
       <div class="meaning-wrap">
         <div class="meaning-item">
-          <div class="tit">入会总人数</div>
-          <div class="sub">在指定时间范围内，从不同渠道加入商会的总人数。</div>
+          <div class="tit">推广渠道</div>
+          <div class="sub">在指定时间范围内，有访问量的商品对应的总渠道数 (需去重)。</div>
         </div>
         <div class="meaning-item">
-          <div class="tit">商会邀请入会人数</div>
-          <div class="sub">在指定时间范围内，通过商会邀请海报加入商会的人数。</div>
+          <div class="tit">推广商品数</div>
+          <div class="sub">在指定时间范围内，有访问量的总商品数 (需去重)</div>
         </div>
         <div class="meaning-item">
-          <div class="tit">自己申请入会人数</div>
-          <div class="sub">在指定时间范围内，自己通过小程序前端申请入会的人数。</div>
+          <div class="tit">访问人数/uv</div>
+          <div class="sub">在指定时间范围内，访问过推广商品的总人数<span style="color:#FF0000;">(需去重)</span></div>
         </div>
         <div class="meaning-item">
-          <div class="tit">会员邀请入会人数</div>
-          <div class="sub">在指定时间范围内，由老会员邀请入会的人数。</div>
+          <div class="tit">访问次数/pv</div>
+          <div class="sub">在指定时间范围内，访问过推广商品的总次数。</div>
         </div>
         <div class="meaning-item">
-          <div class="tit">商会后台添加入会人数</div>
-          <div class="sub">在指定时间范围内，由商会管理员在后台添加入会的人数。</div>
+          <div class="tit">提交订单人数</div>
+          <div class="sub">在指定时间范围内，提交过订单的总人数 <span style="color:#FF0000;">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
-          <div class="tit">个人会员</div>
-          <div class="sub">在指定时间范围内，加入商会且入会类型为个人的会员。</div>
+          <div class="tit">支付人数</div>
+          <div class="sub">在指定时间范围内，成功支付订单的总人数<span style="color:#FF0000;">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
-          <div class="tit">企业/团体</div>
-          <div class="sub">在指定时间范围内，加入商会且入会类型为企业/团体的会员。</div>
+          <div class="tit">提交订单数</div>
+          <div class="sub">在指定时间范围内，提交的订单数之和 (包含未支付的)。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">支付订单数</div>
+          <div class="sub">在指定时间范围内，成功支付的订单数之和。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">成交金额</div>
+          <div class="sub">在指定时间范围内，成功支付且没退款的订单、对应的订单金额之和。</div>
         </div>
       </div>
       <div style="text-align: center;">
@@ -203,6 +208,11 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
+
+.query-wrap {
+  display: flex;
+  align-items: center;
+}
 
 .data-card {
   width: 100%;
@@ -225,11 +235,8 @@
   vertical-align: middle;
 }
 
-.card-key {
-}
-
 .card-value {
-  margin-top: 10px;
+  margin-bottom: 10px;
   color: #008000;
   font-weight: 600;
 }
@@ -241,3 +248,4 @@
   border-left: 1px solid #ccc;
 }
 </style>
+

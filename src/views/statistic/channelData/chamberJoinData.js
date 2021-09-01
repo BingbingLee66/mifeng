@@ -1,10 +1,9 @@
 import {
-  getPlatformMemberPaidData,
   getPlatformMemberJoinData,
   getPlatformChamberData
 } from '@/api/statistics/chamberJoinData'
 import { exportJson2Excel } from '@/utils/exportExcel'
-import { getList } from '@/api/mall/channel'
+import { getList, getChannelSummary, getChannelStatistical } from '@/api/mall/channel'
 
 export default {
   data() {
@@ -12,16 +11,19 @@ export default {
       channelList: [], // 关联渠道列表
       showMeaning: false,
       pfStatistics: {
-        monthlyChamberJoin: 0,
-        totalChambers: 0,
-        monthlyMemberJoin: 0,
-        totalMembers: 0,
-        loginMembers: 0
+        channelNums: 0,
+        goodsNums: 0,
+        payOrderNums: 0,
+        payUserNums: 0,
+        successAmount: 0,
+        userNums: 0,
+        visitNums: 0
       },
       query: {
         days: 7,
         date: '',
-        id: -1
+        id: -1,
+        goodsId: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -29,9 +31,7 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: [],
-      listLoading2: false,
-      list2: []
+      selectionDatas: []
     }
   },
   computed: {
@@ -49,20 +49,17 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
       this.fetchData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
       this.fetchData()
     },
     init() {
       this.getStatistics()
       this.initDatePicker()
-      this.fetchData2()
     },
     initDatePicker() {
       const endDateNs = new Date()
@@ -77,36 +74,36 @@ export default {
     rangeDatePicker(val) {
       console.log(val)
     },
+    // 获取渠道推广数据汇总结果数据
     getStatistics() {
       let params = {}
-      getPlatformMemberPaidData(params).then(response => {
-        this.pfStatistics.monthlyChamberJoin = response.data.monthlyChamberJoin
-        this.pfStatistics.totalChambers = response.data.totalChambers
-        this.pfStatistics.monthlyMemberJoin = response.data.monthlyMemberJoin
-        this.pfStatistics.totalMembers = response.data.totalMembers
-        this.pfStatistics.loginMembers = response.data.loginMembers
+      getChannelSummary(params).then(res => {
+        this.pfStatistics.channelNums = res.data.channelNums
+        this.pfStatistics.goodsNums = res.data.goodsNums
+        this.pfStatistics.payOrderNums = res.data.payOrderNums
+        this.pfStatistics.payUserNums = res.data.payUserNums
+        this.pfStatistics.successAmount = res.data.successAmount
+        this.pfStatistics.userNums = res.data.userNums
+        this.pfStatistics.visitNums = res.data.visitNums
       })
     },
-    fetchData() {
+    fetchData(e) {
+      if (e !== undefined) {
+        this.currentpage = 1
+      }
       this.listLoading = true
       let params = {
         'startTime': this.query.date[0],
         'endTime': this.query.date[1],
+        'channelId': this.query.id,
+        'goodsId': this.query.goodsId,
         'pageSize': this.limit,
         'page': this.currentpage
       }
-      getPlatformMemberJoinData(params).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.totalRows
+      getChannelStatistical(params).then(response => {
+        this.list = response.data.list
+        this.total = response.data.totalRows
         this.listLoading = false
-      })
-    },
-    fetchData2() {
-      this.listLoading2 = true
-      let params = {}
-      getPlatformChamberData(params).then(response => {
-        this.list2 = response.data.list
-        this.listLoading2 = false
       })
     },
     handleSelectionChange(value) {
@@ -139,7 +136,6 @@ export default {
           channelName: '全部渠道'
         })
         this.channelList = res.data.list
-        console.log('this.channelListthis.channelList',this.channelList)
       })
     }
   }
