@@ -1,15 +1,13 @@
-import {
-  getPlatformMemberJoinData,
-  getPlatformChamberData
-} from '@/api/statistics/chamberJoinData'
 import { exportJson2Excel } from '@/utils/exportExcel'
 import { getList, getChannelSummary, getChannelStatistical } from '@/api/mall/channel'
+import { getGoodsDetail } from '@/api/goods/goodsSku'
 
 export default {
   data() {
     return {
       channelList: [], // 关联渠道列表
       showMeaning: false,
+      showGoodsDetail: false,
       pfStatistics: {
         channelNums: 0,
         goodsNums: 0,
@@ -31,7 +29,9 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: []
+      selectionDatas: [],
+      goodsDetail: {},
+      deliveryConfig: {}
     }
   },
   computed: {
@@ -90,6 +90,12 @@ export default {
     fetchData(e) {
       if (e !== undefined) {
         this.currentpage = 1
+        if (this.query.goodsId) {
+          this.getGoodsDetails()
+          this.showGoodsDetail = true
+        } else {
+          this.showGoodsDetail = false
+        }
       }
       this.listLoading = true
       let params = {
@@ -111,9 +117,16 @@ export default {
       this.selectionDatas = []
       for (let data of datas) {
         let new_data = {
-          '日期': data.date,
-          '授权登录人数': data.activeWxUserTotal,
-          '商会会员入驻': data.joinedTotal
+          '日期': data.dayTimeStr,
+          '推广渠道': data.channelNums > 0 ? data.channelNums : '--',
+          '推广商品数': data.goodsNums > 0 ? data.goodsNums : '--',
+          '访问人数/uv': data.userNums > 0 ? data.userNums : '--',
+          '访问次数/pv': data.visitNums > 0 ? data.visitNums : '--',
+          '提交订单人数': data.orderUserNums > 0 ? data.orderUserNums : '--',
+          '支付人数': data.payUserNums > 0 ? data.payUserNums : '--',
+          '提交订单数': data.orderNums > 0 ? data.orderNums : '--',
+          '支付订单数': data.orderUserNums > 0 ? data.orderUserNums : '--',
+          '成交金额': data.successAmount > 0 ? data.successAmount : '--'
         }
         this.selectionDatas.push(new_data)
       }
@@ -126,7 +139,7 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      exportJson2Excel('会员入驻数据', this.selectionDatas)
+      exportJson2Excel('渠道推广数据', this.selectionDatas)
     },
     // 获取关联渠道列表
     getChannelList() {
@@ -137,6 +150,32 @@ export default {
         })
         this.channelList = res.data.list
       })
+    },
+    getGoodsDetails() {
+      let params = {
+        'id': this.query.goodsId
+      }
+      getGoodsDetail(params).then(response => {
+        if (response.state === 1) {
+          this.goodsDetail = response.data.goodsDetail
+          this.deliveryConfig = JSON.parse(response.data.goodsDetail.deliveryConfig)
+        } else {
+          console.log(9999)
+          this.goodsDetail = {}
+          this.deliveryConfig = {}
+        }
+      }).catch(err => {
+        console.log(err)
+        this.goodsDetail = {}
+        this.deliveryConfig = {}
+      })
+    },
+    prevent(e) {
+      var keynum = window.event ? e.keyCode : e.which
+      if (keynum === 189 || keynum === 190 || keynum === 109 || keynum === 110) {
+        this.$message.error('必须是大于0的整数')
+        e.target.value = ''
+      }
     }
   }
 }

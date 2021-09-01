@@ -82,15 +82,25 @@
         <el-select style="margin-right: 15px;" v-model="query.id" placeholder="请选择" clearable size="mini">
           <el-option v-for="item in channelList" :key="item.id" :label="item.channelName" :value="item.id"/>
         </el-select>
-        <el-input style="margin-right: 15px;" size="mini" placeholder="商品ID" v-model="query.goodsId"></el-input>
+        <el-input
+          style="margin-right: 15px;"
+          size="mini"
+          placeholder="商品ID"
+          v-model="query.goodsId"
+          type="number"
+          @mousewheel.native.prevent
+          @keyup.native="prevent($event)"></el-input>
         <el-button size="mini" type="primary" @click="fetchData($event)">查询</el-button>
       </div>
       <el-button type="primary" size="mini" style="position: absolute;right: 0" @click="exportExcel">导表</el-button>
     </div>
-    <div style="margin-bottom: 16px;">
-      <span style="font-weight: 700;margin-right: 20px;">【商品ID】220</span>
-      <span style="color: #ff0000;margin-right: 20px;">广东省江西商会</span>
-      <span>【凯迪20周年纪念酒】珍品酱香纯粮老酒（6瓶/箱）（72小时内发货）</span>
+    <div style="margin-bottom: 16px;color: #333333;" v-if="showGoodsDetail">
+      <div v-if="goodsDetail.id">
+        <span style="font-weight: 600;margin-right: 20px;">【商品ID】{{ goodsDetail.id }}</span>
+        <span style="color: #ff0000;margin-right: 20px;">{{ goodsDetail.chamberName }}</span>
+        <span>{{ goodsDetail.name }}（{{ deliveryConfig['发货时间'] }}）</span>
+      </div>
+      <div v-else style="color: #ff0000;margin-right: 20px;"> 没找到商品信息</div>
     </div>
     <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55px">
@@ -102,47 +112,47 @@
       </el-table-column>
       <el-table-column label="推广渠道">
         <template slot-scope="scope">
-          {{ scope.row.channelNums }}
+          {{ scope.row.channelNums > 0 ? scope.row.channelNums : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="推广商品数">
         <template slot-scope="scope">
-          {{ scope.row.goodsNums }}
+          {{ scope.row.goodsNums > 0 ? scope.row.goodsNums : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="访问人数/uv">
         <template slot-scope="scope">
-          {{ scope.row.userNums }}
+          {{ scope.row.userNums > 0 ? scope.row.userNums : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="访问次数/pv">
         <template slot-scope="scope">
-          {{ scope.row.visitNums }}
+          {{ scope.row.visitNums > 0 ? scope.row.visitNums : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="提交订单人数">
         <template slot-scope="scope">
-          {{ scope.row.orderNums }}
+          {{ scope.row.orderUserNums > 0 ? scope.row.orderUserNums : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="支付人数">
         <template slot-scope="scope">
-          {{ scope.row.payUserNums }}
+          {{ scope.row.payUserNums > 0 ? scope.row.payUserNums : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="提交订单数">
         <template slot-scope="scope">
-          {{ scope.row.joinedTotal }}
+          {{ scope.row.orderNums > 0 ? scope.row.orderNums : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="支付订单数">
         <template slot-scope="scope">
-          {{ scope.row.orderUserNums }}
+          {{ scope.row.orderUserNums > 0 ? scope.row.channelNums : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="成交金额">
         <template slot-scope="scope">
-          {{ scope.row.successAmount }}
+          {{ scope.row.successAmount > 0 ? scope.row.channelNums : '--' }}
         </template>
       </el-table-column>
     </el-table>
@@ -209,11 +219,6 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
 
-.query-wrap {
-  display: flex;
-  align-items: center;
-}
-
 .data-card {
   width: 100%;
   height: 120px;
@@ -246,6 +251,26 @@
   width: 1px;
   height: 100%;
   border-left: 1px solid #ccc;
+}
+</style>
+
+<style lang="scss">
+.query-wrap {
+  display: flex;
+  align-items: center;
+
+  .el-input__inner {
+    line-height: 1;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }
 </style>
 
