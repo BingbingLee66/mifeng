@@ -1,4 +1,5 @@
 import { auditList, updateAudit } from '@/api/member/manager'
+import el from "element-ui/src/locale/lang/el";
 
 export default {
   data() {
@@ -7,7 +8,8 @@ export default {
       batchVisible: false,
       audit: {
         id: '',
-        remark: '资料乱填'
+        remark: '资料乱填',
+        otherRemark: ''
       },
       query: {
         auditStatus: 0,
@@ -25,8 +27,7 @@ export default {
       selectionDatas: [],
       approveLoading: false,
       rejectLoading: false,
-      showInput: false,
-      rejectReason: ''
+      showInput: false
     }
   },
   computed: {
@@ -64,12 +65,17 @@ export default {
     },
     fetchData(e) {
       if (e !== undefined) {
+        this.currentpage = 1
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       this.listLoading = true
       const params = {
         'ckey': this.$store.getters.ckey,
         'auditStatus': this.query.auditStatus,
+        'name': this.query.name,
+        'phone': this.query.phone,
+        'type': this.query.type,
+        'uname': this.query.uname,
         'pageSize': this.limit,
         'page': this.currentpage
       }
@@ -134,10 +140,20 @@ export default {
       this.batchVisible = true
     },
     batchReject() {
+      let _remark = ''
+      if (this.audit.remark === '其他') {
+        if (this.audit.otherRemark.trim() === '') {
+          return this.$message.error('请输入驳回理由~')
+        } else {
+          _remark = this.audit.otherRemark.trim()
+        }
+      } else {
+        _remark = this.audit.remark
+      }
       const params = {
         'memberId': this.selectionDatas,
         'auditStatus': 2,
-        'remark': this.audit.remark
+        'remark': _remark
       }
       updateAudit(params).then(response => {
         this.$message({
@@ -159,10 +175,20 @@ export default {
     reject() {
       const arr = []
       arr.push(this.audit.id)
+      let _remark = ''
+      if (this.audit.remark === '其他') {
+        if (this.audit.otherRemark.trim() === '') {
+          return this.$message.error('请输入驳回理由~')
+        } else {
+          _remark = this.audit.otherRemark.trim()
+        }
+      } else {
+        _remark = this.audit.remark
+      }
       const params = {
         'memberId': arr,
         'auditStatus': 2,
-        'remark': this.audit.remark
+        'remark': _remark
       }
       updateAudit(params).then(response => {
         this.$message({
@@ -187,6 +213,8 @@ export default {
       console.log(val)
       if (val === '其他') {
         this.showInput = true
+      } else {
+        this.showInput = false
       }
     }
   }

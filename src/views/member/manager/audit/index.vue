@@ -111,17 +111,17 @@
             <el-form-item label="">
               <el-radio-group v-model="audit.remark" @change="radioChange">
                 <el-row>
-                  <el-radio label="资料乱填">资料乱填</el-radio>
+                  <el-radio label="资料乱填" value="1">资料乱填</el-radio>
                 </el-row>
                 <el-row>
-                  <el-radio label="不是本商会会员">不是本商会会员</el-radio>
+                  <el-radio label="不是本商会会员" value="2">不是本商会会员</el-radio>
                 </el-row>
                 <el-row>
-                  <el-radio label="提交资料不齐全">提交资料不齐全</el-radio>
+                  <el-radio label="提交资料不齐全" value="3">提交资料不齐全</el-radio>
                 </el-row>
                 <el-row class="radio-input-style">
                   <el-radio label="其他">其他(30字内)</el-radio>
-                  <el-input v-show="showInput" v-model="rejectReason" resize="none" show-word-limit maxlength="30" type="textarea" :autosize="{ minRows: 2, maxRows: 4}"/>
+                  <el-input v-show="showInput" v-model="audit.otherRemark" resize="none" show-word-limit maxlength="30" type="textarea" :autosize="{ minRows: 2, maxRows: 4}"/>
                 </el-row>
               </el-radio-group>
             </el-form-item>
@@ -137,7 +137,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="">
-              <el-radio-group v-model="audit.remark">
+              <el-radio-group v-model="audit.remark" @change="radioChange">
                 <el-row>
                   <el-radio label="资料乱填">资料乱填</el-radio>
                 </el-row>
@@ -147,8 +147,9 @@
                 <el-row>
                   <el-radio label="提交资料不齐全">提交资料不齐全</el-radio>
                 </el-row>
-                <el-row>
-                  <el-radio label="其他">其他</el-radio>
+                <el-row class="radio-input-style">
+                  <el-radio label="其他">其他(30字内)</el-radio>
+                  <el-input v-show="showInput" v-model="audit.otherRemark" resize="none" show-word-limit maxlength="30" type="textarea" :autosize="{ minRows: 2, maxRows: 4}"/>
                 </el-row>
               </el-radio-group>
             </el-form-item>
