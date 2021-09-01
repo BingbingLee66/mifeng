@@ -9,7 +9,7 @@
           <el-input v-model="query.phone"/>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="query.contactName"/>
+          <el-input v-model="query.name"/>
         </el-form-item>
         <el-form-item label="会内职位">
           <el-select v-model="query.memberPostType" placeholder="请选择职业类型">
@@ -38,6 +38,7 @@
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="query.status" placeholder="请选择">
+            <el-option label="全部" :value="-1"/>
             <el-option label="正常" :value="1"/>
             <el-option label="已冻结" :value="0"/>
           </el-select>

@@ -131,12 +131,12 @@ export default {
     },
     fetchData(e) {
       if (e !== undefined) {
-        console.log('4444', e.currentTarget.getAttribute('actionid'))
         this.currentpage = 1
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       // this.listLoading = true
       const params = {
+        'status': this.query.status,
         'uname': this.query.uname,
         'ckey': this.$store.getters.ckey,
         'companyName': this.query.companyName,
@@ -157,7 +157,6 @@ export default {
       }
       list(params).then(response => {
         if (Object.keys(response.data).length > 0) {
-          console.log('33')
           this.list = response.data.data.list
           this.total = response.data.data.totalRows
         } else {
@@ -212,7 +211,6 @@ export default {
     },
 
     handleSelectionChange(value) {
-      console.log('value', value)
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
@@ -242,7 +240,6 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      console.log(this.selectionDatas)
       exportJson2Excel('商会会员', this.selectionDatas)
     },
     openTransfer(row) {
