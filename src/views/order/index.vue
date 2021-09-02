@@ -198,16 +198,12 @@
         <div style="height: 32px;line-height: 32px" > 第2步：</div>
         <el-upload
           class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :http-request="uploadLicense"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :before-remove="beforeRemove"
+          action="/"
+          :show-file-list="true"
+          :before-upload="beforeExcelUpload"
+          :http-request="uploadExcel"
           :multiple="false"
-          :limit="1"
-          :on-exceed="handleExceed"
-          :on-change="fileChange"
-          :file-list="fileList">
+          :limit="1">
           <el-button size="small" type="success">上传发货订单</el-button>
         </el-upload>
       </div>
@@ -223,4 +219,15 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
+</style>
+
+<style lang="scss">
+.upload-demo {
+  display: flex;
+  align-items: center;
+  .el-upload-list__item:first-child {
+    margin-top: 0;
+    margin-left: 10px;
+  }
+}
 </style>

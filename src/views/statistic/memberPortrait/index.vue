@@ -37,7 +37,7 @@
 
 .meaning-wrap .meaning-item .tit {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .meaning-wrap .meaning-item .sub {

@@ -1,9 +1,7 @@
-import { getList, updateOrder } from '@/api/order/order'
+import { getList, updateOrder, batchShipment } from '@/api/order/order'
 import { getAllSupplierList } from '@/api/supplier/supplier'
 import { formatDateTime } from '@/utils/date' // 格式化时间戳
 import { exportJson2Excel } from '@/utils/exportExcel'
-import { uploadLicense } from "@/api/member/manager";
-// import { mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -160,15 +158,27 @@ export default {
       }
     },
     exportExcel(e) {
-      if (this.selectionDatas.length === 0) {
+      if (!this.query.date) {
         this.$message.error({
-          message: '没有选择记录，操作失败'
+          message: '请选择下单起止时间'
         })
         return
       }
+      let params = {}
+      params['startTime'] = this.query.date[0]
+      params['endTime'] = this.query.date[1]
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      getList(params).then(res => {
+        if (res.data.data.list.length === 0) {
+          this.$message.warning('无记录')
+          return
+        }
+        this.handleSelectionChange(res.data.data.list)
+        exportJson2Excel('订单列表', this.selectionDatas)
+      })
+      /* window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       // exportJson2Excel('订单列表', this.selectionDatas)
-      exportJson2Excel('订单管理', this.selectionDatas)
+      exportJson2Excel('订单管理', this.selectionDatas) */
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -233,13 +243,19 @@ export default {
       let excelDatas = [{ '订单编号（必填）': '' }, { '物流公司（必填）': '' }, { '物流单号（必填）': '' }]
       exportJson2Excel('发货模板', excelDatas)
     },
-    uploadLicense(content) {
+    beforeExcelUpload(file) {
+      console.log('filefile', file)
+      if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+        this.$message.error('请上传excel格式文件')
+        return false
+      }
+    },
+    uploadExcel(content) {
       const formData = new FormData()
       formData.append('file', content.file)
-      console.log('formDataformData', content.file)
-      // uploadLicense(formData).then(response => {
-      //   this.formObj['license'] = response.data.filePath
-      // })
+      batchShipment(formData).then(res => {
+        console.log(res)
+      })
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
@@ -254,14 +270,14 @@ export default {
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
     },
-    uploadExcel() {
-      console.log('-----', this.fileList)
-      if (this.fileList.length < 1) {
-        return this.$message.error('请先上传发货清单')
-      } else {
-        this.$message.success('上传')
-      }
-    },
+    // uploadExcel() {
+    //   console.log('-----', this.fileList)
+    //   if (this.fileList.length < 1) {
+    //     return this.$message.error('请先上传发货清单')
+    //   } else {
+    //     this.$message.success('上传')
+    //   }
+    // },
     fileChange(file, fileList) {
       if (fileList.length > 0) {
         this.fileList = [fileList[fileList.length - 1]]

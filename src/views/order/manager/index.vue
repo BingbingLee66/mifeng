@@ -4,12 +4,12 @@
       <el-form ref="query" size="mini" label-position="right" :model="query">
         <el-row>
           <el-col :span="5">
-            <el-form-item label-width="110px" label="订单号：">
+            <el-form-item label-width="110px" label="订单号">
               <el-input v-model.trim="query.orderSn" placeholder="请输入订单号"/>
             </el-form-item>
           </el-col>
           <el-col :span="5" style="margin-left:10px;">
-            <el-form-item label-width="110px" label="所属商会：">
+            <el-form-item label-width="110px" label="所属商会">
               <el-select v-model="query.ckey" placeholder="请选择商会" clearable>
                 <el-option v-for="(item, index) in chamberOptions" :label="item.label" :value="item.value" :key="index"></el-option>
               </el-select>
@@ -21,12 +21,12 @@
             </el-form-item>
           </el-col> -->
           <el-col :span="5" style="margin-left:10px;">
-            <el-form-item label-width="110px" label="商品名称：">
+            <el-form-item label-width="110px" label="商品名称">
               <el-input v-model.trim="query.goodName" placeholder="请输入商品名称"/>
             </el-form-item>
           </el-col>
           <el-col :span="5" style="margin-left:10px;">
-            <el-form-item label-width="110px" :span="12" label="订单状态：">
+            <el-form-item label-width="110px" :span="12" label="订单状态">
               <el-select v-model="query.status" placeholder="请选择状态">
                 <el-option label="所有" :value="-1"></el-option>
                 <el-option label="待发货" :value="2"></el-option>
@@ -39,17 +39,17 @@
             </el-form-item>
           </el-col>
           <el-col :span="5">
-            <el-form-item label-width="110px" label="收货人姓名：">
+            <el-form-item label-width="110px" label="收货人姓名">
               <el-input v-model.trim="query.consignee" placeholder="请输入收货人姓名"/>
             </el-form-item>
           </el-col>
           <el-col :span="5" style="margin-left:10px;">
-            <el-form-item label-width="110px" label="收货人手机号：">
+            <el-form-item label-width="110px" label="收货人手机号">
               <el-input v-model.trim="query.consigneeMobile" placeholder="请输入收货人手机号"/>
             </el-form-item>
           </el-col>
           <el-col :span="13" style="margin-left:10px;">
-            <el-form-item label-width="110px" label="下单时间：" style="float: left;">
+            <el-form-item label-width="110px" label="下单时间" style="float: left;">
               <el-date-picker
                 format="yyyy-MM-dd"
                 value-format="yyyy-MM-dd"
@@ -77,17 +77,13 @@
         </el-col>
       </el-row>
     </div>
-    <el-table size="mini" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="50px">
-      </el-table-column>
-      <!-- <el-table-column type="index" label="序号" width="60px">
-      </el-table-column> --> 
-      <el-table-column label="订单号" width="70px">
+    <el-table size="mini" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
+      <el-table-column label="订单号" width="100px">
         <template slot-scope="scope">
           {{scope.row.orderSn}}
         </template>
       </el-table-column>
-      <el-table-column label="下单时间" width="100px">
+      <el-table-column label="下单时间" width="90px">
         <template slot-scope="scope">
           {{scope.row.createTime | dateFormat}}
         </template>

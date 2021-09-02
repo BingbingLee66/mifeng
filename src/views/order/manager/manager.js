@@ -29,7 +29,7 @@ export default {
   },
   computed: {
     // ...mapGetters(['has'])
-    chamberName () {
+    chamberName() {
       return function(ckey) {
         let chamberName = ''
         for (let chamber of this.chamberOptions) {
@@ -47,10 +47,10 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -64,7 +64,7 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    getChamberOptions () {
+    getChamberOptions() {
       getChamberOptions().then(response => {
         this.chamberOptions = response.data.data
       })
@@ -102,7 +102,7 @@ export default {
         this.listLoading = false
       })
     },
-    reset () {
+    reset() {
       this.query = {
         orderSn: '',
         ckey: '',
@@ -114,7 +114,8 @@ export default {
         date: ''
       }
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
+      console.log('-----\\\\', value)
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
@@ -149,18 +150,27 @@ export default {
         this.selectionDatas.push(new_data)
       }
     },
-    exportExcel (e) {
-      if (this.selectionDatas.length === 0) {
+    exportExcel(e) {
+      if (!this.query.date) {
         this.$message.error({
-          message: '没有选择记录，操作失败'
+          message: '请选择下单起止时间'
         })
         return
       }
+      let params = {}
+      params['startTime'] = this.query.date[0]
+      params['endTime'] = this.query.date[1]
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      // exportJson2Excel('订单管理', this.selectionDatas)
-      exportJson2Excel('订单列表', this.selectionDatas)
+      getAllList(params).then(res => {
+        if (res.data.data.list.length === 0) {
+          this.$message.warning('无记录')
+          return
+        }
+        this.handleSelectionChange(res.data.data.list)
+        exportJson2Excel('订单列表', this.selectionDatas)
+      })
     },
-    detail (e, row) {
+    detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '订单详情', params: { 'orderSn': row.orderSn } })
     }

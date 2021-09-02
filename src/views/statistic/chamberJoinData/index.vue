@@ -8,36 +8,36 @@
       <div class="data-card">
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-key">本月商会入驻</div>
             <div class="card-value">{{ pfStatistics.monthlyChamberJoin }}</div>
+            <div class="card-key">本月商会入驻</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-key">累计商会入驻</div>
             <div class="card-value">{{ pfStatistics.totalChambers }}</div>
+            <div class="card-key">累计商会入驻</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-key">本月会员入驻</div>
             <div class="card-value">{{ pfStatistics.monthlyMemberJoin }}</div>
+            <div class="card-key">本月会员入驻</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-key">累计会员入驻</div>
             <div class="card-value">{{ pfStatistics.totalMembers }}</div>
+            <div class="card-key">累计会员入驻</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-key">累计授权登录人数</div>
             <div class="card-value">{{ pfStatistics.loginMembers }}</div>
+            <div class="card-key">累计授权登录人数</div>
           </div>
         </div>
       </div>
@@ -133,6 +133,10 @@
     <el-dialog title="数据定义" :visible.sync="showMeaning" width="450px">
       <div class="meaning-wrap">
         <div class="meaning-item">
+          <div class="tit">授权登录人数</div>
+          <div class="sub">在指定时间范围内，在小程序端<span style="color: #ff0000">首次</span>授权登录的人数。</div>
+        </div>
+        <div class="meaning-item">
           <div class="tit">入会总人数</div>
           <div class="sub">在指定时间范围内，从不同渠道加入商会的总人数。</div>
         </div>
@@ -199,7 +203,7 @@
 }
 
 .card-value {
-  margin-top: 10px;
+  margin-bottom: 10px;
   color: #008000;
   font-weight: 600;
 }
