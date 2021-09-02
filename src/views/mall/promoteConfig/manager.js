@@ -150,6 +150,10 @@ export default {
           this.promoteForm.goodsId = parseInt(this.promoteForm.goodsId)
           addChannelPromote(this.promoteForm).then(res => {
             if (res.state === 1) {
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
               this.currentpage = 1
               this.getChannelPromoteLists()
               this.promoteChannelDialog = false

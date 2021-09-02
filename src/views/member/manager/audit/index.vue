@@ -79,7 +79,10 @@
         <el-table-column label="申请时间/申请途径" width="160px">
           <template slot-scope="scope">
             <div>{{ scope.row.createdTs }}</div>
-            <div>商会邀请</div>
+            <div v-if="scope.row.registerType == 0">后台</div>
+            <div v-if="scope.row.registerType == 1">小程序</div>
+            <div v-if="scope.row.registerType == 2">商会邀请</div>
+            <div v-if="scope.row.registerType == 3">会员邀请</div>
           </template>
         </el-table-column>
         <el-table-column label="状态" width="100px">
