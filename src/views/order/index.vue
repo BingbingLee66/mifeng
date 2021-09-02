@@ -195,7 +195,7 @@
     <el-dialog title="批量发货" :visible.sync="mulDialog" width="450px">
       <div>第1步：下载批量发货模板 <span class="text-btn-style" @click="downloadExcel">点击下载</span></div>
       <div style="margin-top: 20px;display: flex;">
-        <div style="height: 32px;line-height: 32px" > 第2步：</div>
+        <div style="height: 32px;line-height: 32px"> 第2步：</div>
         <el-upload
           class="upload-demo"
           action="/"
@@ -203,13 +203,14 @@
           :before-upload="beforeExcelUpload"
           :http-request="uploadExcel"
           :multiple="false"
-          :limit="1">
-          <el-button size="small" type="success">上传发货订单</el-button>
+          :file-list="fileList"
+          :on-change="handleChangeUpload">
+          <el-button size="small" type="success">{{ fileList.length === 1 ? '重新上传' : '上传发货订单' }}</el-button>
         </el-upload>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="mulDialog = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="uploadExcel">确 定</el-button>
+        <el-button size="small" type="primary" @click="submitUploadExcel">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -225,9 +226,21 @@
 .upload-demo {
   display: flex;
   align-items: center;
+
   .el-upload-list__item:first-child {
     margin-top: 0;
     margin-left: 10px;
+  }
+
+  .el-upload-list--text {
+    height: 25px;
+    overflow: hidden;
+  }
+
+  .el-upload-list__item {
+    pointer-events: none;
+    transition: none;
+    -webkit-transition: none;
   }
 }
 </style>

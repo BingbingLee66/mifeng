@@ -41,6 +41,7 @@ export default {
           { required: true, message: '请输入物流公司', trigger: 'blur' }
         ]
       },
+      contentData: null,
       fileList: []
     }
   },
@@ -59,13 +60,11 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
       this.fetchData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
       this.fetchData()
     },
@@ -238,51 +237,30 @@ export default {
     },
     openMulDialog() {
       this.mulDialog = true
+      this.fileList = []
     },
     downloadExcel() {
       let excelDatas = [{ '订单编号（必填）': '' }, { '物流公司（必填）': '' }, { '物流单号（必填）': '' }]
       exportJson2Excel('发货模板', excelDatas)
     },
     beforeExcelUpload(file) {
-      console.log('filefile', file)
       if (file.type !== 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
         this.$message.error('请上传excel格式文件')
         return false
       }
     },
     uploadExcel(content) {
+      this.contentData = content
+    },
+    handleChangeUpload(file, fileList) {
+      this.fileList = fileList.slice(-1)
+    },
+    submitUploadExcel() {
       const formData = new FormData()
-      formData.append('file', content.file)
+      formData.append('file', this.contentData.file)
       batchShipment(formData).then(res => {
         console.log(res)
       })
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview(file) {
-      console.log(file)
-    },
-    handleExceed(files, fileList) {
-      console.log('---===---', fileList)
-      this.$message.warning(`请移除文件，重新上传！`)
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`)
-    },
-    // uploadExcel() {
-    //   console.log('-----', this.fileList)
-    //   if (this.fileList.length < 1) {
-    //     return this.$message.error('请先上传发货清单')
-    //   } else {
-    //     this.$message.success('上传')
-    //   }
-    // },
-    fileChange(file, fileList) {
-      if (fileList.length > 0) {
-        this.fileList = [fileList[fileList.length - 1]]
-      }
-      console.log()
     }
   }
 }
