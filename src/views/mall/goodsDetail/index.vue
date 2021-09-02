@@ -40,7 +40,10 @@
             <el-form-item label="">
               <div v-for="(gal, index) in detailObj.galleryArr" :key="index">
                 <div class="goods-pre">
-                  <img :src="gal" class="goods-avatar">
+                  <!--                  <img :src="gal" class="goods-avatar">-->
+                  <!-- https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/video-pre.jpg -->
+                  <img :src="gal" class="goods-avatar" v-if="gal.indexOf('.jpeg') != -1 || gal.indexOf('.jpg') != -1 || gal.indexOf('.png') != -1"/>
+                  <img src="https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/video-pre.jpg" class="goods-avatar" v-else/>
                   <div class="goods-pre-btn" @click="openPreviewModal(gal)">预览</div>
                 </div>
               </div>
@@ -217,7 +220,8 @@
             </div>
           </el-col>
           <el-col :span="20">
-            <el-form-item label="" v-if="detailObj.limitTimeStart == null && detailObj.limitTimeEnd == null ">无</el-form-item>
+            <el-form-item label="" v-if="detailObj.limitTimeStart == null && detailObj.limitTimeEnd == null ">无
+            </el-form-item>
             <el-form-item label="" v-if="detailObj.limitTimeStart != null && detailObj.limitTimeEnd != null ">
               {{ detailObj.limitTimeStart | dateFormat }}至{{ detailObj.limitTimeEnd | dateFormat }}
             </el-form-item>
@@ -230,7 +234,8 @@
             </div>
           </el-col>
           <el-col :span="20">
-            <el-form-item label="" v-if="detailObj.limitTimeStart == null && detailObj.bookingTimeStart == null ">无</el-form-item>
+            <el-form-item label="" v-if="detailObj.limitTimeStart == null && detailObj.bookingTimeStart == null ">无
+            </el-form-item>
             <el-form-item label="" v-if="detailObj.limitTimeStart != null && detailObj.bookingTimeStart != null ">
               {{ detailObj.bookingTimeStart | dateFormat }}至{{ detailObj.limitTimeStart | dateFormat }}
             </el-form-item>
@@ -244,7 +249,7 @@
           </el-col>
           <el-col :span="20">
             <el-form-item label="">
-              {{ detailObj.limitAmount == 0? '不限购':detailObj.limitAmount}}
+              {{ detailObj.limitAmount == 0 ? '不限购' : detailObj.limitAmount }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -257,7 +262,7 @@
           </el-col>
           <el-col :span="20">
             <el-form-item label="">
-              {{ detailObj.discount == 0?'无': detailObj.discount}}
+              {{ detailObj.discount == 0 ? '无' : detailObj.discount }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -349,7 +354,11 @@
       title=""
       :visible.sync="previewImgVisible"
       width="50%">
-      <img :src="previewUrl" style="width: 100%; padding:20px;"/>
+      <img :src="previewUrl" style="width: 100%; padding:20px;" v-if="previewUrl.indexOf('.jpeg') != -1 || previewUrl.indexOf('.jpg') != -1 || previewUrl.indexOf('.png') != -1"/>
+      <video :src="previewUrl" v-else style="width: 100%; padding:20px;" controls>
+        您的浏览器不支持 video 标签。
+      </video>
+<!--      <img :src="previewUrl" style="width: 100%; padding:20px;"/>-->
     </el-dialog>
   </div>
 

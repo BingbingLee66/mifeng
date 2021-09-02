@@ -262,6 +262,7 @@ export default {
         if (res.state === 1) {
           this.$message.success(res.msg)
           this.mulDialog = false
+          this.fetchData()
         }
       })
     }

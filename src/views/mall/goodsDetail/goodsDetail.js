@@ -66,6 +66,7 @@ export default {
       }
       getGoodsDetail(params).then(response => {
         this.detailObj = response.data.goodsDetail
+        console.log('轮播图：', this.detailObj.galleryArr)
         const deliveryConfig = JSON.parse(response.data.goodsDetail.deliveryConfig)
         const serviceConfig = JSON.parse(response.data.goodsDetail.serviceConfig)
         this.deliveryConfig = deliveryConfig
