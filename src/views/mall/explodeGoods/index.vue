@@ -64,7 +64,7 @@
             {{ scope.row.sumStock }}
           </template>
         </el-table-column>
-        <el-table-column label="销量" width="100px">
+        <el-table-column label="销量" width="130px">
           <template slot-scope="scope">
             <div>【真实】 {{ scope.row.salesVolume }}</div>
             <div>【虚拟】 {{ scope.row.virtualSalesVolume  }}</div>
@@ -163,7 +163,7 @@
                 {{ scope.row.sumStock }}
               </template>
             </el-table-column>
-            <el-table-column label="销量" width="100px">
+            <el-table-column label="销量" width="130px">
               <template slot-scope="scope">
                 <div>【真实】 {{ scope.row.salesVolume }}</div>
                 <div>【虚拟】 {{ scope.row.virtualSalesVolume  }}</div>
