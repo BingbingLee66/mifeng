@@ -173,7 +173,7 @@
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="虚拟销量：" size="mini">
-                    <el-input v-model="formObj.salesVolume" maxLength="10">
+                    <el-input v-model="formObj.virtualSalesVolume" maxLength="10" :disabled="type==='edit'">
                       <template slot="append">件</template>
                     </el-input>
                   </el-form-item>
@@ -384,7 +384,7 @@
               <el-row style="margin-left: -45px;">
                 <el-col :span="8">
                   <el-form-item label="虚拟销量：" size="mini">
-                    <el-input v-model="formObj.salesVolume" maxLength="10">
+                    <el-input v-model="formObj.virtualSalesVolume" maxLength="10" :disabled="type==='edit'">
                       <template slot="append">件</template>
                     </el-input>
                   </el-form-item>

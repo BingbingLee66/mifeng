@@ -85,7 +85,7 @@ export default {
         'detail': [''],
         'name': '',
         'supplierId': '',
-        'salesVolume': '',
+        'virtualSalesVolume': '',
         'limitTime': '',
         'limitTimeStart': '',
         'limitTimeEnd': '',
@@ -159,7 +159,7 @@ export default {
           { required: true, message: '供货价不能为空', trigger: 'blur' },
           { validator: checkFee2, trigger: 'change' }
         ],
-        salesVolume: [
+        virtualSalesVolume: [
           { required: true, message: '虚拟销量不能为空', trigger: 'blur' },
           { validator: checkNumber2, trigger: 'change' }
         ],
@@ -427,8 +427,8 @@ export default {
           // this.formObj['limitTime'] = limitTime
         }
         this.$set(this.formObj, 'limitTime', limitTime)
-        if (this.formObj.salesVolume === 0) {
-          this.formObj.salesVolume = ''
+        if (this.formObj.virtualSalesVolume === 0) {
+          this.formObj.virtualSalesVolume = ''
         }
         if (this.formObj.limitAmount === 0) {
           this.formObj.limitAmount = ''
@@ -1180,7 +1180,7 @@ export default {
             'detail': detail,
             'name': this.formObj.name,
             'supplierId': this.formObj.supplierId,
-            'salesVolume': this.formObj.salesVolume === '' ? 0 : this.formObj.salesVolume,
+            'virtualSalesVolume': this.formObj.virtualSalesVolume === '' ? 0 : this.formObj.virtualSalesVolume,
             'limitAmount': this.formObj.limitAmount === '' ? 0 : this.formObj.limitAmount,
             'specType': this.formObj.specType,
             'attr1': attr1,

@@ -87,9 +87,10 @@
               {{ scope.row.sumStock }}
             </template>
           </el-table-column>
-          <el-table-column label="累计销量" width="100px">
+          <el-table-column label="销量" width="100px">
             <template slot-scope="scope">
-              {{ scope.row.salesVolume }}
+              <div>【真实】 {{ scope.row.salesVolume }}</div>
+              <div>【虚拟】 {{ scope.row.virtualSalesVolume  }}</div>
             </template>
           </el-table-column>
           <el-table-column label="预约人数" width="120px">
@@ -161,9 +162,10 @@
             {{ scope.row.sumStock }}
           </template>
         </el-table-column>
-        <el-table-column label="累计销量" width="100px">
+        <el-table-column label="销量" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.salesVolume }}
+            <div>【真实】 {{ scope.row.salesVolume }}</div>
+            <div>【虚拟】 {{ scope.row.virtualSalesVolume }}</div>
           </template>
         </el-table-column>
         <el-table-column label="添加时间" width="180px">

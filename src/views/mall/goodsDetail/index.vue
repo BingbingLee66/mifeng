@@ -132,7 +132,7 @@
                 </el-row>
                 <el-row>
                   <el-col :span="4">
-                    虚拟销量：{{ detailObj.salesVolume }}件
+                    虚拟销量：{{ detailObj.virtualSalesVolume }}件
                   </el-col>
                 </el-row>
               </div>
