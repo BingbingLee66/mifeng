@@ -7,7 +7,6 @@ export default {
     return {
       channelList: [], // 关联渠道列表
       showMeaning: false,
-      showGoodsDetail: false,
       pfStatistics: {
         channelNums: 0,
         goodsNums: 0,
@@ -30,8 +29,13 @@ export default {
       limit: 10,
       listLoading: false,
       selectionDatas: [],
-      goodsDetail: {},
-      deliveryConfig: {}
+      showGoodsDetail: false,
+      goodsDetail: {
+        chamberName: '',
+        deliveryConfig: '',
+        goodsId: '',
+        goodsName: ''
+      }
     }
   },
   computed: {
@@ -90,12 +94,6 @@ export default {
     fetchData(e) {
       if (e !== undefined) {
         this.currentpage = 1
-        if (this.query.goodsId) {
-          this.getGoodsDetails()
-          this.showGoodsDetail = true
-        } else {
-          this.showGoodsDetail = false
-        }
       }
       this.listLoading = true
       let params = {
@@ -106,9 +104,27 @@ export default {
         'pageSize': this.limit,
         'page': this.currentpage
       }
-      getChannelStatistical(params).then(response => {
-        this.list = response.data.list
-        this.total = response.data.totalRows
+      getChannelStatistical(params).then(res => {
+        if (res.data.goodsId !== null) {
+          this.goodsDetail.goodsId = res.data.goodsId
+          this.goodsDetail.deliveryConfig = res.data.deliveryConfig
+          this.goodsDetail.chamberName = res.data.chamberName
+          this.goodsDetail.goodsName = res.data.goodsName
+
+        } else {
+          this.goodsDetail.goodsId = ''
+          this.goodsDetail.deliveryConfig = ''
+          this.goodsDetail.chamberName = ''
+          this.goodsDetail.goodsName = ''
+          this.showGoodsDetail = false
+        }
+        if (this.query.goodsId) {
+          this.showGoodsDetail = true
+        } else {
+          this.showGoodsDetail = false
+        }
+        this.list = res.data.reportList.list
+        this.total = res.data.reportList.totalRows
         this.listLoading = false
       })
     },
@@ -149,25 +165,6 @@ export default {
           channelName: '全部渠道'
         })
         this.channelList = res.data.list
-      })
-    },
-    getGoodsDetails() {
-      let params = {
-        'id': this.query.goodsId
-      }
-      getGoodsDetail(params).then(response => {
-        if (response.state === 1) {
-          this.goodsDetail = response.data.goodsDetail
-          this.deliveryConfig = JSON.parse(response.data.goodsDetail.deliveryConfig)
-        } else {
-          console.log(9999)
-          this.goodsDetail = {}
-          this.deliveryConfig = {}
-        }
-      }).catch(err => {
-        console.log(err)
-        this.goodsDetail = {}
-        this.deliveryConfig = {}
       })
     },
     prevent(e) {

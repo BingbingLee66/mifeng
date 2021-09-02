@@ -62,9 +62,9 @@
       <!-- <el-button type="primary" size="mini" tyle="float: right;">导表</el-button> -->
     </div>
     <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column label="日期">
+      <el-table-column label="日期" width="120px">
         <template slot-scope="scope">
-          {{ scope.row.date | dateFormat2 }}
+          {{ scope.row.date }}
         </template>
       </el-table-column>
       <el-table-column label="入会总人数">

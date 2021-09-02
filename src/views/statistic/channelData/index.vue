@@ -95,10 +95,10 @@
       <el-button type="primary" size="mini" style="position: absolute;right: 0" @click="exportExcel">导表</el-button>
     </div>
     <div style="margin-bottom: 16px;color: #333333;" v-if="showGoodsDetail">
-      <div v-if="goodsDetail.id">
-        <span style="font-weight: 600;margin-right: 20px;">【商品ID】{{ goodsDetail.id }}</span>
+      <div v-if="goodsDetail.goodsId">
+        <span style="font-weight: 600;margin-right: 20px;">【商品ID】{{ goodsDetail.goodsId }}</span>
         <span style="color: #ff0000;margin-right: 20px;">{{ goodsDetail.chamberName }}</span>
-        <span>{{ goodsDetail.name }}（{{ deliveryConfig['发货时间'] }}）</span>
+        <span>{{ goodsDetail.goodsName }}（{{ goodsDetail.deliveryConfig }}）</span>
       </div>
       <div v-else style="color: #ff0000;margin-right: 20px;"> 没找到商品信息</div>
     </div>
@@ -147,12 +147,12 @@
       </el-table-column>
       <el-table-column label="支付订单数">
         <template slot-scope="scope">
-          {{ scope.row.orderUserNums > 0 ? scope.row.channelNums : '--' }}
+          {{ scope.row.payOrderNums > 0 ? scope.row.payOrderNums : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="成交金额">
         <template slot-scope="scope">
-          {{ scope.row.successAmount > 0 ? scope.row.channelNums : '--' }}
+          {{ scope.row.successAmount > 0 ? scope.row.successAmount : '--' }}
         </template>
       </el-table-column>
     </el-table>

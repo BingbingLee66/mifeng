@@ -2,6 +2,7 @@ import { getList, updateOrder } from '@/api/order/order'
 import { getAllSupplierList } from '@/api/supplier/supplier'
 import { formatDateTime } from '@/utils/date' // 格式化时间戳
 import { exportJson2Excel } from '@/utils/exportExcel'
+import { uploadLicense } from "@/api/member/manager";
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -41,7 +42,8 @@ export default {
         shippingCompany: [
           { required: true, message: '请输入物流公司', trigger: 'blur' }
         ]
-      }
+      },
+      fileList: []
     }
   },
   computed: {
@@ -230,6 +232,41 @@ export default {
     downloadExcel() {
       let excelDatas = [{ '订单编号（必填）': '' }, { '物流公司（必填）': '' }, { '物流单号（必填）': '' }]
       exportJson2Excel('发货模板', excelDatas)
+    },
+    uploadLicense(content) {
+      const formData = new FormData()
+      formData.append('file', content.file)
+      console.log('formDataformData', content.file)
+      // uploadLicense(formData).then(response => {
+      //   this.formObj['license'] = response.data.filePath
+      // })
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    handleExceed(files, fileList) {
+      console.log('---===---', fileList)
+      this.$message.warning(`请移除文件，重新上传！`)
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`)
+    },
+    uploadExcel() {
+      console.log('-----', this.fileList)
+      if (this.fileList.length < 1) {
+        return this.$message.error('请先上传发货清单')
+      } else {
+        this.$message.success('上传')
+      }
+    },
+    fileChange(file, fileList) {
+      if (fileList.length > 0) {
+        this.fileList = [fileList[fileList.length - 1]]
+      }
+      console.log()
     }
   }
 }

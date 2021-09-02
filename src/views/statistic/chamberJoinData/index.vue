@@ -71,7 +71,7 @@
     <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55px">
       </el-table-column>
-      <el-table-column label="日期">
+      <el-table-column label="日期" width="120px">
         <template slot-scope="scope">
           {{ scope.row.date }}
         </template>
