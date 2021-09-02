@@ -6,7 +6,10 @@
 ### Added
 
 ### Fixed
-- 总后台，字段“所属商会”改为“订单所属商会”[328(https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/328)
+- 总后台，字段“所属商会”改为“订单所属商会”[328](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/328)
+- 总后台-商品推广配置，添加推广信息成功后建议增加成功提示[347](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/347)
+- 商会后台-商协会成员，导表内容需要与页面显示一致[344](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/344)
+- 商会后台，入会审核页面的申请途径显示错误[346](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/346)
 
 ## [Released]
 ## [1.15.0] - 2021-08-26
