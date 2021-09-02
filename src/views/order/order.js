@@ -259,7 +259,10 @@ export default {
       const formData = new FormData()
       formData.append('file', this.contentData.file)
       batchShipment(formData).then(res => {
-        console.log(res)
+        if (res.state === 1) {
+          this.$message.success(res.msg)
+          this.mulDialog = false
+        }
       })
     }
   }
