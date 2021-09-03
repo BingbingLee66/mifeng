@@ -14,7 +14,7 @@
           <el-input v-model="query.phone"/>
         </el-form-item>
         <el-form-item label="入会类型">
-          <el-select v-model="query.type" placeholder="请选择入">
+          <el-select v-model="query.type" placeholder="请选择">
             <el-option label="全部" :value="-1"/>
             <el-option label="个人" :value="0"/>
             <el-option label="企业/团体" :value="1"/>
