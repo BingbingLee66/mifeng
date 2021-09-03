@@ -7,7 +7,7 @@
     </div>
     <el-row>
       <el-col :span="24">
-        <v-chart :options="tradeBarData" class="chart section" ref="barChart" :style="{'width': '100%'}"/>
+      <!-- <v-chart :options="tradeBarData" class="chart section" ref="barChart" :style="{'width': '100%'}"/> -->
       </el-col>
     </el-row>
     <el-row>
