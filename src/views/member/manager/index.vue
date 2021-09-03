@@ -87,7 +87,7 @@
         <el-table-column label="入会类型" width="100px">
           <template slot-scope="scope">{{ scope.row.type == 0 ? '个人' : '企业/团体' }}</template>
         </el-table-column>
-        <el-table-column label="用户信息" width="300px">
+        <el-table-column label="联系信息" width="300px">
           <template slot-scope="scope">
             <div v-if="scope.row.type == 0">
               <div>【会员姓名】{{ scope.row.name }}</div>

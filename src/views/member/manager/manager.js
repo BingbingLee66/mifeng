@@ -217,7 +217,7 @@ export default {
         let new_data = {
           '用户名': data.uname,
           '入会类型': data.type === 0 ? '个人' : '企业',
-          '用户信息': data.type === 0 ?'【会员姓名】'+data.name+'\n'+'【会员手机号】'+data.phone: '【企业/团体名称】'+data.companyName+'\n【联系人姓名】'+data.contactName+'\n【联系人手机号】'+data.contactPhone,
+          '联系信息': data.type === 0 ?'【会员姓名】'+data.name+'\n'+'【会员手机号】'+data.phone: '【企业/团体名称】'+data.companyName+'\n【联系人姓名】'+data.contactName+'\n【联系人手机号】'+data.contactPhone,
           '入会时间': '【入会时间】'+data.joinedTs+'\n【会内职位】'+data.postName+'\n【部门】'+data.departmentName,
           '状态': data.status === 1 ? '正常' : '已冻结',
 
