@@ -210,7 +210,15 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="mulDialog = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="submitUploadExcel">确 定</el-button>
+        <el-button size="small" type="primary" @click="submitUploadExcel" :loading="submitLoading">{{ submitLoading ? '上传中' : '确 定' }}</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="提示" :visible.sync="tipDialog" width="450px">
+      <p>发货信息已上传！</p>
+      <p>成功 {{ successRows }} 条，失败 <span style="color: #ff0000;"> {{ totalRows - successRows }} </span> 条</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button size="small" type="primary" @click="handletipDialog">我知道了</el-button>
       </span>
     </el-dialog>
   </div>

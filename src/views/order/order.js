@@ -7,6 +7,7 @@ export default {
   data() {
     return {
       mulDialog: false,
+      tipDialog: false,
       query: {
         orderSn: '',
         // suppplierId: '',
@@ -42,7 +43,10 @@ export default {
         ]
       },
       contentData: null,
-      fileList: []
+      fileList: [],
+      submitLoading: false,
+      successRows: '',
+      totalRows: ''
     }
   },
   computed: {
@@ -256,15 +260,24 @@ export default {
       this.fileList = fileList.slice(-1)
     },
     submitUploadExcel() {
+      this.submitLoading = true
+      if (this.fileList.length === 0) return this.$message.warning('请先上传发货清单')
       const formData = new FormData()
       formData.append('file', this.contentData.file)
       batchShipment(formData).then(res => {
         if (res.state === 1) {
-          this.$message.success(res.msg)
-          this.mulDialog = false
+          this.successRows = res.data.successRows
+          this.totalRows = res.data.totalRows
+          this.tipDialog = true
           this.fetchData()
         }
+        this.submitLoading = false
       })
+    },
+    handletipDialog() {
+      this.mulDialog = false
+      this.tipDialog = false
     }
+
   }
 }
