@@ -8,11 +8,11 @@ import { getSupplierOptions } from '@/api/goods/supplier.js'
 import { getSetting } from '@/api/system/setting'
 import videoPreview from '@/assets/img/video-pre.jpg'
 import moment from 'moment'
-// import draggable from 'draggable' // 拖拽组件
+import draggable from 'vuedraggable' // 拖拽组件
 
 export default {
   components: {
-    // draggable
+    draggable
   },
   data() {
     var checkFee = (rule, value, callback) => {
@@ -30,7 +30,6 @@ export default {
       }
     }
     var checkName = (rule, value, callback) => {
-      console.log(value)
       if (value.trim() === '') {
         return callback(new Error('请输入'))
       } else {
@@ -266,7 +265,6 @@ export default {
       }
     },
     disabledGetTime(time) {
-      console.log('.......', this.formObj.limitTime[0])
       if (this.formObj.limitTime.length > 0) {
         if (this.type === 'edit') {
           return time.getTime() > this.formObj.limitTime[0]
@@ -1104,7 +1102,7 @@ export default {
             message: '请注意价格规则：立减优惠＜拼单价'
           })
         }
-        if (!this.formObj.discount) {
+        if (!this.formObj.discount && this.formObj.discount !== 0) {
           valid = false
           this.$message.info('立减优惠不能为空，需输入大于等于0的数字')
         }
@@ -1198,7 +1196,6 @@ export default {
             obj['limitTimeStart'] = this.formObj.limitTime[0]
             obj['limitTimeEnd'] = this.formObj.limitTime[1]
           }
-          console.log('添加商品提交的参数：', obj)
           if (this.type === 'add') {
             add(obj).then(response => {
               this.$message({

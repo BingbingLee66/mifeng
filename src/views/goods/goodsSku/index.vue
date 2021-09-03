@@ -30,23 +30,23 @@
         </el-row>
         <el-row>
           <el-form-item label="">
-            <!-- <draggable v-model="formObj.gallery" ghost-class="ghost" group="gallery" animation="500" @start="galleryStart" @end="galleryEnd"> -->
-            <!-- <transition-group> -->
-            <div v-for="(gal, index) in formObj.gallery" :key="index" style="float:left;">
-              <el-upload class="goods-avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUploadGallery" :http-request="function (content) { return uploadGallery(content, index) }" v-if="!gal">
-                <i class="el-icon-plus goods-avatar-uploader-icon"></i>
-              </el-upload>
-              <div class="goods-pre" v-if="gal">
-                <i class="el-icon-error" @click="clearGalleryImg(index)"></i>
-                <img :src="gal" class="goods-avatar" v-if="gal.indexOf('.jpeg') != -1
+            <draggable v-model="formObj.gallery" ghost-class="ghost" group="gallery" animation="500" @start="galleryStart" @end="galleryEnd">
+              <transition-group>
+                <div v-for="(gal, index) in formObj.gallery" :key="index" style="float:left;">
+                  <el-upload class="goods-avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUploadGallery" :http-request="function (content) { return uploadGallery(content, index) }" v-if="!gal">
+                    <i class="el-icon-plus goods-avatar-uploader-icon"></i>
+                  </el-upload>
+                  <div class="goods-pre" v-if="gal">
+                    <i class="el-icon-error" @click="clearGalleryImg(index)"></i>
+                    <img :src="gal" class="goods-avatar" v-if="gal.indexOf('.jpeg') != -1
                       || gal.indexOf('.jpg') != -1
                       || gal.indexOf('.png') != -1"/>
-                <img :src="videoPreview" class="goods-avatar" v-else/>
-                <div class="goods-pre-btn" @click="openPreviewModal(gal)">预览</div>
-              </div>
-            </div>
-            <!-- </transition-group> -->
-            <!-- </draggable> -->
+                    <img :src="videoPreview" class="goods-avatar" v-else/>
+                    <div class="goods-pre-btn" @click="openPreviewModal(gal)">预览</div>
+                  </div>
+                </div>
+              </transition-group>
+            </draggable>
           </el-form-item>
           <div style="margin-left: 150px;">
             已上传<span style="color: #F56C6C;">（{{ effectiveLength(formObj.gallery) }}/{{ galleryLimit }}）</span></div>
@@ -89,20 +89,20 @@
         </el-row>
         <el-row>
           <el-form-item label="">
-            <!-- <draggable :list="formObj.detail" forceFallback="true" group="detail" animation="1000" @start="detailStart" @end="detailEnd"> -->
-            <!-- <transition-group> -->
-            <div v-for="(dtl, index) in formObj.detail" :key="index" style="float:left;">
-              <el-upload class="goods-avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUpload" :http-request="function (content) { return uploadDetail(content, index) }" v-if="!dtl">
-                <i class="el-icon-plus goods-avatar-uploader-icon"></i>
-              </el-upload>
-              <div class="goods-pre" v-if="dtl">
-                <i class="el-icon-error" @click="clearDetailImg(index)"></i>
-                <img :src="dtl" class="goods-avatar">
-                <div class="goods-pre-btn" @click="openPreviewModal(dtl)">预览</div>
-              </div>
-            </div>
-            <!-- </transition-group> -->
-            <!-- </draggable> -->
+            <draggable :list="formObj.detail" forceFallback="true" group="detail" animation="1000" @start="detailStart" @end="detailEnd">
+              <transition-group>
+                <div v-for="(dtl, index) in formObj.detail" :key="index" style="float:left;">
+                  <el-upload class="goods-avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUpload" :http-request="function (content) { return uploadDetail(content, index) }" v-if="!dtl">
+                    <i class="el-icon-plus goods-avatar-uploader-icon"></i>
+                  </el-upload>
+                  <div class="goods-pre" v-if="dtl">
+                    <i class="el-icon-error" @click="clearDetailImg(index)"></i>
+                    <img :src="dtl" class="goods-avatar">
+                    <div class="goods-pre-btn" @click="openPreviewModal(dtl)">预览</div>
+                  </div>
+                </div>
+              </transition-group>
+            </draggable>
           </el-form-item>
           <div style="margin-left: 150px;">
             已上传<span style="color: #F56C6C;">（{{ effectiveLength(formObj.detail) }}/{{ detailLimit }}）</span></div>
