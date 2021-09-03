@@ -144,7 +144,7 @@ export default {
           '收件人': data.consignee,
           '收件人手机号': data.mobile,
           '收货地址': data.consigneeAddress,
-          '所属商会': this.chamberName(data.ckey),
+          '订单所属商会': this.chamberName(data.ckey),
           '状态': statusStr
         }
         this.selectionDatas.push(new_data)
