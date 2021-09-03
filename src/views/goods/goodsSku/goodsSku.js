@@ -173,6 +173,9 @@ export default {
         attrName: [
           { required: true, message: '规格类型不能为空', trigger: 'change' }
         ],
+        discount: [
+          { required: true, message: '立减优惠不能为空，需输入大于等于0的数字', trigger: 'change' }
+        ],
         deliveryConfig1: [
           { required: true, message: '包邮不能为空', trigger: 'blur' },
           // { validator: checkName, trigger: 'change' }
@@ -1100,6 +1103,10 @@ export default {
             type: 'info',
             message: '请注意价格规则：立减优惠＜拼单价'
           })
+        }
+        if (!this.formObj.discount) {
+          valid = false
+          this.$message.info('立减优惠不能为空，需输入大于等于0的数字')
         }
         if (this.formObj.bookingTimeStart && this.formObj.limitTime[0]) {
           if (this.formObj.bookingTimeStart >= this.formObj.limitTime[0]) {
