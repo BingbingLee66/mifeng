@@ -56,6 +56,32 @@
         <el-row>
           <el-col :span="20">
             <div class="dy-form-label">
+              <span style="color: #F56C6C;padding: 5px;">*</span><span>商品海报图：</span>
+            </div>
+            <span class="dy-form-tip">图片大小不能超过2M，建议尺寸750×750，支持JPG、PNG</span>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-form-item label="">
+            <div style="float:left;">
+              <el-upload class="goods-avatar-uploader" action="/" :show-file-list="false" :before-upload="beforeAvatarUpload" :http-request="function (content) { return uploadPoster(content) }" v-if="!formObj.poster">
+                <i class="el-icon-plus goods-avatar-uploader-icon"></i>
+              </el-upload>
+              <div class="goods-pre" v-else>
+                <i class="el-icon-error" @click="clearposterImg"></i>
+                <img :src="formObj.poster" class="goods-avatar">
+                <div class="goods-pre-btn" @click="openPreviewModal(formObj.poster)">预览</div>
+              </div>
+            </div>
+          </el-form-item>
+          <div style="margin-left: 150px;">
+            已上传<span style="color: #F56C6C;"> （{{ formObj.poster ? 1 : 0 }}/{{ descriptLimit }}）</span></div>
+          <div style="margin: 5px 0 0 150px;" v-show="!posterValid"><span style="color: #F56C6C; font-size: 13px;">至少上传1张图片</span>
+          </div>
+        </el-row>
+        <el-row>
+          <el-col :span="20">
+            <div class="dy-form-label">
               <span style="color: #F56C6C;padding: 5px;">*</span><span>商品列表图：</span>
             </div>
             <span class="dy-form-tip">图片大小不能超过2M，建议尺寸300X300，支持JPG、PNG</span>

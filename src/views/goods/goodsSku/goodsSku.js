@@ -65,8 +65,10 @@ export default {
       type: 'add',
       galleryLimit: 10,
       descriptLimit: 1,
+      posterLimit: 1,
       detailLimit: 20,
       galleryValid: true,
+      posterValid: true,
       descriptValid: true,
       detailValid: true,
       formObj: {
@@ -80,6 +82,7 @@ export default {
         'bookingTimeStart': '',
         'isBooking': 0,
         'gallery': [''],
+        'poster': '',
         'descript': '',
         'detail': [''],
         'name': '',
@@ -391,6 +394,7 @@ export default {
         if (this.formObj.gallery.length !== this.galleryLimit) {
           this.formObj['gallery'].push('')
         }
+        this.formObj['poster'] = obj.poster
         this.formObj['descript'] = obj.descript
         this.formObj['detail'] = obj.detail.split(',')
         if (this.formObj.detail.length !== this.detailLimit) {
@@ -540,6 +544,16 @@ export default {
         this.galleryValid = true
       })
     },
+    uploadPoster(content) {
+      let formData = new FormData()
+      formData.append('file', content.file)
+      uploadGoodsImg(formData).then(response => {
+        this.$set(this.formObj, 'poster', response.data.filePath)
+        // this.formObj.poster = response.data.filePath
+        console.log('this.formObj.poster', this.formObj.poster)
+        this.posterValid = true
+      })
+    },
     uploadDescript(content) {
       let formData = new FormData()
       formData.append('file', content.file)
@@ -659,6 +673,10 @@ export default {
       if (this.formObj.gallery[this.formObj.gallery.length - 1] !== '') {
         this.formObj.gallery.push('')
       }
+    },
+    clearposterImg() {
+      // this.formObj.poster = ''
+      this.$set(this.formObj, 'poster', '')
     },
     clearDescriptImg() {
       this.formObj.descript = ''
@@ -1072,6 +1090,14 @@ export default {
             message: '至少上传一张商品轮播图'
           })
         }
+        if (!this.formObj.poster) {
+          this.posterValid = false
+          valid = false
+          this.$message({
+            type: 'info',
+            message: '至少上传一张商品海报图'
+          })
+        }
         if (this.formObj.descript.length === 0) {
           this.descriptValid = false
           valid = false
@@ -1181,6 +1207,7 @@ export default {
             'isBooking': this.formObj.isBooking,
             'id': this.formObj.id,
             'gallery': gallery,
+            'poster': this.formObj.poster,
             'descript': this.formObj.descript,
             'detail': detail,
             'name': this.formObj.name,
