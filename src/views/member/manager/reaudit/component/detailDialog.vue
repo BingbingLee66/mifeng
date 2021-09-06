@@ -103,11 +103,11 @@
           <td>{{ beforeRevision.tradeName }}</td>
           <td>{{ afterRevision.tradeName }}</td>
         </tr> -->
-        <!-- <tr v-if="afterRevision.companyPosition!=beforeRevision.companyPosition">
-          <td class="th_title">企业/团体职位</td>
+        <tr v-if="afterRevision.companyPosition!=beforeRevision.companyPosition">
+          <td class="th_title">企业职位</td>
           <td>{{ beforeRevision.companyPosition }}</td>
           <td>{{ afterRevision.companyPosition }}</td>
-        </tr> -->
+        </tr>
 
         <!-- <tr v-if="afterRevision.companyIntroduction!=beforeRevision.companyIntroduction">
           <td class="th_title">企业/团体简介</td>
