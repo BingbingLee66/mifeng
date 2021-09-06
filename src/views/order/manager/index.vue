@@ -9,7 +9,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="5" style="margin-left:10px;">
-            <el-form-item label-width="110px" label="所属商会">
+            <el-form-item label-width="110px" label="订单所属商会">
               <el-select v-model="query.ckey" placeholder="请选择商会" clearable>
                 <el-option v-for="(item, index) in chamberOptions" :label="item.label" :value="item.value" :key="index"></el-option>
               </el-select>
