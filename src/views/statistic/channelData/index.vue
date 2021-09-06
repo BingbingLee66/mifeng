@@ -98,7 +98,7 @@
       <div v-if="goodsDetail.goodsId">
         <span style="font-weight: 600;margin-right: 20px;">【商品ID】{{ goodsDetail.goodsId }}</span>
         <span style="color: #ff0000;margin-right: 20px;">{{ goodsDetail.chamberName }}</span>
-        <span>{{ goodsDetail.goodsName }}（{{ goodsDetail.deliveryConfig }}）</span>
+        <span>{{ goodsDetail.goodsName }}</span>
       </div>
       <div v-else style="color: #ff0000;margin-right: 20px;"> 没找到商品信息</div>
     </div>
@@ -176,11 +176,11 @@
         </div>
         <div class="meaning-item">
           <div class="tit">推广商品数</div>
-          <div class="sub">在指定时间范围内，有访问量的总商品数 (需去重)</div>
+          <div class="sub">在指定时间范围内，有访问量的总商品数 (需去重)。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">访问人数/uv</div>
-          <div class="sub">在指定时间范围内，访问过推广商品的总人数<span style="color:#FF0000;">(需去重)</span></div>
+          <div class="sub">在指定时间范围内，访问过推广商品的总人数<span style="color:#FF0000;">(需去重)。</span></div>
         </div>
         <div class="meaning-item">
           <div class="tit">访问次数/pv</div>
