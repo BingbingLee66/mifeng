@@ -152,6 +152,7 @@ export default {
             'contentHtml': dataObj.contentHtml,
             'coverType': dataObj.coverType,
             // 'publishType': dataObj.publishType,
+            'publishTs': dataObj.publishTs,
             'coverImgs': dataObj.coverImgUrl,
             'status': dataObj.status,
             'istop': dataObj.istop

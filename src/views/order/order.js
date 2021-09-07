@@ -272,6 +272,9 @@ export default {
           this.fetchData()
         }
         this.submitLoading = false
+      }).catch(err => {
+        console.log(err)
+        this.submitLoading = false
       })
     },
     handletipDialog() {

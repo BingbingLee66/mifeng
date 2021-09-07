@@ -15,7 +15,7 @@
             <el-select v-model="formObj.contentColumnId" placeholder="请选择对应栏目" style="display: inline-block">
               <el-option v-for="cc in contentColumnOptions" :label="cc.label" :value="cc.value" :key="cc.value"></el-option>
             </el-select>
-          </el-form-item>  
+          </el-form-item>
         </el-col>
         </div>
         <el-button @click="addColumnFunc" type="primary" style="margin-left:10px">添加栏目</el-button>
