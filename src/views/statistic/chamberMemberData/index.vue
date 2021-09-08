@@ -6,43 +6,43 @@
         <span style="float: right;" class="text-btn-style" @click="showMeaning=true">数据定义</span>
       </div>
     </div>
-    <el-table :data="chamberMemberList" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row :default-sort = "{prop: 'joinedTotal', order: 'descending'}">
+    <el-table :data="chamberMemberList" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @sort-change="handleSortChange">
       <el-table-column label="商/协会">
         <template slot-scope="scope">
           {{ scope.row.date ? scope.row.date : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="入会总人数" prop="joinedTotal" sortable>
+      <el-table-column label="入会总人数" prop="joinedTotal" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.joinedTotal > 0 ? scope.row.joinedTotal : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="商会邀请入会人数" prop="chamberInvitationTotal" sortable>
+      <el-table-column label="商会邀请入会人数" prop="chamberInvitationTotal" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.chamberInvitationTotal > 0 ? scope.row.chamberInvitationTotal : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="自己申请入会人数" prop="myselfApplyTotal" sortable>
+      <el-table-column label="自己申请入会人数" prop="myselfApplyTotal" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.myselfApplyTotal > 0 ? scope.row.myselfApplyTotal : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="会员邀请入会人数" prop="memberInvitationTotal" sortable>
+      <el-table-column label="会员邀请入会人数" prop="memberInvitationTotal" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.memberInvitationTotal > 0 ? scope.row.memberInvitationTotal : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="商会后台添加入会人数" prop="chamberBackstageAddTotal" sortable>
+      <el-table-column label="商会后台添加入会人数" prop="chamberBackstageAddTotal" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.chamberBackstageAddTotal > 0 ? scope.row.chamberBackstageAddTotal : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="个人会员" prop="personMemberTotal" sortable>
+      <el-table-column label="个人会员" prop="personMemberTotal" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.personMemberTotal > 0 ? scope.row.personMemberTotal : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="企业/团体" prop="companyMemberTotal" sortable>
+      <el-table-column label="企业/团体" prop="companyMemberTotal" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.companyMemberTotal > 0 ? scope.row.companyMemberTotal : '--' }}
         </template>

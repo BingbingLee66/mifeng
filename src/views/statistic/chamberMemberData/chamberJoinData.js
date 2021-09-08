@@ -4,6 +4,8 @@ export default {
   data() {
     return {
       currentpage: 1,
+      type: null,
+      column: null,
       limit: 10,
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -19,6 +21,8 @@ export default {
     getChamberMemberList() {
       this.listLoading = true
       let params = {
+        type: this.type,
+        column: this.column,
         page: this.currentpage,
         pageSize: this.limit
       }
@@ -35,6 +39,17 @@ export default {
     },
     handleCurrentChange(val) {
       this.currentpage = val
+      this.getChamberMemberList()
+    },
+    handleSortChange(e) {
+      this.currentpage = 1
+      if (e.order === 'descending') {
+        this.column = e.prop
+        this.type = -1
+      } else {
+        this.column = e.prop
+        this.type = 1
+      }
       this.getChamberMemberList()
     }
   }
