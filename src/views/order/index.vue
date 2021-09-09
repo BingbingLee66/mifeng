@@ -5,6 +5,9 @@
         <el-form-item label="订单号">
           <el-input v-model.trim="query.orderSn" placeholder="请输入订单号"/>
         </el-form-item>
+        <el-form-item label="微信订单号">
+          <el-input v-model="query.wechatOrderNum" placeholder="请输入微信订单号"/>
+        </el-form-item>
         <el-form-item label="供货商家">
           <!-- <el-select v-model="query.supplierId" placeholder="请选择供货商家" clearable>
             <el-option v-for="(item, index) in supplierOptions" :label="item.supplierName" :value="item.id" :key="index"></el-option>
@@ -71,9 +74,14 @@
       </el-table-column> -->
       <!-- <el-table-column type="index" label="序号" width="60px">
       </el-table-column> -->
-      <el-table-column label="订单号" width="70px">
+      <el-table-column label="订单号" width="100px">
         <template slot-scope="scope">
           {{ scope.row.orderSn }}
+        </template>
+      </el-table-column>
+      <el-table-column label="微信订单号" width="100px">
+        <template slot-scope="scope">
+          {{ scope.row.wechatOrderNum ? scope.row.wechatOrderNum : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="下单时间" width="90px">
@@ -81,7 +89,7 @@
           {{ scope.row.createTime | dateFormat }}
         </template>
       </el-table-column>
-      <el-table-column label="商品名称">
+      <el-table-column label="商品名称" width="250px">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
@@ -106,22 +114,14 @@
           {{ scope.row.realPrice }}
         </template>
       </el-table-column>
-      <el-table-column label="收件人" width="80px">
+      <el-table-column label="收货信息" width="250px">
         <template slot-scope="scope">
-          {{ scope.row.consignee }}
+          <div>{{ scope.row.consignee }}</div>
+          <div>{{ scope.row.mobile }}</div>
+          <div>{{ scope.row.consigneeAddress }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="收件人手机号" width="100px">
-        <template slot-scope="scope">
-          {{ scope.row.mobile }}
-        </template>
-      </el-table-column>
-      <el-table-column label="收货地址">
-        <template slot-scope="scope">
-          {{ scope.row.consigneeAddress }}
-        </template>
-      </el-table-column>
-      <el-table-column label="供货商家">
+      <el-table-column label="供货商家" width="250px">
         <template slot-scope="scope">
           {{ scope.row.supplierName }}
         </template>
@@ -136,7 +136,7 @@
           <div v-if="scope.row.status == 0">取消订单</div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="100px">
+      <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">
             详情
@@ -210,7 +210,9 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="mulDialog = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="submitUploadExcel" :loading="submitLoading">{{ submitLoading ? '上传中' : '确 定' }}</el-button>
+        <el-button size="small" type="primary" @click="submitUploadExcel" :loading="submitLoading">{{
+            submitLoading ? '上传中' : '确 定'
+          }}</el-button>
       </span>
     </el-dialog>
 

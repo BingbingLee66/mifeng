@@ -12,7 +12,7 @@ export default {
         orderSn: '',
         // suppplierId: '',
         supplierName: '',
-        goodId: '',
+        wechatOrderNum: '',
         goodName: '',
         status: -1,
         consignee: '',
@@ -93,7 +93,7 @@ export default {
         'orderSn': this.query.orderSn,
         // 'supplierId': this.query.supplierId,
         'supplierName': this.query.supplierName,
-        'goodId': this.query.goodId,
+        'wechatOrderNum': this.query.wechatOrderNum,
         'goodName': this.query.goodName,
         'status': this.query.status,
         'consignee': this.query.consignee,
@@ -115,7 +115,7 @@ export default {
       this.query = {
         orderSn: '',
         ckey: '',
-        goodId: '',
+        wechatOrderNum: '',
         goodName: '',
         status: -1,
         consignee: '',
@@ -145,6 +145,9 @@ export default {
         let new_data = {
           '订单号': data.orderSn,
           '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
+          '微信订单号': data.wechatOrderNum,
+          '状态': statusStr,
+          '供货商家': data.supplierName,
           '商品名称': data.name,
           '商品规格': !data.codeName ? '无' : data.codeName,
           '单价(元)': data.price,
@@ -152,9 +155,7 @@ export default {
           '实付金额(元)': data.realPrice,
           '收件人': data.consignee,
           '收件人手机号': data.mobile,
-          '收货地址': data.consigneeAddress,
-          '供货商家': data.supplierName,
-          '状态': statusStr
+          '收货地址': data.consigneeAddress
         }
         this.selectionDatas.push(new_data)
         this.orderSns.push(data.orderSn)

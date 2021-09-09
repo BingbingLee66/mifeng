@@ -10,7 +10,8 @@ export default {
       query: {
         orderSn: '',
         ckey: '',
-        goodId: '',
+        wechatOrderNum: '',
+        supplierName: '',
         goodName: '',
         status: -1,
         consignee: '',
@@ -84,8 +85,9 @@ export default {
       let params = {
         'orderSn': this.query.orderSn,
         'ckey': this.query.ckey,
-        'goodId': this.query.goodId,
+        'wechatOrderNum': this.query.wechatOrderNum,
         'goodName': this.query.goodName,
+        'supplierName': this.query.supplierName,
         'status': this.query.status,
         'consignee': this.query.consignee,
         'consigneeMobile': this.query.consigneeMobile,
@@ -106,7 +108,7 @@ export default {
       this.query = {
         orderSn: '',
         ckey: '',
-        goodId: '',
+        wechatOrderNum: '',
         goodName: '',
         status: -1,
         consignee: '',
@@ -136,6 +138,10 @@ export default {
         let new_data = {
           '订单号': data.orderSn,
           '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
+          '微信订单号': data.wechatOrderNum ? data.wechatOrderNum : '--',
+          '状态': statusStr,
+          '供货商家': data.supplierName,
+          '订单所属商会': this.chamberName(data.ckey),
           '商品名称': data.name,
           '商品规格': !data.codeName ? '无' : data.codeName,
           '单价(元)': data.price,
@@ -143,9 +149,7 @@ export default {
           '实付金额(元)': data.realPrice,
           '收件人': data.consignee,
           '收件人手机号': data.mobile,
-          '收货地址': data.consigneeAddress,
-          '订单所属商会': this.chamberName(data.ckey),
-          '状态': statusStr
+          '收货地址': data.consigneeAddress
         }
         this.selectionDatas.push(new_data)
       }
