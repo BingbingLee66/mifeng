@@ -21,6 +21,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left:10px;">
+            <el-form-item label-width="110px" label="供货商家">
+              <el-input v-model.trim="query.supplierName" placeholder="请输入供货商家"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-left:10px;">
             <el-form-item label-width="110px" label="商品名称">
               <el-input v-model.trim="query.goodName" placeholder="请输入商品名称"/>
             </el-form-item>
@@ -48,7 +53,7 @@
               <el-input v-model.trim="query.consigneeMobile" placeholder="请输入收货人手机号"/>
             </el-form-item>
           </el-col>
-          <el-col :span="15" style="margin-right:10px;">
+          <el-col :span="10" style="margin-right:10px;">
             <el-form-item label-width="110px" label="下单时间" style="float: left;">
               <el-date-picker
                 format="yyyy-MM-dd"
@@ -128,9 +133,14 @@
           <div>{{ scope.row.consigneeAddress }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="订单所属商会" width="250px">
+      <el-table-column label="订单所属商会" width="200px">
         <template slot-scope="scope">
           {{ chamberName(scope.row.ckey) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="供货商家" width="150px">
+        <template slot-scope="scope">
+          {{ scope.row.supplierName }}
         </template>
       </el-table-column>
       <el-table-column label="状态" width="80px">

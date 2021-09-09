@@ -144,10 +144,10 @@ export default {
         }
         let new_data = {
           '订单号': data.orderSn,
+          '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
           '微信订单号': data.wechatOrderNum,
           '状态': statusStr,
           '供货商家': data.supplierName,
-          '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
           '商品名称': data.name,
           '商品规格': !data.codeName ? '无' : data.codeName,
           '单价(元)': data.price,
