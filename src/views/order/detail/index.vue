@@ -19,13 +19,18 @@
           <span v-else> - -</span>
         </el-col>
         <el-col :span="8">
-          订单状态：{{ status(detailObj.status) }}
+          微信订单号：
+          <span v-if="detailObj.wechatOrderNum">{{ detailObj.wechatOrderNum }}</span>
+          <span v-else> - -</span>
         </el-col>
         <el-col :span="8">
-          付款时间：{{ detailObj.payTime ? detailObj.payTime : '- -' }}
+          订单状态：{{ status(detailObj.status) }}
         </el-col>
       </el-row>
       <el-row>
+        <el-col :span="8">
+          付款时间：{{ detailObj.payTime ? detailObj.payTime : '- -' }}
+        </el-col>
         <el-col :span="8">
           发货时间：
           <span v-if="detailObj.shippingTime">{{ detailObj.shippingTime | formatDates}}</span>
@@ -35,12 +40,12 @@
           物流公司：{{ detailObj.shippingCompany ? detailObj.shippingCompany : '--' }}
           <span style="color:#409eff;cursor: pointer" @click="showSendOut">编辑</span>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="8">
           物流单号：{{ detailObj.shippingSn ? detailObj.shippingSn : '--' }}
           <span style="color:#409eff;cursor: pointer" @click="showSendOut">编辑</span>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
           购买方式：{{ buyType(detailObj.fightStatus) }}
         </el-col>
@@ -49,25 +54,25 @@
           <span v-if="detailObj.fightTime">{{ detailObj.fightTime | formatDates}}</span>
           <span v-else> - -</span>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="8">
           供货商家：{{ detailObj.supplierName }}
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
           收件人姓名：{{ detailObj.consignee }}
         </el-col>
         <el-col :span="8">
           收件人手机号：{{ detailObj.mobile }}
         </el-col>
-        <el-col :span="8">
-          收货地址：{{ detailObj.consigneeAddress }}
-        </el-col>
         <!--        <el-col :span="8" v-if="!isChamber">-->
         <!--          所属商会：{{ chamberName(detailObj.ckey) }}-->
         <!--        </el-col>-->
       </el-row>
       <el-row>
+        <el-col :span="8">
+          收货地址：{{ detailObj.consigneeAddress }}
+        </el-col>
         <el-col :span="8">
           收货时间：
           <span v-if="detailObj.confirmReceivingTime">{{ detailObj.confirmReceivingTime | formatDates }}</span>
