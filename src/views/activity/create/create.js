@@ -6,6 +6,8 @@ import {
   updateWeights
 } from '@/api/mall/mall'
 import { getChamberOptions } from '@/api/finance/finance'
+import { save, uploadCoverImg } from "@/api/content/article";
+import { uploadGoodsImg } from "@/api/goods/goodsSku";
 
 export default {
   data() {
@@ -17,6 +19,16 @@ export default {
       }
     }
     return {
+      formObj: {
+        name: '', // 活动名称
+        pic: '', // 活动头图
+        lpic: '', // 活动列表图
+        date: '', // 活动时间
+        address: 0, // 活动地点
+        type: 0, // 报名对象
+        num: [], // 参加人数
+        intro: '', // 活动介绍
+      },
       type: '1',
       previewImgVisible: false,
       previewUrl: '',
@@ -63,6 +75,32 @@ export default {
           { validator: checkNumber, trigger: 'blur' }
         ]
       },
+      rules: {
+        name: [
+          { required: true, message: '活动名称不能为空', trigger: 'blur' }
+        ],
+        pic: [
+          { required: true, message: '请上传活动头图', trigger: 'blur' }
+        ],
+        lpic: [
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+        ],
+        date: [
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+        ],
+        address: [
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+        ],
+        type: [
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+        ],
+        num: [
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+        ],
+        intro: [
+          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -230,7 +268,6 @@ export default {
           message: '移除删除'
         })
       })
-
     },
     // 批量移除
     handleSelectionChange(value) {
@@ -273,6 +310,49 @@ export default {
           return false
         }
       })
-    }
+    },
+
+    // 上传图片校验
+    beforeUpload(file) {
+      if (file.type !== 'image/jpeg' &&
+        file.type !== 'image/jpg' &&
+        file.type !== 'image/png') {
+        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+        return false
+      }
+      if (file.size > 1024 * 1024 * 2) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+        return false
+      }
+    },
+    // 上传活动头图
+    uploadPic(content) {
+      let formData = new FormData()
+      formData.append('file', content.file)
+      console.log(content.file)
+      /* uploadGoodsImg(formData).then(response => {
+        this.formObj.pic = response.data.filePath
+        this.descriptValid = true
+      }) */
+    },
+    // 上传活动头图
+    uploadLpic(content) {
+      let formData = new FormData()
+      formData.append('file', content.file)
+      console.log(content.file)
+      /* uploadGoodsImg(formData).then(response => {
+        this.formObj.pic = response.data.filePath
+        this.descriptValid = true
+      }) */
+    },
+    save() {
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          alert('提交')
+        } else {
+          return false
+        }
+      })
+    },
   }
 }
