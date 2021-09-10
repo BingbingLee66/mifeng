@@ -1,126 +1,64 @@
-import {
-  getAllGoodsList,
-  getExplodeGoodsList,
-  addExplodeGoods,
-  deleteExplodeGoods,
-  updateWeights
-} from '@/api/mall/mall'
-import { getChamberOptions } from '@/api/finance/finance'
-import { save, uploadCoverImg } from "@/api/content/article";
-import { uploadGoodsImg } from "@/api/goods/goodsSku";
+import { createActivity } from '@/api/activity/activity'
+import Ckeditor from '@/components/CKEditor'
+import area from '@/utils/area'
 
 export default {
+  components: {
+    Ckeditor
+  },
   data() {
-    var checkNumber = (rule, value, callback) => {
-      if (!/^([0-9]{0,3})$/.test(value)) {
-        return callback(new Error('必须是0-999的整数'))
-      } else {
-        callback() // 必须加上这个，不然一直塞在验证状态
-      }
-    }
     return {
       formObj: {
         name: '', // 活动名称
         pic: '', // 活动头图
         lpic: '', // 活动列表图
         date: '', // 活动时间
-        address: 0, // 活动地点
-        type: 0, // 报名对象
-        num: [], // 参加人数
+        address: '', // 活动地点
+        target: '', // 报名对象
+        number: [], // 参加人数
+        number2: '',
         intro: '', // 活动介绍
       },
-      type: '1',
-      previewImgVisible: false,
-      previewUrl: '',
-      query: {
-        ckey: '',
-        goodsName: '',
-        status: '',
-        date: ''
+      // 是否限制报名对象
+      target: {
+        unlimit: false,
+        limit: false
       },
-      pageSizes: [10, 20, 50, 100, 500],
-      total: 0,
-      list: [],
-      currentpage: 1,
-      limit: 10,
-      listLoading: false,
-      selectionDatas: [],
-      chamberOptions: [],
-      showWeightDialog: false,
-      showAddDialog: false,
-      numberValidateForm: {
-        weight: 0
+      // 是否限制报名人数
+      number: {
+        unlimit: false,
+        limit: false
       },
-      queryAll: {
-        ckey: '', // 商品来源
-        goodsName: '', // 商品名称
-        goodsId: '', // 商品ID
-        status: '', // 商品状态
-      },
-      allPage: {
-        currentpage: 1,
-        page: 1,
-        pageSize: 100,
-        allTotal: 0
-      },
-      allGoodsIdList: [],
-      allList: [],
-      weightsForm: {
-        weights: null,
-        goodsId: null
-      },
-      weightsFormRules: {
-        weights: [
-          { required: true, message: '权重不能为空', trigger: 'blur' },
-          { validator: checkNumber, trigger: 'blur' }
-        ]
-      },
+      // 活动地点选择
+      provinceValue: '',
+      cityValue: '',
+      countryValue: '',
+      provinceOptions: [],
+      cityOptions: [],
+      countryOptions: [],
+      areaData: null,
       rules: {
         name: [
           { required: true, message: '活动名称不能为空', trigger: 'blur' }
         ],
         pic: [
-          { required: true, message: '请上传活动头图', trigger: 'blur' }
+          { required: true, message: '活动头图不能为空', trigger: 'blur' }
         ],
         lpic: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+          { required: true, message: '活动列表图不能为空', trigger: 'blur' }
         ],
         date: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
-        ],
-        address: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
-        ],
-        type: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
-        ],
-        num: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
-        ],
-        intro: [
-          { required: true, message: '封面图片必须上传', trigger: 'blur' }
+          { required: true, message: '活动时间不能为空', trigger: 'blur' }
         ]
       }
     }
   },
-  computed: {
-    // ...mapGetters(['has'])
-    chamberName() {
-      return function(ckey) {
-        let chamberName = ''
-        for (let chamber of this.chamberOptions) {
-          if (ckey === chamber.value) {
-            chamberName = chamber.label
-            break
-          }
-        }
-        return chamberName
-      }
-    }
-  },
-  created() {
-    // this.getChamberOptions()
-    // this.fetchData()
+  mounted() {
+    this.handleArea()
+    this.$refs.ckeditor1.init()
+    setTimeout(() => {
+      this.$refs.ckeditor1.initHtml('')
+    }, 500)
   },
   methods: {
     handleClick(tab) {
@@ -144,174 +82,21 @@ export default {
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    getChamberOptions() {
-      getChamberOptions().then(response => {
-        this.chamberOptions = response.data.data
-      })
-    },
-    fetchData() {
-      this.listLoading = true
-      let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'goodsName': this.query.goodsName,
-        'status': this.query.status,
-        'ckey': this.query.ckey,
-        'type': this.type
-      }
-      if (this.query.date) {
-        params['startTime'] = this.query.date[0]
-        params['endTime'] = this.query.date[1]
-      }
-      getExplodeGoodsList(params).then(res => {
-        this.list = res.data.list
-        this.total = res.data.totalRows
-        this.listLoading = false
-      })
-    },
-
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      })
-    },
-
-    // 获取全部商品列表
-    addExplodeGoods() {
-      this.queryAll.goodsNam = ''
-      this.queryAll.goodsId = ''
-      this.queryAll.status = ''
-      this.queryAll.ckey = ''
-      this.showAddDialog = true
-      this.getAllGoodsLists()
-    },
-    getAllGoodsLists() {
-      this.listLoading = true
-      let params = {
-        'page': this.allPage.page,
-        'pageSize': this.allPage.pageSize,
-        'goodsName': this.queryAll.goodsName,
-        'goodsId': this.queryAll.goodsId,
-        'status': this.queryAll.status,
-        'ckey': this.queryAll.ckey
-      }
-      getAllGoodsList(params).then(res => {
-        console.log('全部商品列表', res)
-        this.allList = res.data.list
-        this.allPage.allTotal = res.data.totalRows
-        this.listLoading = false
-      })
-    },
-    handleAllSizeChange(val) {
-      this.allPage.currentpage = 1
-      this.allPage.page = 1
-      this.allPage.pageSize = val
-      this.getAllGoodsLists()
-    },
-    handleAllCurrentChange(val) {
-      this.allPage.currentpage = val
-      this.getAllGoodsLists()
-    },
-    // 添加爆品
-    handleAllSelectionChange(value) {
-      let datas = value
-      this.allGoodsIdList = []
-      for (let data of datas) {
-        this.allGoodsIdList.push(data.id)
-      }
-    },
-    addExplode() {
-      if (this.allGoodsIdList.length === 0) {
-        return this.$message.error('请先选择商品')
-      }
-      addExplodeGoods(this.allGoodsIdList).then(res => {
-        if (res.state === 1) {
-          this.$message({
-            message: '添加成功',
-            type: 'success'
-          })
-          this.getAllGoodsLists()
-          this.fetchData()
-          this.showAddDialog = false
-        }
-      })
-    },
-    // 移除爆品
-    delExplode(row) {
-      console.log(row)
-      let delGoodsId = []
-      delGoodsId.push(row.id)
-      this.$confirm('', '确定移除？', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(() => {
-        let params = {
-          'id': row.id
-        }
-        deleteExplodeGoods(delGoodsId).then(res => {
-          if (res.state === 1) {
-            this.$message({
-              message: '移除成功',
-              type: 'success'
+    closeTab() {
+      // 退出当前tab, 打开指定tab
+      const openPath = window.localStorage.getItem('activityeditor')
+      const tagsViews = this.$store.state.tagsView.visitedViews
+      for (const view of tagsViews) {
+        if (view.path === this.$route.path) {
+          this.$store.dispatch('tagsView/delView', view).then(() => {
+            this.$router.push({
+              path: openPath
             })
-            this.fetchData()
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '移除删除'
-        })
-      })
-    },
-    // 批量移除
-    handleSelectionChange(value) {
-      let datas = value
-      this.selectionDatas = []
-      for (let data of datas) {
-        this.selectionDatas.push(data.id)
-      }
-    },
-    delMulExplode() {
-      if (this.selectionDatas.length === 0) {
-        return this.$message.error('请先选择商品')
-      }
-      deleteExplodeGoods(this.selectionDatas).then(res => {
-        if (res.state === 1) {
-          this.fetchData()
-        }
-      })
-    },
-    // 修改权重
-    openUpdateWeightDialog(row) {
-      this.weightsForm.goodsId = row.id
-      this.weightsForm.weights = row.weights
-      this.showWeightDialog = true
-    },
-    updateWeight(weightsForm) {
-      this.$refs[weightsForm].validate((valid) => {
-        if (valid) {
-          updateWeights(this.weightsForm).then(response => {
-            if (response.state === 1) {
-              this.$message({
-                message: '操作成功',
-                type: 'success'
-              })
-              this.fetchData()
-              this.showWeightDialog = false
-            }
           })
-        } else {
-          return false
+          break
         }
-      })
+      }
     },
-
     // 上传图片校验
     beforeUpload(file) {
       if (file.type !== 'image/jpeg' &&
@@ -345,10 +130,121 @@ export default {
         this.descriptValid = true
       }) */
     },
+    // 选择活动地点
+    handleArea() {
+      this.provinceOptions = []
+      this.provinceValue = ''
+      for (const key in area['86']) {
+        this.provinceOptions.push({
+          value: key,
+          label: area['86'][key]
+        })
+      }
+    },
+    resetCityAndCountryData() {
+      this.cityValue = ''
+      this.countryValue = ''
+      this.cityOptions = []
+      this.countryOptions = []
+    },
+    resetCountryData() {
+      this.countryValue = ''
+      this.countryOptions = []
+    },
+    provinceChange() {
+      this.resetCityAndCountryData()
+      for (const key in area[this.provinceValue]) {
+        this.cityOptions.push({
+          value: key,
+          label: area[this.provinceValue][key]
+        })
+      }
+      this.chooseData()
+    },
+    cityChange() {
+      this.resetCountryData()
+      for (const key in area[this.cityValue]) {
+        this.countryOptions.push({
+          value: key,
+          label: area[this.cityValue][key]
+        })
+      }
+      this.chooseData()
+    },
+    countryChange() {
+      this.chooseData()
+    },
+    chooseData() {
+      let data = null
+      if (this.countryValue) {
+        data = {
+          province: {
+            code: this.provinceValue,
+            name: area['86'][this.provinceValue]
+          },
+          city: {
+            code: this.cityValue,
+            name: area[this.provinceValue][this.cityValue]
+          },
+          country: {
+            code: this.countryValue,
+            name: area[this.cityValue][this.countryValue]
+          }
+        }
+      } else if (this.cityValue) {
+        data = {
+          province: {
+            code: this.provinceValue,
+            name: area['86'][this.provinceValue]
+          },
+          city: {
+            code: this.cityValue,
+            name: area[this.provinceValue][this.cityValue]
+          }
+        }
+      } else if (this.provinceValue) {
+        data = {
+          province: {
+            code: this.provinceValue,
+            name: area['86'][this.provinceValue]
+          }
+        }
+      } else {
+        data = null
+      }
+      this.areaData = data
+    },
+    // 选择报名对象
+    handleCheckTarget(e, val) {
+      if (val === 1) {
+        this.target.limit = false
+        this.formObj.target === 1
+      } else {
+        this.target.unlimit = false
+        this.formObj.target === 2
+      }
+    },
+    // 选择参加人数
+    handleCheckNum(e, val) {
+      if (val === 1) {
+        this.number.limit = false
+        this.formObj.number === 1
+      } else {
+        this.number.unlimit = false
+        this.formObj.number === 2
+      }
+    },
+    // 编辑活动介绍
+    getHtml(htmlStr) {
+      this.formObj.intro = htmlStr
+      console.log('this.formObj.intro', this.formObj.intro)
+    },
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          alert('提交')
+          createActivity(this.formObj).then(response => {
+            console.log(response)
+          })
         } else {
           return false
         }

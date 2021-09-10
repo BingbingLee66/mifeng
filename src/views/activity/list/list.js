@@ -1,11 +1,4 @@
-import {
-  getAllGoodsList,
-  getExplodeGoodsList,
-  addExplodeGoods,
-  deleteExplodeGoods,
-  updateWeights
-} from '@/api/mall/mall'
-import { getChamberOptions } from '@/api/finance/finance'
+import { getChamberOptions, getActivityList } from '@/api/activity/activity'
 
 export default {
   data() {
@@ -21,10 +14,10 @@ export default {
       previewImgVisible: false,
       previewUrl: '',
       query: {
-        ckey: '',
-        goodsName: '',
-        status: '',
-        date: ''
+        activitySource: '', // 来源
+        activityID: '', // 活动ID
+        activityName: '', // 活动名称
+        activityStatus: '' // 活动状态
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -32,27 +25,12 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: [],
-      chamberOptions: [],
+      sourceOptions: [], // 活动来源数据
       showWeightDialog: false,
-      showAddDialog: false,
+      showDelDialog: false,
       numberValidateForm: {
         weight: 0
       },
-      queryAll: {
-        ckey: '', // 商品来源
-        goodsName: '', // 商品名称
-        goodsId: '', // 商品ID
-        status: '', // 商品状态
-      },
-      allPage: {
-        currentpage: 1,
-        page: 1,
-        pageSize: 100,
-        allTotal: 0
-      },
-      allGoodsIdList: [],
-      allList: [],
       weightsForm: {
         weights: null,
         goodsId: null
@@ -66,22 +44,21 @@ export default {
     }
   },
   computed: {
-    // ...mapGetters(['has'])
-    chamberName() {
+    sourceName() {
       return function(ckey) {
-        let chamberName = ''
-        for (let chamber of this.chamberOptions) {
-          if (ckey === chamber.value) {
-            chamberName = chamber.label
+        let sourceName = ''
+        for (let source of this.sourceOptions) {
+          if (ckey === source.value) {
+            sourceName = source.label
             break
           }
         }
-        return chamberName
+        return sourceName
       }
     }
   },
   created() {
-    // this.getChamberOptions()
+    this.getSourceOptions()
     // this.fetchData()
   },
   methods: {
@@ -106,148 +83,36 @@ export default {
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    getChamberOptions() {
+    // 编辑活动
+    goEdit() {
+      window.localStorage.setItem('activityeditor', this.$route.path)
+      this.$router.push({ name: '创建新活动' })
+    },
+    // 获取活动来源
+    getSourceOptions() {
       getChamberOptions().then(response => {
-        this.chamberOptions = response.data.data
+        this.sourceOptions = response.data.data
       })
     },
-    fetchData() {
+    // 查询活动列表
+    fetchData(e) {
+      if (e !== undefined) {
+        this.currentpage = 1
+      }
       this.listLoading = true
       let params = {
+        'type': this.type, // 1-已发布 2-未发布
+        'activitySource': this.query.activitySource,
+        'activityID': this.query.activityID,
+        'activityName': this.query.activityName,
+        'activityStatus': this.query.activityStatus,
         'pageSize': this.limit,
         'page': this.currentpage,
-        'goodsName': this.query.goodsName,
-        'status': this.query.status,
-        'ckey': this.query.ckey,
-        'type': this.type
       }
-      if (this.query.date) {
-        params['startTime'] = this.query.date[0]
-        params['endTime'] = this.query.date[1]
-      }
-      getExplodeGoodsList(params).then(res => {
+      getActivityList(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
-      })
-    },
-
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      })
-    },
-
-    // 获取全部商品列表
-    addExplodeGoods() {
-      this.queryAll.goodsNam = ''
-      this.queryAll.goodsId = ''
-      this.queryAll.status = ''
-      this.queryAll.ckey = ''
-      this.showAddDialog = true
-      this.getAllGoodsLists()
-    },
-    getAllGoodsLists() {
-      this.listLoading = true
-      let params = {
-        'page': this.allPage.page,
-        'pageSize': this.allPage.pageSize,
-        'goodsName': this.queryAll.goodsName,
-        'goodsId': this.queryAll.goodsId,
-        'status': this.queryAll.status,
-        'ckey': this.queryAll.ckey
-      }
-      getAllGoodsList(params).then(res => {
-        console.log('全部商品列表', res)
-        this.allList = res.data.list
-        this.allPage.allTotal = res.data.totalRows
-        this.listLoading = false
-      })
-    },
-    handleAllSizeChange(val) {
-      this.allPage.currentpage = 1
-      this.allPage.page = 1
-      this.allPage.pageSize = val
-      this.getAllGoodsLists()
-    },
-    handleAllCurrentChange(val) {
-      this.allPage.currentpage = val
-      this.getAllGoodsLists()
-    },
-    // 添加爆品
-    handleAllSelectionChange(value) {
-      let datas = value
-      this.allGoodsIdList = []
-      for (let data of datas) {
-        this.allGoodsIdList.push(data.id)
-      }
-    },
-    addExplode() {
-      if (this.allGoodsIdList.length === 0) {
-        return this.$message.error('请先选择商品')
-      }
-      addExplodeGoods(this.allGoodsIdList).then(res => {
-        if (res.state === 1) {
-          this.$message({
-            message: '添加成功',
-            type: 'success'
-          })
-          this.getAllGoodsLists()
-          this.fetchData()
-          this.showAddDialog = false
-        }
-      })
-    },
-    // 移除爆品
-    delExplode(row) {
-      console.log(row)
-      let delGoodsId = []
-      delGoodsId.push(row.id)
-      this.$confirm('', '确定移除？', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(() => {
-        let params = {
-          'id': row.id
-        }
-        deleteExplodeGoods(delGoodsId).then(res => {
-          if (res.state === 1) {
-            this.$message({
-              message: '移除成功',
-              type: 'success'
-            })
-            this.fetchData()
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '移除删除'
-        })
-      })
-
-    },
-    // 批量移除
-    handleSelectionChange(value) {
-      let datas = value
-      this.selectionDatas = []
-      for (let data of datas) {
-        this.selectionDatas.push(data.id)
-      }
-    },
-    delMulExplode() {
-      if (this.selectionDatas.length === 0) {
-        return this.$message.error('请先选择商品')
-      }
-      deleteExplodeGoods(this.selectionDatas).then(res => {
-        if (res.state === 1) {
-          this.fetchData()
-        }
       })
     },
     // 修改权重
@@ -259,7 +124,7 @@ export default {
     updateWeight(weightsForm) {
       this.$refs[weightsForm].validate((valid) => {
         if (valid) {
-          updateWeights(this.weightsForm).then(response => {
+          /* updateWeights(this.weightsForm).then(response => {
             if (response.state === 1) {
               this.$message({
                 message: '操作成功',
@@ -268,7 +133,7 @@ export default {
               this.fetchData()
               this.showWeightDialog = false
             }
-          })
+          }) */
         } else {
           return false
         }
