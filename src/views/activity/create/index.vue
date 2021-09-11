@@ -5,22 +5,22 @@
       <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="120px">
         <el-row>
           <el-col style="width: 600px;height: 50px">
-            <el-form-item label="活动名称：" prop="name">
-              <el-input v-model="formObj.name" show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+            <el-form-item label="活动名称：" prop="activityName">
+              <el-input v-model="formObj.activityName" show-word-limit maxlength="30" placeholder="限30字内"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col style="width: 600px;height: 160px">
-            <el-form-item label="活动头像：" prop="pic" class="upload-style">
+            <el-form-item label="活动头图：" prop="headImage" class="upload-style">
               <el-upload
                 class="uploader-pic-wrap"
                 action="/"
                 :show-file-list="false"
                 :before-upload="beforeUpload"
-                :http-request="uploadPic"
+                :http-request="uploadHeadImage"
               >
-                <img v-if="formObj.pic" :src="formObj.pic" class="pic">
+                <img v-if="formObj.headImage" :src="formObj.headImage" class="pic">
                 <i v-else class="el-icon-plus uploader-pic-icon"></i>
               </el-upload>
               <div style="color: #999;line-height: 1.3;margin-top: 8px;">建议尺寸 744*300，支持jpg、png</div>
@@ -35,9 +35,9 @@
                 action="/"
                 :show-file-list="false"
                 :before-upload="beforeUpload"
-                :http-request="uploadLpic"
+                :http-request="uploadListImage"
               >
-                <img v-if="formObj.lpic" :src="formObj.lpic" class="lpic">
+                <img v-if="formObj.listImage" :src="formObj.listImage" class="lpic">
                 <i v-else class="el-icon-plus uploader-lpic-icon"></i>
               </el-upload>
               <div style="color: #999;line-height: 1.3;margin-top: 8px;">建议尺寸 744*300，支持jpg、png</div>
@@ -45,9 +45,9 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col style="width: 600px;">
-            <el-form-item label="活动时间：" prop="date">
-              <el-date-picker v-model="formObj.date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"/>
+          <el-col style="width: 800px;">
+            <el-form-item class="date-wrap" label="活动时间：" prop="date">
+              <el-date-picker v-model="formObj.date" format="yyyy-MM-dd HH:mm:ss" value-format="timestamp" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -78,15 +78,15 @@
                   :value="item.value">
                 </el-option>
               </el-select>
-              <el-input class="address-inp" type="textarea" resize="none" :rows="2" v-model="formObj.address" show-word-limit maxlength="50" placeholder="详细地址，限50字内"></el-input>
+              <el-input class="address-inp" type="textarea" resize="none" :rows="2" v-model="formObj.addressInfo" show-word-limit maxlength="50" placeholder="详细地址，限50字内"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col style="width: 600px;height: 40px;">
             <el-form-item label="报名对象：" required>
-              <el-checkbox v-model="target.unlimit" @change="handleCheckTarget($event,1)">不限</el-checkbox>
-              <el-checkbox v-model="target.limit" @change="handleCheckTarget($event,2)">限云商会成员</el-checkbox>
+              <el-checkbox v-model="applyObject.unlimit" @change="handleCheckTarget($event,0)">不限</el-checkbox>
+              <el-checkbox v-model="applyObject.limit" @change="handleCheckTarget($event,1)">限云商会成员</el-checkbox>
               <span style="margin-left: 20px;color: #ff0000">指云商会平台的任意商会的任意成员</span>
             </el-form-item>
           </el-col>
@@ -94,9 +94,9 @@
         <el-row>
           <el-col style="width: 1000px;">
             <el-form-item label="参加人数：" required>
-              <el-checkbox v-model="number.unlimit" @change="handleCheckNum($event,1)">不限</el-checkbox>
-              <el-checkbox v-model="number.limit" @change="handleCheckNum($event,2)">限</el-checkbox>
-              <el-input v-show="number.limit" style="width: 200px;" placeholder="大于0的整数" v-model="formObj.number2">
+              <el-checkbox v-model="applyCount.unlimit" @change="handleCheckNum($event,0)">不限</el-checkbox>
+              <el-checkbox v-model="applyCount.limit" @change="handleCheckNum($event,1)">限</el-checkbox>
+              <el-input v-show="applyCount.limit" style="width: 200px;" placeholder="大于0的整数" v-model="formObj.applyCount">
                 <template slot="append">人</template>
               </el-input>
               <span style="margin-left: 20px;color: #ff0000">若这里限定了参加人数，在后台审核通过的，才能参加活动</span>
@@ -217,6 +217,13 @@
         right: 10px;
       }
     }
+  }
+
+  .date-wrap .el-input__inner {
+    width: 385px;
+  }
+  .date-wrap .el-date-editor .el-range-input {
+    width: 45%;
   }
 }
 </style>

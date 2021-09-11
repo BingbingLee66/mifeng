@@ -1,4 +1,4 @@
-import { createActivity } from '@/api/activity/activity'
+import { createActivity, uploadPortrait } from '@/api/activity/activity'
 import Ckeditor from '@/components/CKEditor'
 import area from '@/utils/area'
 
@@ -9,23 +9,26 @@ export default {
   data() {
     return {
       formObj: {
-        name: '', // 活动名称
-        pic: '', // 活动头图
-        lpic: '', // 活动列表图
+        activityName: '', // 活动名称
+        headImage: '', // 活动头图
+        listImage: '', // 活动列表图
         date: '', // 活动时间
-        address: '', // 活动地点
-        target: '', // 报名对象
-        number: [], // 参加人数
-        number2: '',
-        intro: '', // 活动介绍
+        province: '', // 活动地点(省)
+        city: '', // 活动地点(市)
+        area: '', // 活动地点(区)
+        addressInfo: '', // 活动地点（详细地址）
+        applyObject: '', // 报名对象
+        applyCountLimit: null, // 是否限制参加人数
+        applyCount: '', // 参加人数
+        introduce: '', // 活动介绍
       },
       // 是否限制报名对象
-      target: {
+      applyObject: {
         unlimit: false,
         limit: false
       },
       // 是否限制报名人数
-      number: {
+      applyCount: {
         unlimit: false,
         limit: false
       },
@@ -38,13 +41,13 @@ export default {
       countryOptions: [],
       areaData: null,
       rules: {
-        name: [
+        activityName: [
           { required: true, message: '活动名称不能为空', trigger: 'blur' }
         ],
-        pic: [
+        headImage: [
           { required: true, message: '活动头图不能为空', trigger: 'blur' }
         ],
-        lpic: [
+        listImage: [
           { required: true, message: '活动列表图不能为空', trigger: 'blur' }
         ],
         date: [
@@ -111,24 +114,20 @@ export default {
       }
     },
     // 上传活动头图
-    uploadPic(content) {
+    uploadHeadImage(content) {
       let formData = new FormData()
       formData.append('file', content.file)
-      console.log(content.file)
-      /* uploadGoodsImg(formData).then(response => {
-        this.formObj.pic = response.data.filePath
-        this.descriptValid = true
-      }) */
+      uploadPortrait(formData).then(response => {
+        this.formObj.headImage = response.data.filePath
+      })
     },
-    // 上传活动头图
-    uploadLpic(content) {
+    // 上传活动列表图
+    uploadListImage(content) {
       let formData = new FormData()
       formData.append('file', content.file)
-      console.log(content.file)
-      /* uploadGoodsImg(formData).then(response => {
-        this.formObj.pic = response.data.filePath
-        this.descriptValid = true
-      }) */
+      uploadPortrait(formData).then(response => {
+        this.formObj.listImage = response.data.filePath
+      })
     },
     // 选择活动地点
     handleArea() {
@@ -213,35 +212,49 @@ export default {
         data = null
       }
       this.areaData = data
+      console.log('this.areaData', this.areaData)
     },
     // 选择报名对象
     handleCheckTarget(e, val) {
-      if (val === 1) {
-        this.target.limit = false
-        this.formObj.target === 1
+      console.log('valval', val)
+      if (val === 0) {
+        this.applyObject.limit = false
+        this.formObj.applyObject = 0
       } else {
-        this.target.unlimit = false
-        this.formObj.target === 2
+        this.applyObject.unlimit = false
+        this.formObj.applyObject = 1
       }
     },
     // 选择参加人数
     handleCheckNum(e, val) {
-      if (val === 1) {
-        this.number.limit = false
-        this.formObj.number === 1
+      if (val === 0) {
+        this.applyCount.limit = false
+        this.formObj.applyCountLimit = 0
       } else {
-        this.number.unlimit = false
-        this.formObj.number === 2
+        this.applyCount.unlimit = false
+        this.formObj.applyCountLimit = 1
       }
     },
     // 编辑活动介绍
     getHtml(htmlStr) {
-      this.formObj.intro = htmlStr
-      console.log('this.formObj.intro', this.formObj.intro)
+      this.formObj.introduce = htmlStr
+      console.log('this.formObj.introduce', this.formObj.introduce)
     },
     save() {
       this.$refs['form'].validate((valid) => {
+        if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
+          valid = false
+          this.$message.error('请选择报名对象')
+        } else if (!this.formObj.applyCountLimit && this.formObj.applyCountLimit !== 0) {
+          valid = false
+          this.$message.error('请选择参加人数')
+        }
         if (valid) {
+          this.formObj['activityStartTime'] = this.formObj['date'][0]
+          this.formObj['activityEndTime'] = this.formObj['date'][1]
+          this.formObj.province = this.areaData.province.name
+          this.formObj.city = this.areaData.city.name
+          this.formObj.area = this.areaData.country.name
           createActivity(this.formObj).then(response => {
             console.log(response)
           })
