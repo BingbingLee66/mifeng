@@ -52,6 +52,9 @@ export default {
         ],
         date: [
           { required: true, message: '活动时间不能为空', trigger: 'blur' }
+        ],
+        addressInfo: [
+          { required: true, message: '活动地点不能为空', trigger: 'blur' }
         ]
       }
     }
@@ -64,29 +67,14 @@ export default {
     }, 500)
   },
   methods: {
-    handleClick(tab) {
-      this.type = tab.name
-      this.fetchData()
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-      this.limit = val
-      this.currentpage = 1
-      this.fetchData()
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-      this.currentpage = val
-      this.fetchData()
-    },
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
+    // 退出当前tab, 打开指定tab
     closeTab() {
-      // 退出当前tab, 打开指定tab
       const openPath = window.localStorage.getItem('activityeditor')
       const tagsViews = this.$store.state.tagsView.visitedViews
       for (const view of tagsViews) {
@@ -212,11 +200,9 @@ export default {
         data = null
       }
       this.areaData = data
-      console.log('this.areaData', this.areaData)
     },
     // 选择报名对象
     handleCheckTarget(e, val) {
-      console.log('valval', val)
       if (val === 0) {
         this.applyObject.limit = false
         this.formObj.applyObject = 0
@@ -238,18 +224,19 @@ export default {
     // 编辑活动介绍
     getHtml(htmlStr) {
       this.formObj.introduce = htmlStr
-      console.log('this.formObj.introduce', this.formObj.introduce)
     },
     save() {
       this.$refs['form'].validate((valid) => {
-        if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
-          valid = false
-          this.$message.error('请选择报名对象')
-        } else if (!this.formObj.applyCountLimit && this.formObj.applyCountLimit !== 0) {
-          valid = false
-          this.$message.error('请选择参加人数')
-        }
         if (valid) {
+          if (!this.areaData.province.name || !this.areaData.city.name || !this.areaData.country.name) {
+            return this.$message.error('活动地点不能为空')
+          } else if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
+            return this.$message.error('请选择报名对象')
+          } else if (!this.formObj.applyCountLimit && this.formObj.applyCountLimit !== 0) {
+            return this.$message.error('请选择参加人数')
+          } else if (!this.formObj.introduce) {
+            return this.$message.error('活动介绍不能为空')
+          }
           this.formObj['activityStartTime'] = this.formObj['date'][0]
           this.formObj['activityEndTime'] = this.formObj['date'][1]
           this.formObj.province = this.areaData.province.name
@@ -257,11 +244,12 @@ export default {
           this.formObj.area = this.areaData.country.name
           createActivity(this.formObj).then(response => {
             console.log(response)
+            this.closeTab()
           })
         } else {
           return false
         }
       })
-    },
+    }
   }
 }

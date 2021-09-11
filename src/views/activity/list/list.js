@@ -1,4 +1,9 @@
-import { getChamberOptions, getActivityList } from '@/api/activity/activity'
+import {
+  getChamberOptions,
+  getActivityList,
+  publishActivity,
+  updateActivitySort
+} from '@/api/activity/activity'
 
 export default {
   data() {
@@ -14,10 +19,10 @@ export default {
       previewImgVisible: false,
       previewUrl: '',
       query: {
-        activitySource: '', // 来源
-        activityID: '', // 活动ID
+        source: '', // 来源
+        id: '', // 活动ID
         activityName: '', // 活动名称
-        activityStatus: '' // 活动状态
+        status: '' // 活动状态
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -94,6 +99,10 @@ export default {
         this.sourceOptions = response.data.data
       })
     },
+    openPreviewModal(url) {
+      this.previewImgVisible = true
+      this.previewUrl = url
+    },
     // 查询活动列表
     fetchData(e) {
       if (e !== undefined) {
@@ -102,10 +111,10 @@ export default {
       this.listLoading = true
       let params = {
         'type': this.type, // 1-已发布 2-未发布
-        'activitySource': this.query.activitySource,
-        'activityID': this.query.activityID,
+        'source': this.query.source,
+        'id': this.query.id,
         'activityName': this.query.activityName,
-        'activityStatus': this.query.activityStatus,
+        'status': this.query.status,
         'pageSize': this.limit,
         'page': this.currentpage,
       }

@@ -4,10 +4,10 @@
       <el-tab-pane label="已发布" name="1"></el-tab-pane>
       <el-tab-pane label="未发布" name="2"></el-tab-pane>
     </el-tabs>
-    <div class="from-block" style="margin:20px 0">
+    <div style="margin:20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item style="margin-right: 30px;" label="活动来源">
-          <el-select v-model="query.activitySource" placeholder="请选择" clearable>
+          <el-select v-model="query.source" placeholder="请选择" clearable>
             <el-option v-for="source in sourceOptions" :key="source.value" :label="source.label" :value="source.value"/>
           </el-select>
         </el-form-item>
@@ -30,44 +30,42 @@
         </el-form-item>
       </el-form>
     </div>
-    <div @click="goEdit">编辑</div>
-
-    <div class="block-table">
+    <div>
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column label="活动列表图" width="115px">
           <template slot-scope="scope">
-            <img class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
+            <img class="activity-img" :src="scope.row.listImage" @click="openPreviewModal(scope.row.listImage)">
           </template>
         </el-table-column>
         <el-table-column label="活动ID/名称" width="250px">
           <template slot-scope="scope">
             <div class="red-label">{{ scope.row.id }}</div>
-            <div> {{ scope.row.name }}</div>
+            <div> {{ scope.row.activityName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="活动时间" width="200px">
           <template slot-scope="scope">
-            {{ scope.row.createTime | dateFormat }}
+            {{ scope.row.activityStartTime }} - {{ scope.row.activityEndTime }}
           </template>
         </el-table-column>
         <el-table-column label="活动地点" width="200px">
           <template slot-scope="scope">
-            {{ scope.row.createTime | dateFormat }}
+            {{ scope.row.province }}{{ scope.row.city }}{{ scope.row.area }}{{ scope.row.addressInfo }}
           </template>
         </el-table-column>
         <el-table-column label="活动来源" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.chamberName }}
+            {{ scope.row.source }}
           </template>
         </el-table-column>
         <el-table-column label="报名对象" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.chamberName }}
+            {{ scope.row.applyObject === 0 ? '全部' : '商会会员' }}
           </template>
         </el-table-column>
         <el-table-column label="报名人数" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.chamberName }}
+            {{ scope.row.applyCount }}
           </template>
         </el-table-column>
         <el-table-column label="签到人数" width="100px">
@@ -77,31 +75,31 @@
         </el-table-column>
         <el-table-column label="发布状态" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.chamberName }}
+            <div v-if="scope.row.isPublish === 1">已发布</div>
+            <div v-if="scope.row.isPublish === 0">未发布</div>
           </template>
         </el-table-column>
         <el-table-column label="活动状态" width="100px">
           <template slot-scope="scope">
-            <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售中</div>
-            <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">商会下架</div>
-            <div v-if="scope.row.isOnSale == 5">已下架</div>
-            <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock == 0">已售罄</div>
+            <div v-if="scope.row.status === 1">未开始</div>
+            <div v-if="scope.row.status === 2">报名中</div>
+            <div v-if="scope.row.status === 3">已结束</div>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" width="200px">
           <template slot-scope="scope">
-            {{ scope.row.limitTimeStart ? scope.row.limitTimeStart : scope.row.createTime | dateFormat }}
+            {{ scope.row.createdTs | dateFormat }}
           </template>
         </el-table-column>
         <el-table-column label="创建人" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.chamberName }}
+            {{ scope.row.operatorName }}
           </template>
         </el-table-column>
         <el-table-column label="权重" width="100px">
           <template slot-scope="scope">
             <span @click="openUpdateWeightDialog(scope.row)" style="color: #409eff;cursor: pointer"> {{
-                scope.row.weights
+                scope.row.sort
               }} </span>
           </template>
         </el-table-column>
@@ -136,10 +134,27 @@
         <el-button type="primary" @click="showDelDialog = false">确 定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="预览" :visible.sync="previewImgVisible" width="50%">
+      <img :src="previewUrl" style="width: 100%; padding:20px;" v-if="previewUrl.indexOf('.jpeg') != -1 || previewUrl.indexOf('.jpg') != -1 || previewUrl.indexOf('.png') != -1"/>
+      <video :src="previewUrl" v-else style="width: 100%; padding:20px;" controls>
+        您的浏览器不支持 video 标签。
+      </video>
+    </el-dialog>
   </div>
 </template>
 
 <script src="./list.js"></script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+@import "src/styles/common.scss";
+
+.activity-img {
+  width: 88px;
+  height: 60px;
+  object-fit: cover;
+}
+</style>
 
 <style scoped>
 

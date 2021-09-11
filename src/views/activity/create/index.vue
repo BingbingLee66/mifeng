@@ -29,7 +29,7 @@
         </el-row>
         <el-row>
           <el-col style="width: 600px;height: 120px">
-            <el-form-item label="活动列表图：" prop="lpic" class="upload-style">
+            <el-form-item label="活动列表图：" prop="listImage" class="upload-style">
               <el-upload
                 class="uploader-lpic-wrap"
                 action="/"
@@ -53,7 +53,7 @@
         </el-row>
         <el-row>
           <el-col style="width: 600px;height: 120px">
-            <el-form-item class="address-wrap" label="活动地点：" required>
+            <el-form-item class="address-wrap" label="活动地点：" prop="addressInfo">
               <el-select v-model="provinceValue" placeholder="请选择省份" @change="provinceChange">
                 <el-option
                   v-for="item in provinceOptions"
