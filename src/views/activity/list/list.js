@@ -2,7 +2,8 @@ import {
   getChamberOptions,
   getActivityList,
   publishActivity,
-  updateActivitySort
+  updateActivitySort,
+  delActivity
 } from '@/api/activity/activity'
 
 export default {
@@ -15,6 +16,7 @@ export default {
       }
     }
     return {
+      ckey: '',
       type: '1',
       previewImgVisible: false,
       previewUrl: '',
@@ -31,17 +33,17 @@ export default {
       limit: 10,
       listLoading: false,
       sourceOptions: [], // 活动来源数据
-      showWeightDialog: false,
+      isPublish: '',
+      rowId: '',
+      showSortDialog: false,
       showDelDialog: false,
-      numberValidateForm: {
-        weight: 0
+      showUpdateDialog: false,
+      sortForm: {
+        id: null,
+        sort: null
       },
-      weightsForm: {
-        weights: null,
-        goodsId: null
-      },
-      weightsFormRules: {
-        weights: [
+      sortRules: {
+        sort: [
           { required: true, message: '权重不能为空', trigger: 'blur' },
           { validator: checkNumber, trigger: 'blur' }
         ]
@@ -63,13 +65,19 @@ export default {
     }
   },
   created() {
-    this.getSourceOptions()
-    // this.fetchData()
+    this.ckey = this.$store.getters.ckey
+    console.log('this.$route.params.type', this.$route.params.type)
+    if (this.$route.params.type !== undefined) {
+      this.type = this.$route.params.type + ''
+    }
+    console.log('商会名称：', this.ckey)
+    // this.getSourceOptions()
+    this.fetchData()
   },
   methods: {
     handleClick(tab) {
       this.type = tab.name
-      this.fetchData()
+      this.fetchData(1)
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -88,11 +96,6 @@ export default {
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    // 编辑活动
-    goEdit() {
-      window.localStorage.setItem('activityeditor', this.$route.path)
-      this.$router.push({ name: '创建新活动' })
-    },
     // 获取活动来源
     getSourceOptions() {
       getChamberOptions().then(response => {
@@ -110,7 +113,8 @@ export default {
       }
       this.listLoading = true
       let params = {
-        'type': this.type, // 1-已发布 2-未发布
+        'isPublish': this.type,
+        'ckey': this.ckey,
         'source': this.query.source,
         'id': this.query.id,
         'activityName': this.query.activityName,
@@ -124,25 +128,74 @@ export default {
         this.listLoading = false
       })
     },
-    // 修改权重
-    openUpdateWeightDialog(row) {
-      this.weightsForm.goodsId = row.id
-      this.weightsForm.weights = row.weights
-      this.showWeightDialog = true
+    // 修改活动发布状态
+    showUpdate(row, isPublish) {
+      this.rowId = row.id
+      this.isPublish = isPublish
+      this.showUpdateDialog = true
     },
-    updateWeight(weightsForm) {
-      this.$refs[weightsForm].validate((valid) => {
+    upadteActivity() {
+      let params = {
+        id: this.rowId,
+        isPublish: this.isPublish
+      }
+      publishActivity(params).then(res => {
+        if (res.state === 1) {
+          this.fetchData(1)
+          this.showUpdateDialog = false
+          this.$message.success(res.msg)
+          this.type = '1'
+        }
+      })
+    },
+    // 编辑活动
+    editActivity(row) {
+      window.localStorage.setItem('activityeditor', this.$route.path)
+      this.$router.push({
+        name: '创建新活动',
+        query: {
+          activityId: row.id,
+          type: this.type
+        }
+      })
+    },
+    // 删除活动
+    showDel(row) {
+      this.rowId = row.id
+      this.showDelDialog = true
+    },
+    delActivity() {
+      console.log(this.rowId)
+      /* let params = {
+        id: row.id
+      }
+      delActivity(params).then(res => {
+        console.log(res)
+        if (res.state === 1) {
+          this.$message.success(res.msg)
+          this.fetchData(1)
+        }
+      }) */
+    },
+    // 修改权重
+    showSort(row) {
+      this.sortForm.id = row.id
+      this.sortForm.sort = row.sort
+      this.showSortDialog = true
+    },
+    updateSort(sortForm) {
+      this.$refs[sortForm].validate((valid) => {
         if (valid) {
-          /* updateWeights(this.weightsForm).then(response => {
+          updateActivitySort(this.sortForm).then(response => {
             if (response.state === 1) {
               this.$message({
                 message: '操作成功',
                 type: 'success'
               })
               this.fetchData()
-              this.showWeightDialog = false
+              this.showSortDialog = false
             }
-          }) */
+          })
         } else {
           return false
         }

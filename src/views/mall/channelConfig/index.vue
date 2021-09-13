@@ -8,7 +8,6 @@
       </el-row>
     </div>
     <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
-     
       <el-table-column label="渠道ID">
         <template slot-scope="scope">
           {{scope.row.id}}
@@ -29,11 +28,11 @@
           {{scope.row.operatorName}}
         </template>
       </el-table-column>
-      
+
       <el-table-column label="操作" >
         <template slot-scope="scope">
           <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('', '编辑')" v-if="has('', '编辑')">编辑</el-button>
-          <el-button type="text" @click="delChannel($event, scope.row)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除</el-button> 
+          <el-button type="text" @click="delChannel($event, scope.row)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -60,7 +59,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-       
+
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" v-dbClick @click="save">提交</el-button>

@@ -1,4 +1,4 @@
-import { createActivity, uploadPortrait } from '@/api/activity/activity'
+import { createActivity, uploadPortrait, getActivity } from '@/api/activity/activity'
 import Ckeditor from '@/components/CKEditor'
 import area from '@/utils/area'
 
@@ -8,6 +8,9 @@ export default {
   },
   data() {
     return {
+      activityId: null,
+      type: null,
+      ckey: '',
       formObj: {
         activityName: '', // 活动名称
         headImage: '', // 活动头图
@@ -18,7 +21,7 @@ export default {
         area: '', // 活动地点(区)
         addressInfo: '', // 活动地点（详细地址）
         applyObject: '', // 报名对象
-        applyCountLimit: null, // 是否限制参加人数
+        isLimit: null, // 是否限制参加人数
         applyCount: '', // 参加人数
         introduce: '', // 活动介绍
       },
@@ -59,6 +62,14 @@ export default {
       }
     }
   },
+  created() {
+    this.ckey = this.$store.getters.ckey
+    this.activityId = this.$route.query.activityId
+    this.type = this.$route.query.type
+    if (this.activityId) {
+      this.fetchData()
+    }
+  },
   mounted() {
     this.handleArea()
     this.$refs.ckeditor1.init()
@@ -87,6 +98,12 @@ export default {
           break
         }
       }
+    },
+    // 获取活动详情
+    fetchData() {
+      getActivity({ id: this.activityId }).then(res => {
+        console.log(res)
+      })
     },
     // 上传图片校验
     beforeUpload(file) {
@@ -215,10 +232,10 @@ export default {
     handleCheckNum(e, val) {
       if (val === 0) {
         this.applyCount.limit = false
-        this.formObj.applyCountLimit = 0
+        this.formObj.isLimit = 0
       } else {
         this.applyCount.unlimit = false
-        this.formObj.applyCountLimit = 1
+        this.formObj.isLimit = 1
       }
     },
     // 编辑活动介绍
@@ -232,22 +249,36 @@ export default {
             return this.$message.error('活动地点不能为空')
           } else if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
             return this.$message.error('请选择报名对象')
-          } else if (!this.formObj.applyCountLimit && this.formObj.applyCountLimit !== 0) {
+          } else if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
             return this.$message.error('请选择参加人数')
           } else if (!this.formObj.introduce) {
             return this.$message.error('活动介绍不能为空')
           }
+          this.formObj.ckey = this.ckey
           this.formObj['activityStartTime'] = this.formObj['date'][0]
           this.formObj['activityEndTime'] = this.formObj['date'][1]
           this.formObj.province = this.areaData.province.name
           this.formObj.city = this.areaData.city.name
           this.formObj.area = this.areaData.country.name
-          createActivity(this.formObj).then(response => {
-            console.log(response)
-            this.closeTab()
+          createActivity(this.formObj).then(res => {
+            this.$message.success(res.msg)
+            this.$router.push({
+              name: '活动列表',
+              params: {
+                type: this.activityId ? this.type : 0
+              }
+            })
           })
         } else {
           return false
+        }
+      })
+    },
+    cancel() {
+      this.$router.push({
+        name: '活动列表',
+        params: {
+          type: this.activityId ? this.type : 1
         }
       })
     }

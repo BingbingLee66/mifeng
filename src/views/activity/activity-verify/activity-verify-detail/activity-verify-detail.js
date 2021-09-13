@@ -29,22 +29,11 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
+      rejectReason: '',
       sourceOptions: [], // 活动来源数据
-      showWeightDialog: false,
-      showDelDialog: false,
-      numberValidateForm: {
-        weight: 0
-      },
-      weightsForm: {
-        weights: null,
-        goodsId: null
-      },
-      weightsFormRules: {
-        weights: [
-          { required: true, message: '权重不能为空', trigger: 'blur' },
-          { validator: checkNumber, trigger: 'blur' }
-        ]
-      },
+      showRejectDialog: false,
+      showDetailDialog: false,
+      showTipDialog: false
     }
   },
   computed: {
@@ -110,7 +99,7 @@ export default {
       }
       this.listLoading = true
       let params = {
-        'ckey': this.ckey,
+        'cket': this.ckey,
         'activityId': this.query.activityId,
         'activityName': this.query.activityName,
         'activityStatus': this.query.activityStatus,
@@ -126,31 +115,7 @@ export default {
     },
     // 去审核
     goVerifyDetail(e) {
-      this.$router.push({ name: '审核详情', query: { id: '1' } })
-    },
-    // 修改权重
-    openUpdateWeightDialog(row) {
-      this.weightsForm.goodsId = row.id
-      this.weightsForm.weights = row.weights
-      this.showWeightDialog = true
-    },
-    updateWeight(weightsForm) {
-      this.$refs[weightsForm].validate((valid) => {
-        if (valid) {
-          /* updateWeights(this.weightsForm).then(response => {
-            if (response.state === 1) {
-              this.$message({
-                message: '操作成功',
-                type: 'success'
-              })
-              this.fetchData()
-              this.showWeightDialog = false
-            }
-          }) */
-        } else {
-          return false
-        }
-      })
+      console.log(e)
     }
   }
 }

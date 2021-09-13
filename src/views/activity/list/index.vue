@@ -2,26 +2,27 @@
   <div class="app-container">
     <el-tabs v-model="type" @tab-click="handleClick">
       <el-tab-pane label="已发布" name="1"></el-tab-pane>
-      <el-tab-pane label="未发布" name="2"></el-tab-pane>
+      <el-tab-pane label="未发布" name="0"></el-tab-pane>
     </el-tabs>
     <div style="margin:20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
-        <el-form-item style="margin-right: 30px;" label="活动来源">
+        <el-form-item style="margin-right: 30px;" label="活动来源" v-if="!ckey">
           <el-select v-model="query.source" placeholder="请选择" clearable>
             <el-option v-for="source in sourceOptions" :key="source.value" :label="source.label" :value="source.value"/>
           </el-select>
         </el-form-item>
         <el-form-item style="margin-right: 30px;" label="活动ID">
-          <el-input v-model="query.activityID" placeholder="请输入"/>
+          <el-input v-model="query.id" placeholder="请输入"/>
         </el-form-item>
         <el-form-item style="margin-right: 30px;" label="活动名称">
           <el-input v-model="query.activityName" placeholder="关键词"/>
         </el-form-item>
         <el-form-item label="活动状态">
-          <el-select v-model="query.activityStatus" placeholder="请选择状态">
-            <el-option label="全部状态" :value="-1"/>
-            <el-option label="已发布" :value="1"/>
-            <el-option label="未发布" :value="2"/>
+          <el-select v-model="query.status" placeholder="请选择状态">
+            <el-option label="全部状态" :value="0"/>
+            <el-option label="未开始" :value="1"/>
+            <el-option label="报名中" :value="2"/>
+            <el-option label="已结束" :value="3"/>
           </el-select>
         </el-form-item>
         <el-form-item label="">
@@ -37,15 +38,16 @@
             <img class="activity-img" :src="scope.row.listImage" @click="openPreviewModal(scope.row.listImage)">
           </template>
         </el-table-column>
-        <el-table-column label="活动ID/名称" width="250px">
+        <el-table-column label="活动ID/名称" width="200px">
           <template slot-scope="scope">
             <div class="red-label">{{ scope.row.id }}</div>
             <div> {{ scope.row.activityName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="活动时间" width="200px">
+        <el-table-column label="活动时间" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.activityStartTime }} - {{ scope.row.activityEndTime }}
+            <div>{{ scope.row.startTime | dateFormat }} ~</div>
+            <div>{{ scope.row.endTime | dateFormat }}</div>
           </template>
         </el-table-column>
         <el-table-column label="活动地点" width="200px">
@@ -53,24 +55,19 @@
             {{ scope.row.province }}{{ scope.row.city }}{{ scope.row.area }}{{ scope.row.addressInfo }}
           </template>
         </el-table-column>
-        <el-table-column label="活动来源" width="100px">
+        <el-table-column label="活动来源" width="100px" v-if="!ckey">
           <template slot-scope="scope">
             {{ scope.row.source }}
           </template>
         </el-table-column>
         <el-table-column label="报名对象" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.applyObject === 0 ? '全部' : '商会会员' }}
+            {{ scope.row.applyObject === 0 ? '不限' : '商会会员' }}
           </template>
         </el-table-column>
-        <el-table-column label="报名人数" width="100px">
+        <el-table-column label="参加人数" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.applyCount }}
-          </template>
-        </el-table-column>
-        <el-table-column label="签到人数" width="100px">
-          <template slot-scope="scope">
-            {{ scope.row.chamberName }}
+            {{ scope.row.applyCount ? '限' + scope.row.applyCount + '人' : '不限' }}
           </template>
         </el-table-column>
         <el-table-column label="发布状态" width="100px">
@@ -86,7 +83,7 @@
             <div v-if="scope.row.status === 3">已结束</div>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" width="200px">
+        <el-table-column label="创建时间" width="100px">
           <template slot-scope="scope">
             {{ scope.row.createdTs | dateFormat }}
           </template>
@@ -98,14 +95,22 @@
         </el-table-column>
         <el-table-column label="权重" width="100px">
           <template slot-scope="scope">
-            <span @click="openUpdateWeightDialog(scope.row)" style="color: #409eff;cursor: pointer"> {{
+            <span @click="showSort(scope.row)" class="blue-label"> {{
                 scope.row.sort
               }} </span>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="delExplode(scope.row)">移除</el-button>
+            <div v-if="type==1">
+              <div class="blue-label" @click="showUpdate(scope.row,0)">取消发布</div>
+              <div class="blue-label" @click="editActivity(scope.row)">编辑</div>
+            </div>
+            <div v-else>
+              <div class="blue-label" @click="showUpdate(scope.row,1)">发布</div>
+              <div class="blue-label" @click="editActivity(scope.row)">编辑</div>
+              <div class="blue-label" @click="showDel(scope.row)">删除</div>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -113,25 +118,34 @@
     </div>
 
     <!-- 修改权重弹窗 -->
-    <el-dialog title="权重" :visible.sync="showWeightDialog" width="30%">
-      <el-form :model="weightsForm" ref="weightsForm" label-width="100px" :rules="weightsFormRules">
-        <el-form-item label="权重" prop="weights">
-          <el-input v-model="weightsForm.weights" placeholder="请输入"></el-input>
+    <el-dialog title="权重" :visible.sync="showSortDialog" width="30%">
+      <el-form :model="sortForm" ref="sortForm" label-width="100px" :rules="sortRules">
+        <el-form-item label="权重" prop="sort">
+          <el-input v-model="sortForm.sort" placeholder="请输入"></el-input>
           <div>权重请控制在0-999，权重为0不在前台展示</div>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="updateWeight('weightsForm')">提交</el-button>
-          <el-button @click="showWeightDialog=false">取消</el-button>
+          <el-button type="primary" @click="updateSort('sortForm')">提交</el-button>
+          <el-button @click="showSortDialog=false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
 
-    <!-- 取消发布弹窗 -->
+    <!-- 更新发布状态弹窗 -->
+    <el-dialog title="提示" :visible.sync="showUpdateDialog" width="400px">
+      <div>{{ isPublish === 0 ? '确认取消发布吗？' : '确认发布吗？' }}</div>
+      <div slot="footer" style="text-align: center;">
+        <el-button @click="showUpdateDialog = false">取 消</el-button>
+        <el-button type="primary" @click="upadteActivity">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 删除确认弹窗 -->
     <el-dialog title="提示" :visible.sync="showDelDialog" width="400px">
-      <div>确认取消发布吗？</div>
+      <div>确认删除吗？</div>
       <div slot="footer" style="text-align: center;">
         <el-button @click="showDelDialog = false">取 消</el-button>
-        <el-button type="primary" @click="showDelDialog = false">确 定</el-button>
+        <el-button type="primary" @click="delActivity">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -156,6 +170,3 @@
 }
 </style>
 
-<style scoped>
-
-</style>

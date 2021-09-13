@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div style="font-size: 24px;font-weight: 700;margin-bottom: 40px;">创建新活动</div>
+    <div style="font-size: 24px;font-weight: 700;margin-bottom: 40px;">{{ activityId ? '编辑活动' : '创建新活动' }}</div>
     <div class="create-container">
       <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="120px">
         <el-row>
@@ -40,7 +40,7 @@
                 <img v-if="formObj.listImage" :src="formObj.listImage" class="lpic">
                 <i v-else class="el-icon-plus uploader-lpic-icon"></i>
               </el-upload>
-              <div style="color: #999;line-height: 1.3;margin-top: 8px;">建议尺寸 744*300，支持jpg、png</div>
+              <div style="color: #999;line-height: 1.3;margin-top: 8px;">建议尺寸 300*205，支持jpg、png</div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -113,7 +113,7 @@
         <el-row>
           <el-col style="width: 600px;padding-left: 120px;">
             <el-button type="primary" v-dbClick @click="save">保存</el-button>
-            <el-button @click="closeTab">取消</el-button>
+            <el-button @click="cancel">取消</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -222,6 +222,7 @@
   .date-wrap .el-input__inner {
     width: 385px;
   }
+
   .date-wrap .el-date-editor .el-range-input {
     width: 45%;
   }
