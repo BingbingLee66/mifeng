@@ -86,7 +86,9 @@
           <el-col style="width: 600px;height: 40px;">
             <el-form-item label="报名对象：" required>
               <el-checkbox v-model="applyObject.unlimit" @change="handleCheckTarget($event,0)">不限</el-checkbox>
-              <el-checkbox v-model="applyObject.limit" @change="handleCheckTarget($event,1)">限云商会成员</el-checkbox>
+              <el-checkbox v-model="applyObject.limit" @change="handleCheckTarget($event,1)">
+                {{ ckey ? '限本商会成员' : '限云商会成员' }}
+              </el-checkbox>
               <span style="margin-left: 20px;color: #ff0000">指云商会平台的任意商会的任意成员</span>
             </el-form-item>
           </el-col>

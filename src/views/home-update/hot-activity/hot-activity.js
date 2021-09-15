@@ -1,11 +1,10 @@
 import {
-  getAllGoodsList,
-  getExplodeGoodsList,
-  addExplodeGoods,
-  deleteExplodeGoods,
-  updateWeights
-} from '@/api/mall/mall'
-import { getChamberOptions } from '@/api/finance/finance'
+  addHotActivity,
+  delHotActivity,
+  getActivitySource,
+  getHotActivityList,
+  updateHotActivitySort
+} from '@/api/activity/hot-activity'
 
 export default {
   data() {
@@ -17,67 +16,59 @@ export default {
       }
     }
     return {
-      type: '1',
-      previewImgVisible: false,
-      previewUrl: '',
-      query: {
-        ckey: '',
-        goodsName: '',
-        status: '',
-        date: ''
-      },
-      pageSizes: [10, 20, 50, 100, 500],
-      total: 0,
+      // 热门活动
       list: [],
       currentpage: 1,
       limit: 10,
-      listLoading: false,
-      selectionDatas: [],
-      chamberOptions: [],
-      showWeightDialog: false,
-      showAddDialog: false,
-      numberValidateForm: {
-        weight: 0
+      pageSizes: [10, 20, 50, 100, 500],
+      total: 0,
+      query: {
+        activityId: '',
+        activityName: '',
+        activityStatus: -1,
+        isPublish: -1,
+        chamberId: '',
+        isAdd: 0,
       },
-      queryAll: {
-        ckey: '', // 商品来源
-        goodsName: '', // 商品名称
-        goodsId: '', // 商品ID
-        status: '', // 商品状态
-      },
-      allPage: {
+      // 可添加活动
+      actList: [],
+      actPage: {
         currentpage: 1,
         page: 1,
         pageSize: 100,
         allTotal: 0
       },
-      allGoodsIdList: [],
-      allList: [],
-      weightsForm: {
-        weights: null,
-        goodsId: null
+      actquery: {
+        activityId: '',
+        activityName: '',
+        activityStatus: -1,
+        isPublish: -1,
+        chamberId: '',
+        isAdd: 1,
       },
-      weightsFormRules: {
-        weights: [
+      actIdsList: [],
+      selectionDatas: [],
+      chamberOptions: [],
+      numberValidateForm: {
+        weight: 0
+      },
+      sortForm: {
+        id: null,
+        sort: null
+      },
+      sortFormRules: {
+        sort: [
           { required: true, message: '权重不能为空', trigger: 'blur' },
           { validator: checkNumber, trigger: 'blur' }
         ]
       },
-    }
-  },
-  computed: {
-    // ...mapGetters(['has'])
-    chamberName() {
-      return function(ckey) {
-        let chamberName = ''
-        for (let chamber of this.chamberOptions) {
-          if (ckey === chamber.value) {
-            chamberName = chamber.label
-            break
-          }
-        }
-        return chamberName
-      }
+      previewUrl: '',
+      // 控制变量
+      listLoading: false,
+      actLoading: false,
+      showSortDialog: false,
+      showAddDialog: false,
+      previewImgVisible: false,
     }
   },
   created() {
@@ -85,88 +76,70 @@ export default {
     this.fetchData()
   },
   methods: {
-    handleClick(tab) {
-      this.type = tab.name
-      this.fetchData()
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-      this.limit = val
-      this.currentpage = 1
-      this.fetchData()
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-      this.currentpage = val
-      this.fetchData()
-    },
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    getChamberOptions() {
-      getChamberOptions().then(response => {
-        this.chamberOptions = response.data.data
-      })
-    },
     fetchData() {
       this.listLoading = true
       let params = {
-        'pageSize': this.limit,
+        'activityId': this.query.activityId,
+        'activityName': this.query.activityName,
+        'activityStatus': this.query.activityStatus,
+        'chamberId': this.query.chamberId,
+        'isPublish': this.query.isPublish,
+        'isAdd': this.query.isAdd,
         'page': this.currentpage,
-        'goodsName': this.query.goodsName,
-        'status': this.query.status,
-        'ckey': this.query.ckey,
-        'type': this.type
+        'pageSize': this.limit,
       }
-      if (this.query.date) {
-        params['startTime'] = this.query.date[0]
-        params['endTime'] = this.query.date[1]
-      }
-      getExplodeGoodsList(params).then(res => {
+      getHotActivityList(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
       })
     },
-
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
+    getChamberOptions() {
+      getActivitySource().then(res => {
+        console.log('活动来源列表：', res)
+        this.chamberOptions = res.data
       })
     },
-
-    // 获取全部商品列表
-    addExplodeGoods() {
-      this.queryAll.goodsNam = ''
-      this.queryAll.goodsId = ''
-      this.queryAll.status = ''
-      this.queryAll.ckey = ''
-      this.showAddDialog = true
-      this.getAllGoodsLists()
+    handleSizeChange(val) {
+      this.limit = val
+      this.currentpage = 1
+      this.fetchData()
     },
-    getAllGoodsLists() {
-      this.listLoading = true
+    handleCurrentChange(val) {
+      this.currentpage = val
+      this.fetchData()
+    },
+    // 获取可添加活动列表
+    showActivityList() {
+      this.actquery.activityId = ''
+      this.actquery.activityName = ''
+      this.actquery.activityStatus = -1
+      this.actquery.chamberId = ''
+      this.showAddDialog = true
+      this.getActivityLists()
+    },
+    getActivityLists() {
+      this.actLoading = true
       let params = {
-        'page': this.allPage.page,
-        'pageSize': this.allPage.pageSize,
-        'goodsName': this.queryAll.goodsName,
-        'goodsId': this.queryAll.goodsId,
-        'status': this.queryAll.status,
-        'ckey': this.queryAll.ckey
+        'page': this.actPage.page,
+        'pageSize': this.actPage.pageSize,
+        'activityName': this.actquery.activityName,
+        'activityId': this.actquery.activityId,
+        'chamberId': this.actquery.chamberId,
+        'activityStatus': this.actquery.activityStatus,
+        'isAdd': this.actquery.isAdd,
       }
-      getAllGoodsList(params).then(res => {
-        console.log('全部商品列表', res)
-        this.allList = res.data.list
-        this.allPage.allTotal = res.data.totalRows
-        this.listLoading = false
+      getHotActivityList(params).then(res => {
+        console.log('可添加活动列表：', res)
+        this.actList = res.data.list
+        this.actPage.allTotal = res.data.totalRows
+        this.actLoading = false
       })
     },
     handleAllSizeChange(val) {
@@ -179,43 +152,39 @@ export default {
       this.allPage.currentpage = val
       this.getAllGoodsLists()
     },
-    // 添加爆品
+    // 添加热门活动
     handleAllSelectionChange(value) {
       let datas = value
-      this.allGoodsIdList = []
+      this.actIdsList = []
       for (let data of datas) {
-        this.allGoodsIdList.push(data.id)
+        this.actIdsList.push(data.id)
       }
     },
-    addExplode() {
-      if (this.allGoodsIdList.length === 0) {
-        return this.$message.error('请先选择商品')
+    addHotAct() {
+      if (this.actIdsList.length === 0) {
+        return this.$message.error('请先选择活动')
       }
-      addExplodeGoods(this.allGoodsIdList).then(res => {
+      addHotActivity(this.actIdsList).then(res => {
         if (res.state === 1) {
           this.$message({
             message: '添加成功',
             type: 'success'
           })
-          this.getAllGoodsLists()
+          this.getActivityLists()
           this.fetchData()
           this.showAddDialog = false
         }
       })
     },
-    // 移除爆品
-    delExplode(row) {
-      console.log(row)
-      let delGoodsId = []
-      delGoodsId.push(row.id)
+    // 移除热门活动
+    showdel(row) {
+      let delIds = []
+      delIds.push(row.id)
       this.$confirm('', '确定移除？', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(() => {
-        let params = {
-          'id': row.id
-        }
-        deleteExplodeGoods(delGoodsId).then(res => {
+        delHotActivity(delIds).then(res => {
           if (res.state === 1) {
             this.$message({
               message: '移除成功',
@@ -227,10 +196,9 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '移除删除'
+          message: '取消移除'
         })
       })
-
     },
     // 批量移除
     handleSelectionChange(value) {
@@ -240,33 +208,52 @@ export default {
         this.selectionDatas.push(data.id)
       }
     },
-    delMulExplode() {
+    delMulActivity() {
       if (this.selectionDatas.length === 0) {
-        return this.$message.error('请先选择商品')
+        return this.$message.error('请先选择活动')
       }
-      deleteExplodeGoods(this.selectionDatas).then(res => {
+      this.$confirm('', '确定移除？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
+        delHotActivity(this.selectionDatas).then(res => {
+          if (res.state === 1) {
+            this.$message({
+              message: '移除成功',
+              type: 'success'
+            })
+            this.fetchData()
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消移除'
+        })
+      })
+      /* delHotActivity(this.selectionDatas).then(res => {
         if (res.state === 1) {
           this.fetchData()
         }
-      })
+      }) */
     },
     // 修改权重
-    openUpdateWeightDialog(row) {
-      this.weightsForm.goodsId = row.id
-      this.weightsForm.weights = row.weights
-      this.showWeightDialog = true
+    showSort(row) {
+      this.sortForm.id = row.id
+      this.sortForm.sort = row.sort
+      this.showSortDialog = true
     },
-    updateWeight(weightsForm) {
-      this.$refs[weightsForm].validate((valid) => {
+    updateSort(sortForm) {
+      this.$refs[sortForm].validate((valid) => {
         if (valid) {
-          updateWeights(this.weightsForm).then(response => {
+          updateHotActivitySort(this.sortForm).then(response => {
             if (response.state === 1) {
               this.$message({
                 message: '操作成功',
                 type: 'success'
               })
               this.fetchData()
-              this.showWeightDialog = false
+              this.showSortDialog = false
             }
           })
         } else {
