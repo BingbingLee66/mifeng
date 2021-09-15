@@ -1,5 +1,5 @@
 import {
-  getChamberOptions,
+  getActivitySource,
   getActivityList,
   publishActivity,
   updateActivitySort,
@@ -21,7 +21,7 @@ export default {
       previewImgVisible: false,
       previewUrl: '',
       query: {
-        source: '', // 来源
+        ckey: '', // 来源
         id: '', // 活动ID
         activityName: '', // 活动名称
         status: '' // 活动状态
@@ -32,7 +32,7 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      sourceOptions: [], // 活动来源数据
+      chamberOptions: [],
       isPublish: '',
       rowId: '',
       showSortDialog: false,
@@ -50,33 +50,21 @@ export default {
       },
     }
   },
-  computed: {
-    sourceName() {
-      return function(ckey) {
-        let sourceName = ''
-        for (let source of this.sourceOptions) {
-          if (ckey === source.value) {
-            sourceName = source.label
-            break
-          }
-        }
-        return sourceName
-      }
-    }
-  },
   created() {
     this.ckey = this.$store.getters.ckey
-    console.log('this.$route.params.type', this.$route.params.type)
     if (this.$route.params.type !== undefined) {
       this.type = this.$route.params.type + ''
     }
-    console.log('商会名称：', this.ckey)
-    // this.getSourceOptions()
+    this.getChamberOptions()
     this.fetchData()
   },
   methods: {
     handleClick(tab) {
       this.type = tab.name
+      this.query.id = ''
+      this.query.activityName = ''
+      this.query.ckey = ''
+      this.query.status = ''
       this.fetchData(1)
     },
     handleSizeChange(val) {
@@ -97,9 +85,9 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     // 获取活动来源
-    getSourceOptions() {
-      getChamberOptions().then(response => {
-        this.sourceOptions = response.data.data
+    getChamberOptions() {
+      getActivitySource().then(response => {
+        this.chamberOptions = response.data
       })
     },
     openPreviewModal(url) {
@@ -114,14 +102,14 @@ export default {
       this.listLoading = true
       let params = {
         'isPublish': this.type,
-        'ckey': this.ckey,
-        'source': this.query.source,
+        'ckey': this.ckey ? this.ckey : this.query.ckey,
         'id': this.query.id,
         'activityName': this.query.activityName,
         'status': this.query.status,
         'pageSize': this.limit,
         'page': this.currentpage,
       }
+      console.log(params, '8888888888888')
       getActivityList(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
@@ -141,10 +129,11 @@ export default {
       }
       publishActivity(params).then(res => {
         if (res.state === 1) {
-          this.fetchData(1)
           this.showUpdateDialog = false
           this.$message.success(res.msg)
           this.type = '1'
+          this.list = []
+          this.fetchData(1)
         }
       })
     },
@@ -166,16 +155,16 @@ export default {
     },
     delActivity() {
       console.log(this.rowId)
-      /* let params = {
-        id: row.id
+      let params = {
+        id: this.rowId
       }
       delActivity(params).then(res => {
-        console.log(res)
         if (res.state === 1) {
           this.$message.success(res.msg)
           this.fetchData(1)
+          this.showDelDialog = false
         }
-      }) */
+      })
     },
     // 修改权重
     showSort(row) {

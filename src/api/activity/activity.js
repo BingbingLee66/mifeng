@@ -41,8 +41,8 @@ export function publishActivity(params) {
 // 删除活动
 export function delActivity(params) {
   return request({
-    url: '',
-    method: 'put',
+    url: '/api/ec/activity/delete-activity',
+    method: 'delete',
     params
   })
 }
@@ -56,11 +56,12 @@ export function updateActivitySort(params) {
   })
 }
 
-// 获取活动来源
-export function getChamberOptions() {
+// 查询活动来源列表
+export function getActivitySource(params) {
   return request({
-    url: baseUrl2 + '/ec/mall/get-chamber-options',
-    method: 'get'
+    url: '/api/ec/activity-hot/chamber-list',
+    method: 'post',
+    params
   })
 }
 

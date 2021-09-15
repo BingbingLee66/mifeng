@@ -102,7 +102,6 @@ export default {
     },
     getChamberOptions() {
       getActivitySource().then(res => {
-        console.log('活动来源列表：', res)
         this.chamberOptions = res.data
       })
     },

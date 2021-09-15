@@ -66,16 +66,17 @@ export default {
     this.ckey = this.$store.getters.ckey
     this.activityId = this.$route.query.activityId
     this.type = this.$route.query.type
-    if (this.activityId) {
-      this.fetchData()
-    }
   },
   mounted() {
     this.handleArea()
     this.$refs.ckeditor1.init()
-    setTimeout(() => {
-      this.$refs.ckeditor1.initHtml('')
-    }, 500)
+    if (!this.activityId) {
+      setTimeout(() => {
+        this.$refs.ckeditor1.initHtml('')
+      }, 500)
+    } else {
+      this.fetchData()
+    }
   },
   methods: {
     has(tabName, actionName) {
@@ -103,6 +104,49 @@ export default {
     fetchData() {
       getActivity({ id: this.activityId }).then(res => {
         console.log(res)
+        let resData = res.data
+        this.formObj.activityName = resData.activityName
+        this.formObj.headImage = resData.headImage
+        this.formObj.listImage = resData.listImage
+        // 活动时间回显
+        let activityTime = []
+        if (resData.startTime && resData.endTime) {
+          activityTime.push(resData.startTime)
+          activityTime.push(resData.endTime)
+        }
+        this.$set(this.formObj, 'date', activityTime)
+        // 活动地点回显
+        this.provinceValue = resData.province
+        this.cityValue = resData.city
+        this.countryValue = resData.area
+        this.formObj.addressInfo = resData.addressInfo
+        // 报名对象回显
+        if (resData.applyObject === 0) {
+          this.applyObject.limit = false
+          this.applyObject.unlimit = true
+          this.formObj.applyObject = 0
+        } else {
+          this.applyObject.limit = true
+          this.applyObject.unlimit = false
+          this.formObj.applyObject = 1
+        }
+        // 参加人数回显
+        if (resData.isLimit === 0) {
+          this.applyCount.unlimit = true
+          this.applyCount.limit = false
+          this.formObj.isLimit = 0
+        } else {
+          this.applyCount.unlimit = false
+          this.applyCount.limit = true
+          this.formObj.isLimit = 1
+          this.formObj.applyCount = resData.applyCount
+        }
+        // 活动介绍回显
+        // this.$refs.ckeditor1.init()
+        setTimeout(() => {
+          this.$refs.ckeditor1.initHtml(resData.introduce ? resData.introduce : '')
+        }, 500)
+        this.formObj.introduce = resData.introduce
       })
     },
     // 上传图片校验
@@ -221,20 +265,24 @@ export default {
     // 选择报名对象
     handleCheckTarget(e, val) {
       if (val === 0) {
+        this.applyObject.unlimit = true
         this.applyObject.limit = false
         this.formObj.applyObject = 0
       } else {
         this.applyObject.unlimit = false
+        this.applyObject.limit = true
         this.formObj.applyObject = 1
       }
     },
     // 选择参加人数
     handleCheckNum(e, val) {
       if (val === 0) {
+        this.applyCount.unlimit = true
         this.applyCount.limit = false
         this.formObj.isLimit = 0
       } else {
         this.applyCount.unlimit = false
+        this.applyCount.limit = true
         this.formObj.isLimit = 1
       }
     },
@@ -245,7 +293,7 @@ export default {
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          if (!this.areaData.province.name || !this.areaData.city.name || !this.areaData.country.name) {
+          if (!this.provinceValue && (!this.areaData.province.name || !this.areaData.city.name || !this.areaData.country.name)) {
             return this.$message.error('活动地点不能为空')
           } else if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
             return this.$message.error('请选择报名对象')
@@ -257,9 +305,9 @@ export default {
           this.formObj.ckey = this.ckey
           this.formObj['activityStartTime'] = this.formObj['date'][0]
           this.formObj['activityEndTime'] = this.formObj['date'][1]
-          this.formObj.province = this.areaData.province.name
-          this.formObj.city = this.areaData.city.name
-          this.formObj.area = this.areaData.country.name
+          this.formObj.province = this.provinceValue ? this.provinceValue : this.areaData.province.name
+          this.formObj.city = this.cityValue ? this.cityValue : this.areaData.city.name
+          this.formObj.area = this.countryValue ? this.countryValue : this.areaData.country.name
           createActivity(this.formObj).then(res => {
             this.$message.success(res.msg)
             this.$router.push({

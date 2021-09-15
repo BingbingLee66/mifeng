@@ -7,8 +7,8 @@
     <div style="margin:20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item style="margin-right: 30px;" label="活动来源" v-if="!ckey">
-          <el-select v-model="query.source" placeholder="请选择" clearable>
-            <el-option v-for="source in sourceOptions" :key="source.value" :label="source.label" :value="source.value"/>
+          <el-select v-model="query.ckey" placeholder="请选择" clearable>
+            <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey"/>
           </el-select>
         </el-form-item>
         <el-form-item style="margin-right: 30px;" label="活动ID">
@@ -57,12 +57,15 @@
         </el-table-column>
         <el-table-column label="活动来源" width="100px" v-if="!ckey">
           <template slot-scope="scope">
-            {{ scope.row.source }}
+            <span v-if="scope.row.chamberName === null">凯迪云商会</span>
+            <span v-if="scope.row.chamberName !== null">{{ scope.row.chamberName }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="报名对象" width="100px">
+        <el-table-column label="报名对象" width="120px">
           <template slot-scope="scope">
-            {{ scope.row.applyObject === 0 ? '不限' : '商会会员' }}
+            <span v-if="scope.row.applyObject === 0">不限</span>
+            <span v-if="scope.row.applyObject === 1 && scope.row.chamberName === null">限云商会成员</span>
+            <span v-if="scope.row.applyObject === 1 && scope.row.chamberName !== null">限本商会成员</span>
           </template>
         </el-table-column>
         <el-table-column label="参加人数" width="100px">
