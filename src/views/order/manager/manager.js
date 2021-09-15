@@ -161,9 +161,18 @@ export default {
         })
         return
       }
-      let params = {}
-      params['startTime'] = this.query.date[0]
-      params['endTime'] = this.query.date[1]
+      let params = {
+        'orderSn': this.query.orderSn,
+        'ckey': this.query.ckey,
+        'wechatOrderNum': this.query.wechatOrderNum,
+        'goodName': this.query.goodName,
+        'supplierName': this.query.supplierName,
+        'status': this.query.status,
+        'consignee': this.query.consignee,
+        'consigneeMobile': this.query.consigneeMobile,
+        'startTime': this.query.date[0],
+        'endTime': this.query.date[1],
+      }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       getAllList(params).then(res => {
         if (res.data.data.list.length === 0) {
