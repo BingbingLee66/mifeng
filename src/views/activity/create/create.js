@@ -12,6 +12,7 @@ export default {
       type: null,
       ckey: '',
       formObj: {
+        id: '',
         activityName: '', // 活动名称
         headImage: '', // 活动头图
         listImage: '', // 活动列表图
@@ -199,7 +200,7 @@ export default {
       this.countryValue = ''
       this.countryOptions = []
     },
-    provinceChange() {
+    provinceChange(e) {
       this.resetCityAndCountryData()
       for (const key in area[this.provinceValue]) {
         this.cityOptions.push({
@@ -260,6 +261,7 @@ export default {
       } else {
         data = null
       }
+      console.log('this.areaDatathis.areaData', this.areaData)
       this.areaData = data
     },
     // 选择报名对象
@@ -293,7 +295,7 @@ export default {
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          if (!this.provinceValue && (!this.areaData.province.name || !this.areaData.city.name || !this.areaData.country.name)) {
+          if (!this.areaData.province.name || !this.areaData.city.name || !this.areaData.country.name) {
             return this.$message.error('活动地点不能为空')
           } else if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
             return this.$message.error('请选择报名对象')
@@ -305,9 +307,15 @@ export default {
           this.formObj.ckey = this.ckey
           this.formObj['activityStartTime'] = this.formObj['date'][0]
           this.formObj['activityEndTime'] = this.formObj['date'][1]
-          this.formObj.province = this.provinceValue ? this.provinceValue : this.areaData.province.name
-          this.formObj.city = this.cityValue ? this.cityValue : this.areaData.city.name
-          this.formObj.area = this.countryValue ? this.countryValue : this.areaData.country.name
+          this.formObj.province = this.areaData.province.name
+          this.formObj.provinceCode = this.areaData.province.code
+          this.formObj.city = this.areaData.city.name
+          this.formObj.cityCode = this.areaData.city.code
+          this.formObj.area = this.areaData.country.name
+          this.formObj.areaCode = this.areaData.country.code
+          if (this.activityId) {
+            this.formObj['id'] = this.activityId
+          }
           createActivity(this.formObj).then(res => {
             this.$message.success(res.msg)
             this.$router.push({
