@@ -1,6 +1,7 @@
 import {
   getActivityApplyList,
-  getActivitySource
+  getActivitySource,
+  getActivityApplyDetail
 } from '@/api/activity/activity-verify'
 
 export default {
@@ -13,6 +14,7 @@ export default {
       }
     }
     return {
+      actId: '',
       ckey: '',
       type: '1',
       previewImgVisible: false,
@@ -36,22 +38,10 @@ export default {
       showTipDialog: false
     }
   },
-  computed: {
-    sourceName() {
-      return function(ckey) {
-        let sourceName = ''
-        for (let source of this.sourceOptions) {
-          if (ckey === source.value) {
-            sourceName = source.label
-            break
-          }
-        }
-        return sourceName
-      }
-    }
-  },
   created() {
     this.ckey = this.$store.getters.ckey
+    this.actId = this.$route.query.activityId
+    this.getApplyDetail()
     this.fetchData()
     this.getSourceOptions()
   },
@@ -76,11 +66,6 @@ export default {
     },
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
-    },
-    // 编辑活动
-    goEdit() {
-      window.localStorage.setItem('activityeditor', this.$route.path)
-      this.$router.push({ name: '创建新活动' })
     },
     // 获取活动来源
     getSourceOptions() {
@@ -111,6 +96,12 @@ export default {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
+      })
+    },
+    // 获取活动来源
+    getApplyDetail() {
+      getActivityApplyDetail({ activityId: this.actId }).then(res => {
+        console.log(res)
       })
     },
     // 去审核

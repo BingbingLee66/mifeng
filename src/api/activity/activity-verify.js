@@ -54,15 +54,6 @@ export function signActivityApply(params) {
   })
 }
 
-// 添加热门活动
-export function addHotActivity(params) {
-  return request({
-    url: '/api/ec/activity-hot/add-activity-hot',
-    method: 'put',
-    params
-  })
-}
-
 // 活动活动来源列表
 export function getActivitySource(params) {
   return request({
@@ -72,29 +63,11 @@ export function getActivitySource(params) {
   })
 }
 
-// 移除热门活动
-export function delActivity(params) {
+// 活动报名审核详情
+export function getActivityApplyDetail(params) {
   return request({
-    url: '/api/ec/activity-hot/delById',
-    method: 'delete',
-    params
-  })
-}
-
-// 获取热门活动列表/添加活动列表
-export function getHotActivityList(params) {
-  return request({
-    url: '/api/ec/activity-hot/list',
+    url: '/api/ec/activity-apply/detail',
     method: 'get',
-    params
-  })
-}
-
-// 更新热门活动权重
-export function updateHotActivitySort(params) {
-  return request({
-    url: '/api/ec/activity-hot/update-sort',
-    method: 'post',
     params
   })
 }

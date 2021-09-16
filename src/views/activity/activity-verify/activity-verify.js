@@ -85,7 +85,7 @@ export default {
     },
     // 查看审核详情
     goVerifyDetail(e) {
-      this.$router.push({ name: '审核详情', query: { id: '1' } })
+      this.$router.push({ name: '审核详情', query: { activityId: e.activityId }})
     }
   }
 }
