@@ -121,6 +121,21 @@ export default {
         this.cityValue = resData.city
         this.countryValue = resData.area
         this.formObj.addressInfo = resData.addressInfo
+        this.areaData = {
+          province: {
+            name: resData.province,
+            code: resData.provinceCode,
+          },
+          city: {
+            name: resData.city,
+            code: resData.cityCode,
+          },
+          country: {
+            name: resData.area,
+            code: resData.areaCode,
+          }
+        }
+        console.log(this.areaData.province.name)
         // 报名对象回显
         if (resData.applyObject === 0) {
           this.applyObject.limit = false
