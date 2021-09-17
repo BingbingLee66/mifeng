@@ -43,12 +43,23 @@ export default {
       unsign: false,
       rowData: null,
       auditFalg: null,
-      mulAuditFalg: null
+      mulAuditFalg: null,
+      chamberName: null,
     }
   },
   created() {
     this.ckey = this.$store.getters.ckey
     this.actId = this.$route.query.activityId
+    this.chamberName = this.$route.query.chamberName
+    if (this.$route.query.type === 'auditStatus' && this.$route.query.status === -1) {
+      this.query.auditStatus = -1
+    }
+    if (this.$route.query.type === 'auditStatus' && this.$route.query.status === 1) {
+      this.query.auditStatus = 1
+    }
+    if (this.$route.query.type === 'auditStatus' && this.$route.query.status === 0) {
+      this.query.auditStatus = 0
+    }
     this.getApplyDetail()
     this.fetchData()
     this.getSourceOptions()

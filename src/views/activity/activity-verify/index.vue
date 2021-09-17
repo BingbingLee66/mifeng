@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div v-if="!ckey">
+    <div v-if="!query.ckey">
       <el-tabs v-model="type" @tab-click="handleClick">
         <el-tab-pane label="凯迪云商会" name="1"></el-tab-pane>
         <el-tab-pane label="其他商协会" name="2"></el-tab-pane>
@@ -8,7 +8,7 @@
     </div>
     <div style="margin:20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
-        <el-form-item style="margin-right: 30px;" label="活动来源" v-if="!ckey">
+        <el-form-item style="margin-right: 30px;" label="活动来源" v-if="!query.ckey">
           <el-select v-if="type==1" v-model="query.ckey" disabled placeholder="请选择" clearable>
             <el-option label="凯迪云商会" value=''/>
           </el-select>
@@ -80,7 +80,7 @@
         <el-table-column label="待审核" width="100px">
           <template slot-scope="scope">
             {{ scope.row.auditNum === null ? 0 : scope.row.auditNum }}
-            <div class="blue-label" v-if="type==1" @click="goVerifyDetail(scope.row)">去审核</div>
+            <div class="blue-label" v-if="type==1" @click="goVerifyDetail(scope.row,'auditStatus',0)">去审核</div>
           </template>
         </el-table-column>
         <el-table-column label="已审核" width="100px">
@@ -91,7 +91,7 @@
         <el-table-column label="审核通过" width="100px">
           <template slot-scope="scope">
             {{ scope.row.approvedNum === null ? 0 : scope.row.approvedNum }}
-            <div class="blue-label" v-if="type==1" @click="goVerifyDetail(scope.row)">下载签到表</div>
+            <div class="blue-label" v-if="type==1" @click="goVerifyDetail(scope.row,'auditStatus',1)">下载签到表</div>
           </template>
         </el-table-column>
         <el-table-column label="审核驳回" width="100px">
@@ -101,8 +101,8 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goVerifyDetail(scope.row)" v-if="type==1">录入签到情况</div>
-            <div class="blue-label" @click="goVerifyDetail(scope.row)">查看审核详情</div>
+            <div class="blue-label" @click="goVerifyDetail(scope.row,'auditStatus',1)" v-if="type==1">录入签到情况</div>
+            <div class="blue-label" @click="goVerifyDetail(scope.row,'auditStatus',-1)">查看审核详情</div>
           </template>
         </el-table-column>
       </el-table>

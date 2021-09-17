@@ -78,7 +78,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div style="margin:10px 0">
+    <div style="margin:10px 0" v-if="chamberName">
       <el-button v-if="showMulBtn" size="small" type="success" @click="handleMulAudit(1)">通过</el-button>
       <el-button v-if="showMulBtn" size="small" type="warning" @click="handleMulAudit(2)">驳回</el-button>
       <el-button size="small" type="text" @click="downloadSignTable">下载签到表</el-button>
@@ -132,16 +132,19 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
-            <div v-if="scope.row.auditStatus === 0">
-              <el-button size="mini" type="success" @click="handleAudit(scope.row,1)">通过</el-button>
-              <el-button size="mini" type="warning" @click="handleAudit(scope.row,2)">驳回</el-button>
+            <div v-if="chamberName">
+              <div v-if="scope.row.auditStatus === 0">
+                <el-button size="mini" type="success" @click="handleAudit(scope.row,1)">通过</el-button>
+                <el-button size="mini" type="warning" @click="handleAudit(scope.row,2)">驳回</el-button>
+              </div>
+              <div v-if="scope.row.auditStatus === 2">--</div>
+              <div v-if="scope.row.signStatus === 0 && scope.row.auditStatus !== 2 && scope.row.auditStatus !== 0">
+                <el-checkbox v-model="signed" @change="e=>handleSign(e,scope.row,1)">已签到</el-checkbox>
+                <br/>
+                <el-checkbox v-model="unsign" @change="e=>handleSign(e,scope.row,2)">未签到</el-checkbox>
+              </div>
             </div>
-            <div v-if="scope.row.auditStatus === 2">--</div>
-            <div v-if="scope.row.signStatus === 0 && scope.row.auditStatus !== 2 && scope.row.auditStatus !== 0">
-              <el-checkbox v-model="signed" @change="e=>handleSign(e,scope.row,1)">已签到</el-checkbox>
-              <br/>
-              <el-checkbox v-model="unsign" @change="e=>handleSign(e,scope.row,2)">未签到</el-checkbox>
-            </div>
+            <div v-else>--</div>
           </template>
         </el-table-column>
       </el-table>

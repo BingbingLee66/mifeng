@@ -6,7 +6,6 @@ import {
 export default {
   data() {
     return {
-      ckey: '',
       type: '1',
       query: {
         ckey: '',
@@ -26,7 +25,7 @@ export default {
     }
   },
   created() {
-    this.ckey = this.$store.getters.ckey
+    this.query.ckey = this.$store.getters.ckey
     this.getChamberOptions()
     this.fetchData()
   },
@@ -84,8 +83,20 @@ export default {
       this.fetchData()
     },
     // 查看审核详情
-    goVerifyDetail(e) {
-      this.$router.push({ name: '审核详情', query: { activityId: e.activityId }})
+    goVerifyDetail(e, type, status) {
+      let chamberName = null
+      if (this.type === '1' && !this.ckey) {
+        chamberName = 'yun'
+      }
+      this.$router.push({
+        name: '审核详情',
+        query: {
+          activityId: e.activityId,
+          type: type,
+          status: status,
+          chamberName
+        }
+      })
     }
   }
 }
