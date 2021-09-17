@@ -1,29 +1,30 @@
 import {
-  getActivityApplyList,
+  getActivityApply,
   getActivitySource,
-  getActivityApplyDetail
+  getActivityApplyDetail,
+  getActivityRejectApply,
+  signActivityApply,
+  aduitActivityApply,
+  downloadActivityApply
 } from '@/api/activity/activity-verify'
 
 export default {
   data() {
-    var checkNumber = (rule, value, callback) => {
-      if (!/^([0-9]{0,3})$/.test(value)) {
-        return callback(new Error('必须是0-999的整数'))
-      } else {
-        callback() // 必须加上这个，不然一直塞在验证状态
-      }
-    }
     return {
       actId: '',
+      applyDetail: {},
+      applyDetailList: [],
       ckey: '',
       type: '1',
       previewImgVisible: false,
       previewUrl: '',
       query: {
-        activityId: '', // 活动ID
-        activityName: '', // 活动名称
-        activityStatus: '', // 活动状态
-        chamberId: '' // 活动状态
+        auditStatus: '',
+        signStatus: '',
+        name: '',
+        phone: '',
+        userType: '',
+        chamberId: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -32,10 +33,17 @@ export default {
       limit: 10,
       listLoading: false,
       rejectReason: '',
-      sourceOptions: [], // 活动来源数据
+      chamberOptions: [], // 活动来源数据
       showRejectDialog: false,
       showDetailDialog: false,
-      showTipDialog: false
+      showTipDialog: false,
+      showMulBtn: false,
+      selectionDatas: [],
+      signed: false,
+      unsign: false,
+      rowData: null,
+      auditFalg: null,
+      mulAuditFalg: null
     }
   },
   created() {
@@ -46,67 +54,195 @@ export default {
     this.getSourceOptions()
   },
   methods: {
-    handleClick(tab) {
-      this.type = tab.name
-      this.fetchData()
-    },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-      this.limit = val
-      this.currentpage = 1
-      this.fetchData()
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-      this.currentpage = val
-      this.fetchData()
-    },
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
+    // 获取活动详情
+    getApplyDetail() {
+      getActivityApplyDetail({ activityId: this.actId }).then(res => {
+        if (res.state === 1) {
+          this.applyDetail = res.data
+        }
+      })
+    },
     // 获取活动来源
     getSourceOptions() {
       getActivitySource().then(response => {
-        this.sourceOptions = response.data.data
+        this.chamberOptions = response.data
       })
-    },
-    openPreviewModal(url) {
-      this.previewImgVisible = true
-      this.previewUrl = url
     },
     // 查询活动报名审核列表
     fetchData(e) {
       if (e !== undefined) {
         this.currentpage = 1
       }
+      if (this.query.auditStatus === 0) {
+        this.showMulBtn = true
+      } else {
+        this.showMulBtn = false
+      }
       this.listLoading = true
       let params = {
-        'cket': this.ckey,
-        'activityId': this.query.activityId,
-        'activityName': this.query.activityName,
-        'activityStatus': this.query.activityStatus,
+        'activityId': this.actId,
+        'auditStatus': this.query.auditStatus,
+        'signStatus': this.query.signStatus,
+        'name': this.query.name,
+        'phone': this.query.phone,
+        'userType': this.query.userType,
         'chamberId': this.query.chamberId,
         'pageSize': this.limit,
         'page': this.currentpage,
       }
-      getActivityApplyList(params).then(res => {
+      getActivityApply(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
       })
     },
-    // 获取活动来源
-    getApplyDetail() {
-      getActivityApplyDetail({ activityId: this.actId }).then(res => {
-        console.log(res)
+    handleClick(tab) {
+      this.type = tab.name
+      this.fetchData()
+    },
+    handleSizeChange(val) {
+      this.limit = val
+      this.currentpage = 1
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+      this.currentpage = val
+      this.fetchData()
+    },
+    // 批量通过/驳回
+    handleSelectionChange(value) {
+      let datas = value
+      this.selectionDatas = []
+      for (let data of datas) {
+        if (this.mulAuditFalg === 2) {
+          this.selectionDatas.push({
+            auditStatus: 2,
+            activityId: data.activityId,
+            id: data.id,
+            auditReason: this.rejectReason
+          })
+        } else {
+          this.selectionDatas.push({
+            auditStatus: 1,
+            activityId: data.activityId,
+            id: data.id,
+          })
+        }
+      }
+    },
+    handleMulAudit(falg) {
+      if (this.selectionDatas.length === 0) {
+        return this.$message.warning('请先选择数据')
+      }
+      if (falg === 1) {
+        this.$confirm('确定通过吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'none'
+        }).then(() => {
+          aduitActivityApply(this.selectionDatas).then(res => {
+            this.fetchData(1)
+            this.$message.success(res.msg)
+          })
+        }).catch(() => {
+        })
+      } else {
+        this.mulAuditFalg = falg
+        this.showRejectDialog = true
+      }
+    },
+    // 通过/驳回
+    handleAudit(row, auditFalg) {
+      this.rowData = row
+      this.auditFalg = auditFalg
+      if (auditFalg === 1) {
+        this.$confirm('确定通过吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'none'
+        }).then(() => {
+          let paramsArr = []
+          let paramsObj = {
+            auditStatus: 1,
+            activityId: this.rowData.activityId,
+            id: this.rowData.id
+          }
+          paramsArr.push(paramsObj)
+          aduitActivityApply(paramsArr).then(res => {
+            this.fetchData(1)
+            this.$message.success(res.msg)
+          })
+        }).catch(() => {
+        })
+      } else {
+        this.showRejectDialog = true
+      }
+    },
+    reject() {
+      if (this.rejectReason.trim() === '') {
+        return this.$message.error('驳回理由不能为空')
+      }
+      let paramsArr = []
+      if (this.mulAuditFalg === 2) {
+        paramsArr = this.selectionDatas
+      } else {
+        let paramsObj = {
+          auditStatus: 2,
+          activityId: this.rowData.activityId,
+          id: this.rowData.id,
+          auditReason: this.rejectReason
+        }
+        paramsArr.push(paramsObj)
+      }
+      aduitActivityApply(paramsArr).then(res => {
+        this.showDetailDialog = true
       })
     },
-    // 去审核
-    goVerifyDetail(e) {
-      console.log(e)
+    // 查看详情
+    showDetail(row) {
+      console.log(row, '9999')
+      let params = {
+        activityId: row.activityId,
+        wxUserId: row.wxUserId
+      }
+      getActivityRejectApply(params).then(res => {
+        console.log(res, '999999999')
+        this.applyDetailList = res.data
+        this.showDetailDialog = true
+      })
+    },
+    // 签到
+    handleSign(e, row, falg) {
+      if (falg === 1) {
+        this.signed = true
+        this.unsign = false
+      } else {
+        this.unsign = true
+        this.signed = false
+      }
+      let params = {
+        activityId: row.activityId,
+        id: row.id, // 报名申请id
+        signStatus: falg // 1已签到,2未签到
+      }
+      signActivityApply(params).then(res => {
+        if (res.state === 1) {
+          this.$message.success(res.msg)
+        }
+      })
+    },
+    // 下载签到表
+    downloadSignTable() {
+      let a = document.createElement('a')
+      a.download = ''
+      a.href = process.env.VUE_APP_BASE_API + '/api/ec/activity-apply/download?activityId=' + this.actId
+      a.click()
     }
   }
 }
