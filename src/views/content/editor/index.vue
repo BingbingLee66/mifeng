@@ -20,7 +20,7 @@
               <el-select v-model="query.status">
                 <el-option label="全部" :value="-1" />
                 <el-option label="已发布" :value="1" />
-                <el-option label="已冻结" :value="0" />
+                <el-option label="已冻结" :value="3" />
               </el-select>
             </el-form-item>
           </el-col>
