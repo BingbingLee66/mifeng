@@ -1,4 +1,12 @@
 import request from '@/utils/request'
+// 修改权重
+export function updateChamberContentSort(params) {
+  return request({
+    url: '/ec/article/update-article-sort',
+    method: 'put',
+    params
+  })
+}
 
 export function getChamberContentList(params) {
   return request({

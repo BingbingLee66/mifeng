@@ -84,7 +84,7 @@
           {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
         </template>
       </el-table-column>
-      <el-table-column label="浏览量" prop="readCount" sortable="custom">
+      <el-table-column label="浏览量" width="120px" prop="readCount" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.readCount ? scope.row.readCount : '--' }}
         </template>
@@ -206,7 +206,7 @@
     <el-dialog
       title=""
       :visible.sync="visible"
-      width="80%"
+      width="450px"
     >
       <div class="m-preview-wrap">
         <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="m-article-remark">
@@ -235,7 +235,7 @@
 
 .m-preview-area {
   width: 100%;
-  min-height: 500px;
+  height: 60vh;
   margin: 30px 20px;
   border: 1px solid #d9dde2;
   overflow-y: auto;
@@ -251,14 +251,14 @@
   text-align: center;
   font-size: 24px;
   font-weight: 700;
-  margin: 40px 40px 20px 40px;
+  margin: 20px 40px 20px 40px;
 }
 
 .m-article-content {
   font-size: 16px;
   font-weight: 500;
   line-height: 1.8;
-  margin: 0 40px 20px 40px;
+  margin: 20px;
 }
 
 .m-article-content > p > img {

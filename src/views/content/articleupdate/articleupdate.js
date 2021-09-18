@@ -1,11 +1,26 @@
-import { getChamberContentList, getAboutChamberList, getContactUs, save, updateStatus } from '@/api/content/article'
+import {
+  getChamberContentList,
+  getAboutChamberList,
+  getContactUs,
+  save,
+  updateStatus,
+  updateChamberContentSort, getDetail
+} from '@/api/content/article'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import addColumn from './editor/component/addColumn'
+
 export default {
   components: {
     addColumn
   },
   data() {
+    var checkNumber = (rule, value, callback) => {
+      if (!/^([0-9]{0,3})$/.test(value)) {
+        return callback(new Error('必须是0-999的整数'))
+      } else {
+        callback() // 必须加上这个，不然一直塞在验证状态
+      }
+    }
     return {
       detailVisible: false,
       pageSizes: [10, 20, 50, 100, 500],
@@ -27,13 +42,23 @@ export default {
       },
       contentColumnOptions: [],
       formObj: {},
-      activeName: '5'
+      activeName: '5',
+      showSortDialog: false,
+      sortForm: {
+        id: null,
+        sort: null
+      },
+      sortFormRules: {
+        sort: [
+          { required: true, message: '权重不能为空', trigger: 'blur' },
+          { validator: checkNumber, trigger: 'blur' }
+        ]
+      },
     }
   },
   mounted() {
   },
-  computed: {
-  },
+  computed: {},
   created() {
     let activename = window.localStorage.getItem('activename')
     if (activename) {
@@ -48,6 +73,43 @@ export default {
     },
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
+    },
+    // 浏览量排序
+    handleSortChange(e) {
+      let sort = ''
+      this.currentpage = 1
+      if (e.prop) {
+        if (e.order === 'descending') {
+          sort = 'read_count desc'
+        } else {
+          sort = 'read_count'
+        }
+        this.fetchData(1, sort)
+      }
+    },
+    // 修改权重
+    showSort(row) {
+      this.sortForm.id = row.id
+      this.sortForm.sort = row.sort
+      this.showSortDialog = true
+    },
+    updateSort(sortForm) {
+      this.$refs[sortForm].validate((valid) => {
+        if (valid) {
+          updateChamberContentSort(this.sortForm).then(response => {
+            if (response.state === 1) {
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              this.fetchData()
+              this.showSortDialog = false
+            }
+          })
+        } else {
+          return false
+        }
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -93,8 +155,8 @@ export default {
         this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
       })
     },
-    fetchData(e) {
-      if (e !== undefined) {
+    fetchData(e, sort) {
+      if (e !== undefined && e !== 1) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
         this.currentpage = 1
       }
@@ -107,6 +169,9 @@ export default {
         'contentModuleId': this.activeName,
         'contentColumnId': this.query.contentColumnId,
         'status': this.query.status
+      }
+      if (sort) {
+        params['order'] = sort
       }
       if (this.query.date) {
         params['startTs'] = this.query.date[0]
@@ -157,21 +222,21 @@ export default {
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('articleupdate', this.$route.path)
-      this.$router.push({ name: '添加/修改文章', params: { 'activeName': this.activeName }})
+      this.$router.push({ name: '添加/修改文章', params: { 'activeName': this.activeName } })
     },
     edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('articleupdate', this.$route.path)
-      this.$router.push({ name: '添加/修改文章', params: { 'activeName': this.activeName, 'articleId': row.id }})
+      this.$router.push({ name: '添加/修改文章', params: { 'activeName': this.activeName, 'articleId': row.id } })
     },
     editColumn(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '修改栏目内容', params: { 'activeName': this.activeName, 'articleObj': row }})
+      this.$router.push({ name: '修改栏目内容', params: { 'activeName': this.activeName, 'articleObj': row } })
     },
-    detail(e, row) {
+    /* detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '文章详情', params: { 'articleId': row.id }})
-    },
+      this.$router.push({ name: '文章详情', params: { 'articleId': row.id } })
+    }, */
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
@@ -203,9 +268,13 @@ export default {
       })
     },
     openDetail(row) {
-      this.detailObj.contentHtml = row.contentHtml
-      this.detailObj.auditStatus = row.auditStatus
-      this.detailObj.auditRemark = row.auditRemark
+      let params = {
+        id: row.id
+      }
+      getDetail(params).then(response => {
+        this.detailObj = response.data.dtl
+      }).catch(() => {
+      })
       this.detailVisible = true
     }
   }
