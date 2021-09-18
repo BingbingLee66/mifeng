@@ -52,32 +52,37 @@
     <el-table :data="dataList" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @sort-change="handleSortChange">
       <el-table-column label="商/协会">
         <template slot-scope="scope">
-          {{ scope.row.dayTimeStr }}
+          {{ scope.row.chamberName }}
         </template>
       </el-table-column>
       <el-table-column label="累计举办活动" sortable="custom">
         <template slot-scope="scope">
-          {{ scope.row.channelNums > 0 ? scope.row.channelNums : '--' }}
+          {{ scope.row.totalActivity > 0 ? scope.row.totalActivity : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计浏览人数" sortable="custom">
+      <el-table-column label="累计访问人数/uv" sortable="custom">
         <template slot-scope="scope">
-          {{ scope.row.goodsNums > 0 ? scope.row.goodsNums : '--' }}
+          {{ scope.row.totalUv > 0 ? scope.row.totalUv : '--' }}
+        </template>
+      </el-table-column>
+      <el-table-column label="累计访问次数/pv" sortable="custom">
+        <template slot-scope="scope">
+          {{ scope.row.totalPv > 0 ? scope.row.totalPv : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="累计分享人数" sortable="custom">
         <template slot-scope="scope">
-          {{ scope.row.userNums > 0 ? scope.row.userNums : '--' }}
+          {{ scope.row.totalShare > 0 ? scope.row.totalShare : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计报名人数" sortable="custom">
+      <el-table-column label="累计参加人数" sortable="custom">
         <template slot-scope="scope">
-          {{ scope.row.visitNums > 0 ? scope.row.visitNums : '--' }}
+          {{ scope.row.totalJoin > 0 ? scope.row.totalJoin : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="累计签到人数" sortable="custom">
         <template slot-scope="scope">
-          {{ scope.row.orderUserNums > 0 ? scope.row.orderUserNums : '--' }}
+          {{ scope.row.totalSign > 0 ? scope.row.totalSign : '--' }}
         </template>
       </el-table-column>
     </el-table>
