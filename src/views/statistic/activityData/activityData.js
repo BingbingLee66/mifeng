@@ -61,6 +61,7 @@ export default {
     },
     handleSortChange(e) {
       this.currentpage = 1
+      console.log(e)
       if (e.prop) {
         if (e.order === 'descending') {
           this.column = e.prop

@@ -55,32 +55,32 @@
           {{ scope.row.chamberName }}
         </template>
       </el-table-column>
-      <el-table-column label="累计举办活动" sortable="custom">
+      <el-table-column label="累计举办活动" prop="totalActivity" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.totalActivity > 0 ? scope.row.totalActivity : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计访问人数/uv" sortable="custom">
+      <el-table-column label="累计访问人数/uv" prop="totalUv" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.totalUv > 0 ? scope.row.totalUv : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计访问次数/pv" sortable="custom">
+      <el-table-column label="累计访问次数/pv" prop="totalPv" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.totalPv > 0 ? scope.row.totalPv : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计分享人数" sortable="custom">
+      <el-table-column label="累计分享人数" prop="totalShare" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.totalShare > 0 ? scope.row.totalShare : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计参加人数" sortable="custom">
+      <el-table-column label="累计参加人数" prop="totalJoin" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.totalJoin > 0 ? scope.row.totalJoin : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计签到人数" sortable="custom">
+      <el-table-column label="累计签到人数" prop="totalSign" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.totalSign > 0 ? scope.row.totalSign : '--' }}
         </template>
