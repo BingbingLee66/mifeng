@@ -5,17 +5,17 @@
         <el-row>
           <el-col :span="7">
             <el-form-item label="文章标题：">
-              <el-input v-model="query.title" placeholder="请输入文章标题" />
+              <el-input v-model="query.title" placeholder="请输入文章标题"/>
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left: 10px;">
             <el-form-item label="文章状态：">
               <el-select v-model="query.status">
-                <el-option label="已发布" :value="1" />
-                <el-option label="已冻结(商会)" :value="0" />
-                <el-option label="已冻结(平台)" :value="3" />
-                <el-option label="审核不通过" :value="5" />
-                <el-option label="所有" :value="-1" />
+                <el-option label="已发布" :value="1"/>
+                <el-option label="已冻结(商会)" :value="0"/>
+                <el-option label="已冻结(平台)" :value="3"/>
+                <el-option label="审核不通过" :value="5"/>
+                <el-option label="所有" :value="-1"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -34,11 +34,11 @@
           <el-col :span="4" style="margin-left: 10px;">
             <el-form-item label="发布时间：">
               <el-select v-model="query.publishTimeType">
-                <el-option label="所有" :value="0" />
-                <el-option label="24小时内" :value="1" />
-                <el-option label="3天内" :value="2" />
-                <el-option label="7天内" :value="3" />
-                <el-option label="一个月内" :value="4" />
+                <el-option label="所有" :value="0"/>
+                <el-option label="24小时内" :value="1"/>
+                <el-option label="3天内" :value="2"/>
+                <el-option label="7天内" :value="3"/>
+                <el-option label="一个月内" :value="4"/>
               </el-select>
             </el-form-item>
           </el-col>
@@ -69,8 +69,9 @@
       fit
       highlight-current-row
       @selection-change="handleSelectionChange"
+      @sort-change="handleSortChange"
     >
-      <el-table-column type="selection" width="55px" />
+      <el-table-column type="selection" width="55px"/>
       <!-- <el-table-column type="index" label="序号" width="60px">
       </el-table-column> -->
       <el-table-column label="ID" width="80px">
@@ -81,6 +82,11 @@
       <el-table-column label="文章">
         <template slot-scope="scope">
           {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
+        </template>
+      </el-table-column>
+      <el-table-column label="浏览量" prop="readCount" sortable="custom">
+        <template slot-scope="scope">
+          {{ scope.row.readCount ? scope.row.readCount : '--' }}
         </template>
       </el-table-column>
       <el-table-column label="栏目" width="120px">
@@ -102,7 +108,9 @@
         <template slot-scope="scope">
           <div v-if="scope.row.publishType == 1">{{ scope.row.chamberName }}</div>
           <div v-if="scope.row.publishType == 5">{{ scope.row.companyName }}</div>
-          <div v-if="scope.row.publishType == 3 || scope.row.publishType == 4 || scope.row.publishType == 6 || scope.row.publishType == 7 || scope.row.publishType == 2">{{ scope.row.sourceName }}</div>
+          <div v-if="scope.row.publishType == 3 || scope.row.publishType == 4 || scope.row.publishType == 6 || scope.row.publishType == 7 || scope.row.publishType == 2">
+            {{ scope.row.sourceName }}
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="发布时间" width="180px">
@@ -206,7 +214,7 @@
         </div>
         <div class="m-preview-area">
           <div class="m-article-title">{{ detailObj.title }}</div>
-          <div class="m-article-content" v-html="detailObj.contentHtml" />
+          <div class="m-article-content" v-html="detailObj.contentHtml"/>
         </div>
       </div>
     </el-dialog>
