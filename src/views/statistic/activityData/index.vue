@@ -8,69 +8,74 @@
       <div class="data-card">
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.channelNums }}</div>
+            <div class="card-value">{{ sumData.totalActivity }}</div>
             <div class="card-key">累计举办活动</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.goodsNums }}</div>
-            <div class="card-key">累计浏览人数</div>
+            <div class="card-value">{{ sumData.totalUv }}</div>
+            <div class="card-key">累计访问人数</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value" style="color: #FF0000;">{{ pfStatistics.userNums }}</div>
+            <div class="card-value">{{ sumData.totalPv }}</div>
+            <div class="card-key">累计访问次数</div>
+          </div>
+        </div>
+        <div class="h-cut-line"></div>
+        <div class="c-card-box">
+          <div class="card-box-3">
+            <div class="card-value" style="color: #FF0000;">{{ sumData.totalShare }}</div>
             <div class="card-key">累计分享人数</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.visitNums }}</div>
-            <div class="card-key">累计报名人数</div>
+            <div class="card-value">{{ sumData.totalJoin }}</div>
+            <div class="card-key">累计参加人数</div>
           </div>
         </div>
         <div class="h-cut-line"></div>
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.payUserNums }}</div>
+            <div class="card-value">{{ sumData.totalSign }}</div>
             <div class="card-key">累计签到人数</div>
           </div>
         </div>
       </div>
     </div>
-    <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55px">
-      </el-table-column>
+    <el-table :data="dataList" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @sort-change="handleSortChange">
       <el-table-column label="商/协会">
         <template slot-scope="scope">
           {{ scope.row.dayTimeStr }}
         </template>
       </el-table-column>
-      <el-table-column label="累计举办活动">
+      <el-table-column label="累计举办活动" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.channelNums > 0 ? scope.row.channelNums : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计浏览人数">
+      <el-table-column label="累计浏览人数" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.goodsNums > 0 ? scope.row.goodsNums : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计分享人数">
+      <el-table-column label="累计分享人数" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.userNums > 0 ? scope.row.userNums : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计报名人数">
+      <el-table-column label="累计报名人数" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.visitNums > 0 ? scope.row.visitNums : '--' }}
         </template>
       </el-table-column>
-      <el-table-column label="累计签到人数">
+      <el-table-column label="累计签到人数" sortable="custom">
         <template slot-scope="scope">
           {{ scope.row.orderUserNums > 0 ? scope.row.orderUserNums : '--' }}
         </template>
@@ -88,11 +93,11 @@
       :style="{'padding-top': '15px'}">
     </el-pagination>
 
-    <el-dialog title="数据定义" :visible.sync="showMeaning" width="480px">
+    <el-dialog title="数据定义" :visible.sync="showMeaning" width="540px">
       <div class="meaning-wrap">
         <div class="meaning-item">
           <div class="tit">累计举办活动</div>
-          <div class="sub">在指定时间范围内，累计举办的活动数<span style="color:#FF0000;"> (有人报名 且审核通过 且已签到 才算)</span>。</div>
+          <div class="sub">在指定时间范围内，累计举办的活动数<span style="color:#FF0000;"> (有人报名且审核通过且已签到才算)</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">累计浏览人数</div>
@@ -132,7 +137,7 @@
 
 .c-card-box {
   float: left;
-  width: 14%;
+  width: 16%;
   height: 100%;
   text-align: center;
   display: table;
