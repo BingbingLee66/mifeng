@@ -74,7 +74,7 @@
             {{ scope.row.title }}
           </template>
         </el-table-column>
-        <el-table-column label="权重">
+        <el-table-column label="权重" width="100px">
           <template slot-scope="scope">
             <span class="blue-label" @click="showSort(scope.row)"> {{ scope.row.sort }} </span>
           </template>

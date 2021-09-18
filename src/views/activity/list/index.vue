@@ -70,7 +70,9 @@
         </el-table-column>
         <el-table-column label="参加人数" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.applyCount ? '限' + scope.row.applyCount + '人' : '不限' }}
+          <!-- {{ scope.row.isLimit ? '限' + scope.row.applyCount + '人' : '不限' }}-->
+            <span v-if="scope.row.isLimit===0">不限</span>
+            <span v-if="scope.row.isLimit===1">限{{scope.row.applyCount}}人 </span>
           </template>
         </el-table-column>
         <el-table-column label="发布状态" width="100px">

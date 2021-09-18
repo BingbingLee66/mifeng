@@ -104,7 +104,6 @@ export default {
     // 获取活动详情
     fetchData() {
       getActivity({ id: this.activityId }).then(res => {
-        console.log(res)
         let resData = res.data
         this.formObj.activityName = resData.activityName
         this.formObj.headImage = resData.headImage
@@ -135,7 +134,6 @@ export default {
             code: resData.areaCode,
           }
         }
-        console.log(this.areaData.province.name)
         // 报名对象回显
         if (resData.applyObject === 0) {
           this.applyObject.limit = false
@@ -276,7 +274,6 @@ export default {
       } else {
         data = null
       }
-      console.log('this.areaDatathis.areaData', this.areaData)
       this.areaData = data
     },
     // 选择报名对象
@@ -314,8 +311,11 @@ export default {
             return this.$message.error('活动地点不能为空')
           } else if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
             return this.$message.error('请选择报名对象')
-          } else if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
-            return this.$message.error('请选择参加人数')
+          } else if (this.formObj.isLimit === 1) {
+            let regexp = /^[1-9]\d*$/
+            if (!regexp.test(this.formObj.applyCount)) {
+              return this.$message.error('参加人数为大于0的正整数')
+            }
           } else if (!this.formObj.introduce) {
             return this.$message.error('活动介绍不能为空')
           }
