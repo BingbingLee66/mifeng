@@ -25,9 +25,9 @@ export default {
       limit: 10,
       listLoading: false,
       selectionDatas: [],
-      approveLoading: false,
       rejectLoading: false,
-      showInput: false
+      showInput: false,
+      rowId: null
     }
   },
   computed: {
@@ -118,13 +118,13 @@ export default {
         'memberId': arr,
         'auditStatus': 1
       }
-      this.approveLoading = true
+      this.rowId = row.id
       updateAudit(params).then(response => {
         this.$message({
           message: '已通过',
           type: 'success'
         })
-        this.approveLoading = false
+        this.rowId = null
         this.fetchData()
       })
     },

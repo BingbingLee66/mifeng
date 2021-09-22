@@ -6,20 +6,20 @@
       </el-row>
       <el-row>
         <el-col :span="1" class="wx-col col-title">ID</el-col>
-        <el-col :span="2" class="wx-col">{{ memberDetail.id ? memberDetail.id : '空' }}</el-col>
+        <el-col :span="2" class="wx-col">{{ member.id ? memberDetail.id : '空' }}</el-col>
         <el-col :span="2" class="wx-col col-title">微信</el-col>
-        <el-col :span="3" class="wx-col els-title">{{ memberDetail.uname ? memberDetail.uname : '未绑定' }}</el-col>
+        <el-col :span="3" class="wx-col els-title">{{ member.uname ? member.uname : '未绑定' }}</el-col>
         <el-col :span="2" class="wx-col col-title">手机号</el-col>
-        <el-col :span="3" class="wx-col">{{ memberDetail.phone ? memberDetail.phone : '空' }}</el-col>
+        <el-col :span="3" class="wx-col">{{ member.phone ? member.phone : '空' }}</el-col>
         <el-col :span="2" class="wx-col col-title">注册时间</el-col>
-        <el-col :span="4" class="wx-col">{{ memberDetail.createdTs ? memberDetail.createdTs : '空' }}</el-col>
+        <el-col :span="4" class="wx-col">{{ member.createdTs ? member.createdTs : '空' }}</el-col>
         <el-col :span="2" class="wx-col col-title">注册方式</el-col>
         <el-col :span="3" class="wx-col">
-          <span v-if="memberDetail.registerType == 0">商会后台</span>
-          <span v-if="memberDetail.registerType == 1">微信小程序</span>
+          <span v-if="member.registerType == 0">商会后台</span>
+          <span v-if="member.registerType == 1">微信小程序</span>
           <!-- <span v-if="memberDetail.registerType == 2">凯迪网</span> -->
           <span
-            v-if="memberDetail.registerType != 0 && memberDetail.registerType != 1 && memberDetail.registerType != 2"
+            v-if="member.registerType != 0 && member.registerType != 1 && member.registerType != 2"
           >空</span>
         </el-col>
       </el-row>
