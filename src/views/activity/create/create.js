@@ -7,6 +7,13 @@ export default {
     Ckeditor
   },
   data() {
+    var checkSpace = (rule, value, callback) => {
+      if (!value.trim()) {
+        return callback(new Error('不能为空'))
+      } else {
+        callback() // 必须加上这个，不然一直塞在验证状态
+      }
+    }
     return {
       activityId: null,
       type: null,
@@ -46,7 +53,8 @@ export default {
       areaData: null,
       rules: {
         activityName: [
-          { required: true, message: '活动名称不能为空', trigger: 'blur' }
+          { required: true, message: '活动名称不能为空', trigger: 'blur' },
+          { validator: checkSpace, trigger: 'blur' }
         ],
         headImage: [
           { required: true, message: '活动头图不能为空', trigger: 'blur' }
@@ -58,7 +66,8 @@ export default {
           { required: true, message: '活动时间不能为空', trigger: 'blur' }
         ],
         addressInfo: [
-          { required: true, message: '活动地点不能为空', trigger: 'blur' }
+          { required: true, message: '活动地点不能为空', trigger: 'blur' },
+          { validator: checkSpace, trigger: 'blur' }
         ]
       }
     }
@@ -307,16 +316,22 @@ export default {
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          if (!this.areaData.province.name || !this.areaData.city.name || !this.areaData.country.name) {
-            return this.$message.error('活动地点不能为空')
+          if (!this.areaData) {
+            return this.$message.error('请选择省份')
+          } else if (!this.areaData.hasOwnProperty('city')) {
+            return this.$message.error('请选择城市')
+          } else if (!this.areaData.hasOwnProperty('country')) {
+            return this.$message.error('请选择城区')
           } else if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
             return this.$message.error('请选择报名对象')
+          } else if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
+            return this.$message.error('请选择参加人数')
           } else if (this.formObj.isLimit === 1) {
             let regexp = /^[1-9]\d*$/
             if (!regexp.test(this.formObj.applyCount)) {
               return this.$message.error('参加人数为大于0的正整数')
             }
-          } else if (!this.formObj.introduce) {
+          } else if (!this.formObj.introduce.trim()) {
             return this.$message.error('活动介绍不能为空')
           }
           this.formObj.ckey = this.ckey

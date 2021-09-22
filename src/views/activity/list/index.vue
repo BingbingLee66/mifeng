@@ -17,11 +17,11 @@
         <el-form-item style="margin-right: 30px;" label="活动名称">
           <el-input v-model="query.activityName" placeholder="关键词"/>
         </el-form-item>
-        <el-form-item label="活动状态">
+        <el-form-item label="活动状态" v-if="type!=='0'">
           <el-select v-model="query.status" placeholder="请选择状态">
             <el-option label="全部状态" :value="0"/>
             <el-option label="未开始" :value="1"/>
-            <el-option label="报名中" :value="2"/>
+            <el-option label="进行中" :value="2"/>
             <el-option label="已结束" :value="3"/>
           </el-select>
         </el-form-item>

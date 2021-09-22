@@ -89,7 +89,7 @@
               <el-checkbox v-model="applyObject.limit" @change="handleCheckTarget($event,1)">
                 {{ ckey ? '限本商会成员' : '限云商会成员' }}
               </el-checkbox>
-              <span style="margin-left: 20px;color: #ff0000">指云商会平台的任意商会的任意成员</span>
+              <span style="margin-left: 20px;color: #ff0000" v-if="!ckey">指云商会平台的任意商会的任意成员</span>
             </el-form-item>
           </el-col>
         </el-row>
