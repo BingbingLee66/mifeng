@@ -10,23 +10,23 @@
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item style="margin-right: 30px;" label="活动来源" v-if="!query.ckey">
           <el-select v-if="type==1" v-model="query.ckey" disabled placeholder="请选择" clearable>
-            <el-option label="凯迪云商会" value=''/>
+            <el-option label="凯迪云商会" value='' />
           </el-select>
           <el-select v-if="type==2" v-model="query.ckey" placeholder="请选择" clearable>
-            <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey"/>
+            <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey" />
           </el-select>
         </el-form-item>
         <el-form-item style="margin-right: 30px;" label="活动ID">
-          <el-input v-model="query.activityId" placeholder="请输入"/>
+          <el-input v-model="query.activityId" placeholder="请输入" />
         </el-form-item>
         <el-form-item style="margin-right: 30px;" label="活动名称">
-          <el-input v-model="query.activityName" placeholder="关键词"/>
+          <el-input v-model="query.activityName" placeholder="关键词" />
         </el-form-item>
         <el-form-item label="活动状态">
           <el-select v-model="query.activityStatus" placeholder="请选择状态">
-            <el-option label="全部状态" :value="-1"/>
-            <el-option label="已发布" :value="1"/>
-            <el-option label="未发布" :value="2"/>
+            <el-option label="全部状态" :value="-1" />
+            <el-option label="已发布" :value="1" />
+            <el-option label="未发布" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item label="">
@@ -68,8 +68,10 @@
         </el-table-column>
         <el-table-column label="参加人数" width="100px">
           <template slot-scope="scope">
-            <span v-if="scope.row.applyCount === null ">不限</span>
-            <span v-if="scope.row.applyCount !== null ">限{{ scope.row.applyCount }}人</span>
+            <!-- <span v-if="scope.row.applyCount === null ">不限</span>
+            <span v-if="scope.row.applyCount !== null ">限{{ scope.row.applyCount }}人</span> -->
+            <span v-if="scope.row.isLimit===0">不限</span>
+            <span v-if="scope.row.isLimit===1">限{{scope.row.applyCount}}人 </span>
           </template>
         </el-table-column>
         <el-table-column label="已报名人数" width="100px">
@@ -106,7 +108,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
   </div>
 </template>

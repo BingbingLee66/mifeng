@@ -9,9 +9,11 @@
         <div>活动来源：{{ applyDetail.chamberName === null ? '凯迪云商会' : applyDetail.chamberName }}</div>
         <div>活动时间：{{ applyDetail.activityStartTime }} - {{ applyDetail.activityEndTime }}</div>
         <div>
-          参加人数：<span v-if="applyDetail.applyCount === null">不限</span><span v-if="applyDetail.applyCount !== null">限{{
-            applyDetail.applyCount
-          }}人</span>
+          参加人数：
+          <!-- <span v-if="applyDetail.applyCount === null">不限</span>
+          <span v-if="applyDetail.applyCount !== null">限{{ applyDetail.applyCount }}人</span> -->
+          <span v-if="applyDetail.isLimit===0">不限</span>
+          <span v-if="applyDetail.isLimit===1">限{{scope.row.applyCount}}人 </span>
         </div>
       </div>
       <div class="item-wrap">
@@ -41,36 +43,36 @@
       <el-form ref="query" label-position="right" label-width="80px" :inline="true" size="mini" :model="query">
         <el-form-item label="审核状态" class="form-item">
           <el-select v-model="query.auditStatus" placeholder="请选择" clearable>
-            <el-option label="全部" :value="-1"/>
-            <el-option label="待审核" :value="0"/>
-            <el-option label="已通过" :value="1"/>
-            <el-option label="已驳回" :value="2"/>
+            <el-option label="全部" :value="-1" />
+            <el-option label="待审核" :value="0" />
+            <el-option label="已通过" :value="1" />
+            <el-option label="已驳回" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item label="签到状态" class="form-item">
           <el-select v-model="query.signStatus" placeholder="请选择" clearable>
-            <el-option label="全部" :value="-1"/>
-            <el-option label="待签到" :value="0"/>
-            <el-option label="已签到" :value="1"/>
-            <el-option label="未签到" :value="2"/>
+            <el-option label="全部" :value="-1" />
+            <el-option label="待签到" :value="0" />
+            <el-option label="已签到" :value="1" />
+            <el-option label="未签到" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="query.name" placeholder="关键词"/>
+          <el-input v-model="query.name" placeholder="关键词" />
         </el-form-item>
         <el-form-item label="手机号">
-          <el-input v-model="query.phone" placeholder="关键词"/>
+          <el-input v-model="query.phone" placeholder="关键词" />
         </el-form-item>
         <el-form-item label="用户属性" class="form-item">
           <el-select v-model="query.userType" placeholder="请选择">
-            <el-option label="全部" :value="-1"/>
-            <el-option label="商协会成员" :value="0"/>
-            <el-option label="普通用户" :value="1"/>
+            <el-option label="全部" :value="-1" />
+            <el-option label="商协会成员" :value="0" />
+            <el-option label="普通用户" :value="1" />
           </el-select>
         </el-form-item>
         <el-form-item label="所属商会">
           <el-select v-model="query.chamberId" placeholder="请选择">
-            <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id"/>
+            <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="">
@@ -85,7 +87,7 @@
     </div>
     <div>
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55px"/>
+        <el-table-column type="selection" width="55px" />
         <el-table-column label="报名时间" width="180px">
           <template slot-scope="scope">
             {{ scope.row.createdTs }}
@@ -140,7 +142,7 @@
               <div v-if="scope.row.auditStatus === 2">--</div>
               <div v-if="scope.row.signStatus === 0 && scope.row.auditStatus !== 2 && scope.row.auditStatus !== 0">
                 <el-checkbox v-model="signed" @change="e=>handleSign(e,scope.row,1)">已签到</el-checkbox>
-                <br/>
+                <br />
                 <el-checkbox v-model="unsign" @change="e=>handleSign(e,scope.row,2)">未签到</el-checkbox>
               </div>
             </div>
@@ -148,7 +150,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
 
     <!-- 驳回弹窗 -->
