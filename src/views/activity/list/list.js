@@ -129,11 +129,15 @@ export default {
       }
       publishActivity(params).then(res => {
         if (res.state === 1) {
-          this.showUpdateDialog = false
-          this.$message.success(res.msg)
-          this.type = '1'
+          if (this.isPublish === 0) {
+            this.type = '0'
+          } else if (this.isPublish === 1) {
+            this.type = '1'
+          }
           this.list = []
           this.fetchData(1)
+          this.showUpdateDialog = false
+          this.$message.success(res.msg)
         }
       })
     },
