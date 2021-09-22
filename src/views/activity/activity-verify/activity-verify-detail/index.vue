@@ -164,10 +164,10 @@
 
     <!-- 审核详情弹窗 -->
     <el-dialog title="审核详情" :visible.sync="showDetailDialog" width="400px">
-      <div style="line-height: 1.5;" v-for="item in applyDetailList" :key="item.id">
-        <div>报名时间：{{ item.createdTs }}</div>
-        <div v-if="item.auditStatus === 1">通过时间: {{ item.auditTs }}</div>
-        <div v-if="item.auditStatus === 2">驳回时间: {{ item.auditTs }}</div>
+      <div style="line-height: 1.5;margin-bottom: 20px;" v-for="(item,index) in applyDetailList" :key="item.id">
+        <div>{{ index === 0 ? '报名时间' : '再次报名' }}：{{ item.createdTs }}</div>
+        <div v-if="item.auditStatus === 1">通过时间：{{ item.auditTs }}</div>
+        <div v-if="item.auditStatus === 2">驳回时间：{{ item.auditTs }}</div>
         <div v-if="item.auditStatus === 2">驳回理由：<span class="red-label">{{ item.auditReason }}</span></div>
       </div>
       <div></div>

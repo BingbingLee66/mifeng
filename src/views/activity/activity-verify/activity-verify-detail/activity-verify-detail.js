@@ -212,18 +212,19 @@ export default {
         paramsArr.push(paramsObj)
       }
       aduitActivityApply(paramsArr).then(res => {
-        this.showDetailDialog = true
+        this.list = []
+        this.fetchData(1)
+        this.$message.success('操作成功')
+        this.showRejectDialog = false
       })
     },
     // 查看详情
     showDetail(row) {
-      console.log(row, '9999')
       let params = {
         activityId: row.activityId,
         wxUserId: row.wxUserId
       }
       getActivityRejectApply(params).then(res => {
-        console.log(res, '999999999')
         this.applyDetailList = res.data
         this.showDetailDialog = true
       })
