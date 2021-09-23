@@ -83,7 +83,8 @@ export default {
     // 获取活动来源
     getSourceOptions() {
       getActivitySource().then(response => {
-        this.chamberOptions = response.data
+        // this.chamberOptions = response.data
+        this.chamberOptions = response.data.filter(item => item.name !== '凯迪云商会')
         this.chamberOptions.unshift({
           id: '',
           name: '全部'
