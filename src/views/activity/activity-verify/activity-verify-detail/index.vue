@@ -105,7 +105,7 @@
         </el-table-column>
         <el-table-column label="用户属性" width="120px">
           <template slot-scope="scope">
-            <span v-if="scope.row.userType === null">云商会成员</span>
+            <span v-if="scope.row.userType === null">商/协会成员</span>
             <span v-if="scope.row.userType === 1">本商会成员</span>
             <span v-if="scope.row.userType === 0">普通用户</span>
           </template>
