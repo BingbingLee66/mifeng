@@ -159,7 +159,7 @@ export default {
           }
           aduitActivityApply(this.selectionDatas).then(res => {
             if (res.state === 1) {
-              if (res.msg.indexOf('agreeCount') != -1) {
+              if (res.msg.indexOf('agreeCount') !== -1) {
                 let resMsg = JSON.parse(res.msg)
                 this.agreeCount = resMsg.agreeCount
                 this.applyCount = resMsg.applyCount
@@ -196,9 +196,18 @@ export default {
           }
           paramsArr.push(paramsObj)
           aduitActivityApply(paramsArr).then(res => {
-            this.getApplyDetail()
-            this.fetchData(1)
-            this.$message.success(res.msg)
+            if (res.state === 1) {
+              if (res.msg.indexOf('agreeCount') !== -1) {
+                let resMsg = JSON.parse(res.msg)
+                this.agreeCount = resMsg.agreeCount
+                this.applyCount = resMsg.applyCount
+                this.showTipDialog = true
+              } else {
+                this.getApplyDetail()
+                this.fetchData(1)
+                this.$message.success(res.msg)
+              }
+            }
           })
         }).catch(() => {
         })

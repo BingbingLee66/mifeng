@@ -94,6 +94,12 @@ export default {
       this.previewImgVisible = true
       this.previewUrl = url
     },
+    handleInput(e) {
+      let regexp = /^[1-9]\d*$/
+      if (!regexp.test(e)) {
+        this.query.id = ''
+      }
+    },
     // 查询活动列表
     fetchData(e) {
       if (e !== undefined) {

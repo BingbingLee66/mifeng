@@ -27,7 +27,7 @@ export default {
         activityName: '',
         activityStatus: -1,
         isPublish: -1,
-        chamberId: '',
+        ckey: '',
         isAdd: 0,
       },
       // 可添加活动
@@ -82,7 +82,20 @@ export default {
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
+    handleInput(e) {
+      let regexp = /^[1-9]\d*$/
+      if (!regexp.test(e)) {
+        this.query.activityId = ''
+      }
+    },
+    handleInput2(e) {
+      let regexp = /^[1-9]\d*$/
+      if (!regexp.test(e)) {
+        this.actquery.activityId = ''
+      }
+    },
     fetchData(e) {
+      console.log('this.query.ckey', this.query.ckey)
       if (e !== undefined) {
         this.currentpage = 1
       }
@@ -91,7 +104,7 @@ export default {
         'activityId': this.query.activityId,
         'activityName': this.query.activityName,
         'activityStatus': this.query.activityStatus,
-        'chamberId': this.query.chamberId,
+        'ckey': this.query.ckey,
         'isPublish': this.query.isPublish,
         'isAdd': this.query.isAdd,
         'page': this.currentpage,
@@ -106,6 +119,7 @@ export default {
     getChamberOptions() {
       getActivitySource().then(res => {
         this.chamberOptions = res.data
+        console.log('this.chamberOptions', this.chamberOptions)
       })
     },
     handleSizeChange(val) {

@@ -3,12 +3,12 @@
     <div class="from-block" style="margin:20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="活动来源">
-          <el-select v-model="query.chamberId" placeholder="请选择" clearable>
-            <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id"/>
+          <el-select v-model="query.ckey" placeholder="请选择" clearable>
+            <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey"/>
           </el-select>
         </el-form-item>
         <el-form-item label="活动ID">
-          <el-input v-model="query.activityId" placeholder="请输入"/>
+          <el-input v-model="query.activityId" maxlength="9" @input="handleInput" placeholder="请输入"/>
         </el-form-item>
         <el-form-item label="活动名称">
           <el-input v-model="query.activityName" placeholder="关键词"/>
@@ -92,6 +92,7 @@
         </el-table-column>
         <el-table-column label="活动状态" width="100px">
           <template slot-scope="scope">
+            <span v-if="scope.row.status === 0">--</span>
             <span v-if="scope.row.status === 1">未开始</span>
             <span v-if="scope.row.status === 2">进行中</span>
             <span v-if="scope.row.status === 3">已结束</span>
@@ -130,7 +131,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label-width="100px" label="活动ID">
-            <el-input v-model="actquery.activityId" placeholder="请输入"/>
+            <el-input v-model="actquery.activityId" maxlength="9" @input="handleInput2" placeholder="请输入"/>
           </el-form-item>
           <el-form-item label-width="100px" label="活动名称">
             <el-input v-model="actquery.activityName" placeholder="请输入"/>
