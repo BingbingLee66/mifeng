@@ -253,17 +253,19 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="" :visible.sync="detailVisible" width="450px">
-      <div class="u-preview-wrap">
-        <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="u-article-remark">
-          不通过理由：{{ detailObj.auditRemark }}
+    <div class="art-preview-wrap">
+      <el-dialog title="" :visible.sync="detailVisible" width="60%">
+        <div class="u-preview-wrap">
+          <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="u-article-remark">
+            不通过理由：{{ detailObj.auditRemark }}
+          </div>
+          <div class="u-preview-area">
+            <div class="u-article-title">{{ detailObj.title }}</div>
+            <div class="u-article-content" v-html="detailObj.contentHtml"/>
+          </div>
         </div>
-        <div class="u-preview-area">
-          <div class="u-article-title">{{ detailObj.title }}</div>
-          <div class="u-article-content" v-html="detailObj.contentHtml"/>
-        </div>
-      </div>
-    </el-dialog>
+      </el-dialog>
+    </div>
     <!-- 修改权重 -->
     <el-dialog title="权重" :visible.sync="showSortDialog" width="520px">
       <el-form :model="sortForm" ref="sortForm" label-width="100px" :rules="sortFormRules">
@@ -286,18 +288,16 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
-</style>
-<style>
 .u-preview-wrap {
-  width: 95%;
-  height: auto;
-  min-height: 500px;
+  width: 100%;
+  height: 80vh;
 }
 
 .u-preview-area {
   width: 100%;
-  height: 60vh;
-  margin: 30px 20px;
+  height: 100%;
+  overflow: hidden;
+  margin: 0 auto;
   border: 1px solid #d9dde2;
   overflow-y: auto;
 }
@@ -322,15 +322,28 @@
   margin:20px;
 }
 
-.u-article-content > p > img {
-  margin: 20px 10%;
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+> > >  .u-article-content img {
+  margin: 10px 10%;
   width: 80% !important;
   height: auto !important;
-  max-height: 100% !important;
 }
 
 .content-box {
   max-height: 70px;
   /*overflow-y: auto;*/
+}
+</style>
+
+<style lang="scss">
+.art-preview-wrap {
+  .el-dialog {
+    margin-top: 5vh !important;
+    height: 90vh;
+    overflow: hidden;
+  }
 }
 </style>

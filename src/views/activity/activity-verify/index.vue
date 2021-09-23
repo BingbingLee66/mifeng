@@ -17,7 +17,7 @@
           </el-select>
         </el-form-item>
         <el-form-item style="margin-right: 30px;" label="活动ID">
-          <el-input v-model="query.activityId" placeholder="请输入" />
+          <el-input v-model="query.activityId" placeholder="请输入" maxlength="9" @input="handleInput" />
         </el-form-item>
         <el-form-item style="margin-right: 30px;" label="活动名称">
           <el-input v-model="query.activityName" placeholder="关键词" />

@@ -45,6 +45,12 @@ export default {
         this.chamberOptions = res2
       })
     },
+    handleInput(e) {
+      let regexp = /^[1-9]\d*$/
+      if (!regexp.test(e)) {
+        this.query.activityId = ''
+      }
+    },
     // 切换tab
     handleClick(tab) {
       this.type = tab.name

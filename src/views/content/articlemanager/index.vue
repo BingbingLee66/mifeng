@@ -203,21 +203,20 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    <el-dialog
-      title=""
-      :visible.sync="visible"
-      width="450px"
-    >
-      <div class="m-preview-wrap">
-        <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="m-article-remark">
-          不通过理由：{{ detailObj.auditRemark }}
+    <div class="art-preview-wrap">
+      <el-dialog title="" :visible.sync="visible" width="60%">
+        <div class="m-preview-wrap">
+          <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="m-article-remark">
+            不通过理由：{{ detailObj.auditRemark }}
+          </div>
+          <div class="m-preview-area">
+            <div class="m-article-title">{{ detailObj.title }}</div>
+            <div class="m-article-content" v-html="detailObj.contentHtml"/>
+          </div>
         </div>
-        <div class="m-preview-area">
-          <div class="m-article-title">{{ detailObj.title }}</div>
-          <div class="m-article-content" v-html="detailObj.contentHtml"/>
-        </div>
-      </div>
-    </el-dialog>
+      </el-dialog>
+    </div>
+
   </div>
 </template>
 
@@ -225,18 +224,17 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
-</style>
-<style>
+
 .m-preview-wrap {
-  width: 95%;
-  height: auto;
-  min-height: 500px;
+  width: 100%;
+  height: 80vh;
 }
 
 .m-preview-area {
   width: 100%;
-  height: 60vh;
-  margin: 30px 20px;
+  height: 100%;
+  overflow: hidden;
+  margin: 0 auto;
   border: 1px solid #d9dde2;
   overflow-y: auto;
 }
@@ -261,10 +259,23 @@
   margin: 20px;
 }
 
-.m-article-content > p > img {
-  margin: 20px 10%;
-  width: 80% !important;
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+> > > .m-preview-area img {
+  width: 100% !important;
   height: auto !important;
-  /*max-height: 100% !important;*/
 }
 </style>
+
+<style lang="scss">
+.art-preview-wrap {
+  .el-dialog {
+    margin-top: 5vh !important;
+    height: 90vh;
+    overflow: hidden;
+  }
+}
+</style>
+
