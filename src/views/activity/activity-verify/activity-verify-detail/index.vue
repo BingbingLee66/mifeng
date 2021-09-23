@@ -6,14 +6,16 @@
     <div class="statistic-wrap">
       <div class="intro">
         <div>活动名称：{{ applyDetail.activityName }}</div>
-        <div style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">活动来源：{{ applyDetail.chamberName === null ? '凯迪云商会' : applyDetail.chamberName }}</div>
+        <div style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">
+          活动来源：{{ applyDetail.chamberName === null ? '凯迪云商会' : applyDetail.chamberName }}
+        </div>
         <div>活动时间：{{ applyDetail.activityStartTime }} - {{ applyDetail.activityEndTime }}</div>
         <div>
           参加人数：
           <!-- <span v-if="applyDetail.applyCount === null">不限</span>
           <span v-if="applyDetail.applyCount !== null">限{{ applyDetail.applyCount }}人</span> -->
           <span v-if="applyDetail.isLimit===0">不限</span>
-          <span v-if="applyDetail.isLimit===1">限{{scope.row.applyCount}}人 </span>
+          <span v-if="applyDetail.isLimit===1">限{{ scope.row.applyCount }}人 </span>
         </div>
       </div>
       <div class="item-wrap">
@@ -32,7 +34,7 @@
         <div class="red-label">
           <!-- {{ applyDetail.applyCount === null ? '不限' : applyDetail.applyCount - applyDetail.approvedNum }} -->
           <span v-if="applyDetail.isLimit===0">不限</span>
-          <span v-if="applyDetail.isLimit===1">{{applyDetail.applyCount - applyDetail.approvedNum}}</span>
+          <span v-if="applyDetail.isLimit===1">{{ applyDetail.applyCount - applyDetail.approvedNum }}</span>
         </div>
         <div class="item-name">剩余名额</div>
       </div>
@@ -45,36 +47,36 @@
       <el-form ref="query" label-position="right" label-width="80px" :inline="true" size="mini" :model="query">
         <el-form-item label="审核状态" class="form-item">
           <el-select v-model="query.auditStatus" placeholder="请选择" clearable>
-            <el-option label="全部" :value="-1" />
-            <el-option label="待审核" :value="0" />
-            <el-option label="已通过" :value="1" />
-            <el-option label="已驳回" :value="2" />
+            <el-option label="全部" :value="-1"/>
+            <el-option label="待审核" :value="0"/>
+            <el-option label="已通过" :value="1"/>
+            <el-option label="已驳回" :value="2"/>
           </el-select>
         </el-form-item>
         <el-form-item label="签到状态" class="form-item">
           <el-select v-model="query.signStatus" placeholder="请选择" clearable>
-            <el-option label="全部" :value="-1" />
-            <el-option label="待签到" :value="0" />
-            <el-option label="已签到" :value="1" />
-            <el-option label="未签到" :value="2" />
+            <el-option label="全部" :value="-1"/>
+            <el-option label="待签到" :value="0"/>
+            <el-option label="已签到" :value="1"/>
+            <el-option label="未签到" :value="2"/>
           </el-select>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="query.name" placeholder="关键词" />
+          <el-input v-model="query.name" placeholder="关键词"/>
         </el-form-item>
         <el-form-item label="手机号">
-          <el-input v-model="query.phone" placeholder="关键词" />
+          <el-input v-model="query.phone" placeholder="关键词"/>
         </el-form-item>
         <el-form-item label="用户属性" class="form-item">
           <el-select v-model="query.userType" placeholder="请选择">
-            <el-option label="全部" :value="-1" />
-            <el-option label="商协会成员" :value="0" />
-            <el-option label="普通用户" :value="1" />
+            <el-option label="全部" :value="-1"/>
+            <el-option label="商协会成员" :value="0"/>
+            <el-option label="普通用户" :value="1"/>
           </el-select>
         </el-form-item>
         <el-form-item label="所属商会">
           <el-select v-model="query.chamberId" placeholder="请选择">
-            <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id" />
+            <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id"/>
           </el-select>
         </el-form-item>
         <el-form-item label="">
@@ -89,7 +91,7 @@
     </div>
     <div class="table_wrap">
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55px" />
+        <el-table-column type="selection" width="55px"/>
         <el-table-column label="报名时间" width="180px">
           <template slot-scope="scope">
             {{ scope.row.createdTs }}
@@ -141,10 +143,11 @@
                 <el-button size="mini" type="success" @click="handleAudit(scope.row,1)">通过</el-button>
                 <el-button size="mini" type="warning" @click="handleAudit(scope.row,2)">驳回</el-button>
               </div>
-              <div v-if="scope.row.auditStatus === 2 || scope.row.signStatus === 1 || scope.row.signStatus === 2">--</div>
+              <div v-if="scope.row.auditStatus === 2 || scope.row.signStatus === 1 || scope.row.signStatus === 2">--
+              </div>
               <div v-if="scope.row.signStatus === 0 && scope.row.auditStatus !== 2 && scope.row.auditStatus !== 0">
                 <el-checkbox @change="e=>handleSign(e,scope.row,1)">已签到</el-checkbox>
-                <br />
+                <br/>
                 <el-checkbox @change="e=>handleSign(e,scope.row,2)">未签到</el-checkbox>
               </div>
             </div>
@@ -152,7 +155,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
 
     <!-- 驳回弹窗 -->
@@ -182,9 +185,16 @@
 
     <!-- 提示 -->
     <el-dialog title="提示" :visible.sync="showTipDialog" width="400px">
-      <div>该活动仅限50人参加，名额仅剩 10 个，允许审核通过的人数，需控制在10个以内哦</div>
+      <div v-if="applyCount-agreeCount===0">
+        <div>没有名额啦！</div>
+        <div>该活动仅限 {{ applyCount }} 人参加，已有 {{ agreeCount }} 人审核通过</div>
+      </div>
+      <div v-else>
+        该活动仅限 {{ applyCount }} 人参加，名额仅剩 <span class="red-label">{{ applyCount - agreeCount }}</span> 个，
+        允许审核通过的人数，需控制在 {{ applyCount - agreeCount }} 个以内哦
+      </div>
       <div slot="footer" style="text-align: center;">
-        <el-button type="primary" @click="showDetailDialog = false">我知道了</el-button>
+        <el-button type="primary" @click="showTipDialog = false">我知道了</el-button>
       </div>
     </el-dialog>
   </div>
@@ -234,6 +244,7 @@
 .verify-container {
   .query-wrap {
     margin-top: 30px;
+
     .el-input__inner {
       width: 140px;
     }

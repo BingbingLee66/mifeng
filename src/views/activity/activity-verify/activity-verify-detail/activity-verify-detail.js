@@ -4,8 +4,7 @@ import {
   getActivityApplyDetail,
   getActivityRejectApply,
   signActivityApply,
-  aduitActivityApply,
-  downloadActivityApply
+  aduitActivityApply
 } from '@/api/activity/activity-verify'
 
 export default {
@@ -19,7 +18,7 @@ export default {
       previewImgVisible: false,
       previewUrl: '',
       query: {
-        auditStatus: '',
+        auditStatus: -1,
         signStatus: '',
         name: '',
         phone: '',
@@ -45,6 +44,8 @@ export default {
       auditFalg: null,
       mulAuditFalg: null,
       chamberName: null,
+      agreeCount: null,
+      applyCount: null
     }
   },
   created() {
@@ -135,40 +136,45 @@ export default {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
-        if (this.mulAuditFalg === 2) {
-          this.selectionDatas.push({
-            auditStatus: 2,
-            activityId: data.activityId,
-            id: data.id,
-            auditReason: this.rejectReason
-          })
-        } else {
-          this.selectionDatas.push({
-            auditStatus: 1,
-            activityId: data.activityId,
-            id: data.id,
-          })
-        }
+        // auditReason: this.rejectReason
+        this.selectionDatas.push({
+          activityId: data.activityId,
+          id: data.id
+        })
       }
     },
     handleMulAudit(falg) {
       if (this.selectionDatas.length === 0) {
         return this.$message.warning('请先选择数据')
       }
+      this.mulAuditFalg = falg
       if (falg === 1) {
         this.$confirm('确定通过吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'none'
         }).then(() => {
+          for (let data of this.selectionDatas) {
+            data['auditStatus'] = 1
+          }
           aduitActivityApply(this.selectionDatas).then(res => {
-            this.fetchData(1)
-            this.$message.success(res.msg)
+            if (res.state === 1) {
+              if (res.msg.indexOf('agreeCount') != -1) {
+                let resMsg = JSON.parse(res.msg)
+                this.agreeCount = resMsg.agreeCount
+                this.applyCount = resMsg.applyCount
+                this.showTipDialog = true
+              } else {
+                this.fetchData(1)
+                this.$message.success('操作成功')
+              }
+            }
           })
         }).catch(() => {
         })
       } else {
-        this.mulAuditFalg = falg
+        this.auditFalg = null
+        this.rejectReason = ''
         this.showRejectDialog = true
       }
     },
@@ -197,6 +203,7 @@ export default {
         }).catch(() => {
         })
       } else {
+        this.rejectReason = ''
         this.showRejectDialog = true
       }
     },
@@ -205,7 +212,11 @@ export default {
         return this.$message.error('驳回理由不能为空')
       }
       let paramsArr = []
-      if (this.mulAuditFalg === 2) {
+      if (this.auditFalg !== 2) {
+        for (let data of this.selectionDatas) {
+          data['auditStatus'] = 2
+          data['auditReason'] = this.rejectReason
+        }
         paramsArr = this.selectionDatas
       } else {
         let paramsObj = {
