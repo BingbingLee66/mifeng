@@ -21,7 +21,7 @@
         <div class="item-name">已报名人数</div>
       </div>
       <div class="item-wrap">
-        <div class="item-num">{{ applyDetail.rejectedNum ? applyDetail.rejectedNum : '--' }}</div>
+        <div class="item-num">{{ applyDetail.rejectedNum ? applyDetail.rejectedNum : 0 }}</div>
         <div class="item-name">审核驳回</div>
       </div>
       <div class="item-wrap">
@@ -30,12 +30,14 @@
       </div>
       <div class="item-wrap">
         <div class="red-label">
-          {{ applyDetail.applyCount === null ? '不限' : applyDetail.applyCount - applyDetail.approvedNum }}
+          <!-- {{ applyDetail.applyCount === null ? '不限' : applyDetail.applyCount - applyDetail.approvedNum }} -->
+          <span v-if="applyDetail.isLimit===0">不限</span>
+          <span v-if="applyDetail.isLimit===1">{{applyDetail.applyCount - applyDetail.approvedNum}}</span>
         </div>
         <div class="item-name">剩余名额</div>
       </div>
       <div class="item-wrap">
-        <div class="item-num">{{ applyDetail.auditNum ? applyDetail.auditNum : '--' }}</div>
+        <div class="item-num">{{ applyDetail.auditNum ? applyDetail.auditNum : 0 }}</div>
         <div class="item-name">待审核</div>
       </div>
     </div>
