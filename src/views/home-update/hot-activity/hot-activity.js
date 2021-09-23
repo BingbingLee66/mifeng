@@ -43,7 +43,7 @@ export default {
         activityName: '',
         activityStatus: -1,
         isPublish: -1,
-        chamberId: '',
+        ckey: '',
         isAdd: 1,
       },
       actIdsList: [],
@@ -136,7 +136,7 @@ export default {
       this.actquery.activityId = ''
       this.actquery.activityName = ''
       this.actquery.activityStatus = -1
-      this.actquery.chamberId = ''
+      this.actquery.ckey = ''
       this.showAddDialog = true
       this.getActivityLists()
     },
@@ -147,7 +147,7 @@ export default {
         'pageSize': this.actPage.pageSize,
         'activityName': this.actquery.activityName,
         'activityId': this.actquery.activityId,
-        'chamberId': this.actquery.chamberId,
+        'ckey': this.actquery.ckey,
         'activityStatus': this.actquery.activityStatus,
         'isAdd': this.actquery.isAdd,
       }

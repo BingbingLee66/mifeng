@@ -83,9 +83,12 @@
         </el-table-column>
         <el-table-column label="活动状态" width="100px">
           <template slot-scope="scope">
-            <div v-if="scope.row.status === 1">未开始</div>
-            <div v-if="scope.row.status === 2">进行中</div>
-            <div v-if="scope.row.status === 3">已结束</div>
+            <div v-if="scope.row.isPublish === 0">--</div>
+            <div v-else>
+              <div v-if="scope.row.status === 1">未开始</div>
+              <div v-if="scope.row.status === 2">进行中</div>
+              <div v-if="scope.row.status === 3">已结束</div>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" width="100px">
