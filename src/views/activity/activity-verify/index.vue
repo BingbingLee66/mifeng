@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div v-if="!query.ckey">
+    <div v-if="!chamberCkey">
       <el-tabs v-model="type" @tab-click="handleClick">
         <el-tab-pane label="凯迪云商会" name="1"></el-tab-pane>
         <el-tab-pane label="其他商协会" name="2"></el-tab-pane>
@@ -8,7 +8,7 @@
     </div>
     <div style="margin:20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
-        <el-form-item style="margin-right: 30px;" label="活动来源" v-if="!query.ckey">
+        <el-form-item style="margin-right: 30px;" label="活动来源" v-if="!chamberCkey">
           <el-select v-if="type==1" v-model="yunCkey" disabled placeholder="请选择" clearable>
             <el-option label="凯迪云商会" value='' />
           </el-select>

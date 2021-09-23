@@ -8,6 +8,7 @@ export default {
     return {
       type: '1',
       yunCkey: '',
+      chamberCkey: '',
       query: {
         ckey: '',
         activityId: '',
@@ -26,7 +27,7 @@ export default {
     }
   },
   created() {
-    this.query.ckey = this.$store.getters.ckey
+    this.chamberCkey = this.$store.getters.ckey
     this.getChamberOptions()
     this.fetchData()
   },
@@ -61,8 +62,14 @@ export default {
         this.currentpage = 1
       }
       this.listLoading = true
+      let ckey = null
+      if (e === 'other' || (this.type === '2' && this.query.ckey === '')) {
+        ckey = 'other'
+      } else {
+        ckey = this.query.ckey
+      }
       let params = {
-        'ckey': e === 'other' ? 'other' : this.query.ckey,
+        'ckey': ckey,
         'activityId': this.query.activityId,
         'activityName': this.query.activityName,
         'activityStatus': this.query.activityStatus,
