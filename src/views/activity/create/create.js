@@ -320,8 +320,6 @@ export default {
             return this.$message.error('请选择省份')
           } else if (!this.areaData.hasOwnProperty('city')) {
             return this.$message.error('请选择城市')
-          } else if (!this.areaData.hasOwnProperty('country')) {
-            return this.$message.error('请选择城区')
           } else if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
             return this.$message.error('请选择报名对象')
           } else if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
@@ -331,7 +329,12 @@ export default {
             if (!regexp.test(this.formObj.applyCount)) {
               return this.$message.error('参加人数为大于0的正整数')
             }
-          } else if (!this.formObj.introduce.trim()) {
+          } else if (!this.formObj.introduce) {
+            return this.$message.error('活动介绍不能为空')
+          }
+          let introHtml = this.formObj.introduce.replace(/<\/?.+?>/g, '')
+          let introHtml2 = introHtml.replace(/&nbsp;/ig, '')
+          if (introHtml2.match(/^\s+$/) || introHtml2.length === 0) {
             return this.$message.error('活动介绍不能为空')
           }
           this.formObj.ckey = this.ckey
@@ -341,8 +344,10 @@ export default {
           this.formObj.provinceCode = this.areaData.province.code
           this.formObj.city = this.areaData.city.name
           this.formObj.cityCode = this.areaData.city.code
-          this.formObj.area = this.areaData.country.name
-          this.formObj.areaCode = this.areaData.country.code
+          if (this.areaData.hasOwnProperty('country')) {
+            this.formObj.area = this.areaData.country.name
+            this.formObj.areaCode = this.areaData.country.code
+          }
           if (this.activityId) {
             this.formObj['id'] = this.activityId
           }
