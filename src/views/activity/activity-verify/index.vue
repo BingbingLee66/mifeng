@@ -25,8 +25,9 @@
         <el-form-item label="活动状态">
           <el-select v-model="query.activityStatus" placeholder="请选择状态">
             <el-option label="全部状态" :value="-1" />
-            <el-option label="已发布" :value="1" />
-            <el-option label="未发布" :value="2" />
+            <el-option label="未开始" :value="1" />
+            <el-option label="进行中" :value="2" />
+            <el-option label="已结束" :value="3" />
           </el-select>
         </el-form-item>
         <el-form-item label="">

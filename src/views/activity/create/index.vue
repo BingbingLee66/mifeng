@@ -98,7 +98,7 @@
             <el-form-item label="参加人数：" required>
               <el-checkbox v-model="applyCount.unlimit" @change="handleCheckNum($event,0)">不限</el-checkbox>
               <el-checkbox v-model="applyCount.limit" @change="handleCheckNum($event,1)">限</el-checkbox>
-              <el-input v-show="applyCount.limit" style="width: 200px;" placeholder="大于0的整数" v-model="formObj.applyCount">
+              <el-input v-show="applyCount.limit" style="width: 200px;" placeholder="大于0的整数" maxlength="9" v-model="formObj.applyCount">
                 <template slot="append">人</template>
               </el-input>
               <span style="margin-left: 20px;color: #ff0000">若这里限定了参加人数，在后台审核通过的，才能参加活动</span>
