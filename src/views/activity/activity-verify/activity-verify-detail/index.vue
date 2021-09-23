@@ -39,7 +39,7 @@
         <div class="item-name">待审核</div>
       </div>
     </div>
-    <div style="margin-top:30px;">
+    <div class="query-wrap">
       <el-form ref="query" label-position="right" label-width="80px" :inline="true" size="mini" :model="query">
         <el-form-item label="审核状态" class="form-item">
           <el-select v-model="query.auditStatus" placeholder="请选择" clearable>
@@ -85,7 +85,7 @@
       <el-button v-if="showMulBtn" size="small" type="warning" @click="handleMulAudit(2)">驳回</el-button>
       <el-button size="small" type="text" @click="downloadSignTable">下载签到表</el-button>
     </div>
-    <div>
+    <div class="table_wrap">
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55px" />
         <el-table-column label="报名时间" width="180px">
@@ -141,9 +141,9 @@
               </div>
               <div v-if="scope.row.auditStatus === 2">--</div>
               <div v-if="scope.row.signStatus === 0 && scope.row.auditStatus !== 2 && scope.row.auditStatus !== 0">
-                <el-checkbox v-model="signed" @change="e=>handleSign(e,scope.row,1)">已签到</el-checkbox>
+                <el-checkbox @change="e=>handleSign(e,scope.row,1)">已签到</el-checkbox>
                 <br />
-                <el-checkbox v-model="unsign" @change="e=>handleSign(e,scope.row,2)">未签到</el-checkbox>
+                <el-checkbox @change="e=>handleSign(e,scope.row,2)">未签到</el-checkbox>
               </div>
             </div>
             <div v-else>--</div>
@@ -229,20 +229,23 @@
 
 <style lang="scss">
 .verify-container {
-  .el-input__inner {
-    width: 140px;
-  }
-
-  .el-select {
+  .query-wrap {
+    margin-top: 30px;
     .el-input__inner {
-      width: 163px;
+      width: 140px;
     }
-  }
 
-  .form-item {
     .el-select {
       .el-input__inner {
-        width: 120px;
+        width: 163px;
+      }
+    }
+
+    .form-item {
+      .el-select {
+        .el-input__inner {
+          width: 120px;
+        }
       }
     }
   }

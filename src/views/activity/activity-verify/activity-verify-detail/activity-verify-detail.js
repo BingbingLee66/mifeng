@@ -238,6 +238,7 @@ export default {
         this.unsign = true
         this.signed = false
       }
+      return
       let params = {
         activityId: row.activityId,
         id: row.id, // 报名申请id
@@ -245,6 +246,8 @@ export default {
       }
       signActivityApply(params).then(res => {
         if (res.state === 1) {
+          this.list = []
+          this.fetchData(e)
           this.$message.success(res.msg)
         }
       })
