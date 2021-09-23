@@ -69,7 +69,7 @@ export default {
         ckey = this.query.ckey
       }
       let params = {
-        'ckey': ckey,
+        'ckey': this.chamberCkey ? this.chamberCkey : ckey,
         'activityId': this.query.activityId,
         'activityName': this.query.activityName,
         'activityStatus': this.query.activityStatus,
