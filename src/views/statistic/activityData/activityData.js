@@ -46,7 +46,7 @@ export default {
       getActivitySummaryChamber(params).then(res => {
         if (res.state === 1) {
           this.dataList = res.data.list
-          this.total = res.data.totalPages
+          this.total = res.data.totalRows
         }
       })
     },
