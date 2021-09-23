@@ -83,6 +83,10 @@ export default {
     getSourceOptions() {
       getActivitySource().then(response => {
         this.chamberOptions = response.data
+        this.chamberOptions.unshift({
+          id: '',
+          name: '全部'
+        })
       })
     },
     // 查询活动报名审核列表

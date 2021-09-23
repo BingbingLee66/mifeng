@@ -109,7 +109,6 @@ export default {
         'pageSize': this.limit,
         'page': this.currentpage,
       }
-      console.log(params, '8888888888888')
       getActivityList(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
@@ -158,7 +157,6 @@ export default {
       this.showDelDialog = true
     },
     delActivity() {
-      console.log(this.rowId)
       let params = {
         id: this.rowId
       }

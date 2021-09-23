@@ -9,7 +9,7 @@
     <div style="margin:20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item style="margin-right: 30px;" label="活动来源" v-if="!query.ckey">
-          <el-select v-if="type==1" v-model="query.ckey" disabled placeholder="请选择" clearable>
+          <el-select v-if="type==1" v-model="yunCkey" disabled placeholder="请选择" clearable>
             <el-option label="凯迪云商会" value='' />
           </el-select>
           <el-select v-if="type==2" v-model="query.ckey" placeholder="请选择" clearable>

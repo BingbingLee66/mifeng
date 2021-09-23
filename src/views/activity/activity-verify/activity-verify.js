@@ -7,6 +7,7 @@ export default {
   data() {
     return {
       type: '1',
+      yunCkey: '',
       query: {
         ckey: '',
         activityId: '',
@@ -39,15 +40,16 @@ export default {
     // 获取活动来源
     getChamberOptions() {
       getActivitySource().then(res => {
-        this.chamberOptions = res.data
+        let res2 = res.data.filter(item => item.name !== '凯迪云商会')
+        this.chamberOptions = res2
       })
     },
     // 切换tab
     handleClick(tab) {
       this.type = tab.name
-      console.log(typeof this.type)
       if (this.type === '2') {
-        this.fetchData('ohter')
+        // this.query.ckey = 'other'
+        this.fetchData('other')
       } else {
         this.query.ckey = ''
         this.fetchData(1)
@@ -60,7 +62,7 @@ export default {
       }
       this.listLoading = true
       let params = {
-        'ckey': e === 'other' ? 'ohter' : this.query.ckey,
+        'ckey': e === 'other' ? 'other' : this.query.ckey,
         'activityId': this.query.activityId,
         'activityName': this.query.activityName,
         'activityStatus': this.query.activityStatus,
@@ -68,7 +70,6 @@ export default {
         'page': this.currentpage,
       }
       getActivityApplyList(params).then(res => {
-        console.log('审核列表：', res)
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
