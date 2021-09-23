@@ -15,7 +15,7 @@
           <!-- <span v-if="applyDetail.applyCount === null">不限</span>
           <span v-if="applyDetail.applyCount !== null">限{{ applyDetail.applyCount }}人</span> -->
           <span v-if="applyDetail.isLimit===0">不限</span>
-          <span v-if="applyDetail.isLimit===1">限{{ scope.row.applyCount }}人 </span>
+          <span v-if="applyDetail.isLimit===1">限{{ applyDetail.applyCount }}人 </span>
         </div>
       </div>
       <div class="item-wrap">
