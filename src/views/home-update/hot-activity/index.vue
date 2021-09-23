@@ -3,7 +3,7 @@
     <div class="from-block" style="margin:20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="活动来源">
-          <el-select v-model="query.ckey" placeholder="请选择" clearable>
+          <el-select v-model="query.ckey" placeholder="请选择" clearable filterable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey"/>
           </el-select>
         </el-form-item>
@@ -126,7 +126,7 @@
       <el-dialog title="添加活动" :visible.sync="showAddDialog" width="80%">
         <el-form ref="query" label-position="right" :inline="true" size="mini" :model="actquery">
           <el-form-item label-width="100px" label="活动来源">
-            <el-select v-model="actquery.ckey" placeholder="请选择商品来源" clearable>
+            <el-select v-model="actquery.ckey" placeholder="请选择商品来源" clearable filterable>
               <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey"/>
             </el-select>
           </el-form-item>

@@ -12,7 +12,7 @@
           <el-select v-if="type==1" v-model="yunCkey" disabled placeholder="请选择" clearable>
             <el-option label="凯迪云商会" value='' />
           </el-select>
-          <el-select v-if="type==2" v-model="query.ckey" placeholder="请选择" clearable>
+          <el-select v-if="type==2" v-model="query.ckey" placeholder="请选择" clearable filterable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey" />
           </el-select>
         </el-form-item>

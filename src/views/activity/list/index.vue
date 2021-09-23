@@ -7,7 +7,7 @@
     <div style="margin:20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item style="margin-right: 30px;" label="活动来源" v-if="!ckey">
-          <el-select v-model="query.ckey" placeholder="请选择" clearable>
+          <el-select v-model="query.ckey" placeholder="请选择" clearable filterable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey"/>
           </el-select>
         </el-form-item>
