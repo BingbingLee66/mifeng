@@ -186,6 +186,7 @@ export default {
           }
           paramsArr.push(paramsObj)
           aduitActivityApply(paramsArr).then(res => {
+            this.getApplyDetail()
             this.fetchData(1)
             this.$message.success(res.msg)
           })
@@ -212,6 +213,7 @@ export default {
         paramsArr.push(paramsObj)
       }
       aduitActivityApply(paramsArr).then(res => {
+        this.getApplyDetail()
         this.list = []
         this.fetchData(1)
         this.$message.success('操作成功')
