@@ -233,14 +233,13 @@ export default {
     },
     // 签到
     handleSign(e, row, falg) {
-      if (falg === 1) {
-        this.signed = true
-        this.unsign = false
-      } else {
-        this.unsign = true
-        this.signed = false
-      }
-      return
+      // if (falg === 1) {
+      //   this.signed = true
+      //   this.unsign = false
+      // } else {
+      //   this.unsign = true
+      //   this.signed = false
+      // }
       let params = {
         activityId: row.activityId,
         id: row.id, // 报名申请id

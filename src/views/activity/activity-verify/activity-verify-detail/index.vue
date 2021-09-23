@@ -141,7 +141,7 @@
                 <el-button size="mini" type="success" @click="handleAudit(scope.row,1)">通过</el-button>
                 <el-button size="mini" type="warning" @click="handleAudit(scope.row,2)">驳回</el-button>
               </div>
-              <div v-if="scope.row.auditStatus === 2">--</div>
+              <div v-if="scope.row.auditStatus === 2 || scope.row.signStatus === 1 || scope.row.signStatus === 2">--</div>
               <div v-if="scope.row.signStatus === 0 && scope.row.auditStatus !== 2 && scope.row.auditStatus !== 0">
                 <el-checkbox @change="e=>handleSign(e,scope.row,1)">已签到</el-checkbox>
                 <br />
