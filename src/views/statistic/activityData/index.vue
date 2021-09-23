@@ -102,23 +102,27 @@
       <div class="meaning-wrap">
         <div class="meaning-item">
           <div class="tit">累计举办活动</div>
-          <div class="sub">在指定时间范围内，累计举办的活动数<span style="color:#FF0000;"> (有人报名且审核通过且已签到才算)</span>。</div>
+          <div class="sub">在指定时间范围内，举办的总活动数<span style="color:#FF0000;"> (有人报名且审核通过且有已签到的才算)</span>。</div>
         </div>
         <div class="meaning-item">
-          <div class="tit">累计浏览人数</div>
-          <div class="sub">在指定时间范围内，累计浏览活动的人数 <span style="color:#FF0000;">(需去重)</span>。</div>
+          <div class="tit">累计访问次数/pv</div>
+          <div class="sub">在指定时间范围内，访问过活动详情页的总次数。</div>
+        </div>
+        <div class="meaning-item">
+          <div class="tit">累计访问人数/uv</div>
+          <div class="sub">在指定时间范围内，访问过活动详情页的总人数<span style="color:#FF0000;">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">累计分享人数</div>
-          <div class="sub">在指定时间范围内，累计分享活动的人数 <span style="color:#FF0000;">(需去重)</span>。</div>
+          <div class="sub">在指定时间范围内，分享活动的总人数<span style="color:#FF0000;">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
-          <div class="tit">累计报名人数</div>
-          <div class="sub">在指定时间范围内，累计报名参加活动且审核通过的人数 <span style="color:#FF0000;">(需去重)</span>。</div>
+          <div class="tit">累计参加人数</div>
+          <div class="sub">在指定时间范围内，报名参加活动且审核通过的总人数<span style="color:#FF0000;">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">累计签到人数</div>
-          <div class="sub">在指定时间范围内，提交过订单的总人数 <span style="color:#FF0000;">(需去重)</span>。</div>
+          <div class="sub">在指定时间范围内，被管理员在后台标识已签到的总人数<span style="color:#FF0000;">(需去重)</span>。</div>
         </div>
       </div>
       <div style="text-align: center;">
