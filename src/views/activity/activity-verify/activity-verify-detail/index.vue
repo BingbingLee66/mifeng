@@ -6,7 +6,7 @@
     <div class="statistic-wrap">
       <div class="intro">
         <div>活动名称：{{ applyDetail.activityName }}</div>
-        <div>活动来源：{{ applyDetail.chamberName === null ? '凯迪云商会' : applyDetail.chamberName }}</div>
+        <div style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">活动来源：{{ applyDetail.chamberName === null ? '凯迪云商会' : applyDetail.chamberName }}</div>
         <div>活动时间：{{ applyDetail.activityStartTime }} - {{ applyDetail.activityEndTime }}</div>
         <div>
           参加人数：
@@ -199,13 +199,14 @@
   display: flex;
 
   .intro {
-    width: 60%;
+    width: 40%;
     height: 100px;
     background: #f2f2f2;
     padding: 10px;
     color: #7f7f7f;
     line-height: 1.5;
     font-size: 14px;
+    flex-shrink: 0;
   }
 
   .item-wrap {
