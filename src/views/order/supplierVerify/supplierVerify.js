@@ -59,8 +59,8 @@ export default {
       let params = {
         'supplierName': this.query.supplierName,
         'status': this.query.status,
-        'startTime': this.query.date[0],
-        'endTime': this.query.date[1],
+        'startTime': this.query.date ? this.query.date[0] : '',
+        'endTime': this.query.date ? this.query.date[1] : '',
         'pageSize': this.limit,
         'page': this.currentpage
       }

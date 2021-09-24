@@ -111,7 +111,6 @@ export default {
           if (response.data.userInfo) {
             this.userInfo = response.data.userInfo
           }
-
           console.log('member', this.member)
         })
       } else {

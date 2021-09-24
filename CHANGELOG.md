@@ -1,6 +1,31 @@
 # CHANGELOG
 
 ## [Unreleased]
+## [1.17.0] - 2021-09-23
+
+### Added
+
+### Fixed
+- 【正式环境】编辑台无法搜索已冻结的数据[377](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/377)
+
+## [Rreleased]
+## [1.16.2] - 2021-09-16
+
+### Added
+- 后台订单列表（商会后台和总后台），导表功能[372](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/372)
+
+### Fixed
+
+## [Rreleased]
+## [1.16.1] - 2021-09-09
+
+### Added
+- 新增微信订单号[360](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/360)
+- 展示供货商[365](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/365)
+
+### Fixed
+
+## [Rreleased]
 ## [1.16.0] - 2021-09-07
 
 ### Added

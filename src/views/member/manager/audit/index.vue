@@ -82,7 +82,7 @@
             <div v-if="scope.row.registerType == 0">后台</div>
             <div v-if="scope.row.registerType == 1">小程序</div>
             <div v-if="scope.row.registerType == 2">商会邀请</div>
-            <div v-if="scope.row.registerType == 3">会员邀请</div>
+            <div v-if="scope.row.registerType >= 3">会员邀请</div>
           </template>
         </el-table-column>
         <el-table-column label="状态" width="100px">
@@ -95,7 +95,7 @@
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
             <!-- <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">详情</el-button> -->
-            <el-button v-if="has('', '通过') && scope.row.auditStatus == 0" type="success" size="small" :loading="approveLoading" :actionid="getId('', '通过')" @click="approved($event, scope.row)">
+            <el-button v-if="has('', '通过') && scope.row.auditStatus == 0" type="success" size="small" :loading="rowId===scope.row.id" :actionid="getId('', '通过')" @click="approved($event, scope.row)">
               通过
             </el-button>
             <el-button v-if="has('', '驳回') && scope.row.auditStatus == 0" type="warning" size="small" :loading="rejectLoading" :actionid="getId('', '驳回')" @click="rejectRemark($event, scope.row)">

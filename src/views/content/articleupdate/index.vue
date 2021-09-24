@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="商会资讯" name="5" />
-      <el-tab-pane label="关于商会" name="6" />
-      <el-tab-pane label="联系我们" name="7" />
+      <el-tab-pane label="商会资讯" name="5"/>
+      <el-tab-pane label="关于商会" name="6"/>
+      <el-tab-pane label="联系我们" name="7"/>
     </el-tabs>
     <div v-if="activeName == '5'">
       <div class="block">
@@ -11,25 +11,25 @@
           <el-row>
             <el-col :span="5">
               <el-form-item label="文章标题：">
-                <el-input v-model="query.title" />
+                <el-input v-model="query.title"/>
               </el-form-item>
             </el-col>
             <el-col :span="4">
               <el-form-item :span="12" label="栏目：">
                 <el-select v-model="query.contentColumnId">
-                  <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label" :value="cc.value" />
+                  <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label" :value="cc.value"/>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="3">
               <el-form-item :span="12" label="状态：">
                 <el-select v-model="query.status">
-                  <el-option label="全部" :value="-1" />
-                  <el-option label="已发布" :value="1" />
-                  <el-option label="已冻结(商会)" :value="0" />
-                  <el-option label="已冻结(平台)" :value="3" />
-                  <el-option label="定时发布" :value="4" />
-                  <el-option label="审核不通过" :value="8" />
+                  <el-option label="全部" :value="-1"/>
+                  <el-option label="已发布" :value="1"/>
+                  <el-option label="已冻结(商会)" :value="0"/>
+                  <el-option label="已冻结(平台)" :value="3"/>
+                  <el-option label="定时发布" :value="4"/>
+                  <el-option label="审核不通过" :value="8"/>
                 </el-select>
               </el-form-item>
             </el-col>
@@ -48,16 +48,20 @@
             </el-col>
             <el-col :span="1">
               <el-form-item label=" ">
-                <el-button v-if="has('商会资讯', '查询')" type="primary" :actionid="getId('商会资讯', '查询')" @click="fetchData($event)">查询</el-button>
+                <el-button v-if="has('商会资讯', '查询')" type="primary" :actionid="getId('商会资讯', '查询')" @click="fetchData($event)">
+                  查询
+                </el-button>
               </el-form-item>
             </el-col>
           </el-row>
         </el-form>
       </div>
       <el-row>
-        <el-button v-if="has('商会资讯', '添加文章')" type="primary" size="small" :actionid="getId('商会资讯', '添加文章')" @click="add($event)">添加文章</el-button>
+        <el-button v-if="has('商会资讯', '添加文章')" type="primary" size="small" :actionid="getId('商会资讯', '添加文章')" @click="add($event)">
+          添加文章
+        </el-button>
       </el-row>
-      <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
+      <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @sort-change="handleSortChange">
         <!-- <el-table-column type="index" label="序号" width="60px">
         </el-table-column> -->
         <el-table-column key="activeName5" label="文章ID" width="80px">
@@ -68,6 +72,16 @@
         <el-table-column label="文章标题">
           <template slot-scope="scope">
             {{ scope.row.title }}
+          </template>
+        </el-table-column>
+        <el-table-column label="权重" width="100px">
+          <template slot-scope="scope">
+            <span class="blue-label" @click="showSort(scope.row)"> {{ scope.row.sort }} </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="浏览量" width="100px" prop="readCount" sortable="custom">
+          <template slot-scope="scope">
+            {{ scope.row.readCount ? scope.row.readCount : '--' }}
           </template>
         </el-table-column>
         <el-table-column label="栏目" width="180px">
@@ -98,8 +112,10 @@
         <el-table-column label="状态" width="120px">
           <template slot-scope="scope">
             <div v-if="scope.row.status == 1 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">已发布</div>
-            <div v-if="scope.row.status == 0 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">已冻结(商会)</div>
-            <div v-if="scope.row.status == 3 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">已冻结(平台)</div>
+            <div v-if="scope.row.status == 0 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">已冻结(商会)
+            </div>
+            <div v-if="scope.row.status == 3 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">已冻结(平台)
+            </div>
             <div v-if="scope.row.status == 4 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">定时发布</div>
             <div v-if="scope.row.auditStatus == 2 || scope.row.auditStatus == 3">审核不通过</div>
           </template>
@@ -114,10 +130,18 @@
         </el-table-column> -->
         <el-table-column label="操作" width="200px">
           <template slot-scope="scope">
-            <el-button v-if="has('商会资讯', '编辑')" type="text" :actionid="getId('商会资讯', '编辑')" @click="edit($event, scope.row)">编辑</el-button>
-            <el-button v-if="has('商会资讯', '冻结') && (scope.row.status == 1 || scope.row.status == 4)" type="text" :actionid="getId('商会资讯', '冻结')" @click="updateStatus($event, scope.row)">冻结</el-button>
-            <el-button v-if="has('商会资讯', '解冻') && scope.row.status == 0" type="text" :actionid="getId('商会资讯', '解冻')" @click="updateStatus($event, scope.row)">解冻</el-button>
-            <el-button v-if="has('商会资讯', '详情')" type="text" :actionid="getId('商会资讯', '详情')" @click="detail($event, scope.row)">详情</el-button>
+            <el-button v-if="has('商会资讯', '编辑')" type="text" :actionid="getId('商会资讯', '编辑')" @click="edit($event, scope.row)">
+              编辑
+            </el-button>
+            <el-button v-if="has('商会资讯', '冻结') && (scope.row.status == 1 || scope.row.status == 4)" type="text" :actionid="getId('商会资讯', '冻结')" @click="updateStatus($event, scope.row)">
+              冻结
+            </el-button>
+            <el-button v-if="has('商会资讯', '解冻') && scope.row.status == 0" type="text" :actionid="getId('商会资讯', '解冻')" @click="updateStatus($event, scope.row)">
+              解冻
+            </el-button>
+            <el-button v-if="has('商会资讯', '详情')" type="text" :actionid="getId('商会资讯', '详情')" @click="openDetail(scope.row)">
+              详情
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -137,7 +161,7 @@
         <el-button type="primary" size="small" @click="addCloumn($event)">添加栏目</el-button>
       </el-row>
       <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-        <el-table-column key="activeName6" type="index" label="序号" width="60px" />
+        <el-table-column key="activeName6" type="index" label="序号" width="60px"/>
         <!-- <el-table-column label="ID">
           <template slot-scope="scope">
             {{scope.row.id}}
@@ -150,7 +174,7 @@
         </el-table-column>
         <el-table-column label="文章内容">
           <template slot-scope="scope">
-            <div class="content-box" v-html="scope.row.contentHtml" />
+            <div class="content-box" v-html="scope.row.contentHtml"/>
           </template>
         </el-table-column>
         <el-table-column label="修改时间">
@@ -167,7 +191,8 @@
           <template slot-scope="scope">
             <div v-if="scope.row.status == 0 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">已冻结</div>
             <div v-if="scope.row.status == 1 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">已发布</div>
-            <div v-if="scope.row.status == 3 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">已冻结(平台)</div>
+            <div v-if="scope.row.status == 3 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">已冻结(平台)
+            </div>
             <div v-if="scope.row.status == 4 && (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)">定时发布</div>
             <div v-if="scope.row.auditStatus == 2 || scope.row.auditStatus == 3">审核不通过</div>
           </template>
@@ -183,14 +208,16 @@
           <template slot-scope="scope">
             <!-- <el-button type="text" @click="detail($event, scope.row)">详情</el-button> -->
             <el-button type="text" @click="openDetail(scope.row)">详情</el-button>
-            <el-button v-if="has('关于商会', '编辑')" type="text" :actionid="getId('关于商会', '编辑')" @click="editColumn($event, scope.row)">编辑</el-button>
+            <el-button v-if="has('关于商会', '编辑')" type="text" :actionid="getId('关于商会', '编辑')" @click="editColumn($event, scope.row)">
+              编辑
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <div v-if="activeName == '7'">
       <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-        <el-table-column key="activeName7" type="index" label="序号" width="60px" />
+        <el-table-column key="activeName7" type="index" label="序号" width="60px"/>
         <!-- <el-table-column label="ID">
           <template slot-scope="scope">
             {{scope.row.id}}
@@ -203,7 +230,7 @@
         </el-table-column> -->
         <el-table-column label="文章内容">
           <template slot-scope="scope">
-            <div class="content-box" v-html="scope.row.contentHtml" />
+            <div class="content-box" v-html="scope.row.contentHtml"/>
           </template>
         </el-table-column>
         <el-table-column label="修改时间">
@@ -219,24 +246,40 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="openDetail(scope.row)">详情</el-button>
-            <el-button v-if="has('关于商会', '编辑')" type="text" :actionid="getId('联系我们', '编辑')" @click="editColumn($event, scope.row)">编辑</el-button>
+            <el-button v-if="has('关于商会', '编辑')" type="text" :actionid="getId('联系我们', '编辑')" @click="editColumn($event, scope.row)">
+              编辑
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog
-      title=""
-      :visible.sync="detailVisible"
-      width="80%"
-    >
-      <div class="u-preview-wrap">
-        <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="u-article-remark">不通过理由：{{ detailObj.auditRemark }}</div>
-        <div class="u-preview-area">
-          <div class="u-article-content" v-html="detailObj.contentHtml" />
+    <div class="art-preview-wrap">
+      <el-dialog title="" :visible.sync="detailVisible" width="60%">
+        <div class="u-preview-wrap">
+          <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="u-article-remark">
+            不通过理由：{{ detailObj.auditRemark }}
+          </div>
+          <div class="u-preview-area">
+            <div class="u-article-title">{{ detailObj.title }}</div>
+            <div class="u-article-content" v-html="detailObj.contentHtml"/>
+          </div>
         </div>
-      </div>
+      </el-dialog>
+    </div>
+    <!-- 修改权重 -->
+    <el-dialog title="权重" :visible.sync="showSortDialog" width="520px">
+      <el-form :model="sortForm" ref="sortForm" label-width="100px" :rules="sortFormRules">
+        <el-form-item label="权重" prop="sort">
+          <el-input v-model="sortForm.sort" placeholder="请输入"></el-input>
+          <div style="line-height: 1.5;margin-top: 10px;">权重请控制在0-999，权重为0不在前台展示，权重越大越靠前</div>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="updateSort('sortForm')">提交</el-button>
+          <el-button @click="showSortDialog=false">取消</el-button>
+        </el-form-item>
+      </el-form>
     </el-dialog>
-    <addColumn ref="addColumnRef" />
+    <addColumn ref="addColumnRef"/>
   </div>
 
 </template>
@@ -244,40 +287,63 @@
 <script src="./articleupdate.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
-</style>
-<style>
+@import "src/styles/common.scss";
 .u-preview-wrap {
-  width: 95%;
-  height: auto;
-  min-height: 500px;
+  width: 100%;
+  height: 80vh;
 }
+
 .u-preview-area {
   width: 100%;
-  min-height: 500px;
-  margin: 30px 20px;
+  height: 100%;
+  overflow: hidden;
+  margin: 0 auto;
   border: 1px solid #d9dde2;
   overflow-y: auto;
 }
+
 .u-article-remark {
   font-size: 19px;
   font-weight: 500;
   margin: 0px 20px;
 }
+
+.u-article-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 40px 40px 20px 40px;
+}
+
 .u-article-content {
   font-size: 16px;
   font-weight: 500;
   line-height: 1.8;
-  margin: 0 40px 20px 40px;
+  margin:20px;
 }
-.u-article-content>p>img {
-  margin: 20px 10%;
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+> > >  .u-article-content img {
+  margin: 10px 10%;
   width: 80% !important;
   height: auto !important;
-  max-height: 100% !important;
 }
+
 .content-box {
   max-height: 70px;
   /*overflow-y: auto;*/
+}
+</style>
+
+<style lang="scss">
+.art-preview-wrap {
+  .el-dialog {
+    margin-top: 5vh !important;
+    height: 90vh;
+    overflow: hidden;
+  }
 }
 </style>

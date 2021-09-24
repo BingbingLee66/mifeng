@@ -1,4 +1,12 @@
-import { getManagerList, updateStatusPlatform, getDetail, updateAudit, del, countTop, setTop } from '@/api/content/article'
+import {
+  getManagerList,
+  updateStatusPlatform,
+  getDetail,
+  updateAudit,
+  del,
+  countTop,
+  setTop
+} from '@/api/content/article'
 import { getAllContentColumnOptions } from '@/api/content/columnsetup'
 
 export default {
@@ -17,6 +25,7 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
+      sortFlag: '',
       selectionDatas: [],
       detailObj: {
         title: '',
@@ -27,18 +36,30 @@ export default {
       contentColumnOptions: []
     }
   },
-  computed: {
-  },
+  computed: {},
   created() {
     this.getContentColumnType()
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
+    },
+    // 浏览量排序
+    handleSortChange(e) {
+      // let sort = ''
+      this.currentpage = 1
+      if (e.prop) {
+        if (e.order === 'descending') {
+          this.sortFlag = 'read_count desc'
+        } else {
+          this.sortFlag = 'read_count'
+        }
+        this.fetchData(1)
+      }
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -56,7 +77,7 @@ export default {
         this.fetchData()
       }
     },
-    getContentColumnType () {
+    getContentColumnType() {
       getAllContentColumnOptions().then(response => {
         this.contentColumnOptions = response.data.data
         this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
@@ -69,12 +90,13 @@ export default {
       this.currentpage = 1
       this.fetchData(e)
     },
-    fetchData(e) {
-      if (e !== undefined) {
+    fetchData(e, sort) {
+      if (e !== undefined && e !== 1) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       this.listLoading = true
       let params = {
+        'order': this.sortFlag,
         'pageSize': this.limit,
         'page': this.currentpage,
         'title': this.query.title,
@@ -82,13 +104,16 @@ export default {
         'status': this.query.status,
         'publishTimeType': this.query.publishTimeType
       }
+      // if (sort) {
+      //   params['order'] = sort
+      // }
       getManagerList(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
         this.listLoading = false
       })
     },
-    detail (e, row) {
+    detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.selectId = row.id
       let params = {
@@ -101,17 +126,17 @@ export default {
       })
       this.visible = true
     },
-    handlerChange (value) {
+    handlerChange(value) {
       this.query.tradeType = value[value.length - 1]
     },
-    handleSelectionChange (value) {
+    handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
         this.selectionDatas.push(data.id)
       }
     },
-    delArticle (e, row) {
+    delArticle(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$confirm('此删除会把文章直接从数据库删除不可恢复，请谨慎操作', '确定删除文章？', {
         confirmButtonText: '确定',
@@ -136,7 +161,7 @@ export default {
         })
       })
     },
-    batchDelArticle (e) {
+    batchDelArticle(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -166,7 +191,7 @@ export default {
         })
       })
     },
-    updateStatus (e, row) {
+    updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let ids = []
       ids.push(row.id)
@@ -189,7 +214,7 @@ export default {
         this.fetchData()
       })
     },
-    batchUpdateStatus (e) {
+    batchUpdateStatus(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -209,7 +234,7 @@ export default {
         this.fetchData()
       })
     },
-    top (e, row) {
+    top(e, row) {
       const actionId = e.currentTarget.getAttribute('actionid')
       countTop().then(response => {
         const count = response.data.count
@@ -247,11 +272,11 @@ export default {
         }
       })
     },
-    edit (row) {
+    edit(row) {
       window.localStorage.setItem('articleeditor', this.$route.path)
       this.$router.push({ name: '添加或编辑文章', params: { 'articleId': row.id } })
     },
-    goSettop (e) {
+    goSettop(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '置顶管理' })
     }

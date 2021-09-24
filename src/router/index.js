@@ -227,7 +227,15 @@ export const constantRoutes = [
         component: () => import('@/views/member/memberNotice/smsRecords/index'),
         hidden: true,
         meta: { title: '短信记录' }
-      }
+      },
+      // 活动报名审核详情
+      {
+        path: '/activity/applyDetail',
+        name: '审核详情',
+        component: () => import('@/views/activity/activity-verify/activity-verify-detail/index'),
+        hidden: true,
+        meta: { title: '审核详情' }
+      },
     ]
   }
 ]

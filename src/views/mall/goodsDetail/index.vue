@@ -53,6 +53,22 @@
         <el-row>
           <el-col :span="2">
             <div class="dy-form-label">
+              <span>商品海报图：</span>
+            </div>
+          </el-col>
+          <el-col :span="20">
+            <el-form-item label="">
+              <div v-if="detailObj.poster" class="goods-pre">
+                <img :src="detailObj.poster" class="goods-avatar">
+                <div class="goods-pre-btn" @click="openPreviewModal(detailObj.poster)">预览</div>
+              </div>
+              <div v-else>无</div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="2">
+            <div class="dy-form-label">
               <span>商品列表图：</span>
             </div>
           </el-col>
