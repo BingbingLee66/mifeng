@@ -332,7 +332,7 @@ export default {
           } else if (!this.formObj.introduce) {
             return this.$message.error('活动介绍不能为空')
           }
-          let introHtml = this.formObj.introduce.replace(/<\/?.+?>/g, '')
+          let introHtml = this.formObj.introduce.replace(/<\/?p[^>]*>/gi, '')
           let introHtml2 = introHtml.replace(/&nbsp;/ig, '')
           if (introHtml2.match(/^\s+$/) || introHtml2.length === 0) {
             return this.$message.error('活动介绍不能为空')
