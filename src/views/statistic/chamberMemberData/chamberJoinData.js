@@ -4,8 +4,8 @@ export default {
   data() {
     return {
       currentpage: 1,
-      type: null,
-      column: null,
+      type: -1,
+      column: 'joinedTotal',
       limit: 10,
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
