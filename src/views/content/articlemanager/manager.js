@@ -25,6 +25,7 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
+      sortFlag: '',
       selectionDatas: [],
       detailObj: {
         title: '',
@@ -49,15 +50,15 @@ export default {
     },
     // 浏览量排序
     handleSortChange(e) {
-      let sort = ''
+      // let sort = ''
       this.currentpage = 1
       if (e.prop) {
         if (e.order === 'descending') {
-          sort = 'read_count desc'
+          this.sortFlag = 'read_count desc'
         } else {
-          sort = 'read_count'
+          this.sortFlag = 'read_count'
         }
-        this.fetchData(1, sort)
+        this.fetchData(1)
       }
     },
     handleSizeChange(val) {
@@ -95,7 +96,7 @@ export default {
       }
       this.listLoading = true
       let params = {
-        // 'order': 'read_count desc',
+        'order': this.sortFlag,
         'pageSize': this.limit,
         'page': this.currentpage,
         'title': this.query.title,
@@ -103,9 +104,9 @@ export default {
         'status': this.query.status,
         'publishTimeType': this.query.publishTimeType
       }
-      if (sort) {
-        params['order'] = sort
-      }
+      // if (sort) {
+      //   params['order'] = sort
+      // }
       getManagerList(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows

@@ -28,6 +28,7 @@ export default {
       list: [],
       currentpage: 1,
       limit: 10,
+      sortFalg: '',
       listLoading: false,
       query: {
         title: '',
@@ -76,15 +77,15 @@ export default {
     },
     // 浏览量排序
     handleSortChange(e) {
-      let sort = ''
+      // let sort = ''
       this.currentpage = 1
       if (e.prop) {
         if (e.order === 'descending') {
-          sort = 'read_count desc'
+          this.sortFalg = 'read_count desc'
         } else {
-          sort = 'read_count'
+          this.sortFalg = 'read_count'
         }
-        this.fetchData(1, sort)
+        this.fetchData(1)
       }
     },
     // 修改权重
@@ -162,6 +163,7 @@ export default {
       }
       this.listLoading = true
       let params = {
+        'order': this.sortFalg,
         'pageSize': this.limit,
         'page': this.currentpage,
         'ckey': this.$store.getters.ckey,
@@ -170,9 +172,9 @@ export default {
         'contentColumnId': this.query.contentColumnId,
         'status': this.query.status
       }
-      if (sort) {
-        params['order'] = sort
-      }
+      // if (sort) {
+      //   params['order'] = sort
+      // }
       if (this.query.date) {
         params['startTs'] = this.query.date[0]
         params['endTs'] = this.query.date[1]
