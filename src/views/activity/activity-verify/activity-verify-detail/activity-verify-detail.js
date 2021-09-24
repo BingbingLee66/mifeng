@@ -166,6 +166,7 @@ export default {
                 this.applyCount = resMsg.applyCount
                 this.showTipDialog = true
               } else {
+                this.getApplyDetail()
                 this.fetchData(1)
                 this.$message.success('操作成功')
               }

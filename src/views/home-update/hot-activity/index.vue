@@ -76,7 +76,9 @@
         </el-table-column>
         <el-table-column label="报名人数" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.applyCount === null ? '不限' : '限' + scope.row.applyCount + '人'}}
+            <span v-if="scope.row.isLimit===0">不限</span>
+            <span v-if="scope.row.isLimit===1">限{{scope.row.applyCount}}人 </span>
+            <!-- {{ scope.row.applyCount === null ? '不限' : '限' + scope.row.applyCount + '人'}}  -->
           </template>
         </el-table-column>
         <el-table-column label="签到人数" width="100px">
