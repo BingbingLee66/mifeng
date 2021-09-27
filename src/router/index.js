@@ -236,6 +236,13 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '审核详情' }
       },
+      {
+        path: '/mall/couponDetail',
+        name: '查看优惠券',
+        component: () => import('@/views/mall/coupon-detail/index'),
+        hidden: true,
+        meta: { title: '查看优惠券' }
+      },
     ]
   }
 ]
