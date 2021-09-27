@@ -23,7 +23,7 @@
     <div>
       <el-button type="danger" size="small" @click="create">创建优惠券</el-button>
     </div>
-    <div class="block-table">
+    <div class="table-block">
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column label="优惠券ID" width="100px">
           <template slot-scope="scope">
@@ -33,24 +33,27 @@
         <el-table-column label="优惠券名称" width="200px">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
-        <el-table-column label="类型" width="200px">
+        <el-table-column label="类型" width="100px">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
-        <el-table-column label="有效期" width="160px">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
+        <el-table-column label="有效期" width="130px">
+          <template slot-scope="scope">
+            {{ scope.row.createTime | dateFormat }}至
+            {{ scope.row.createTime | dateFormat }}
+          </template>
         </el-table-column>
-        <el-table-column label="发行量" width="130px">
+        <el-table-column label="发行量" width="100px">
           <template slot-scope="scope">
             <div class="blue-label" @click="showIssue">{{ scope.row.name }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="获取规则" width="200px">
+        <el-table-column label="获取规则" width="150px">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
-        <el-table-column label="使用规则" width="200px">
+        <el-table-column label="使用规则" width="150px">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
-        <el-table-column label="已发放/领取" width="300px">
+        <el-table-column label="已发放/领取" width="100px">
           <template slot-scope="scope">
             <div class="blue-label" @click="goIssueList">{{ scope.row.name }}</div>
           </template>
@@ -60,7 +63,7 @@
             <div class="blue-label" @click="goOrderList">{{ scope.row.name }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="创建时间" width="100px">
+        <el-table-column label="创建时间" width="160px">
           <template slot-scope="scope"> {{ scope.row.createTime | dateFormat }}</template>
         </el-table-column>
         <el-table-column label="操作" fixed="right">
@@ -94,7 +97,7 @@
 </style>
 <style lang="scss">
 .from-block {
-  margin: 20px 0;
+  margin: 10px 0;
 
   .el-form-item {
     margin-right: 40px;
@@ -107,16 +110,13 @@
   }
 }
 
+.table-block {
+  margin-top: 20px;
+}
+
 .table-dialog {
   .el-dialog {
     margin-top: 8vh !important;
-  }
-
-  .table-block {
-    width: 100%;
-    height: 50vh;
-    overflow-y: scroll;
-    padding-bottom: 50px;
   }
 }
 </style>

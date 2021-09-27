@@ -58,10 +58,6 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    // 创建优惠券
-    create() {
-      console.log('创造优惠劵')
-    },
     // 更新发行量
     showIssue() {
       this.showIssueDialog = true
@@ -107,6 +103,10 @@ export default {
         })
       })
     },
+    // 跳转创建优惠券
+    create() {
+      this.$router.push(`/mall/couponCreate`)
+    },
     // 查看优惠券详情
     goCouponDetail() {
       this.$router.push(`/mall/couponDetail`)
@@ -117,7 +117,7 @@ export default {
     },
     // 查看订单管理列表
     goOrderList() {
-      this.$router.push(`/mall/couponDetail`)
+      this.$router.push(`/order/manager`)
     },
     // 查看已发放列表
     goIssueList() {
