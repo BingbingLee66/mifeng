@@ -1,29 +1,30 @@
 import {
   getExplodeGoodsList
 } from '@/api/mall/mall'
+import {
+  getActivitySource
+} from '@/api/activity/hot-activity'
 
 export default {
   data() {
     return {
       // 查询优惠劵列表
       query: {
-        id: '',
-        name: '',
-        status: ''
+        userName: '',
+        phone: '',
+        property: '',
+        ckey: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
       currentpage: 1,
       limit: 10,
-      // 发行量
-      issue: '',
-      // 控制变量
-      listLoading: false,
-      showIssueDialog: false
+      chamberOptions: []
     }
   },
   created() {
+    this.getChamberOptions()
     this.fetchData()
   },
   methods: {
@@ -32,6 +33,11 @@ export default {
     },
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
+    },
+    getChamberOptions() {
+      getActivitySource().then(res => {
+        this.chamberOptions = res.data
+      })
     },
     // 查询优惠券列表
     fetchData() {
@@ -58,51 +64,13 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    // 更新发行量
-    showIssue() {
-      this.showIssueDialog = true
-    },
-    updateIssue() {
-      console.log('更新发行量')
-    },
-    // 停止发送
-    send() {
-      console.log('停止发送')
-      this.$confirm('确认发送吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
-      })
-    },
-    // 跳转发放优惠券
-    create() {
-      this.$router.push(`/mall/issuing-coupon-send`)
-    },
     // 查看优惠券详情
-    goCouponDetail() {
-      this.$router.push(`/mall/couponDetail`)
-    },
-    // 查看商品劵商品
-    goGoodsLsit() {
-      this.$router.push(`/mall/couponDetail`)
+    goMemberDetail() {
+      this.$router.push(`/member/detail`)
     },
     // 查看订单管理列表
     goOrderList() {
       this.$router.push(`/order/manager`)
-    },
-    // 查看已发放列表
-    goIssueList() {
-      this.$router.push(`/mall/couponIssued`)
     }
   }
 }

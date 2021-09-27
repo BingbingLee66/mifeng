@@ -250,6 +250,41 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '创建优惠券' }
       },
+      {
+        path: '/mall/couponIssued',
+        name: '已发放',
+        component: () => import('@/views/mall/coupon-issued/index'),
+        hidden: true,
+        meta: { title: '已发放' }
+      },
+      {
+        path: '/mall/spreeDetail',
+        name: '查看大礼包',
+        component: () => import('@/views/mall/spree-detail/index'),
+        hidden: true,
+        meta: { title: '查看大礼包' }
+      },
+      {
+        path: '/mall/spreeCreate',
+        name: '创建大礼包',
+        component: () => import('@/views/mall/spree-create/index'),
+        hidden: true,
+        meta: { title: '创建大礼包' }
+      },
+      {
+        path: '/mall/spreeIssued',
+        name: '已发放大礼包',
+        component: () => import('@/views/mall/spree-issued/index'),
+        hidden: true,
+        meta: { title: '已发放大礼包' }
+      },
+      {
+        path: '/mall/issuing-coupon-send',
+        name: '发放优惠券',
+        component: () => import('@/views/mall/issuing-coupon-send/index'),
+        hidden: true,
+        meta: { title: '发放优惠券' }
+      }
     ]
   }
 ]

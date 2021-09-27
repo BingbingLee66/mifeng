@@ -121,7 +121,7 @@ export default {
     },
     // 查看已发放列表
     goIssueList() {
-      this.$router.push(`/mall/couponDetail`)
+      this.$router.push(`/mall/couponIssued`)
     }
   }
 }
