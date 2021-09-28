@@ -1,0 +1,250 @@
+<template>
+  <div class="create-dialog">
+    <el-dialog title="可用劵商品" :visible.sync="createVisible" width="80%">
+      <el-form ref="query" label-position="right" size="small" :inline="true" :model="query">
+        <el-form-item label-width="80px" label="商品来源">
+          <el-select v-model="query.ckey" placeholder="请选择商品来源" clearable>
+            <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label-width="80px" label="商品ID">
+          <el-input v-model="query.goodsId" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label-width="80px" label="商品名称">
+          <el-input v-model="query.goodsName" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label-width="80px" label="商品状态">
+          <el-select v-model="query.status" placeholder="请选择状态">
+            <el-option label="所有" :value="-1" />
+            <el-option label="在售中" :value="1" />
+            <el-option label="已下架" :value="6" />
+            <el-option label="商会下架" :value="2" />
+            <el-option label="已售罄" :value="5" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label=" ">
+          <el-button type="primary" @click="fetchData">查询
+          </el-button>
+        </el-form-item>
+      </el-form>
+      <div class="table-block">
+        <el-table height="62vh" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55px" />
+          <el-table-column label="商品ID/名称" width="200px">
+            <template slot-scope="scope">
+              <div class="red-label">{{ scope.row.id }}</div>
+              <div> {{ scope.row.name }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="商品图片" width="120px">
+            <template slot-scope="scope">
+              <img class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
+            </template>
+          </el-table-column>
+          <el-table-column label="商品价格信息（元）" width="180px">
+            <template slot-scope="scope">
+              <div>【单买价】{{ scope.row.singlePriceMerge }}</div>
+              <div>【拼单价】<span class="red-label">{{ scope.row.fightPriceMerge }}</span></div>
+              <div>【供货价】{{ scope.row.supplyPriceMerge }}</div>
+              <div>【立减优惠】{{ scope.row.discount }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="商品库存" width="100px">
+            <template slot-scope="scope">
+              {{ scope.row.sumStock }}
+            </template>
+          </el-table-column>
+          <el-table-column label="销量" width="130px">
+            <template slot-scope="scope">
+              <div>【真实】 {{ scope.row.salesVolume }}</div>
+              <div>【虚拟】 {{ scope.row.virtualSalesVolume }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="创建时间" width="100px">
+            <template slot-scope="scope">
+              {{ scope.row.createTime | dateFormat }}
+            </template>
+          </el-table-column>
+          <el-table-column label="开售时间" width="100px">
+            <template slot-scope="scope">
+              {{ scope.row.createTime | dateFormat }}
+            </template>
+          </el-table-column>
+          <el-table-column label="来源" width="200px">
+            <template slot-scope="scope">
+              {{ scope.row.chamberName }}
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" fixed="right">
+            <template slot-scope="scope">
+              <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售中</div>
+              <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">商会下架</div>
+              <div v-if="scope.row.isOnSale == 5">已下架</div>
+              <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock == 0">已售罄</div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="btn-block" style="text-align: center;margin-top: 20px">
+        <el-button @click="add" type="primary">添加</el-button>
+        <el-button @click="close">取消</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="" :visible.sync="previewImgVisible" width="50%">
+      <img :src="previewUrl" style="width: 100%; padding:20px;" />
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import { getExplodeGoodsList } from '@/api/mall/coupon'
+import { getChamberAllList } from '@/api/goods/goods'
+export default {
+  props: {
+    /* createVisible: {
+      type: Boolean,
+      required: true,
+    }, */
+  },
+  data() {
+    return {
+      // 选择可用商品劵
+      query: {
+        ckey: '',
+        goodsId: '',
+        goodsName: '',
+        status: '',
+      },
+      listLoading: false,
+      list: [],
+      chamberOptions: [],
+      goodsIds: [],
+      selectedItem: [],
+      showCouponListType: '',
+      selectionDatas: [],
+      previewImgVisible: false,
+      previewUrl: '',
+      createVisible: false,
+    }
+  },
+  created() {
+    this.getChamberList()
+    this.fetchData()
+  },
+  methods: {
+    // 工具类函数 数组对象中id相同的元素去重
+    filterArrById(arr, initArr = []) {
+      arr.forEach((item) => {
+        let isFind = initArr.find((cell) => cell.id === item.id)
+        if (!isFind) {
+          initArr.push(item)
+        }
+      })
+      return initArr
+    },
+    // 展示
+    show() {
+      this.createVisible = true
+    },
+    // 关闭
+    close() {
+      this.createVisible = false
+    },
+    // 添加
+    handleSelectionChange(value) {
+      // 清除两个数组中相同的元素
+      let tempList = [...this.selectionDatas, ...value]
+      this.selectionDatas = this.filterArrById(tempList)
+      // let datas = value
+      // this.selectionDatas = []
+      // for (let data of datas) {
+      //   this.selectionDatas.push(data.id)
+      // }
+    },
+    add() {
+      if (this.selectionDatas.length === 0) {
+        return this.$message.error('请选择商品！')
+      } else {
+        window.localStorage.setItem(
+          'selected-item',
+          JSON.stringify(this.selectionDatas)
+        )
+        this.$emit('localChange', {
+          len: this.selectionDatas.length,
+          type: 'add',
+        })
+        let _this = this
+        let finalList = _this.list.filter((item) => {
+          let arrList = _this.selectionDatas.map((item2) => item2.id)
+          return !arrList.includes(item.id)
+        })
+        this.list = finalList
+        this.listLoading = false
+        this.$message.success('添加成功')
+        this.createVisible = false
+      }
+    },
+    fetchData(e) {
+      this.listLoading = true
+      let params = {
+        page: 1,
+        pageSize: 100,
+        goodsName: this.query.goodsName,
+        goodsId: this.query.goodsId,
+        status: this.query.status,
+        ckey: this.query.ckey,
+      }
+      getExplodeGoodsList(params).then((res) => {
+        if (e === 'update') {
+          let localList = window.localStorage.getItem('selected-item')
+          if (localList) {
+            localList = JSON.parse(localList)
+            console.log('=======', localList)
+            let finalList = res.data.list.filter((item) => {
+              let arrList = localList.map((item2) => item2.id)
+              return !arrList.includes(item.id)
+            })
+            this.list = finalList
+            console.log(this.list, '6666666666666666666')
+            this.listLoading = false
+          } else {
+            this.list = res.data.list
+            this.listLoading = false
+          }
+        } else {
+          this.list = res.data.list
+          this.listLoading = false
+        }
+      })
+    },
+    getChamberList() {
+      getChamberAllList().then((res) => {
+        if (res.state === 1) {
+          this.chamberOptions = res.data.data
+          this.chamberOptions.unshift({ name: '全部', id: -1 })
+        }
+      })
+    },
+    openPreviewModal(url) {
+      this.previewImgVisible = true
+      this.previewUrl = url
+    },
+  },
+}
+</script>
+
+<style lang="scss">
+.create-dialog {
+  .goods-preview {
+    width: 90px;
+    height: 70px;
+    cursor: pointer;
+    object-fit: cover;
+  }
+  .el-dialog {
+    margin-top: 5vh !important;
+    height: 90vh !important;
+  }
+}
+</style>
+

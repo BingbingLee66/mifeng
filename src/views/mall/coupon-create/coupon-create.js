@@ -2,9 +2,14 @@ import {
   createCoupon, getExplodeGoodsList
 } from '@/api/mall/coupon'
 import { spaceInput, intInput } from '@/utils/utils'
-import { getChamberAllList } from "@/api/goods/goods";
+import addDialog from './add-dialog.vue'
+import removeDialog from './remove-dialog.vue'
 
 export default {
+  components: {
+    'add-dialog': addDialog,
+    'remove-dialog': removeDialog
+  },
   data() {
     return {
       formObj: {
@@ -31,23 +36,6 @@ export default {
       disDayValue: false,
       disRangeDay: false,
       giftPackFlag: false,
-      // 选择可用商品劵
-      query: {
-        ckey: '',
-        goodsId: '',
-        goodsName: '',
-        status: ''
-      },
-      listLoading: false,
-      list: [],
-      chamberOptions: [],
-      goodsIds: [],
-      selectedItem: [],
-      showCouponListDialog: false,
-      showCouponListType: '',
-      selectionDatas: [],
-      previewImgVisible: false,
-      previewUrl: '',
       rules: {
         type: [
           { required: true, message: '请设置优惠券类型！', trigger: 'change' }
@@ -79,11 +67,10 @@ export default {
         isGive: [
           { required: true, message: '请设置是否可赠送！', trigger: 'change' }
         ]
-      }
+      },
+      createVisible: false,
+      selectedItemLength: 0
     }
-  },
-  created() {
-    this.getChamberList()
   },
   methods: {
     has(tabName, actionName) {
@@ -107,73 +94,25 @@ export default {
         }
       }
     },
-    openPreviewModal(url) {
-      this.previewImgVisible = true
-      this.previewUrl = url
-    },
-    // 选择可用劵商品
-    getChamberList() {
-      getChamberAllList().then(res => {
-        if (res.state === 1) {
-          this.chamberOptions = res.data.data
-          this.chamberOptions.unshift({ 'name': '全部', 'id': -1 })
-        }
-      })
-    },
-    fetchData() {
-      this.listLoading = true
-      let params = {
-        'page': 1,
-        'pageSize': 100,
-        'goodsName': this.query.goodsName,
-        'goodsId': this.query.goodsId,
-        'status': this.query.status,
-        'ckey': this.query.ckey
-      }
-      getExplodeGoodsList(params).then(res => {
-        this.list = res.data.list
-        this.total = res.data.totalRows
-        this.listLoading = false
-      })
-    },
-    add() {
-      if (this.selectionDatas.length === 0) {
-        return this.$message.error('请选择商品！')
-      } else {
-        this.$message.success('添加成功')
-        this.showCouponListDialog = false
+    localChange(obj) {
+      this.selectedItemLength = obj.len
+      if (obj.type === 'remove') {
+        this.$refs['addDialog'].fetchData('update')
+      } else if (obj.type === 'add') {
+        this.$refs['removeDialog'].fetchData()
       }
     },
-    remove() {
-      console.log('移除')
+    openAddDialog() {
+      this.$refs['addDialog'].show()
     },
-    showCouponList(str) {
-      this.showCouponListType = str
-      if (str === 'remove') {
-        let _list = window.localStorage.getItem('selected-item')
-        _list = JSON.parse(_list)
-        this.selectedItem = _list
-        this.list = _list
-      } else {
-        this.fetchData()
-      }
-      this.showCouponListDialog = true
+    openRemoveDialog() {
+      this.$refs['removeDialog'].show()
     },
-    handleSelectionChange(value) {
-      if (this.showCouponListType === 'add') {
-        window.localStorage.setItem('selected-item', JSON.stringify(value))
-        this.selectedItem = value
-        let datas = value
-        this.selectionDatas = []
-        for (let data of datas) {
-          this.selectionDatas.push(data.id)
-        }
-      }
-    },
-    // 输入框限制
+    // 限制输入空格
     handleSpace(e) {
       this.formObj.name = spaceInput(e)
     },
+    // 限制输入正整数
     handleNumber(e, str) {
       if (str === 'amount') {
         this.formObj.amount = intInput(e)
@@ -183,16 +122,13 @@ export default {
     },
     handleChange(e, val, dis) {
       if (e === '1') {
-        // this[val] = ''
         this[dis] = true
         if (val === 'dayValue') {
           this.disRangeDay = false
         }
       } else {
-        // this[val] = ''
         this[dis] = false
         if (val === 'dayValue') {
-          // this.rangeDay = []
           this.disRangeDay = true
         }
       }
