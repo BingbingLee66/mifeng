@@ -1,6 +1,8 @@
 import {
   getExplodeGoodsList
-} from '@/api/mall/mall'
+} from '@/api/mall/coupon'
+
+import { nmberInput } from '@/utils/utils'
 
 export default {
   data() {
@@ -33,6 +35,9 @@ export default {
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
+    handleInput(e) {
+      this.query.id = nmberInput(e)
+    },
     // 查询优惠券列表
     fetchData() {
       this.listLoading = true
@@ -43,6 +48,7 @@ export default {
         'status': this.query.status,
         'name': this.query.name
       }
+      // getCouponList
       getExplodeGoodsList(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows

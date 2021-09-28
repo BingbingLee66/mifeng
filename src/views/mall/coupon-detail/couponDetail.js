@@ -1,6 +1,6 @@
 import { getGoodsDetail } from '@/api/goods/goodsSku'
-import { getChamberAllList } from '@/api/goods/goods';
-import { getAllGoodsList } from "@/api/mall/mall";
+import { getChamberAllList } from '@/api/goods/goods'
+import { getAllGoodsList } from '@/api/mall/mall'
 
 export default {
   data() {

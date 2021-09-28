@@ -1,100 +1,89 @@
-import { createActivity, uploadPortrait, getActivity } from '@/api/activity/activity'
-import Ckeditor from '@/components/CKEditor'
-import area from '@/utils/area'
+import {
+  createCoupon, getExplodeGoodsList
+} from '@/api/mall/coupon'
+import { spaceInput, intInput } from '@/utils/utils'
+import { getChamberAllList } from "@/api/goods/goods";
 
 export default {
-  components: {
-    Ckeditor
-  },
   data() {
     return {
-      ruleForm: {
-        name: '',
-        region: '1',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      rules: {
-        name: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-        ],
-        region: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
-        ],
-        date1: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        ],
-        date2: [
-          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-        ],
-        type: [
-          { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-        ],
-        resource: [
-          { required: true, message: '请选择活动资源', trigger: 'change' }
-        ],
-        desc: [
-          { required: true, message: '请填写活动形式', trigger: 'blur' }
-        ]
-      },
-      activityId: null,
-      type: null,
-      ckey: '',
       formObj: {
-        id: '',
-        activityName: '', // 活动名称
-        headImage: '', // 活动头图
-        listImage: '', // 活动列表图
-        date: '', // 活动时间
-        province: '', // 活动地点(省)
-        city: '', // 活动地点(市)
-        area: '', // 活动地点(区)
-        addressInfo: '', // 活动地点（详细地址）
-        applyObject: '', // 报名对象
-        isLimit: null, // 是否限制参加人数
-        applyCount: '', // 参加人数
-        introduce: '', // 活动介绍
+        type: '1', // 优惠券类型
+        condition: '', // 适用条件
+        isGiftPack: false, // 是否放进大礼包
+        name: '', // 优惠券名称
+        amount: '', // 面值金额
+        isLimit: '', // 是否满减限额
+        isIssue: '', // 是否限制发行量
+        isGain: '', // 是否限制获得张数
+        timeType: '', // 有效期类型
+        isNew: '', // 是否仅限新人使用
+        isGive: '', // 是否可赠送
       },
-      // 是否限制报名对象
-      applyObject: {
-        unlimit: false,
-        limit: false
+      limitValue: '',
+      issueValue: '',
+      gainValue: '',
+      dayValue: '',
+      rangeDay: [],
+      disLimitValue: false,
+      disIssueValue: false,
+      disGainValue: false,
+      disDayValue: false,
+      disRangeDay: false,
+      giftPackFlag: false,
+      // 选择可用商品劵
+      query: {
+        ckey: '',
+        goodsId: '',
+        goodsName: '',
+        status: ''
       },
-      // 是否限制报名人数
-      applyCount: {
-        unlimit: false,
-        limit: false
-      },
-      // 活动地点选择
-      provinceValue: '',
-      cityValue: '',
-      countryValue: '',
-      provinceOptions: [],
-      cityOptions: [],
-      countryOptions: [],
-      areaData: null
+      listLoading: false,
+      list: [],
+      chamberOptions: [],
+      goodsIds: [],
+      selectedItem: [],
+      showCouponListDialog: false,
+      showCouponListType: '',
+      selectionDatas: [],
+      previewImgVisible: false,
+      previewUrl: '',
+      rules: {
+        type: [
+          { required: true, message: '请设置优惠券类型！', trigger: 'change' }
+        ],
+        condition: [
+          { required: true, message: '请设置优惠券适用条件！', trigger: 'change' }
+        ],
+        name: [
+          { required: true, message: '请填写优惠券名称！', trigger: 'blur' }
+        ],
+        amount: [
+          { required: true, message: '请填写面值金额！', trigger: 'blur' }
+        ],
+        // isLimit: [
+        //   { required: true, message: '请设置满减限额！', trigger: 'change' }
+        // ],
+        // isIssue: [
+        //   { required: true, message: '请设置发行量！' }
+        // ],
+        // isGain: [
+        //   { required: true, message: '请设置获取规则！', trigger: 'change' }
+        // ],
+        // timeType: [
+        //   { required: true, message: '请设置有效期！', trigger: 'change' }
+        // ],
+        isNew: [
+          { required: true, message: '请设置是否仅限新人使用！', trigger: 'change' }
+        ],
+        isGive: [
+          { required: true, message: '请设置是否可赠送！', trigger: 'change' }
+        ]
+      }
     }
   },
   created() {
-    this.ckey = this.$store.getters.ckey
-    this.activityId = this.$route.query.activityId
-    this.type = this.$route.query.type
-  },
-  mounted() {
-    // this.handleArea()
-    // this.$refs.ckeditor1.init()
-    // if (!this.activityId) {
-    //   setTimeout(() => {
-    //     this.$refs.ckeditor1.initHtml('')
-    //   }, 500)
-    // } else {
-    //   this.fetchData()
-    // }
+    this.getChamberList()
   },
   methods: {
     has(tabName, actionName) {
@@ -118,279 +107,180 @@ export default {
         }
       }
     },
-    submitForm(formName) {
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
+    openPreviewModal(url) {
+      this.previewImgVisible = true
+      this.previewUrl = url
+    },
+    // 选择可用劵商品
+    getChamberList() {
+      getChamberAllList().then(res => {
+        if (res.state === 1) {
+          this.chamberOptions = res.data.data
+          this.chamberOptions.unshift({ 'name': '全部', 'id': -1 })
         }
-      });
+      })
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    // 获取活动详情
     fetchData() {
-      getActivity({ id: this.activityId }).then(res => {
-        let resData = res.data
-        this.formObj.activityName = resData.activityName
-        this.formObj.headImage = resData.headImage
-        this.formObj.listImage = resData.listImage
-        // 活动时间回显
-        let activityTime = []
-        if (resData.startTime && resData.endTime) {
-          activityTime.push(resData.startTime)
-          activityTime.push(resData.endTime)
-        }
-        this.$set(this.formObj, 'date', activityTime)
-        // 活动地点回显
-        this.provinceValue = resData.province
-        this.cityValue = resData.city
-        this.countryValue = resData.area
-        this.formObj.addressInfo = resData.addressInfo
-        this.areaData = {
-          province: {
-            name: resData.province,
-            code: resData.provinceCode,
-          },
-          city: {
-            name: resData.city,
-            code: resData.cityCode,
-          },
-          country: {
-            name: resData.area,
-            code: resData.areaCode,
-          }
-        }
-        // 报名对象回显
-        if (resData.applyObject === 0) {
-          this.applyObject.limit = false
-          this.applyObject.unlimit = true
-          this.formObj.applyObject = 0
-        } else {
-          this.applyObject.limit = true
-          this.applyObject.unlimit = false
-          this.formObj.applyObject = 1
-        }
-        // 参加人数回显
-        if (resData.isLimit === 0) {
-          this.applyCount.unlimit = true
-          this.applyCount.limit = false
-          this.formObj.isLimit = 0
-        } else {
-          this.applyCount.unlimit = false
-          this.applyCount.limit = true
-          this.formObj.isLimit = 1
-          this.formObj.applyCount = resData.applyCount
-        }
-        // 活动介绍回显
-        // this.$refs.ckeditor1.init()
-        setTimeout(() => {
-          this.$refs.ckeditor1.initHtml(resData.introduce ? resData.introduce : '')
-        }, 500)
-        this.formObj.introduce = resData.introduce
+      this.listLoading = true
+      let params = {
+        'page': 1,
+        'pageSize': 100,
+        'goodsName': this.query.goodsName,
+        'goodsId': this.query.goodsId,
+        'status': this.query.status,
+        'ckey': this.query.ckey
+      }
+      getExplodeGoodsList(params).then(res => {
+        this.list = res.data.list
+        this.total = res.data.totalRows
+        this.listLoading = false
       })
     },
-    // 上传图片校验
-    beforeUpload(file) {
-      if (file.type !== 'image/jpeg' &&
-        file.type !== 'image/jpg' &&
-        file.type !== 'image/png') {
-        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
-        return false
-      }
-      if (file.size > 1024 * 1024 * 2) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-        return false
+    add() {
+      if (this.selectionDatas.length === 0) {
+        return this.$message.error('请选择商品！')
+      } else {
+        this.$message.success('添加成功')
+        this.showCouponListDialog = false
       }
     },
-    // 上传活动头图
-    uploadHeadImage(content) {
-      let formData = new FormData()
-      formData.append('file', content.file)
-      uploadPortrait(formData).then(response => {
-        this.formObj.headImage = response.data.filePath
-      })
+    remove() {
+      console.log('移除')
     },
-    // 上传活动列表图
-    uploadListImage(content) {
-      let formData = new FormData()
-      formData.append('file', content.file)
-      uploadPortrait(formData).then(response => {
-        this.formObj.listImage = response.data.filePath
-      })
-    },
-    // 选择活动地点
-    handleArea() {
-      this.provinceOptions = []
-      this.provinceValue = ''
-      for (const key in area['86']) {
-        this.provinceOptions.push({
-          value: key,
-          label: area['86'][key]
-        })
+    showCouponList(str) {
+      this.showCouponListType = str
+      if (str === 'remove') {
+        let _list = window.localStorage.getItem('selected-item')
+        _list = JSON.parse(_list)
+        this.selectedItem = _list
+        this.list = _list
+      } else {
+        this.fetchData()
       }
+      this.showCouponListDialog = true
     },
-    resetCityAndCountryData() {
-      this.cityValue = ''
-      this.countryValue = ''
-      this.cityOptions = []
-      this.countryOptions = []
-    },
-    resetCountryData() {
-      this.countryValue = ''
-      this.countryOptions = []
-    },
-    provinceChange(e) {
-      this.resetCityAndCountryData()
-      for (const key in area[this.provinceValue]) {
-        this.cityOptions.push({
-          value: key,
-          label: area[this.provinceValue][key]
-        })
-      }
-      this.chooseData()
-    },
-    cityChange() {
-      this.resetCountryData()
-      for (const key in area[this.cityValue]) {
-        this.countryOptions.push({
-          value: key,
-          label: area[this.cityValue][key]
-        })
-      }
-      this.chooseData()
-    },
-    countryChange() {
-      this.chooseData()
-    },
-    chooseData() {
-      let data = null
-      if (this.countryValue) {
-        data = {
-          province: {
-            code: this.provinceValue,
-            name: area['86'][this.provinceValue]
-          },
-          city: {
-            code: this.cityValue,
-            name: area[this.provinceValue][this.cityValue]
-          },
-          country: {
-            code: this.countryValue,
-            name: area[this.cityValue][this.countryValue]
-          }
+    handleSelectionChange(value) {
+      if (this.showCouponListType === 'add') {
+        window.localStorage.setItem('selected-item', JSON.stringify(value))
+        this.selectedItem = value
+        let datas = value
+        this.selectionDatas = []
+        for (let data of datas) {
+          this.selectionDatas.push(data.id)
         }
-      } else if (this.cityValue) {
-        data = {
-          province: {
-            code: this.provinceValue,
-            name: area['86'][this.provinceValue]
-          },
-          city: {
-            code: this.cityValue,
-            name: area[this.provinceValue][this.cityValue]
-          }
-        }
-      } else if (this.provinceValue) {
-        data = {
-          province: {
-            code: this.provinceValue,
-            name: area['86'][this.provinceValue]
-          }
+      }
+    },
+    // 输入框限制
+    handleSpace(e) {
+      this.formObj.name = spaceInput(e)
+    },
+    handleNumber(e, str) {
+      if (str === 'amount') {
+        this.formObj.amount = intInput(e)
+      } else {
+        this[str] = intInput(e)
+      }
+    },
+    handleChange(e, val, dis) {
+      if (e === '1') {
+        // this[val] = ''
+        this[dis] = true
+        if (val === 'dayValue') {
+          this.disRangeDay = false
         }
       } else {
-        data = null
+        // this[val] = ''
+        this[dis] = false
+        if (val === 'dayValue') {
+          // this.rangeDay = []
+          this.disRangeDay = true
+        }
       }
-      this.areaData = data
     },
-    // 选择报名对象
-    handleCheckTarget(e, val) {
-      if (val === 0) {
-        this.applyObject.unlimit = true
-        this.applyObject.limit = false
-        this.formObj.applyObject = 0
+    // 是否放进大礼包
+    putGiftPack(e) {
+      this.giftPackFlag = e
+      if (e) {
+        this.formObj.isIssue = '1'
+        this.formObj.isGain = '1'
+        this.formObj.timeType = '2'
       } else {
-        this.applyObject.unlimit = false
-        this.applyObject.limit = true
-        this.formObj.applyObject = 1
+        this.formObj.isIssue = ''
+        this.issueValue = ''
+        this.formObj.isGain = ''
+        this.gainValue = ''
+        this.formObj.timeType = ''
+        this.dayValue = ''
+        this.disRangeDay = false
       }
-    },
-    // 选择参加人数
-    handleCheckNum(e, val) {
-      if (val === 0) {
-        this.applyCount.unlimit = true
-        this.applyCount.limit = false
-        this.formObj.isLimit = 0
-      } else {
-        this.applyCount.unlimit = false
-        this.applyCount.limit = true
-        this.formObj.isLimit = 1
-      }
-    },
-    // 编辑活动介绍
-    getHtml(htmlStr) {
-      this.formObj.introduce = htmlStr
     },
     save() {
-      this.$refs['form'].validate((valid) => {
+      console.log('提交参数：', this.formObj)
+      this.$refs['formObj'].validate((valid) => {
+        if (!this.formObj.condition) {
+          return this.$message.error('请设置优惠券适用条件！')
+        }
+        if (this.formObj.condition === '2') {
+          if (this.selectionDatas.length === 0) {
+            return this.$message.error('请选择可用劵商品！')
+          }
+        }
+        // this.selectionDatas
+        if (!this.formObj.name) {
+          return this.$message.error('请填写优惠券名称！')
+        }
+        if (!this.formObj.amount) {
+          return this.$message.error('请填写面值金额！')
+        }
+        if (!this.formObj.isLimit) {
+          return this.$message.error('请设置满减限额！')
+        }
+        if (this.formObj.isLimit === '2') {
+          if (!this.limitValue) {
+            return this.$message.error('请填写满减限额！')
+          } else if (parseInt(this.limitValue) <= parseInt(this.formObj.amount)) {
+            return this.$message.error('满减限额需大于面值金额！')
+          } else if (parseInt(this.limitValue) > 1000000) {
+            return this.$message.error('满减限额不得大于100万元！')
+          }
+        }
+        if (!this.formObj.isIssue) {
+          return this.$message.error('请设置发行量！')
+        }
+        if (this.formObj.isIssue === '2') {
+          if (!this.issueValue) {
+            return this.$message.error('请填写发行量！')
+          }
+        }
+        if (!this.formObj.isGain) {
+          return this.$message.error('请设置获取规则！')
+        }
+        if (this.formObj.isGain === '2') {
+          if (!this.gainValue) {
+            return this.$message.error('请填写最多可获得张数！')
+          }
+        }
+        if (!this.formObj.timeType) {
+          return this.$message.error('请设置有效期！')
+        }
+        if (this.formObj.timeType === '2') {
+          if (!this.gainValue) {
+            return this.$message.error('请填写有效期！')
+          }
+        }
+        if (!this.formObj.isNew) {
+          return this.$message.error('请设置是否仅限新人使用！')
+        }
+        if (!this.formObj.isGive) {
+          return this.$message.error('请设置是否可赠送！')
+        }
         if (valid) {
-          if (!this.areaData) {
-            return this.$message.error('请选择省份')
-          } else if (!this.areaData.hasOwnProperty('city')) {
-            return this.$message.error('请选择城市')
-          } else if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
-            return this.$message.error('请选择报名对象')
-          } else if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
-            return this.$message.error('请选择参加人数')
-          } else if (this.formObj.isLimit === 1) {
-            let regexp = /^[1-9]\d*$/
-            if (!regexp.test(this.formObj.applyCount)) {
-              return this.$message.error('参加人数为大于0的正整数')
-            }
-          } else if (!this.formObj.introduce) {
-            return this.$message.error('活动介绍不能为空')
-          }
-          let introHtml = this.formObj.introduce.replace(/<\/?p[^>]*>/gi, '')
-          let introHtml2 = introHtml.replace(/&nbsp;/ig, '')
-          if (introHtml2.match(/^\s+$/) || introHtml2.length === 0) {
-            return this.$message.error('活动介绍不能为空')
-          }
-          this.formObj.ckey = this.ckey
-          this.formObj['activityStartTime'] = this.formObj['date'][0]
-          this.formObj['activityEndTime'] = this.formObj['date'][1]
-          this.formObj.province = this.areaData.province.name
-          this.formObj.provinceCode = this.areaData.province.code
-          this.formObj.city = this.areaData.city.name
-          this.formObj.cityCode = this.areaData.city.code
-          if (this.areaData.hasOwnProperty('country')) {
-            this.formObj.area = this.areaData.country.name
-            this.formObj.areaCode = this.areaData.country.code
-          }
-          if (this.activityId) {
-            this.formObj['id'] = this.activityId
-          }
-          createActivity(this.formObj).then(res => {
-            this.$message.success(res.msg)
-            this.$router.push({
-              name: '活动列表',
-              params: {
-                type: this.activityId ? this.type : 0
-              }
-            })
+          let params = {}
+          createCoupon(params).then(res => {
+            console.log(res)
           })
         } else {
           return false
-        }
-      })
-    },
-    cancel() {
-      this.$router.push({
-        name: '活动列表',
-        params: {
-          type: this.activityId ? this.type : 1
         }
       })
     }

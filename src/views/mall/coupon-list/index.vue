@@ -3,15 +3,15 @@
     <div class="from-block">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="优惠券ID">
-          <el-input v-model="query.id" placeholder=""/>
+          <el-input v-model="query.id" placeholder="" @input="handleInput"/>
         </el-form-item>
         <el-form-item label="优惠券名称">
           <el-input v-model="query.name" placeholder=""/>
         </el-form-item>
         <el-form-item label="是否礼包劵">
           <el-select v-model="query.status" placeholder="请选择">
-            <el-option label="是" :value="-1"/>
-            <el-option label="否" :value="1"/>
+            <el-option label="是礼包劵" :value="-1"/>
+            <el-option label="不是礼包劵" :value="1"/>
           </el-select>
         </el-form-item>
         <el-form-item label="">
