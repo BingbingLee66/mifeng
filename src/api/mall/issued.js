@@ -10,18 +10,26 @@ export function getExplodeGoodsList(params) {
   })
 }
 
-export function createSend(params) {
+export function getIssuedCouponList(params) {
   return request({
-    url: baseUrl + '',
+    url: baseUrl + '/api/issueCoupon/issuedCouponList',
     method: 'get',
     params
   })
 }
 
+export function createSend(params) {
+  return request({
+    url: baseUrl + '/api/issueCoupon/createIssuingCoupon',
+    method: 'post',
+    data: params
+  })
+}
+
 export function sendCoupon(params) {
   return request({
-    url: baseUrl + '',
-    method: 'get',
+    url: baseUrl + '/api/issueCoupon/sendCoupon',
+    method: 'put',
     params
   })
 }
