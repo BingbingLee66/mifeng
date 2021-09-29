@@ -138,7 +138,7 @@ export default {
         })
         this.list = finalList
         window.localStorage.setItem('selected-item', JSON.stringify(finalList))
-        this.$emit('localChange', { len: finalList.length, type: 'remove' })
+        this.$emit('localChange', { data: finalList, type: 'remove' })
         this.$message.success('移除成功')
         this.createVisible = false
       }

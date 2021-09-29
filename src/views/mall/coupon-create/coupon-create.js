@@ -1,6 +1,4 @@
-import {
-  createCoupon, getExplodeGoodsList
-} from '@/api/mall/coupon'
+import { createCoupon } from '@/api/mall/coupon'
 import { spaceInput, intInput } from '@/utils/utils'
 import addDialog from './add-dialog.vue'
 import removeDialog from './remove-dialog.vue'
@@ -69,7 +67,8 @@ export default {
         ]
       },
       createVisible: false,
-      selectedItemLength: 0
+      selectedItemLength: 0,
+      selectedItem: []
     }
   },
   methods: {
@@ -95,7 +94,12 @@ export default {
       }
     },
     localChange(obj) {
-      this.selectedItemLength = obj.len
+      this.selectedItemLength = obj.data.length
+      let datas = obj.data
+      this.selectedItem = []
+      for (let data of datas) {
+        this.selectedItem.push(data.id)
+      }
       if (obj.type === 'remove') {
         this.$refs['addDialog'].fetchData('update')
       } else if (obj.type === 'add') {
@@ -151,17 +155,15 @@ export default {
       }
     },
     save() {
-      console.log('提交参数：', this.formObj)
       this.$refs['formObj'].validate((valid) => {
         if (!this.formObj.condition) {
           return this.$message.error('请设置优惠券适用条件！')
         }
         if (this.formObj.condition === '2') {
-          if (this.selectionDatas.length === 0) {
+          if (this.selectedItem.length === 0) {
             return this.$message.error('请选择可用劵商品！')
           }
         }
-        // this.selectionDatas
         if (!this.formObj.name) {
           return this.$message.error('请填写优惠券名称！')
         }
@@ -200,7 +202,7 @@ export default {
           return this.$message.error('请设置有效期！')
         }
         if (this.formObj.timeType === '2') {
-          if (!this.gainValue) {
+          if (!this.dayValue) {
             return this.$message.error('请填写有效期！')
           }
         }
@@ -211,10 +213,26 @@ export default {
           return this.$message.error('请设置是否可赠送！')
         }
         if (valid) {
-          let params = {}
-          createCoupon(params).then(res => {
+          let params = this.formObj
+          if (this.formObj.condition === '2') {
+            params['selectedItem'] = this.selectedItem
+          }
+          if (this.formObj.isLimit === '2') {
+            params['limitValue'] = this.limitValue
+          }
+          if (this.formObj.isIssue === '2') {
+            params['issueValue'] = this.issueValue
+          }
+          if (this.formObj.isGain === '2') {
+            params['gainValue'] = this.gainValue
+          }
+          if (this.formObj.timeType === '2') {
+            params['dayValue'] = this.dayValue
+          }
+          console.log('提交参数:', params)
+          /* createCoupon(params).then(res => {
             console.log(res)
-          })
+          }) */
         } else {
           return false
         }

@@ -2,14 +2,6 @@ import request from '@/utils/request'
 
 const baseUrl = process.env.VUE_APP_BASE_API_2
 
-export function getList(params) {
-  return request({
-    url: baseUrl + '/ec/mall/admin-goods-list',
-    method: 'get',
-    params
-  })
-}
-
 export function getExplodeGoodsList(params) {
   return request({
     url: baseUrl + '/api/ec/mall/explodeGoods/listExplodeGoods',
@@ -18,35 +10,18 @@ export function getExplodeGoodsList(params) {
   })
 }
 
-export function getAllGoodsList(params) {
+export function createSend(params) {
   return request({
-    url: baseUrl + '/api/ec/mall/explodeGoods/listAddExplodeGoods',
+    url: baseUrl + '',
     method: 'get',
     params
   })
 }
 
-export function addExplodeGoods(params) {
+export function sendCoupon(params) {
   return request({
-    url: baseUrl + '/api/ec/mall/explodeGoods/addExplodeGoods',
-    method: 'post',
-    data: params
-  })
-}
-
-export function deleteExplodeGoods(params) {
-  return request({
-    url: baseUrl + '/api/ec/mall/explodeGoods/deleteExplodeGoods',
-    method: 'delete',
-    data: params
-  })
-}
-
-export function updateWeights(params) {
-  return request({
-    url: baseUrl + '/ec/mall/updateWeights',
-    method: 'put',
+    url: baseUrl + '',
+    method: 'get',
     params
   })
 }
-

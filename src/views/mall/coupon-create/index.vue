@@ -16,11 +16,11 @@
               <el-radio-group v-model="formObj.condition">
                 <div style="width: 500px">
                   <el-radio label="1">全场劵</el-radio>
-                  <span>任何商品都可以使用</span>
+                  <span style="color: #7f7f7f;">任何商品都可以使用</span>
                 </div>
                 <div>
                   <el-radio label="2">商品劵</el-radio>
-                  <span>只有指定商品，才可以使用</span>
+                  <span style="color: #7f7f7f;">只有指定商品，才可以使用</span>
                   <div style="margin-top: 10px;" v-if="formObj.condition==='2'">
                     <el-button type="danger" size="small" @click="openAddDialog">选择可用劵商品</el-button>
                     <span v-if="selectedItemLength>0">已选{{ selectedItemLength }}款</span>
@@ -40,12 +40,12 @@
           <div class="coupon-form-title">优惠券信息</div>
           <div class="coupon-form-item">
             <el-form-item label="优惠券名称：" prop="name">
-              <el-input style="width: 200px;" v-model="formObj.name" placeholder="8个字内" show-word-limit maxlength="8" @input="handleSpace"></el-input>
+              <el-input size="mini" style="width: 200px;" v-model="formObj.name" placeholder="8个字内" show-word-limit maxlength="8" @input="handleSpace"></el-input>
             </el-form-item>
           </div>
           <div class="coupon-form-item">
             <el-form-item label="面值金额：" prop="amount">
-              <el-input style="width: 150px;" v-model="formObj.amount" @input="e => handleNumber(e,'amount')">
+              <el-input size="mini" style="width: 150px;margin-top: 6px;" v-model="formObj.amount" @input="e => handleNumber(e,'amount')">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
@@ -58,7 +58,7 @@
                 </div>
                 <div class="radio-input">
                   <el-radio label="2">满</el-radio>
-                  <el-input :disabled="disLimitValue" size="small" v-model="limitValue" @input="e => handleNumber(e,'limitValue')" />
+                  <el-input :disabled="disLimitValue" size="mini" v-model="limitValue" @input="e => handleNumber(e,'limitValue')" />
                   元可用
                 </div>
               </el-radio-group>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="radio-input" v-if="!giftPackFlag">
                   <el-radio label="2">共</el-radio>
-                  <el-input :disabled="disIssueValue" size="small" v-model="issueValue" @input="e => handleNumber(e,'issueValue')" />
+                  <el-input :disabled="disIssueValue" size="mini" v-model="issueValue" @input="e => handleNumber(e,'issueValue')" />
                   张
                 </div>
               </el-radio-group>
@@ -89,7 +89,7 @@
                 </div>
                 <div class="radio-input" v-if="!giftPackFlag">
                   <el-radio label="2">最多获得</el-radio>
-                  <el-input :disabled="disGainValue" size="small" v-model="gainValue" @input="e => handleNumber(e,'gainValue')" />
+                  <el-input :disabled="disGainValue" size="mini" v-model="gainValue" @input="e => handleNumber(e,'gainValue')" />
                   张
                 </div>
               </el-radio-group>
@@ -103,12 +103,12 @@
               <el-radio-group v-model="formObj.timeType" @change="e => handleChange(e,'dayValue','disDayValue')">
                 <div class="radio-input" v-if="!giftPackFlag">
                   <el-radio label="1">指定日期</el-radio>
-                  <el-date-picker :disabled="disRangeDay" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="rangeDay" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+                  <el-date-picker size="mini" :disabled="disRangeDay" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="rangeDay" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
                   </el-date-picker>
                 </div>
                 <div class="radio-input">
                   <el-radio label="2">领取后立即生效，有效期</el-radio>
-                  <el-input v-model="dayValue" :disabled="disDayValue" size="small" @input="e => handleNumber(e,'dayValue')" />
+                  <el-input size="mini" v-model="dayValue" :disabled="disDayValue" @input="e => handleNumber(e,'dayValue')" />
                   天
                 </div>
               </el-radio-group>

@@ -1,15 +1,15 @@
 import {
-  getExplodeGoodsList
-} from '@/api/mall/mall'
+  getExplodeGoodsList, sendCoupon
+} from '@/api/mall/issued'
+import { spaceInput, intInput } from '@/utils/utils'
 
 export default {
   data() {
     return {
-      // 查询优惠劵列表
       query: {
         id: '',
         name: '',
-        status: ''
+        create: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -33,14 +33,25 @@ export default {
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
+    // 限制输入空格
+    handleSpace(e) {
+      this.query.name = spaceInput(e)
+    },
+    // 限制输入正整数
+    handleNumber(e, str) {
+      this.query.id = intInput(e)
+    },
     // 查询优惠券列表
-    fetchData() {
+    fetchData(e) {
+      if (e !== undefined) {
+        this.currentpage = 1
+      }
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
         'page': this.currentpage,
         'id': this.query.id,
-        'status': this.query.status,
+        'create': this.query.create,
         'name': this.query.name
       }
       getExplodeGoodsList(params).then(res => {
@@ -58,47 +69,28 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    // 更新发行量
-    showIssue() {
-      this.showIssueDialog = true
-    },
-    updateIssue() {
-      console.log('更新发行量')
-    },
-    // 停止发送
-    send() {
-      console.log('停止发送')
+    // 发送
+    send(id) {
       this.$confirm('确认发送吗?', '提示', {
         confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+        cancelButtonText: '取消'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+        sendCoupon(id).then(res => {
+          this.list = res.data.list
+          this.total = res.data.totalRows
+          this.listLoading = false
+          this.$message.success('发送成功!')
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
       })
     },
-    // 跳转发放优惠券
+    // 跳转发送优惠券页面
     create() {
       this.$router.push(`/mall/issuing-coupon-send`)
     },
     // 查看优惠券详情
     goCouponDetail() {
       this.$router.push(`/mall/couponDetail`)
-    },
-    // 查看商品劵商品
-    goGoodsLsit() {
-      this.$router.push(`/mall/couponDetail`)
-    },
-    // 查看订单管理列表
-    goOrderList() {
-      this.$router.push(`/order/manager`)
     },
     // 查看已发放列表
     goIssueList() {

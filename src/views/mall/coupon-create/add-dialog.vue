@@ -155,11 +155,6 @@ export default {
       // 清除两个数组中相同的元素
       let tempList = [...this.selectionDatas, ...value]
       this.selectionDatas = this.filterArrById(tempList)
-      // let datas = value
-      // this.selectionDatas = []
-      // for (let data of datas) {
-      //   this.selectionDatas.push(data.id)
-      // }
     },
     add() {
       if (this.selectionDatas.length === 0) {
@@ -170,7 +165,7 @@ export default {
           JSON.stringify(this.selectionDatas)
         )
         this.$emit('localChange', {
-          len: this.selectionDatas.length,
+          data: this.selectionDatas,
           type: 'add',
         })
         let _this = this
@@ -199,13 +194,11 @@ export default {
           let localList = window.localStorage.getItem('selected-item')
           if (localList) {
             localList = JSON.parse(localList)
-            console.log('=======', localList)
             let finalList = res.data.list.filter((item) => {
               let arrList = localList.map((item2) => item2.id)
               return !arrList.includes(item.id)
             })
             this.list = finalList
-            console.log(this.list, '6666666666666666666')
             this.listLoading = false
           } else {
             this.list = res.data.list

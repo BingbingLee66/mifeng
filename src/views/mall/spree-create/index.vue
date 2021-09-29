@@ -1,59 +1,66 @@
 <template>
   <div class="app-container">
     <div class="coupon-form-container">
-      <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="160px" class="demo-ruleForm">
+      <el-form :model="formObj" :rules="rules" ref="form" label-width="160px">
         <div class="coupon-form-wrap">
           <div class="coupon-form-title">大礼包信息</div>
           <div class="coupon-form-item">
             <el-form-item label="大礼包名称：" prop="name">
-              <el-input style="width: 200px;" v-model="ruleForm.name" placeholder="8个字内" show-word-limit maxlength="8"></el-input>
+              <el-input style="width: 200px;" size="mini" v-model="formObj.name" placeholder="8个字内" show-word-limit maxlength="8" @input="handleSpace"></el-input>
             </el-form-item>
           </div>
           <div class="coupon-form-item">
-            <el-form-item label="包含优惠券：">
-              <draggable v-model="ruleForm.couponList" ghost-class="ghost" group="couponList" animation="500" @start="couponListStart" @end="couponListEnd">
+            <el-form-item label="包含优惠券：" prop="couponList">
+              <draggable v-model="formObj.couponList" ghost-class="ghost" group="couponList" animation="500" @start="couponListStart" @end="couponListEnd">
                 <transition-group>
-                  <div class="add-coupon" v-for="(id, index) in ruleForm.couponList" :key="index">
-                    <el-input style="width: 200px;" v-model="ruleForm.couponList[index]" placeholder="优惠券ID"></el-input>
-                    <span class="blue-label" @click="delCoupon(index)">删除</span>
-                    <span class="blue-label">移动</span>
+                  <div class="mb-10" v-for="(item, index) in formObj.couponList" :key="index">
+                    <el-input style="width: 200px;" size="mini" v-model="item.id" placeholder="优惠券ID" maxlength="12" @input="e => handleInt(e,index)" @blur="e => handleBlur(e,index)"></el-input>
+                    <span class="blue-label" v-if="formObj.couponList.length>1" @click="delCoupon(index)">删除</span>
+                    <span style="color: #e6a23c;cursor: pointer;" v-if="formObj.couponList.length>1">移动</span>
+                    <div style="line-height: 1.2;color: #333;font-size: 14px;">{{ item.name }}</div>
                   </div>
                 </transition-group>
               </draggable>
-              <div class="blue-label" @click="addCoupon">新增</div>
+              <div style="line-height: 1">
+                <span class="blue-label" @click="addCoupon">新增</span>
+              </div>
             </el-form-item>
           </div>
           <div class="coupon-form-item">
-            <el-form-item label="大礼包发行量：" prop="resource">
-              <el-input style="width: 150px;" size="small" v-model="ruleForm.name" />份
+            <el-form-item label="大礼包发行量：" prop="issue">
+              <el-input style="width: 200px;" size="mini" v-model="formObj.issue" @input="e => handleNumber(e,'issue')"/>
+              份
             </el-form-item>
           </div>
         </div>
         <div class="coupon-form-wrap">
           <div class="coupon-form-title">获取规则</div>
           <div class="coupon-form-item">
-            <el-form-item label="每人可获得：">
-              <div>最多1份 <span class="red-label"> (不可修改) </span></div>
+            <el-form-item label="每人可获得：" prop="limit">
+              <div>
+                <span>最多{{ formObj.limit }}份</span>
+                <span class="red-label"> (不可修改) </span>
+              </div>
             </el-form-item>
           </div>
           <div class="coupon-form-item">
-            <el-form-item label="可接收/领取的人：">
-              <div>不限</div>
+            <el-form-item label="可接收/领取的人：" prop="person">
+              <el-radio disabled v-model="formObj.person" label="1">不限</el-radio>
             </el-form-item>
           </div>
         </div>
         <div class="coupon-form-wrap" style="border-bottom: none">
           <div class="coupon-form-title">使用规则</div>
           <div class="coupon-form-item">
-            <el-form-item label="有效期：" prop="resource">
-              <el-time-picker is-range range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间" v-model="ruleForm.date2" style="width: 300px"></el-time-picker>
+            <el-form-item label="有效期：" prop="date">
+              <el-date-picker style="width: 260px" size="mini" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="formObj.date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"/>
             </el-form-item>
           </div>
         </div>
       </el-form>
     </div>
     <div style="width:900px;text-align:center;margin-top: 30px;">
-      <el-button type="primary" @click="submitForm">保存</el-button>
+      <el-button type="primary" @click="save">保存</el-button>
       <el-button>取消</el-button>
     </div>
   </div>
@@ -78,10 +85,6 @@
     color: #333333;
     font-weight: bolder;
     margin-bottom: 20px;
-  }
-
-  .add-coupon {
-    margin: 10px 0;
   }
 
   .radio-form {

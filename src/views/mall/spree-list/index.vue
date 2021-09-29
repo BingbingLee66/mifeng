@@ -3,10 +3,13 @@
     <div class="from-block">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="大礼包ID">
-          <el-input v-model="query.id" placeholder="" />
+          <el-input v-model="query.id" maxlength="12" placeholder=""  @input="e => handleNumber(e,'id')" />
         </el-form-item>
         <el-form-item label="大礼包名称">
-          <el-input v-model="query.name" placeholder="关键词" />
+          <el-input v-model="query.name" placeholder="关键词" @input="handleSpace" />
+        </el-form-item>
+        <el-form-item label="创建人">
+          <el-input v-model="query.create" placeholder="关键词" @input="handleSpace" />
         </el-form-item>
         <el-form-item label="">
           <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
@@ -21,18 +24,21 @@
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column label="大礼包ID" width="100px">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goCouponDetail">{{ scope.row.id }}</div>
+            <div class="blue-label" @click="goSpreeDetail">{{ scope.row.id }}</div>
           </template>
         </el-table-column>
         <el-table-column label="大礼包名称" width="200px">
           <template slot-scope="scope">
             <div>{{ scope.row.name }}</div>
-            <span class="blue-label">二维码</span>
-            <span class="blue-label">短连接</span>
+            <span class="blue-label" @click="createCode($event, scope.row)">二维码</span>
+            <span class="blue-label" @click="createLink($event, scope.row)">短连接</span>
           </template>
         </el-table-column>
         <el-table-column label="包含优惠券" width="200px">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
+          <template slot-scope="scope">
+            <span class="blue-label" @click="goCouponDetail">100036</span>-
+            {{ scope.row.name }}
+          </template>
         </el-table-column>
         <el-table-column label="大礼包有效期" width="130px">
           <template slot-scope="scope">
@@ -42,7 +48,7 @@
         </el-table-column>
         <el-table-column label="大礼包发行量" width="130px">
           <template slot-scope="scope">
-            <div class="blue-label" @click="showIssue">{{ scope.row.name }}</div>
+            <div class="blue-label" @click="showIssue(scope.row)">{{ scope.row.name }}</div>
           </template>
         </el-table-column>
         <el-table-column label="获取规则" width="150px">
@@ -51,11 +57,6 @@
         <el-table-column label="已发放/领取" width="100px">
           <template slot-scope="scope">
             <div class="blue-label" @click="goIssueList">{{ scope.row.name }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="已使用" width="100px">
-          <template slot-scope="scope">
-            <div class="blue-label" @click="goOrderList">{{ scope.row.name }}</div>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" width="160px">
@@ -68,20 +69,59 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
 
     <!-- 编辑发行量 -->
-    <el-dialog title="发行量" :visible.sync="showIssueDialog" width="30%">
+    <el-dialog title="发行量" :visible.sync="showIssueDialog" width="400px">
       <div class="dialog-content">
-        <el-input v-model="issue" placeholder="" />
-        <div class="red-label">提示：编辑发行量时，只能增加，不能减少。</div>
+        <el-input style="width: 300px" v-model="issue" placeholder="" @input="e => handleNumber(e,'issue')"/>
+        <div class="red-label mt-10">提示：编辑发行量时，只能增加，不能减少。</div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="showIssueDialog = false">提交</el-button>
-        <el-button type="primary" @click="showIssueDialog = false">取消</el-button>
+        <el-button type="primary" @click="updateIssue">提交</el-button>
+        <el-button @click="showIssueDialog = false">取消</el-button>
       </div>
     </el-dialog>
+    <!-- 生成短链接 -->
+    <el-dialog
+      title="生成短链接"
+      :visible.sync="linkVisible"
+      width="500px">
+      <el-row>
+        <el-col style="width: 60px;">短链接：</el-col>
+        <el-col style="width: 400px;">{{ spreeLink }}</el-col>
+      </el-row>
+      <el-row>
+        <el-col style="width: 60px;"></el-col>
+        <el-col :span="10" :offset="3"><span style="color: #409eff;cursor: pointer;" @click="copyUrl">复制链接</span>
+        </el-col>
+      </el-row>
+    </el-dialog>
+    <!-- 生成二维码 -->
+    <div class="code-dialog">
+      <el-dialog
+        title="礼包二维码"
+        :visible.sync="codeVisible"
+        width="600px">
+        <div class="code-wrap">
+          <div id="postdiv" class="code-content">
+            <div class="code-img">
+              <img class="qr-code" src="https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/company-default-logo.png">
+            </div>
+            <div class="code-info">
+              <div class="item">
+                <div class="tit">大礼包：</div>
+                <div class="txt">10月福利礼包</div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: center;margin-top: 20px">
+            <el-button type="primary" @click="downloadCode" :loading="isLoading">保存</el-button>
+          </div>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -112,6 +152,67 @@
 .table-dialog {
   .el-dialog {
     margin-top: 8vh !important;
+  }
+}
+
+.code-dialog {
+  .el-dialog {
+    margin-top: 5vh !important;
+  }
+
+  .code-wrap {
+    width: 100%;
+    height: 80vh;
+
+    .code-content {
+      width: 502px;
+      height: 602px;
+      margin: 0 auto;
+      border: 1px solid #d6d5d5;
+      border-radius: 20px;
+      font-size: 16px;
+      font-family: PingFang SC, PingFang SC-Regular;
+      color: #999999;
+      overflow: hidden;
+
+      .code-img {
+        width: 500px;
+        height: 500px;
+        border-bottom: 1px solid #d6d5d5;
+        border-radius: 1px;
+
+        .qr-code {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .code-info {
+        padding: 20px 33px 33px 33px;
+        box-sizing: border-box;
+
+        .item {
+          display: flex;
+          margin-top: 18px;
+
+          .tit {
+            width: 80px;
+            flex-shrink: 0;
+            line-height: 24px;
+          }
+
+          .txt {
+            font-weight: bold;
+            color: #222222;
+            line-height: 24px;
+          }
+
+          .txt-1 {
+            color: #dc0000;
+          }
+        }
+      }
+    }
   }
 }
 </style>

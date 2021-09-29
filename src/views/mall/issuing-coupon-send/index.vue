@@ -1,31 +1,38 @@
 <template>
   <div class="app-container">
     <div class="coupon-form-container">
-      <el-form :model="ruleForm" label-width="160px" class="demo-ruleForm">
+      <el-form :model="formObj" label-width="160px" class="demo-formObj">
         <div class="coupon-form-wrap">
           <div class="coupon-form-title">发放优惠券</div>
           <div class="coupon-form-item">
             <el-form-item label="包含优惠券：" required>
-              <draggable v-model="ruleForm.couponList" ghost-class="ghost" group="couponList" animation="500" @start="couponListStart" @end="couponListEnd">
+              <draggable v-model="couponList" ghost-class="ghost" group="couponList" animation="500" @start="couponListStart" @end="couponListEnd">
                 <transition-group>
-                  <div class="add-coupon" v-for="(id, index) in ruleForm.couponList" :key="index">
-                    <el-input style="width: 200px;" v-model="ruleForm.couponList[index]" placeholder="优惠券ID"></el-input>
-                    <el-input style="width: 120px;" placeholder="数量（1-10）"></el-input>
-                    <span class="blue-label" @click="delCoupon(index)">删除</span>
-                    <span class="blue-label">移动</span>
+                  <div class="add-coupon" v-for="(item, index) in couponList" :key="index">
+                    <div class="add-item">
+                      <el-input style="width: 200px;" size="mini" v-model="item.id" maxlength="12" placeholder="优惠券ID" @input="e => handleInt(e,index,'id')" @blur="e => handleBlur(e,index,'id')"></el-input>
+                      <div class="tips">{{item.name}}</div>
+                      <div class="tips" style="color: #ff3333;">{{item.errTips}}</div>
+                    </div>
+                    <div class="add-item">
+                      <el-input style="width: 120px;margin-right: 10px;" size="mini" maxlength="2" v-model="item.number" placeholder="数量（1-10）" @input="e => handleInt(e,index,'num')" @blur="e => handleBlur(e,index,'num')"></el-input>
+                      <span class="blue-label" v-if="couponList.length>1" @click="delCoupon(index)">删除</span>
+                      <span class="blue-label" v-if="couponList.length>1">移动</span>
+                      <div class="tips" style="color: #ff3333;">{{ item.tip }}</div>
+                    </div>
                   </div>
                 </transition-group>
               </draggable>
-              <div class="blue-label" @click="addCoupon">新增</div>
+              <div class="blue-label" style="line-height: 1.5;" @click="addCoupon">新增</div>
             </el-form-item>
           </div>
           <div class="coupon-form-item radio-form">
             <el-form-item label="优惠券接收方：" required>
-              <el-radio-group v-model="ruleForm.receive" @change="handleChange">
+              <el-radio-group v-model="issueType" @change="handleChange">
                 <div style="width: 500px">
                   <el-radio label="1">发给指定手机号</el-radio>
-                  <div v-if="ruleForm.receive==='1'" style="margin-top:10px;">
-                    <el-input style="width: 400px;" type="textarea" resize="none" :rows="8" v-model="ruleForm.phone" placeholder=""></el-input>
+                  <div v-if="issueType==='1'" style="margin-top:10px;">
+                    <el-input style="width: 400px;" type="textarea" resize="none" :rows="8" v-model="phone" placeholder=""></el-input>
                     <div style="margin-top:10px;line-height:1.5;" class="red-label">
                       <div>提示：</div>
                       <div>1.输入多个手机号时，请以回车换行。</div>
@@ -35,9 +42,9 @@
                 </div>
                 <div style="width: 500px">
                   <el-radio label="2">发给指定商/协会成员</el-radio>
-                  <div v-if="ruleForm.receive==='2'" style="margin-top:10px;">
-                    <el-select style="width:200px;" v-model="ruleForm.ckey" placeholder="请选择商/协会成员" clearable>
-                      <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value" />
+                  <div v-if="issueType==='2'" style="margin-top:10px;">
+                    <el-select style="width:200px;" v-model="formObj.ckey" placeholder="请选择商/协会成员" clearable>
+                      <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value"/>
                     </el-select>
                   </div>
                 </div>
@@ -46,7 +53,7 @@
           </div>
         </div>
         <el-form-item label=" ">
-          <el-button type="primary" @click="submitForm">保存</el-button>
+          <el-button type="primary" @click="save">保存</el-button>
           <el-button>取消</el-button>
         </el-form-item>
       </el-form>
@@ -77,6 +84,17 @@
 
   .add-coupon {
     margin: 10px 0;
+    display: flex;
+
+    .add-item {
+      line-height: 1;
+      margin-right: 10px;
+
+      .tips {
+        color: #333;
+        margin-top: 10px;
+      }
+    }
   }
 
   .radio-form {

@@ -3,19 +3,16 @@
     <div class="from-block">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="优惠券ID">
-          <el-input v-model="query.id" placeholder="" />
+          <el-input v-model="query.id" placeholder="" maxlength="12" @input="handleNumber" />
         </el-form-item>
         <el-form-item label="优惠券名称">
-          <el-input v-model="query.name" placeholder="" />
+          <el-input v-model="query.name" placeholder="" maxlength="12" @input="handleSpace" />
         </el-form-item>
-        <el-form-item label="是否礼包劵">
-          <el-select v-model="query.status" placeholder="请选择">
-            <el-option label="是礼包劵" :value="-1" />
-            <el-option label="不是礼包劵" :value="1" />
-          </el-select>
+        <el-form-item label="创建人">
+          <el-input v-model="query.create" placeholder="关键词" @input="handleSpace" />
         </el-form-item>
         <el-form-item label="">
-          <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询</el-button>
+          <el-button style="margin-left: -20px;" v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -43,7 +40,7 @@
         </el-table-column>
         <el-table-column label="操作" width="200px" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="send(scope.row)">发送</el-button>
+            <el-button type="text" @click="send(scope.row.id)">发送</el-button>
           </template>
         </el-table-column>
       </el-table>
