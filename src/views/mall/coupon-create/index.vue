@@ -12,8 +12,8 @@
             </el-form-item>
           </div>
           <div class="coupon-form-item radio-form">
-            <el-form-item label="适用条件：" prop="condition">
-              <el-radio-group v-model="formObj.condition">
+            <el-form-item label="适用条件：" prop="scope">
+              <el-radio-group v-model="formObj.scope">
                 <div style="width: 500px">
                   <el-radio label="1">全场劵</el-radio>
                   <span style="color: #7f7f7f;">任何商品都可以使用</span>
@@ -21,7 +21,7 @@
                 <div>
                   <el-radio label="2">商品劵</el-radio>
                   <span style="color: #7f7f7f;">只有指定商品，才可以使用</span>
-                  <div style="margin-top: 10px;" v-if="formObj.condition==='2'">
+                  <div style="margin-top: 10px;" v-if="formObj.scope==='2'">
                     <el-button type="danger" size="small" @click="openAddDialog">选择可用劵商品</el-button>
                     <span v-if="selectedItemLength>0">已选{{ selectedItemLength }}款</span>
                     <span v-if="selectedItemLength>0" class="blue-label" @click="openRemoveDialog">点击查看</span>
@@ -31,8 +31,8 @@
             </el-form-item>
           </div>
           <div class="coupon-form-item">
-            <el-form-item label="是否放进大礼包：" prop="isGiftPack">
-              <el-checkbox v-model="formObj.isGiftPack" @change="putGiftPack">会放进大礼包</el-checkbox>
+            <el-form-item label="是否放进大礼包：">
+              <el-checkbox v-model="isPutGiftPack" @change="putGiftPack">会放进大礼包</el-checkbox>
             </el-form-item>
           </div>
         </div>
@@ -44,15 +44,15 @@
             </el-form-item>
           </div>
           <div class="coupon-form-item">
-            <el-form-item label="面值金额：" prop="amount">
-              <el-input size="mini" style="width: 150px;margin-top: 6px;" v-model="formObj.amount" @input="e => handleNumber(e,'amount')">
+            <el-form-item label="面值金额：" prop="price">
+              <el-input size="mini" style="width: 150px;margin-top: 6px;" v-model="formObj.price" @input="e => handleNumber(e,'price')">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
           </div>
           <div class="coupon-form-item radio-form require-label">
-            <el-form-item label="满额限额：" prop="isLimit">
-              <el-radio-group v-model="formObj.isLimit" @change="e => handleChange(e,'limitValue','disLimitValue')">
+            <el-form-item label="满额限额：">
+              <el-radio-group v-model="isLimit" @change="e => handleChange(e,'limitValue','disLimitValue')">
                 <div style="width: 500px">
                   <el-radio label="1">无门槛使用</el-radio>
                 </div>
@@ -65,12 +65,12 @@
             </el-form-item>
           </div>
           <div class="coupon-form-item radio-form require-label">
-            <el-form-item label="发行量：" prop="isIssue" ref="issueForm">
-              <el-radio-group v-model="formObj.isIssue" @change="e => handleChange(e,'issueValue','disIssueValue')">
+            <el-form-item label="发行量：" ref="issueForm">
+              <el-radio-group v-model="isIssue" @change="e => handleChange(e,'issueValue','disIssueValue')">
                 <div style="width: 500px">
                   <el-radio label="1">无张数限制</el-radio>
                 </div>
-                <div class="radio-input" v-if="!giftPackFlag">
+                <div class="radio-input" v-if="!formObj.used">
                   <el-radio label="2">共</el-radio>
                   <el-input :disabled="disIssueValue" size="mini" v-model="issueValue" @input="e => handleNumber(e,'issueValue')" />
                   张
@@ -82,12 +82,12 @@
         <div class="coupon-form-wrap">
           <div class="coupon-form-title">获取规则</div>
           <div class="coupon-form-item radio-form require-label">
-            <el-form-item label="每人可获得：" prop="isGain" ref="gainForm">
-              <el-radio-group v-model="formObj.isGain" @change="e => handleChange(e,'gainValue','disGainValue')">
+            <el-form-item label="每人可获得：" ref="gainForm">
+              <el-radio-group v-model="isGain" @change="e => handleChange(e,'gainValue','disGainValue')">
                 <div style="width: 500px">
                   <el-radio label="1">无张数限制</el-radio>
                 </div>
-                <div class="radio-input" v-if="!giftPackFlag">
+                <div class="radio-input" v-if="!formObj.used">
                   <el-radio label="2">最多获得</el-radio>
                   <el-input :disabled="disGainValue" size="mini" v-model="gainValue" @input="e => handleNumber(e,'gainValue')" />
                   张
@@ -99,9 +99,9 @@
         <div class="coupon-form-wrap" style="border-bottom: none">
           <div class="coupon-form-title">使用规则</div>
           <div class="coupon-form-item radio-form require-label">
-            <el-form-item label="有效期：" prop="timeType" ref="timeTypeForm">
-              <el-radio-group v-model="formObj.timeType" @change="e => handleChange(e,'dayValue','disDayValue')">
-                <div class="radio-input" v-if="!giftPackFlag">
+            <el-form-item label="有效期：" ref="timeTypeForm">
+              <el-radio-group v-model="formObj.validType" @change="e => handleChange(e,'dayValue','disDayValue')">
+                <div class="radio-input" v-if="!formObj.used">
                   <el-radio label="1">指定日期</el-radio>
                   <el-date-picker size="mini" :disabled="disRangeDay" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="rangeDay" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
                   </el-date-picker>
@@ -115,25 +115,25 @@
             </el-form-item>
           </div>
           <div class="coupon-form-item radio-form">
-            <el-form-item label="是否仅限新人使用：" prop="isNew">
-              <el-radio-group v-model="formObj.isNew">
+            <el-form-item label="是否仅限新人使用：" prop="validUse">
+              <el-radio-group v-model="formObj.validUse">
                 <div style="width: 500px">
                   <el-radio label="1">是，仅限未下单用户使用</el-radio>
                 </div>
                 <div class="radio-input">
-                  <el-radio label="2">否</el-radio>
+                  <el-radio label="0">否</el-radio>
                 </div>
               </el-radio-group>
             </el-form-item>
           </div>
           <div class="coupon-form-item radio-form">
-            <el-form-item label="是否可赠送：" prop="isGive">
-              <el-radio-group v-model="formObj.isGive">
+            <el-form-item label="是否可赠送：" prop="validShare">
+              <el-radio-group v-model="formObj.validShare">
                 <div style="width: 500px">
                   <el-radio label="1">可以赠送</el-radio>
                 </div>
                 <div class="radio-input">
-                  <el-radio label="2">禁止赠送</el-radio>
+                  <el-radio label="0">禁止赠送</el-radio>
                 </div>
               </el-radio-group>
             </el-form-item>

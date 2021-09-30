@@ -13,14 +13,14 @@ export function getExplodeGoodsList(params) {
 // 查询优惠劵列表
 export function getCouponList(params) {
   return request({
-    url: baseUrl + '',
+    url: baseUrl + '/api/coupons',
     method: 'get',
     params
   })
 }
 
 // 更新发行量
-export function updateIssueAmount(params) {
+export function updateIssue(params) {
   return request({
     url: baseUrl + '',
     method: 'get',
@@ -28,17 +28,8 @@ export function updateIssueAmount(params) {
   })
 }
 
-// 停止发优惠券
-export function stopIssue(params) {
-  return request({
-    url: baseUrl + '',
-    method: 'get',
-    params
-  })
-}
-
-// 继续发优惠券
-export function continueIssue(params) {
+// 继续/停止发优惠券
+export function updateIssueStatus(params) {
   return request({
     url: baseUrl + '',
     method: 'get',
@@ -49,9 +40,9 @@ export function continueIssue(params) {
 // 创建优惠券
 export function createCoupon(params) {
   return request({
-    url: baseUrl + '',
-    method: 'get',
-    params
+    url: baseUrl + '/api/coupon',
+    method: 'post',
+    data: params
   })
 }
 

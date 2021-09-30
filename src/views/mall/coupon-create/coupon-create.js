@@ -12,19 +12,20 @@ export default {
     return {
       formObj: {
         type: '1', // 优惠券类型
-        condition: '', // 适用条件
-        isGiftPack: false, // 是否放进大礼包
+        scope: '', // 适用条件
+        used: '', // 是否放进大礼包
         name: '', // 优惠券名称
-        amount: '', // 面值金额
-        isLimit: '', // 是否满减限额
-        isIssue: '', // 是否限制发行量
-        isGain: '', // 是否限制获得张数
-        timeType: '', // 有效期类型
-        isNew: '', // 是否仅限新人使用
-        isGive: '', // 是否可赠送
+        price: '', // 面值金额
+        validType: '', // 有效期类型
+        validUse: '', // 是否仅限新人使用
+        validShare: '', // 是否可赠送
       },
+      isPutGiftPack: false, // 是否放进大礼包
+      isLimit: '', // 是否满减限额
       limitValue: '',
+      isIssue: '', // 是否限制发行量
       issueValue: '',
+      isGain: '', // 每人获取限制
       gainValue: '',
       dayValue: '',
       rangeDay: [],
@@ -33,36 +34,23 @@ export default {
       disGainValue: false,
       disDayValue: false,
       disRangeDay: false,
-      giftPackFlag: false,
       rules: {
         type: [
           { required: true, message: '请设置优惠券类型！', trigger: 'change' }
         ],
-        condition: [
+        scope: [
           { required: true, message: '请设置优惠券适用条件！', trigger: 'change' }
         ],
         name: [
           { required: true, message: '请填写优惠券名称！', trigger: 'blur' }
         ],
-        amount: [
+        price: [
           { required: true, message: '请填写面值金额！', trigger: 'blur' }
         ],
-        // isLimit: [
-        //   { required: true, message: '请设置满减限额！', trigger: 'change' }
-        // ],
-        // isIssue: [
-        //   { required: true, message: '请设置发行量！' }
-        // ],
-        // isGain: [
-        //   { required: true, message: '请设置获取规则！', trigger: 'change' }
-        // ],
-        // timeType: [
-        //   { required: true, message: '请设置有效期！', trigger: 'change' }
-        // ],
-        isNew: [
+        validUse: [
           { required: true, message: '请设置是否仅限新人使用！', trigger: 'change' }
         ],
-        isGive: [
+        validShare: [
           { required: true, message: '请设置是否可赠送！', trigger: 'change' }
         ]
       },
@@ -107,9 +95,11 @@ export default {
       }
     },
     openAddDialog() {
+      this.$refs['addDialog'].fetchData('reset')
       this.$refs['addDialog'].show()
     },
     openRemoveDialog() {
+      this.$refs['removeDialog'].fetchData()
       this.$refs['removeDialog'].show()
     },
     // 限制输入空格
@@ -118,8 +108,8 @@ export default {
     },
     // 限制输入正整数
     handleNumber(e, str) {
-      if (str === 'amount') {
-        this.formObj.amount = intInput(e)
+      if (str === 'price') {
+        this.formObj.price = intInput(e)
       } else {
         this[str] = intInput(e)
       }
@@ -139,27 +129,28 @@ export default {
     },
     // 是否放进大礼包
     putGiftPack(e) {
-      this.giftPackFlag = e
       if (e) {
-        this.formObj.isIssue = '1'
-        this.formObj.isGain = '1'
-        this.formObj.timeType = '2'
+        this.formObj.used = 1
+        this.isIssue = '1'
+        this.isGain = '1'
+        this.formObj.validType = '2'
       } else {
-        this.formObj.isIssue = ''
+        this.formObj.used = 0
+        this.isIssue = ''
         this.issueValue = ''
-        this.formObj.isGain = ''
+        this.isGain = ''
         this.gainValue = ''
-        this.formObj.timeType = ''
+        this.formObj.validType = ''
         this.dayValue = ''
         this.disRangeDay = false
       }
     },
     save() {
       this.$refs['formObj'].validate((valid) => {
-        if (!this.formObj.condition) {
+        if (!this.formObj.scope) {
           return this.$message.error('请设置优惠券适用条件！')
         }
-        if (this.formObj.condition === '2') {
+        if (this.formObj.scope === '2') {
           if (this.selectedItem.length === 0) {
             return this.$message.error('请选择可用劵商品！')
           }
@@ -167,72 +158,102 @@ export default {
         if (!this.formObj.name) {
           return this.$message.error('请填写优惠券名称！')
         }
-        if (!this.formObj.amount) {
+        if (!this.formObj.price) {
           return this.$message.error('请填写面值金额！')
         }
-        if (!this.formObj.isLimit) {
+        if (!this.isLimit) {
           return this.$message.error('请设置满减限额！')
         }
-        if (this.formObj.isLimit === '2') {
+        if (this.isLimit === '2') {
           if (!this.limitValue) {
             return this.$message.error('请填写满减限额！')
-          } else if (parseInt(this.limitValue) <= parseInt(this.formObj.amount)) {
+          } else if (parseInt(this.limitValue) <= parseInt(this.formObj.price)) {
             return this.$message.error('满减限额需大于面值金额！')
           } else if (parseInt(this.limitValue) > 1000000) {
             return this.$message.error('满减限额不得大于100万元！')
           }
         }
-        if (!this.formObj.isIssue) {
+        if (!this.isIssue) {
           return this.$message.error('请设置发行量！')
         }
-        if (this.formObj.isIssue === '2') {
+        if (this.isIssue === '2') {
           if (!this.issueValue) {
             return this.$message.error('请填写发行量！')
           }
         }
-        if (!this.formObj.isGain) {
+        if (!this.isGain) {
           return this.$message.error('请设置获取规则！')
         }
-        if (this.formObj.isGain === '2') {
+        if (this.isGain === '2') {
           if (!this.gainValue) {
             return this.$message.error('请填写最多可获得张数！')
           }
         }
-        if (!this.formObj.timeType) {
+        if (!this.formObj.validType) {
           return this.$message.error('请设置有效期！')
         }
-        if (this.formObj.timeType === '2') {
+        if (this.formObj.validType === '1') {
+          if (!this.rangeDay) {
+            return this.$message.error('请指定日期！')
+          }
+        }
+        if (this.formObj.validType === '2') {
           if (!this.dayValue) {
             return this.$message.error('请填写有效期！')
           }
         }
-        if (!this.formObj.isNew) {
+        if (!this.formObj.validUse) {
           return this.$message.error('请设置是否仅限新人使用！')
         }
-        if (!this.formObj.isGive) {
+        if (!this.formObj.validShare) {
           return this.$message.error('请设置是否可赠送！')
         }
         if (valid) {
           let params = this.formObj
-          if (this.formObj.condition === '2') {
-            params['selectedItem'] = this.selectedItem
+          // 适用条件1-全场券 2-商品券
+          if (this.formObj.scope === '2') {
+            params['goodsIds'] = this.selectedItem
           }
-          if (this.formObj.isLimit === '2') {
-            params['limitValue'] = this.limitValue
+          // 是否会放进大礼包
+          if (this.isPutGiftPack) {
+            params['used'] = 1
           }
-          if (this.formObj.isIssue === '2') {
-            params['issueValue'] = this.issueValue
+          if (!this.isPutGiftPack) {
+            params['used'] = 0
           }
-          if (this.formObj.isGain === '2') {
-            params['gainValue'] = this.gainValue
+          // useLimit满减限额 -1-无门槛使用 >0 满减使用
+          if (this.isLimit === '1') {
+            params['useLimit'] = -1
           }
-          if (this.formObj.timeType === '2') {
-            params['dayValue'] = this.dayValue
+          if (this.isLimit === '2') {
+            params['useLimit'] = this.limitValue
+          }
+          // quota发行量 -1-无限制 >0 限制数量
+          if (this.isIssue === '1') {
+            params['quota'] = -1
+          }
+          if (this.isIssue === '2') {
+            params['quota'] = this.issueValue
+          }
+          // obtainLimit每人获取限制-1-无限制 >0 限制数量
+          if (this.isGain === '1') {
+            params['obtainLimit'] = -1
+          }
+          if (this.isGain === '2') {
+            params['obtainLimit'] = this.gainValue
+          }
+          // validType有效期 1绝对时效（领取后XXX-XXX时间段有效）  2相对时效（领取后N天有效）
+          if (this.formObj.validType === '1') {
+            params['validStartTime'] = this.rangeDay[0]
+            params['validEndTime'] = this.rangeDay[1]
+          }
+          if (this.formObj.validType === '2') {
+            params['validDays'] = this.dayValue
           }
           console.log('提交参数:', params)
-          /* createCoupon(params).then(res => {
+          createCoupon(params).then(res => {
             console.log(res)
-          }) */
+          })
         } else {
           return false
         }

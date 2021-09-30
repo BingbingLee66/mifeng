@@ -3,7 +3,7 @@
     <el-dialog title="可用劵商品" :visible.sync="createVisible" width="80%">
       <div class="table-block">
         <el-table height="62vh" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55px" />
+          <el-table-column type="selection" width="55px"/>
           <el-table-column label="商品ID/名称" width="200px">
             <template slot-scope="scope">
               <div class="red-label">{{ scope.row.id }}</div>
@@ -65,22 +65,15 @@
       </div>
     </el-dialog>
     <el-dialog title="" :visible.sync="previewImgVisible" width="50%">
-      <img :src="previewUrl" style="width: 100%; padding:20px;" />
+      <img :src="previewUrl" style="width: 100%; padding:20px;"/>
     </el-dialog>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    /* createVisible: {
-      type: Boolean,
-      required: true,
-    }, */
-  },
   data() {
     return {
-      // 选择可用商品劵
       query: {
         ckey: '',
         goodsId: '',
@@ -123,14 +116,16 @@ export default {
     },
     // 移除
     handleSelectionChange(value) {
-      // 清除两个数组中相同的元素
-      let tempList = [...this.selectionDatas, ...value]
-      this.selectionDatas = this.filterArrById(tempList)
+      this.selectionDatas = value
     },
     remove() {
       if (this.selectionDatas.length === 0) {
         return this.$message.error('请选择商品！')
-      } else {
+      }
+      this.$confirm('确认移除所选商品吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
         let _this = this
         let finalList = _this.list.filter((item) => {
           let arrList = _this.selectionDatas.map((item2) => item2.id)
@@ -141,7 +136,8 @@ export default {
         this.$emit('localChange', { data: finalList, type: 'remove' })
         this.$message.success('移除成功')
         this.createVisible = false
-      }
+      }).catch(() => {
+      })
     },
     openPreviewModal(url) {
       this.previewImgVisible = true
@@ -159,6 +155,7 @@ export default {
     cursor: pointer;
     object-fit: cover;
   }
+
   .el-dialog {
     margin-top: 5vh !important;
     height: 90vh !important;

@@ -1,8 +1,5 @@
-import {
-  getExplodeGoodsList
-} from '@/api/mall/coupon'
-
-import { nmberInput } from '@/utils/utils'
+import { getCouponList, updateIssue, updateIssueStatus } from '@/api/mall/coupon'
+import { intInput, spaceInput } from '@/utils/utils'
 
 export default {
   data() {
@@ -11,22 +8,22 @@ export default {
       query: {
         id: '',
         name: '',
-        status: ''
+        type: '',
+        user: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
       currentpage: 1,
       limit: 10,
-      // 发行量
       issue: '',
-      // 控制变量
+      rowData: '',
       listLoading: false,
-      showIssueDialog: false
+      issueVisible: false
     }
   },
   created() {
-    this.fetchData()
+    // this.fetchData()
   },
   methods: {
     has(tabName, actionName) {
@@ -35,21 +32,33 @@ export default {
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    handleInput(e) {
-      this.query.id = nmberInput(e)
+    // 限制输入空格
+    handleSpace(e, str) {
+      this.query[str] = spaceInput(e)
+    },
+    // 限制输入正整数
+    handleNumber(e, str) {
+      if (str === 'id') {
+        this.query.id = intInput(e)
+      } else if (str === 'issue') {
+        this.issue = intInput(e)
+      }
     },
     // 查询优惠券列表
-    fetchData() {
+    fetchData(e) {
+      if (e !== undefined) {
+        this.currentpage = 1
+      }
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
         'page': this.currentpage,
         'id': this.query.id,
-        'status': this.query.status,
-        'name': this.query.name
+        'type': this.query.type,
+        'name': this.query.name,
+        'user': this.query.user
       }
-      // getCouponList
-      getExplodeGoodsList(params).then(res => {
+      getCouponList(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
@@ -57,56 +66,48 @@ export default {
     },
     handleSizeChange(val) {
       this.limit = val
-      this.currentpage = 1
-      this.fetchData()
+      this.fetchData(1)
     },
     handleCurrentChange(val) {
       this.currentpage = val
       this.fetchData()
     },
     // 更新发行量
-    showIssue() {
-      this.showIssueDialog = true
+    showIssue(row) {
+      this.rowData = row
+      this.issue = row.quota
+      this.issueVisible = true
     },
-    updateIssue() {
-      console.log('更新发行量')
-    },
-    // 停止发送
-    stopSend() {
-      console.log('停止发送')
-      this.$confirm('确认停发吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
+    updateIssues() {
+      if (!this.issue) return this.$message.error('请设置发行量')
+      if (this.issue < this.rowData.quota) return this.$message.error('编辑发行量时，只能增加，不能减少')
+      let params = {
+        quota: this.issue,
+        templateId: this.rowData.templateId
+      }
+      updateIssue(params).then(res => {
+        this.fetchData()
+        this.listLoading = false
       })
     },
-    // 继续发送
-    continueSend() {
-      console.log('继续发送')
-      this.$confirm('确认继续发吗?', '提示', {
+    // 继续/停止发送
+    updateIssueType(e, type) {
+      let msg = type === 1 ? '确认停发吗？' : '确认继续发吗？'
+      this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+        cancelButtonText: '取消'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
+        let params = {
+          templateId: e.templateId,
+          status: type
+        }
+        updateIssueStatus(params).then(res => {
+          console.log(res)
+          this.listLoading = false
+          this.fetchData(1)
+          this.$message.success('操作成功')
         })
       }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
       })
     },
     // 跳转创建优惠券

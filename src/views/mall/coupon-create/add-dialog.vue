@@ -4,22 +4,22 @@
       <el-form ref="query" label-position="right" size="small" :inline="true" :model="query">
         <el-form-item label-width="80px" label="商品来源">
           <el-select v-model="query.ckey" placeholder="请选择商品来源" clearable>
-            <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey" />
+            <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value"/>
           </el-select>
         </el-form-item>
         <el-form-item label-width="80px" label="商品ID">
-          <el-input v-model="query.goodsId" placeholder="请输入" />
+          <el-input v-model="query.goodsId" placeholder="请输入"/>
         </el-form-item>
         <el-form-item label-width="80px" label="商品名称">
-          <el-input v-model="query.goodsName" placeholder="请输入" />
+          <el-input v-model="query.goodsName" placeholder="请输入"/>
         </el-form-item>
         <el-form-item label-width="80px" label="商品状态">
           <el-select v-model="query.status" placeholder="请选择状态">
-            <el-option label="所有" :value="-1" />
-            <el-option label="在售中" :value="1" />
-            <el-option label="已下架" :value="6" />
-            <el-option label="商会下架" :value="2" />
-            <el-option label="已售罄" :value="5" />
+            <el-option label="所有" :value="-1"/>
+            <el-option label="在售中" :value="1"/>
+            <el-option label="已下架" :value="6"/>
+            <el-option label="商会下架" :value="2"/>
+            <el-option label="已售罄" :value="5"/>
           </el-select>
         </el-form-item>
         <el-form-item label=" ">
@@ -29,7 +29,7 @@
       </el-form>
       <div class="table-block">
         <el-table height="62vh" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55px" />
+          <el-table-column type="selection" width="55px"/>
           <el-table-column label="商品ID/名称" width="200px">
             <template slot-scope="scope">
               <div class="red-label">{{ scope.row.id }}</div>
@@ -91,14 +91,15 @@
       </div>
     </el-dialog>
     <el-dialog title="" :visible.sync="previewImgVisible" width="50%">
-      <img :src="previewUrl" style="width: 100%; padding:20px;" />
+      <img :src="previewUrl" style="width: 100%; padding:20px;"/>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getExplodeGoodsList } from '@/api/mall/coupon'
-import { getChamberAllList } from '@/api/goods/goods'
+import { getList } from '@/api/mall/mall'
+import { getChamberOptions } from '@/api/finance/finance'
+
 export default {
   props: {
     /* createVisible: {
@@ -113,7 +114,7 @@ export default {
         ckey: '',
         goodsId: '',
         goodsName: '',
-        status: '',
+        status: -1,
       },
       listLoading: false,
       list: [],
@@ -129,7 +130,6 @@ export default {
   },
   created() {
     this.getChamberList()
-    this.fetchData()
   },
   methods: {
     // 工具类函数 数组对象中id相同的元素去重
@@ -159,7 +159,11 @@ export default {
     add() {
       if (this.selectionDatas.length === 0) {
         return this.$message.error('请选择商品！')
-      } else {
+      }
+      this.$confirm('确认添加所选商品吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(() => {
         window.localStorage.setItem(
           'selected-item',
           JSON.stringify(this.selectionDatas)
@@ -177,9 +181,16 @@ export default {
         this.listLoading = false
         this.$message.success('添加成功')
         this.createVisible = false
-      }
+      }).catch(() => {
+      })
     },
     fetchData(e) {
+      if (e === 'reset') {
+        this.query.goodsName = ''
+        this.query.goodsId = ''
+        this.query.status = ''
+        this.query.ckey = ''
+      }
       this.listLoading = true
       let params = {
         page: 1,
@@ -189,32 +200,27 @@ export default {
         status: this.query.status,
         ckey: this.query.ckey,
       }
-      getExplodeGoodsList(params).then((res) => {
-        if (e === 'update') {
-          let localList = window.localStorage.getItem('selected-item')
-          if (localList) {
-            localList = JSON.parse(localList)
-            let finalList = res.data.list.filter((item) => {
-              let arrList = localList.map((item2) => item2.id)
-              return !arrList.includes(item.id)
-            })
-            this.list = finalList
-            this.listLoading = false
-          } else {
-            this.list = res.data.list
-            this.listLoading = false
-          }
+      getList(params).then((res) => {
+        let localList = window.localStorage.getItem('selected-item')
+        if (localList) {
+          localList = JSON.parse(localList)
+          let finalList = res.data.data.list.filter((item) => {
+            let arrList = localList.map((item2) => item2.id)
+            return !arrList.includes(item.id)
+          })
+          this.list = finalList
+          this.listLoading = false
         } else {
-          this.list = res.data.list
+          this.list = res.data.data.list
           this.listLoading = false
         }
       })
     },
     getChamberList() {
-      getChamberAllList().then((res) => {
+      getChamberOptions().then((res) => {
         if (res.state === 1) {
           this.chamberOptions = res.data.data
-          this.chamberOptions.unshift({ name: '全部', id: -1 })
+          this.chamberOptions.unshift({ label: '全部', value: '' })
         }
       })
     },
@@ -234,6 +240,7 @@ export default {
     cursor: pointer;
     object-fit: cover;
   }
+
   .el-dialog {
     margin-top: 5vh !important;
     height: 90vh !important;
