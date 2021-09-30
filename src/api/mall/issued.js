@@ -33,3 +33,13 @@ export function sendCoupon(params) {
     params
   })
 }
+
+// 已发放劵列表
+export function getIssuedCouponUserList(params) {
+  return request({
+    url: baseUrl + '/api/issueCoupon/issuedCouponUserList',
+    method: 'get',
+    params
+  })
+}
+

@@ -55,3 +55,18 @@ export function createCoupon(params) {
   })
 }
 
+// 查询优惠劵详情
+export function queryCouponDetailById(params) {
+  return request({
+    url: baseUrl + '/api/coupon/' + params,
+    method: 'get'
+  })
+}
+
+export function queryDetail(params) {
+  return request({
+    url: baseUrl + '/ec/mall/get-goods',
+    method: 'get',
+    params
+  })
+}

@@ -1,7 +1,7 @@
 import { createSend } from '@/api/mall/issued'
-import draggable from 'vuedraggable' // 拖拽组件
+import { queryDetail } from '@/api/mall/coupon'
 import { getChamberAllList } from '@/api/goods/goods'
-import { queryDetail } from "@/api/mall/spree";
+import draggable from 'vuedraggable' // 拖拽组件
 
 export default {
   components: {
@@ -23,13 +23,13 @@ export default {
     this.getChamberOptions()
   },
   methods: {
-    //工具类函数 查找数组重复元素
+    // 工具类函数 查找数组重复元素
     findSameEle(arr) {
-      var tmp = [];
-      arr.forEach(function (item) {
+      var tmp = []
+      arr.forEach(function(item) {
         (arr.indexOf(item) !== arr.lastIndexOf(item) && tmp.indexOf(item) === -1) && tmp.push(item)
       })
-      return tmp;
+      return tmp
     },
     getChamberOptions() {
       getChamberAllList().then(response => {
@@ -62,8 +62,12 @@ export default {
         } else {
           queryDetail({ id: val }).then(res => {
             console.log(res)
-            this.couponList[index].errTips = ''
-            this.couponList[index].name = res.data.goodsDetail.name
+            if (res.state === 1) {
+              this.couponList[index].errTips = ''
+              this.couponList[index].name = res.data.goodsDetail.name
+            } else {
+              this.couponList[index].errTips = '该优惠券不存在'
+            }
           })
         }
       } else if (str === 'couponNum') {
@@ -94,7 +98,7 @@ export default {
     couponListStart() {
       this.couponListDrag = true
     },
-    couponListEnd(evt) {
+    couponListEnd() {
       this.couponListDrag = false
     },
     handleChange(e) {
@@ -116,8 +120,12 @@ export default {
           _this.couponList[index].tip = '请填写券数量'
           vaild = false
         }
-        if (item.couponNum > 10) {
+        if (item.couponNum > 10 || item.couponNum < 1) {
           _this.couponList[index].tip = '券数量需控制在1-10张'
+          vaild = false
+        }
+        if (item.errTips) {
+          _this.couponList[index].errTips = '该优惠券不存在'
           vaild = false
         }
       })
@@ -125,24 +133,15 @@ export default {
     },
     save() {
       if (!this.checkCouponList()) return
-      if (!this.issueType) {
-        return this.$message.error('请设置优惠券接收方！')
-      }
-      if (this.issueType === '0' && !this.phone) {
-        return this.$message.error('请设置指定手机号！')
-      }
-      if (this.issueType === '0' && this.phone) {
-        let phoneList = this.phone.split(/[\s\n]/)
-        if (phoneList.length > 1000) return this.$message.error('单次发送的手机号不得大于1000个！')
-      }
-      if (this.issueType === '1' && !this.chamberId) {
-        return this.$message.error('请选择某个商/协会！')
-      }
+      if (!this.issueType) return this.$message.error('请设置优惠券接收方！')
+      if (this.issueType === '0' && !this.phone) return this.$message.error('请设置指定手机号！')
+      if (this.issueType === '0' && this.phone && this.phone.split(/[\s\n]/).length > 1000) return this.$message.error('单次发送的手机号不得大于1000个！')
+      if (this.issueType === '1' && !this.chamberId) return this.$message.error('请选择某个商/协会！')
+      // 判断输入的优惠券id是否有重复
       let _couponList = []
       for (let item of this.couponList) {
         _couponList.push({ couponId: item.couponId, couponNum: item.couponNum })
       }
-      // 判断输入的优惠券id是否有重复
       const ids = _couponList.map(value => value.couponId)
       const idsSet = new Set(ids)
       if (idsSet.size !== ids.length) {
@@ -150,6 +149,7 @@ export default {
         let newStr = newArr.toString()
         return this.$message.error(`所设置的优惠券，存在重复的情况！【${newStr}】`)
       }
+      // 根据回车键切割字符串
       let _phoneList = []
       _phoneList = this.phone.split(/[\s\n]/)
       let params = {

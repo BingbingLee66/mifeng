@@ -284,6 +284,13 @@ export const constantRoutes = [
         component: () => import('@/views/mall/issuing-coupon-send/index'),
         hidden: true,
         meta: { title: '发放优惠券' }
+      },
+      {
+        path: '/mall/issuing-coupon-receiver',
+        name: '已发放列表',
+        component: () => import('@/views/mall/issuing-coupon-receiver/index'),
+        hidden: true,
+        meta: { title: '已发放列表' }
       }
     ]
   }

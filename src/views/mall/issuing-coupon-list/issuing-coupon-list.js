@@ -1,5 +1,5 @@
 import {
-  getExplodeGoodsList, sendCoupon
+  sendCoupon, getIssuedCouponList
 } from '@/api/mall/issued'
 import { spaceInput, intInput } from '@/utils/utils'
 
@@ -7,24 +7,22 @@ export default {
   data() {
     return {
       query: {
-        id: '',
-        name: '',
-        create: ''
+        couponId: '',
+        couponName: '',
+        creator: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
       currentpage: 1,
       limit: 10,
-      // 发行量
       issue: '',
-      // 控制变量
       listLoading: false,
-      showIssueDialog: false
+      failTipVisible: false
     }
   },
   created() {
-    this.fetchData()
+    // this.fetchData()
   },
   methods: {
     has(tabName, actionName) {
@@ -34,12 +32,12 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     // 限制输入空格
-    handleSpace(e) {
-      this.query.name = spaceInput(e)
+    handleSpace(e, str) {
+      this.query[str] = spaceInput(e)
     },
     // 限制输入正整数
     handleNumber(e, str) {
-      this.query.id = intInput(e)
+      this.query.couponId = intInput(e)
     },
     // 查询优惠券列表
     fetchData(e) {
@@ -50,20 +48,21 @@ export default {
       let params = {
         'pageSize': this.limit,
         'page': this.currentpage,
-        'id': this.query.id,
-        'create': this.query.create,
-        'name': this.query.name
+        'creator': this.query.creator,
+        'couponName': this.query.couponName,
+        'couponId': this.query.couponId
       }
-      getExplodeGoodsList(params).then(res => {
-        this.list = res.data.list
-        this.total = res.data.totalRows
-        this.listLoading = false
+      getIssuedCouponList(params).then(res => {
+        if (res.state === 1) {
+          this.list = res.data.list
+          this.total = res.data.totalRows
+          this.listLoading = false
+        }
       })
     },
     handleSizeChange(val) {
       this.limit = val
-      this.currentpage = 1
-      this.fetchData()
+      this.fetchData(1)
     },
     handleCurrentChange(val) {
       this.currentpage = val
@@ -94,7 +93,7 @@ export default {
     },
     // 查看已发放列表
     goIssueList() {
-      this.$router.push(`/mall/couponIssued`)
+      this.$router.push(`/mall/issuing-coupon-receiver`)
     }
   }
 }

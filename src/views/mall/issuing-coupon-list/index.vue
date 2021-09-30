@@ -3,16 +3,18 @@
     <div class="from-block">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="优惠券ID">
-          <el-input v-model="query.id" placeholder="" maxlength="12" @input="handleNumber" />
+          <el-input v-model="query.couponId" placeholder="" maxlength="12" @input="handleNumber"/>
         </el-form-item>
         <el-form-item label="优惠券名称">
-          <el-input v-model="query.name" placeholder="" maxlength="12" @input="handleSpace" />
+          <el-input v-model="query.couponName" placeholder="" maxlength="12" @input="e=>handleSpace(e,'couponName')"/>
         </el-form-item>
         <el-form-item label="创建人">
-          <el-input v-model="query.create" placeholder="关键词" @input="handleSpace" />
+          <el-input v-model="query.creator" placeholder="关键词" @input="e=>handleSpace(e,'creator')"/>
         </el-form-item>
         <el-form-item label="">
-          <el-button style="margin-left: -20px;" v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询</el-button>
+          <el-button style="margin-left: -20px;" v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">
+            查询
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -23,39 +25,57 @@
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column label="包含优惠券">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goCouponDetail">{{ scope.row.id }}</div>
+            <div v-for="item in scope.row.couponList" :key="item.couponId">
+              <div>【{{ item.total }}】
+                <span class="blue-label" @click="goCouponDetail">{{ scope.row.couponName }}</span>
+              </div>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="优惠券接收方" width="250px">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
+          <template slot-scope="scope">
+            <div>{{ scope.row.receiver }}</div>
+            <div class="blue-label" @click="goIssueList">{{ scope.row.receiverCount }}</div>
+          </template>
         </el-table-column>
         <el-table-column label="创建时间" width="200px">
-          <template slot-scope="scope"> {{ scope.row.createTime | dateFormat }}</template>
+          <template slot-scope="scope">
+            <div>{{scope.row.creator}}</div>
+            <div>{{ scope.row.createTime | dateFormat }}</div>
+          </template>
         </el-table-column>
         <el-table-column label="发送状态" width="200px">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
+          <template slot-scope="scope">
+            <div v-if="scope.row.sendStatus===0">未发送</div>
+            <div v-if="scope.row.sendStatus===1">已发送</div>
+          </template>
         </el-table-column>
         <el-table-column label="发送结果">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
+          <template slot-scope="scope">{{ scope.row.result }}</template>
         </el-table-column>
         <el-table-column label="操作" width="200px" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="send(scope.row.id)">发送</el-button>
+            <div v-if="scope.row.sendStatus===0">
+              <el-button type="text" @click="send(scope.row.id)">发送</el-button>
+            </div>
+            <div v-else>--</div>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
 
-    <!-- 编辑发行量 -->
-    <el-dialog title="发行量" :visible.sync="showIssueDialog" width="30%">
+    <!-- 提示 -->
+    <el-dialog title="提示" :visible.sync="failTipVisible" width="400px">
       <div class="dialog-content">
-        <el-input v-model="issue" placeholder="" />
-        <div class="red-label">提示：编辑发行量时，只能增加，不能减少。</div>
+        <div>以下手机号还未注册</div>
+        <div v-for="i in 3" :key="i">
+          i12323
+        </div>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="showIssueDialog = false">提交</el-button>
-        <el-button type="primary" @click="showIssueDialog = false">取消</el-button>
+      <div slot="footer" style="text-align: center;">
+        <el-button type="primary" @click="failTipVisible = false">确认</el-button>
+        <el-button @click="failTipVisible = false">取消</el-button>
       </div>
     </el-dialog>
   </div>

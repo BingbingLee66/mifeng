@@ -50,11 +50,11 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     if (response.headers.token) {
-      //如果后台通过header返回token，说明token已经更新，则更新客户端本地token
+      // 如果后台通过header返回token，说明token已经更新，则更新客户端本地token
       store.dispatch('user/updateToken', { token: response.headers.token })
     }
     // if the custom code is not 1, it is judged as an error.
-    if (res.state !== 1 && res.state !== -1) {
+    if (res.state !== 1 && res.state !== -1 && res.state !== 0) {
       Message({
         message: res.msg === undefined ? '系统错误，请重试' : res.msg,
         type: 'error',
