@@ -1,5 +1,5 @@
 import {
-  getExplodeGoodsList, getSpreeQrCode, getSpreeLink, updateSpreeIssue, stopGrantSpree, continueGrantSpree
+  getSpreeList, querySpreeDetail, updateSpreeIssue, updateIssueStatus
 } from '@/api/mall/spree'
 import { spaceInput, intInput } from '@/utils/utils'
 import domtoimage from 'dom-to-image'
@@ -7,31 +7,27 @@ import domtoimage from 'dom-to-image'
 export default {
   data() {
     return {
-      // 查询优惠劵列表
       query: {
-        id: '',
-        name: '',
-        create: ''
+        giftId: '',
+        giftName: '',
+        createName: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
       currentpage: 1,
       limit: 10,
-      // 发行量
-      issue: '',
-      // 控制变量
-      spreeLink: '',
-      linkVisible: false,
       listLoading: false,
-      showIssueDialog: false,
+      issue: '',
+      linkVisible: false,
+      issueVisible: false,
       codeVisible: false,
       rowData: null,
       isLoading: false
     }
   },
   created() {
-    this.fetchData()
+    // this.fetchData()
   },
   methods: {
     has(tabName, actionName) {
@@ -41,8 +37,8 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     // 限制输入空格
-    handleSpace(e) {
-      this.query.name = spaceInput(e)
+    handleSpace(e, str) {
+      this.query[str] = spaceInput(e)
     },
     // 限制输入正整数
     handleNumber(e, str) {
@@ -61,11 +57,11 @@ export default {
       let params = {
         'pageSize': this.limit,
         'page': this.currentpage,
-        'id': this.query.id,
-        'status': this.query.status,
-        'name': this.query.name
+        'giftId': this.query.giftId,
+        'giftName': this.query.giftName,
+        'createName': this.query.createName
       }
-      getExplodeGoodsList(params).then(res => {
+      getSpreeList(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
@@ -73,22 +69,16 @@ export default {
     },
     handleSizeChange(val) {
       this.limit = val
-      this.currentpage = 1
-      this.fetchData()
+      this.fetchData(1)
     },
     handleCurrentChange(val) {
       this.currentpage = val
       this.fetchData()
     },
     // 生成礼包二维码
-    createCode(e, row) {
+    createCode(row) {
       this.codeVisible = true
       this.rowData = row
-      getSpreeQrCode({ id: row.id }).then(res => {
-        if (res.state === 1) {
-          this.qrCode = res.data
-        }
-      })
     },
     // 保存礼包二维码
     downloadCode() {
@@ -103,25 +93,19 @@ export default {
           a.click()
           _this.isLoading = false
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error('oops, something went wrong!', error)
           _this.isLoading = false
         })
     },
     // 生成短链接
-    createLink(e, row) {
+    createLink(row) {
       this.linkVisible = true
-      getSpreeLink({ id: row.id }).then(res => {
-        if (res.state === 1) {
-          this.spreeLink = res.data
-        } else {
-          console.log(res)
-        }
-      })
+      this.rowData = row
     },
     // 复制短链接
     copyUrl() {
-      let url = this.spreeLink
+      let url = this.rowData.sortUrl
       let oInput = document.createElement('input')
       oInput.value = url
       document.body.appendChild(oInput)
@@ -134,49 +118,30 @@ export default {
     // 更新发行量
     showIssue(row) {
       this.rowData = row
-      this.issue = row.id
-      this.showIssueDialog = true
+      this.issue = row.quota
+      this.issueVisible = true
     },
     updateIssue() {
+      if (this.issue > this.rowData.quota) return this.$message.error('编辑发行量时，只能增加，不能减少。')
       let params = {
-        id: this.rowData.id,
-        issue: this.issue
+        giftId: this.rowData.giftId,
+        quota: this.issue
       }
       updateSpreeIssue(params).then(res => {
         if (res.state === 1) {
-          console.log(res)
-          this.showIssueDialog = false
+          this.issueVisible = false
           this.fetchData(1)
         }
       })
     },
-    // 停止发送
-    stopSend() {
-      console.log('停止发送')
-      this.$confirm('确认停发吗?', '提示', {
+    // 更新发行状态
+    updateIssueStatu(row, status) {
+      let msg = status === 1 ? '确认停发吗?' : '确认继续发吗?'
+      this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(() => {
-        let params = {}
-        stopGrantSpree(params).then(res => {
-          if (res.state === 1) {
-            console.log(res)
-            this.$message.success('操作成功')
-            this.fetchData(1)
-          }
-        })
-      }).catch(() => {
-      })
-    },
-    // 继续发送
-    continueSend() {
-      console.log('继续发送')
-      this.$confirm('确认继续发吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(() => {
-        let params = {}
-        continueGrantSpree(params).then(res => {
+        updateIssueStatus({ giftId: row.giftId, status }).then(res => {
           if (res.state === 1) {
             console.log(res)
             this.$message.success('操作成功')
@@ -191,8 +156,11 @@ export default {
       this.$router.push(`/mall/spreeCreate`)
     },
     // 查看大礼包详情
-    goSpreeDetail() {
-      this.$router.push(`/mall/spreeDetail`)
+    goSpreeDetail(giftId) {
+      this.$router.push({
+        path: '/mall/spreeDetail',
+        query: { giftId }
+      })
     },
     // 查看优惠券详情
     goCouponDetail() {

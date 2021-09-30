@@ -2,43 +2,19 @@ import request from '@/utils/request'
 
 const baseUrl = process.env.VUE_APP_BASE_API_2
 
-export function getExplodeGoodsList(params) {
-  return request({
-    url: baseUrl + '/api/ec/mall/explodeGoods/listExplodeGoods',
-    method: 'get',
-    params
-  })
-}
-
+// 创建大礼包
 export function createSpree(params) {
   return request({
-    url: baseUrl + '',
+    url: baseUrl + 'api/bigGiftBag/bigGiftbag',
     method: 'post',
-    params
+    data: params
   })
 }
 
-export function queryDetail(params) {
+// 大礼包列表
+export function getSpreeList(params) {
   return request({
-    url: baseUrl + '/ec/mall/get-goods',
-    method: 'get',
-    params
-  })
-}
-
-// 生成二维码
-export function getSpreeQrCode(params) {
-  return request({
-    url: baseUrl + '',
-    method: 'get',
-    params
-  })
-}
-
-// 生成短链接
-export function getSpreeLink(params) {
-  return request({
-    url: baseUrl + '',
+    url: baseUrl + '/api/bigGiftBag/bigGiftBagList',
     method: 'get',
     params
   })
@@ -53,20 +29,20 @@ export function updateSpreeIssue(params) {
   })
 }
 
-// 停止发放
-export function stopGrantSpree(params) {
+// 查询大礼包详情
+export function querySpreeDetail(params) {
   return request({
-    url: baseUrl + '',
+    url: baseUrl + '/ec/mall/get-goods',
     method: 'get',
     params
   })
 }
 
-// 继续发放
-export function continueGrantSpree(params) {
+// 更新发行状态
+export function updateIssueStatus(params) {
   return request({
-    url: baseUrl + '',
-    method: 'get',
+    url: baseUrl + '/api/bigGiftBag/issue',
+    method: 'put',
     params
   })
 }

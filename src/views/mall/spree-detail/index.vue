@@ -4,16 +4,20 @@
       <div class="coupon-detail-wrap">
         <div class="coupon-detail-title">大礼包信息</div>
         <div class="coupon-detail-item">
-          <div class="coupon-detail-lable">优惠券名称：</div>
-          <div class="coupon-detail-content">10元福利券</div>
+          <div class="coupon-detail-lable">大礼包名称：</div>
+          <div class="coupon-detail-content">{{giftObj.giftName}}</div>
         </div>
         <div class="coupon-detail-item">
           <div class="coupon-detail-lable">包含优惠券：</div>
-          <div class="coupon-detail-content">10元</div>
+          <div class="coupon-detail-content">
+            <div v-for="item in giftObj.coupons" :key="item.giftId">
+              <span class="blue-label" @click="goCouponDetail(item.couponId)">{{item.couponId}}</span>-{{ item.couponName }}
+            </div>
+          </div>
         </div>
         <div class="coupon-detail-item">
           <div class="coupon-detail-lable">大礼包发行量：</div>
-          <div class="coupon-detail-content">1000张</div>
+          <div class="coupon-detail-content">{{giftObj.quota}}张</div>
         </div>
       </div>
       <div class="coupon-detail-wrap">
@@ -30,8 +34,8 @@
       <div class="coupon-detail-wrap" style="border-bottom: none">
         <div class="coupon-detail-title">使用规则</div>
         <div class="coupon-detail-item">
-          <div class="coupon-detail-lable">有效期：</div>
-          <div class="coupon-detail-content">发放后立即生效，有效期3天</div>
+          <div class="coupon-detail-lable">有效期</div>
+          <div class="coupon-detail-content">{{giftObj.validStartTime}}-{{giftObj.validEndTime}}</div>
         </div>
       </div>
     </div>
