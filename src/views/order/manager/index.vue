@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="block">
-      <el-form ref="query" size="mini" label-position="right" :model="query">
+      <el-form ref="query" size="mini" label-position="right" :model="query" label-width="110px">
         <el-row>
           <el-col :span="4">
             <el-form-item label-width="110px" label="订单号">
@@ -30,6 +30,16 @@
               <el-input v-model.trim="query.goodName" placeholder="请输入商品名称"/>
             </el-form-item>
           </el-col>
+          <el-col :span="4">
+            <el-form-item label-width="110px" label="收货人姓名">
+              <el-input v-model.trim="query.consignee" placeholder="请输入收货人姓名"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-left:10px;margin-right:10px;">
+            <el-form-item label-width="110px" label="收货人手机号">
+              <el-input v-model.trim="query.consigneeMobile" placeholder="请输入收货人手机号"/>
+            </el-form-item>
+          </el-col>
           <el-col :span="4" style="margin-right:10px;">
             <el-form-item label-width="110px" label="订单状态">
               <el-select v-model="query.status" placeholder="请选择状态">
@@ -43,17 +53,25 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
-            <el-form-item label-width="110px" label="收货人姓名">
-              <el-input v-model.trim="query.consignee" placeholder="请输入收货人姓名"/>
+          <el-col :span="4" style="margin-right:10px;">
+            <el-form-item label="生成结算单" v-if="query.status == 5 || query.status == 6">
+              <el-select v-model="query.status" placeholder="请选择">
+                <el-option label="是" :value="1"></el-option>
+                <el-option label="否" :value="0"></el-option>
+              </el-select>
+           </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-right:10px;">
+            <el-form-item label="商品结算状态" v-if="query.settled == 1 && (query.status == 5 || query.status == 6)">
+              <el-select v-model="query.status" placeholder="请选择">
+                <el-option label="所有" :value="-1"></el-option>
+                <el-option label="待商务确认" :value="0"></el-option>
+                <el-option label="待财务打款" :value="1"></el-option>
+                <el-option label="财务已付款" :value="2"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4" style="margin-left:10px;margin-right:10px;">
-            <el-form-item label-width="110px" label="收货人手机号">
-              <el-input v-model.trim="query.consigneeMobile" placeholder="请输入收货人手机号"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10" style="margin-right:10px;">
+          <el-col :span="8">
             <el-form-item label-width="110px" label="下单时间" style="float: left;">
               <el-date-picker
                 format="yyyy-MM-dd"
@@ -65,7 +83,22 @@
                 end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
-            <el-form-item label=" " style="float: left;margin-left: 10px;">
+          </el-col>
+          <el-col :span="4">
+            <el-form-item label-width="110px" label="推广渠道">
+              <el-select v-model="query.status" placeholder="请选择状态">
+                <el-option label="所有" :value="-1"></el-option>
+                <el-option label="待发货" :value="2"></el-option>
+                <el-option label="已发货" :value="5"></el-option>
+                <el-option label="已完成" :value="6"></el-option>
+                <el-option label="待成团" :value="4"></el-option>
+                <el-option label="待支付" :value="1"></el-option>
+                <el-option label="取消订单" :value="0"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="20">
+            <el-form-item label=" " >
               <el-button type="primary" :actionid="getId('', '查询')" v-if="has('', '查询')" @click="fetchData($event)">查询
               </el-button>
               <el-button type="primary" @click="reset($event)">重置</el-button>
@@ -126,6 +159,7 @@
           {{ scope.row.realPrice }}
         </template>
       </el-table-column>
+      <el-table-column label="推广渠道" width="80px">~~~</el-table-column>
       <el-table-column label="收货信息" width="250px">
         <template slot-scope="scope">
           <div>{{ scope.row.consignee }}</div>
@@ -153,7 +187,7 @@
           <div v-if="scope.row.status == 0">取消订单</div>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">
             详情

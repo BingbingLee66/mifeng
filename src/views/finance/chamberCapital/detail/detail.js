@@ -72,37 +72,31 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange1 (val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
-      this.fetchData()
+      this.fetchData1()
     },
     handleCurrentChange1 (val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
-      this.fetchData()
+      this.fetchData1()
     },
     handleSizeChange2 (val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
-      this.fetchData()
+      this.fetchData2()
     },
     handleCurrentChange2 (val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
-      this.fetchData()
+      this.fetchData2()
     },
     handleSizeChange3 (val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
-      this.fetchData()
+      this.fetchData3()
     },
     handleCurrentChange3(val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
-      this.fetchData()
+      this.fetchData3()
     },
     init() {
       this.initDatePicker1()

@@ -119,9 +119,7 @@ export default {
       for (let data of datas) {
         let new_data = {
           '日期': formatDate(new Date(data.rptDate), 'yyyy-MM-dd'),
-          '商城交易额(元）': data.shopPrice,
           '会费交易额（元）': data.memberPrice,
-          '合计（元）': data.shopPrice + data.memberPrice
         }
         this.selectionDatas.push(new_data)
       }

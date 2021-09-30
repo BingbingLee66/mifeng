@@ -2,6 +2,18 @@
   <div class="app-container">
     <div class="block">
       <el-form ref="query" label-width="100px" size="mini" :inline="true" label-position="right" :model="query">
+        <el-form-item label="下单时间">
+          <el-date-picker
+            format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
+            v-model="query.date"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期">
+          </el-date-picker>
+        </el-form-item>
+        <br />
         <el-form-item label="订单号">
           <el-input v-model.trim="query.orderSn" placeholder="请输入订单号"/>
         </el-form-item>
@@ -22,6 +34,13 @@
         <el-form-item label="商品名称">
           <el-input v-model.trim="query.goodName" placeholder="请输入商品名称"/>
         </el-form-item>
+        <br/>
+        <el-form-item label="收货人姓名">
+          <el-input v-model.trim="query.consignee" placeholder="请输入收货人姓名"/>
+        </el-form-item>
+        <el-form-item label="收货人手机号">
+          <el-input v-model.trim="query.consigneeMobile" placeholder="请输入收货人手机号"/>
+        </el-form-item>
         <el-form-item label="订单状态">
           <el-select v-model="query.status" placeholder="请选择状态">
             <el-option label="所有" :value="-1"></el-option>
@@ -33,29 +52,27 @@
             <el-option label="取消订单" :value="0"></el-option>
           </el-select>
         </el-form-item>
-        <br/>
-        <el-form-item label="收货人姓名">
-          <el-input v-model.trim="query.consignee" placeholder="请输入收货人姓名"/>
+        <el-form-item label="生成结算单" v-if="query.status == 5 || query.status == 6">
+          <el-select v-model="query.settled" placeholder="请选择">
+            <el-option label="是" :value="1"></el-option>
+            <el-option label="否" :value="0"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="收货人手机号">
-          <el-input v-model.trim="query.consigneeMobile" placeholder="请输入收货人手机号"/>
+        <el-form-item label="商品结算状态" v-if="query.settled == 1 && (query.status == 5 || query.status == 6)">
+          <el-select v-model="query.settlementStatus" placeholder="请选择">
+            <el-option label="所有" :value="-1"></el-option>
+            <el-option label="待商务确认" :value="0"></el-option>
+            <el-option label="待财务打款" :value="1"></el-option>
+            <el-option label="财务已付款" :value="2"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="下单时间">
-          <el-date-picker
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
-            v-model="query.date"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="">
-          <el-button type="primary" :actionid="getId('', '查询')" v-if="has('', '查询')" @click="fetchData($event)">查询
-          </el-button>
-          <el-button type="primary" @click="reset($event)">重置</el-button>
-        </el-form-item>
+        <div style="margin-left:100px">
+            <el-form-item label="">
+            <el-button type="primary" :actionid="getId('', '查询')" v-if="has('', '查询')" @click="fetchData($event)">查询
+            </el-button>
+            <el-button type="primary" @click="reset($event)">重置</el-button>
+          </el-form-item>
+        </div>
       </el-form>
     </div>
     <div class="block">
@@ -136,7 +153,7 @@
           <div v-if="scope.row.status == 0">取消订单</div>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="200" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">
             详情

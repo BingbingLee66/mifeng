@@ -236,6 +236,14 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '审核详情' }
       },
+      // 结算单详情
+      {
+        path: '/finance/settlement-detail',
+        name: '结算单详情',
+        component: () => import('@/views/finance/settlementDetail/index'),
+        hidden: true,
+        meta: { title: '结算单详情' }
+      },
     ]
   }
 ]

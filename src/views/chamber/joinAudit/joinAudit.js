@@ -26,6 +26,9 @@ export default {
       }
     }
     return {
+      passDia: false,
+      rejectDia: false,
+      rejectRemark:'',
       detailVisible: false,
       // 审核状态 0待审核 1通过 2驳回
       statusOptions: [
@@ -113,6 +116,16 @@ export default {
       var newwin = window.open()
       newwin.document.write('<img src="' + path + '"/>')
     },
+    // 点击通过或驳回
+    handlePassOrReject(row,num){
+      this.detailObj = row
+      if(num === 1){
+        this.passDia = true
+      }else {
+        this.rejectRemark = ''
+        this.rejectDia = true
+      }
+    },
     audit (e, row, type) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       if (type === 1) {
@@ -124,6 +137,7 @@ export default {
           }
         })
       } else if (type === 2) {
+        if(!this.rejectRemark) return this.$message.error('请填写驳回理由')
         this.reject(row)
       }
     },
@@ -139,7 +153,7 @@ export default {
           message: '通过成功',
           type: 'success'
         })
-        this.detailVisible = false
+        this.passDia = false
         this.fetchData()
       })
     },
@@ -150,20 +164,21 @@ export default {
       }).then(() => {
         let params = {
           'chamberId': row.id,
-          'password': this.detailObj.temporaryPass,
           'level': this.detailObj.level,
+          'rejectRemark': this.rejectRemark,
           'auditStatus': 2
         }
+        console.log(params,this.detailObj,111);
         updateAudit(params).then(response => {
           this.$message({
             message: '驳回成功',
             type: 'success'
           })
-          this.detailVisible = false
+          this.rejectDia = false
           this.fetchData()
         })
       }).catch(() => {
-        this.detailVisible = false
+        this.rejectDia = false
       })
     }
   }

@@ -132,7 +132,7 @@
           <div v-if="scope.row.istop == 0">否</div>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="270" fixed="right">
         <template slot-scope="scope">
           <el-button
             v-if="!(!scope.row.title) && has('', '置顶')"

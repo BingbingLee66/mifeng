@@ -17,7 +17,9 @@ export default {
         status: -1,
         consignee: '',
         consigneeMobile: '',
-        date: ''
+        date: '',
+        settled: 0,
+        settlementStatus: -1,
       },
       supplierOptions: [],
       pageSizes: [10, 20, 50, 100, 500],
@@ -99,8 +101,11 @@ export default {
         'consignee': this.query.consignee,
         'consigneeMobile': this.query.consigneeMobile,
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        'settled':this.query.settled,
+        'settlementStatus': this.query.settlementStatus
       }
+      if(params.settlementStatus == -1) delete params.settlementStatus
       if (this.query.date) {
         params['startTime'] = this.query.date[0]
         params['endTime'] = this.query.date[1]

@@ -1,36 +1,62 @@
 <template>
   <div class="app-container">
     <div class="block">
-      <el-form ref="query" label-position="left" :model="query">
+      <el-form ref="query" label-position="right" :model="query">
         <el-row>
-          <el-col :span="5">
-            <el-form-item label-width="110px" label="供货商名称：">
-              <el-input v-model="query.supplier" placeholder="请输入商品名称"/>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4" style="margin-left:10px;">
-            <el-form-item label-width="60px" label="状态：">
-              <el-select v-model="query.settlementStatus" placeholder="请选择操作行为">
-                <el-option label="所有" :value="-1"></el-option>
-                <el-option label="已结算" :value="1"></el-option>
-                <el-option label="未结算" :value="2"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="13" style="margin-left:10px;">
-            <el-form-item label-width="110px" label="完成时间：" style="float: left;">
+          <el-col :span="24">
+            <el-form-item label-width="130px" label="结算单生成时间：">
               <el-date-picker
                 format="yyyy-MM-dd"
                 value-format="yyyy-MM-dd"
-                v-model="query.date"
+                v-model="selectTime"
                 type="daterange"
                 range-separator="至"
                 start-placeholder="开始日期"
-                end-placeholder="结束日期">
+                end-placeholder="结束日期"
+              >
               </el-date-picker>
             </el-form-item>
-            <el-form-item label=" " style="float: left;margin-left:10px;">
-              <el-button type="primary" :actionid="getId('', '查询')" v-if="has('', '查询')" @click="fetchData($event)">查询</el-button>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5">
+            <el-form-item label-width="90px" label="商品名称：">
+              <el-input v-model="query.goodName" placeholder="请输入商品名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item
+              label-width="100px"
+              label="供货商姓名："
+              class="mar-left"
+            >
+              <el-input
+                v-model="query.supplierName"
+                placeholder="请输入供货商姓名"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="5">
+            <el-form-item
+              label-width="110px"
+              label="供货商手机号："
+              class="mar-left"
+            >
+              <el-input
+                v-model.trim="query.supplierPhone"
+                placeholder="请输入供货商手机号"
+                maxlength="11"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-left: 10px">
+            <el-form-item label-width="60px" label="状态：">
+              <el-select v-model="query.status" placeholder="请选择操作行为">
+                <el-option label="全部" :value="-1"></el-option>
+                <el-option label="待商务确认" :value="0" v-if="ckey"></el-option>
+                <el-option label="待财务付款" :value="1"></el-option>
+                <el-option label="财务已付款" :value="2"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -39,90 +65,152 @@
     <div class="block">
       <el-row>
         <el-col :span="24">
-          <el-button type="primary" size="small" :actionid="getId('', '确认结算')" v-if="has('', '确认结算')" @click.native="batchConfirm($event)">确认结算</el-button>
-          <el-button type="primary" size="small" :actionid="getId('', '导表')" v-if="has('', '导表')" @click.native="exportExcel($event)">导表</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="fetchData($event)"
+            >查询</el-button
+          >
+          <el-button
+            type="text"
+            icon="el-icon-download"
+            @click.native="exportExcel($event)"
+            >导出表格</el-button
+          >
+          <el-button type="text" @click="calculationRulesDia = true"
+            >计算规则</el-button
+          >
         </el-col>
       </el-row>
     </div>
-    <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55px">
-      </el-table-column>
-      <!-- <el-table-column type="index" label="序号" width="60px">
-      </el-table-column> -->
-      <el-table-column label="完成时间" width="120px">
+    <el-table
+      :data="list"
+      v-loading="listLoading"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+    >
+      <el-table-column label="商品&规格" width="180">
         <template slot-scope="scope">
-          {{scope.row.rptDateMin | dateFormat2}}至{{scope.row.rptDateMax | dateFormat2}}
+          <div class="layout-box">
+            <div>{{ scope.row.goodsName }}</div>
+            <div>【规格】{{ scope.row.skuName || "--" }}</div>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column label="供货商" width="120px">
+      <el-table-column label="供货商">
         <template slot-scope="scope">
-          {{scope.row.supplierName}}
+          {{ scope.row.supplierName }}
         </template>
       </el-table-column>
-      <el-table-column label="商品名称" width="120px">
+      <el-table-column label="结算单生成时间/结算周期" width="220">
         <template slot-scope="scope">
-          {{scope.row.goodsName}}
+          <div class="flex-box">
+            <div>{{ scope.row.createdTs ? scope.row.createdTs : "--" }}</div>
+            <div>{{ scope.row.settlementPeriodStr }}</div>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column label="规格" width="120px">
+      <el-table-column label="应付款金额（元）">
         <template slot-scope="scope">
-          {{!scope.row.codeName ? '无' : scope.row.codeName}}
+          {{ scope.row.payable }}
         </template>
       </el-table-column>
-      <el-table-column label="供货价(元)" width="120px">
+      <el-table-column label="买家实付金额（元）">
         <template slot-scope="scope">
-          {{scope.row.supplyPrice}}
+          {{ scope.row.payment }}
         </template>
       </el-table-column>
-      <el-table-column label="销量(件)" width="120px">
+      <el-table-column label="服务费（元）" width="180">
         <template slot-scope="scope">
-          {{scope.row.count}}
+          <div class="flex-box">
+            <div>【商品服务费】{{ scope.row.serviceFee }}</div>
+            <div>【微信手续费】{{ scope.row.wxServiceFee }}</div>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column label="待结算金额(元)" width="120px">
+      <el-table-column label="优惠（元）" width="180">
         <template slot-scope="scope">
-          {{scope.row.unsettledSupplyPrice}}
+          <div class="flex-box">
+            <div>【立减优惠】{{ scope.row.discount }}</div>
+            <div>【优惠劵】{{ scope.row.coupon }}</div>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column label="总金额(元)" width="120px">
+      <el-table-column label="操作时间" width="300">
         <template slot-scope="scope">
-          {{scope.row.totalSupplyPrice}}
+          <div class="flex-box">
+            <div>
+              【运营申请时间】{{ scope.row.operateApplyTs | dateFormat }}
+            </div>
+            <div>【标记付款时间】{{ scope.row.paidTs | dateFormat }}</div>
+          </div>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="操作人">
-        <template slot-scope="scope">
-          {{scope.row.operator}}
-        </template>
-      </el-table-column> -->
       <el-table-column label="状态" width="120px">
         <template slot-scope="scope">
-          <div v-if="scope.row.settlementStatus == 2">未结算</div>
-          <div v-if="scope.row.settlementStatus == 1">已结算</div>
+          {{ scope.row.status | filterStatus }}
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" fixed="right" width="250">
         <template slot-scope="scope">
-          <el-button type="text" @click="confirm($event, scope.row)" :actionid="getId('', '确认结算')" v-if="has('', '确认结算')" :disabled="scope.row.settlementStatus == 1">确认结算</el-button>
+          <el-button type="text" v-if="ckey && scope.row.status == 0" @click="changeStatus(scope.row,1)"
+            >申请财务付款</el-button
+          >
+          <el-button type="text" @click="detail(scope.row)"
+            >详情</el-button
+          >
+           <el-button type="text" v-if="!ckey && scope.row.status == 1" @click="changeStatus(scope.row,2)"
+            >标记为已付款</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
     <el-pagination
       background
       layout="total, sizes, prev, pager, next, jumper"
-      :page-sizes="pageSizes"
-      :page-size="limit"
+      :page-sizes="[10, 20, 50, 100, 500]"
+      :page-size="query.pageSize"
       :total="total"
-      :current-page.sync="currentpage"
+      :current-page.sync="query.page"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :style="{'padding-top': '15px'}">
+      :style="{ 'padding-top': '15px' }"
+    >
     </el-pagination>
-  </div>
 
+    <!-- --------------------------计算规则弹窗-------------------------- -->
+    <finance-rules
+      :calculationRulesDia="calculationRulesDia"
+      @closeDia="closeDia"
+    ></finance-rules>
+
+    <!-- ----------------------申请财务付款弹窗---------------------- -->
+    <el-dialog title="申请财务付款" :visible.sync="paymentDia" width="25%">
+      <span style="line-height: 24px"
+        >该操作无法撤销！请先确认结算单内的各款项明细，申请财务付款或者是财务付款之后，将无法再从结算单中添加/移除订单。</span
+      >
+      <!-- <span>该结算单内无订单，无法提交空的结算单。</span> -->
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="paymentDia = false">取 消</el-button>
+        <el-button type="primary" @click="paymentDia = false">确 定</el-button>
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script src="./supplierSettle.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import "src/styles/common.scss";
+.mar-left {
+  margin-left: 20px;
+}
+.layout-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: left;
+}
 </style>

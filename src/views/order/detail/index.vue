@@ -78,20 +78,24 @@
           <span v-if="detailObj.confirmReceivingTime">{{ detailObj.confirmReceivingTime | formatDates }}</span>
           <span v-else> - -</span>
         </el-col>
+        <el-col :span="8">
+          推广渠道：{{ '~~~' }}
+        </el-col>
       </el-row>
     </div>
     <div class="block o-table-box">
       <el-row class="o-table-th">
-        <el-col :span="3" class="o-table-content">商品ID</el-col>
+        <el-col :span="2" class="o-table-content">商品ID</el-col>
         <el-col :span="6" class="o-table-content">商品名称</el-col>
         <el-col :span="3" class="o-table-content">规格</el-col>
-        <el-col :span="3" class="o-table-content">商品单价（元）</el-col>
-        <el-col :span="3" class="o-table-content">商品数量（件）</el-col>
+        <el-col :span="2" class="o-table-content">商品单价（元）</el-col>
+        <el-col :span="2" class="o-table-content">商品数量（件）</el-col>
         <el-col :span="3" class="o-table-content">商品总价（元）</el-col>
         <el-col :span="3" class="o-table-content">实收金额（元）</el-col>
+        <el-col :span="3" class="o-table-content">结算状态</el-col>
       </el-row>
       <el-row class="o-table-td">
-        <el-col :span="3" class="o-table-content o-table-input">
+        <el-col :span="2" class="o-table-content o-table-input">
           {{ detailObj.idGoods }}
         </el-col>
         <el-col :span="6" class="o-table-content o-table-input">
@@ -100,10 +104,10 @@
         <el-col :span="3" class="o-table-content o-table-input">
           {{ !detailObj.codeName ? '无' : detailObj.codeName }}
         </el-col>
-        <el-col :span="3" class="o-table-content o-table-input">
+        <el-col :span="2" class="o-table-content o-table-input">
           ¥{{ detailObj.price }}
         </el-col>
-        <el-col :span="3" class="o-table-content o-table-input">
+        <el-col :span="2" class="o-table-content o-table-input">
           {{ detailObj.count }}
         </el-col>
         <el-col :span="3" class="o-table-content o-table-input">
@@ -111,6 +115,9 @@
         </el-col>
         <el-col :span="3" class="o-table-content o-table-input">
           ¥{{ detailObj.realPrice }}
+        </el-col>
+        <el-col :span="3" class="o-table-content o-table-input">
+          {{ detailObj.settlementStatus | filterSettlementStatus }}
         </el-col>
       </el-row>
     </div>

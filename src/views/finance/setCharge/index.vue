@@ -34,8 +34,8 @@
           <el-row style="margin-top: 20px;">
             <el-form ref="form2" :model="formObj2" :rules="rules2" label-position="left" label-width="auto">
               <el-col :offset="4" :span="12">
-                <el-form-item label="商城服务费：" prop="mallFeeRatio">
-                  <el-input v-model="formObj2.mallFeeRatio" maxlength="60" placeholder="请输入商城服务费">
+                <el-form-item label="商品服务费：" prop="mallFeeRatio">
+                  <el-input v-model="formObj2.mallFeeRatio" maxlength="60" placeholder="请输入商品服务费">
                     <template slot="append">%</template>
                   </el-input>
                 </el-form-item>

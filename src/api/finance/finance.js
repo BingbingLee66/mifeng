@@ -35,7 +35,7 @@ export function getChamberFinanceShopDay(params) {
 
 export function getSupplierSettlementList(params) {
   return request({
-    url: baseUrl + '/ec/mall/supplier-settlement-list',
+    url: baseUrl + '/ec/mall/settlement-summary-list',
     method: 'get',
     params
   })
@@ -195,6 +195,57 @@ export function applyWithdrawalConfirm(params) {
   return request({
     url: baseUrl + '/ec/mall/apply-withdrawal-confirm',
     method: 'post',
+    data: params
+  })
+}
+
+// 查询结算单详情信息
+export function getSettlementOrderDetailMsg(id) {
+  return request({
+    url: baseUrl + `/ec/mall/settlement-summary-detail/${id}`,
+    method: 'get',
+  })
+}
+
+// 查询结算单详情列表
+export function getSettlementOrderDetailList(params) {
+  return request({
+    url: baseUrl + '/ec/mall/settlement-order-list',
+    method: 'get',
+    params
+  })
+}
+
+// 商会/总后台-申请财务付款或标记为已付款
+export function changeSettlementStatus(params) {
+  return request({
+    url: baseUrl + '/ec/mall/settlement-status',
+    method: 'post',
+    data: params
+  })
+}
+
+// 查询订单列表
+export function getOrderList(params) {
+  return request({
+    url: baseUrl + '/ec/mall/supply-paid-order-list',
+    method: 'get',
+    params
+  })
+}
+
+// 商会后台-结算单详情-移除订单
+export function removeOrder(id) {
+  return request({
+    url: baseUrl + `/ec/mall/settlement-order-del/${id}`,
+    method: 'delete',
+  })
+}
+// 商会后台-结算单详情-添加订单
+export function addOrder(params) {
+  return request({
+    url: baseUrl + '/ec/mall/settlement-oder-add',
+    method: 'put',
     data: params
   })
 }

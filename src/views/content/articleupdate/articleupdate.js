@@ -233,6 +233,7 @@ export default {
     },
     editColumn(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      window.localStorage.setItem('articleupdate', this.$route.path)
       this.$router.push({ name: '修改栏目内容', params: { 'activeName': this.activeName, 'articleObj': row } })
     },
     /* detail(e, row) {
