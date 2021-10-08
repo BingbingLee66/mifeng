@@ -38,8 +38,8 @@ export default {
     this.getDepartmentList()
   },
   mounted() {
-    const box = this.$refs.searchBox
-    box.addEventListener('scroll', this.handleScroll, true)
+    /* const box = this.$refs.searchBox
+    box.addEventListener('scroll', this.handleScroll, true) */
   },
   methods: {
     /**
@@ -157,6 +157,10 @@ export default {
         this.searchValue = e
         this.showFlag = true
         this.search()
+        setTimeout(() => {
+          const box = this.$refs.searchBox
+          box.addEventListener('scroll', this.handleScroll, true)
+        }, 500)
       } else {
         this.showFlag = false
       }

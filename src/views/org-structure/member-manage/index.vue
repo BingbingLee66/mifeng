@@ -169,7 +169,7 @@
     }
 
     .search-result {
-      height: calc(100vh - 165px);
+      height: calc(100vh - 180px);
       overflow-y: auto;
       background: rgba(245, 245, 245, 0.5);
 
