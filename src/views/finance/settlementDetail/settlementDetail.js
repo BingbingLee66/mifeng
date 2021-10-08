@@ -148,7 +148,6 @@ export default {
       };
       if (this.ckey) params.ckey = this.ckey;
       let res = await getOrderList(params);
-      console.log("订单列表", res);
       this.listLoading = true;
       try {
         this.listLoading = false;
@@ -172,11 +171,10 @@ export default {
     },
     // 移除订单 removeOrder
     removeOrder() {
-      console.log(this.removeId);
-      removeOrder(this.removeId).then((res)=>{
-        console.log(res);
+      removeOrder(this.removeId).then(() => {
         this.removeOrderDia = false
         this.$message.success('移除成功')
+        this.fetchData()
       })
     },
     // 添加订单 addOrder
@@ -191,6 +189,7 @@ export default {
         if (res.state !== 1) return this.$message.error(res.msg)
         this.addOrderDia = false
         this.$message.success('添加成功')
+        this.fetchData()
       } catch (e) {
         this.addLoading = false
         console.log(e)
