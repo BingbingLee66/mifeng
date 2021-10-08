@@ -1,15 +1,11 @@
 import {
   getSupplierSettlementList,
-  changeSettlementStatus
+  changeSettlementStatus,
 } from '@/api/finance/finance'
-import {
-  exportJson2Excel
-} from '@/utils/exportExcel'
 import {
   formatDate
 } from '@/utils/date' // 格式化时间戳
 // import { mapGetters } from 'vuex'
-
 export default {
   components: {
     financeRules: () => import('@/components/common/FinanceRules.vue')
@@ -59,7 +55,6 @@ export default {
   },
   watch: {
     selectTime(newData) {
-      console.log(newData, 11);
       if (!newData) {
         this.query.startTime = ''
         this.query.endTime = ''
@@ -125,14 +120,17 @@ export default {
     },
     // 标记为已付款/申请财务付款
     async changeStatus(row, status) {
+      this.listLoading = true
       let res = await changeSettlementStatus({
         id: row.id,
         status
       })
       try {
+        this.listLoading = false
         if (res.state !== 1) return this.$message.error(res.msg)
         this.fetchData()
       } catch (e) {
+        this.listLoading = false
         console.log(e)
       }
     },
@@ -155,6 +153,22 @@ export default {
     handlePayMent(e, row) {
       console.log('申请财务付款row', row);
       this.paymentDia = true
+    },
+    // 导出表格
+    exportExcel() {
+      if (!this.selectTime || this.selectTime.length === 0) return this.$message.error('请选择结算时间')
+      let params = {
+        ...this.query
+      }
+      let paramString = `?startTime=${params.startTime}&endTime=${params.endTime}&goodName=${params.goodName}&supplierName=${params.supplierName}&supplierPhone=${params.supplierPhone}`
+      if (params.status != -1) {
+        paramString += `&status=${params.status}`
+      }
+      if (this.ckey) paramString += `&ckey=${this.ckey}`
+      let a = document.createElement('a')
+      a.download = ''
+      a.href = process.env.VUE_APP_BASE_API_2 + '/ec/mall/settlement-download' + paramString
+      a.click()
     },
   }
 }

@@ -27,7 +27,9 @@ export default {
       selectionDatas: [],
       rejectLoading: false,
       showInput: false,
-      rowId: null
+      rowId: null,
+      detailDia: false, // 详情弹窗
+      detailObj:{},
     }
   },
   computed: {
@@ -216,6 +218,11 @@ export default {
       } else {
         this.showInput = false
       }
+    },
+
+    // 详情
+    getDetail(id){
+      this.detailDia = true
     }
   }
 }

@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="block">
       <el-form ref="query" size="mini" label-position="right" :model="query" label-width="110px">
-        <el-row>
+        <el-row style="margin:0">
           <el-col :span="4">
             <el-form-item label-width="110px" label="订单号">
               <el-input v-model.trim="query.orderSn" placeholder="请输入订单号"/>
@@ -55,7 +55,7 @@
           </el-col>
           <el-col :span="4" style="margin-right:10px;">
             <el-form-item label="生成结算单" v-if="query.status == 5 || query.status == 6">
-              <el-select v-model="query.status" placeholder="请选择">
+              <el-select v-model="query.settled" placeholder="请选择">
                 <el-option label="是" :value="1"></el-option>
                 <el-option label="否" :value="0"></el-option>
               </el-select>
@@ -63,11 +63,20 @@
           </el-col>
           <el-col :span="4" style="margin-right:10px;">
             <el-form-item label="商品结算状态" v-if="query.settled == 1 && (query.status == 5 || query.status == 6)">
-              <el-select v-model="query.status" placeholder="请选择">
+              <el-select v-model="query.settlementStatus" placeholder="请选择">
                 <el-option label="所有" :value="-1"></el-option>
                 <el-option label="待商务确认" :value="0"></el-option>
                 <el-option label="待财务打款" :value="1"></el-option>
                 <el-option label="财务已付款" :value="2"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="4">
+            <el-form-item label-width="110px" label="推广渠道">
+              <el-select v-model="query.channelId" placeholder="请选择状态" clearable>
+                <el-option v-for="item in channelOptions" :key="item.id" :label="item.channelName" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -84,19 +93,7 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
-            <el-form-item label-width="110px" label="推广渠道">
-              <el-select v-model="query.status" placeholder="请选择状态">
-                <el-option label="所有" :value="-1"></el-option>
-                <el-option label="待发货" :value="2"></el-option>
-                <el-option label="已发货" :value="5"></el-option>
-                <el-option label="已完成" :value="6"></el-option>
-                <el-option label="待成团" :value="4"></el-option>
-                <el-option label="待支付" :value="1"></el-option>
-                <el-option label="取消订单" :value="0"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+        </el-row>
           <el-col :span="20">
             <el-form-item label=" " >
               <el-button type="primary" :actionid="getId('', '查询')" v-if="has('', '查询')" @click="fetchData($event)">查询
@@ -104,7 +101,6 @@
               <el-button type="primary" @click="reset($event)">重置</el-button>
             </el-form-item>
           </el-col>
-        </el-row>
       </el-form>
     </div>
     <div class="block">
@@ -159,7 +155,9 @@
           {{ scope.row.realPrice }}
         </template>
       </el-table-column>
-      <el-table-column label="推广渠道" width="80px">~~~</el-table-column>
+      <el-table-column label="推广渠道" width="80px">
+        <template slot-scope='scope'>{{scope.row.channelName || '--'}}</template>
+      </el-table-column>
       <el-table-column label="收货信息" width="250px">
         <template slot-scope="scope">
           <div>{{ scope.row.consignee }}</div>

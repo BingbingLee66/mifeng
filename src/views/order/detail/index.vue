@@ -79,7 +79,7 @@
           <span v-else> - -</span>
         </el-col>
         <el-col :span="8">
-          推广渠道：{{ '~~~' }}
+          推广渠道：{{ detailObj.channelName || '--' }}
         </el-col>
       </el-row>
     </div>

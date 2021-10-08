@@ -87,7 +87,7 @@ export default {
           trigger: 'blur'
         }, {
           validator: checkBankCard,
-          trigger: 'change'
+          trigger: 'blur'
         }]
       },
       settlementPeriodObjRules: {
