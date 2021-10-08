@@ -46,3 +46,12 @@ export function updateIssueStatus(params) {
     params
   })
 }
+
+// 查询已发放列表
+export function querySpreeIssued(params) {
+  return request({
+    url: baseUrl + '/api/bigGiftBag/issuedBigGiftBagList',
+    method: 'get',
+    params
+  })
+}

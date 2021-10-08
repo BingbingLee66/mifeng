@@ -252,10 +252,10 @@ export const constantRoutes = [
       },
       {
         path: '/mall/couponIssued',
-        name: '已发放',
+        name: '已发放优惠券',
         component: () => import('@/views/mall/coupon-issued/index'),
         hidden: true,
-        meta: { title: '已发放' }
+        meta: { title: '已发放优惠券' }
       },
       {
         path: '/mall/spreeDetail',

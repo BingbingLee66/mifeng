@@ -1,4 +1,4 @@
-import { getCouponList, updateIssue, updateIssueStatus } from '@/api/mall/coupon'
+import { getCouponList, updateIssue, updateIssueStatus, getExplodeGoodsList } from '@/api/mall/coupon'
 import { intInput, spaceInput } from '@/utils/utils'
 
 export default {
@@ -23,7 +23,7 @@ export default {
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     has(tabName, actionName) {
@@ -58,7 +58,8 @@ export default {
         'name': this.query.name,
         'user': this.query.user
       }
-      getCouponList(params).then(res => {
+      // getCouponList
+      getExplodeGoodsList(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
@@ -115,8 +116,11 @@ export default {
       this.$router.push(`/mall/couponCreate`)
     },
     // 查看优惠券详情
-    goCouponDetail() {
-      this.$router.push(`/mall/couponDetail`)
+    goCouponDetail(couponId) {
+      this.$router.push({
+        path: '/mall/couponDetail',
+        query: { couponId }
+      })
     },
     // 查看商品劵商品
     goGoodsLsit() {
@@ -127,8 +131,15 @@ export default {
       this.$router.push(`/order/manager`)
     },
     // 查看已发放列表
-    goIssueList() {
-      this.$router.push(`/mall/couponIssued`)
+    goIssueList(row) {
+      this.$router.push({
+        name: '已发放优惠券',
+        params: {
+          couponId: row.templateId,
+          couponName: row.name
+        }
+      })
+      // this.$router.push(`/mall/couponIssued`)
     }
   }
 }

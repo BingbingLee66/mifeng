@@ -167,8 +167,12 @@ export default {
       this.$router.push(`/mall/couponDetail`)
     },
     // 查看已发放列表
-    goIssueList() {
-      this.$router.push(`/mall/spreeIssued`)
+    goIssueList(row) {
+      // this.$router.push(`/mall/spreeIssued`)
+      this.$router.push({
+        name: '已发放大礼包',
+        params: { giftId: row.giftId, giftName: row.giftName }
+      })
     }
   }
 }

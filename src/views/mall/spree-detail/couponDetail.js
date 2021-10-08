@@ -8,7 +8,8 @@ export default {
     }
   },
   created() {
-    this.giftId = this.$route.query.giftId
+    this.giftId = this.$route.params.giftId
+    console.log('this.giftId ', this.giftId);
     // this.fetchData()
   },
   methods: {

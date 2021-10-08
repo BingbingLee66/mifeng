@@ -1,18 +1,15 @@
-import {
-  getExplodeGoodsList
-} from '@/api/mall/mall'
-import {
-  getActivitySource
-} from '@/api/activity/hot-activity'
+import { getExplodeGoodsList, queryCouponIssued } from '@/api/mall/coupon'
+import { getChamberOptions } from '@/api/finance/finance'
 
 export default {
   data() {
     return {
-      // 查询优惠劵列表
+      couponId: '100036',
+      couponName: '10元福利券',
       query: {
-        userName: '',
+        name: '',
         phone: '',
-        property: '',
+        type: '',
         ckey: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
@@ -20,12 +17,15 @@ export default {
       list: [],
       currentpage: 1,
       limit: 10,
+      listLoading: false,
       chamberOptions: []
     }
   },
   created() {
+    // this.couponId = this.$route.params.couponId
+    // this.couponName = this.$route.params.couponName
     this.getChamberOptions()
-    this.fetchData()
+    // this.fetchData()
   },
   methods: {
     has(tabName, actionName) {
@@ -35,21 +35,25 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     getChamberOptions() {
-      getActivitySource().then(res => {
-        this.chamberOptions = res.data
+      getChamberOptions().then(res => {
+        this.chamberOptions = res.data.data
       })
     },
     // 查询优惠券列表
     fetchData() {
+      if (e !== undefined) {
+        this.currentpage = 1
+      }
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
         'page': this.currentpage,
         'id': this.query.id,
-        'status': this.query.status,
-        'name': this.query.name
+        'type': this.query.type,
+        'phone': this.query.phone,
+        'ckey': this.query.ckey
       }
-      getExplodeGoodsList(params).then(res => {
+      queryCouponIssued(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
@@ -57,16 +61,32 @@ export default {
     },
     handleSizeChange(val) {
       this.limit = val
-      this.currentpage = 1
-      this.fetchData()
+      this.fetchData(1)
     },
     handleCurrentChange(val) {
       this.currentpage = val
       this.fetchData()
     },
-    // 查看优惠券详情
-    goMemberDetail() {
-      this.$router.push(`/member/detail`)
+    // 查看用户详情详情
+    goMemberDetail(userId) {
+      let memberDetail = {
+        id: userId
+      }
+      // /member/detail/
+      this.$router.push({
+        name: '会员详情',
+        params: { memberDetail, querytype: 0 }
+      })
+    },
+    // 查看已发放优惠券列表
+    goCouponDetail() {
+      // /member/detail/
+      this.$router.push({
+        name: '查看优惠券',
+        params: {
+          couponId: this.couponId
+        }
+      })
     },
     // 查看订单管理列表
     goOrderList() {

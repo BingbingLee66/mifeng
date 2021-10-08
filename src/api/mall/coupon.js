@@ -19,6 +19,14 @@ export function getCouponList(params) {
   })
 }
 
+// 查询优惠劵详情
+export function queryCouponDetailById(params) {
+  return request({
+    url: baseUrl + '/api/coupon/' + params,
+    method: 'get'
+  })
+}
+
 // 更新发行量
 export function updateIssue(params) {
   return request({
@@ -46,13 +54,15 @@ export function createCoupon(params) {
   })
 }
 
-// 查询优惠劵详情
-export function queryCouponDetailById(params) {
+// 查询已发送优惠券列表
+export function queryCouponIssued(params) {
   return request({
-    url: baseUrl + '/api/coupon/' + params,
-    method: 'get'
+    url: baseUrl + '/api/coupon/sends',
+    method: 'get',
+    params
   })
 }
+
 
 export function queryDetail(params) {
   return request({

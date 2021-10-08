@@ -1,18 +1,15 @@
-import {
-  getExplodeGoodsList
-} from '@/api/mall/mall'
-import {
-  getActivitySource
-} from '@/api/activity/hot-activity'
+import { querySpreeIssued, querySpreeDetail } from '@/api/mall/spree'
+import { getChamberOptions } from '@/api/finance/finance'
 
 export default {
   data() {
     return {
-      // 查询优惠劵列表
+      giftId: '100012',
+      giftName: '10元福利礼包',
       query: {
-        userName: '',
+        uname: '',
         phone: '',
-        property: '',
+        attribute: '',
         ckey: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
@@ -20,12 +17,17 @@ export default {
       list: [],
       currentpage: 1,
       limit: 10,
-      chamberOptions: []
+      listLoading: false,
+      chamberOptions: [],
+      giftObj: {}
     }
   },
   created() {
+    // this.gifDetail()
+    // this.giftName = this.$route.params.giftName
+    // this.giftId = this.$route.params.giftId
+    // this.giftId && this.fetchData()
     this.getChamberOptions()
-    this.fetchData()
   },
   methods: {
     has(tabName, actionName) {
@@ -34,22 +36,23 @@ export default {
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
+    // gifDetail() {
+    //   querySpreeDetail({ giftId: this.giftId }).then(res => {
+    //     this.giftObj = res.data
+    //   })
+    // },
     getChamberOptions() {
-      getActivitySource().then(res => {
-        this.chamberOptions = res.data
+      getChamberOptions().then(res => {
+        this.chamberOptions = res.data.data
       })
     },
     // 查询优惠券列表
-    fetchData() {
+    fetchData(e) {
       this.listLoading = true
-      let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'id': this.query.id,
-        'status': this.query.status,
-        'name': this.query.name
-      }
-      getExplodeGoodsList(params).then(res => {
+      let params = [...this.query]
+      params['pageSize'] = this.limit
+      params['page'] = e === 1 ? this.currentpage = 1 : this.currentpage
+      querySpreeIssued(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
@@ -57,20 +60,29 @@ export default {
     },
     handleSizeChange(val) {
       this.limit = val
-      this.currentpage = 1
-      this.fetchData()
+      this.fetchData(1)
     },
     handleCurrentChange(val) {
       this.currentpage = val
       this.fetchData()
     },
-    // 查看优惠券详情
-    goMemberDetail() {
-      this.$router.push(`/member/detail`)
+    // 查看用户详情详情
+    goMemberDetail(userId) {
+      let memberDetail = {
+        id: userId
+      }
+      this.$router.push({
+        name: '会员详情',
+        params: { memberDetail, querytype: 0 }
+      })
     },
-    // 查看订单管理列表
-    goOrderList() {
-      this.$router.push(`/order/manager`)
-    }
+    // 查看大礼包详情
+    goSpreeDetail() {
+      // /mall/spreeDetail
+      this.$router.push({
+        name: '查看大礼包',
+        params: { giftId: this.giftId }
+      })
+    },
   }
 }

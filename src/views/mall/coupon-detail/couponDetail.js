@@ -11,11 +11,14 @@ export default {
   },
   created() {
     this.couponId = this.$route.query.couponId
-    // this.fetchData()
+    console.log('优惠卷模板id', this.couponId)
+    if (this.couponId) {
+      this.fetchData()
+    }
   },
   methods: {
     fetchData() {
-      queryCouponDetailById(params).then(res => {
+      queryCouponDetailById(this.couponId).then(res => {
         this.couponObj = res.data
       })
     },

@@ -61,7 +61,7 @@
         </el-table-column>
         <el-table-column label="已发放/领取" width="100px">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goIssueList">{{ scope.row.sendSize }}</div>
+            <div class="blue-label" @click="goIssueList(scope.row)">{{ scope.row.sendSize }}</div>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" width="160px">
