@@ -1,4 +1,4 @@
-import { auditList, updateAudit } from '@/api/member/manager'
+import { auditList, updateAudit, examineDetail } from '@/api/member/manager'
 import el from "element-ui/src/locale/lang/el";
 
 export default {
@@ -222,6 +222,9 @@ export default {
 
     // 详情
     getDetail(id){
+      examineDetail({id}).then(res=>{
+        this.detailObj = res.data
+      })
       this.detailDia = true
     }
   }

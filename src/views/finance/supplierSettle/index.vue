@@ -21,7 +21,12 @@
         <el-row>
           <el-col :span="5">
             <el-form-item label-width="90px" label="商品名称：">
-              <el-input v-model="query.goodName" placeholder="请输入商品名称" />
+              <el-input
+                v-model="query.goodName"
+                placeholder="请输入商品名称"
+                maxlength="50"
+                clearable
+              />
             </el-form-item>
           </el-col>
           <el-col :span="5">
@@ -33,6 +38,8 @@
               <el-input
                 v-model="query.supplierName"
                 placeholder="请输入供货商姓名"
+                maxlength="50"
+                clearable
               />
             </el-form-item>
           </el-col>
@@ -46,6 +53,8 @@
                 v-model.trim="query.supplierPhone"
                 placeholder="请输入供货商手机号"
                 maxlength="11"
+                clearable
+                @input="checkNum"
               />
             </el-form-item>
           </el-col>
@@ -53,7 +62,11 @@
             <el-form-item label-width="60px" label="状态：">
               <el-select v-model="query.status" placeholder="请选择操作行为">
                 <el-option label="全部" :value="-1"></el-option>
-                <el-option label="待商务确认" :value="0" v-if="ckey"></el-option>
+                <el-option
+                  label="待商务确认"
+                  :value="0"
+                  v-if="ckey"
+                ></el-option>
                 <el-option label="待财务付款" :value="1"></el-option>
                 <el-option label="财务已付款" :value="2"></el-option>
               </el-select>
@@ -65,10 +78,7 @@
     <div class="block">
       <el-row>
         <el-col :span="24">
-          <el-button
-            type="primary"
-            size="small"
-            @click="fetchData($event)"
+          <el-button type="primary" size="small" @click="fetchData($event)"
             >查询</el-button
           >
           <el-button
@@ -155,13 +165,17 @@
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="250">
         <template slot-scope="scope">
-          <el-button type="text" v-if="ckey && scope.row.status == 0" @click="changeStatus(scope.row,1)"
+          <el-button
+            type="text"
+            v-if="ckey && scope.row.status == 0"
+            @click="changeStatus(scope.row, 1)"
             >申请财务付款</el-button
           >
-          <el-button type="text" @click="detail(scope.row)"
-            >详情</el-button
-          >
-           <el-button type="text" v-if="!ckey && scope.row.status == 1" @click="changeStatus(scope.row,2)"
+          <el-button type="text" @click="detail(scope.row)">详情</el-button>
+          <el-button
+            type="text"
+            v-if="!ckey && scope.row.status == 1"
+            @click="changeStatus(scope.row, 2)"
             >标记为已付款</el-button
           >
         </template>

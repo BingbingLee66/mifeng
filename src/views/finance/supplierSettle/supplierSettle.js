@@ -99,6 +99,9 @@ export default {
       this.query.startTime = this.selectTime[0] = formatDate(new Date(start), 'yyyy-MM-dd')
       this.query.endTime = this.selectTime[1] = formatDate(new Date(end), 'yyyy-MM-dd')
     },
+    checkNum() {
+      this.query.supplierPhone = this.query.supplierPhone.replace(/\D/g, '')
+    },
     // 查询列表
     fetchData(e) {
       if (e !== undefined) {
