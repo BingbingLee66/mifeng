@@ -101,6 +101,7 @@
             <el-button v-if="has('', '驳回') && scope.row.auditStatus == 0" type="warning" size="small" :loading="rejectLoading" :actionid="getId('', '驳回')" @click="rejectRemark($event, scope.row)">
               驳回
             </el-button>
+            <el-button v-if="scope.row.auditStatus !== 0" type="primary" size="small" @click="getDetail(scope.row.id)">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -163,6 +164,16 @@
         <el-button type="primary" @click="batchReject">确定</el-button>
       </span>
     </el-dialog>
+
+    <!-- ---------------------------详情弹窗--------------------------- -->
+      <el-dialog title="详情"  :visible.sync="detailDia" width="25%" center>
+        <div class="margin-b">操作人：{{ detailObj.auditor }}</div>
+        <div class="margin-b">操作时间：{{ detailObj.auditedTsLong | dateFormat }}</div>
+        <div class="margin-b" v-if="detailObj.auditStatus == 2">驳回原因：{{ detailObj.rejectRemark }}</div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="detailDia = false" type="primary">我知道了</el-button>
+        </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -170,6 +181,9 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
+.margin-b{
+  margin-bottom: 15px;
+}
 </style>
 
 <style lang="scss">

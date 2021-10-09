@@ -59,3 +59,10 @@ export function getMatchForm(params) {
     params
   })
 }
+
+export function getChannelList() {
+  return request({
+    url: baseUrl + '/ec/mall/channel/thChannel-list-all',
+    method: 'get',
+  })
+}

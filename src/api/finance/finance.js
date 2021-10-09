@@ -244,7 +244,7 @@ export function removeOrder(id) {
 // 商会后台-结算单详情-添加订单
 export function addOrder(params) {
   return request({
-    url: baseUrl + '/ec/mall/settlement-oder-add',
+    url: baseUrl + '/ec/mall/settlement-order-add',
     method: 'put',
     data: params
   })

@@ -1,4 +1,4 @@
-import { getAllList } from '@/api/order/order'
+import { getAllList, getChannelList } from '@/api/order/order'
 import { getChamberOptions } from '@/api/finance/finance'
 import { exportJson2Excel } from '@/utils/exportExcel'
 import { formatDateTime } from '@/utils/date' // 格式化时间戳
@@ -16,7 +16,10 @@ export default {
         status: -1,
         consignee: '',
         consigneeMobile: '',
-        date: ''
+        date: '',
+        settled: 0,
+        settlementStatus: -1,
+        channelId: null,
       },
       chamberOptions: [],
       pageSizes: [10, 20, 50, 100, 500],
@@ -25,7 +28,8 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: []
+      selectionDatas: [],
+      channelOptions:[],
     }
   },
   computed: {
@@ -45,6 +49,7 @@ export default {
   },
   created() {
     this.getChamberOptions()
+    this.getChannelOptions()
     this.init()
   },
   methods: {
@@ -55,13 +60,11 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
       this.fetchData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
       this.fetchData()
     },
@@ -74,6 +77,12 @@ export default {
       if (this.has('', '查询')) {
         this.fetchData()
       }
+    },
+    // 查询推广渠道
+    getChannelOptions(){
+      getChannelList().then(res=>{
+        this.channelOptions = res.data
+      })
     },
     fetchData(e) {
       if (e !== undefined) {
@@ -92,8 +101,12 @@ export default {
         'consignee': this.query.consignee,
         'consigneeMobile': this.query.consigneeMobile,
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        'settled':this.query.settled,
+        'settlementStatus': this.query.settlementStatus,
+        'channelId': this.query.channelId
       }
+      if(params.settlementStatus == -1) delete params.settlementStatus
       if (this.query.date) {
         params['startTime'] = this.query.date[0]
         params['endTime'] = this.query.date[1]
@@ -147,6 +160,7 @@ export default {
           '单价(元)': data.price,
           '下单数': data.count,
           '实付金额(元)': data.realPrice,
+          '推广渠道': data.channelName,
           '收件人': data.consignee,
           '收件人手机号': data.mobile,
           '收货地址': data.consigneeAddress

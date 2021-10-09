@@ -181,7 +181,7 @@
                 placeholder="请填写银行卡号"
                 type="text"
                 show-word-limit
-                maxlength="19"
+                maxlength="30"
               ></el-input>
             </el-form-item>
           </el-col>
