@@ -180,12 +180,6 @@ export default {
         discount: [
           { required: true, message: '立减优惠不能为空，需输入大于等于0的数字', trigger: 'change' }
         ],
-        serviceFee: [
-          { required: true, message: '商品服务费率不能为空', trigger: 'change' }
-        ],
-        wxServiceFee: [
-          { required: true, message: '微信手续费率不能为空', trigger: 'change' }
-        ],
         deliveryConfig1: [
           { required: true, message: '包邮不能为空', trigger: 'blur' },
           // { validator: checkName, trigger: 'change' }

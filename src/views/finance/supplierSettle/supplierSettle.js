@@ -1,6 +1,7 @@
 import {
   getSupplierSettlementList,
   changeSettlementStatus,
+  getOrderCount
 } from '@/api/finance/finance'
 import {
   formatDate
@@ -28,6 +29,9 @@ export default {
       calculationRulesDia: false, // 计算规则弹窗
       paymentDia: false, // 申请付款弹窗
       selectTime: [],
+      settlementId: 0,
+      btnLoading: false,
+      judgeCount: 1,
     }
   },
   computed: {
@@ -121,16 +125,29 @@ export default {
         this.listLoading = false
       })
     },
+    // 判断显示弹窗
+    judgeDiaShow(id) {
+      this.settlementId = id
+      this.btnLoading = true
+      getOrderCount(id).then(res => {
+        this.btnLoading = false
+        this.judgeCount = res.data
+        this.paymentDia = true
+      }).catch((e)=>{
+        this.btnLoading = false
+      })
+    },
     // 标记为已付款/申请财务付款
-    async changeStatus(row, status) {
+    async changeStatus(id, status) {
       this.listLoading = true
       let res = await changeSettlementStatus({
-        id: row.id,
+        id,
         status
       })
       try {
         this.listLoading = false
         if (res.state !== 1) return this.$message.error(res.msg)
+        this.paymentDia = true
         this.fetchData()
       } catch (e) {
         this.listLoading = false

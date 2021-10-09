@@ -163,19 +163,22 @@
           {{ scope.row.status | filterStatus }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" fixed="right" width="250">
+      <el-table-column label="操作" fixed="right" width="220">
         <template slot-scope="scope">
           <el-button
-            type="text"
+            type="primary"
+            size="small"
             v-if="ckey && scope.row.status == 0"
-            @click="changeStatus(scope.row, 1)"
+            @click="judgeDiaShow(scope.row.id)"
+            :loading="btnLoading"
             >申请财务付款</el-button
           >
           <el-button type="text" @click="detail(scope.row)">详情</el-button>
           <el-button
-            type="text"
+            type="primary"
+            size="small"
             v-if="!ckey && scope.row.status == 1"
-            @click="changeStatus(scope.row, 2)"
+            @click="changeStatus(scope.row.id, 2)"
             >标记为已付款</el-button
           >
         </template>
@@ -201,14 +204,15 @@
     ></finance-rules>
 
     <!-- ----------------------申请财务付款弹窗---------------------- -->
-    <el-dialog title="申请财务付款" :visible.sync="paymentDia" width="25%">
-      <span style="line-height: 24px"
+    <el-dialog title="申请财务付款" :visible.sync="paymentDia" width="25%" center>
+      <span style="line-height: 24px" v-if="judgeCount != 0"
         >该操作无法撤销！请先确认结算单内的各款项明细，申请财务付款或者是财务付款之后，将无法再从结算单中添加/移除订单。</span
       >
-      <!-- <span>该结算单内无订单，无法提交空的结算单。</span> -->
+      <div v-else style="width:100%;text-align: center;">该结算单内无订单，无法提交空的结算单。</div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="paymentDia = false">取 消</el-button>
-        <el-button type="primary" @click="paymentDia = false">确 定</el-button>
+        <el-button @click="paymentDia = false" v-if="judgeCount != 0">取 消</el-button>
+        <el-button type="primary" @click="changeStatus(settlementId, 1)" v-if="judgeCount != 0">确 定</el-button>
+        <el-button type="primary" @click="paymentDia = false" v-if="judgeCount == 0">我知道了</el-button>
       </div>
     </el-dialog>
   </div>

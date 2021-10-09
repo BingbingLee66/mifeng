@@ -249,3 +249,10 @@ export function addOrder(params) {
     data: params
   })
 }
+// 查询结算单是否有订单 
+export function getOrderCount(id) {
+  return request({
+    url: baseUrl + '/ec/mall/check-settlement-order-count?id=' + id,
+    method: 'get',
+  })
+}
