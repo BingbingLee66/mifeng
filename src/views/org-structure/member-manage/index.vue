@@ -2,15 +2,18 @@
   <div class="menber_manager_container">
     <div class="menu_tree">
       <div class="search_wrap">
-        <el-input v-model="searchValue" placeholder="搜索人员用户名、姓名、联系人姓名、企业名称" prefix-icon="el-icon-search" @input="handleValueChange" />
+        <el-input v-model="searchValue" placeholder="搜索人员用户名、姓名、联系人姓名、企业名称" prefix-icon="el-icon-search" @input="handleValueChange"/>
       </div>
       <div v-show="showFlag" ref="searchBox" class="search-result">
         <div class="member-list">
           <div v-if="searchResult.length>0">
             <div v-for="item in searchResult" :key="item.id" class="member-item" @click="goDetail(item.id)">
               <!-- <div class="avatar"></div> -->
-              <i class="el-icon-s-custom" />
+              <i class="el-icon-s-custom"/>
               <div class="name">{{ item.name }}</div>
+            </div>
+            <div v-if="showMore" style="text-align: center;">
+              <el-button type="text" size="small" @click="loadMore">查看更多</el-button>
             </div>
           </div>
           <div v-else>
@@ -32,8 +35,8 @@
         >
           <template slot-scope="{ node, data }">
             <span style="font-size: 16px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;">{{
-              data.departmentName
-            }} ({{ data.peopleCount }})</span>
+                data.departmentName
+              }} ({{ data.peopleCount }})</span>
           </template>
         </el-tree>
       </div>
@@ -41,7 +44,7 @@
     <div class="content_wrap">
       <div class="name">{{ departmentName }}</div>
       <div class="content_item operation">
-        <div class="ico"><i class="el-icon-s-custom" />成员</div>
+        <div class="ico"><i class="el-icon-s-custom"/>成员</div>
         <div>
           <el-button type="primary" @click="add">添加成员</el-button>
           <el-button type="warning" @click="handleOpenAdjustDialog">调整部门</el-button>
@@ -57,8 +60,8 @@
           @row-click="skipToDetail"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55" />
-          <el-table-column label="用户名" prop="uname" />
+          <el-table-column type="selection" width="55"/>
+          <el-table-column label="用户名" prop="uname"/>
           <el-table-column label="姓名/联系人姓名" width="200">
             <template slot-scope="scope">
               {{ scope.row.type === 0 ? scope.row.name : scope.row.contactName }}
@@ -169,7 +172,7 @@
     }
 
     .search-result {
-      height: calc(100vh - 180px);
+      height: calc(100vh - 170px);
       overflow-y: auto;
       background: rgba(245, 245, 245, 0.5);
 
@@ -257,7 +260,7 @@
     }
 
     .table_wrap {
-      height: 530px;
+      height: calc(100vh - 320px);
       overflow-y: auto;
     }
 
