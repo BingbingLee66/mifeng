@@ -30,7 +30,7 @@
           {{scope.row.id}}
         </template>
       </el-table-column> -->
-      <el-table-column label="供货商名称">
+      <el-table-column label="联系人姓名">
         <template slot-scope="scope">
           {{ scope.row.supplierName }}
         </template>
@@ -125,10 +125,10 @@
       >
         <el-row>
           <el-col :offset="2" :span="20">
-            <el-form-item label="供货商家名称：" prop="supplierName">
+            <el-form-item label="联系人姓名：" prop="supplierName">
               <el-input
                 v-model.trim="formObj.supplierName"
-                placeholder="请填写供货商家名称"
+                placeholder="请填写联系人姓名"
               ></el-input>
             </el-form-item>
           </el-col>

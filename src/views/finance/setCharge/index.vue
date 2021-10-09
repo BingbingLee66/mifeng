@@ -5,18 +5,22 @@
         <div style="text-align:center;">微信手续费设置</div>
       </th>
       <tr>
-        <td align="center">
+        <td>
           <el-row style="margin-top: 20px;">
             <el-form ref="form1" :model="formObj1" :rules="rules1" label-position="left" label-width="auto">
               <el-col :offset="4" :span="12">
                 <el-form-item label="微信手续费：" prop="wechatFeeRatio">
-                  <el-input v-model="formObj1.wechatFeeRatio" maxlength="60" placeholder="请输入微信手续费">
+                  <!-- <el-input v-model="formObj1.wechatFeeRatio" maxlength="60" placeholder="请输入微信手续费">
                     <template slot="append">%</template>
-                  </el-input>
+                  </el-input> -->
+                  <div class="discount-input">
+                    <el-input-number style="width:92%" v-model="formObj1.wechatFeeRatio" :min="0" :max="1" :controls="false" :precision="2"></el-input-number>
+                    <div class="input-prepend">%</div>
+                  </div>
                 </el-form-item>
               </el-col>
               <el-col :span="4">
-                <el-form-item label="">
+                <el-form-item>
                   <el-button type="primary" v-dbClick @click="update1($event)">修改</el-button>
                 </el-form-item>
               </el-col>
@@ -35,13 +39,17 @@
             <el-form ref="form2" :model="formObj2" :rules="rules2" label-position="left" label-width="auto">
               <el-col :offset="4" :span="12">
                 <el-form-item label="商品服务费：" prop="mallFeeRatio">
-                  <el-input v-model="formObj2.mallFeeRatio" maxlength="60" placeholder="请输入商品服务费">
+                  <!-- <el-input v-model="formObj2.mallFeeRatio" maxlength="60" placeholder="请输入商品服务费">
                     <template slot="append">%</template>
-                  </el-input>
+                  </el-input> -->
+                  <div class="discount-input">
+                    <el-input-number style="width:92%" v-model="formObj2.mallFeeRatio" :min="0" :max="99" :controls="false" :precision="2"></el-input-number>
+                    <div class="input-prepend">%</div>
+                  </div>
                 </el-form-item>
               </el-col>
               <el-col :span="4">
-                <el-form-item label="">
+                <el-form-item>
                   <el-button type="primary" v-dbClick @click="update2($event)">修改</el-button>
                 </el-form-item>
               </el-col>
@@ -51,13 +59,17 @@
             <el-form ref="form3" :model="formObj3" :rules="rules3" label-position="left" label-width="auto">
               <el-col :offset="4" :span="12">
                 <el-form-item label="会费服务费：" prop="memberFeeRatio">
-                  <el-input v-model="formObj3.memberFeeRatio" maxlength="60" placeholder="请输入会费服务费">
+                  <!-- <el-input v-model="formObj3.memberFeeRatio" maxlength="60" placeholder="请输入会费服务费">
                     <template slot="append">%</template>
-                  </el-input>
+                  </el-input> -->
+                   <div class="discount-input">
+                    <el-input-number style="width:92%"  v-model="formObj3.memberFeeRatio" :min="0" :max="100" :controls="false" :precision="2"></el-input-number>
+                    <div class="input-prepend">%</div>
+                  </div>
                 </el-form-item>
               </el-col>
               <el-col :span="4">
-                <el-form-item label="">
+                <el-form-item >
                   <el-button type="primary" v-dbClick @click="update3($event)">修改</el-button>
                 </el-form-item>
               </el-col>
@@ -73,6 +85,28 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "src/styles/common.scss";
+/deep/.discount-input {
+  display: flex;
+
+  .el-input__inner {
+    border-radius: 4px 0 0 4px !important;
+  }
+}
+.input-prepend {
+  height: 40px;
+  background-color: #F5F7FA;
+  color: #909399;
+  vertical-align: middle;
+  display: table-cell;
+  position: relative;
+  border: 1px solid #DCDFE6;
+  border-radius: 4px;
+  padding: 0 20px;
+  white-space: nowrap;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0;
+}
 </style>
 <style>
 .table-box {

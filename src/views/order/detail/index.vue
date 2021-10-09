@@ -71,15 +71,20 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          收货地址：{{ detailObj.consigneeAddress }}
-        </el-col>
-        <el-col :span="8">
           收货时间：
           <span v-if="detailObj.confirmReceivingTime">{{ detailObj.confirmReceivingTime | formatDates }}</span>
           <span v-else> - -</span>
         </el-col>
         <el-col :span="8">
           推广渠道：{{ detailObj.channelName || '--' }}
+        </el-col>
+        <el-col :span="8">
+          用户属性：{{ detailObj.channelName || '--' }}
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          收货地址：{{ detailObj.consigneeAddress }}
         </el-col>
       </el-row>
     </div>

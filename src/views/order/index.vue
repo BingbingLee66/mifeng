@@ -153,7 +153,7 @@
           <div v-if="scope.row.status == 0">取消订单</div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200" fixed="right">
+      <el-table-column label="操作"  fixed="right">
         <template slot-scope="scope">
           <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('', '详情')" v-if="has('', '详情')">
             详情

@@ -58,7 +58,7 @@ export default {
       rules: {
         supplierName: [{
           required: true,
-          message: '供货商家名称不能为空',
+          message: '联系人姓名不能为空',
           trigger: 'blur'
         }],
         supplierPhone: [{

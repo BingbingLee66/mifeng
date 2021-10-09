@@ -469,7 +469,7 @@
           <el-col :span="24">
             <el-form-item label="商品服务费率：" prop="serviceFee">
               <div class="discount-input">
-                <el-input-number v-model="formObj.serviceFee" :min="0"  :controls="false" :precision="2"></el-input-number>
+                <el-input-number v-model="formObj.serviceFee" :min="0" :max="99" :controls="false" :precision="2"></el-input-number>
                 <div class="input-prepend">%</div>
               </div>
             </el-form-item>
@@ -479,7 +479,7 @@
           <el-col :span="24">
             <el-form-item label="微信手续费率：" prop="wxServiceFee">
               <div class="discount-input">
-                <el-input-number v-model="formObj.wxServiceFee" :min="0"  :controls="false" :precision="2"></el-input-number>
+                <el-input-number v-model="formObj.wxServiceFee" :min="0" :max="1" :controls="false" :precision="2"></el-input-number>
                 <div class="input-prepend">%</div>
               </div>
               <div class="tips">商品服务费和微信手续费的初始值来自总后台的设置，都是从用户的实付金额中收取某个百分点，将在和供货商结算时抵扣。</div>
