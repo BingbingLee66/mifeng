@@ -1,13 +1,15 @@
 import { getUpdateDetail, uploadCoverImg, save } from '@/api/content/article'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import Ckeditor from '@/components/CKEditor'
+import UEditor from '@/components/UEditor'
 import PreviewPh from '@/components/ArticlePreview'
 import addColumn from '../editor/component/addColumn'
 export default {
   components: {
     Ckeditor,
     PreviewPh,
-    addColumn
+    addColumn,
+    UEditor
   },
   data() {
     return {
@@ -56,10 +58,11 @@ export default {
       this.articleId = this.$route.params.articleId
       this.init()
     } else {
-      this.$refs.ckeditor1.init()
-      setTimeout(() => {
-        this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      }, 500)
+      this.$refs.ueditor.setContent(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      // this.$refs.ckeditor1.init()
+      // setTimeout(() => {
+      //   this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      // }, 500)
     }
   },
   computed: {},
@@ -157,10 +160,11 @@ export default {
             'status': dataObj.status,
             'istop': dataObj.istop
           }
-          this.$refs.ckeditor1.init()
-          setTimeout(() => {
-            this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
-          }, 500)
+          this.$refs.ueditor.setContent(htmlObj === null ? '' : htmlObj)
+          // this.$refs.ckeditor1.init()
+          // setTimeout(() => {
+          //   this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
+          // }, 500)
         }).catch(error => {
           reject(error)
         })
@@ -172,6 +176,7 @@ export default {
           if (this.formObj.coverType === 0) {
             this.formObj.coverImgs = []
           }
+          this.formObj['contentHtml'] = this.$refs.ueditor.content
           this.formObj['istop'] = false // 商会发布文章不开放置顶
           this.formObj['ckey'] = this.$store.getters.ckey
           this.formObj['contentModuleId'] = this.activeName
