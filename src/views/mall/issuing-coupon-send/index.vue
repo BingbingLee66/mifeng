@@ -11,8 +11,8 @@
                   <div class="add-coupon" v-for="(item, index) in couponList" :key="index">
                     <div class="add-item">
                       <el-input style="width: 200px;" size="mini" v-model="item.couponId" maxlength="12" placeholder="优惠券ID" @input="e => handleInt(e,index,'couponId')" @blur="e => handleBlur(e,index,'couponId')"></el-input>
-                      <div class="tips">{{item.name}}</div>
-                      <div class="tips" style="color: #ff3333;">{{item.errTips}}</div>
+                      <div class="tips" style="color: #333333;font-size: 13px;">{{item.name}}</div>
+                      <div class="tips" style="color: #F56C6C;font-size: 13px;">{{item.errTips}}</div>
                     </div>
                     <div class="add-item">
                       <el-input style="width: 120px;margin-right: 10px;" size="mini" maxlength="2" v-model="item.couponNum" placeholder="数量（1-10）" @input="e => handleInt(e,index,'couponNum')" @blur="e => handleBlur(e,index,'couponNum')"></el-input>
@@ -32,8 +32,8 @@
             <el-form-item label="优惠券接收方：" required>
               <el-radio-group v-model="issueType" @change="handleChange">
                 <div style="width: 500px">
-                  <el-radio label="0">发给指定手机号</el-radio>
-                  <div v-if="issueType==='0'" style="margin-top:10px;">
+                  <el-radio label="1">发给指定手机号</el-radio>
+                  <div v-if="issueType==='1'" style="margin-top:10px;">
                     <el-input style="width: 400px;" type="textarea" resize="none" :rows="8" v-model="phone" placeholder=""></el-input>
                     <div style="margin-top:10px;line-height:1.5;" class="red-label">
                       <div>提示：</div>
@@ -43,8 +43,8 @@
                   </div>
                 </div>
                 <div style="width: 500px">
-                  <el-radio label="1">发给指定商/协会成员</el-radio>
-                  <div v-if="issueType==='1'" style="margin-top:10px;">
+                  <el-radio label="2">发给指定商/协会成员</el-radio>
+                  <div v-if="issueType==='2'" style="margin-top:10px;">
                     <el-select style="width:200px;" v-model="chamberId" placeholder="请选择商/协会成员" clearable>
                       <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id" />
                     </el-select>

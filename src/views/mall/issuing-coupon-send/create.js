@@ -1,5 +1,5 @@
 import { createSend } from '@/api/mall/issued'
-import { queryDetail } from '@/api/mall/coupon'
+import { queryCouponInfo } from '@/api/mall/coupon'
 import { getChamberAllList } from '@/api/goods/goods'
 import draggable from 'vuedraggable' // 拖拽组件
 
@@ -60,12 +60,13 @@ export default {
           this.couponList[index].name = ''
           this.couponList[index].errTips = '请设置所包含的优惠券'
         } else {
-          queryDetail({ id: val }).then(res => {
+          queryCouponInfo(val).then(res => {
             console.log(res)
             if (res.state === 1) {
               this.couponList[index].errTips = ''
-              this.couponList[index].name = res.data.goodsDetail.name
+              this.couponList[index].name = res.msg
             } else {
+              this.couponList[index].name = ''
               this.couponList[index].errTips = '该优惠券不存在'
             }
           })
@@ -134,9 +135,9 @@ export default {
     save() {
       if (!this.checkCouponList()) return
       if (!this.issueType) return this.$message.error('请设置优惠券接收方！')
-      if (this.issueType === '0' && !this.phone) return this.$message.error('请设置指定手机号！')
-      if (this.issueType === '0' && this.phone && this.phone.split(/[\s\n]/).length > 1000) return this.$message.error('单次发送的手机号不得大于1000个！')
-      if (this.issueType === '1' && !this.chamberId) return this.$message.error('请选择某个商/协会！')
+      if (this.issueType === '1' && !this.phone) return this.$message.error('请设置指定手机号！')
+      if (this.issueType === '1' && this.phone && this.phone.split(/[\s\n]/).length > 1000) return this.$message.error('单次发送的手机号不得大于1000个！')
+      if (this.issueType === '2' && !this.chamberId) return this.$message.error('请选择某个商/协会！')
       // 判断输入的优惠券id是否有重复
       let _couponList = []
       for (let item of this.couponList) {

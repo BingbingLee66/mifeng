@@ -1,4 +1,4 @@
-import { queryCouponDetailById } from '@/api/mall/coupon'
+import { queryCouponDetailById, queryCouponGoods } from '@/api/mall/coupon'
 
 export default {
   data() {
@@ -19,8 +19,10 @@ export default {
   methods: {
     fetchData() {
       queryCouponDetailById(this.couponId).then(res => {
-        console.log('优惠券详情：', res)
         this.couponObj = res.data
+      })
+      queryCouponGoods(this.couponId).then(res => {
+        this.list = res.data.respList
       })
     },
     showCoupon() {

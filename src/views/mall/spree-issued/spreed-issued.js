@@ -1,11 +1,11 @@
-import { querySpreeIssued, querySpreeDetail } from '@/api/mall/spree'
+import { querySpreeIssued } from '@/api/mall/spree'
 import { getChamberOptions } from '@/api/finance/finance'
 
 export default {
   data() {
     return {
-      giftId: '100012',
-      giftName: '10元福利礼包',
+      giftId: '',
+      giftName: '',
       query: {
         uname: '',
         phone: '',
@@ -24,9 +24,9 @@ export default {
   },
   created() {
     // this.gifDetail()
-    // this.giftName = this.$route.params.giftName
-    // this.giftId = this.$route.params.giftId
-    // this.giftId && this.fetchData()
+    this.giftName = this.$route.query.giftName
+    this.giftId = this.$route.query.giftId
+    this.fetchData()
     this.getChamberOptions()
   },
   methods: {
@@ -49,10 +49,12 @@ export default {
     // 查询优惠券列表
     fetchData(e) {
       this.listLoading = true
-      let params = [...this.query]
+      let params = { ...this.query }
       params['pageSize'] = this.limit
       params['page'] = e === 1 ? this.currentpage = 1 : this.currentpage
+      params['templateId '] = this.giftId
       querySpreeIssued(params).then(res => {
+        console.log('已发放大礼包列表', res)
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false

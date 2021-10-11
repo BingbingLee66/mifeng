@@ -1,4 +1,4 @@
-import { querySpreeDetail } from '@/api/mall/spree'
+import { querySpreedInfo } from '@/api/mall/spree'
 
 export default {
   data() {
@@ -8,13 +8,12 @@ export default {
     }
   },
   created() {
-    this.giftId = this.$route.params.giftId
-    console.log('this.giftId ', this.giftId);
-    // this.fetchData()
+    this.giftId = this.$route.query.giftId
+    this.fetchData()
   },
   methods: {
     fetchData() {
-      querySpreeDetail(params).then(res => {
+      querySpreedInfo(this.giftId).then(res => {
         this.giftObj = res.data
       })
     },

@@ -14,7 +14,7 @@
           </div>
           <div class="coupon-detail-content" v-if="couponObj.scope===2">
             <div>商品劵 <span style="color: #7f7f7f;">只有指定商品，才可以使用</span></div>
-            <div class="mt-10">已选50款 <span class="blue-label" @click="showCoupon">点击查看</span></div>
+            <div class="mt-10">已选{{list.length}}款 <span class="blue-label" @click="showCoupon">点击查看</span></div>
           </div>
         </div>
         <div class="coupon-detail-item">
@@ -65,18 +65,18 @@
       <el-dialog title="可用劵商品" :visible.sync="couponVisible" width="80%">
         <div class="table-block">
           <el-table :data="list" border fit highlight-current-row>
-            <el-table-column label="商品ID/名称" width="250px">
+            <el-table-column label="商品ID/名称">
               <template slot-scope="scope">
                 <div class="red-label">{{ scope.row.id }}</div>
                 <div> {{ scope.row.name }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="商品图片" width="110px">
+            <el-table-column label="商品图片" width="120px">
               <template slot-scope="scope">
                 <img class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
               </template>
             </el-table-column>
-            <el-table-column label="商品价格信息（元）" width="160px">
+            <el-table-column label="商品价格信息（元）">
               <template slot-scope="scope">
                 <div>【单买价】{{ scope.row.singlePriceMerge }}</div>
                 <div>【拼单价】<span class="red-label">{{ scope.row.fightPriceMerge }}</span></div>
@@ -95,12 +95,12 @@
                 <div>【虚拟】 {{ scope.row.virtualSalesVolume  }}</div>
               </template>
             </el-table-column>
-            <el-table-column label="创建时间" width="200px">
+            <el-table-column label="创建时间" width="100px">
               <template slot-scope="scope">
                 {{ scope.row.createTime | dateFormat }}
               </template>
             </el-table-column>
-            <el-table-column label="开售时间" width="200px">
+            <el-table-column label="开售时间" width="100px">
               <template slot-scope="scope">
                 {{ scope.row.createTime | dateFormat }}
               </template>
@@ -110,7 +110,7 @@
                 {{ scope.row.chamberName }}
               </template>
             </el-table-column>
-            <el-table-column label="状态">
+            <el-table-column label="状态" width="100px">
               <template slot-scope="scope">
                 <div v-if="(scope.row.isOnSale == 1 || scope.row.isOnSale == 3) && scope.row.sumStock > 0">在售中</div>
                 <div v-if="scope.row.isOnSale == 2 || scope.row.isOnSale == 4">商会下架</div>
@@ -169,5 +169,11 @@
       display: none;
     }
   }
+}
+.goods-preview {
+  width: 90px;
+  height: 70px;
+  cursor: pointer;
+  object-fit: cover;
 }
 </style>

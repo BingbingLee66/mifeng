@@ -61,7 +61,7 @@
   </div>
 </template>
 
-<script src="./coupon-issued.js"></script>
+<script src="./spreed-issued.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import 'src/styles/common.scss';

@@ -46,6 +46,7 @@ export default {
       }
       this.listLoading = true
       let params = {
+        'templateId': this.couponId,
         'pageSize': this.limit,
         'pageNum': this.currentpage,
         'id': this.query.id,

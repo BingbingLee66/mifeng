@@ -1,8 +1,9 @@
 import {
-  getSpreeList, querySpreeDetail, updateSpreeIssue, updateIssueStatus
+  getSpreeList, updateSpreeIssue, updateIssueStatus
 } from '@/api/mall/spree'
 import { spaceInput, intInput } from '@/utils/utils'
 import domtoimage from 'dom-to-image'
+import { mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -26,8 +27,11 @@ export default {
       isLoading: false
     }
   },
+  computed: {
+    ...mapGetters(['profile'])
+  },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     has(tabName, actionName) {
@@ -93,7 +97,7 @@ export default {
           a.click()
           _this.isLoading = false
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error('oops, something went wrong!', error)
           _this.isLoading = false
         })
@@ -122,30 +126,36 @@ export default {
       this.issueVisible = true
     },
     updateIssue() {
-      if (this.issue > this.rowData.quota) return this.$message.error('编辑发行量时，只能增加，不能减少。')
+      if (this.issue < this.rowData.quota) return this.$message.error('编辑发行量时，只能增加，不能减少。')
       let params = {
         giftId: this.rowData.giftId,
         quota: this.issue
       }
       updateSpreeIssue(params).then(res => {
         if (res.state === 1) {
+          this.$message.success(res.msg)
           this.issueVisible = false
-          this.fetchData(1)
+          this.fetchData()
         }
       })
     },
     // 更新发行状态
     updateIssueStatu(row, status) {
+      let _this = this
       let msg = status === 1 ? '确认停发吗?' : '确认继续发吗?'
-      this.$confirm(msg, '提示', {
+      _this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(() => {
-        updateIssueStatus({ giftId: row.giftId, status }).then(res => {
+        let params = {
+          giftId: parseInt(row.giftId),
+          status: status,
+          updateId: _this.profile.id
+        }
+        updateIssueStatus(params).then(res => {
           if (res.state === 1) {
-            console.log(res)
-            this.$message.success('操作成功')
-            this.fetchData(1)
+            _this.$message.success('操作成功')
+            _this.fetchData()
           }
         })
       }).catch(() => {
@@ -163,15 +173,18 @@ export default {
       })
     },
     // 查看优惠券详情
-    goCouponDetail() {
-      this.$router.push(`/mall/couponDetail`)
+    goCouponDetail(couponId) {
+      this.$router.push({
+        path: '/mall/couponDetail',
+        query: { couponId }
+      })
     },
     // 查看已发放列表
     goIssueList(row) {
       // this.$router.push(`/mall/spreeIssued`)
       this.$router.push({
-        name: '已发放大礼包',
-        params: { giftId: row.giftId, giftName: row.giftName }
+        path: '/mall/spreeIssued',
+        query: { giftId: row.giftId, giftName: row.giftName }
       })
     }
   }

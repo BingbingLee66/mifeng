@@ -61,10 +61,17 @@ export function queryCouponIssued(params) {
   })
 }
 
-export function queryDetail(params) {
+// 优惠券模板-查看绑定商品
+export function queryCouponGoods(params) {
   return request({
-    url: baseUrl + '/ec/mall/get-goods',
-    method: 'get',
-    params
+    url: baseUrl + '/coupon-goods/' + params,
+    method: 'get'
+  })
+}
+
+export function queryCouponInfo(params) {
+  return request({
+    url: baseUrl + '/coupon/valid/' + params,
+    method: 'get'
   })
 }

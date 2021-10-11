@@ -3,13 +3,13 @@
     <div class="from-block">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="大礼包ID">
-          <el-input v-model="query.giftId" maxlength="12" placeholder="" @input="e => handleNumber(e,'giftId')" />
+          <el-input v-model="query.giftId" maxlength="12" placeholder="" @input="e => handleNumber(e,'giftId')"/>
         </el-form-item>
         <el-form-item label="大礼包名称">
-          <el-input v-model="query.giftName" placeholder="关键词" @input="e => handleSpace(e,'giftName')" />
+          <el-input v-model="query.giftName" placeholder="关键词" @input="e => handleSpace(e,'giftName')"/>
         </el-form-item>
         <el-form-item label="创建人">
-          <el-input v-model="query.createName" placeholder="关键词" @input="e => handleSpace(e,'createName')" />
+          <el-input v-model="query.createName" placeholder="关键词" @input="e => handleSpace(e,'createName')"/>
         </el-form-item>
         <el-form-item label="">
           <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
@@ -37,7 +37,7 @@
         <el-table-column label="包含优惠券" width="200px">
           <template slot-scope="scope">
             <div v-for="item in scope.row.coupons" :key="item.giftId">
-              <span class="blue-label" @click="goCouponDetail">{{item.couponId}}</span>-
+              <span class="blue-label" @click="goCouponDetail(item.couponId)">{{ item.couponId }}</span>-
               {{ item.couponName }}
             </div>
           </template>
@@ -72,18 +72,20 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.status===2" type="text" @click="updateIssueStatus(scope.row,1)">停发</el-button>
-            <el-button v-else type="text" @click="updateIssueStatus(scope.row,2)">继续发</el-button>
+            <el-button v-if="scope.row.status===2" type="text" @click="updateIssueStatu(scope.row,1)">停发</el-button>
+            <el-button v-else-if="scope.row.status===1" type="text" @click="updateIssueStatu(scope.row,2)">继续发
+            </el-button>
+            <el-button v-else>--</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
 
     <!-- 编辑发行量 -->
     <el-dialog title="发行量" :visible.sync="issueVisible" width="400px">
       <div class="dialog-content">
-        <el-input style="width: 300px" v-model="issue" placeholder="" @input="e => handleNumber(e,'issue')" />
+        <el-input style="width: 300px" v-model="issue" placeholder="" @input="e => handleNumber(e,'issue')"/>
         <div class="red-label mt-10">提示：编辑发行量时，只能增加，不能减少。</div>
       </div>
       <div slot="footer" class="dialog-footer">

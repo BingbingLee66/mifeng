@@ -1,6 +1,8 @@
-import { createSpree, queryCouponInfo } from '@/api/mall/spree'
+import { createSpree } from '@/api/mall/spree'
+import { queryCouponInfo } from '@/api/mall/coupon'
 import { spaceInput, intInput } from '@/utils/utils'
 import draggable from 'vuedraggable'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -31,6 +33,9 @@ export default {
         ]
       }
     }
+  },
+  computed: {
+    ...mapGetters(['profile'])
   },
   methods: {
     has(tabName, actionName) {
@@ -129,22 +134,25 @@ export default {
       return vaild
     },
     save() {
-      if (!this.checkIds()) return
       this.$refs['form'].validate((valid) => {
+        if (!this.checkIds()) return
         if (valid) {
           let params = this.formObj
           let ids = []
           for (let data of this.couponList) {
-            data.id && ids.push(data.id)
+            data.id && ids.push(parseInt(data.id))
           }
           if (ids.length === 0) return this.$message.warning('请填写至少一个优惠券ID！')
           params['couponIdList'] = ids
           params['validStartTime'] = this.formObj.date[0]
           params['validEndTime'] = this.formObj.date[1]
-          console.log('提交的参数：', params)
+          params['createId'] = this.profile.id
+          params['createName'] = this.profile.userName
           createSpree(params).then(res => {
-            console.log(res)
-            this.$router.push('/mall/spree-list')
+            if (res.state === 1) {
+              this.$message.success(res.msg)
+              this.$router.push('/mall/spree-list')
+            }
           })
         } else {
           return false

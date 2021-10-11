@@ -12,12 +12,13 @@ export function getExplodeGoodsList(params) {
 
 export function getIssuedCouponList(params) {
   return request({
-    url: baseUrl + '/api/issueCoupon/issuedCouponList',
+    url: baseUrl + '/api/issueCoupon/issuedCouponList/',
     method: 'get',
     params
   })
 }
 
+// 发放优惠券
 export function createSend(params) {
   return request({
     url: baseUrl + '/api/issueCoupon/createIssuingCoupon',
