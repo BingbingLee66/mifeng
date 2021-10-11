@@ -9,6 +9,7 @@ const getters = {
   chamberName: state => state.user.chambername,
   systemLogo: state => state.user.systemlogo,
   remark: state => state.user.remark,
+  profile: state => state.user.profile,
   has: state => { // getters只有一个参数state
     // 要额外接收参数，通过返回函数来接收
     return function(actionInfo) {

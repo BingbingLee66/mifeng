@@ -1,4 +1,4 @@
-import { createSpree, querySpreeDetail } from '@/api/mall/spree'
+import { createSpree, queryCouponInfo } from '@/api/mall/spree'
 import { spaceInput, intInput } from '@/utils/utils'
 import draggable from 'vuedraggable'
 
@@ -74,15 +74,14 @@ export default {
       let val = e.target.value
       if (val) {
         // 失焦查询优惠劵名称
-        querySpreeDetail({ id: val }).then(res => {
+        queryCouponInfo(val).then(res => {
           if (res.state === 1) {
-            this.couponList[index].name = res.data.goodsDetail.name
+            this.couponList[index].name = res.msg
             this.couponList[index].errTip = ''
           } else {
             this.couponList[index].errTip = '该优惠券不存在'
             this.couponList[index].name = ''
           }
-
         })
       } else {
         this.couponList[index].errTip = '该优惠券不存在'

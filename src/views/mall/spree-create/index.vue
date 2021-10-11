@@ -17,8 +17,8 @@
                     <el-input style="width: 200px;" size="mini" v-model="item.id" placeholder="优惠券ID" maxlength="12" @input="e => handleInt(e,index)" @blur="e => handleBlur(e,index)"></el-input>
                     <span class="blue-label" v-if="couponList.length>1" @click="delCoupon(index)">删除</span>
                     <span style="color: #e6a23c;cursor: pointer;" v-if="couponList.length>1">移动</span>
-                    <div style="line-height: 1.2;color: #333333;font-size: 14px;">{{ item.name }}</div>
-                    <div style="line-height: 1.2;color: #FF0000;font-size: 14px;">{{ item.errTip }}</div>
+                    <div style="line-height: 1.2;color: #F56C6C;font-size: 12px;">{{ item.name }}</div>
+                    <div style="line-height: 1.2;color: #F56C6C;font-size: 12px;">{{ item.errTip }}</div>
                   </div>
                 </transition-group>
               </draggable>

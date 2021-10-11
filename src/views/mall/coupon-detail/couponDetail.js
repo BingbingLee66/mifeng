@@ -19,6 +19,7 @@ export default {
   methods: {
     fetchData() {
       queryCouponDetailById(this.couponId).then(res => {
+        console.log('优惠券详情：', res)
         this.couponObj = res.data
       })
     },

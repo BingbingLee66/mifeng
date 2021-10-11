@@ -1,4 +1,4 @@
-import { getExplodeGoodsList, queryCouponIssued } from '@/api/mall/coupon'
+import { queryCouponIssued } from '@/api/mall/coupon'
 import { getChamberOptions } from '@/api/finance/finance'
 
 export default {
@@ -22,10 +22,10 @@ export default {
     }
   },
   created() {
-    // this.couponId = this.$route.params.couponId
-    // this.couponName = this.$route.params.couponName
+    this.couponId = this.$route.query.couponId
+    this.couponName = this.$route.query.couponName
     this.getChamberOptions()
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     has(tabName, actionName) {
@@ -40,20 +40,21 @@ export default {
       })
     },
     // 查询优惠券列表
-    fetchData() {
+    fetchData(e) {
       if (e !== undefined) {
         this.currentpage = 1
       }
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
-        'page': this.currentpage,
+        'pageNum': this.currentpage,
         'id': this.query.id,
         'type': this.query.type,
         'phone': this.query.phone,
         'ckey': this.query.ckey
       }
       queryCouponIssued(params).then(res => {
+        console.log('已发放列表：', res)
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
@@ -78,14 +79,11 @@ export default {
         params: { memberDetail, querytype: 0 }
       })
     },
-    // 查看已发放优惠券列表
+    // 查看优惠券详情
     goCouponDetail() {
-      // /member/detail/
       this.$router.push({
-        name: '查看优惠券',
-        params: {
-          couponId: this.couponId
-        }
+        path: '/mall/couponDetail',
+        query: { couponId: this.couponId }
       })
     },
     // 查看订单管理列表

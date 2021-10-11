@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const baseUrl = process.env.VUE_APP_BASE_API_2
+const baseUrl = process.env.VUE_APP_BASE_API_3
 
 // 创建大礼包
 export function createSpree(params) {
@@ -30,11 +30,10 @@ export function updateSpreeIssue(params) {
 }
 
 // 查询大礼包详情
-export function querySpreeDetail(params) {
+export function queryCouponInfo(params) {
   return request({
-    url: baseUrl + '/ec/mall/get-goods',
-    method: 'get',
-    params
+    url: baseUrl + '/coupon/valid/' + params,
+    method: 'get'
   })
 }
 

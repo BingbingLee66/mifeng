@@ -30,7 +30,7 @@
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column label="券模板ID" width="100px">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goCouponDetail(scope.row.id)">{{ scope.row.id }}templateId</div>
+            <div class="blue-label" @click="goCouponDetail(scope.row.templateId)">{{ scope.row.templateId }}</div>
           </template>
         </el-table-column>
         <el-table-column label="优惠券名称" width="200px">
@@ -49,7 +49,7 @@
         <el-table-column label="发行量" width="100px">
           <template slot-scope="scope">
             <div v-if="scope.row.quota===-1">无张数限制</div>
-            <div v-else class="blue-label" @click="showIssue(scope.row.quota)">{{ scope.row.quota }}</div>
+            <div v-else class="blue-label" @click="showIssue(scope.row)">{{ scope.row.quota }}</div>
           </template>
         </el-table-column>
         <el-table-column label="获取规则" width="150px">
@@ -79,8 +79,8 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
-            <el-button type="text" @click="updateIssueType(scope.row,1)">停发</el-button>
-            <el-button type="text" @click="updateIssueType(scope.row,2)">继续发</el-button>
+            <el-button v-if="scope.row.status===1" type="text" @click="updateIssueType(scope.row,0)">停发</el-button>
+            <el-button v-if="scope.row.status===0" type="text" @click="updateIssueType(scope.row,1)">继续发</el-button>
           </template>
         </el-table-column>
       </el-table>

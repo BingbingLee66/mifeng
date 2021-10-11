@@ -1,4 +1,4 @@
-import { getCouponList, updateIssue, updateIssueStatus, getExplodeGoodsList } from '@/api/mall/coupon'
+import { getCouponList, updateIssue, updateIssueStatus } from '@/api/mall/coupon'
 import { intInput, spaceInput } from '@/utils/utils'
 
 export default {
@@ -52,14 +52,13 @@ export default {
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
-        'page': this.currentpage,
+        'pageNum': this.currentpage,
         'id': this.query.id,
         'type': this.query.type,
         'name': this.query.name,
         'user': this.query.user
       }
-      // getCouponList
-      getExplodeGoodsList(params).then(res => {
+      getCouponList(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
@@ -88,12 +87,13 @@ export default {
       }
       updateIssue(params).then(res => {
         this.fetchData()
-        this.listLoading = false
+        this.$message.success(res.msg)
+        this.issueVisible = false
       })
     },
     // 继续/停止发送
     updateIssueType(e, type) {
-      let msg = type === 1 ? '确认停发吗？' : '确认继续发吗？'
+      let msg = type === 0 ? '确认停发吗？' : '确认继续发吗？'
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -103,9 +103,7 @@ export default {
           status: type
         }
         updateIssueStatus(params).then(res => {
-          console.log(res)
-          this.listLoading = false
-          this.fetchData(1)
+          this.fetchData()
           this.$message.success('操作成功')
         })
       }).catch(() => {
@@ -133,13 +131,12 @@ export default {
     // 查看已发放列表
     goIssueList(row) {
       this.$router.push({
-        name: '已发放优惠券',
-        params: {
+        path: '/mall/couponIssued',
+        query: {
           couponId: row.templateId,
           couponName: row.name
         }
       })
-      // this.$router.push(`/mall/couponIssued`)
     }
   }
 }

@@ -9,12 +9,12 @@
         </div>
         <div class="coupon-detail-item">
           <div class="coupon-detail-lable">适用条件：</div>
-          <div class="coupon-detail-content" v-if="couponObj.source===1">
-            <div>全场券 任何商品都可以使用</div>
+          <div class="coupon-detail-content" v-if="couponObj.scope===1">
+            <div>全场券 <span style="color: #7f7f7f;">任何商品都可以使用</span></div>
           </div>
-          <div class="coupon-detail-content" v-if="couponObj.source===2">
-            <div>商品劵 只有指定商品，才可以使用</div>
-            <div>已选50款 <span class="blue-label" @click="showCoupon">点击查看</span></div>
+          <div class="coupon-detail-content" v-if="couponObj.scope===2">
+            <div>商品劵 <span style="color: #7f7f7f;">只有指定商品，才可以使用</span></div>
+            <div class="mt-10">已选50款 <span class="blue-label" @click="showCoupon">点击查看</span></div>
           </div>
         </div>
         <div class="coupon-detail-item">
@@ -31,7 +31,7 @@
         </div>
         <div class="coupon-detail-item">
           <div class="coupon-detail-lable">面值金额：</div>
-          <div class="coupon-detail-content">{{couponObj.price}}</div>
+          <div class="coupon-detail-content">{{couponObj.price}}元</div>
         </div>
         <div class="coupon-detail-item">
           <div class="coupon-detail-lable">满减限额：</div>
@@ -147,7 +147,7 @@
 
   .coupon-detail-item {
     display: flex;
-    align-items: center;
+    //align-items: center;
     margin: 30px 0;
     color: #333333;
     font-size: 14px;

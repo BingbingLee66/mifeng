@@ -153,8 +153,10 @@ export default {
     // 添加
     handleSelectionChange(value) {
       // 清除两个数组中相同的元素
-      let tempList = [...this.selectionDatas, ...value]
-      this.selectionDatas = this.filterArrById(tempList)
+      // let tempList = [...this.selectionDatas, ...value]
+      // this.selectionDatas = this.filterArrById(tempList)
+      // console.log(this.selectionDatas)
+      this.selectionDatas = value
     },
     add() {
       if (this.selectionDatas.length === 0) {

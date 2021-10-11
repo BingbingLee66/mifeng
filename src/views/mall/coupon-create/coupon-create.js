@@ -2,6 +2,7 @@ import { createCoupon } from '@/api/mall/coupon'
 import { spaceInput, intInput } from '@/utils/utils'
 import addDialog from './add-dialog.vue'
 import removeDialog from './remove-dialog.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -11,6 +12,8 @@ export default {
   data() {
     return {
       formObj: {
+        createId: 1,
+        createName: '123',
         type: '1', // 优惠券类型
         scope: '', // 适用条件
         used: '', // 是否放进大礼包
@@ -59,6 +62,15 @@ export default {
       selectedItem: []
     }
   },
+  computed: {
+    ...mapGetters(['profile'])
+  },
+  created() {
+    window.addEventListener('beforeunload', e => this.removeItem(e))
+  },
+  destroyed() {
+    window.removeEventListener('beforeunload', e => this.removeItem(e))
+  },
   methods: {
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
@@ -80,6 +92,9 @@ export default {
           break
         }
       }
+    },
+    removeItem() {
+      window.localStorage.setItem('selected-item', [])
     },
     localChange(obj) {
       this.selectedItemLength = obj.data.length
@@ -250,9 +265,13 @@ export default {
           if (this.formObj.validType === '2') {
             params['validDays'] = this.dayValue
           }
-          console.log('提交参数:', params)
+          params['createId'] = this.profile.id
+          params['createName'] = this.profile.userName
           createCoupon(params).then(res => {
-            console.log(res)
+            if (res.state === 1) {
+              this.$message.success(res.msg)
+              this.$router.push({ name: '优惠券列表' })
+            }
           })
         } else {
           return false
