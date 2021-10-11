@@ -79,7 +79,7 @@
           推广渠道：{{ detailObj.channelName || '--' }}
         </el-col>
         <el-col :span="8">
-          用户属性：{{ detailObj.channelName || '--' }}
+          用户属性：{{ detailObj.isFirst | filterIsFirst }}
         </el-col>
       </el-row>
       <el-row>

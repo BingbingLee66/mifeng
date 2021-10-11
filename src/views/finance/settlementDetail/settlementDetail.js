@@ -202,8 +202,6 @@ export default {
 
     // 导出表格
     exportExcel() {
-      if (!this.selectTime || this.selectTime.length === 0)
-        return this.$message.error("请选择交易时间");
       let params = {
         ...this.query,
       };

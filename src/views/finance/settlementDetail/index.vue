@@ -66,7 +66,7 @@
       </div>
       <div class="msg-block center">
         <p>商品名称：{{ settlementMsg.goodsName }}</p>
-        <p>规格：{{ settlementMsg.skuName }}</p>
+        <p>规格：{{ settlementMsg.skuName | '--'}}</p>
         <p>应打款金额：{{ settlementMsg.payable }}</p>
         <p>
           供货商：{{ settlementMsg.supplierName }}&ensp;&ensp;{{
