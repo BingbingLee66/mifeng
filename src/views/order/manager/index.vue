@@ -42,7 +42,7 @@
           </el-col>
           <el-col :span="4" style="margin-right:10px;">
             <el-form-item label-width="110px" label="订单状态">
-              <el-select v-model="query.status" placeholder="请选择状态">
+              <el-select v-model="query.status" placeholder="请选择状态" @change="statusSelectChange">
                 <el-option label="所有" :value="-1"></el-option>
                 <el-option label="待发货" :value="2"></el-option>
                 <el-option label="已发货" :value="5"></el-option>

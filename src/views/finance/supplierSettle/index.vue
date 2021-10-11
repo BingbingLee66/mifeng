@@ -200,6 +200,7 @@
     <!-- --------------------------计算规则弹窗-------------------------- -->
     <finance-rules
       :calculationRulesDia="calculationRulesDia"
+      position="list"
       @closeDia="closeDia"
     ></finance-rules>
 

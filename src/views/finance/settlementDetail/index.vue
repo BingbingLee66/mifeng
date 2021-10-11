@@ -164,6 +164,7 @@
     <!-- --------------------------计算规则弹窗-------------------------- -->
     <finance-rules
       :calculationRulesDia="calculationRulesDia"
+      position="detail"
       @closeDia="closeDia"
     ></finance-rules>
 

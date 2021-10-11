@@ -102,11 +102,13 @@ export default {
         'consigneeMobile': this.query.consigneeMobile,
         'pageSize': this.limit,
         'page': this.currentpage,
-        'settled':this.query.settled,
-        'settlementStatus': this.query.settlementStatus,
         'channelId': this.query.channelId
       }
-      if(params.settlementStatus == -1) delete params.settlementStatus
+      if(params.status == 5 || params.status == 6){
+        params.settled = this.query.settled
+        params.settlementStatus = this.query.settlementStatus
+        if(params.settlementStatus == -1) delete params.settlementStatus
+      }
       if (this.query.date) {
         params['startTime'] = this.query.date[0]
         params['endTime'] = this.query.date[1]
@@ -117,20 +119,28 @@ export default {
         this.listLoading = false
       })
     },
+    // 订单状态改变
+    statusSelectChange(val){
+      if(val === 5 || val === 6){
+        this.query.settled = 0
+        this.query.settlementStatus = -1
+      }
+    },
     reset() {
       this.query = {
         orderSn: '',
         ckey: '',
         wechatOrderNum: '',
+        supplierName: '',
         goodName: '',
         status: -1,
         consignee: '',
         consigneeMobile: '',
-        date: ''
+        date: '',
+        channelId: null,
       }
     },
     handleSelectionChange(value) {
-      console.log('-----\\\\', value)
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
