@@ -98,31 +98,31 @@ export default {
         }]
       },
       weekOptions: [{
-          value: 1,
+          value: 2,
           label: '每周一'
         },
         {
-          value: 2,
+          value: 3,
           label: '每周二'
         },
         {
-          value: 3,
+          value: 4,
           label: '每周三'
         },
         {
-          value: 4,
+          value: 5,
           label: '每周四'
         },
         {
-          value: 5,
+          value: 6,
           label: '每周五'
         },
         {
-          value: 6,
+          value: 7,
           label: '每周六'
         },
         {
-          value: 7,
+          value: 1,
           label: '每周日'
         },
       ],
