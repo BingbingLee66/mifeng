@@ -178,7 +178,7 @@
             type="primary"
             size="small"
             v-if="!ckey && scope.row.status == 1"
-            @click="changeStatus(scope.row.id, 2)"
+            @click="signPay(scope.row.id, 2)"
             >标记为已付款</el-button
           >
         </template>

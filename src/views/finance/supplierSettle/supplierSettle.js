@@ -137,6 +137,21 @@ export default {
         this.btnLoading = false
       })
     },
+    // 点击标记为已付款
+    signPay(id,status){
+      this.$confirm(
+        '标记已付款',
+        {
+          title:'标记已付款',
+          message: this.$createElement('div', null, [this.$createElement('p', null, '是否确定已付款给该供货商？'),this.$createElement('p', null, '该操作执行后无法撤销，请谨慎处理。')]),
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        this.changeStatus(id,status)
+      })
+    },
     // 标记为已付款/申请财务付款
     async changeStatus(id, status) {
       let res = await changeSettlementStatus({
@@ -145,6 +160,7 @@ export default {
       })
       try {
         if (res.state !== 1) return this.$message.error(res.msg)
+        this.$message.success('处理成功')
         this.paymentDia = false
         this.fetchData()
       } catch (e) {
