@@ -117,17 +117,17 @@
       <el-table-column label="结算单生成时间/结算周期" width="220">
         <template slot-scope="scope">
           <div class="flex-box">
-            <div>{{ scope.row.createdTs ? scope.row.createdTs : "--" }}</div>
+            <div>{{ scope.row.createdTs | dateFormat }}</div>
             <div>{{ scope.row.settlementPeriodStr }}</div>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="应付款金额（元）">
+      <el-table-column label="应付款金额（元）" width="140">
         <template slot-scope="scope">
           {{ scope.row.payable }}
         </template>
       </el-table-column>
-      <el-table-column label="买家实付金额（元）">
+      <el-table-column label="买家实付金额（元）" width="150">
         <template slot-scope="scope">
           {{ scope.row.payment }}
         </template>

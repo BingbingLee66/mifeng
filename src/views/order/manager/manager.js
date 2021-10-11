@@ -19,7 +19,8 @@ export default {
         date: '',
         settled: 0,
         settlementStatus: -1,
-        channelId: null,
+        channelId: null, // 推广渠道
+        isFirst: -1, // 用户属性
       },
       chamberOptions: [],
       pageSizes: [10, 20, 50, 100, 500],
@@ -102,8 +103,10 @@ export default {
         'consigneeMobile': this.query.consigneeMobile,
         'pageSize': this.limit,
         'page': this.currentpage,
-        'channelId': this.query.channelId
+        'channelId': this.query.channelId,
+        'isFirst': this.query.isFirst
       }
+      if(params.isFirst == -1) delete params.isFirst
       if(params.status == 5 || params.status == 6){
         params.settled = this.query.settled
         params.settlementStatus = this.query.settlementStatus
@@ -158,6 +161,12 @@ export default {
         } else if (data.status == 0) {
           statusStr = '取消订单'
         }
+        let isFirstStr = ''
+        if(data.isFirst == 1){
+          isFirstStr = "首单用户"
+        }else if(data.isFirst == 0){
+          isFirstStr = "复购用户"
+        }
         let new_data = {
           '订单号': data.orderSn,
           '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
@@ -170,7 +179,8 @@ export default {
           '单价(元)': data.price,
           '下单数': data.count,
           '实付金额(元)': data.realPrice,
-          '推广渠道': data.channelName,
+          '推广渠道': data.channelName || '--',
+          '用户属性': isFirstStr,
           '收件人': data.consignee,
           '收件人手机号': data.mobile,
           '收货地址': data.consigneeAddress
@@ -196,7 +206,10 @@ export default {
         'consigneeMobile': this.query.consigneeMobile,
         'startTime': this.query.date[0],
         'endTime': this.query.date[1],
+        'channelId': this.query.channelId,
+        'isFirst': this.query.isFirst
       }
+      if(params.isFirst == -1) delete params.isFirst
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       getAllList(params).then(res => {
         if (res.data.data.list.length === 0) {
