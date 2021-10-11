@@ -136,6 +136,7 @@ export default {
         this.listLoading = false;
         if (res.state !== 1) return this.$message.error(res.msg);
         this.list = res.data.list;
+        this.total = res.data.totalRows
       } catch (e) {
         this.listLoading = false;
         console.log(e);
@@ -153,6 +154,7 @@ export default {
         this.listLoading = false;
         if (res.state !== 1) return this.$message.error(res.msg);
         this.orderList = res.data.list;
+        this.orderTotal = res.data.totalRows
       } catch (e) {
         this.listLoading = false;
         console.log(e);
@@ -207,7 +209,6 @@ export default {
       };
       let paramString = `?startTime=${params.startTime}&endTime=${params.endTime}&wechatOrderNum=${params.wechatOrderNum}&orderSn=${params.orderSn}&id=${this.settlementId}`;
       if (this.ckey) paramString += `&ckey=${this.ckey}`;
-      console.log('paramString', paramString);
       let a = document.createElement("a");
       a.download = "";
       a.href =

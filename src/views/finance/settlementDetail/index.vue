@@ -66,7 +66,7 @@
       </div>
       <div class="msg-block center">
         <p>商品名称：{{ settlementMsg.goodsName }}</p>
-        <p>规格：{{ settlementMsg.skuName | '--'}}</p>
+        <p>规格：{{ settlementMsg.skuName || '--'}}</p>
         <p>应打款金额：{{ settlementMsg.payable }}</p>
         <p>
           供货商：{{ settlementMsg.supplierName }}&ensp;&ensp;{{
@@ -117,9 +117,9 @@
       <el-table-column label="服务费" width="280">
         <template slot-scope="scope">
           <div class="layout-box">
-            <div>【商品服务费率】{{ scope.row.serviceFeeRatio }}</div>
+            <div>【商品服务费率】{{ scope.row.serviceFeeRatio }} %</div>
             <div>【商品服务费】{{ scope.row.serviceFee }}</div>
-            <div>【微信手续费率】{{ scope.row.wxServiceFeeRatio }}</div>
+            <div>【微信手续费率】{{ scope.row.wxServiceFeeRatio }} %</div>
             <div>【微信手续费】{{ scope.row.wxServiceFee }}</div>
           </div></template
         >

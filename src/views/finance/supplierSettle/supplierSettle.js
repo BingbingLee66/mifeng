@@ -139,18 +139,15 @@ export default {
     },
     // 标记为已付款/申请财务付款
     async changeStatus(id, status) {
-      this.listLoading = true
       let res = await changeSettlementStatus({
         id,
         status
       })
       try {
-        this.listLoading = false
         if (res.state !== 1) return this.$message.error(res.msg)
-        this.paymentDia = true
+        this.paymentDia = false
         this.fetchData()
       } catch (e) {
-        this.listLoading = false
         console.log(e)
       }
     },
@@ -180,9 +177,18 @@ export default {
       let params = {
         ...this.query
       }
-      let paramString = `?startTime=${params.startTime}&endTime=${params.endTime}&goodName=${params.goodName}&supplierName=${params.supplierName}&supplierPhone=${params.supplierPhone}`
+      let paramString = `?startTime=${params.startTime}&endTime=${params.endTime}`
       if (params.status != -1) {
         paramString += `&status=${params.status}`
+      }
+      if(params.goodName){
+        paramString += `&goodName=${params.goodName}`
+      }
+      if(params.supplierName){
+        paramString += `&supplierName=${params.supplierName}`
+      }
+      if(params.supplierPhone){
+        paramString += `&supplierPhone=${params.supplierPhone}`
       }
       if (this.ckey) paramString += `&ckey=${this.ckey}`
       let a = document.createElement('a')
