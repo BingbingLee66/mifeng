@@ -82,34 +82,39 @@
     </div>
     <div class="block o-table-box">
       <el-row class="o-table-th">
-        <el-col :span="3" class="o-table-content">商品ID</el-col>
-        <el-col :span="6" class="o-table-content">商品名称</el-col>
+        <el-col :span="4" class="o-table-content">商品ID/商品名称</el-col>
         <el-col :span="3" class="o-table-content">规格</el-col>
         <el-col :span="3" class="o-table-content">商品单价（元）</el-col>
         <el-col :span="3" class="o-table-content">商品数量（件）</el-col>
         <el-col :span="3" class="o-table-content">商品总价（元）</el-col>
-        <el-col :span="3" class="o-table-content">实收金额（元）</el-col>
+        <el-col :span="3" class="o-table-content">立减优惠（元）</el-col>
+        <el-col :span="3" class="o-table-content">优惠券优惠（元）</el-col>
+        <el-col :span="2" class="o-table-content">实收金额（元）</el-col>
       </el-row>
       <el-row class="o-table-td">
-        <el-col :span="3" class="o-table-content o-table-input">
-          {{ detailObj.idGoods }}
+        <el-col :span="4" class="o-table-content o-table-input">
+          <div class="red-label"> {{ detailObj.idGoods }} </div>
+          <div> {{ detailObj.name }} </div>
         </el-col>
-        <el-col :span="6" class="o-table-content o-table-input">
-          {{ detailObj.name }}
-        </el-col>
-        <el-col :span="3" class="o-table-content o-table-input">
+        <el-col :span="3" class="o-table-content o-table-input o-table-style">
           {{ !detailObj.codeName ? '无' : detailObj.codeName }}
         </el-col>
-        <el-col :span="3" class="o-table-content o-table-input">
+        <el-col :span="3" class="o-table-content o-table-input o-table-style">
           ¥{{ detailObj.price }}
         </el-col>
-        <el-col :span="3" class="o-table-content o-table-input">
+        <el-col :span="3" class="o-table-content o-table-input o-table-style">
           {{ detailObj.count }}
         </el-col>
-        <el-col :span="3" class="o-table-content o-table-input">
+        <el-col :span="3" class="o-table-content o-table-input o-table-style">
           ¥{{ detailObj.totalPrice }}
         </el-col>
-        <el-col :span="3" class="o-table-content o-table-input">
+        <el-col :span="3" class="o-table-content o-table-input o-table-style">
+          ¥{{ detailObj.totalDiscount }}
+        </el-col>
+        <el-col :span="3" class="o-table-content o-table-input o-table-style">
+          ¥{{ detailObj.couponPrice }}
+        </el-col>
+        <el-col :span="2" class="o-table-content o-table-input o-table-style">
           ¥{{ detailObj.realPrice }}
         </el-col>
       </el-row>
@@ -198,7 +203,10 @@
 }
 
 .o-table-input {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.o-table-style {
+  line-height: 2;
 }
 </style>

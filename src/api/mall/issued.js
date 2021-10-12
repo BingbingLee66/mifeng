@@ -12,7 +12,7 @@ export function getExplodeGoodsList(params) {
 
 export function getIssuedCouponList(params) {
   return request({
-    url: baseUrl + '/api/issueCoupon/issuedCouponList/',
+    url: baseUrl + '/api/issueCoupon/issuedCouponList',
     method: 'get',
     params
   })

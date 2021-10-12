@@ -146,6 +146,8 @@ export default {
           '商品规格': !data.codeName ? '无' : data.codeName,
           '单价(元)': data.price,
           '下单数': data.count,
+          '立减优惠(元)': data.totalDiscount,
+          '优惠券优惠(元)': data.couponPrice,
           '实付金额(元)': data.realPrice,
           '收件人': data.consignee,
           '收件人手机号': data.mobile,

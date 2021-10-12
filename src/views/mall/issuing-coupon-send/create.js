@@ -157,7 +157,7 @@ export default {
         couponList: _couponList,
         chamberId: this.chamberId,
         issueType: this.issueType,
-        phoneList: _phoneList
+        phone: _phoneList
       }
       console.log('提交参数：', params)
       createSend(params).then(res => {

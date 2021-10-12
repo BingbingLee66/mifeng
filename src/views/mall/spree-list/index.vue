@@ -11,7 +11,7 @@
         <el-form-item label="创建人">
           <el-input v-model="query.createName" placeholder="关键词" @input="e => handleSpace(e,'createName')"/>
         </el-form-item>
-        <el-form-item label="">
+        <el-form-item label="" style="margin-left: -30px;">
           <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
           </el-button>
         </el-form-item>

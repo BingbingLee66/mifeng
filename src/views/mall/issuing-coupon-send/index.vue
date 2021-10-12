@@ -11,14 +11,14 @@
                   <div class="add-coupon" v-for="(item, index) in couponList" :key="index">
                     <div class="add-item">
                       <el-input style="width: 200px;" size="mini" v-model="item.couponId" maxlength="12" placeholder="优惠券ID" @input="e => handleInt(e,index,'couponId')" @blur="e => handleBlur(e,index,'couponId')"></el-input>
-                      <div class="tips" style="color: #333333;font-size: 13px;">{{item.name}}</div>
-                      <div class="tips" style="color: #F56C6C;font-size: 13px;">{{item.errTips}}</div>
+                      <div class="tips" style="color: #333333;font-size: 13px;">{{ item.name }}</div>
+                      <div class="tips" style="color: #F56C6C;font-size: 13px;">{{ item.errTips }}</div>
                     </div>
                     <div class="add-item">
                       <el-input style="width: 120px;margin-right: 10px;" size="mini" maxlength="2" v-model="item.couponNum" placeholder="数量（1-10）" @input="e => handleInt(e,index,'couponNum')" @blur="e => handleBlur(e,index,'couponNum')"></el-input>
                       <span class="blue-label" v-if="couponList.length>1" @click="delCoupon(index)">删除</span>
-                      <span class="blue-label" v-if="couponList.length>1">移动</span>
-                      <div class="tips" style="color: #ff3333;">{{ item.tip }}</div>
+                      <span class="blue-label" style="color:#e6a23c; " v-if="couponList.length>1">移动</span>
+                      <div class="tips" style="color: #F56C6C;font-size: 13px;">{{ item.tip }}</div>
                     </div>
                   </div>
                 </transition-group>
@@ -46,7 +46,7 @@
                   <el-radio label="2">发给指定商/协会成员</el-radio>
                   <div v-if="issueType==='2'" style="margin-top:10px;">
                     <el-select style="width:200px;" v-model="chamberId" placeholder="请选择商/协会成员" clearable>
-                      <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id" />
+                      <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id"/>
                     </el-select>
                   </div>
                 </div>
