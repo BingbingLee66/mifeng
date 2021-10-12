@@ -17,20 +17,32 @@
               </el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="5" class="number-input">
             <el-form-item label-width="90px" label="订单编号：">
-              <el-input v-model="query.orderSn" placeholder="请输入订单编号" />
+              <el-input
+                v-model.trim="query.orderSn"
+                oninput="if(value.length>50)value=value.slice(0,50)"
+                type="number"
+                clearable
+                data-id="orderSn"
+                @mousewheel.native.prevent
+                placeholder="请输入订单编号"
+              />
             </el-form-item>
           </el-col>
-          <el-col :span="5">
+          <el-col :span="5" class="number-input">
             <el-form-item
               label-width="100px"
               label="微信订单号："
               class="mar-left"
-              style="margin-left: 20px"
             >
               <el-input
-                v-model="query.wechatOrderNum"
+                v-model.trim="query.wechatOrderNum"
+                oninput="if(value.length>50)value=value.slice(0,50)"
+                type="number"
+                clearable
+                data-id="wechatOrderNum"
+                @mousewheel.native.prevent
                 placeholder="请输入微信订单号"
               />
             </el-form-item>
@@ -43,7 +55,10 @@
               @click="fetchData"
               >查询</el-button
             >
-            <el-button type="text" @click="handleAddOrder" v-if="ckey"
+            <el-button
+              type="text"
+              @click="handleAddOrder"
+              v-if="ckey && settlementMsg.status == 0"
               >添加订单</el-button
             >
             <el-button type="text" icon="el-icon-download" @click="exportExcel"
@@ -66,7 +81,7 @@
       </div>
       <div class="msg-block center">
         <p>商品名称：{{ settlementMsg.goodsName }}</p>
-        <p>规格：{{ settlementMsg.skuName || '--'}}</p>
+        <p>规格：{{ settlementMsg.skuName || "--" }}</p>
         <p>应打款金额：{{ settlementMsg.payable }}</p>
         <p>
           供货商：{{ settlementMsg.supplierName }}&ensp;&ensp;{{
@@ -141,7 +156,12 @@
           </div></template
         >
       </el-table-column>
-      <el-table-column label="操作" fixed="right" width="150" v-if="ckey">
+      <el-table-column
+        label="操作"
+        fixed="right"
+        width="150"
+        v-if="ckey && settlementMsg.status == 0"
+      >
         <template slot-scope="scope">
           <el-button type="text" @click="handleRemove($event, scope.row)"
             >移除订单</el-button
@@ -191,7 +211,7 @@
         </div>
         <div class="tip-box">
           <span class="tip">规格：</span
-          ><span>{{ settlementMsg.skuName }}</span>
+          ><span>{{ settlementMsg.skuName || "--"}}</span>
         </div>
         <div class="tip-box">
           <span class="tip">供货商：</span
@@ -205,15 +225,20 @@
       <div class="block">
         <el-form ref="orderQuery" label-position="left" :model="orderQuery">
           <el-row>
-            <el-col :span="6">
+            <el-col :span="6" class="number-input">
               <el-form-item label-width="90px" label="订单编号：">
                 <el-input
                   v-model="orderQuery.orderSn"
+                  oninput="if(value.length>50)value=value.slice(0,50)"
+                  type="number"
+                  clearable
+                  data-id="addOrderSn"
+                  @mousewheel.native.prevent
                   placeholder="请输入订单编号"
                 />
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="6" class="number-input">
               <el-form-item
                 label-width="100px"
                 label="微信订单号："
@@ -221,6 +246,11 @@
               >
                 <el-input
                   v-model="orderQuery.wechatOrderNum"
+                  oninput="if(value.length>50)value=value.slice(0,50)"
+                  type="number"
+                  clearable
+                  data-id="addWechatOrderNum"
+                  @mousewheel.native.prevent
                   placeholder="请输入微信订单号"
                 />
               </el-form-item>
@@ -336,5 +366,23 @@
   width: 100%;
   text-align: center;
   margin: 15px 0;
+}
+</style>
+
+
+<style lang="scss">
+.number-input {
+  .el-input__inner {
+    line-height: 1;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
 }
 </style>

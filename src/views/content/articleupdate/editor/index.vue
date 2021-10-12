@@ -23,8 +23,8 @@
       <el-row>
         <el-col :span="18">
           <el-form-item label="文章内容：" class="ue-wrap">
-            <!-- <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor> -->
-            <UEditor ref="ueditor" />
+            <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor>
+            <!-- <UEditor ref="ueditor" /> -->
           </el-form-item>
         </el-col>
         <el-col :span="4">

@@ -58,11 +58,11 @@ export default {
       this.articleId = this.$route.params.articleId
       this.init()
     } else {
-      this.$refs.ueditor.setContent(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      // this.$refs.ckeditor1.init()
-      // setTimeout(() => {
-      //   this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      // }, 500)
+      // this.$refs.ueditor.setContent(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      this.$refs.ckeditor1.init()
+      setTimeout(() => {
+        this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      }, 500)
     }
   },
   computed: {},
@@ -160,11 +160,11 @@ export default {
             'status': dataObj.status,
             'istop': dataObj.istop
           }
-          this.$refs.ueditor.setContent(htmlObj === null ? '' : htmlObj)
-          // this.$refs.ckeditor1.init()
-          // setTimeout(() => {
-          //   this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
-          // }, 500)
+          // this.$refs.ueditor.setContent(htmlObj === null ? '' : htmlObj)
+          this.$refs.ckeditor1.init()
+          setTimeout(() => {
+            this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
+          }, 500)
         }).catch(error => {
           reject(error)
         })

@@ -113,6 +113,23 @@ export default {
         });
       });
     },
+    // replaceToNum(e) {
+    //   if (e.target.dataset.id == "wechatOrderNum") {
+    //     this.replaceStr(this.query.wechatOrderNum)
+    //   } else if (e.target.dataset.id == "orderSn") {
+    //     this.replaceStr(this.query.orderSn)
+    //   } else if (e.target.dataset.id == "addOrderSn") {
+    //     this.replaceStr(this.orderQuery.orderSn)
+    //   } else if (e.target.dataset.id == "addWechatOrderNum") {
+    //     this.replaceStr(this.orderQuery.wechatOrderNum)
+    //   }
+    // },
+    // replaceStr(val) {
+    //   if (!/^[0-9]*$/g.test(val)) {
+    //     val = val.replace(/[\+\.\D]/g, '')
+    //     console.log(val);
+    //   }
+    // },
     fetchData() {
       this.getDetailMsg();
       this.getDetailList();
