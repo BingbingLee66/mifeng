@@ -94,12 +94,12 @@
         <el-col :span="10">{{detailObj.president}}</el-col>
       </el-row>
       <el-row>
-        <el-col :offset="2" :span="8">办公地址</el-col>
-        <el-col :span="10">{{detailObj.address}}</el-col>
-      </el-row>
-      <el-row>
         <el-col :offset="2" :span="8">联系人手机号</el-col>
         <el-col :span="10">{{detailObj.phone}}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :offset="2" :span="8">办公地址</el-col>
+        <el-col :span="10">{{detailObj.address}}</el-col>
       </el-row>
       <el-row>
         <el-col :offset="2" :span="8">社会团体法人登记证</el-col>
@@ -187,12 +187,11 @@
     <el-dialog title="驳回" :visible.sync="rejectDia" width="30%" center>
       <div class="block">
         <el-row>
-          <el-col :offset="2" :span="7">商/协会名称</el-col>
-          <el-col :span="10">{{ detailObj.name }}</el-col>
+          <el-col :offset="2" :span="7">商/协会名称：{{ detailObj.name }}</el-col>
         </el-row>
       </div>
       <div class="block">
-        <el-input type="textarea" class="reject-dia-reason" v-model="rejectRemark" show-word-limit placeholder="请填写驳回理由，1-30个字" resize="none" minlength="1" maxlength="30"></el-input>
+        <el-input type="textarea" class="reject-dia-reason" v-model="rejectRemark" show-word-limit placeholder="请填写驳回原因，1-30个字" resize="none" minlength="1" maxlength="30"></el-input>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="audit($event, detailObj, 2)" :actionid="getId('', '驳回')" v-if="has('', '驳回')">确定</el-button>

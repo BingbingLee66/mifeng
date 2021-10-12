@@ -1,11 +1,12 @@
 import { exportJson2Excel } from '@/utils/exportExcel'
-import { getList, getChannelSummary, getChannelStatistical } from '@/api/mall/channel'
+import { getList, getChannelSummary, getChannelStatistical,getChamberOptions } from '@/api/mall/channel'
 import { getGoodsDetail } from '@/api/goods/goodsSku'
 
 export default {
   data() {
     return {
       channelList: [], // 关联渠道列表
+      chamberOptions:[], // 商会列表
       showMeaning: false,
       pfStatistics: {
         channelNums: 0,
@@ -20,7 +21,10 @@ export default {
         days: 7,
         date: '',
         id: -1,
-        goodsId: ''
+        goodsId: '',
+        relType: -1,
+        relTypeChild: -1,
+        relCkey: -1,
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -44,6 +48,7 @@ export default {
   created() {
     this.getChannelList()
     this.init()
+    this.getChamberOptions()
   },
   methods: {
     has(tabName, actionName) {
@@ -78,6 +83,13 @@ export default {
     rangeDatePicker(val) {
       console.log(val)
     },
+    // 获取商会options
+    async getChamberOptions() {
+      let {
+        data: res
+      } = await getChamberOptions()
+      this.chamberOptions = res.data
+    },
     // 获取渠道推广数据汇总结果数据
     getStatistics() {
       let params = {}
@@ -102,7 +114,16 @@ export default {
         'channelId': this.query.id,
         'goodsId': this.query.goodsId,
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        'relType': this.query.relType
+      }
+      if(params.relType == -2){
+        if(this.query.relTypeChild == 1){
+          params.relType = 1
+        }else if(this.query.relTypeChild == 2){
+          params.relType = 2
+          params.relCkey = this.query.relCkey
+        }
       }
       getChannelStatistical(params).then(res => {
         if (res.data.goodsId !== null) {

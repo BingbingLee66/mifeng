@@ -109,9 +109,12 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="供货商">
+      <el-table-column label="供货商" width="220">
         <template slot-scope="scope">
-          {{ scope.row.supplierName }}
+          <div class="layout-box">
+            <div>【联系人姓名】{{ scope.row.supplierName }}</div>
+            <div>【联系人手机号】{{ scope.row.supplierPhone || "--" }}</div>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="结算单生成时间/结算周期" width="220">
@@ -140,7 +143,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="优惠（元）" width="180">
+      <el-table-column label="优惠（元）" width="160">
         <template slot-scope="scope">
           <div class="flex-box">
             <div>【立减优惠】{{ scope.row.discount }}</div>
@@ -148,7 +151,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作时间" width="300">
+      <el-table-column label="操作时间" width="274">
         <template slot-scope="scope">
           <div class="flex-box">
             <div>
@@ -158,12 +161,12 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="120px">
+      <el-table-column label="状态" min-width="120">
         <template slot-scope="scope">
           {{ scope.row.status | filterStatus }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" fixed="right" width="220">
+      <el-table-column label="操作" fixed="right" min-width="220">
         <template slot-scope="scope">
           <el-button
             type="primary"

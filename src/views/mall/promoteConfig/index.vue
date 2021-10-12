@@ -22,21 +22,26 @@
             <div> {{ scope.row.channelName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="关联商品" width="200px">
+        <el-table-column label="关联内容" width="200px">
           <template slot-scope="scope">
-            <div class="red-label">{{ scope.row.goodsId }}</div>
-            <div> {{ scope.row.goodsName }}</div>
-            <el-button type="text" style="margin-left:0px;" @click="detail($event, scope.row)">查看商品详情</el-button>
+            <div v-if="scope.row.relType == 0">
+              <div class="red-label">{{ scope.row.goodsId }}</div>
+              <div> {{ scope.row.goodsName }}</div>
+              <el-button type="text" style="margin-left:0px;" @click="detail($event, scope.row)">查看商品详情</el-button>
+            </div>
+            <div v-if="scope.row.relType == 1">首页 - 爆品必拼</div>
+            <div v-if="scope.row.relType == 2">商会优选 - {{scope.row.relCkey | filterRelCkey(chamberOptions)}}</div>
           </template>
         </el-table-column>
         <el-table-column label="商品图片" width="115px">
           <template slot-scope="scope">
-            <img class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
+            <img v-if="scope.row.relType == 0" class="goods-preview" :src="scope.row.descript" @click="openPreviewModal(scope.row.descript)">
+            <div v-else>--</div>
           </template>
         </el-table-column>
-        <el-table-column label="来源商会" width="150px">
-          <template slot-scope="scope">
-            {{ scope.row.chamberName }}
+        <el-table-column label="来源商会" width="150px" >
+          <template slot-scope="scope" >
+            <div>{{ scope.row.relType == 0? scope.row.chamberName : '--' }}</div>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" width="100px">
@@ -135,23 +140,37 @@
     >
       <el-form :model="promoteForm" ref="promoteForm" label-width="100px" :rules="promoteRules">
         <el-form-item label="关联渠道：" prop="channelId">
-          <el-col :span="14">
+          <el-col :span="16">
             <el-select v-model="promoteForm.channelId" placeholder="请选择" clearable>
               <el-option v-for="item in channelList" :key="item.id" :label="item.channelName" :value="item.id"/>
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="关联商品：" prop="goodsId">
-          <el-col :span="14">
-            <el-input v-model="promoteForm.goodsId" placeholder="商品ID" @blur="handleInput"></el-input>
-            <div v-show="showGoodIdsDetail">
-              <div class="chamber-name">{{ goodsDetail.chamberName }}</div>
-              <div class="goods-name">{{ goodsDetail.name }}</div>
+        <el-form-item label="关联商品：" >
+          <el-col :span="16">
+            <div class="flex-radio">
+              <div class="required-point">*</div>
+              <el-radio v-model="promoteForm.relType" label="0">单个商品</el-radio>
+              <el-form-item prop="goodsId" class="single-input" v-if="promoteForm.relType == 0">
+                <el-input v-model="promoteForm.goodsId" placeholder="商品ID" @blur="handleInput"></el-input>
+                <div v-show="showGoodIdsDetail">
+                  <div class="chamber-name">{{ goodsDetail.chamberName }}</div>
+                  <div class="goods-name">{{ goodsDetail.name }}</div>
+                </div>
+             </el-form-item>
+              <el-radio v-model="promoteForm.relType" label="list">商品列表</el-radio>
+              <el-radio v-if="promoteForm.relType == 'list'" class="ml" v-model="promoteForm.relTypeChild" label="1">首页-爆品必拼</el-radio>
+              <el-radio v-if="promoteForm.relType == 'list'" class="ml" v-model="promoteForm.relTypeChild" label="2">商品优选</el-radio>
+              <el-form-item prop="relCkey" v-if="promoteForm.relType == 'list' && promoteForm.relTypeChild == 2" >
+                <el-select v-model="promoteForm.relCkey" placeholder="请选择商会">
+                 <el-option v-for="item in chamberOptions" :key="item.value" :label="item.label" :value="item.value"/>
+                </el-select>
+              </el-form-item>
             </div>
           </el-col>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" :disabled="!goodsDetail.name" @click="submitPromote('promoteForm')">提交</el-button>
+          <el-button type="primary" :disabled="submitDisable" @click="submitPromote('promoteForm')">提交</el-button>
           <el-button @click="promoteChannelDialog=false">取消</el-button>
         </el-form-item>
       </el-form>
@@ -225,7 +244,27 @@
     }
   }
 }
-
+.flex-radio {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 14px;
+  .el-radio {
+    margin-bottom: 20px;
+  }   
+  .single-input{
+   margin-bottom: 25px;
+  }
+  .ml{
+    margin-left: 24px;
+  }
+  .required-point{
+    position: absolute;
+    top: -14px;
+    left: -92px;
+    color: #F56C6C;
+  }
+}
 </style>
 <style lang="scss">
 .goods-preview {

@@ -56,8 +56,8 @@
         </div>
       </div>
     </div>
-    <div class="block" style="height: 60px;display: flex;align-items:center;position: relative;">
-      <div>
+    <div class="block query-box">
+      <div class="item">
         <span style="color: #bbb;margin-right: 20px;">时间</span>
         <el-radio-group style="margin-right: 12px;" v-model="query.days" size="mini" @change="initDatePicker">
           <el-radio-button :label="7">7天</el-radio-button>
@@ -78,10 +78,29 @@
           size="mini">
         </el-date-picker>
       </div>
-      <div class="query-wrap">
-        <el-select style="margin-right: 15px;" v-model="query.id" placeholder="请选择" clearable size="mini">
-          <el-option v-for="item in channelList" :key="item.id" :label="item.channelName" :value="item.id"/>
+      <div class="item" style="margin-right: 25px;">
+        <el-select v-model="query.id" placeholder="请选择" clearable size="mini">
+        <el-option v-for="item in channelList" :key="item.id" :label="item.channelName" :value="item.id"/>
+      </el-select>
+      </div>
+      <div class="item flex-box">
+        <el-select  v-model="query.relType" placeholder="请选择" :style="query.relType == -1?'margin-right:15px':''" size="mini">
+          <el-option label="全部" :value="-1"></el-option>
+          <el-option label="单个商品" :value="0"></el-option>
+          <el-option label="商品列表" :value="-2"></el-option>
         </el-select>
+        <el-select  v-model="query.relTypeChild" placeholder="请选择" v-if="query.relType == -2"  size="mini" :style="query.relTypeChild != 2?'margin-right:15px':''">
+          <el-option label="全部商品列表" :value="-1"></el-option>
+          <el-option label="首页-爆品必拼" :value="1"></el-option>
+          <el-option label="商会优选" :value="2"></el-option>
+        </el-select>
+        <el-select  v-model="query.relCkey" placeholder="请选择" v-if="query.relType == -2 && query.relTypeChild == 2" size="mini" style="margin-right:15px">
+          <el-option label="全部商会" :value="-1"></el-option>
+          <el-option v-for="item in chamberOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+          <!-- <el-option v-for="item in channelList" :key="item.id" :label="item.channelName" :value="item.id"/> -->
+        </el-select>
+      </div>
+      <div class="query-wrap item">
         <el-input
           style="margin-right: 15px;"
           size="mini"
@@ -89,10 +108,12 @@
           v-model="query.goodsId"
           type="number"
           @mousewheel.native.prevent
-          @keyup.native="prevent($event)"></el-input>
-        <el-button size="mini" type="primary" @click="fetchData($event)">查询</el-button>
+          @keyup.native="prevent($event)"
+          v-if="query.relType == 0"
+          ></el-input>
+        <el-button size="mini" type="primary"  @click="fetchData($event)">查询</el-button>
       </div>
-      <el-button type="primary" size="mini" style="position: absolute;right: 0" @click="exportExcel">导表</el-button>
+      <el-button type="primary" size="mini" style="position: absolute;right: 0;top:10px" @click="exportExcel">导表</el-button>
     </div>
     <div style="margin-bottom: 16px;color: #333333;" v-if="showGoodsDetail">
       <div v-if="goodsDetail.goodsId">
@@ -251,6 +272,20 @@
   width: 1px;
   height: 100%;
   border-left: 1px solid #ccc;
+}
+.query-box{
+  display: flex;
+  flex-wrap: wrap;
+  align-items:center;
+  position: relative;
+  width: 100%;
+  .item{
+    margin-bottom: 12px;
+  }
+  .flex-box{
+    display: flex;
+    align-items: center;
+  }
 }
 </style>
 

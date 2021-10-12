@@ -137,7 +137,9 @@ export default {
           }
         })
       } else if (type === 2) {
-        if(!this.rejectRemark) return this.$message.error('请填写驳回理由')
+        this.rejectRemark += ''
+        this.rejectRemark = this.rejectRemark.trim()
+        if(!this.rejectRemark) return this.$message.error('请输入1-30字的驳回理由')
         this.reject(row)
       }
     },

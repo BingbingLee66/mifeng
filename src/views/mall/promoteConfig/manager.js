@@ -4,10 +4,17 @@ import {
   delChannelPromote,
   addChannelPromote,
   getChannelPromoteCode,
-  getChannelPromoteLink
+  getChannelPromoteLink,
+  getChamberOptions
 } from '@/api/mall/channel'
-import { adminUdateGoodsStatus, batchAdminUpdateGoodsStatus, getGoodsQrcode } from '@/api/goods/goods'
-import { getGoodsDetail } from '@/api/goods/goodsSku'
+import {
+  adminUdateGoodsStatus,
+  batchAdminUpdateGoodsStatus,
+  getGoodsQrcode
+} from '@/api/goods/goods'
+import {
+  getGoodsDetail
+} from '@/api/goods/goodsSku'
 import domtoimage from 'dom-to-image'
 
 // import { mapGetters } from 'vuex'
@@ -36,8 +43,12 @@ export default {
       rowData: [],
       promoteForm: {
         channelId: '',
-        goodsId: ''
+        goodsId: '',
+        relType: '0',
+        relTypeChild: '1',
+        relCkey: '',
       },
+      chamberOptions: [], // 商会列表
       previewImgVisible: false,
       previewUrl: '',
       query: {
@@ -53,14 +64,26 @@ export default {
       limit: 10,
       listLoading: false,
       selectionDatas: [],
-      chamberOptions: [],
       promoteRules: {
-        channelId: [
-          { required: true, message: '请选择渠道', trigger: 'blur' }
-        ],
-        goodsId: [
-          { required: true, message: '请输入商品ID', trigger: 'blur' },
-          { validator: checkId, trigger: 'blur' }
+        channelId: [{
+          required: true,
+          message: '请选择渠道',
+          trigger: 'blur'
+        }],
+        relCkey: [{
+          required: true,
+          message: '请选择商会',
+          trigger: 'change'
+        }],
+        goodsId: [{
+            required: true,
+            message: '请输入商品ID',
+            trigger: 'blur'
+          },
+          {
+            validator: checkId,
+            trigger: 'blur'
+          }
         ]
       },
     }
@@ -68,7 +91,7 @@ export default {
   computed: {
     // ...mapGetters(['has'])
     chamberName() {
-      return function(ckey) {
+      return function (ckey) {
         let chamberName = ''
         for (let chamber of this.chamberOptions) {
           if (ckey === chamber.value) {
@@ -78,20 +101,68 @@ export default {
         }
         return chamberName
       }
+    },
+    submitDisable() {
+      let bol = true
+      if (this.promoteForm.relType == 0) {
+        bol = !this.goodsDetail.name
+      } else if (this.promoteForm.relType == 'list' && this.promoteForm.relTypeChild == 1) {
+        bol = false
+      } else if (this.promoteForm.relType == 'list' && this.promoteForm.relTypeChild == 2 && !this.promoteForm.relCkey) {
+        bol = true
+      } else {
+        bol = false
+      }
+      return bol
+    },
+    relType(){
+      return this.promoteForm.relType
     }
   },
+  filters: {
+    filterRelCkey(val, options) {
+      let relName = ""
+      options.map(item => {
+        if (item.value == val) relName = item.label
+      })
+      return relName
+    },
+  },
   created() {
+    this.getChamberOptions()
     this.getChannelList()
     this.getChannelPromoteLists()
   },
+  watch:{
+    relType(val){
+      if(val == 0){
+        this.promoteForm.goodsId = ''
+      }else if(val == 'list'){
+        this.promoteForm.relTypeChild = '1'
+        this.promoteForm.relCkey = ''
+      }
+    },
+  },
   methods: {
     has(tabName, actionName) {
-      return this.$store.getters.has({ tabName, actionName })
+      return this.$store.getters.has({
+        tabName,
+        actionName
+      })
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({ tabName, actionName })
+      return this.$store.getters.getId({
+        tabName,
+        actionName
+      })
     },
-
+    // 获取商会options
+    async getChamberOptions() {
+      let {
+        data: res
+      } = await getChamberOptions()
+      this.chamberOptions = res.data
+    },
     // 获取商品推广配置列表
     getChannelPromoteLists() {
       this.listLoading = true
@@ -131,14 +202,18 @@ export default {
     },
 
     handleInput(e) {
+      if (!this.promoteForm.goodsId) this.showGoodIdsDetail = false
       // 查询商品详情
       if (this.promoteForm.goodsId.trim() !== '' && /^$|^([1-9]\d*)$/.test(this.promoteForm.goodsId)) {
-        getGoodsDetail({ id: this.promoteForm.goodsId }).then(res => {
+        getGoodsDetail({
+          id: this.promoteForm.goodsId
+        }).then(res => {
           if (res.state === 1) {
-            console.log(res)
             this.goodsDetail = res.data.goodsDetail
             this.showGoodIdsDetail = true
           }
+        }).catch(() => {
+          this.showGoodIdsDetail = false
         })
       }
     },
@@ -148,7 +223,21 @@ export default {
       this.$refs[promoteForm].validate((valid) => {
         if (valid) {
           this.promoteForm.goodsId = parseInt(this.promoteForm.goodsId)
-          addChannelPromote(this.promoteForm).then(res => {
+          let params = {
+            ...this.promoteForm
+          }
+          if (params.relType == 'list') {
+            delete params.goodsId
+            params.relType = this.promoteForm.relTypeChild * 1
+            if (params.relType != 2) {
+              delete params.relCkey
+            }
+            delete params.relTypeChild
+          } else if (params.relType == 0) {
+            delete params.relCkey
+            delete params.relTypeChild
+          }
+          addChannelPromote(params).then(res => {
             if (res.state === 1) {
               this.$message({
                 message: '操作成功',
@@ -169,7 +258,9 @@ export default {
     createCode(e, row) {
       this.channelCodeDialog = true
       this.rowData = row
-      getChannelPromoteCode({ id: row.id }).then(res => {
+      getChannelPromoteCode({
+        id: row.id
+      }).then(res => {
         if (res.state === 1) {
           console.log(res)
           this.channelCode = res.data
@@ -196,7 +287,7 @@ export default {
           a.click()
           _this.isLoading = false
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.error('oops, something went wrong!', error)
           _this.isLoading = false
         })
@@ -205,7 +296,9 @@ export default {
     // 生成短连接
     createLink(e, row) {
       this.channelLinkDialog = true
-      getChannelPromoteLink({ id: row.id }).then(res => {
+      getChannelPromoteLink({
+        id: row.id
+      }).then(res => {
         if (res.state === 1) {
           this.channelLink = res.data
         } else {
@@ -243,7 +336,12 @@ export default {
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '商品详情', params: { goodsId: row.goodsId } })
+      this.$router.push({
+        name: '商品详情',
+        params: {
+          goodsId: row.goodsId
+        }
+      })
     },
     openPreviewModal(url) {
       this.previewImgVisible = true
