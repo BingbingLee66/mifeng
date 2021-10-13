@@ -19,7 +19,7 @@ export default {
         date: '',
         settled: 0,
         settlementStatus: -1,
-        channelId: null, // 推广渠道
+        channelId: -1, // 推广渠道
         isFirst: -1, // 用户属性
       },
       chamberOptions: [],
@@ -83,6 +83,7 @@ export default {
     getChannelOptions(){
       getChannelList().then(res=>{
         this.channelOptions = res.data
+        this.channelOptions.unshift({id:-1,channelName:'全部'})
       })
     },
     fetchData(e) {
@@ -112,6 +113,7 @@ export default {
         params.settlementStatus = this.query.settlementStatus
         if(params.settlementStatus == -1) delete params.settlementStatus
       }
+      if(params.channelId == -1) delete params.channelId
       if (this.query.date) {
         params['startTime'] = this.query.date[0]
         params['endTime'] = this.query.date[1]
@@ -172,6 +174,8 @@ export default {
           '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
           '微信订单号': data.wechatOrderNum ? data.wechatOrderNum : '--',
           '状态': statusStr,
+          '推广渠道': data.channelName || '--',
+          '用户属性': isFirstStr,
           '供货商家': data.supplierName,
           '订单所属商会': this.chamberName(data.ckey),
           '商品名称': data.name,
@@ -179,8 +183,6 @@ export default {
           '单价(元)': data.price,
           '下单数': data.count,
           '实付金额(元)': data.realPrice,
-          '推广渠道': data.channelName || '--',
-          '用户属性': isFirstStr,
           '收件人': data.consignee,
           '收件人手机号': data.mobile,
           '收货地址': data.consigneeAddress
@@ -202,14 +204,15 @@ export default {
         'goodName': this.query.goodName,
         'supplierName': this.query.supplierName,
         'status': this.query.status,
+        'channelId': this.query.channelId,
+        'isFirst': this.query.isFirst,
         'consignee': this.query.consignee,
         'consigneeMobile': this.query.consigneeMobile,
         'startTime': this.query.date[0],
         'endTime': this.query.date[1],
-        'channelId': this.query.channelId,
-        'isFirst': this.query.isFirst
       }
       if(params.isFirst == -1) delete params.isFirst
+      if(params.channelId == -1) delete params.channelId
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       getAllList(params).then(res => {
         if (res.data.data.list.length === 0) {

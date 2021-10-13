@@ -31,13 +31,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="4">
-            <el-form-item label-width="110px" label="收货人姓名">
-              <el-input v-model.trim="query.consignee" placeholder="请输入收货人姓名"/>
+            <el-form-item label-width="110px" label="推广渠道">
+              <el-select v-model="query.channelId" placeholder="请选择状态">
+                <el-option v-for="item in channelOptions" :key="item.id" :label="item.channelName" :value="item.id"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4" style="margin-left:10px;margin-right:10px;">
-            <el-form-item label-width="110px" label="收货人手机号">
-              <el-input v-model.trim="query.consigneeMobile" placeholder="请输入收货人手机号"/>
+          <el-col :span="4">
+            <el-form-item label-width="110px" label="用户属性">
+              <el-select v-model="query.isFirst" placeholder="请选择状态">
+                <el-option label="所有" :value="-1"></el-option>
+                <el-option label="首单用户" :value="1"></el-option>
+                <el-option label="复购用户" :value="0"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-right:10px;">
@@ -74,19 +80,13 @@
         </el-row>
         <el-row>
           <el-col :span="4">
-            <el-form-item label-width="110px" label="推广渠道">
-              <el-select v-model="query.channelId" placeholder="请选择状态" clearable>
-                <el-option v-for="item in channelOptions" :key="item.id" :label="item.channelName" :value="item.id"></el-option>
-              </el-select>
+            <el-form-item label-width="110px" label="收货人姓名">
+              <el-input v-model.trim="query.consignee" placeholder="请输入收货人姓名"/>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
-            <el-form-item label-width="110px" label="用户属性">
-              <el-select v-model="query.isFirst" placeholder="请选择状态">
-                <el-option label="所有" :value="-1"></el-option>
-                <el-option label="首单用户" :value="1"></el-option>
-                <el-option label="复购用户" :value="0"></el-option>
-              </el-select>
+          <el-col :span="4" style="margin-left:10px;margin-right:10px;">
+            <el-form-item label-width="110px" label="收货人手机号">
+              <el-input v-model.trim="query.consigneeMobile" placeholder="请输入收货人手机号"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -164,10 +164,10 @@
           {{ scope.row.realPrice }}
         </template>
       </el-table-column>
-      <el-table-column label="推广渠道" width="80px">
+      <el-table-column label="推广渠道" width="100">
         <template slot-scope='scope'>{{scope.row.channelName || '--'}}</template>
       </el-table-column>
-      <el-table-column label="用户属性" width="80px">
+      <el-table-column label="用户属性" width="100">
        <template slot-scope='scope'>
         <div v-if="scope.row.isFirst == 1">首单用户</div>
         <div v-if="scope.row.isFirst == 0">复购用户</div>
