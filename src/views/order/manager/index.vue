@@ -42,7 +42,7 @@
               <el-select v-model="query.isFirst" placeholder="请选择状态">
                 <el-option label="所有" :value="-1"></el-option>
                 <el-option label="首单用户" :value="1"></el-option>
-                <el-option label="复购用户" :value="0"></el-option>
+                <el-option label="复购用户" :value="2"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -170,7 +170,8 @@
       <el-table-column label="用户属性" width="100">
        <template slot-scope='scope'>
         <div v-if="scope.row.isFirst == 1">首单用户</div>
-        <div v-if="scope.row.isFirst == 0">复购用户</div>
+        <div v-else-if="scope.row.isFirst == 2">复购用户</div>
+        <div v-else>--</div>
        </template>
       </el-table-column>
       <el-table-column label="收货信息" width="250px">

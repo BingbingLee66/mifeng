@@ -166,8 +166,10 @@ export default {
         let isFirstStr = ''
         if(data.isFirst == 1){
           isFirstStr = "首单用户"
-        }else if(data.isFirst == 0){
+        }else if(data.isFirst == 2){
           isFirstStr = "复购用户"
+        }else{
+          isFirstStr = "--"
         }
         let new_data = {
           '订单号': data.orderSn,

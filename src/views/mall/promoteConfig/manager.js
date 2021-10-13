@@ -262,7 +262,6 @@ export default {
         id: row.id
       }).then(res => {
         if (res.state === 1) {
-          console.log(res)
           this.channelCode = res.data
           /* let imgUrl = res.data.qrCode
           let alink = document.createElement('a')

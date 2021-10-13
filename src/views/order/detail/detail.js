@@ -51,6 +51,8 @@ export default {
         return '首单用户'
       }else if(val == 2){
         return '复购用户'
+      }else{
+        return '--'
       }
     }
   },

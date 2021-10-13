@@ -101,14 +101,20 @@
                 <div class="tit">推广渠道：</div>
                 <div class="txt">{{ rowData.channelName }}</div>
               </div>
-              <div class="item">
+              <div class="item" v-if="rowData.relType == 0">
                 <div class="tit">推广商品：</div>
                 <div class="txt">{{ rowData.goodsName }}</div>
               </div>
-              <div class="item">
+              <div class="item" v-if="rowData.relType == 0">
                 <div class="tit">来源商会：</div>
                 <div class="txt txt-1">{{ rowData.chamberName }}</div>
               </div>
+              <div class="item" v-if="rowData.relType != 0">
+                <div class="tit">列表名称：</div>
+                <div class="txt" v-if="rowData.relType == 1">首页 - 爆品必拼</div>
+                <div class="txt" v-if="rowData.relType == 2">商会优选 - {{rowData.relCkey | filterRelCkey(chamberOptions)}}</div>
+              </div>
+              <div></div>
             </div>
           </div>
           <div style="text-align: center;margin-top: 5px">
