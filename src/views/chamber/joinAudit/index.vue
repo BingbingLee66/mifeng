@@ -186,9 +186,7 @@
 
     <el-dialog title="驳回" :visible.sync="rejectDia" width="30%" center>
       <div class="block">
-        <el-row>
-          <el-col :offset="2" :span="7">商/协会名称：{{ detailObj.name }}</el-col>
-        </el-row>
+        <div style="margin-left:40px;width:85%">商/协会名称：{{ detailObj.name }}</div>
       </div>
       <div class="block">
         <el-input type="textarea" class="reject-dia-reason" v-model="rejectRemark" show-word-limit placeholder="请填写驳回原因，1-30个字" resize="none" minlength="1" maxlength="30"></el-input>
