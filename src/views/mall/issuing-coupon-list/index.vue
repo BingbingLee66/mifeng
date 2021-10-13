@@ -26,8 +26,8 @@
         <el-table-column label="包含优惠券">
           <template slot-scope="scope">
             <div v-for="item in scope.row.couponList" :key="item.couponId">
-              <div>【{{ item.total }}】
-                <span class="blue-label" @click="goCouponDetail">{{ scope.row.couponName }}</span>
+              <div>【{{ item.total }}张】
+                <span class="blue-label" @click="goCouponDetail(item.couponId)">{{ item.couponName }}</span>
               </div>
             </div>
           </template>

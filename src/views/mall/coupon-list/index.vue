@@ -9,7 +9,7 @@
           <el-input v-model="query.name" placeholder="关键词" @input="e=>handleSpace(e,'name')" />
         </el-form-item>
         <el-form-item label="是否礼包劵">
-          <el-select v-model="query.type" placeholder="请选择">
+          <el-select v-model="query.gift" placeholder="请选择">
             <el-option label="是礼包劵" :value="1" />
             <el-option label="不是礼包劵" :value="0" />
           </el-select>
@@ -33,32 +33,33 @@
             <div class="blue-label" @click="goCouponDetail(scope.row.templateId)">{{ scope.row.templateId }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="优惠券名称" width="200px">
+        <el-table-column label="优惠券名称">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
-        <el-table-column label="类型" width="100px">
+        <el-table-column label="类型" width="90px">
           <template slot-scope="scope">
             <div v-if="scope.row.source===1">全场劵</div>
             <div v-if="scope.row.source===2">商品劵</div>
             <div v-if="scope.row.source===3">全场劵，礼包劵</div>
+            <div v-if="scope.row.source===4">商品劵，礼包劵</div>
           </template>
         </el-table-column>
-        <el-table-column label="有效期" width="130px">
+        <el-table-column label="有效期" width="110px">
           <template slot-scope="scope">{{ scope.row.desc }}</template>
         </el-table-column>
-        <el-table-column label="发行量" width="100px">
+        <el-table-column label="发行量" width="110px">
           <template slot-scope="scope">
             <div v-if="scope.row.quota===-1">无张数限制</div>
             <div v-else class="blue-label" @click="showIssue(scope.row)">{{ scope.row.quota }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="获取规则" width="150px">
+        <el-table-column label="获取规则" width="110px">
           <template slot-scope="scope">
             <div v-if="scope.row.accept===-1">无张数限制</div>
             <div v-else>最多获得{{ scope.row.accept }}张</div>
           </template>
         </el-table-column>
-        <el-table-column label="使用规则" width="150px">
+        <el-table-column label="使用规则" width="110px">
           <template slot-scope="scope">{{ scope.row.useRule }}</template>
         </el-table-column>
         <el-table-column label="已发放/领取" width="100px">

@@ -23,7 +23,7 @@ export default {
       linkVisible: false,
       issueVisible: false,
       codeVisible: false,
-      rowData: null,
+      rowData: {},
       isLoading: false
     }
   },
@@ -81,14 +81,15 @@ export default {
     },
     // 生成礼包二维码
     createCode(row) {
-      this.codeVisible = true
+      console.log(row)
       this.rowData = row
+      this.codeVisible = true
     },
     // 保存礼包二维码
     downloadCode() {
       const _this = this
       this.isLoading = true
-      const node = document.getElementById('postdiv')
+      const node = document.getElementById('qrcodediv')
       domtoimage.toPng(node)
         .then((dataUrl) => {
           var a = document.createElement('a')
@@ -104,8 +105,8 @@ export default {
     },
     // 生成短链接
     createLink(row) {
-      this.linkVisible = true
       this.rowData = row
+      this.linkVisible = true
     },
     // 复制短链接
     copyUrl() {

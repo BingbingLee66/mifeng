@@ -55,7 +55,7 @@
         <div class="coupon-detail-title">使用规则</div>
         <div class="coupon-detail-item">
           <div class="coupon-detail-lable">有效期：</div>
-          <div class="coupon-detail-content" v-if="couponObj.validType===1">{{couponObj.validStartTime}}-{{couponObj.validEndTime}}</div>
+          <div class="coupon-detail-content" v-if="couponObj.validType===1">{{couponObj.validStartTime | dateFormat2}} - {{couponObj.validEndTime | dateFormat2}}</div>
           <div class="coupon-detail-content" v-if="couponObj.validType===2">发放后立即生效，有效期{{couponObj.validDays}}天</div>
         </div>
       </div>

@@ -88,8 +88,11 @@ export default {
       this.$router.push(`/mall/issuing-coupon-send`)
     },
     // 查看优惠券详情
-    goCouponDetail() {
-      this.$router.push(`/mall/couponDetail`)
+    goCouponDetail(couponId) {
+      this.$router.push({
+        path: '/mall/couponDetail',
+        query: { couponId }
+      })
     },
     // 查看已发放列表
     goIssueList() {

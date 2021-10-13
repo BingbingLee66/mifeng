@@ -79,8 +79,11 @@ export default {
       this.$router.push(`/member/detail`)
     },
     // 查看已使用订单列表
-    goCouponDetail() {
-      this.$router.push(`/mall/couponDetail`)
+    goCouponDetail(couponId) {
+      this.$router.push({
+        path: '/mall/couponDetail',
+        query: { couponId }
+      })
     },
     // 查看订单管理列表
     goOrderList() {

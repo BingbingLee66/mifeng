@@ -35,7 +35,7 @@
         </el-table-column>
         <el-table-column label="发放的券">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goCouponDetail">{{ scope.row.couponName }}</div>
+            <div class="blue-label" @click="goCouponDetail(scope.row.couponId)">{{ scope.row.couponName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="接收方-用户名">

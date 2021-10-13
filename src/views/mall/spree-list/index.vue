@@ -97,7 +97,7 @@
     <el-dialog title="生成短链接" :visible.sync="linkVisible" width="500px">
       <el-row>
         <el-col style="width: 60px;">短链接：</el-col>
-        <!-- <el-col style="width: 400px;">{{ rowData.sortUrl }}</el-col> -->
+        <el-col style="width: 400px;">{{ rowData.sortUrl }}</el-col>
       </el-row>
       <el-row>
         <el-col style="width: 60px;"></el-col>
@@ -109,14 +109,14 @@
     <div class="code-dialog">
       <el-dialog title="礼包二维码" :visible.sync="codeVisible" width="600px">
         <div class="code-wrap">
-          <div id="postdiv" class="code-content">
+          <div id="qrcodediv" class="code-content">
             <div class="code-img">
-              <!-- <img class="qr-code" :src="rowData.qrCode"> -->
+              <img class="qr-code" :src="rowData.qrcode">
             </div>
             <div class="code-info">
               <div class="item">
                 <div class="tit">大礼包：</div>
-                <!-- <div class="txt">{{rowData.giftName}}</div> -->
+                <div class="txt">{{ rowData.giftName }}</div>
               </div>
             </div>
           </div>

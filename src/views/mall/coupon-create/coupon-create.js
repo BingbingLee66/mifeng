@@ -125,6 +125,7 @@ export default {
     handleNumber(e, str) {
       if (str === 'price') {
         this.formObj.price = intInput(e)
+        this.formObj.price = this.formObj.price * 100
       } else {
         this[str] = intInput(e)
       }
@@ -241,7 +242,7 @@ export default {
             params['useLimit'] = -1
           }
           if (this.isLimit === '2') {
-            params['useLimit'] = this.limitValue
+            params['useLimit'] = this.limitValue * 100
           }
           // quota发行量 -1-无限制 >0 限制数量
           if (this.isIssue === '1') {

@@ -8,7 +8,7 @@ export default {
       query: {
         id: '',
         name: '',
-        type: '',
+        gift: '',
         user: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
@@ -54,7 +54,7 @@ export default {
         'pageSize': this.limit,
         'pageNum': this.currentpage,
         'id': this.query.id,
-        'type': this.query.type,
+        'gift': this.query.gift,
         'name': this.query.name,
         'user': this.query.user
       }
