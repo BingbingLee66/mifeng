@@ -58,8 +58,26 @@
             <div v-else>
               <div v-for="(item,index) in  scope.row.resultList" :key="index">
                 <div v-if="item.resultStatus===5">
-                  由于手机号未注册，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{ item.phoneStr.length }}人次</span>无法收到足额的劵
+                  由于手机号未注册，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{
+                    item.phoneStr.length
+                  }}人次</span>无法收到足额的劵
                 </div>
+                <div v-if="item.resultStatus===4">
+                  由于优惠券【<span v-for="(item,index) in scope.row.couponList" :key="index">{{item}}</span>】被停发，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{
+                    item.phoneStr.length
+                  }}人次</span>无法收到足额的券
+                </div>
+                <div v-if="item.resultStatus===3">
+                  由于优惠券【<span v-for="(item,index) in scope.row.couponList" :key="index">{{item}}</span>】的发行量不够，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{
+                    item.phoneStr.length
+                  }}人次</span>无法收到足额的券！
+                </div>
+                <div v-if="item.resultStatus===2">
+                  由于优惠券【<span v-for="(item,index) in scope.row.couponList" :key="index">{{item}}</span>】的限领限制，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{
+                    item.phoneStr.length
+                  }}人次</span>无法收到足额的券！
+                </div>
+                <div v-if="item.resultStatus===1">全部发送成功</div>
               </div>
             </div>
           </template>
@@ -82,7 +100,7 @@
         <div class="dialog-content">
           <div>以下手机号还未注册</div>
           <div class="phone-list">
-            <div v-for="(item,index) in phoneList" :key="index">{{item}}</div>
+            <div v-for="(item,index) in phoneList" :key="index">{{ item }}</div>
           </div>
         </div>
         <div slot="footer" style="text-align: center;">
@@ -126,8 +144,9 @@
 
 .result-dialog {
   .el-dialog__body {
-    padding: 10px 20px!important;
+    padding: 10px 20px !important;
   }
+
   .phone-list {
     max-height: 300px;
     overflow-y: auto;

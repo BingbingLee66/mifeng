@@ -76,8 +76,12 @@ export default {
         cancelButtonText: '取消'
       }).then(() => {
         sendCoupon({ id }).then(res => {
-          this.fetchData()
-          this.$message.success('发送成功!')
+          if (res.state === 1) {
+            this.fetchData()
+            this.$message.success('发送成功!')
+          } else {
+            this.$message.error('系统错误')
+          }
         })
       }).catch(() => {
       })
