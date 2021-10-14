@@ -83,6 +83,14 @@ export default {
     rangeDatePicker(val) {
       console.log(val)
     },
+    // 改变relType时清空input
+    changeRelType(){
+      this.query.goodsId = ''
+      this.query.relTypeChild = -1
+    },
+    changeRelTypeChild(){
+      this.query.relCkey = -1
+    },
     // 获取商会options
     async getChamberOptions() {
       let {

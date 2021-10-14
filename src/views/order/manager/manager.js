@@ -17,7 +17,7 @@ export default {
         consignee: '',
         consigneeMobile: '',
         date: '',
-        settled: 0,
+        settled: -1,
         settlementStatus: -1,
         channelId: -1, // 推广渠道
         isFirst: -1, // 用户属性
@@ -110,6 +110,7 @@ export default {
       if(params.isFirst == -1) delete params.isFirst
       if(params.status == 5 || params.status == 6){
         params.settled = this.query.settled
+        if(params.settled == -1) delete params.settled
         params.settlementStatus = this.query.settlementStatus
         if(params.settlementStatus == -1) delete params.settlementStatus
       }
@@ -127,7 +128,7 @@ export default {
     // 订单状态改变
     statusSelectChange(val){
       if(val === 5 || val === 6){
-        this.query.settled = 0
+        this.query.settled = -1
         this.query.settlementStatus = -1
       }
     },

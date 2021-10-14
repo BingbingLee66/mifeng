@@ -84,12 +84,12 @@
       </el-select>
       </div>
       <div class="item flex-box">
-        <el-select  v-model="query.relType" placeholder="请选择" :style="query.relType == -1?'margin-right:15px':''" size="mini">
+        <el-select  v-model="query.relType" placeholder="请选择" :style="query.relType == -1?'margin-right:15px':''" size="mini" @change="changeRelType">
           <el-option label="全部" :value="-1"></el-option>
           <el-option label="单个商品" :value="0"></el-option>
           <el-option label="商品列表" :value="-2"></el-option>
         </el-select>
-        <el-select  v-model="query.relTypeChild" placeholder="请选择" v-if="query.relType == -2"  size="mini" :style="query.relTypeChild != 2?'margin-right:15px':''">
+        <el-select  v-model="query.relTypeChild" placeholder="请选择" v-if="query.relType == -2"  size="mini" :style="query.relTypeChild != 2?'margin-right:15px':''" @change="changeRelTypeChild">
           <el-option label="全部商品列表" :value="-1"></el-option>
           <el-option label="首页-爆品必拼" :value="1"></el-option>
           <el-option label="商会优选" :value="2"></el-option>
