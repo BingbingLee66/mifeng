@@ -145,10 +145,10 @@
         </el-row>
         <el-row>
           <el-col :offset="2" :span="20">
-            <el-form-item label="单位名称\账户名：" prop="companyName">
+            <el-form-item label="单位名称/账户名：" prop="companyName">
               <el-input
                 v-model.trim="formObj.companyName"
-                placeholder="请填写单位名/账户名称"
+                placeholder="请填写单位名称/账户名"
                 class="form-bank-area"
                 type="textarea"
                 show-word-limit

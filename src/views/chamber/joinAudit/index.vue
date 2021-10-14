@@ -141,41 +141,27 @@
       </span>
     </el-dialog>
 
-    <el-dialog title="通过" :visible.sync="passDia" width="30%" center>
+    <el-dialog title="通过" :visible.sync="passDia" width="30%" center class="pass-dia">
       <div class="pass-tip">温馨提示：设置密码后，自动审核通过</div>
-      <div class="block">
-        <el-row>
-          <el-col :offset="2" :span="7">商/协会名称</el-col>
-          <el-col :span="10">{{ detailObj.name }}</el-col>
-        </el-row>
-        <el-row>
-          <el-col :offset="2" :span="7">后台账号</el-col>
-          <el-col :span="10">{{ detailObj.phone }}</el-col>
-        </el-row>
+      <div class="pass-item item1">
+        <div class="title">商/协会名称</div>
+        <div class="content">{{ detailObj.name }}</div>
+      </div>
+      <div class="pass-item item2">
+        <div class="title">后台账号</div>
+        <div class="content">{{ detailObj.phone }}</div>
       </div>
       <div class="block">
-        <el-form ref="detail" :model="detailObj" :rules="rules" label-position="left" label-width="150px">
-          <el-row>
-            <el-col :offset="2" :span="20">
-              <el-form-item label="设置密码" prop="temporaryPass">
-                <el-input type="password" v-model="detailObj.temporaryPass"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :offset="2" :span="20">
-              <el-form-item label="确认密码" prop="confirmPassword">
-                <el-input type="password" v-model="detailObj.confirmPassword"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :offset="2" :span="20">
-              <el-form-item label="排序" prop="level">
-                <el-input v-model="detailObj.level" minlength=1></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
+        <el-form ref="detail" :model="detailObj" :rules="rules" label-position="left" label-width="100px">
+          <el-form-item label="设置密码" prop="temporaryPass">
+            <el-input type="password" v-model="detailObj.temporaryPass"></el-input>
+          </el-form-item>
+          <el-form-item label="确认密码" prop="confirmPassword">
+            <el-input type="password" v-model="detailObj.confirmPassword"></el-input>
+          </el-form-item>
+          <el-form-item label="排序" prop="level">
+            <el-input v-model="detailObj.level" minlength=1></el-input>
+          </el-form-item>
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -204,12 +190,34 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import 'src/styles/common.scss';
-.pass-tip{
-  width: 100%;
-  margin-bottom: 20px;
-  text-align: center;
-  font-size: 12px;
-  color: #848282;
+.pass-dia{
+  /deep/.el-dialog__body{
+    padding: 25px 50px;
+  }
+  .pass-tip{
+    width: 100%;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 12px;
+    color: #848282;
+  }
+  .pass-item{
+    display: flex;
+    align-items: center;
+    .title{
+      width: 100px;
+      text-align: left;
+    }
+    .content{
+      flex: 1;
+    }
+  }
+  .item1{
+    margin-bottom: 25px;
+  }
+  .item2{
+    margin-bottom: 15px;
+  }
 }
 /deep/.reject-dia-reason .el-textarea__inner{
   width: 85%;

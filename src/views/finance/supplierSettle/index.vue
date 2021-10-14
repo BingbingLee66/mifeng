@@ -20,7 +20,7 @@
         </el-row>
         <el-row>
           <el-col :span="5">
-            <el-form-item label-width="90px" label="商品名称：">
+            <el-form-item label-width="130px" label="商品名称：">
               <el-input
                 v-model="query.goodName"
                 placeholder="请输入商品名称"
