@@ -11,7 +11,7 @@
         <el-form-item label="创建人">
           <el-input v-model="query.creator" placeholder="关键词" @input="e=>handleSpace(e,'creator')"/>
         </el-form-item>
-        <el-form-item label=""  style="margin-left: -30px;">
+        <el-form-item label="" style="margin-left: -30px;">
           <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">
             查询
           </el-button>
@@ -35,27 +35,38 @@
         <el-table-column label="优惠券接收方" width="250px">
           <template slot-scope="scope">
             <div>{{ scope.row.receiver }}</div>
-            <div class="blue-label" @click="goIssueList">{{ scope.row.receiverCount }}</div>
+            <div class="blue-label" v-if="scope.row.receiveType===1" @click="goIssueList(scope.row.id)">
+              {{ scope.row.receiverCount }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="创建时间" width="200px">
           <template slot-scope="scope">
-            <div>{{scope.row.creator}}</div>
+            <div class="red-label">{{ scope.row.creator }}</div>
             <div>{{ scope.row.createTime | dateFormat }}</div>
           </template>
         </el-table-column>
         <el-table-column label="发送状态" width="200px">
           <template slot-scope="scope">
-            <div v-if="scope.row.sendStatus===0">未发送</div>
-            <div v-if="scope.row.sendStatus===1">已发送</div>
+            <div v-if="scope.row.sendStatus===1">未发送</div>
+            <div v-if="scope.row.sendStatus===2">已发送</div>
           </template>
         </el-table-column>
         <el-table-column label="发送结果">
-          <template slot-scope="scope">{{ scope.row.result }}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="200px" fixed="right">
           <template slot-scope="scope">
-            <div v-if="scope.row.sendStatus===0">
+            <div v-if="scope.row.sendStatus===1">--</div>
+            <div v-else>
+              <div v-for="(item,index) in  scope.row.resultList" :key="index">
+                <div v-if="item.resultStatus===5">
+                  由于手机号未注册，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{ item.phoneStr.length }}人次</span>无法收到足额的劵
+                </div>
+              </div>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="100px" fixed="right">
+          <template slot-scope="scope">
+            <div v-if="scope.row.sendStatus===1">
               <el-button type="text" @click="send(scope.row.id)">发送</el-button>
             </div>
             <div v-else>--</div>
@@ -66,18 +77,20 @@
     </div>
 
     <!-- 提示 -->
-    <el-dialog title="提示" :visible.sync="failTipVisible" width="400px">
-      <div class="dialog-content">
-        <div>以下手机号还未注册</div>
-        <div v-for="i in 3" :key="i">
-          i12323
+    <div class="result-dialog">
+      <el-dialog title="提示" :visible.sync="sendResultVisible" width="400px">
+        <div class="dialog-content">
+          <div>以下手机号还未注册</div>
+          <div class="phone-list">
+            <div v-for="(item,index) in phoneList" :key="index">{{item}}</div>
+          </div>
         </div>
-      </div>
-      <div slot="footer" style="text-align: center;">
-        <el-button type="primary" @click="failTipVisible = false">确认</el-button>
-        <el-button @click="failTipVisible = false">取消</el-button>
-      </div>
-    </el-dialog>
+        <div slot="footer" style="text-align: center;">
+          <el-button type="primary" @click="failTipVisible = false">确认</el-button>
+          <el-button @click="failTipVisible = false">取消</el-button>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -108,6 +121,16 @@
 .table-dialog {
   .el-dialog {
     margin-top: 8vh !important;
+  }
+}
+
+.result-dialog {
+  .el-dialog__body {
+    padding: 10px 20px!important;
+  }
+  .phone-list {
+    max-height: 300px;
+    overflow-y: auto;
   }
 }
 </style>

@@ -71,7 +71,7 @@ export function queryCouponGoods(params) {
 
 export function queryCouponInfo(params) {
   return request({
-    url: baseUrl + '/coupon/valid/' + params,
+    url: baseUrl + '/coupon/valid/' + params.type + '/' + params.couponId,
     method: 'get'
   })
 }

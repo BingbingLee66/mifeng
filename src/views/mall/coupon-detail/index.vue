@@ -31,16 +31,17 @@
         </div>
         <div class="coupon-detail-item">
           <div class="coupon-detail-lable">面值金额：</div>
-          <div class="coupon-detail-content">{{couponObj.price}}元</div>
+          <div class="coupon-detail-content">{{couponObj.price/100}}元</div>
         </div>
         <div class="coupon-detail-item">
           <div class="coupon-detail-lable">满减限额：</div>
           <div class="coupon-detail-content" v-if="couponObj.useLimit===-1">无门槛使用</div>
-          <div class="coupon-detail-content" v-else>满{{couponObj.useLimit}}元可用</div>
+          <div class="coupon-detail-content" v-else>满{{couponObj.useLimit/100}}元可用</div>
         </div>
         <div class="coupon-detail-item">
           <div class="coupon-detail-lable">发行量：</div>
-          <div class="coupon-detail-content">{{couponObj.quota}}张</div>
+          <div class="coupon-detail-content" v-if="couponObj.quota===-1">无张数限制</div>
+          <div class="coupon-detail-content" v-else>{{couponObj.quota}}张</div>
         </div>
       </div>
       <div class="coupon-detail-wrap">

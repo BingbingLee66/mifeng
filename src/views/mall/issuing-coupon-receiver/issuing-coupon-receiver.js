@@ -1,5 +1,5 @@
 import {
-  getIssuedCouponUserList
+  getIssuedListByOrderId
 } from '@/api/mall/issued'
 import { getChamberAllList } from '@/api/goods/goods'
 import { intInput, spaceInput } from '@/utils/utils'
@@ -7,6 +7,7 @@ import { intInput, spaceInput } from '@/utils/utils'
 export default {
   data() {
     return {
+      orderId: '',
       query: {
         uname: '',
         phone: '',
@@ -23,8 +24,10 @@ export default {
     }
   },
   created() {
+    this.orderId = this.$route.query.orderid
+    console.log(this.orderId)
     this.getChamberOptions()
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     has(tabName, actionName) {
@@ -54,16 +57,22 @@ export default {
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
-        'page': this.currentpage,
-        'uname': this.query.uname,
+        'pageNum': this.currentpage,
+        'name': this.query.uname,
         'phone': this.query.phone,
-        'userType': this.query.userType,
-        'chamberId': this.query.chamberId
+        'type': this.query.userType,
+        'id': this.query.chamberId
       }
-      getIssuedCouponUserList(params).then(res => {
-        this.list = res.data.list
-        this.total = res.data.totalRows
-        this.listLoading = false
+      getIssuedListByOrderId(this.orderId, params).then(res => {
+        console.log('已发送列表：', res)
+        if (res.state === 1) {
+          this.list = res.data.list
+          this.total = res.data.totalRows
+          this.listLoading = false
+        } else {
+          this.listLoading = false
+          console.log(res)
+        }
       })
     },
     handleSizeChange(val) {

@@ -18,7 +18,8 @@ export default {
       limit: 10,
       issue: '',
       listLoading: false,
-      failTipVisible: false
+      phoneList: [],
+      sendResultVisible: false
     }
   },
   created() {
@@ -74,14 +75,18 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(() => {
-        sendCoupon(id).then(res => {
-          this.list = res.data.list
-          this.total = res.data.totalRows
-          this.listLoading = false
+        sendCoupon({ id }).then(res => {
+          this.fetchData()
           this.$message.success('发送成功!')
         })
       }).catch(() => {
       })
+    },
+    // 查看发送结果
+    showResultDialog(phone) {
+      console.log(phone)
+      this.phoneList = phone
+      this.sendResultVisible = true
     },
     // 跳转发送优惠券页面
     create() {
@@ -95,8 +100,13 @@ export default {
       })
     },
     // 查看已发放列表
-    goIssueList() {
-      this.$router.push(`/mall/issuing-coupon-receiver`)
+    goIssueList(couponId) {
+      this.$router.push({
+        path: '/mall/issuing-coupon-receiver',
+        query: {
+          orderid: couponId
+        }
+      })
     }
   }
 }

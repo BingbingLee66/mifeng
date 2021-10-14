@@ -79,12 +79,16 @@ export default {
       let val = e.target.value
       if (val) {
         // 失焦查询优惠劵名称
-        queryCouponInfo(val).then(res => {
+        let params = {
+          couponId: val,
+          type: 1
+        }
+        queryCouponInfo(params).then(res => {
           if (res.state === 1) {
             this.couponList[index].name = res.msg
             this.couponList[index].errTip = ''
           } else {
-            this.couponList[index].errTip = '该优惠券不存在'
+            this.couponList[index].errTip = res.msg
             this.couponList[index].name = ''
           }
         })

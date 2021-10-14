@@ -125,7 +125,6 @@ export default {
     handleNumber(e, str) {
       if (str === 'price') {
         this.formObj.price = intInput(e)
-        this.formObj.price = this.formObj.price * 100
       } else {
         this[str] = intInput(e)
       }
@@ -225,6 +224,7 @@ export default {
           return this.$message.error('请设置是否可赠送！')
         }
         if (valid) {
+          this.formObj.price = this.formObj.price * 100
           let params = this.formObj
           // 适用条件1-全场券 2-商品券
           if (this.formObj.scope === '2') {

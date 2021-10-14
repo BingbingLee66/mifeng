@@ -60,14 +60,17 @@ export default {
           this.couponList[index].name = ''
           this.couponList[index].errTips = '请设置所包含的优惠券'
         } else {
-          queryCouponInfo(val).then(res => {
-            console.log(res)
+          let params = {
+            type: 2,
+            couponId: val
+          }
+          queryCouponInfo(params).then(res => {
             if (res.state === 1) {
               this.couponList[index].errTips = ''
               this.couponList[index].name = res.msg
             } else {
               this.couponList[index].name = ''
-              this.couponList[index].errTips = '该优惠券不存在'
+              this.couponList[index].errTips = res.msg
             }
           })
         }
