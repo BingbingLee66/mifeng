@@ -143,7 +143,7 @@ export default {
     // 更新发行状态
     updateIssueStatu(row, status) {
       let _this = this
-      let msg = status === 1 ? '确认停发吗?' : '确认继续发吗?'
+      let msg = status === 0 ? '确认停发吗?' : '确认继续发吗?'
       _this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'

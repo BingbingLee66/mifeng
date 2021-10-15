@@ -1,4 +1,4 @@
-import {refreshGetInfo, getInfo, getPostUrl} from '@/api/system/property'
+import { refreshGetInfo, getInfo, getPostUrl } from '@/api/system/property'
 import html2canvas from 'html2canvas'
 import domtoimage from 'dom-to-image'
 
@@ -33,6 +33,7 @@ export default {
         ckey: this.$store.getters.ckey
       }
       getInfo(params).then(response => {
+        console.log('response', response)
         this.property = response.data.data
       })
     },
@@ -107,7 +108,7 @@ export default {
           a.click()
           _this.isLoading = false
         })
-        .catch(function (error) {
+        .catch(function(error) {
           console.error('oops, something went wrong!', error)
           _this.isLoading = false
         })

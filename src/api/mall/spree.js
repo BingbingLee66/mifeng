@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const baseUrl = process.env.VUE_APP_BASE_API_3
+const baseUrl = process.env.VUE_APP_BASE_API_2
 
 // 创建大礼包
 export function createSpree(params) {

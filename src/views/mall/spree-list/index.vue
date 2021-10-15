@@ -42,13 +42,13 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="大礼包有效期" width="130px">
+        <el-table-column label="大礼包有效期" width="165px">
           <template slot-scope="scope">
             {{ scope.row.validStartTime | dateFormat }}至
             {{ scope.row.validEndTime | dateFormat }}
           </template>
         </el-table-column>
-        <el-table-column label="大礼包发行量" width="130px">
+        <el-table-column label="大礼包发行量" width="120px">
           <template slot-scope="scope">
             <div class="blue-label" @click="showIssue(scope.row)">{{ scope.row.quota }}</div>
           </template>
@@ -72,10 +72,10 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.status===1" type="text" @click="updateIssueStatu(scope.row,1)">停发</el-button>
-            <el-button v-else-if="scope.row.status===2" type="text" @click="updateIssueStatu(scope.row,2)">继续发
+            <el-button v-if="scope.row.status===0" type="text" @click="updateIssueStatu(scope.row,0)">停发</el-button>
+            <el-button v-else-if="scope.row.status===1" type="text" @click="updateIssueStatu(scope.row,1)">继续发
             </el-button>
-            <el-button v-else>--</el-button>
+            <span v-else>--</span>
           </template>
         </el-table-column>
       </el-table>
