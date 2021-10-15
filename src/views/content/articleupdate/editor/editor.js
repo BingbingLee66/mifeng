@@ -176,7 +176,7 @@ export default {
           if (this.formObj.coverType === 0) {
             this.formObj.coverImgs = []
           }
-          this.formObj['contentHtml'] = this.$refs.ueditor.content
+          // this.formObj['contentHtml'] = this.$refs.ueditor.content
           this.formObj['istop'] = false // 商会发布文章不开放置顶
           this.formObj['ckey'] = this.$store.getters.ckey
           this.formObj['contentModuleId'] = this.activeName
