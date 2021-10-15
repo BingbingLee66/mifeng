@@ -63,7 +63,7 @@
           <el-select v-model="query.settlementStatus" placeholder="请选择">
             <el-option label="所有" :value="-1"></el-option>
             <el-option label="待商务确认" :value="0"></el-option>
-            <el-option label="待财务打款" :value="1"></el-option>
+            <el-option label="待财务付款" :value="1"></el-option>
             <el-option label="财务已付款" :value="2"></el-option>
           </el-select>
         </el-form-item>
