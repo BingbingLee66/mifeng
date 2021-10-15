@@ -31,16 +31,16 @@
     <div class="table-block">
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column label="接收时间">
-          <template slot-scope="scope"> {{ scope.row.receivedTime | dateFormat }}</template>
+          <template slot-scope="scope"> {{ scope.row.time }}</template>
         </el-table-column>
         <el-table-column label="发放的券">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goCouponDetail(scope.row.couponId)">{{ scope.row.couponName }}</div>
+            <div class="blue-label" @click="goCouponDetail(scope.row.templateId)">{{ scope.row.couponName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="接收方-用户名">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goMemberDetail">{{ scope.row.uname }}</div>
+            <div class="blue-label" @click="goMemberDetail(scope.row.uid)">{{ scope.row.name }}</div>
           </template>
         </el-table-column>
         <el-table-column label="注册手机号" width="160px">
@@ -48,26 +48,26 @@
         </el-table-column>
         <el-table-column label="用户属性" width="150px">
           <template slot-scope="scope">
-            <span v-if="scope.row.userType===1">商协会成员</span>
-            <span v-if="scope.row.userType===2">普通用户</span>
+            <span v-if="scope.row.type===2">商协会成员</span>
+            <span v-if="scope.row.type===1">普通用户</span>
           </template>
         </el-table-column>
         <el-table-column label="所属商/协会">
-          <template slot-scope="scope">{{ scope.row.chamberName }}</template>
+          <template slot-scope="scope">{{ scope.row.chamber }}</template>
         </el-table-column>
         <el-table-column label="已接收" width="150px">
-          <template slot-scope="scope">{{ scope.row.receivedCount }}</template>
+          <template slot-scope="scope">{{ scope.row.takeSize }}</template>
         </el-table-column>
         <el-table-column label="已赠送" width="150px">
-          <template slot-scope="scope">{{ scope.row.sendCount }}</template>
+          <template slot-scope="scope">{{ scope.row.giveSize }}</template>
         </el-table-column>
         <el-table-column label="已使用" width="150px">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goOrderList">{{ scope.row.usedCount }}</div>
+            <div class="blue-label" @click="goOrderList">{{ scope.row.useSize }}</div>
           </template>
         </el-table-column>
         <el-table-column label="已过期" width="150px">
-          <template slot-scope="scope">{{ scope.row.expiredCount }}</template>
+          <template slot-scope="scope">{{ scope.row.expireSize }}</template>
         </el-table-column>
       </el-table>
       <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />

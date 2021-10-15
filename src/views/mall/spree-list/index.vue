@@ -72,8 +72,8 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.status===0" type="text" @click="updateIssueStatu(scope.row,0)">停发</el-button>
-            <el-button v-else-if="scope.row.status===1" type="text" @click="updateIssueStatu(scope.row,1)">继续发
+            <el-button v-if="scope.row.status===0" type="text" @click="updateIssueStatu(scope.row,1)">继续发</el-button>
+            <el-button v-else-if="scope.row.status===1" type="text" @click="updateIssueStatu(scope.row,0)">停发
             </el-button>
             <span v-else>--</span>
           </template>
