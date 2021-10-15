@@ -99,10 +99,11 @@ export default {
     handleSizeChange(val, str) {
       this[str].pageSize = val;
       this[str].page = 1;
-      console.log(this[str]);
+      this.fetchData()
     },
     handleCurrentChange(val) {
       this[str].page = val;
+      this.fetchData()
     },
     handleSelectionChange(val) {
       this.ids = [];
