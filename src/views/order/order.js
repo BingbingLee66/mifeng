@@ -256,6 +256,7 @@ export default {
               type: 'success'
             })
             this.showSendOutDialog = false
+            this.currentpage = 1
             this.fetchData()
           })
         } else {
@@ -294,6 +295,7 @@ export default {
           this.successRows = res.data.successRows
           this.totalRows = res.data.totalRows
           this.tipDialog = true
+          this.currentpage = 1
           this.fetchData()
         }
         this.submitLoading = false
