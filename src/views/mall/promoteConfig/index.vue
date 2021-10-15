@@ -166,7 +166,7 @@
              </el-form-item>
               <el-radio v-model="promoteForm.relType" label="list">商品列表</el-radio>
               <el-radio v-if="promoteForm.relType == 'list'" class="ml" v-model="promoteForm.relTypeChild" label="1">首页-爆品必拼</el-radio>
-              <el-radio v-if="promoteForm.relType == 'list'" class="ml" v-model="promoteForm.relTypeChild" label="2">商品优选</el-radio>
+              <el-radio v-if="promoteForm.relType == 'list'" class="ml" v-model="promoteForm.relTypeChild" label="2">商会优选</el-radio>
               <el-form-item prop="relCkey" v-if="promoteForm.relType == 'list' && promoteForm.relTypeChild == 2" >
                 <el-select v-model="promoteForm.relCkey" placeholder="请选择商会">
                  <el-option v-for="item in chamberOptions" :key="item.value" :label="item.label" :value="item.value"/>
