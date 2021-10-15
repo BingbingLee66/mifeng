@@ -343,7 +343,7 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "src/styles/common.scss";
 </style>
-<style>
+<style scoped>
 .stat-card {
   width: 100%;
   height: 120px;
