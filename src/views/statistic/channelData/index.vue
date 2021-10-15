@@ -99,8 +99,6 @@
           <el-option v-for="item in chamberOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
           <!-- <el-option v-for="item in channelList" :key="item.id" :label="item.channelName" :value="item.id"/> -->
         </el-select>
-      </div>
-      <div class="query-wrap item">
         <el-input
           style="margin-right: 15px;"
           size="mini"
@@ -278,7 +276,7 @@
   flex-wrap: wrap;
   align-items:center;
   position: relative;
-  width: 100%;
+  width: calc(100% - 60px);
   .item{
     margin-bottom: 12px;
   }
