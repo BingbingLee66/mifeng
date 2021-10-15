@@ -54,6 +54,7 @@
         </el-form-item>
         <el-form-item label="生成结算单" v-if="query.status == 5 || query.status == 6">
           <el-select v-model="query.settled" placeholder="请选择">
+            <el-option label="所有" :value="-1"></el-option>
             <el-option label="是" :value="1"></el-option>
             <el-option label="否" :value="0"></el-option>
           </el-select>
