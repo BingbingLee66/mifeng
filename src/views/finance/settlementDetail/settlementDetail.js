@@ -101,7 +101,7 @@ export default {
       this[str].page = 1;
       this.fetchData()
     },
-    handleCurrentChange(val) {
+    handleCurrentChange(val,str) {
       this[str].page = val;
       this.fetchData()
     },
