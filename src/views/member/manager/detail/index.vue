@@ -18,10 +18,8 @@
           <span v-if="member.registerType == 0">商会后台</span>
           <span v-if="member.registerType == 1">微信小程序</span>
           <span v-if="member.registerType == 2">商会邀请</span>
-          <span v-if="member.registerType >= 3">会员邀请</span> 
-          <span
-            v-if="member.registerType != 0 && member.registerType != 1 && member.registerType != 2"
-          >空</span>
+         <span v-if="member.registerType == 3 || member.registerType == 4">会员邀请</span> 
+          <span v-else>空</span>
         </el-col>
       </el-row>
     </div>
