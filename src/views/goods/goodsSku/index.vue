@@ -13,7 +13,7 @@
           </el-col>
           <el-col :span="18">
             <el-form-item label="供货商家：" prop="supplierId">
-              <el-select v-model="formObj.supplierId" placeholder="请选择商品的供货商家" @visible-change="addSupplier">
+              <el-select v-model="formObj.supplierId" placeholder="请选择商品的供货商家" @visible-change="addSupplier" filterable>
                 <el-option v-for="sp in supplierOptions" :label="sp.label" :value="sp.value" :key="sp.value"></el-option>
               </el-select>
             </el-form-item>

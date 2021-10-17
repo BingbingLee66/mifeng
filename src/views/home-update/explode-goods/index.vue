@@ -20,7 +20,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="商品来源">
-          <el-select v-model="query.ckey" placeholder="请选择商品来源" clearable>
+          <el-select v-model="query.ckey" placeholder="请选择商品来源" clearable filterable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value"/>
           </el-select>
         </el-form-item>
@@ -112,7 +112,7 @@
       <el-dialog title="添加爆品" :visible.sync="showAddDialog" width="80%">
         <el-form ref="query" label-position="left" :inline="true" :model="queryAll">
           <el-form-item label-width="100px" label="商品来源：">
-            <el-select v-model="queryAll.ckey" placeholder="请选择商品来源" clearable>
+            <el-select v-model="queryAll.ckey" placeholder="请选择商品来源" clearable filterable>
               <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value"/>
             </el-select>
           </el-form-item>

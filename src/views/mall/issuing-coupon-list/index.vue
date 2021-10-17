@@ -58,7 +58,7 @@
             <div v-else>
               <div v-for="(item,index) in  scope.row.resultList" :key="index">
                 <div v-if="item.resultStatus===5">
-                  由于手机号未注册，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{
+                  由于手机号未注册，有<span class="blue-label" @click="showResultDialog(item.phoneStr,1)">{{
                     item.phoneStr.length
                   }}人次</span>无法收到足额的劵
                 </div>
@@ -98,14 +98,14 @@
     <div class="result-dialog">
       <el-dialog title="提示" :visible.sync="sendResultVisible" width="400px">
         <div class="dialog-content">
-          <div>以下手机号还未注册</div>
+          <div style="margin-bottom: 10px;">{{resultTips}}</div>
           <div class="phone-list">
-            <div v-for="(item,index) in phoneList" :key="index">{{ item }}</div>
+            <div v-for="(item,index) in phoneList" :key="index" style="line-height: 1.5;">{{ item }}</div>
           </div>
         </div>
         <div slot="footer" style="text-align: center;">
-          <el-button type="primary" @click="failTipVisible = false">确认</el-button>
-          <el-button @click="failTipVisible = false">取消</el-button>
+          <el-button type="primary" @click="sendResultVisible = false">确认</el-button>
+          <el-button @click="sendResultVisible = false">取消</el-button>
         </div>
       </el-dialog>
     </div>

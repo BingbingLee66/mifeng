@@ -19,7 +19,8 @@ export default {
       issue: '',
       listLoading: false,
       phoneList: [],
-      sendResultVisible: false
+      sendResultVisible: false,
+      resultTips: ''
     }
   },
   created() {
@@ -87,8 +88,12 @@ export default {
       })
     },
     // 查看发送结果
-    showResultDialog(phone) {
-      console.log(phone)
+    showResultDialog(phone, resultStatus) {
+      if (resultStatus === 5) {
+        this.resultTips = '以下手机号还未注册'
+      } else {
+        this.resultTips = '以下手机号无法收到足额的券'
+      }
       this.phoneList = phone
       this.sendResultVisible = true
     },

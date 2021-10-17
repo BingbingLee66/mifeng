@@ -3,7 +3,7 @@
     <el-dialog title="可用劵商品" :visible.sync="createVisible" width="80%">
       <el-form ref="query" label-position="right" size="small" :inline="true" :model="query">
         <el-form-item label-width="80px" label="商品来源">
-          <el-select v-model="query.ckey" placeholder="请选择商品来源" clearable>
+          <el-select v-model="query.ckey" placeholder="请选择商品来源" clearable filterable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value"/>
           </el-select>
         </el-form-item>
@@ -166,12 +166,17 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(() => {
+        let selectedItem = window.localStorage.getItem('selected-item')
+        if (selectedItem) {
+          selectedItem = JSON.parse(selectedItem)
+        }
+        let setSelectedItem = [...this.selectionDatas, ...selectedItem]
         window.localStorage.setItem(
           'selected-item',
-          JSON.stringify(this.selectionDatas)
+          JSON.stringify(setSelectedItem)
         )
         this.$emit('localChange', {
-          data: this.selectionDatas,
+          data: setSelectedItem,
           type: 'add',
         })
         let _this = this

@@ -137,6 +137,15 @@ export default {
           couponName: row.name
         }
       })
+    },
+    // 查看商品劵商品
+    goGoodsManager(couponId) {
+      this.$router.push({
+        path: '/mall/goods-manager',
+        query: {
+          couponId
+        }
+      })
     }
   }
 }

@@ -21,6 +21,18 @@ export default {
   },
   created() {
     this.getChamberOptions()
+    let sendItem = window.localStorage.getItem('send-item')
+    let phoneItem = window.localStorage.getItem('phone-item')
+    let issueType = window.localStorage.getItem('issue-type')
+    if (sendItem) {
+      this.couponList = JSON.parse(sendItem)
+    }
+    if (phoneItem) {
+      this.phone = JSON.parse(phoneItem)
+    }
+    if (issueType) {
+      this.issueType = issueType
+    }
   },
   methods: {
     // 工具类函数 查找数组重复元素
@@ -83,6 +95,7 @@ export default {
           this.couponList[index].tip = ''
         }
       }
+      window.localStorage.setItem('send-item', JSON.stringify(this.couponList))
     },
     addCoupon() {
       if (this.couponList.length > 9) {
@@ -95,15 +108,19 @@ export default {
       } else {
         this.couponList.push({ couponId: '', name: '', couponNum: '', tip: '', errTips: '' })
       }
+      window.localStorage.setItem('send-item', JSON.stringify(this.couponList))
     },
     delCoupon(index) {
       this.couponList.splice(index, 1)
+      window.localStorage.setItem('send-item', JSON.stringify(this.couponList))
     },
     couponListStart() {
       this.couponListDrag = true
+      window.localStorage.setItem('send-item', JSON.stringify(this.couponList))
     },
     couponListEnd() {
       this.couponListDrag = false
+      window.localStorage.setItem('send-item', JSON.stringify(this.couponList))
     },
     handleChange(e) {
       if (e === '1') {
@@ -111,6 +128,7 @@ export default {
       } else if (e === '2') {
         this.showChamberSelect = true
       }
+      window.localStorage.setItem('issue-type', this.issueType)
     },
     checkCouponList() {
       let vaild = true
@@ -134,6 +152,10 @@ export default {
         }
       })
       return vaild
+    },
+    handlePhoneBlur(e) {
+      let val = e.target.value
+      val && window.localStorage.setItem('phone-item', JSON.stringify(val))
     },
     save() {
       if (!this.checkCouponList()) return
@@ -162,10 +184,17 @@ export default {
         issueType: this.issueType,
         phone: _phoneList
       }
-      console.log('提交参数：', params)
       createSend(params).then(res => {
-        console.log(res)
         if (res.state === 1) {
+          window.localStorage.setItem('send-item', JSON.stringify([{
+            couponId: '',
+            name: '',
+            couponNum: '',
+            tip: '',
+            errTips: ''
+          }]))
+          window.localStorage.setItem('phone-item', '')
+          window.localStorage.setItem('issue-type', '')
           this.$router.push({ name: '已发放的劵' })
         }
       })

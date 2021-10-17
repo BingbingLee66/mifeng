@@ -34,7 +34,7 @@
                 <div style="width: 500px">
                   <el-radio label="1">发给指定手机号</el-radio>
                   <div v-if="issueType==='1'" style="margin-top:10px;">
-                    <el-input style="width: 400px;" type="textarea" resize="none" :rows="8" v-model="phone" placeholder=""></el-input>
+                    <el-input style="width: 400px;" type="textarea" resize="none" :rows="8" v-model="phone" placeholder="" @blur="handlePhoneBlur"></el-input>
                     <div style="margin-top:10px;line-height:1.5;" class="red-label">
                       <div>提示：</div>
                       <div>1.输入多个手机号时，请以回车换行。</div>

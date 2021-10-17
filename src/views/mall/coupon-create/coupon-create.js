@@ -224,7 +224,6 @@ export default {
           return this.$message.error('请设置是否可赠送！')
         }
         if (valid) {
-          this.formObj.price = this.formObj.price * 100
           let params = this.formObj
           // 适用条件1-全场券 2-商品券
           if (this.formObj.scope === '2') {
@@ -237,6 +236,7 @@ export default {
           if (!this.isPutGiftPack) {
             params['used'] = 0
           }
+          params['price'] = this.formObj.price * 100
           // useLimit满减限额 -1-无门槛使用 >0 满减使用
           if (this.isLimit === '1') {
             params['useLimit'] = -1

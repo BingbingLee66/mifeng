@@ -22,7 +22,8 @@ export default {
       limit: 10,
       listLoading: false,
       selectionDatas: [],
-      chamberOptions: []
+      chamberOptions: [],
+      couponId: null
     }
   },
   computed: {
@@ -41,6 +42,7 @@ export default {
     }
   },
   created() {
+    this.couponId = this.$route.query.couponId
     this.getChamberOptions()
     this.init()
   },
@@ -85,6 +87,9 @@ export default {
       if (this.query.date) {
         params['startTime'] = this.query.date[0]
         params['endTime'] = this.query.date[1]
+      }
+      if (this.couponId) {
+        params['templateId'] = this.couponId
       }
       // const objList = [{
       //   id: 2242,

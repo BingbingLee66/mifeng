@@ -16,7 +16,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="所属商会：">
-          <el-select v-model="query.chamberId" placeholder="请选择职业类型">
+          <el-select v-model="query.chamberId" placeholder="请选择职业类型" filterable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id" />
           </el-select>
           <!-- <el-input v-model="query.chamberName" placeholder="请输入所属商会"/> -->
