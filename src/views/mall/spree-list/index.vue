@@ -85,7 +85,7 @@
     <!-- 编辑发行量 -->
     <el-dialog title="发行量" :visible.sync="issueVisible" width="400px">
       <div class="dialog-content">
-        <el-input style="width: 300px" v-model="issue" placeholder="" @input="e => handleNumber(e,'issue')"/>
+        <el-input style="width: 300px" v-model="issue" placeholder="" maxlength="10" show-word-limit @input="e => handleNumber(e,'issue')"/>
         <div class="red-label mt-10">提示：编辑发行量时，只能增加，不能减少。</div>
       </div>
       <div slot="footer" class="dialog-footer">

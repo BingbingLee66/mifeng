@@ -3,7 +3,7 @@
     <div class="top-block">
       <div class="title">已发放列表</div>
       <div class="red-label goods">【{{giftId}}】{{giftName}}</div>
-      <div class="blue-label" @click="goSpreeDetail()">查看详情</div>
+      <div class="blue-label" @click="goSpreeDetail(giftId)">查看详情</div>
     </div>
     <div class="from-block">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
@@ -24,26 +24,26 @@
             <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="">
-          <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
+        <el-form-item label="" style="margin-left: -30px;">
+          <el-button type="primary" @click="fetchData($event)">查询
           </el-button>
         </el-form-item>
       </el-form>
     </div>
     <div class="table-block">
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-        <el-table-column label="接收/领取时间">
+        <el-table-column label="接收/领取时间" width="160px">
           <template slot-scope="scope"> {{ scope.row.createTime | dateFormat }}</template>
         </el-table-column>
-        <el-table-column label="接收方/领取方-用户名">
+        <el-table-column label="接收方/领取方-用户名" width="200px">
           <template slot-scope="scope">
             <div class="blue-label" @click="goMemberDetail(scope.row.userId)">{{ scope.row.userName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="注册手机号" width="200px">
+        <el-table-column label="注册手机号" width="120px">
           <template slot-scope="scope">{{ scope.row.phone }}</template>
         </el-table-column>
-        <el-table-column label="用户属性" width="150px">
+        <el-table-column label="用户属性" width="120px">
           <template slot-scope="scope">
             <div v-if="scope.row.attribute===1">商/协会成员</div>
             <div v-if="scope.row.attribute===2">普通用户</div>
@@ -52,7 +52,7 @@
         <el-table-column label="所属商/协会">
           <template slot-scope="scope">{{ scope.row.orgId }}</template>
         </el-table-column>
-        <el-table-column label="已接收/领取" width="200px">
+        <el-table-column label="已接收/领取" width="100px">
           <template slot-scope="scope">{{ scope.row.receiveSize }}</template>
         </el-table-column>
       </el-table>

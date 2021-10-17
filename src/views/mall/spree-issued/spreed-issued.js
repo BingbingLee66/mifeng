@@ -52,7 +52,7 @@ export default {
       let params = { ...this.query }
       params['pageSize'] = this.limit
       params['page'] = e === 1 ? this.currentpage = 1 : this.currentpage
-      params['templateId '] = this.giftId
+      params['templateId'] = this.giftId
       querySpreeIssued(params).then(res => {
         console.log('已发放大礼包列表', res)
         this.list = res.data.list
@@ -82,8 +82,8 @@ export default {
     goSpreeDetail() {
       // /mall/spreeDetail
       this.$router.push({
-        name: '查看大礼包',
-        params: { giftId: this.giftId }
+        path: '/mall/spreeDetail',
+        query: { giftId: this.giftId }
       })
     },
   }
