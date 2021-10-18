@@ -7,10 +7,10 @@ export default {
       giftId: '',
       giftName: '',
       query: {
-        userName: '',
+        uName: '',
         phone: '',
         attribute: '',
-        ckey: ''
+        cKey: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
