@@ -1,4 +1,4 @@
-import { getList, updateStatus, batchUpdateStatus } from '@/api/mall/mall'
+import { getList, getCouponList, updateStatus, batchUpdateStatus } from '@/api/mall/mall'
 import { adminUdateGoodsStatus, batchAdminUpdateGoodsStatus } from '@/api/goods/goods'
 import { getChamberOptions } from '@/api/finance/finance'
 
@@ -77,6 +77,7 @@ export default {
         this.currentpage = 1
       }
       this.listLoading = true
+      let requestUrl = ''
       let params = {
         'pageSize': this.limit,
         'page': this.currentpage,
@@ -90,6 +91,9 @@ export default {
       }
       if (this.couponId) {
         params['templateId'] = this.couponId
+        requestUrl = getCouponList
+      } else {
+        requestUrl = getList
       }
       // const objList = [{
       //   id: 2242,
@@ -107,7 +111,7 @@ export default {
       // this.list = objList
       // this.total = 1
       // this.listLoading = false
-      getList(params).then(response => {
+      requestUrl(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
         this.listLoading = false

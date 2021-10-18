@@ -10,6 +10,15 @@ export function getList(params) {
   })
 }
 
+// 优惠券绑定商品列表
+export function getCouponList(params) {
+  return request({
+    url: baseUrl + '/ec/mall/coupon-goods-list',
+    method: 'get',
+    params
+  })
+}
+
 export function getExplodeGoodsList(params) {
   return request({
     url: baseUrl + '/api/ec/mall/explodeGoods/listExplodeGoods',

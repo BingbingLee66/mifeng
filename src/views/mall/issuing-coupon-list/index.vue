@@ -63,17 +63,17 @@
                   }}人次</span>无法收到足额的劵
                 </div>
                 <div v-if="item.resultStatus===4">
-                  由于优惠券【<span v-for="(item,index) in scope.row.couponList" :key="index">{{item.couponId}}</span>】被停发，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{
-                    item.phoneStr.length
-                  }}人次</span>无法收到足额的券
+                  由于优惠券【<span v-for="(item,index) in scope.row.couponList" :key="index">
+                  {{ item.couponId }}<i v-if="scope.row.couponList.length!==index+1">，</i></span>】被停发，
+                  有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{ item.phoneStr.length }}人次</span>无法收到足额的券
                 </div>
                 <div v-if="item.resultStatus===3">
-                  由于优惠券【<span v-for="(item,index) in scope.row.couponList" :key="index">{{item.couponId}}</span>】的发行量不够，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{
+                  由于优惠券【<span v-for="(item,index) in scope.row.couponList" :key="index">{{ item.couponId }}，</span>】的发行量不够，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{
                     item.phoneStr.length
                   }}人次</span>无法收到足额的券！
                 </div>
                 <div v-if="item.resultStatus===2">
-                  由于优惠券【<span v-for="(item,index) in scope.row.couponList" :key="index">{{item.couponId}}</span>】的限领限制，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{
+                  由于优惠券【<span v-for="(item,index) in scope.row.couponList" :key="index">{{ item.couponId }}，</span>】的限领限制，有<span class="blue-label" @click="showResultDialog(item.phoneStr)">{{
                     item.phoneStr.length
                   }}人次</span>无法收到足额的券！
                 </div>
@@ -98,7 +98,7 @@
     <div class="result-dialog">
       <el-dialog title="提示" :visible.sync="sendResultVisible" width="400px">
         <div class="dialog-content">
-          <div style="margin-bottom: 10px;">{{resultTips}}</div>
+          <div style="margin-bottom: 10px;">{{ resultTips }}</div>
           <div class="phone-list">
             <div v-for="(item,index) in phoneList" :key="index" style="line-height: 1.5;">{{ item }}</div>
           </div>

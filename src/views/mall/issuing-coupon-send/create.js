@@ -1,7 +1,8 @@
 import { createSend } from '@/api/mall/issued'
 import { queryCouponInfo } from '@/api/mall/coupon'
 import { getChamberAllList } from '@/api/goods/goods'
-import draggable from 'vuedraggable' // 拖拽组件
+import draggable from 'vuedraggable'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -18,6 +19,9 @@ export default {
       showPhoneInput: false,
       showChamberSelect: false
     }
+  },
+  computed: {
+    ...mapGetters(['profile'])
   },
   created() {
     this.getChamberOptions()
@@ -184,6 +188,8 @@ export default {
         issueType: this.issueType,
         phone: _phoneList
       }
+      params['createId'] = this.profile.id
+      params['createName'] = this.profile.remark
       createSend(params).then(res => {
         if (res.state === 1) {
           window.localStorage.setItem('send-item', JSON.stringify([{

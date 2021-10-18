@@ -18,11 +18,11 @@ export default {
         scope: '', // 适用条件
         used: '', // 是否放进大礼包
         name: '', // 优惠券名称
-        price: '', // 面值金额
         validType: '', // 有效期类型
         validUse: '', // 是否仅限新人使用
         validShare: '', // 是否可赠送
       },
+      priceValue: '', // 面值金额
       isPutGiftPack: false, // 是否放进大礼包
       isLimit: '', // 是否满减限额
       limitValue: '',
@@ -47,7 +47,7 @@ export default {
         name: [
           { required: true, message: '请填写优惠券名称！', trigger: 'blur' }
         ],
-        price: [
+        priceValue: [
           { required: true, message: '请填写面值金额！', trigger: 'blur' }
         ],
         validUse: [
@@ -124,7 +124,7 @@ export default {
     // 限制输入正整数
     handleNumber(e, str) {
       if (str === 'price') {
-        this.formObj.price = intInput(e)
+        this.priceValue = intInput(e)
       } else {
         this[str] = intInput(e)
       }
@@ -173,7 +173,7 @@ export default {
         if (!this.formObj.name) {
           return this.$message.error('请填写优惠券名称！')
         }
-        if (!this.formObj.price) {
+        if (!this.priceValue) {
           return this.$message.error('请填写面值金额！')
         }
         if (!this.isLimit) {
@@ -182,7 +182,7 @@ export default {
         if (this.isLimit === '2') {
           if (!this.limitValue) {
             return this.$message.error('请填写满减限额！')
-          } else if (parseInt(this.limitValue) <= parseInt(this.formObj.price)) {
+          } else if (parseInt(this.limitValue) <= parseInt(this.priceValue)) {
             return this.$message.error('满减限额需大于面值金额！')
           } else if (parseInt(this.limitValue) > 1000000) {
             return this.$message.error('满减限额不得大于100万元！')
@@ -236,8 +236,7 @@ export default {
           if (!this.isPutGiftPack) {
             params['used'] = 0
           }
-          let price = this.formObj.price
-          params['price'] = price * 100
+          params['price'] = this.priceValue * 100
           // useLimit满减限额 -1-无门槛使用 >0 满减使用
           if (this.isLimit === '1') {
             params['useLimit'] = -1
@@ -268,12 +267,14 @@ export default {
             params['validDays'] = this.dayValue
           }
           params['createId'] = this.profile.id
-          params['createName'] = this.profile.userName
+          params['createName'] = this.profile.remark
           createCoupon(params).then(res => {
             if (res.state === 1) {
               window.localStorage.setItem('selected-item', [])
               this.$message.success(res.msg)
               this.$router.push({ name: '优惠券列表' })
+            } else {
+              this.$message.error(res.msg)
             }
           })
         } else {

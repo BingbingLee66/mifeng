@@ -151,7 +151,7 @@ export default {
           params['validStartTime'] = this.formObj.date[0]
           params['validEndTime'] = this.formObj.date[1]
           params['createId'] = this.profile.id
-          params['createName'] = this.profile.userName
+          params['createName'] = this.profile.remark
           createSpree(params).then(res => {
             if (res.state === 1) {
               this.$message.success(res.msg)

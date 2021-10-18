@@ -43,9 +43,9 @@
               <el-input size="mini" style="width: 200px;" v-model="formObj.name" placeholder="8个字内" show-word-limit maxlength="8" @input="handleSpace"></el-input>
             </el-form-item>
           </div>
-          <div class="coupon-form-item">
+          <div class="coupon-form-item require-label">
             <el-form-item label="面值金额：" prop="price">
-              <el-input size="mini" style="width: 150px;margin-top: 6px;" v-model="formObj.price" @input="e => handleNumber(e,'price')">
+              <el-input size="mini" style="width: 150px;margin-top: 6px;" v-model="priceValue" maxlength="4" @input="e => handleNumber(e,'price')">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
@@ -58,7 +58,7 @@
                 </div>
                 <div class="radio-input">
                   <el-radio label="2">满</el-radio>
-                  <el-input :disabled="disLimitValue" size="mini" v-model="limitValue" @input="e => handleNumber(e,'limitValue')" />
+                  <el-input :disabled="disLimitValue" size="mini" v-model="limitValue" maxlength="4" @input="e => handleNumber(e,'limitValue')" />
                   元可用
                 </div>
               </el-radio-group>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="radio-input" v-if="!formObj.used">
                   <el-radio label="2">共</el-radio>
-                  <el-input :disabled="disIssueValue" size="mini" v-model="issueValue" @input="e => handleNumber(e,'issueValue')" />
+                  <el-input :disabled="disIssueValue" size="mini" v-model="issueValue" maxlength="4" @input="e => handleNumber(e,'issueValue')" />
                   张
                 </div>
               </el-radio-group>
@@ -108,7 +108,7 @@
                 </div>
                 <div class="radio-input">
                   <el-radio label="2">领取后立即生效，有效期</el-radio>
-                  <el-input size="mini" v-model="dayValue" :disabled="disDayValue" @input="e => handleNumber(e,'dayValue')" />
+                  <el-input size="mini" v-model="dayValue" :disabled="disDayValue" maxlength="3" @input="e => handleNumber(e,'dayValue')" />
                   天
                 </div>
               </el-radio-group>
