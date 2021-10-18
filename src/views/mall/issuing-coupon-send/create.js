@@ -204,6 +204,9 @@ export default {
           this.$router.push({ name: '已发放的劵' })
         }
       })
+    },
+    cancel() {
+      this.$router.push({ name: '已发放的劵' })
     }
   }
 }

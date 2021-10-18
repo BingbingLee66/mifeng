@@ -6,7 +6,7 @@
           <div class="coupon-form-title">大礼包信息</div>
           <div class="coupon-form-item">
             <el-form-item label="大礼包名称：" prop="giftName">
-              <el-input style="width: 200px;" size="mini" v-model="formObj.giftName" placeholder="8个字内" show-word-limit maxlength="8" @input="handleSpace"></el-input>
+              <el-input style="width: 200px;" size="mini" v-model="formObj.giftName" placeholder="8个字内" show-word-limit maxlength="8" @input="handleSpace" @blur="handleGiftName"></el-input>
             </el-form-item>
           </div>
           <div class="coupon-form-item">
@@ -29,7 +29,7 @@
           </div>
           <div class="coupon-form-item">
             <el-form-item label="大礼包发行量：" prop="quota">
-              <el-input style="width: 200px;" size="mini" v-model="formObj.quota" @input="e => handleNumber(e,'quota')" />
+              <el-input style="width: 200px;" size="mini" v-model="formObj.quota" maxlength="9"  @input="e => handleNumber(e,'quota')" @blur="handleQuota" />
               份
             </el-form-item>
           </div>
@@ -62,7 +62,7 @@
     </div>
     <div style="width:900px;text-align:center;margin-top: 30px;">
       <el-button type="primary" @click="save">保存</el-button>
-      <el-button>取消</el-button>
+      <el-button @click="cancel">取消</el-button>
     </div>
   </div>
 </template>

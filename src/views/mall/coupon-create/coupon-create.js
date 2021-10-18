@@ -283,6 +283,9 @@ export default {
           return false
         }
       })
+    },
+    cancel() {
+      this.$router.push({ name: '优惠券列表' })
     }
   }
 }

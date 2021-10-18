@@ -37,6 +37,25 @@ export default {
   computed: {
     ...mapGetters(['profile'])
   },
+  created() {
+    let spreeItem = window.localStorage.getItem('spree-item')
+    let giftnameItem = window.localStorage.getItem('giftname-item')
+    let quotaItem = window.localStorage.getItem('quota-item')
+    if (spreeItem) {
+      this.couponList = JSON.parse(spreeItem)
+    }
+    if (giftnameItem) {
+      this.formObj.giftName = giftnameItem
+    }
+    if (quotaItem) {
+      this.formObj.quota = quotaItem
+    }
+  },
+  destroyed() {
+    window.localStorage.setItem('spree-item', JSON.stringify([{ id: '', name: '', errTip: '' }]))
+    window.localStorage.setItem('giftname-item', '')
+    window.localStorage.setItem('quota-item', '')
+  },
   methods: {
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
@@ -62,6 +81,7 @@ export default {
     // 限制输入空格
     handleSpace(e) {
       this.formObj.giftName = spaceInput(e)
+      window.localStorage.setItem('giftname-item', this.formObj.giftName)
     },
     // 限制输入正整数
     handleNumber(e, str) {
@@ -96,12 +116,23 @@ export default {
         this.couponList[index].errTip = '该优惠券不存在'
         this.couponList[index].name = ''
       }
+      window.localStorage.setItem('spree-item', JSON.stringify(this.couponList))
+    },
+    handleGiftName(e) {
+      let val = e.target.value
+      window.localStorage.setItem('giftname-item', val)
+    },
+    handleQuota(e) {
+      let val = e.target.value
+      window.localStorage.setItem('quota-item', val)
     },
     couponListStart() {
       this.couponListDrag = true
+      window.localStorage.setItem('spree-item', JSON.stringify(this.couponList))
     },
     couponListEnd(evt) {
       this.couponListDrag = false
+      window.localStorage.setItem('spree-item', JSON.stringify(this.couponList))
     },
     addCoupon() {
       if (this.couponList.length > 9) {
@@ -118,9 +149,11 @@ export default {
           errTip: ''
         })
       }
+      window.localStorage.setItem('spree-item', JSON.stringify(this.couponList))
     },
     delCoupon(index) {
       this.couponList.splice(index, 1)
+      window.localStorage.setItem('spree-item', JSON.stringify(this.couponList))
     },
     checkIds() {
       let vaild = true
@@ -162,6 +195,9 @@ export default {
           return false
         }
       })
+    },
+    cancel() {
+      this.$router.push('/mall/spree-list')
     },
     // 查看大礼包详情
     goSpreeDetail() {

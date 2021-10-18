@@ -58,7 +58,7 @@
                 </div>
                 <div class="radio-input">
                   <el-radio label="2">满</el-radio>
-                  <el-input :disabled="disLimitValue" size="mini" v-model="limitValue" maxlength="4" @input="e => handleNumber(e,'limitValue')" />
+                  <el-input :disabled="disLimitValue" size="mini" v-model="limitValue" maxlength="4" @input="e => handleNumber(e,'limitValue')"/>
                   元可用
                 </div>
               </el-radio-group>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="radio-input" v-if="!formObj.used">
                   <el-radio label="2">共</el-radio>
-                  <el-input :disabled="disIssueValue" size="mini" v-model="issueValue" maxlength="4" @input="e => handleNumber(e,'issueValue')" />
+                  <el-input :disabled="disIssueValue" size="mini" v-model="issueValue" maxlength="4" @input="e => handleNumber(e,'issueValue')"/>
                   张
                 </div>
               </el-radio-group>
@@ -89,7 +89,7 @@
                 </div>
                 <div class="radio-input" v-if="!formObj.used">
                   <el-radio label="2">最多获得</el-radio>
-                  <el-input :disabled="disGainValue" size="mini" v-model="gainValue" @input="e => handleNumber(e,'gainValue')" />
+                  <el-input :disabled="disGainValue" size="mini" v-model="gainValue" @input="e => handleNumber(e,'gainValue')"/>
                   张
                 </div>
               </el-radio-group>
@@ -108,7 +108,7 @@
                 </div>
                 <div class="radio-input">
                   <el-radio label="2">领取后立即生效，有效期</el-radio>
-                  <el-input size="mini" v-model="dayValue" :disabled="disDayValue" maxlength="3" @input="e => handleNumber(e,'dayValue')" />
+                  <el-input size="mini" v-model="dayValue" :disabled="disDayValue" maxlength="3" @input="e => handleNumber(e,'dayValue')"/>
                   天
                 </div>
               </el-radio-group>
@@ -143,11 +143,11 @@
     </div>
     <div style="width:900px;text-align:center;margin-top: 30px;">
       <el-button type="primary" @click="save">保存</el-button>
-      <el-button>取消</el-button>
+      <el-button @click="cancel">取消</el-button>
     </div>
     <!-- 可用劵商品弹窗 -->
-    <add-dialog ref="addDialog" @localChange='localChange' />
-    <remove-dialog ref="removeDialog" @localChange='localChange' />
+    <add-dialog ref="addDialog" @localChange='localChange'/>
+    <remove-dialog ref="removeDialog" @localChange='localChange'/>
   </div>
 </template>
 

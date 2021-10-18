@@ -56,7 +56,7 @@
         </div>
         <el-form-item label=" ">
           <el-button type="primary" @click="save">保存</el-button>
-          <el-button>取消</el-button>
+          <el-button @click="cancel">取消</el-button>
         </el-form-item>
       </el-form>
     </div>
