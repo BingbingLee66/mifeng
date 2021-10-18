@@ -346,7 +346,7 @@
                 <!-- <el-col :span="2" class="sku-table-content">图片</el-col> -->
                 <el-col :span="3" class="sku-table-content">删除</el-col>
               </el-row>
-              <el-row class="sku-table-td" v-for="(sku, index) in formObj.multiSku">
+              <el-row class="sku-table-td" v-for="(sku, index) in formObj.multiSku" :key="index">
                 <el-col :span="formObj.attr2 != undefined ? 3 : 6" class="sku-table-content sku-table-img">
                   {{ sku.codeName.split(',')[0] }}
                 </el-col>
@@ -433,7 +433,7 @@
         <el-form-item label="限时购买：">
           <el-date-picker @change="handleSelectTime" v-model="formObj.limitTime" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" align="right">
           </el-date-picker>
-          <div>设置完限时购买的开始时间和结束时间后，可以设置商品是否开启预约期</div>
+          <div class="tips">设置完限时购买的开始时间和结束时间后，可以设置商品是否开启预约期</div>
         </el-form-item>
         <el-row v-if="showBooking">
           <el-form-item label="预约期：">
@@ -462,6 +462,27 @@
                 <div class="input-prepend">元/件</div>
               </div>
               <!-- <div>支持输入大于0的数字，最多支持输入两位小数</div> -->
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="商品服务费率：" prop="serviceFee">
+              <div class="discount-input">
+                <el-input-number v-model="formObj.serviceFee" :min="0" :max="99" :controls="false" :precision="2"></el-input-number>
+                <div class="input-prepend">%</div>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="微信手续费率：" prop="wxServiceFee">
+              <div class="discount-input">
+                <el-input-number v-model="formObj.wxServiceFee" :min="0" :max="1" :controls="false" :precision="2"></el-input-number>
+                <div class="input-prepend">%</div>
+              </div>
+              <div class="tips">商品服务费和微信手续费的初始值来自总后台的设置，都是从用户的实付金额中收取某个百分点，将在和供货商结算时抵扣。</div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -939,5 +960,8 @@
 .ghost {
   opacity: 0.5;
   background: #c8ebfb;
+}
+.tips{
+  color: #999;
 }
 </style>

@@ -291,6 +291,13 @@ export const constantRoutes = [
         component: () => import('@/views/mall/issuing-coupon-receiver/index'),
         hidden: true,
         meta: { title: '已发放列表' }
+      },
+      {
+        path: '/finance/settlement-detail',
+        name: '结算单详情',
+        component: () => import('@/views/finance/settlementDetail/index'),
+        hidden: true,
+        meta: { title: '结算单详情' }
       }
     ]
   }

@@ -27,28 +27,6 @@
           </div>
         </div>
       </div>
-      <div class="block">
-        <div class="stat-card">
-          <div class="card-box">
-            <div class="card-box-3">
-              <div class="card-key">商城累计提现金额（元）</div>
-              <div class="card-value">¥{{pfStatistics.shopWithdraw == null ? 0 : pfStatistics.shopWithdraw}}</div>
-            </div>
-          </div>
-          <div class="cut-line"></div>
-          <div class="card-box">
-            <div class="card-box-3">
-              <div class="card-key">商城可提现金额（元）</div>
-              <div class="card-value" style="color: #FF0000;">¥{{pfStatistics.shopLave}}</div>
-            </div>
-          </div>
-          <div class="card-box">
-            <div class="card-box-3">
-              <el-button type="danger" :actionid="getId('提现', '申请提现')" v-if="has('提现', '申请提现')" @click="applyForMall($event)">申请提现</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
       <el-tabs>
         <el-tab-pane label="提现记录"></el-tab-pane>
       </el-tabs>
@@ -327,7 +305,7 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "src/styles/common.scss";
 </style>
-<style>
+<style scoped>
 .stat-card {
   width: 100%;
   height: 120px;

@@ -34,6 +34,26 @@ export default {
   filters: {
     formatDates(val) {
       return moment(val).format('yyyy-MM-DD HH:mm:ss')
+    },
+    filterSettlementStatus(val){
+      if(val == 0){
+        return '待商务确认'
+      }else if(val == 1){
+        return '待财务付款'
+      }else if(val == 2){
+        return '财务已付款'
+      }else{
+        return '--'
+      }
+    },
+    filterIsFirst(val){
+      if(val == 1){
+        return '首单用户'
+      }else if(val == 2){
+        return '复购用户'
+      }else{
+        return '--'
+      }
     }
   },
   computed: {

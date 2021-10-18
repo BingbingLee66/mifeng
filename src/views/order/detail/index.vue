@@ -71,12 +71,20 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          收货地址：{{ detailObj.consigneeAddress }}
-        </el-col>
-        <el-col :span="8">
           收货时间：
           <span v-if="detailObj.confirmReceivingTime">{{ detailObj.confirmReceivingTime | formatDates }}</span>
           <span v-else> - -</span>
+        </el-col>
+        <el-col :span="8">
+          推广渠道：{{ detailObj.channelName || '--' }}
+        </el-col>
+        <el-col :span="8">
+          用户属性：{{ detailObj.isFirst | filterIsFirst }}
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          收货地址：{{ detailObj.consigneeAddress }}
         </el-col>
       </el-row>
     </div>
@@ -84,12 +92,13 @@
       <el-row class="o-table-th">
         <el-col :span="4" class="o-table-content">商品ID/商品名称</el-col>
         <el-col :span="3" class="o-table-content">规格</el-col>
-        <el-col :span="3" class="o-table-content">商品单价（元）</el-col>
-        <el-col :span="3" class="o-table-content">商品数量（件）</el-col>
+        <el-col :span="2" class="o-table-content">商品单价（元）</el-col>
+        <el-col :span="2" class="o-table-content">商品数量（件）</el-col>
         <el-col :span="3" class="o-table-content">商品总价（元）</el-col>
         <el-col :span="3" class="o-table-content">立减优惠（元）</el-col>
         <el-col :span="3" class="o-table-content">优惠券优惠（元）</el-col>
         <el-col :span="2" class="o-table-content">实收金额（元）</el-col>
+        <el-col :span="2" class="o-table-content">结算状态</el-col>
       </el-row>
       <el-row class="o-table-td">
         <el-col :span="4" class="o-table-content o-table-input">
@@ -99,10 +108,10 @@
         <el-col :span="3" class="o-table-content o-table-input o-table-style">
           {{ !detailObj.codeName ? '无' : detailObj.codeName }}
         </el-col>
-        <el-col :span="3" class="o-table-content o-table-input o-table-style">
+        <el-col :span="2" class="o-table-content o-table-input o-table-style">
           ¥{{ detailObj.price }}
         </el-col>
-        <el-col :span="3" class="o-table-content o-table-input o-table-style">
+        <el-col :span="2" class="o-table-content o-table-input o-table-style">
           {{ detailObj.count }}
         </el-col>
         <el-col :span="3" class="o-table-content o-table-input o-table-style">
@@ -116,6 +125,9 @@
         </el-col>
         <el-col :span="2" class="o-table-content o-table-input o-table-style">
           ¥{{ detailObj.realPrice }}
+        </el-col>
+        <el-col :span="2" class="o-table-content o-table-input o-table-style">
+          {{ detailObj.settlementStatus | filterSettlementStatus }}
         </el-col>
       </el-row>
     </div>
@@ -141,7 +153,7 @@
         </el-form-item>
         <el-form-item label-width="110px" label="物流单号：" prop="shippingSn">
           <el-col :span="20">
-            <el-input v-model.trim="shipping.shippingSn" placeholder="请输入"/>
+            <el-input v-model.trim="shipping.shippingSn" placeholder="请输入" />
           </el-col>
         </el-form-item>
         <el-form-item>
@@ -159,7 +171,7 @@
 <script src="./detail.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import "src/styles/common.scss";
+@import 'src/styles/common.scss';
 </style>
 <style>
 .o-contain {

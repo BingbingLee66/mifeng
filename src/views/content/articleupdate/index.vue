@@ -128,7 +128,7 @@
             <div v-if="scope.row.auditStatus == 3">审核失败</div>
           </template>
         </el-table-column> -->
-        <el-table-column label="操作" width="200px">
+        <el-table-column label="操作" width="200px" fixed="right">
           <template slot-scope="scope">
             <el-button v-if="has('商会资讯', '编辑')" type="text" :actionid="getId('商会资讯', '编辑')" @click="edit($event, scope.row)">
               编辑
@@ -204,7 +204,7 @@
             <div v-if="scope.row.auditStatus == 2">不通过</div>
           </template>
         </el-table-column> -->
-        <el-table-column label="操作">
+        <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
             <!-- <el-button type="text" @click="detail($event, scope.row)">详情</el-button> -->
             <el-button type="text" @click="openDetail(scope.row)">详情</el-button>
@@ -243,7 +243,7 @@
             {{ scope.row.operator }}
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
             <el-button type="text" @click="openDetail(scope.row)">详情</el-button>
             <el-button v-if="has('关于商会', '编辑')" type="text" :actionid="getId('联系我们', '编辑')" @click="editColumn($event, scope.row)">

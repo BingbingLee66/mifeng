@@ -163,3 +163,12 @@ export function transferPresident(params) {
     data: params
   })
 }
+
+// 入会审核详情
+export function examineDetail(params) {
+  return request({
+    url: '/ec/member/getMemberAuditInfo',
+    method: 'get',
+    params
+  })
+}

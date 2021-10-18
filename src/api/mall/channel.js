@@ -39,7 +39,7 @@ export function delChannelPromote(params) {
 // 添加配置
 export function addChannelPromote(params) {
   return request({
-    url: baseUrl + '/api/ec/mall/channel-goods/channel-save\n',
+    url: baseUrl + '/api/ec/mall/channel-goods/channel-save',
     method: 'post',
     data: params
   })
@@ -85,5 +85,13 @@ export function save(params) {
     url: baseUrl + '/ec/mall/channel/channel-save',
     method: 'post',
     data: params
+  })
+}
+
+// 商会列表
+export function getChamberOptions() {
+  return request({
+    url: baseUrl + '/ec/mall/get-chamber-options',
+    method: 'get'
   })
 }

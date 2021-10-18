@@ -192,12 +192,12 @@
         <el-col :span="10">{{ detailObj.president }}</el-col>
       </el-row>
       <el-row>
-        <el-col :offset="2" :span="6">办公地址：</el-col>
-        <el-col :span="10">{{ detailObj.address }}</el-col>
-      </el-row>
-      <el-row>
         <el-col :offset="2" :span="6">联系人手机号：</el-col>
         <el-col :span="10">{{ detailObj.phone }}</el-col>
+      </el-row>
+      <el-row>
+        <el-col :offset="2" :span="6">办公地址：</el-col>
+        <el-col :span="10">{{ detailObj.address }}</el-col>
       </el-row>
       <el-row>
         <el-col :offset="2" :span="6">社会团体法人登记证：</el-col>

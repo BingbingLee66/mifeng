@@ -25,9 +25,18 @@ export function updateStatus(params) {
   })
 }
 
-export function save (params) {
+export function save(params) {
   return request({
     url: baseUrl + '/ec/mall/supplier',
+    method: 'post',
+    data: params
+  })
+}
+
+// 设置结算周期
+export function setUpSettlementPeriod(params) {
+  return request({
+    url: baseUrl + '/ec/mall/supplier-settlement-period',
     method: 'post',
     data: params
   })

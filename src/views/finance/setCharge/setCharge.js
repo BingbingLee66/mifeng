@@ -99,12 +99,6 @@ export default {
           })
           this.getWechatFeeRatio()
         })
-      }).catch((err) => {
-        console.log(err)
-        this.$message({
-          type: 'info',
-          message: '取消修改'
-        })
       })
     },
     update2 (e) {
@@ -124,12 +118,6 @@ export default {
           })
           this.getMallFeeRatio()
         })
-      }).catch((err) => {
-        console.log(err)
-        this.$message({
-          type: 'info',
-          message: '取消修改'
-        })
       })
     },
     update3 (e) {
@@ -148,12 +136,6 @@ export default {
             type: 'success'
           })
           this.getMemberFeeRatio()
-        })
-      }).catch((err) => {
-        console.log(err)
-        this.$message({
-          type: 'info',
-          message: '取消修改'
         })
       })
     }

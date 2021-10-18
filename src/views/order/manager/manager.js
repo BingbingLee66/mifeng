@@ -1,4 +1,4 @@
-import { getAllList } from '@/api/order/order'
+import { getAllList, getChannelList } from '@/api/order/order'
 import { getChamberOptions } from '@/api/finance/finance'
 import { exportJson2Excel } from '@/utils/exportExcel'
 import { formatDateTime } from '@/utils/date' // 格式化时间戳
@@ -16,7 +16,11 @@ export default {
         status: -1,
         consignee: '',
         consigneeMobile: '',
-        date: ''
+        date: '',
+        settled: -1,
+        settlementStatus: -1,
+        channelId: -1, // 推广渠道
+        isFirst: -1, // 用户属性
       },
       chamberOptions: [],
       pageSizes: [10, 20, 50, 100, 500],
@@ -25,7 +29,8 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: []
+      selectionDatas: [],
+      channelOptions:[],
     }
   },
   computed: {
@@ -45,6 +50,7 @@ export default {
   },
   created() {
     this.getChamberOptions()
+    this.getChannelOptions()
     this.init()
   },
   methods: {
@@ -55,13 +61,11 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
       this.fetchData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
       this.fetchData()
     },
@@ -74,6 +78,13 @@ export default {
       if (this.has('', '查询')) {
         this.fetchData()
       }
+    },
+    // 查询推广渠道
+    getChannelOptions(){
+      getChannelList().then(res=>{
+        this.channelOptions = res.data
+        this.channelOptions.unshift({id:-1,channelName:'全部'})
+      })
     },
     fetchData(e) {
       if (e !== undefined) {
@@ -92,8 +103,18 @@ export default {
         'consignee': this.query.consignee,
         'consigneeMobile': this.query.consigneeMobile,
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        'channelId': this.query.channelId,
+        'isFirst': this.query.isFirst
       }
+      if(params.isFirst == -1) delete params.isFirst
+      if(params.status == 5 || params.status == 6){
+        params.settled = this.query.settled
+        if(params.settled == -1) delete params.settled
+        params.settlementStatus = this.query.settlementStatus
+        if(params.settlementStatus == -1) delete params.settlementStatus
+      }
+      if(params.channelId == -1) delete params.channelId
       if (this.query.date) {
         params['startTime'] = this.query.date[0]
         params['endTime'] = this.query.date[1]
@@ -104,20 +125,28 @@ export default {
         this.listLoading = false
       })
     },
+    // 订单状态改变
+    statusSelectChange(val){
+      if(val === 5 || val === 6){
+        this.query.settled = -1
+        this.query.settlementStatus = -1
+      }
+    },
     reset() {
       this.query = {
         orderSn: '',
         ckey: '',
         wechatOrderNum: '',
+        supplierName: '',
         goodName: '',
         status: -1,
         consignee: '',
         consigneeMobile: '',
-        date: ''
+        date: '',
+        channelId: null,
       }
     },
     handleSelectionChange(value) {
-      console.log('-----\\\\', value)
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
@@ -135,11 +164,21 @@ export default {
         } else if (data.status == 0) {
           statusStr = '取消订单'
         }
+        let isFirstStr = ''
+        if(data.isFirst == 1){
+          isFirstStr = "首单用户"
+        }else if(data.isFirst == 2){
+          isFirstStr = "复购用户"
+        }else{
+          isFirstStr = "--"
+        }
         let new_data = {
           '订单号': data.orderSn,
           '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
           '微信订单号': data.wechatOrderNum ? data.wechatOrderNum : '--',
           '状态': statusStr,
+          '推广渠道': data.channelName || '--',
+          '用户属性': isFirstStr,
           '供货商家': data.supplierName,
           '订单所属商会': this.chamberName(data.ckey),
           '商品名称': data.name,
@@ -170,11 +209,15 @@ export default {
         'goodName': this.query.goodName,
         'supplierName': this.query.supplierName,
         'status': this.query.status,
+        'channelId': this.query.channelId,
+        'isFirst': this.query.isFirst,
         'consignee': this.query.consignee,
         'consigneeMobile': this.query.consigneeMobile,
         'startTime': this.query.date[0],
         'endTime': this.query.date[1],
       }
+      if(params.isFirst == -1) delete params.isFirst
+      if(params.channelId == -1) delete params.channelId
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       getAllList(params).then(res => {
         if (res.data.data.list.length === 0) {

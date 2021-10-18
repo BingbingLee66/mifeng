@@ -2,27 +2,7 @@
   <div class="app-container">
     <div class="block">
       <div class="stat-card">
-        <div class="left-box">
-          <div class="card-box-1">
-            <div class="card-key">商会累计交易额（元）</div>
-            <div class="card-value">¥{{pfStatistics.cumulativeTransactionAmount}}</div>
-          </div>
-        </div>
         <div class="right-box">
-          <div class="box-line">
-            <div class="card-box-2">
-              <div class="card-key">商城累计交易额（元）</div>
-              <div class="card-value">¥{{pfStatistics.cumulativeShopPrice}}</div>
-            </div>
-            <div class="card-box-2">
-              <div class="card-key">商城已提现（元）</div>
-              <div class="card-value">¥{{pfStatistics.shopWithdraw == null ? 0 : pfStatistics.shopWithdraw}}</div>
-            </div>
-            <div class="card-box-2" style="border-right: 0;">
-              <div class="card-key">商城待提现（元）</div>
-              <div class="card-value" style="color: #FF0000;">¥{{pfStatistics.shopLave}}</div>
-            </div>
-          </div>
           <div class="box-line" style="border-bottom: 0;">
             <div class="card-box-2">
               <div class="card-key">会费累计交易额（元）</div>
@@ -64,7 +44,7 @@
       </el-date-picker>
       <el-button type="primary" size="mini" :actionid="getId('', '导表')" v-if="has('', '导表')" style="float: right;" @click="exportExcel($event)">导表</el-button>
     </div>
-    <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+    <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange" >
       <el-table-column type="selection" width="55px">
       </el-table-column>
       <!-- <el-table-column type="index" label="序号" width="60px">
@@ -74,19 +54,9 @@
           {{scope.row.rptDate | dateFormat2}}
         </template>
       </el-table-column>
-      <el-table-column label="商城交易额(元）">
-        <template slot-scope="scope">
-          {{scope.row.shopPrice}}
-        </template>
-      </el-table-column>
       <el-table-column label="会费交易额（元）">
         <template slot-scope="scope">
           {{scope.row.memberPrice}}
-        </template>
-      </el-table-column>
-      <el-table-column label="合计（元）">
-        <template slot-scope="scope">
-          {{Math.floor((scope.row.shopPrice + scope.row.memberPrice) * 100) / 100}}
         </template>
       </el-table-column>
     </el-table>
@@ -109,23 +79,16 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
   @import "src/styles/common.scss";
 </style>
-<style>
+<style scoped>
 .stat-card {
   width: 100%;
-  height: 120px;
+  height: 61px;
   border-radius: 10px;
   border: 1px solid #ccc;
 }
-.left-box {
-  float: left;
-  width: 25%;
-  height: 100%;
-  text-align: center;
-  display: table;
-}
 .right-box {
   /*float: left;*/
-  width: 75%;
+  width: 100%;
   height: 100%;
   text-align: center;
   display: table;
@@ -148,8 +111,7 @@
   display: table;
   border-bottom: 1px solid #ccc;
 }
-.card-key {
-}
+
 .card-value {
   margin-top: 10px;
   color: #008000;

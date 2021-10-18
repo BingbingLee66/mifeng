@@ -79,6 +79,8 @@ export default {
         'deliveryConfig2': '', // 发货时间
         'deliveryConfig3': '', // 发货说明
         'discount': '', // 立减优惠
+        'serviceFee': 0, // 商品服务费率
+        'wxServiceFee': 0, // 微信手续费率
         'bookingTimeStart': '',
         'isBooking': 0,
         'gallery': [''],
@@ -217,6 +219,8 @@ export default {
       this.type = 'edit'
     } else {
       this.type = 'add'
+      this.getWeChatFeeRatio()
+      this.getMallFeeRatio()
       this.getDeliveryConfig()
       this.getServiceConfig()
     }
@@ -295,6 +299,24 @@ export default {
     },
     init() {
       this.fetchData()
+    },
+    // 获取微信手续费
+    getWeChatFeeRatio () {
+      let params = {
+        key: 'wechatFeeRatio'
+      }
+      getSetting(params).then(response => {
+        this.formObj.wxServiceFee = response.data.value * 100
+      })
+    },
+    // 获取商品服务费
+    getMallFeeRatio () {
+      let params = {
+        key: 'mallFeeRatio'
+      }
+      getSetting(params).then(response => {
+        this.formObj.serviceFee = response.data.value * 100
+      })
     },
     getSupplierOptions() {
       getSupplierOptions().then(response => {
@@ -438,6 +460,8 @@ export default {
         if (this.formObj.limitAmount === 0) {
           this.formObj.limitAmount = ''
         }
+        this.$set(this.formObj, 'serviceFee', serviceFee)
+        this.$set(this.formObj, 'wxServiceFee', wxServiceFee)
       })
     },
     addSupplier(val) {
@@ -1217,7 +1241,9 @@ export default {
             'specType': this.formObj.specType,
             'attr1': attr1,
             'attr2': attr2,
-            'sku': sku
+            'sku': sku,
+            'serviceFee': this.formObj.serviceFee,
+            'wxServiceFee': this.formObj.wxServiceFee
           }
           if (this.formObj.limitTime) {
             obj['limitTimeStart'] = this.formObj.limitTime[0]

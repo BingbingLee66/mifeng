@@ -13,7 +13,8 @@ export default {
       searchValue: '', // 搜索值
       searchResult: [], // 搜索结果
       showFlag: false, // 是否展示搜索结果
-
+      showMore: false,
+      totalSearch: 0,
       departmentId: 0, // 部门id
       departmentName: '', // 部门名称
 
@@ -51,7 +52,6 @@ export default {
         'parentId': 0
       }
       getDepartmentList(params).then(res => {
-        console.log('部门树结构：', res)
         let newArry = []
         // 深拷贝数组
         newArry = JSON.parse(JSON.stringify(res.data.data))
@@ -122,7 +122,6 @@ export default {
     * 部门切换
     * */
     handleNodeClick(data) {
-      console.log('当前部门', data)
       this.currentpage = 1
       this.page = 1
       if (data.id === -1) {
@@ -135,9 +134,7 @@ export default {
       this.memberData = []
       this.getMemberList()
     },
-
     skipToDetail(row, column, event) {
-      console.log(row, column, event)
       this.$router.push({
         name: '会员详情',
         params: {
@@ -151,12 +148,11 @@ export default {
     * 搜索成员
     * */
     handleValueChange(e) {
-      console.log(e)
       this.page = 1
       if (e.length > 0) {
         this.searchValue = e
-        this.showFlag = true
         this.search()
+        this.showFlag = true
       } else {
         this.showFlag = false
       }
@@ -177,29 +173,43 @@ export default {
         'pageSize': this.searchPage
       }
       getMemberList(params).then(res => {
-        console.log('搜索结果：', res)
         if (res.state === 1 && JSON.stringify(res.data) !== '{}') {
-          if (this.page === 1) {
-            this.searchResult = res.data.page.list
+          console.log(res, 66666)
+          let listData = res.data.page
+          this.totalSearch = listData.totalPages
+          if (this.totalSearch === this.page) {
+            this.showMore = false
           } else {
-            this.searchResult.push(...res.data.page.list)
+            this.showMore = true
+          }
+          if (this.page === 1) {
+            this.searchResult = listData.list
+          } else {
+            this.searchResult.push(...listData.list)
           }
         } else {
           return
         }
       })
     },
-    handleScroll(e) {
+    loadMore() {
+      this.page += 1
+      if (this.totalSearch === this.page) {
+        this.showMore = false
+      } else {
+        this.showMore = true
+      }
+      this.search()
+    },
+    /* handleScroll(e) {
       var scrollTop = e.target.scrollTop
       var windowHeight = e.target.clientHeight
       var scrollHeight = e.target.scrollHeight
       if (scrollTop + windowHeight === scrollHeight) {
-        console.log('触底了')
         this.page += 1
         this.search()
       }
-    },
-
+    }, */
     goDetail(id) {
       const memberDetail = {}
       memberDetail['id'] = id
@@ -257,7 +267,6 @@ export default {
     },
 
     save() {
-      console.log(this.departmentId)
       // if(this.departmentId)
       const params = {
         'finalDepartmentId': this.finalDepartmentId, // 调整后的部门
@@ -279,7 +288,6 @@ export default {
      * 跳转邀请成员加入页面
      */
     invite() {
-      console.log('部门id', this.departmentId)
       if (this.departmentId === 0) {
         this.$router.push({
           path: '/sys/member/qrcode'

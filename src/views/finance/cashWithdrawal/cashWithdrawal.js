@@ -235,37 +235,5 @@ export default {
         })
       })
     },
-    applyForMall (e) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$prompt('提现金额', '申请提现(商城可提现金额为¥' + this.pfStatistics.shopLave + ')', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPlaceholder: '请输入提现金额(100元以上)',
-        inputPattern: /^[0]$|^(([1-9]\d*)|[0]\.\d{1,2}|([1-9]\d*)\.\d{1,2})$/,
-        inputValidator: (val) => {
-          if (parseFloat(val) > parseFloat(this.pfStatistics.shopLave)) {
-            return '余额不足以提现'
-          }
-        },
-        inputErrorMessage: '最多两位小数金额'
-      }).then(({ value }) => {
-        let params = {
-          'applyPrice': value,
-          'type': 0
-        }
-        applyWithdrawalAdd(params).then(response => {
-          this.$message({
-            message: '提现申请提交成功',
-            type: 'success'
-          })
-          this.fetchData()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消输入'
-        })
-      })
-    }
   }
 }

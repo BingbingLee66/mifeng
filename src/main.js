@@ -19,6 +19,7 @@ import Print from '@/utils/print' // 打印
 import VueClipboard from 'vue-clipboard2' // 复制内容
 import DbClick from '@/utils/dbClick' // 防止重复点击
 import { formatDateTime, formatDate } from '@/utils/date' // 格式化时间戳
+import VueUeditorWrap from 'vue-ueditor-wrap'
 
 Vue.use(Print)
 Vue.use(DbClick)
@@ -33,7 +34,7 @@ Vue.use(DbClick)
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { i18n: (key, value) => i18n.t(key, value) })
-
+Vue.component('vue-ueditor-wrap', VueUeditorWrap)
 Vue.component('v-chart', ECharts)
 Vue.config.productionTip = false
 
@@ -54,11 +55,11 @@ window.ysh = {
  *时间戳过滤器
  */
 Vue.filter('dateFormat', (dataStr) => {
-  return dataStr === null ? '' : formatDateTime(new Date(dataStr), 'yyyy-MM-dd hh:mm:ss')
+  return dataStr === null ? '--' : formatDateTime(new Date(dataStr), 'yyyy-MM-dd hh:mm:ss')
 })
 /**
  *时间戳过滤器
  */
 Vue.filter('dateFormat2', (dataStr) => {
-  return dataStr === null ? '' : formatDate(new Date(dataStr), 'yyyy-MM-dd')
+  return dataStr === null ? '--' : formatDate(new Date(dataStr), 'yyyy-MM-dd')
 })

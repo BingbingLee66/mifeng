@@ -1,4 +1,4 @@
-import { auditList, updateAudit } from '@/api/member/manager'
+import { auditList, updateAudit, examineDetail } from '@/api/member/manager'
 import el from "element-ui/src/locale/lang/el";
 
 export default {
@@ -27,7 +27,9 @@ export default {
       selectionDatas: [],
       rejectLoading: false,
       showInput: false,
-      rowId: null
+      rowId: null,
+      detailDia: false, // 详情弹窗
+      detailObj:{},
     }
   },
   computed: {
@@ -216,6 +218,14 @@ export default {
       } else {
         this.showInput = false
       }
+    },
+
+    // 详情
+    getDetail(id){
+      examineDetail({id}).then(res=>{
+        this.detailObj = res.data
+      })
+      this.detailDia = true
     }
   }
 }
