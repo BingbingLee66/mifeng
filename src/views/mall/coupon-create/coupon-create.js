@@ -215,6 +215,8 @@ export default {
         if (this.formObj.validType === '2') {
           if (!this.dayValue) {
             return this.$message.error('请填写有效期！')
+          } else if (parseInt(this.dayValue) > 365) {
+            return this.$message.error('有效期不得大于365天！')
           }
         }
         if (!this.formObj.validUse) {
