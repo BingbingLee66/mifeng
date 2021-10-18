@@ -44,7 +44,10 @@
           <template slot-scope="scope">{{ scope.row.phone }}</template>
         </el-table-column>
         <el-table-column label="用户属性" width="150px">
-          <template slot-scope="scope">{{ scope.row.type }}</template>
+          <template slot-scope="scope">
+            <span v-if="scope.row.type===1">商/协会成员</span>
+            <span v-if="scope.row.type===2">普通用户</span>
+          </template>
         </el-table-column>
         <el-table-column label="所属商/协会">
           <template slot-scope="scope">{{ scope.row.chamber }}</template>

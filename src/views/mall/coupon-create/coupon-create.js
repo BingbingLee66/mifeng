@@ -236,7 +236,8 @@ export default {
           if (!this.isPutGiftPack) {
             params['used'] = 0
           }
-          params['price'] = this.formObj.price * 100
+          let price = this.formObj.price
+          params['price'] = price * 100
           // useLimit满减限额 -1-无门槛使用 >0 满减使用
           if (this.isLimit === '1') {
             params['useLimit'] = -1
@@ -270,6 +271,7 @@ export default {
           params['createName'] = this.profile.userName
           createCoupon(params).then(res => {
             if (res.state === 1) {
+              window.localStorage.setItem('selected-item', [])
               this.$message.success(res.msg)
               this.$router.push({ name: '优惠券列表' })
             }
