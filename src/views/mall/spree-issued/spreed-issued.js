@@ -7,7 +7,7 @@ export default {
       giftId: '',
       giftName: '',
       query: {
-        uname: '',
+        userName: '',
         phone: '',
         attribute: '',
         ckey: ''

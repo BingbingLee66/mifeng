@@ -8,7 +8,7 @@
     <div class="from-block">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="用户名">
-          <el-input v-model="query.uname" placeholder="关键词" />
+          <el-input v-model="query.userName" placeholder="关键词" />
         </el-form-item>
         <el-form-item label="注册手机号">
           <el-input v-model="query.phone" placeholder="关键词" />
