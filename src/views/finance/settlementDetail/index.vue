@@ -139,7 +139,7 @@
           </div></template
         >
       </el-table-column>
-      <el-table-column label="优惠（元）">
+      <el-table-column label="优惠（元）" width="170">
         <template slot-scope="scope">
           <div class="layout-box">
             <div>【立减优惠】{{ scope.row.discount }}</div>

@@ -109,7 +109,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="供货商" width="220">
+      <el-table-column label="供货商" width="250">
         <template slot-scope="scope">
           <div class="layout-box">
             <div>【联系人姓名】{{ scope.row.supplierName }}</div>
@@ -143,7 +143,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="优惠（元）" width="160">
+      <el-table-column label="优惠（元）" width="180">
         <template slot-scope="scope">
           <div class="flex-box">
             <div>【立减优惠】{{ scope.row.discount }}</div>
@@ -151,7 +151,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作时间" width="274">
+      <el-table-column label="操作时间" width="290">
         <template slot-scope="scope">
           <div class="flex-box">
             <div>
