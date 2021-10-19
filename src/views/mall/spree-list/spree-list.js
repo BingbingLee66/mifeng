@@ -89,7 +89,7 @@ export default {
     downloadCode() {
       const _this = this
       this.isLoading = true
-      const node = document.getElementById('qrcodediv')
+      const node = document.getElementById('spreeQrcode')
       domtoimage.toPng(node)
         .then((dataUrl) => {
           var a = document.createElement('a')
@@ -164,6 +164,7 @@ export default {
     },
     // 跳转创建大礼包
     create() {
+      window.localStorage.setItem('spreelist', this.$route.path)
       this.$router.push(`/mall/spreeCreate`)
     },
     // 查看大礼包详情

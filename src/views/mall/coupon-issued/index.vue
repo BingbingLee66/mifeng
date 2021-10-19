@@ -24,8 +24,8 @@
             <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="">
-          <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
+        <el-form-item label="" style="margin-left: -30px;">
+          <el-button type="primary" @click="fetchData($event)">查询
           </el-button>
         </el-form-item>
       </el-form>
@@ -37,7 +37,7 @@
         </el-table-column>
         <el-table-column label="接收方/领取方-用户名">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goMemberDetail(scope.row.userId)">{{ scope.row.name }}</div>
+            <div class="blue-label" @click="goMemberDetail(scope.row)">{{ scope.row.name }}</div>
           </template>
         </el-table-column>
         <el-table-column label="注册手机号" width="160px">

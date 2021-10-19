@@ -80,7 +80,7 @@ export default {
     },
     // 退出当前tab, 打开指定tab
     closeTab() {
-      const openPath = window.localStorage.getItem('activityeditor')
+      const openPath = window.localStorage.getItem('couponlist')
       const tagsViews = this.$store.state.tagsView.visitedViews
       for (const view of tagsViews) {
         if (view.path === this.$route.path) {
@@ -149,6 +149,7 @@ export default {
         this.isIssue = '1'
         this.isGain = '1'
         this.formObj.validType = '2'
+        this.disDayValue = false
       } else {
         this.formObj.used = 0
         this.isIssue = ''
@@ -285,7 +286,8 @@ export default {
       })
     },
     cancel() {
-      this.$router.push({ name: '优惠券列表' })
+      this.closeTab()
+      // this.$router.push({ name: '优惠券列表' })
     }
   }
 }

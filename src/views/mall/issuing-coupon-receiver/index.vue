@@ -40,7 +40,7 @@
         </el-table-column>
         <el-table-column label="接收方-用户名">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goMemberDetail(scope.row.uid)">{{ scope.row.name }}</div>
+            <div class="blue-label" @click="goMemberDetail(scope.row)">{{ scope.row.name }}</div>
           </template>
         </el-table-column>
         <el-table-column label="注册手机号" width="160px">

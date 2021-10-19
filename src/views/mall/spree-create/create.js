@@ -51,11 +51,6 @@ export default {
       this.formObj.quota = quotaItem
     }
   },
-  destroyed() {
-    window.localStorage.setItem('spree-item', JSON.stringify([{ id: '', name: '', errTip: '' }]))
-    window.localStorage.setItem('giftname-item', '')
-    window.localStorage.setItem('quota-item', '')
-  },
   methods: {
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
@@ -65,7 +60,7 @@ export default {
     },
     // 退出当前tab, 打开指定tab
     closeTab() {
-      const openPath = window.localStorage.getItem('activityeditor')
+      const openPath = window.localStorage.getItem('spreelist')
       const tagsViews = this.$store.state.tagsView.visitedViews
       for (const view of tagsViews) {
         if (view.path === this.$route.path) {
@@ -197,7 +192,11 @@ export default {
       })
     },
     cancel() {
-      this.$router.push('/mall/spree-list')
+      window.localStorage.setItem('giftname-item', '')
+      window.localStorage.setItem('quota-item', '')
+      window.localStorage.setItem('spree-item', JSON.stringify([{ id: '', name: '', errTip: '' }]))
+      this.closeTab()
+      // this.$router.push('/mall/spree-list')
     },
     // 查看大礼包详情
     goSpreeDetail() {

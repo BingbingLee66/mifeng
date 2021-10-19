@@ -24,7 +24,7 @@
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column label="大礼包ID" width="100px">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goSpreeDetail(scope.row.giftId)">{{ scope.row.giftId }}</div>
+            <span class="blue-label" @click="goSpreeDetail(scope.row.giftId)">{{ scope.row.giftId }}</span>
           </template>
         </el-table-column>
         <el-table-column label="大礼包名称" width="200px">
@@ -109,7 +109,7 @@
     <div class="code-dialog">
       <el-dialog title="礼包二维码" :visible.sync="codeVisible" width="600px">
         <div class="code-wrap">
-          <div id="qrcodediv" class="code-content">
+          <div id="spreeQrcode" class="code-content">
             <div class="code-img">
               <img class="qr-code" :src="rowData.qrcode">
             </div>

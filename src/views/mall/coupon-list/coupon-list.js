@@ -111,6 +111,7 @@ export default {
     },
     // 跳转创建优惠券
     create() {
+      window.localStorage.setItem('couponlist', this.$route.path)
       this.$router.push(`/mall/couponCreate`)
     },
     // 查看优惠券详情

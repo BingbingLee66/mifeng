@@ -79,7 +79,7 @@ export default {
         sendCoupon({ id }).then(res => {
           if (res.state === 1) {
             this.fetchData()
-            this.$message.success('发送成功!')
+            this.$message.success('操作成功!')
           } else {
             this.$message.error('系统错误')
           }
@@ -99,6 +99,7 @@ export default {
     },
     // 跳转发送优惠券页面
     create() {
+      window.localStorage.setItem('issuedlist', this.$route.path)
       this.$router.push(`/mall/issuing-coupon-send`)
     },
     // 查看优惠券详情

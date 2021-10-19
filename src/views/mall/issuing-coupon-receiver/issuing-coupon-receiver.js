@@ -84,13 +84,8 @@ export default {
       this.fetchData()
     },
     // 查看优用户详情
-    goMemberDetail(uid) {
-      let rowObj = {}
-      rowObj['id'] = uid
-      this.$router.push({
-        name: '会员详情',
-        params: { 'memberDetail': rowObj }
-      })
+    goMemberDetail(row) {
+      this.$router.push({ name: '用户详情', params: { 'userDetail': row }})
     },
     // 查看已使用订单列表
     goCouponDetail(couponId) {

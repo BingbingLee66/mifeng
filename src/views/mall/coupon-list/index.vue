@@ -30,7 +30,7 @@
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column label="券模板ID" width="100px">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goCouponDetail(scope.row.templateId)">{{ scope.row.templateId }}</div>
+            <span class="blue-label" @click="goCouponDetail(scope.row.templateId)">{{ scope.row.templateId }}</span>
           </template>
         </el-table-column>
         <el-table-column label="优惠券名称">

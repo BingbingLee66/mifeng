@@ -32,7 +32,8 @@ export default {
       if (value) {
         var myDate = new Date(value.replace('-', '/').replace('-', '/'))
         return myDate.getFullYear() + '年' + (myDate.getMonth() + 1) + '月' + (myDate.getDay() + 1) + '日'
-      } return ''
+      }
+      return ''
     }
   },
   computed: {
@@ -62,18 +63,22 @@ export default {
     console.log('出去缓存')
   },
   mounted() {
+    console.log('this.$route.params', this.$route.params)
     if (this.$route.params.memberDetail) {
       console.log('this.$route.params.memberDetail', this.$route.params.memberDetail)
       this.memberDetail = this.$route.params.memberDetail
       console.log('this.memberDetail.id', this.memberDetail.id)
       window.localStorage.setItem('detail-member', JSON.stringify(this.memberDetail))
     }
+    console.log('this.$route.params.memberDetail', this.$route.params.memberDetail)
     if (!this.memberDetail.id) {
       this.memberDetail = JSON.parse(window.localStorage.getItem('detail-member'))
     }
     if (this.$route.params.querytype) {
       this.type = this.$route.params.querytype
       window.localStorage.setItem('detail-type', this.type)
+    } else if (this.$route.params.querytype === 0) {
+      this.type = '0'
     }
     if (this.type === '') {
       this.type = window.localStorage.getItem('detail-type')
@@ -105,6 +110,7 @@ export default {
       const params = {
         'memberId': this.memberDetail.id
       }
+      console.log('paramsparams', params)
       if (this.type === '0') {
         getMemberDetail(params).then(response => {
           this.member = response.data.dtl[0]
@@ -138,7 +144,7 @@ export default {
       this.companyIntroductionVisible = true
     },
     goEdit() {
-      this.$router.push({ name: '编辑会员', params: { 'memberId': this.memberDetail.id, 'querytype': this.type }})
+      this.$router.push({ name: '编辑会员', params: { 'memberId': this.memberDetail.id, 'querytype': this.type } })
     },
     approved(row) {
       let arr = []

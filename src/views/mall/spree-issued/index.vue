@@ -37,7 +37,7 @@
         </el-table-column>
         <el-table-column label="接收方/领取方-用户名" width="200px">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goMemberDetail(scope.row.userId)">{{ scope.row.userName }}</div>
+            <div class="blue-label" @click="goMemberDetail(scope.row)">{{ scope.row.userName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="注册手机号" width="120px">

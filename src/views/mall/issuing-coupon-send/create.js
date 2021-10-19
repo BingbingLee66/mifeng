@@ -39,6 +39,21 @@ export default {
     }
   },
   methods: {
+    // 退出当前tab, 打开指定tab
+    closeTab() {
+      const openPath = window.localStorage.getItem('issuedlist')
+      const tagsViews = this.$store.state.tagsView.visitedViews
+      for (const view of tagsViews) {
+        if (view.path === this.$route.path) {
+          this.$store.dispatch('tagsView/delView', view).then(() => {
+            this.$router.push({
+              path: openPath
+            })
+          })
+          break
+        }
+      }
+    },
     // 工具类函数 查找数组重复元素
     findSameEle(arr) {
       var tmp = []
@@ -206,7 +221,16 @@ export default {
       })
     },
     cancel() {
-      this.$router.push({ name: '已发放的劵' })
+      window.localStorage.setItem('send-item', JSON.stringify([{
+        couponId: '',
+        name: '',
+        couponNum: '',
+        tip: '',
+        errTips: ''
+      }]))
+      window.localStorage.setItem('phone-item', '')
+      window.localStorage.setItem('issue-type', '')
+      this.closeTab()
     }
   }
 }
