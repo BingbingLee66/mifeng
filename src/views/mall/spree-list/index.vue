@@ -31,7 +31,7 @@
           <template slot-scope="scope">
             <div>{{ scope.row.giftName }}</div>
             <span class="blue-label" @click="createCode(scope.row)">二维码</span>
-            <span class="blue-label" @click="createLink(scope.row)">短连接</span>
+            <span class="blue-label" @click="createLink(scope.row)">短链接</span>
           </template>
         </el-table-column>
         <el-table-column label="包含优惠券" width="200px">
