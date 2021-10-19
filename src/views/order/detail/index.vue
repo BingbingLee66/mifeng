@@ -121,7 +121,7 @@
           ¥{{ detailObj.totalDiscount }}
         </el-col>
         <el-col :span="3" class="o-table-content o-table-input o-table-style">
-          ¥{{ detailObj.couponPrice }}
+          ¥{{ detailObj.couponPrice/100 }}
         </el-col>
         <el-col :span="2" class="o-table-content o-table-input o-table-style">
           ¥{{ detailObj.realPrice }}

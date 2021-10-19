@@ -8,7 +8,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label-width="80px" label="商品ID">
-          <el-input v-model="query.goodsId" placeholder="请输入"/>
+          <el-input v-model="query.goodId" placeholder="请输入"/>
         </el-form-item>
         <el-form-item label-width="80px" label="商品名称">
           <el-input v-model="query.goodsName" placeholder="请输入"/>
@@ -112,7 +112,7 @@ export default {
       // 选择可用商品劵
       query: {
         ckey: '',
-        goodsId: '',
+        goodId: '',
         goodsName: '',
         status: -1,
       },
@@ -194,7 +194,7 @@ export default {
     fetchData(e) {
       if (e === 'reset') {
         this.query.goodsName = ''
-        this.query.goodsId = ''
+        this.query.goodId = ''
         this.query.status = ''
         this.query.ckey = ''
       }
@@ -203,7 +203,7 @@ export default {
         page: 1,
         pageSize: 100,
         goodsName: this.query.goodsName,
-        goodsId: this.query.goodsId,
+        goodId: this.query.goodId,
         status: this.query.status,
         ckey: this.query.ckey,
       }
