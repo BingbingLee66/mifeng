@@ -82,7 +82,7 @@
 <style scoped>
 .stat-card {
   width: 100%;
-  height: 61px;
+  height: 120px;
   border-radius: 10px;
   border: 1px solid #ccc;
 }
@@ -107,7 +107,7 @@
 }
 .box-line {
   width: 100%;
-  height: 60px;
+  height: 120px;
   display: table;
   border-bottom: 1px solid #ccc;
 }
