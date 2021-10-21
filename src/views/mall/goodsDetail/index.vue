@@ -29,7 +29,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <hr size="1"/>
+        <hr size="1" />
         <el-row>
           <el-col :span="2">
             <div class="dy-form-label">
@@ -41,9 +41,9 @@
               <div v-for="(gal, index) in detailObj.galleryArr" :key="index">
                 <div class="goods-pre">
                   <!--                  <img :src="gal" class="goods-avatar">-->
-                  <!-- https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/video-pre.jpg -->
-                  <img :src="gal" class="goods-avatar" v-if="gal.indexOf('.jpeg') != -1 || gal.indexOf('.jpg') != -1 || gal.indexOf('.png') != -1"/>
-                  <img src="https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/video-pre.jpg" class="goods-avatar" v-else/>
+                  <!-- https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/video-pre.jpg -->
+                  <img :src="gal" class="goods-avatar" v-if="gal.indexOf('.jpeg') != -1 || gal.indexOf('.jpg') != -1 || gal.indexOf('.png') != -1" />
+                  <img src="https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/video-pre.jpg" class="goods-avatar" v-else />
                   <div class="goods-pre-btn" @click="openPreviewModal(gal)">预览</div>
                 </div>
               </div>
@@ -99,7 +99,7 @@
           </el-col>
         </el-row>
 
-        <hr size="1"/>
+        <hr size="1" />
         <el-row>
           <div class="goods-bar-info"><span>2</span>商品规格与库存</div>
         </el-row>
@@ -225,7 +225,7 @@
           </el-col>
         </el-row>
 
-        <hr size="1"/>
+        <hr size="1" />
         <el-row>
           <div class="goods-bar-info"><span>3</span>购买设置</div>
         </el-row>
@@ -283,7 +283,7 @@
           </el-col>
         </el-row>
 
-        <hr size="1"/>
+        <hr size="1" />
         <el-row>
           <div class="goods-bar-info"><span>4</span>发货说明</div>
         </el-row>
@@ -324,7 +324,7 @@
           </el-col>
         </el-row>
 
-        <hr size="1"/>
+        <hr size="1" />
         <el-row>
           <div class="goods-bar-info"><span>5</span>服务保障</div>
         </el-row>
@@ -366,15 +366,12 @@
         </el-row>
       </el-form>
     </div>
-    <el-dialog
-      title=""
-      :visible.sync="previewImgVisible"
-      width="50%">
-      <img :src="previewUrl" style="width: 100%; padding:20px;" v-if="previewUrl.indexOf('.jpeg') != -1 || previewUrl.indexOf('.jpg') != -1 || previewUrl.indexOf('.png') != -1"/>
+    <el-dialog title="" :visible.sync="previewImgVisible" width="50%">
+      <img :src="previewUrl" style="width: 100%; padding:20px;" v-if="previewUrl.indexOf('.jpeg') != -1 || previewUrl.indexOf('.jpg') != -1 || previewUrl.indexOf('.png') != -1" />
       <video :src="previewUrl" v-else style="width: 100%; padding:20px;" controls>
         您的浏览器不支持 video 标签。
       </video>
-<!--      <img :src="previewUrl" style="width: 100%; padding:20px;"/>-->
+      <!--      <img :src="previewUrl" style="width: 100%; padding:20px;"/>-->
     </el-dialog>
   </div>
 
@@ -383,7 +380,7 @@
 <script src="./goodsDetail.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import "src/styles/common.scss";
+@import 'src/styles/common.scss';
 </style>
 <style>
 .form-border {
@@ -521,7 +518,7 @@
 }
 
 .goods-avatar-uploader .el-upload:hover {
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 
 .goods-avatar-uploader-icon {
@@ -567,7 +564,7 @@
   position: absolute;
   text-align: center;
   z-index: 10;
-  background-color: rgba(0, 0, 0, .6);
+  background-color: rgba(0, 0, 0, 0.6);
   display: none;
 }
 
@@ -590,7 +587,7 @@
 }
 
 .dtl-sku-avatar-uploader .el-upload:hover {
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 
 .dtl-sku-avatar-uploader-icon {
@@ -655,7 +652,7 @@
   position: absolute;
   text-align: center;
   z-index: 10;
-  background-color: rgba(0, 0, 0, .6);
+  background-color: rgba(0, 0, 0, 0.6);
   display: none;
 }
 
@@ -678,7 +675,7 @@
 }
 
 .dtl-sku-avatar-uploader-1 .el-upload:hover {
-  border-color: #409EFF;
+  border-color: #409eff;
 }
 
 .dtl-sku-avatar-uploader-icon-1 {
@@ -737,7 +734,7 @@
   position: absolute;
   text-align: center;
   z-index: 10;
-  background-color: rgba(0, 0, 0, .6);
+  background-color: rgba(0, 0, 0, 0.6);
   display: none;
 }
 
