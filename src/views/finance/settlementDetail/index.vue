@@ -117,31 +117,36 @@
         label="应付款金额（元）"
         prop="payable"
       ></el-table-column>
-      <el-table-column label="价格（元）">
+      <el-table-column
+        label="供货价（元）"
+        prop="supplyPrice"
+      ></el-table-column>
+      <el-table-column label="服务费（元）" min-width="100">
         <template slot-scope="scope">
           <div class="layout-box">
-            <div>【单买价】{{ scope.row.price }}</div>
-            <div>【供货价】{{ scope.row.supplyPrice }}</div>
+            <div>【商品服务费】{{ scope.row.serviceFee }}</div>
+            <div>【微信手续费】{{ scope.row.wxServiceFee }}</div>
+          </div></template
+        >
+      </el-table-column>
+      <el-table-column label="服务费率（%）" min-width="120">
+        <template slot-scope="scope">
+          <div class="layout-box">
+            <div>【商品服务费率】{{ scope.row.serviceFeeRatio }} %</div>
+            <div>【微信手续费率】{{ scope.row.wxServiceFeeRatio }} %</div>
           </div></template
         >
       </el-table-column>
       <el-table-column
         label="买家实付金额（元）"
         prop="payment"
+        width="160"
       ></el-table-column>
-      <el-table-column label="服务费" width="280">
+      <el-table-column label="价格与优惠（元）" min-width="120">
         <template slot-scope="scope">
           <div class="layout-box">
-            <div>【商品服务费率】{{ scope.row.serviceFeeRatio }} %</div>
-            <div>【商品服务费】{{ scope.row.serviceFee }}</div>
-            <div>【微信手续费率】{{ scope.row.wxServiceFeeRatio }} %</div>
-            <div>【微信手续费】{{ scope.row.wxServiceFee }}</div>
-          </div></template
-        >
-      </el-table-column>
-      <el-table-column label="优惠（元）" width="170">
-        <template slot-scope="scope">
-          <div class="layout-box">
+            <div v-if="scope.row.fightStatus == 0">【单买价】{{ scope.row.price }}</div>
+            <div v-else>【拼单价】{{ scope.row.price }}</div>
             <div>【立减优惠】{{ scope.row.discount }}</div>
             <div>【优惠劵】{{ scope.row.coupon }}</div>
           </div></template

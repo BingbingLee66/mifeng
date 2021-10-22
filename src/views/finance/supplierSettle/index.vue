@@ -130,17 +130,17 @@
           {{ scope.row.payable }}
         </template>
       </el-table-column>
-      <el-table-column label="买家实付金额（元）" width="150">
-        <template slot-scope="scope">
-          {{ scope.row.payment }}
-        </template>
-      </el-table-column>
       <el-table-column label="服务费（元）" width="180">
         <template slot-scope="scope">
           <div class="flex-box">
             <div>【商品服务费】{{ scope.row.serviceFee }}</div>
             <div>【微信手续费】{{ scope.row.wxServiceFee }}</div>
           </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="买家实付金额（元）" width="150">
+        <template slot-scope="scope">
+          {{ scope.row.payment }}
         </template>
       </el-table-column>
       <el-table-column label="优惠（元）" width="180">
