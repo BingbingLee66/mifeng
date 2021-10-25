@@ -9,7 +9,7 @@
           <el-input v-model="query.name" placeholder="关键词" @input="e=>handleSpace(e,'name')"/>
         </el-form-item>
         <el-form-item label="是否礼包劵">
-          <el-select v-model="query.gift" placeholder="请选择">
+          <el-select v-model="query.gift" placeholder="请选择" clearable>
             <el-option label="是礼包劵" :value="1"/>
             <el-option label="不是礼包劵" :value="0"/>
           </el-select>

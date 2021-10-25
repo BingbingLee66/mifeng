@@ -6,7 +6,7 @@
           <el-form-item label="邀请商会专属二维码：">
             <div style="text-align: center;">
               <div ref="qecodeRef">
-                <img src="https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/yushanghui-admin-poster-new-2.png" class="q-avatar" id="qrcode" />
+                <img src="https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/yushanghui-admin-poster-new-2.png" class="q-avatar" id="qrcode" />
               </div>
               <el-button style="margin-top: 20px;" type="primary" @click="save">保存二维码</el-button>
             </div>
@@ -20,7 +20,7 @@
 <script src="./chamber.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import 'src/styles/common.scss';
 </style>
 <style>
 .q-avatar {

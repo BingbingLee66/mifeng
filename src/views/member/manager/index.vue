@@ -3,56 +3,41 @@
     <div class="query-form">
       <el-form ref="query" :inline="true" :model="query" label-width="100px" label-position="right" size="small">
         <el-form-item label="企业/团体名称">
-          <el-input v-model="query.companyName" placeholder="关键词"/>
+          <el-input v-model="query.companyName" placeholder="关键词" />
         </el-form-item>
         <el-form-item label="手机号">
-          <el-input v-model="query.phone"/>
+          <el-input v-model="query.phone" />
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="query.name"/>
+          <el-input v-model="query.name" />
         </el-form-item>
         <el-form-item label="会内职位">
           <el-select v-model="query.memberPostType" placeholder="请选择职业类型">
-            <el-option v-for="post in memberPostOptions" :key="post.value" :label="post.label" :value="post.value"/>
+            <el-option v-for="post in memberPostOptions" :key="post.value" :label="post.label" :value="post.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="部门">
-          <el-cascader
-            v-model="departmentCas"
-            :show-all-levels="false"
-            :options="departmentOptions"
-            :props="{checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList' }"
-            placeholder="请选择部门"
-            @change="handlerDepartmentChange"
-          />
+          <el-cascader v-model="departmentCas" :show-all-levels="false" :options="departmentOptions" :props="{checkStrictly: true , value:'id',label:'departmentName',children:'departmentRespList' }" placeholder="请选择部门" @change="handlerDepartmentChange" />
         </el-form-item>
         <el-form-item label="入会类型">
           <el-select v-model="query.type" placeholder="请选择入会类型" style="width:100%">
-            <el-option label="全部" :value="-1"/>
-            <el-option label="个人" :value="0"/>
-            <el-option label="企业/团体" :value="1"/>
+            <el-option label="全部" :value="-1" />
+            <el-option label="个人" :value="0" />
+            <el-option label="企业/团体" :value="1" />
           </el-select>
         </el-form-item>
         <el-form-item label="用户名">
-          <el-input v-model="query.uname "/>
+          <el-input v-model="query.uname " />
         </el-form-item>
         <el-form-item label="状态">
           <el-select v-model="query.status" placeholder="请选择">
-            <el-option label="全部" :value="-1"/>
-            <el-option label="正常" :value="1"/>
-            <el-option label="已冻结" :value="0"/>
+            <el-option label="全部" :value="-1" />
+            <el-option label="正常" :value="1" />
+            <el-option label="已冻结" :value="0" />
           </el-select>
         </el-form-item>
         <el-form-item label="入会时间">
-          <el-date-picker
-            v-model="query.date"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
+          <el-date-picker v-model="query.date" format="yyyy-MM-dd" value-format="yyyy-MM-dd" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
         </el-form-item>
         <el-form-item label="">
           <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
@@ -67,23 +52,14 @@
       </el-button>
     </div>
     <div style="margin-bottom:20px">
-      <el-table
-        id="out-table"
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="Loading"
-        border
-        fit
-        highlight-current-row
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column type="selection" width="55px"/>
+      <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55px" />
         <el-table-column label="用户头像" width="92px">
           <template slot-scope="scope">
-            <img style="width: 70px;height: 70px;border-radius: 50%;object-fit: cover;" :src="scope.row.uavatar?scope.row.uavatar:'https://ysh-sz.oss-cn-shenzhen.aliyuncs.com/prod/png/yunshanghui-nologo.png.png'">
+            <img style="width: 70px;height: 70px;border-radius: 50%;object-fit: cover;" :src="scope.row.uavatar?scope.row.uavatar:'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/yunshanghui-nologo.png.png'">
           </template>
         </el-table-column>
-        <el-table-column label="用户名" width="200px" prop="uname"/>
+        <el-table-column label="用户名" width="200px" prop="uname" />
         <el-table-column label="入会类型" width="100px">
           <template slot-scope="scope">{{ scope.row.type == 0 ? '个人' : '企业/团体' }}</template>
         </el-table-column>
@@ -132,16 +108,7 @@
       </el-table>
     </div>
 
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-      :page-sizes="pageSizes"
-      :page-size="limit"
-      :total="total"
-      :current-page.sync="currentpage"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+    <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
 
     <el-dialog title="转让商会会长" :visible.sync="transferVisible" width="50%">
       <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="150px">
@@ -162,7 +129,7 @@
         <el-row>
           <el-col :offset="2" :span="20">
             <el-form-item label="账号密码" prop="password">
-              <el-input v-model="formObj.password" minlength="1"/>
+              <el-input v-model="formObj.password" minlength="1" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -181,14 +148,15 @@
 <script src="./manager.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import "src/styles/common.scss";
+@import 'src/styles/common.scss';
 </style>
 
 <style lang="scss">
 .query-form .el-form-item {
   margin-right: 20px;
 
-  .el-select, .el-cascader {
+  .el-select,
+  .el-cascader {
     .el-input__inner {
       width: 184px;
     }
