@@ -81,10 +81,13 @@ export default {
       })
     },
     // 查看订单管理列表
-    goOrderList(templateId) {
+    goOrderList(row) {
       this.$router.push({
         path: `/order/manager`,
-        query: { templateId }
+        query: {
+          templateId: row.templateId,
+          wxUserId: row.uid
+        }
       })
     }
   }

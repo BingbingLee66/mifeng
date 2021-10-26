@@ -31,7 +31,8 @@ export default {
       listLoading: false,
       selectionDatas: [],
       channelOptions: [],
-      templateId: ''// 优惠券模板id
+      templateId: '', // 优惠券模板id
+      wxUserId: '' // 用户id
     }
   },
   computed: {
@@ -51,6 +52,7 @@ export default {
   },
   created() {
     this.templateId = this.$route.query.templateId
+    this.wxUserId = this.$route.query.wxUserId
     this.getChamberOptions()
     this.getChannelOptions()
     this.init()
@@ -123,6 +125,9 @@ export default {
       }
       if (this.templateId) {
         params['templateId'] = this.templateId
+      }
+      if (this.wxUserId) {
+        params['wxUserId'] = this.wxUserId
       }
       getAllList(params).then(response => {
         this.list = response.data.data.list
