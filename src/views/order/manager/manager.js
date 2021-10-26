@@ -30,7 +30,8 @@ export default {
       limit: 10,
       listLoading: false,
       selectionDatas: [],
-      channelOptions:[],
+      channelOptions: [],
+      templateId: ''// 优惠券模板id
     }
   },
   computed: {
@@ -49,6 +50,7 @@ export default {
     }
   },
   created() {
+    this.templateId = this.$route.query.templateId
     this.getChamberOptions()
     this.getChannelOptions()
     this.init()
@@ -80,10 +82,10 @@ export default {
       }
     },
     // 查询推广渠道
-    getChannelOptions(){
-      getChannelList().then(res=>{
+    getChannelOptions() {
+      getChannelList().then(res => {
         this.channelOptions = res.data
-        this.channelOptions.unshift({id:-1,channelName:'全部'})
+        this.channelOptions.unshift({ id: -1, channelName: '全部' })
       })
     },
     fetchData(e) {
@@ -107,17 +109,20 @@ export default {
         'channelId': this.query.channelId,
         'isFirst': this.query.isFirst
       }
-      if(params.isFirst == -1) delete params.isFirst
-      if(params.status == 5 || params.status == 6){
+      if (params.isFirst == -1) delete params.isFirst
+      if (params.status == 5 || params.status == 6) {
         params.settled = this.query.settled
-        if(params.settled == -1) delete params.settled
+        if (params.settled == -1) delete params.settled
         params.settlementStatus = this.query.settlementStatus
-        if(params.settlementStatus == -1) delete params.settlementStatus
+        if (params.settlementStatus == -1) delete params.settlementStatus
       }
-      if(params.channelId == -1) delete params.channelId
+      if (params.channelId == -1) delete params.channelId
       if (this.query.date) {
         params['startTime'] = this.query.date[0]
         params['endTime'] = this.query.date[1]
+      }
+      if (this.templateId) {
+        params['templateId'] = this.templateId
       }
       getAllList(params).then(response => {
         this.list = response.data.data.list
@@ -126,8 +131,8 @@ export default {
       })
     },
     // 订单状态改变
-    statusSelectChange(val){
-      if(val === 5 || val === 6){
+    statusSelectChange(val) {
+      if (val === 5 || val === 6) {
         this.query.settled = -1
         this.query.settlementStatus = -1
       }
@@ -165,11 +170,11 @@ export default {
           statusStr = '取消订单'
         }
         let isFirstStr = ''
-        if(data.isFirst == 1){
+        if (data.isFirst == 1) {
           isFirstStr = "首单用户"
-        }else if(data.isFirst == 2){
+        } else if (data.isFirst == 2) {
           isFirstStr = "复购用户"
-        }else{
+        } else {
           isFirstStr = "--"
         }
         let new_data = {
@@ -216,8 +221,8 @@ export default {
         'startTime': this.query.date[0],
         'endTime': this.query.date[1],
       }
-      if(params.isFirst == -1) delete params.isFirst
-      if(params.channelId == -1) delete params.channelId
+      if (params.isFirst == -1) delete params.isFirst
+      if (params.channelId == -1) delete params.channelId
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       getAllList(params).then(res => {
         if (res.data.data.list.length === 0) {

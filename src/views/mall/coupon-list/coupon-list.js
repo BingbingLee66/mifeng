@@ -126,8 +126,11 @@ export default {
       this.$router.push(`/mall/couponDetail`)
     },
     // 查看订单管理列表
-    goOrderList() {
-      this.$router.push(`/order/manager`)
+    goOrderList(templateId) {
+      this.$router.push({
+        path: `/order/manager`,
+        query: { templateId }
+      })
     },
     // 查看已发放列表
     goIssueList(row) {

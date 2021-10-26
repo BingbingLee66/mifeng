@@ -63,7 +63,8 @@
         </el-table-column>
         <el-table-column label="已使用" width="150px">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goOrderList">{{ scope.row.useSize }}</div>
+            <span v-if="scope.row.useSize>0" class="blue-label" @click="goOrderList(scope.row.templateId)">{{ scope.row.useSize }}</span>
+            <span v-else>{{ scope.row.useSize }}</span>
           </template>
         </el-table-column>
         <el-table-column label="已过期" width="150px">
