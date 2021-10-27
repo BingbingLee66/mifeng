@@ -169,8 +169,8 @@
     height: 80vh;
 
     .code-content {
-      width: 502px;
-      height: 602px;
+      width: 506px;
+      height: 606px;
       margin: 0 auto;
       border: 1px solid #d6d5d5;
       border-radius: 20px;
