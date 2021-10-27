@@ -176,7 +176,7 @@
       font-size: 16px;
       font-family: PingFang SC, PingFang SC-Regular;
       color: #999999;
-
+      background: #fff;
       .code-img {
         width: 490px;
         height: 490px;
