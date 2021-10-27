@@ -110,13 +110,15 @@
       <el-dialog title="礼包二维码" :visible.sync="codeVisible" width="600px">
         <div class="code-wrap">
           <div id="spreeQrcode" class="code-content">
-            <div class="code-img">
-              <img class="qr-code" :src="rowData.qrcode">
-            </div>
-            <div class="code-info">
-              <div class="item">
-                <div class="tit">大礼包：</div>
-                <div class="txt">{{ rowData.giftName }}</div>
+            <div class="code-content-wrap">
+              <div class="code-img">
+                <img class="qr-code" :src="rowData.qrcode">
+              </div>
+              <div class="code-info">
+                <div class="item">
+                  <div class="tit">大礼包：</div>
+                  <div class="txt">{{ rowData.giftName }}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -167,23 +169,27 @@
   .code-wrap {
     width: 100%;
     height: 80vh;
+    background: #fff;
 
     .code-content {
-      width: 502px;
-      height: 602px;
-      margin: 0 auto;
-      border: 1px solid #d6d5d5;
-      border-radius: 20px;
+      width: 500px;
+      height: 600px;
       font-size: 16px;
       font-family: PingFang SC, PingFang SC-Regular;
       color: #999999;
-      overflow: hidden;
+      background: #fff;
+
+      .code-content-wrap {
+        border: 1px solid #d6d5d5;
+        border-radius: 20px;
+        background: #fff;
+      }
 
       .code-img {
-        width: 500px;
-        height: 500px;
-        border-bottom: 1px solid #d6d5d5;
-        border-radius: 1px;
+        width: 490px;
+        height: 490px;
+        text-align: center;
+        padding: 5px;
 
         .qr-code {
           width: 100%;
@@ -192,6 +198,7 @@
       }
 
       .code-info {
+        border-top: 1px solid #d6d5d5;
         padding: 20px 33px 33px 33px;
         box-sizing: border-box;
 

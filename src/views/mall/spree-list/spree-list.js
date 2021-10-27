@@ -90,7 +90,11 @@ export default {
       const _this = this
       this.isLoading = true
       const node = document.getElementById('spreeQrcode')
-      domtoimage.toPng(node)
+      const options = {
+        height: 600,
+        width: 500
+      }
+      domtoimage.toJpeg(node, options)
         .then((dataUrl) => {
           var a = document.createElement('a')
           a.download = '礼包二维码'

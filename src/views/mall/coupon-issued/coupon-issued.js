@@ -71,7 +71,7 @@ export default {
     },
     // 查看用户详情详情
     goMemberDetail(row) {
-      this.$router.push({ name: '用户详情', params: { 'userDetail': row }})
+      this.$router.push({ name: '用户详情', params: { 'userDetail': row } })
     },
     // 查看优惠券详情
     goCouponDetail() {
@@ -81,8 +81,14 @@ export default {
       })
     },
     // 查看订单管理列表
-    goOrderList() {
-      this.$router.push(`/order/manager`)
+    goOrderList(row) {
+      this.$router.push({
+        path: `/order/manager`,
+        query: {
+          templateId: row.templateId,
+          wxUserId: row.uid
+        }
+      })
     }
   }
 }
