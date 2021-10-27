@@ -169,22 +169,20 @@
     height: 80vh;
 
     .code-content {
-      width: 506px;
-      height: 606px;
+      width: 500px;
+      height: 600px;
       margin: 0 auto;
       border: 1px solid #d6d5d5;
       border-radius: 20px;
       font-size: 16px;
       font-family: PingFang SC, PingFang SC-Regular;
       color: #999999;
-      overflow: hidden;
 
       .code-img {
-        width: 500px;
-        height: 500px;
-        border-bottom: 1px solid #d6d5d5;
-        border-radius: 1px;
-
+        width: 490px;
+        height: 490px;
+        text-align: center;
+        padding: 5px;
         .qr-code {
           width: 100%;
           height: 100%;
@@ -192,6 +190,7 @@
       }
 
       .code-info {
+        border-top: 1px solid #d6d5d5;
         padding: 20px 33px 33px 33px;
         box-sizing: border-box;
 
