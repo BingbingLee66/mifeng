@@ -171,7 +171,6 @@
     .code-content {
       width: 500px;
       height: 600px;
-      margin: 0 auto;
       border: 1px solid #d6d5d5;
       border-radius: 20px;
       font-size: 16px;
