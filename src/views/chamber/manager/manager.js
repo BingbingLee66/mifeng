@@ -60,6 +60,13 @@ export default {
       listLoading: false,
       detailObj: {},
       type: 'add',
+      //搜索表单
+      query:{
+        name:null,
+        userName:null,
+        status:null,
+        date:null
+      },
       rules: {
         name: [
           {required: true, message: '商/协会名称不能为空', trigger: 'blur'},
@@ -103,6 +110,9 @@ export default {
     this.init()
   },
   methods: {
+    a(){
+      console.log("aa")
+    },
     has(tabName, actionName) {
       return this.$store.getters.has({tabName, actionName})
     },
@@ -148,6 +158,7 @@ export default {
         'pageSize': this.limit,
         'page': this.currentpage
       }
+      console.log('query',this.query)
       getList(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
@@ -177,11 +188,18 @@ export default {
       this.fetchData()
     },
     fetchData() {
-      this.listLoading = true
+      this.listLoading = true;
+      let {name,status,userName,date}=this.query;
       let params = {
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        name,
+        status,
+        userName,
+        startTime:date ? date[0] : "" ,
+        endTime:date ? date[1] : "" 
       }
+      console.log('query',this.query)
       getList(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
