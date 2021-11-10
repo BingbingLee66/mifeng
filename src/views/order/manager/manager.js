@@ -109,7 +109,11 @@ export default {
         'pageSize': this.limit,
         'page': this.currentpage,
         'channelId': this.query.channelId,
-        'isFirst': this.query.isFirst
+        'isFirst': this.query.isFirst,
+        'giftId':this.query.giftId,
+        'giftName':this.query.giftName,
+        'templateId':this.query.templateId,
+        'couponName':this.query.couponName,
       }
       if (params.isFirst == -1) delete params.isFirst
       if (params.status == 5 || params.status == 6) {
@@ -182,6 +186,7 @@ export default {
         } else {
           isFirstStr = "--"
         }
+        console.log('data',data)
         let new_data = {
           '订单号': data.orderSn,
           '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
@@ -190,6 +195,10 @@ export default {
           '推广渠道': data.channelName || '--',
           '用户属性': isFirstStr,
           '供货商家': data.supplierName,
+          '大礼包ID': data.giftId,
+          '大礼包名称': data.giftName,
+          '优惠券ID': data.templateId,
+          '优惠券名称': data.couponName,
           '订单所属商会': this.chamberName(data.ckey),
           '商品名称': data.name,
           '商品规格': !data.codeName ? '无' : data.codeName,
@@ -241,6 +250,20 @@ export default {
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '订单详情', params: { 'orderSn': row.orderSn } })
-    }
+    },
+     // 查看大礼包详情
+     goSpreeDetail(giftId) {
+      this.$router.push({
+        path: '/mall/spreeDetail',
+        query: { giftId }
+      })
+    },
+    // 查看优惠券详情
+    goCouponDetail(couponId) {
+      this.$router.push({
+        path: '/mall/couponDetail',
+        query: { couponId }
+      })
+    },
   }
 }

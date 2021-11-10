@@ -86,6 +86,16 @@
         <el-col :span="8">
           收货地址：{{ detailObj.consigneeAddress }}
         </el-col>
+        <el-col :span="8">
+          大礼包：
+          <span style="color:#409eff;cursor: pointer" @click="showSendOut">{{detailObj.giftId}}</span>-
+           <span style="color:#409eff;cursor: pointer" @click="showSendOut">{{detailObj.giftName}}</span>
+        </el-col>
+        <el-col :span="8">
+          优惠券：
+          <span style="color:#409eff;cursor: pointer" @click="showSendOut">{{detailObj.templateId}}</span>-
+           <span style="color:#409eff;cursor: pointer" @click="showSendOut">{{detailObj.couponName}}</span>
+        </el-col>
       </el-row>
     </div>
     <div class="block o-table-box">
