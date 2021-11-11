@@ -9,6 +9,7 @@ import {
 import ECharts from 'vue-echarts/components/ECharts'
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/component/title'
+import { exportJson2Excel } from '@/utils/exportExcel'
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -32,7 +33,10 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: []
+      //已选导表数据
+      // selectionDatas: [],
+      //临时已选数据
+      tempSelectDatas:[]
     }
   },
   created() {
@@ -107,6 +111,45 @@ export default {
         this.tradeBarData.xAxis.data = response.data.xAxisData
         this.tradeBarData.series[0].data = response.data.seriesData
       })
+    },
+    //导表
+    exportExcel(){
+      if(this.tempSelectDatas.length<1){
+        this.$message({
+          showClose: true,
+          message: '没有可选操作的记录',
+          type: 'warning'
+        });
+        return;
+      }
+      let selectionDatas=this.handleData(this.tempSelectDatas);
+      console.log('selectionDatas',selectionDatas);
+      exportJson2Excel('会员数据', selectionDatas)
+    },
+    //表格选择时触发
+    handleSelectionChange(rows){
+      this.tempSelectDatas=rows;
+    },
+    handleData(list){
+      let newData=[]
+      if(list.length<1){return;};
+      list.forEach(item=>{
+        let obj={
+          '日期':item.date,
+          '授权登录人数':item.activeWxUserTotal,
+          '入会总人数':item.joinedTotal>0 ? item.joinedTotal: "--",
+          '商会邀请入会人数':item.chamberInvitationTotal >0 ? item.chamberInvitationTotal: "--",
+          '自己申请入会人数':item.myselfApplyTotal >0 ? item.myselfApplyTotal: "--",
+          '会员邀请入会人数':item.memberInvitationTotal >0 ? item.memberInvitationTotal: "--",
+          '商会后台添加入会人数':item.chamberBackstageAddTotal >0 ? item.chamberBackstageAddTotal: "--",
+          '个人会员':item.memberInvitationTotal >0 ? item.memberInvitationTotal: "--",
+          '会员邀请入会人数':item.personMemberTotal >0 ? item.personMemberTotal: "--",
+          '企业/团体':item.companyMemberTotal >0 ? item.companyMemberTotal: "--",
+          
+        };
+        newData.push(obj)
+      })
+      return newData
     }
   }
 }

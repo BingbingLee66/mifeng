@@ -42,7 +42,7 @@
           <el-button
             type="primary"
             size="small"
-            @click.native="fetchData($event)"
+            @click.native="selectData($event)"
             >查询
           </el-button>
         </el-form-item>
@@ -110,9 +110,11 @@
           {{ scope.row.userName }}
         </template>
       </el-table-column>
-      <el-table-column label="排序" width="100px">
+      <el-table-column label="权重" width="100px">
         <template slot-scope="scope">
-          {{ scope.row.level }}
+          <span style="color: #409eff; cursor: pointer" @click="updateLevel(scope.row)">{{
+            scope.row.level
+          }}</span>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" width="180px">
@@ -172,7 +174,6 @@
       @current-change="handleCurrentChange"
     >
     </el-pagination>
-
     <el-dialog title="添加/编辑商会" :visible.sync="editorVisible" width="50%">
       <el-form
         ref="form"
@@ -396,6 +397,7 @@
         </el-col>
       </el-row>
     </el-dialog>
+        <levelDialog title="权重" ref="levelDialog" width="30%"></levelDialog>
   </div>
 </template>
 

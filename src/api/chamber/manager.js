@@ -56,3 +56,11 @@ export function updateAudit(params) {
     params
   })
 }
+//修改商会权重
+export function updateChamberLevel(params) {
+  return request({
+    url: '/ec/chamber/updateChamberLevel',
+    method: 'put',
+    params
+  })
+}
