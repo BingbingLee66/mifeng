@@ -1,5 +1,12 @@
 <template>
   <div class="app-container">
+    <el-form :inline="true" class="demo-form-inline">
+ <el-form-item  label="数据维度" prop="region" >
+    <el-select v-model="ckey" placeholder="数据维度" filterable @change="change">
+      <el-option v-for="item in chamberList" :key="item.id" :label="item.name" :value="item.ckey"></el-option>
+    </el-select>
+  </el-form-item>
+    </el-form>
     <div class="block">
       <div style="height:20px;margin-bottom: 10px;">
         <span style="font-weight: 600; font-size: 18px;float: left;">商会入驻数据</span>
@@ -130,39 +137,39 @@
       :style="{'padding-top': '15px'}">
     </el-pagination>
 
-    <el-dialog title="数据定义" :visible.sync="showMeaning" width="450px">
+    <el-dialog title="数据定义" :visible.sync="showMeaning" width="496px">
       <div class="meaning-wrap">
         <div class="meaning-item">
           <div class="tit">授权登录人数</div>
-          <div class="sub">在指定时间范围内，在小程序端<span style="color: #ff0000">首次</span>授权登录的人数。</div>
+          <div class="sub">在指定时间范围内，在小程序端<span style="color: #ff0000">首次</span>授权登录的人数<span style="color: #ff0000">（需去重）</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">入会总人数</div>
-          <div class="sub">在指定时间范围内，从不同渠道加入商会的总人数。</div>
+          <div class="sub">在指定时间范围内，从不同渠道加入商会的总人数<span style="color: #ff0000">（需去重）</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">商会邀请入会人数</div>
-          <div class="sub">在指定时间范围内，通过商会邀请海报加入商会的人数。</div>
+          <div class="sub">在指定时间范围内，通过商会邀请海报加入商会的人数<span style="color: #ff0000">（需去重）</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">自己申请入会人数</div>
-          <div class="sub">在指定时间范围内，自己通过小程序前端申请入会的人数。</div>
+          <div class="sub">在指定时间范围内，自己通过小程序前端申请入会的人数。<span style="color: #ff0000">（需去重）</span></div>
         </div>
         <div class="meaning-item">
           <div class="tit">会员邀请入会人数</div>
-          <div class="sub">在指定时间范围内，由老会员邀请入会的人数。</div>
+          <div class="sub">在指定时间范围内，由老会员邀请入会的人数。<span style="color: #ff0000">（需去重）</span></div>
         </div>
         <div class="meaning-item">
           <div class="tit">商会后台添加入会人数</div>
-          <div class="sub">在指定时间范围内，由商会管理员在后台添加入会的人数。</div>
+          <div class="sub">在指定时间范围内，由商会管理员在后台添加入会的人数。<span style="color: #ff0000">（需去重）</span></div>
         </div>
         <div class="meaning-item">
           <div class="tit">个人会员</div>
-          <div class="sub">在指定时间范围内，加入商会且入会类型为个人的会员。</div>
+          <div class="sub">在指定时间范围内，加入商会且入会类型为个人的会员。<span style="color: #ff0000">（需去重）</span></div>
         </div>
         <div class="meaning-item">
           <div class="tit">企业/团体</div>
-          <div class="sub">在指定时间范围内，加入商会且入会类型为企业/团体的会员。</div>
+          <div class="sub">在指定时间范围内，加入商会且入会类型为企业/团体的会员。<span style="color: #ff0000">（需去重）</span></div>
         </div>
       </div>
       <div style="text-align: center;">

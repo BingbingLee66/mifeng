@@ -64,3 +64,11 @@ export function updateChamberLevel(params) {
     params
   })
 }
+//数据维度（商会列表）
+export function chamberSearchList(params) {
+  return request({
+    url: '/ec/chamber/chamberSearchList',
+    method: 'get',
+    params
+  })
+}
