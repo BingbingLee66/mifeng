@@ -15,9 +15,19 @@ export default {
       }
     }
     return {
+      activeName: '1',
       activityId: null,
       type: null,
       ckey: '',
+      // 活动报名表参数 begin
+      arrayData:[
+        {
+          id:"",
+          data:""
+        }
+      ],
+      dataNum:0,
+      // 活动报名表参数 end
       formObj: {
         id: '',
         activityName: '', // 活动名称
@@ -89,6 +99,18 @@ export default {
     }
   },
   methods: {
+    add() {
+      this.arrayData.push(
+        {
+          id: this.dataNum++,
+          data: ''
+        }
+      )
+    },
+    del(item, index) {
+      this.arrayData.splice(index, 1)
+    },
+
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
