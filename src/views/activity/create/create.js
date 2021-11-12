@@ -21,12 +21,16 @@ export default {
       ckey: '',
       // 活动报名表参数 begin
       arrayData:[
-        {
-          id:"",
-          data:""
-        }
       ],
-      dataNum:0,
+      colData:{
+        "title" : "",
+        "describe" : "",
+        "size" : "",
+        "require" : 1
+      },
+      dialogFormVisible: false,
+      editCol: false, // 是否编辑
+      editIndex: 0, // 编辑索引
       // 活动报名表参数 end
       formObj: {
         id: '',
@@ -99,16 +103,85 @@ export default {
     }
   },
   methods: {
-    add() {
-      this.arrayData.push(
-        {
-          id: this.dataNum++,
-          data: ''
-        }
-      )
+    // 动态表单
+    // 取消
+    cancel1(){
+      this.dialogFormVisible = false;
+      this.colData = {
+        "title" : "",
+        "describe" : "",
+        "size" : "",
+        "require":1
+      };
+      this.editCol = false;
+      this.$refs["f2"].resetFields();
     },
-    del(item, index) {
+    // 新增
+    add() {
+      console.log(this.arrayData)
+      if(this.arrayData.length>=6){
+        alert('报名信息请限制在 10 个以内');
+        return;
+      }
+      this.$refs["f2"].validate((valid, v) => {
+        console.log(v)
+        if (valid) {
+
+          if(this.editCol){
+            // 编辑
+            this.arrayData[this.editIndex] = {...this.colData};
+          }else{
+            // 新增
+            this.arrayData.push(
+              {...this.colData}
+            );
+          }
+          this.cancel1();
+          return;
+        } else {
+          console.log('error submit!!');
+          return;
+        }
+      });
+
+    },
+    // 删除
+    del(index) {
+      console.log(index);
       this.arrayData.splice(index, 1)
+    },
+    // 修改
+    edit(index){
+      console.log(index);
+      this.dialogFormVisible = true;
+      this.colData = {...this.arrayData[index]};
+      this.editCol = true;
+      this.editIndex = index;
+    },
+    // 上移
+    up(index){
+      console.log(index);
+      if(index == 0){
+        return;
+      }else{
+        let data = this.arrayData[index];
+        this.arrayData[index] = this.arrayData[index - 1];
+        this.arrayData[index - 1] = data;
+        this.$forceUpdate();
+        console.log(this.arrayData)
+      }
+    },
+    // 下移
+    down(index){
+      console.log(index);
+      if(index == this.arrayData.length - 1){
+        return;
+      }else{
+        let data = this.arrayData[index];
+        this.arrayData[index] = this.arrayData[index + 1];
+        this.arrayData[index + 1] = data;
+        this.$forceUpdate();
+      }
     },
 
     has(tabName, actionName) {

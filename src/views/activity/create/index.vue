@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
     <el-tabs v-model="activeName" >
-      <el-tab-pane label="创建新活动" name="1"></el-tab-pane>
+      <el-tab-pane v-bind:label="activityId ? '编辑活动' : '创建新活动'" name="1"></el-tab-pane>
       <el-tab-pane label="活动介绍" name="2"></el-tab-pane>
       <el-tab-pane label="活动报名表" name="3"></el-tab-pane>
     </el-tabs>
 
-    <div v-if="activeName == '1'">
+    <div v-show="activeName == '1'">
       <div class="create-container">
         <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="120px">
           <el-row>
@@ -120,7 +120,7 @@
         </el-form>
       </div>
     </div>
-    <div v-if="activeName == '2'">
+    <div v-show="activeName == '2'">
       <div class="create-container">
         <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="120px">
           <el-row>
@@ -139,60 +139,93 @@
         </el-form>
       </div>
     </div>
-    <div v-if="activeName == '3'">
+    <div v-show="activeName == '3'">
       <div class="create-container mydiv" >
-        <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="120px">
-
+        <el-form ref="form1" :rules="rules" label-position="right" label-width="120px">
+          <el-row style="margin-top: 8px">
+            <span style="color: #F5222D;margin-left: 60px;">提示：报名信息请限制在 10 个以内</span>
+          </el-row>
           <el-row>
-            <el-col style="width: 600px;height: 50px;margin-top: 30px">
+            <el-col :span="12">
               <el-form-item label="姓名：" prop="activityName">
-                <el-input v-model="formObj.activityName" show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+                <el-input show-word-limit maxlength="30" placeholder="限30字内"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
               <el-form-item label="手机：" prop="activityName">
-                <el-input v-model="formObj.activityName" show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+                <el-input show-word-limit maxlength="30" placeholder="限30字内"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
               <el-form-item label="邮箱：" prop="activityName">
-                <el-input v-model="formObj.activityName" show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+                <el-input show-word-limit maxlength="30" placeholder="限30字内"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
               <el-form-item label="微信：" prop="activityName">
-                <el-input v-model="formObj.activityName" show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+                <el-input show-word-limit maxlength="30" placeholder="限30字内"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row style="width: 600px;height: 50px">
             <el-form-item >
-            <el-button type="primary"  @click="add">自定义</el-button>
+            <el-button type="primary"  @click="dialogFormVisible = true">+自定义</el-button>
             </el-form-item>
           </el-row>
 
           <div v-for="(item,index) in arrayData" :key="item.id">
             <el-row>
-              <el-col style="width: 600px;height: 50px">
-                <el-form-item label="邮箱：" prop="activityName">
-                  <el-input v-model="formObj.activityName" show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+              <el-col :span="12">
+                <el-form-item :label="item.title" :prop="'col'+index" :required="item.require===1">
+                  <el-input show-word-limit :maxlength="item.size" :placeholder="item.describe"></el-input>
                 </el-form-item>
               </el-col>
-              <el-button type="primary"  @click="add">编辑</el-button>
-              <el-button type="primary"  @click="add">上移</el-button>
-              <el-button type="primary"  @click="add">下移</el-button>
-              <el-button type="primary"  @click="del(item,index)">删除</el-button>
+              <el-col :span="8" style="margin-top: 10px;margin-left: 10px;">
+                <el-link type="primary"  @click="edit(index)">编辑</el-link>
+                <el-link type="primary"  @click="up(index)">上移</el-link>
+                <el-link type="primary"  @click="down(index)">下移</el-link>
+                <el-link type="primary"  @click="del(index)">删除</el-link>
+              </el-col>
             </el-row>
           </div>
-
         </el-form>
       </div>
+      <el-dialog :title="(this.editCol ? '编辑' : '新增') + '自定义信息'" :visible.sync="dialogFormVisible" width="500px" @close="cancel1()" >
+        <el-form :model="colData" label-width="120px" ref="f2">
+          <el-form-item label="标题" prop="title"
+          :rules="[
+            {required: true, message: '不能为空'},
+          ]">
+            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15"></el-input>
+          </el-form-item>
+          <el-form-item label="输入框提示" prop="describe" 
+          :rules="[
+            {required: true, message: '不能为空'},
+          ]">
+            <el-input v-model="colData.describe" autocomplete="off" placeholder="输入框提示文字，15字内" :maxlength="15"></el-input>
+          </el-form-item>
+          <el-form-item label="输入字数限制" prop="size" >
+            <el-input-number v-model="colData.size" :step="1" autocomplete="off" placeholder="不限制"></el-input-number>
+            <br/>不填写，则默认不限制
+          </el-form-item>
+          <el-form-item label="是否必填" prop="require">
+              <el-radio-group v-model="colData.require">
+                <el-radio :label="1">必填</el-radio>
+                <el-radio :label="0">选填</el-radio>
+              </el-radio-group>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="cancel1">取 消</el-button>
+          <el-button type="primary" @click="add">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
 
   </div>
@@ -208,7 +241,7 @@
 .mydiv {
   width: 1200px;
 
-  border: 1px solid black;
+  // border: 1px solid black;
   margin-left: 30px;
   height:auto;
   min-height:500px;
