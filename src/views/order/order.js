@@ -203,7 +203,8 @@ export default {
           this.$message.warning('无记录')
           return
         }
-        this.handleSelectionChange(res.data.data.list)
+        this.handleSelectionChange(res.data.data.list);
+        console.log('this.selectionDatas',this.selectionDatas)
         exportJson2Excel('订单列表', this.selectionDatas)
       })
       /* window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))

@@ -33,6 +33,13 @@
             <div class="card-value">{{ pfStatistics.paidMembers }}</div>
           </div>
         </div>
+        <div class="h-cut-line"></div>
+        <div class="d-card-box">
+          <div class="card-box-3">
+            <div class="card-key">累计授权登录人数</div>
+            <div class="card-value">{{ pfStatistics.activeWxUserTotal }}</div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="block">
@@ -59,12 +66,21 @@
         <el-radio-button :label="2">周</el-radio-button>
         <el-radio-button :label="3">月</el-radio-button>
       </el-radio-group>
-      <!-- <el-button type="primary" size="mini" tyle="float: right;">导表</el-button> -->
+      <el-button type="primary" size="mini" tyle="float: right;" @click="exportExcel">导表</el-button>
     </div>
-    <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
+    <el-table   @selection-change="handleSelectionChange" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
+      <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
       <el-table-column label="日期" width="120px">
         <template slot-scope="scope">
           {{ scope.row.date }}
+        </template>
+      </el-table-column>
+      <el-table-column label="授权登录人数" width="120px">
+        <template slot-scope="scope">
+          {{ scope.row.activeWxUserTotal }}
         </template>
       </el-table-column>
       <el-table-column label="入会总人数">
@@ -115,35 +131,39 @@
       :style="{'padding-top': '15px'}">
     </el-pagination>
 
-    <el-dialog title="数据定义" :visible.sync="showMeaning" width="450px">
+    <el-dialog title="数据定义" :visible.sync="showMeaning" width="480px">
       <div class="meaning-wrap">
         <div class="meaning-item">
+          <div class="tit">授权登录人数</div>
+          <div class="sub">在指定时间范围内，在小程序端<span class="color-red">首次</span>授权登录的人数 <span class="color-red">(需去重)</span>。</div>
+        </div>
+        <div class="meaning-item">
           <div class="tit">入会总人数</div>
-          <div class="sub">在指定时间范围内，从不同渠道加入商会的总人数。</div>
+          <div class="sub">在指定时间范围内，从不同渠道加入商会的总人数 <span class="color-red">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">商会邀请入会人数</div>
-          <div class="sub">在指定时间范围内，通过商会邀请海报加入商会的人数。</div>
+          <div class="sub">在指定时间范围内，通过商会邀请海报加入商会的人数 <span class="color-red">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">自己申请入会人数</div>
-          <div class="sub">在指定时间范围内，自己通过小程序前端申请入会的人数。</div>
+          <div class="sub">在指定时间范围内，自己通过小程序前端申请入会的人数 <span class="color-red">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">会员邀请入会人数</div>
-          <div class="sub">在指定时间范围内，由老会员邀请入会的人数。</div>
+          <div class="sub">在指定时间范围内，由老会员邀请入会的人数 <span class="color-red">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">商会后台添加入会人数</div>
-          <div class="sub">在指定时间范围内，由商会管理员在后台添加入会的人数。</div>
+          <div class="sub">在指定时间范围内，由商会管理员在后台添加入会的人数  <span class="color-red">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">个人会员</div>
-          <div class="sub">在指定时间范围内，加入商会且入会类型为个人的会员。</div>
+          <div class="sub">在指定时间范围内，加入商会且入会类型为个人的会员 <span class="color-red">(需去重)</span>。</div>
         </div>
         <div class="meaning-item">
           <div class="tit">企业/团体</div>
-          <div class="sub">在指定时间范围内，加入商会且入会类型为企业/团体的会员。</div>
+          <div class="sub">在指定时间范围内，加入商会且入会类型为企业/团体的会员 <span class="color-red">(需去重)</span>。</div>
         </div>
       </div>
       <div style="text-align: center;">
@@ -168,7 +188,7 @@
 
 .d-card-box {
   float: left;
-  width: 24.5%;
+  width: 19.5%;
   height: 100%;
   text-align: center;
   display: table;
@@ -179,7 +199,9 @@
   display: table-cell;
   vertical-align: middle;
 }
-
+.color-red{
+  color: red;
+}
 .card-key {
 }
 

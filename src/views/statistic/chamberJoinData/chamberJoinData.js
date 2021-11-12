@@ -2,6 +2,7 @@ import {
   getPlatformMemberPaidData,
   getPlatformMemberJoinData
 } from '@/api/statistics/chamberJoinData'
+import {chamberSearchList} from '@/api/chamber/manager'
 import { exportJson2Excel } from '@/utils/exportExcel'
 
 export default {
@@ -26,7 +27,13 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      selectionDatas: []
+      selectionDatas: [],
+      //商会名称
+      name:'',
+      ckey:"",
+      // page:1,
+      // pageSize:10,
+      chamberList:[]
     }
   },
   computed: {
@@ -56,6 +63,19 @@ export default {
     init() {
       this.getStatistics()
       this.initDatePicker()
+      this.chamberSearchListFunc()
+    },
+    chamberSearchListFunc(){
+      let param={
+        // page:this.page,
+        // pageSize:this.pageSize,
+        name:this.name
+      }
+      chamberSearchList(param).then(res=>{
+        if(res.state===1){
+          this.chamberList=res.data
+        }
+      })
     },
     initDatePicker() {
       const endDateNs = new Date()
@@ -74,7 +94,9 @@ export default {
     },
     // 获取商会入驻数据
     getStatistics() {
-      let params = {}
+      let params = {
+        ckey:this.ckey
+      }
       getPlatformMemberPaidData(params).then(response => {
         this.pfStatistics.monthlyChamberJoin = response.data.monthlyChamberJoin
         this.pfStatistics.totalChambers = response.data.totalChambers
@@ -90,7 +112,8 @@ export default {
         'endTime': this.query.date[1],
         'pageSize': this.limit,
         'page': this.currentpage,
-        'type': this.query.type
+        'type': this.query.type,
+        'ckey':this.ckey
       }
       getPlatformMemberJoinData(params).then(response => {
         this.list = response.data.list
@@ -125,6 +148,11 @@ export default {
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       exportJson2Excel('会员入驻数据', this.selectionDatas)
+    },
+    //下拉框改变时触发
+    change(){
+      this.getStatistics()
+      this.initDatePicker()
     }
   }
 }
