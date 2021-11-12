@@ -7,10 +7,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "dev": "vue-cli-service serve --open --mode development",
+    "dev2": "vue-cli-service serve --open --mode development2",
     "test": "vue-cli-service serve --open --mode test",
     "test2": "vue-cli-service serve --open --mode test2",
     "prod": "vue-cli-service serve --open --mode production",
     "build:dev": "vue-cli-service build --mode development",
+    "build:dev2": "vue-cli-service build --mode development2",
     "build:test": "vue-cli-service build --mode test",
     "build:test2": "vue-cli-service build --mode test2",
     "build:prod": "vue-cli-service build --mode production",
