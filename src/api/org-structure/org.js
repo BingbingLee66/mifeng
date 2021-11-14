@@ -8,6 +8,14 @@ export function getDepartmentList(params) {
   })
 }
 
+export function getDepartmentListTreeSelect(params) {
+  return request({
+    url: '/api/ec/department/tree/list',
+    method: 'get',
+    params
+  })
+}
+
 export function saveDepartment(params) {
   return request({
     url: '/api/ec/department/save',

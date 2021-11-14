@@ -1,10 +1,16 @@
 import { createActivity, uploadPortrait, getActivity } from '@/api/activity/activity'
+import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
+import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
 import area from '@/utils/area'
-
+// import the component
+import Treeselect from '@riophae/vue-treeselect'
+// import the styles
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
   components: {
-    Ckeditor
+    Ckeditor,
+    Treeselect
   },
   data() {
     var checkSpace = (rule, value, callback) => {
@@ -15,18 +21,28 @@ export default {
       }
     }
     return {
+      // 树形下拉框 begin
+      port: false,
+      department: false,
+      valueTree: [],
+      options: [],
+      // 树形下拉框 end
       activeName: '1',
       activityId: null,
       type: null,
       ckey: '',
+      // 下拉选择 begin
+      portSelect: [],
+      portValue: '',
+      // 下拉选择 begin
       // 活动报名表参数 begin
-      arrayData:[
+      arrayData: [
       ],
-      colData:{
-        "title" : "",
-        "describe" : "",
-        "size" : "",
-        "require" : 1
+      colData: {
+        title: '',
+        msgAlert: '',
+        lengthLimit: '',
+        check: true
       },
       dialogFormVisible: false,
       editCol: false, // 是否编辑
@@ -50,7 +66,9 @@ export default {
       // 是否限制报名对象
       applyObject: {
         unlimit: false,
-        limit: false
+        limit: false,
+        port: false,
+        department: false
       },
       // 是否限制报名人数
       applyCount: {
@@ -101,86 +119,105 @@ export default {
     } else {
       this.fetchData()
     }
+    this.postSelectInit()
+    this.treeSelectInit()
   },
   methods: {
+    postSelectInit() {
+      const params = {
+        'ckey': this.$store.getters.ckey,
+      }
+      getListOfSelect(params).then(response => {
+        console.log(response.data.data)
+        this.portSelect = response.data.data
+      })
+    },
+    treeSelectInit() {
+      const params = {
+        'ckey': this.$store.getters.ckey,
+        'parentId': 0
+      }
+      getDepartmentListTreeSelect(params).then(response => {
+        console.log(response.data.data)
+        this.options = response.data.data
+      })
+    },
     // 动态表单
     // 取消
-    cancel1(){
-      this.dialogFormVisible = false;
+    cancel1() {
+      this.dialogFormVisible = false
       this.colData = {
-        "title" : "",
-        "describe" : "",
-        "size" : "",
-        "require":1
-      };
-      this.editCol = false;
-      this.$refs["f2"].resetFields();
+        title: '',
+        describe: '',
+        size: '',
+        require: 1,
+      }
+      this.editCol = false
+      this.$refs['f2'].resetFields()
     },
     // 新增
     add() {
       console.log(this.arrayData)
-      if(this.arrayData.length>=6){
-        alert('报名信息请限制在 10 个以内');
-        return;
+      if (this.arrayData.length >= 6) {
+        alert('报名信息请限制在 10 个以内')
+        return
       }
-      this.$refs["f2"].validate((valid, v) => {
+      this.$refs['f2'].validate((valid, v) => {
         console.log(v)
         if (valid) {
-
-          if(this.editCol){
+          if (this.editCol) {
             // 编辑
-            this.arrayData[this.editIndex] = {...this.colData};
-          }else{
+            this.arrayData[this.editIndex] = {...this.colData}
+          } else {
             // 新增
             this.arrayData.push(
               {...this.colData}
-            );
+            )
           }
-          this.cancel1();
-          return;
+          this.cancel1()
+          return
         } else {
-          console.log('error submit!!');
-          return;
+          console.log('error submit!!')
+          return
         }
-      });
-
+      })
     },
     // 删除
     del(index) {
-      console.log(index);
+      console.log(index)
       this.arrayData.splice(index, 1)
     },
     // 修改
-    edit(index){
-      console.log(index);
-      this.dialogFormVisible = true;
-      this.colData = {...this.arrayData[index]};
-      this.editCol = true;
-      this.editIndex = index;
+    edit(index) {
+      console.log(index)
+      this.dialogFormVisible = true
+      this.colData = {...this.arrayData[index]}
+      this.editCol = true
+      this.editIndex = index
     },
     // 上移
-    up(index){
-      console.log(index);
-      if(index == 0){
-        return;
-      }else{
-        let data = this.arrayData[index];
-        this.arrayData[index] = this.arrayData[index - 1];
-        this.arrayData[index - 1] = data;
-        this.$forceUpdate();
+    up(index) {
+      console.log(index)
+      if (index === 0) {
+        return
+      } else {
+        let data = this.arrayData[index]
+        this.arrayData[index] = this.arrayData[index - 1]
+        this.arrayData[index - 1] = data
+        this.$forceUpdate()
         console.log(this.arrayData)
       }
     },
     // 下移
-    down(index){
-      console.log(index);
-      if(index == this.arrayData.length - 1){
-        return;
-      }else{
-        let data = this.arrayData[index];
-        this.arrayData[index] = this.arrayData[index + 1];
-        this.arrayData[index + 1] = data;
-        this.$forceUpdate();
+    down(index) {
+      console.log(index)
+      if (index === this.arrayData.length - 1) {
+        return
+      } else {
+        let data = this.arrayData[index]
+        this.arrayData[index] = this.arrayData[index + 1]
+        this.arrayData[index + 1] = data
+        this.$forceUpdate()
       }
     },
 
@@ -382,14 +419,28 @@ export default {
     },
     // 选择报名对象
     handleCheckTarget(e, val) {
+      this.applyObject.unlimit = false
+      this.applyObject.limit = false
+      this.applyObject.port = false
+      this.applyObject.department = false
       if (val === 0) {
         this.applyObject.unlimit = true
-        this.applyObject.limit = false
         this.formObj.applyObject = 0
-      } else {
-        this.applyObject.unlimit = false
+      } else if (val === 1) {
         this.applyObject.limit = true
         this.formObj.applyObject = 1
+      } else if (val === 2) {
+        this.applyObject.port = true
+        this.formObj.applyObject = 2
+        this.port = true
+        this.department = false
+        this.valueTree = []
+      } else if (val === 3) {
+        this.applyObject.department = true
+        this.formObj.applyObject = 3
+        this.port = false
+        this.department = true
+        this.portValue = []
       }
     },
     // 选择参加人数
@@ -409,6 +460,8 @@ export default {
       this.formObj.introduce = htmlStr
     },
     save() {
+      console.log('自定义参数' + this.arrayData[0].title)
+      console.log('自定义参数' + this.arrayData[0].describe)
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (!this.areaData) {
@@ -445,6 +498,17 @@ export default {
           }
           if (this.activityId) {
             this.formObj['id'] = this.activityId
+          }
+
+          if (this.valueTree.length > 0) {
+            this.formObj['applyIds'] = this.valueTree.join(',')
+          }
+          if (this.portValue.length > 0) {
+            this.formObj['applyIds'] = this.portValue.join(',')
+          }
+
+          if (this.colData.length > 0) {
+            this.formObj['dtos'] = this.colData
           }
           createActivity(this.formObj).then(res => {
             this.$message.success(res.msg)

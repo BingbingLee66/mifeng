@@ -7,7 +7,7 @@
     </el-tabs>
 
     <div v-show="activeName == '1'">
-      <div class="create-container">
+      <div class="create-container  mydiv">
         <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="120px">
           <el-row>
             <el-col style="width: 600px;height: 50px">
@@ -51,7 +51,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col style="width: 800px;">
+            <el-col style="width: 700px;">
               <el-form-item class="date-wrap" label="活动时间：" prop="date">
                 <el-date-picker v-model="formObj.date" format="yyyy-MM-dd HH:mm:ss" value-format="timestamp" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"/>
               </el-form-item>
@@ -89,18 +89,54 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col style="width: 600px;height: 40px;">
+            <el-col  style="width: 700px;height: 40px;">
               <el-form-item label="报名对象：" required>
                 <el-checkbox v-model="applyObject.unlimit" @change="handleCheckTarget($event,0)">不限</el-checkbox>
                 <el-checkbox v-model="applyObject.limit" @change="handleCheckTarget($event,1)">
                   {{ ckey ? '限本商会成员' : '限云商会成员' }}
                 </el-checkbox>
-                <span style="margin-left: 20px;color: #ff0000" v-if="!ckey">指云商会平台的任意商会的任意成员</span>
+                <el-checkbox v-model="applyObject.port" @change="handleCheckTarget($event,2)">
+                  限定本商会内指定职位
+                </el-checkbox>
+                <el-checkbox v-model="applyObject.department" @change="handleCheckTarget($event,3)">
+                  限本商会内指定部门
+                </el-checkbox>
+<!--                <span style="margin-left: 20px;color: #ff0000" v-if="!ckey">指云商会平台的任意商会的任意成员</span>-->
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row v-show="port">
+            <el-col style="width: 600px;height: 40px;">
+              <el-form-item label="会内职位：" required>
+                <el-select v-model="portValue" multiple placeholder="请选择">
+                  <el-option
+                    v-for="item in portSelect"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row v-show="department">
+            <el-col style="width: 600px;height: 40px;">
+              <el-form-item label="会内部门：" required>
+                <div>
+                  <treeselect
+                    :multiple="true"
+                    :options="options"
+                    placeholder="请选择"
+                    v-model="valueTree"
+                  />
+<!--                  <treeselect-value :value="value" />-->
+                </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
           <el-row>
-            <el-col style="width: 1000px;">
+            <el-col style="width: 700px;">
               <el-form-item label="参加人数：" required>
                 <el-checkbox v-model="applyCount.unlimit" @change="handleCheckNum($event,0)">不限</el-checkbox>
                 <el-checkbox v-model="applyCount.limit" @change="handleCheckNum($event,1)">限</el-checkbox>
@@ -121,10 +157,10 @@
       </div>
     </div>
     <div v-show="activeName == '2'">
-      <div class="create-container">
+      <div class="create-container mydiv"  >
         <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="120px">
           <el-row>
-            <el-col style="width: 1000px;">
+            <el-col style="width: 700px;">
               <el-form-item label="活动介绍：" required class="upload-style">
                 <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor>
               </el-form-item>
@@ -182,8 +218,8 @@
           <div v-for="(item,index) in arrayData" :key="item.id">
             <el-row>
               <el-col :span="12">
-                <el-form-item :label="item.title" :prop="'col'+index" :required="item.require===1">
-                  <el-input show-word-limit :maxlength="item.size" :placeholder="item.describe"></el-input>
+                <el-form-item :label="item.title" :prop="'col'+index" :required="item.check===true">
+                  <el-input show-word-limit :maxlength="item.lengthLimit" :placeholder="item.msgAlert"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8" style="margin-top: 10px;margin-left: 10px;">
@@ -198,24 +234,24 @@
       </div>
       <el-dialog :title="(this.editCol ? '编辑' : '新增') + '自定义信息'" :visible.sync="dialogFormVisible" width="500px" @close="cancel1()" >
         <el-form :model="colData" label-width="120px" ref="f2">
-          <el-form-item label="标题" prop="title"
+          <el-form-item label = '标题' prop= 'title'
           :rules="[
             {required: true, message: '不能为空'},
           ]">
             <el-input v-model="colData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15"></el-input>
           </el-form-item>
-          <el-form-item label="输入框提示" prop="describe" 
+          <el-form-item label='输入框提示' prop='msgAlert'
           :rules="[
             {required: true, message: '不能为空'},
           ]">
-            <el-input v-model="colData.describe" autocomplete="off" placeholder="输入框提示文字，15字内" :maxlength="15"></el-input>
+            <el-input v-model='colData.msgAlert' autocomplete="off" placeholder="输入框提示文字，15字内" :maxlength="15"></el-input>
           </el-form-item>
-          <el-form-item label="输入字数限制" prop="size" >
-            <el-input-number v-model="colData.size" :step="1" autocomplete="off" placeholder="不限制"></el-input-number>
+          <el-form-item label='输入字数限制' prop='lengthLimit' >
+            <el-input-number v-model='colData.lengthLimit' :step="1" autocomplete="off" placeholder="不限制"></el-input-number>
             <br/>不填写，则默认不限制
           </el-form-item>
-          <el-form-item label="是否必填" prop="require">
-              <el-radio-group v-model="colData.require">
+          <el-form-item label="是否必填" prop="check">
+              <el-radio-group v-model="colData.check">
                 <el-radio :label="1">必填</el-radio>
                 <el-radio :label="0">选填</el-radio>
               </el-radio-group>
@@ -226,6 +262,13 @@
           <el-button type="primary" @click="add">确 定</el-button>
         </div>
       </el-dialog>
+
+      <el-row>
+        <el-col style="width: 600px;padding-left: 120px;">
+          <el-button type="primary" v-dbClick @click="save">保存</el-button>
+          <el-button @click="cancel">取消</el-button>
+        </el-col>
+      </el-row>
     </div>
 
   </div>
@@ -235,16 +278,23 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
+
 </style>
 
 <style lang="scss">
-.mydiv {
-  width: 1200px;
+.el-scrollbar {
+  display: block !important;
+}
 
-  // border: 1px solid black;
+.mydiv {
+  width: 700px;
+  border: 1px solid rgba(0, 0, 0, 0.17);
   margin-left: 30px;
+  margin-top: 30px;
+  padding-top: 30px;
   height:auto;
   min-height:500px;
+  min-width:700px;
 }
 .create-container {
   .upload-style {
