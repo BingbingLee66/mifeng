@@ -10,7 +10,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
   components: {
     Ckeditor,
-    Treeselect
+    Treeselect,
   },
   data() {
     var checkSpace = (rule, value, callback) => {
@@ -139,6 +139,17 @@ export default {
         console.log(response.data.data)
         this.options = response.data.data
       })
+    },
+    normalizer(node){
+      //去掉children=[]的children属性
+      if(node.children == null || node.children.length==0){
+        delete node.children;
+      }
+      return {
+        id: node.value,
+        label:node.label,
+        children:node.children
+      }
     },
     // 动态表单
     // 取消
@@ -509,6 +520,7 @@ export default {
             this.formObj['id'] = this.activityId
           }
 
+          debugger;
           if (this.valueTree.length > 0) {
             this.formObj['applyIds'] = this.valueTree.join(',')
           }

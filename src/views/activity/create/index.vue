@@ -123,7 +123,7 @@
             <el-col style="width: 600px;height: 40px;">
               <el-form-item label="会内部门：" required>
                 <div>
-                  <el-cascader
+                  <!-- <el-cascader
                     placeholder="请选择"
                     :options="options"
                     :props="{ multiple: true, checkStrictly: true}"
@@ -132,14 +132,18 @@
                     v-model="valueTree"
                     @change="test()"
                   >
-                  </el-cascader>
-                  <!-- <treeselect
+                  </el-cascader> -->
+                  <treeselect
                     :multiple="true"
                     :options="options"
                     placeholder="请选择"
                     v-model="valueTree"
-                  /> -->
-<!--                  <treeselect-value :value="value" />-->
+                    :normalizer="normalizer"
+                    value-consists-of="ALL"
+                    :flat="true"
+                    :default-expand-level="3"
+                  /> 
+                 <!-- <treeselect-value :value="valueTree" /> -->
                 </div>
               </el-form-item>
             </el-col>
