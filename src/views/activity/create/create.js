@@ -22,8 +22,6 @@ export default {
     }
     return {
       // 树形下拉框 begin
-      port: false,
-      department: false,
       valueTree: [],
       options: [],
       // 树形下拉框 end
@@ -42,7 +40,7 @@ export default {
         title: '',
         msgAlert: '',
         lengthLimit: '',
-        check: true
+        check: 1
       },
       dialogFormVisible: false,
       editCol: false, // 是否编辑
@@ -148,9 +146,9 @@ export default {
       this.dialogFormVisible = false
       this.colData = {
         title: '',
-        describe: '',
-        size: '',
-        require: 1,
+        msgAlert: '',
+        lengthLimit: '',
+        check: 1
       }
       this.editCol = false
       this.$refs['f2'].resetFields()
@@ -165,8 +163,7 @@ export default {
         alert('报名信息请限制在 10 个以内')
         return
       }
-      this.$refs['f2'].validate((valid, v) => {
-        console.log(v)
+      this.$refs['f2'].validate((valid) => {
         if (valid) {
           if (this.editCol) {
             // 编辑
@@ -279,14 +276,26 @@ export default {
           }
         }
         // 报名对象回显
+        this.applyObject.limit = false
+        this.applyObject.unlimit = false
+        this.applyObject.department = false
+        this.applyObject.port = false
+        this.portValue = []
+        this.valueTree = []
         if (resData.applyObject === 0) {
-          this.applyObject.limit = false
           this.applyObject.unlimit = true
           this.formObj.applyObject = 0
-        } else {
+        } else if(resData.applyObject === 1){
           this.applyObject.limit = true
-          this.applyObject.unlimit = false
           this.formObj.applyObject = 1
+        }else if(resData.applyObject === 2){
+          this.applyObject.port = true
+          this.formObj.applyObject = 2
+          this.portValue = resData.applyIds.split(",")
+        }else{
+          this.applyObject.department = true
+          this.formObj.applyObject = 3
+          this.valueTree = resData.applyIds.split(",")
         }
         // 参加人数回显
         if (resData.isLimit === 0) {
@@ -305,6 +314,8 @@ export default {
           this.$refs.ckeditor1.initHtml(resData.introduce ? resData.introduce : '')
         }, 500)
         this.formObj.introduce = resData.introduce
+        // 动态字段回显
+        this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
       })
     },
     // 上传图片校验
@@ -435,14 +446,10 @@ export default {
       } else if (val === 2) {
         this.applyObject.port = true
         this.formObj.applyObject = 2
-        this.port = true
-        this.department = false
         this.valueTree = []
       } else if (val === 3) {
         this.applyObject.department = true
         this.formObj.applyObject = 3
-        this.port = false
-        this.department = true
         this.portValue = []
       }
     },
@@ -463,8 +470,7 @@ export default {
       this.formObj.introduce = htmlStr
     },
     save() {
-      console.log('自定义参数' + this.arrayData[0].title)
-      console.log('自定义参数' + this.arrayData[0].describe)
+      console.log(this.arrayData);
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (!this.areaData) {
@@ -510,8 +516,8 @@ export default {
             this.formObj['applyIds'] = this.portValue.join(',')
           }
 
-          if (this.colData.length > 0) {
-            this.formObj['dtos'] = this.colData
+          if (this.arrayData.length > 0) {
+            this.formObj['dtos'] = this.arrayData
           }
           createActivity(this.formObj).then(res => {
             this.$message.success(res.msg)

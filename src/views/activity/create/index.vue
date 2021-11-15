@@ -105,7 +105,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-if="port">
+          <el-row v-if="applyObject.port">
             <el-col style="width: 600px;height: 40px;">
               <el-form-item label="会内职位：" required>
                 <el-select v-model="portValue" multiple placeholder="请选择">
@@ -119,7 +119,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-if="department">
+          <el-row v-if="applyObject.department">
             <el-col style="width: 600px;height: 40px;">
               <el-form-item label="会内部门：" required>
                 <div>
@@ -193,29 +193,29 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="姓名：" prop="activityName">
-                <el-input show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+              <el-form-item label="姓名：" prop="name">
+                <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
-              <el-form-item label="手机：" prop="activityName">
-                <el-input show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+              <el-form-item label="手机：" prop="phone">
+                <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
-              <el-form-item label="邮箱：" prop="activityName">
-                <el-input show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+              <el-form-item label="邮箱：" prop="email">
+                <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
-              <el-form-item label="微信：" prop="activityName">
-                <el-input show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+              <el-form-item label="微信：" prop="wechat">
+                <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -229,7 +229,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item :label="item.title" :prop="'col'+index" :required="item.check===true">
-                  <el-input show-word-limit :maxlength="item.lengthLimit" :placeholder="item.msgAlert"></el-input>
+                  <el-input show-word-limit :maxlength="item.lengthLimit" :placeholder="item.msgAlert" :disabled="true"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8" style="margin-top: 10px;margin-left: 10px;">
@@ -262,8 +262,8 @@
           </el-form-item>
           <el-form-item label="是否必填" prop="check">
               <el-radio-group v-model="colData.check">
-                <el-radio :label="true">必填</el-radio>
-                <el-radio :label="false">选填</el-radio>
+                <el-radio :label="1">必填</el-radio>
+                <el-radio :label="0">选填</el-radio>
               </el-radio-group>
           </el-form-item>
         </el-form>
