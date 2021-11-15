@@ -155,6 +155,9 @@ export default {
       this.editCol = false
       this.$refs['f2'].resetFields()
     },
+    test(){
+      console.log(this.valueTree)
+    },
     // 新增
     add() {
       console.log(this.arrayData)

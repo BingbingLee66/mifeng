@@ -95,17 +95,17 @@
                 <el-checkbox v-model="applyObject.limit" @change="handleCheckTarget($event,1)">
                   {{ ckey ? '限本商会成员' : '限云商会成员' }}
                 </el-checkbox>
-                <el-checkbox v-model="applyObject.port" @change="handleCheckTarget($event,2)">
+                <el-checkbox v-if="ckey" v-model="applyObject.port" @change="handleCheckTarget($event,2)">
                   限定本商会内指定职位
                 </el-checkbox>
-                <el-checkbox v-model="applyObject.department" @change="handleCheckTarget($event,3)">
+                <el-checkbox v-if="ckey" v-model="applyObject.department" @change="handleCheckTarget($event,3)">
                   限本商会内指定部门
                 </el-checkbox>
 <!--                <span style="margin-left: 20px;color: #ff0000" v-if="!ckey">指云商会平台的任意商会的任意成员</span>-->
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-show="port">
+          <el-row v-if="port">
             <el-col style="width: 600px;height: 40px;">
               <el-form-item label="会内职位：" required>
                 <el-select v-model="portValue" multiple placeholder="请选择">
@@ -119,16 +119,26 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-show="department">
+          <el-row v-if="department">
             <el-col style="width: 600px;height: 40px;">
               <el-form-item label="会内部门：" required>
                 <div>
-                  <treeselect
+                  <el-cascader
+                    placeholder="请选择"
+                    :options="options"
+                    :props="{ multiple: true, checkStrictly: true}"
+                    clearable
+                    filterable
+                    v-model="valueTree"
+                    @change="test()"
+                  >
+                  </el-cascader>
+                  <!-- <treeselect
                     :multiple="true"
                     :options="options"
                     placeholder="请选择"
                     v-model="valueTree"
-                  />
+                  /> -->
 <!--                  <treeselect-value :value="value" />-->
                 </div>
               </el-form-item>
@@ -252,8 +262,8 @@
           </el-form-item>
           <el-form-item label="是否必填" prop="check">
               <el-radio-group v-model="colData.check">
-                <el-radio :label="1">必填</el-radio>
-                <el-radio :label="0">选填</el-radio>
+                <el-radio :label="true">必填</el-radio>
+                <el-radio :label="false">选填</el-radio>
               </el-radio-group>
           </el-form-item>
         </el-form>
