@@ -19,7 +19,8 @@ export default {
         monthlyJoin: 0,
         totalMembers: 0,
         unpaidMembers: 0,
-        paidMembers: 0
+        paidMembers: 0,
+        activeWxUserTotal: 0
       },
       query: {
         days: 7,
@@ -207,6 +208,7 @@ export default {
         this.pfStatistics.totalMembers = response.data.totalMembers
         this.pfStatistics.unpaidMembers = response.data.unpaidMembers
         this.pfStatistics.paidMembers = response.data.paidMembers
+        this.pfStatistics.activeWxUserTotal = response.data.activeWxUserTotal
       })
     },
     fetchData() {
