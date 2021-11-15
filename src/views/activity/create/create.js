@@ -140,15 +140,15 @@ export default {
         this.options = response.data.data
       })
     },
-    normalizer(node){
-      //去掉children=[]的children属性
-      if(node.children == null || node.children.length==0){
-        delete node.children;
+    normalizer(node) {
+      // 去掉children=[]的children属性
+      if (node.children == null || node.children == 'null' || node.children && !node.children.length) {
+        delete node.children
       }
       return {
         id: node.value,
-        label:node.label,
-        children:node.children
+        label: node.label,
+        children: node.children
       }
     },
     // 动态表单
@@ -164,7 +164,7 @@ export default {
       this.editCol = false
       this.$refs['f2'].resetFields()
     },
-    test(){
+    test() {
       console.log(this.valueTree)
     },
     // 新增
@@ -296,17 +296,17 @@ export default {
         if (resData.applyObject === 0) {
           this.applyObject.unlimit = true
           this.formObj.applyObject = 0
-        } else if(resData.applyObject === 1){
+        } else if (resData.applyObject === 1) {
           this.applyObject.limit = true
           this.formObj.applyObject = 1
-        }else if(resData.applyObject === 2){
+        } else if (resData.applyObject === 2) {
           this.applyObject.port = true
           this.formObj.applyObject = 2
-          this.portValue = resData.applyIds.split(",")
-        }else{
+          this.portValue = resData.applyIdsArray
+        } else {
           this.applyObject.department = true
           this.formObj.applyObject = 3
-          this.valueTree = resData.applyIds.split(",")
+          this.valueTree = resData.applyIdsArray
         }
         // 参加人数回显
         if (resData.isLimit === 0) {

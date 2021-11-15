@@ -140,9 +140,7 @@
                     v-model="valueTree"
                     :normalizer="normalizer"
                     value-consists-of="ALL"
-                    :flat="true"
-                    :default-expand-level="3"
-                  /> 
+                  />
                  <!-- <treeselect-value :value="valueTree" /> -->
                 </div>
               </el-form-item>
