@@ -195,28 +195,32 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="姓名：" prop="name">
+              <el-form-item label="姓名：" prop="name" 
+              :rules="[{required: true, message: '不能为空'},]" >
                 <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
-              <el-form-item label="手机：" prop="phone">
+              <el-form-item label="手机：" prop="phone"
+              :rules="[{required: true, message: '不能为空'},]">
                 <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
-              <el-form-item label="邮箱：" prop="email">
+              <el-form-item label="邮箱：" prop="email"
+              :rules="[{required: true, message: '不能为空'},]">
                 <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
-              <el-form-item label="微信：" prop="wechat">
+              <el-form-item label="微信：" prop="wechat"
+              :rules="[{required: true, message: '不能为空'},]">
                 <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
@@ -230,7 +234,7 @@
           <div v-for="(item,index) in arrayData" :key="item.id">
             <el-row>
               <el-col :span="12">
-                <el-form-item :label="item.title" :prop="'col'+index" :required="item.check===true">
+                <el-form-item :label="item.title" :prop="'col'+index" :required="item.check===1">
                   <el-input show-word-limit :maxlength="item.lengthLimit" :placeholder="item.msgAlert" :disabled="true"></el-input>
                 </el-form-item>
               </el-col>
