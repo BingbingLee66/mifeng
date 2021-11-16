@@ -520,7 +520,6 @@ export default {
             this.formObj['id'] = this.activityId
           }
 
-          debugger;
           if (this.valueTree.length > 0) {
             this.formObj['applyIds'] = this.valueTree.join(',')
           }
