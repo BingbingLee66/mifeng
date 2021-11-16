@@ -66,7 +66,7 @@
         <el-radio-button :label="2">周</el-radio-button>
         <el-radio-button :label="3">月</el-radio-button>
       </el-radio-group>
-      <el-button type="primary" size="mini" tyle="float: right;" @click="exportExcel">导表</el-button>
+      <el-button type="primary" size="mini"  style="float: right;" @click="exportExcel">导表</el-button>
     </div>
     <el-table   @selection-change="handleSelectionChange" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
       <el-table-column

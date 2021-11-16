@@ -31,6 +31,7 @@ export default {
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
+      chamberName: '',
       currentpage: 1,
       limit: 10,
       listLoading: false,
@@ -41,6 +42,7 @@ export default {
     }
   },
   created() {
+    this.chamberName = this.$store.getters.chamberName
     this.init()
   },
   methods: {
@@ -126,9 +128,16 @@ export default {
       }
       let selectionDatas=this.handleData(this.tempSelectDatas);
       console.log('selectionDatas',selectionDatas);
-      exportJson2Excel('会员数据', selectionDatas)
+      let nowDate = new Date()
+      let date = {
+        year: nowDate.getFullYear(),
+        month: nowDate.getMonth() + 1,
+        date: nowDate.getDate()
+      }
+
+      exportJson2Excel(date.year + '-' + date.month + '-' + date.date + '-' + this.chamberName + '-会员数据', selectionDatas)
     },
-    //表格选择时触发
+    // 表格选择时触发
     handleSelectionChange(rows){
       this.tempSelectDatas=rows;
     },
