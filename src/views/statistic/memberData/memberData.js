@@ -20,7 +20,8 @@ export default {
         monthlyJoin: 0,
         totalMembers: 0,
         unpaidMembers: 0,
-        paidMembers: 0
+        paidMembers: 0,
+        activeWxUserTotal: 0
       },
       query: {
         days: 7,
@@ -33,9 +34,9 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      //已选导表数据
+      // 已选导表数据
       // selectionDatas: [],
-      //临时已选数据
+      // 临时已选数据
       tempSelectDatas:[]
     }
   },
@@ -86,6 +87,7 @@ export default {
         this.pfStatistics.totalMembers = response.data.totalMembers
         this.pfStatistics.unpaidMembers = response.data.unpaidMembers
         this.pfStatistics.paidMembers = response.data.paidMembers
+        this.pfStatistics.activeWxUserTotal = response.data.activeWxUserTotal
       })
     },
     fetchData() {
@@ -112,7 +114,7 @@ export default {
         this.tradeBarData.series[0].data = response.data.seriesData
       })
     },
-    //导表
+    // 导表
     exportExcel(){
       if(this.tempSelectDatas.length<1){
         this.$message({
@@ -136,7 +138,7 @@ export default {
       list.forEach(item=>{
         let obj={
           '日期':item.date,
-          '授权登录人数':item.activeWxUserTotal,
+          '授权登录人数':item.activeWxUserTotal>0 ? item.activeWxUserTotal: "--",
           '入会总人数':item.joinedTotal>0 ? item.joinedTotal: "--",
           '商会邀请入会人数':item.chamberInvitationTotal >0 ? item.chamberInvitationTotal: "--",
           '自己申请入会人数':item.myselfApplyTotal >0 ? item.myselfApplyTotal: "--",
@@ -145,7 +147,7 @@ export default {
           '个人会员':item.memberInvitationTotal >0 ? item.memberInvitationTotal: "--",
           '会员邀请入会人数':item.personMemberTotal >0 ? item.personMemberTotal: "--",
           '企业/团体':item.companyMemberTotal >0 ? item.companyMemberTotal: "--",
-          
+
         };
         newData.push(obj)
       })
