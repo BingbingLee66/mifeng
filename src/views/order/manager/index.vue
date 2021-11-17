@@ -169,6 +169,7 @@
               <el-input
                 v-model.trim="query.giftId"
                 placeholder="请输入"
+                oninput="value=value.replace(/[^\d]/g,'')"
               />
             </el-form-item>
           </el-col>
@@ -185,6 +186,7 @@
               <el-input
                 v-model.trim="query.templateId"
                 placeholder="请输入"
+                oninput="value=value.replace(/[^\d]/g,'')"
               />
             </el-form-item>
           </el-col>

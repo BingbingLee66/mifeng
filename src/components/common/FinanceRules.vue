@@ -25,7 +25,7 @@
             <div class="rule-left">应付款金额</div>
             <div class="rule-right">
               表示应该结算给供货商的钱。<br /><span class="zred">单个订单的应付款金额 =
-              供货价*数量-供货价*数量*商品服务费率-供货价*数量*微信服务费率；</span>
+              供货价*数量-供货价*数量*微信服务费率-供货价*数量*商品服务费率；</span>
             </div>
           </div>
           <div class="rule-item bbn">
@@ -45,7 +45,7 @@
           <div class="rule-item bbn">
             <div class="rule-left">商品服务费</div>
             <div class="rule-right">
-              单个订单的【商品服务费】= 商品服务费率* 买家实付金额；
+              单个订单的【商品服务费】= 供货价*数量*商品服务费率；
             </div>
           </div>
           <div class="rule-item bbn">
@@ -96,13 +96,13 @@
             <div class="rule-left">应付款金额</div>
             <div class="rule-right">
               表示应该结算给供货商的钱。<br /><span class="zred">单个订单的应付款金额 =
-              供货价*数量-供货价*数量*商品服务费率-供货价*数量*微信服务费率；</span><br />此处的【应付款金额】为该结算单内，所有订单的应付款金额的总和；
+              供货价*数量-供货价*数量*商品服务费率-供货价*数量*商品服务费率；</span><br />此处的【应付款金额】为该结算单内，所有订单的应付款金额的总和；
             </div>
           </div>
           <div class="rule-item bbn">
             <div class="rule-left">商品服务费</div>
             <div class="rule-right">
-              单个订单的【商品服务费】= 商品服务费率* 买家实付金额；<br />此处的【商品服务费】为该结算单内，所有订单的商品服务费的总和；
+              单个订单的【商品服务费】= 供货价*数量*商品服务费率<br />此处的【商品服务费】为该结算单内，所有订单的商品服务费的总和；
             </div>
           </div>
           <div class="rule-item bbn">

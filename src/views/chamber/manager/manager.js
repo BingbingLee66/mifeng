@@ -311,12 +311,19 @@ export default {
         if (valid) {
           console.log('this.formObj', this.formObj)
           save(this.formObj).then(response => {
-            this.$message({
-              message: '操作成功',
-              type: 'success'
-            })
-            this.fetchData()
-            this.editorVisible = false
+            if(response.state===1){
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              this.fetchData()
+              this.editorVisible = false
+            }else{
+              this.$message({
+                message: response.msg,
+                type: 'success'
+              })
+            }
           })
         } else {
           return false
@@ -331,7 +338,7 @@ export default {
         this.$msgbox({
           title: '冻结',
           message: h('p', null, [
-            h('div', null, '是否确定定金该商会？'),
+            h('div', null, '是否确定冻结该商会？'),
             h('div', null, '冻结后，该商会无法登录商会后台，但是不会影响商会在小程序端的显示'),
           ]),
           showCancelButton: true,
