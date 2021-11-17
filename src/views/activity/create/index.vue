@@ -139,7 +139,7 @@
                     placeholder="请选择"
                     v-model="valueTree"
                     :normalizer="normalizer"
-                    value-consists-of="ALL"
+                    :flat="true"
                   />
                  <!-- <treeselect-value :value="valueTree" /> -->
                 </div>
