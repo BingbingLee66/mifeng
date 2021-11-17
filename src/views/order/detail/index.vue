@@ -88,13 +88,13 @@
         </el-col>
         <el-col :span="8">
           大礼包：
-          <span style="color:#409eff;cursor: pointer" @click="showSendOut">{{detailObj.giftId}}</span>-
-           <span style="color:#409eff;cursor: pointer" @click="showSendOut">{{detailObj.giftName}}</span>
+          <span style="color:#409eff;cursor: pointer" @click="goSpreeDetail(detailObj.giftId)">{{detailObj.giftId}}</span>-
+           <span style="color:#409eff;cursor: pointer" @click="goSpreeDetail(detailObj.giftId)">{{detailObj.giftName}}</span>
         </el-col>
         <el-col :span="8">
           优惠券：
-          <span style="color:#409eff;cursor: pointer" @click="showSendOut">{{detailObj.templateId}}</span>-
-           <span style="color:#409eff;cursor: pointer" @click="showSendOut">{{detailObj.couponName}}</span>
+          <span style="color:#409eff;cursor: pointer" @click="goCouponDetail(detailObj.templateId)">{{detailObj.templateId}}</span>-
+           <span style="color:#409eff;cursor: pointer" @click="goCouponDetail(detailObj.templateId)">{{detailObj.couponName}}</span>
         </el-col>
       </el-row>
     </div>

@@ -10,7 +10,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
   components: {
     Ckeditor,
-    Treeselect,
+   Treeselect,
   },
   data() {
     var checkSpace = (rule, value, callback) => {

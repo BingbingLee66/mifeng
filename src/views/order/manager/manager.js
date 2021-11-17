@@ -186,7 +186,6 @@ export default {
         } else {
           isFirstStr = "--"
         }
-        console.log('data',data)
         let new_data = {
           '订单号': data.orderSn,
           '下单时间': formatDateTime(new Date(data.createTime), 'yyyy-MM-dd hh:mm:ss'),
@@ -243,9 +242,11 @@ export default {
           this.$message.warning('无记录')
           return
         }
+        if(res.data.data.list.length>4999){
+          this.$message.warning('请选择记录小于5000条')
+          return;
+        }
         this.handleSelectionChange(res.data.data.list);
-        console.log('this.selectionDatas',this.selectionDatas)
-
         exportJson2Excel('订单列表', this.selectionDatas)
       })
     },
