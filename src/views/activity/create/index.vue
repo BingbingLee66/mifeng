@@ -140,6 +140,9 @@
                     v-model="valueTree"
                     :normalizer="normalizer"
                     :flat="true"
+                    noChildrenText="无子部门"
+                    noOptionsText="暂时没有部门"
+                    noResultsText="没找到部门"
                   />
                  <!-- <treeselect-value :value="valueTree" /> -->
                 </div>
