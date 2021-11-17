@@ -42,6 +42,7 @@ export default {
     }
   },
   created() {
+    this.ckey = this.$store.getters.ckey
     this.chamberName = this.$store.getters.chamberName
     this.init()
   },
@@ -99,7 +100,8 @@ export default {
         'endTime': this.query.date[1],
         'type': this.query.type,
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        'ckey':this.ckey 
       }
       getDailyStatistics(params).then(response => {
         console.log('responseresponseresponse----', response)

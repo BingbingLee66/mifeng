@@ -163,7 +163,8 @@ export default {
     // ...mapGetters(['has'])
   },
   created() {
-    this.init()
+    this.ckey = this.$store.getters.ckey
+    this.init();
   },
   methods: {
     has(tabName, actionName) {
@@ -217,7 +218,8 @@ export default {
         'startTime': this.query.date[0],
         'endTime': this.query.date[1],
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        'ckey':this.ckey
       }
       getDailyStatistics(params).then(response => {
         this.list = response.data.data.list

@@ -40,6 +40,7 @@ export default {
     // ...mapGetters(['has'])
   },
   created() {
+    this.ckey = this.$store.getters.ckey
     this.init()
   },
   methods: {
@@ -115,6 +116,7 @@ export default {
         'type': this.query.type,
         'ckey':this.ckey
       }
+      console.log('params',params)
       getPlatformMemberJoinData(params).then(response => {
         this.list = response.data.list
         this.total = response.data.totalRows
