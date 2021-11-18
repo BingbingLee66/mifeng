@@ -216,16 +216,14 @@
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
-              <el-form-item label="邮箱：" prop="email"
-              :rules="[{required: true, message: '不能为空'},]">
+              <el-form-item label="邮箱：" prop="email">
                 <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 50px">
-              <el-form-item label="微信：" prop="wechat"
-              :rules="[{required: true, message: '不能为空'},]">
+              <el-form-item label="微信：" prop="wechat">
                 <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
