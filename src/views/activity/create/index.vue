@@ -143,6 +143,8 @@
                     noChildrenText="无子部门"
                     noOptionsText="暂时没有部门"
                     noResultsText="没找到部门"
+                    id = "treeselect"
+                    :default-expand-level="3"
                   />
                  <!-- <treeselect-value :value="valueTree" /> -->
                 </div>
@@ -230,7 +232,7 @@
           </el-row>
           <el-row style="width: 600px;height: 50px">
             <el-form-item >
-            <el-button type="primary"  @click="dialogFormVisible = true">+自定义</el-button>
+            <el-button type="primary"  @click="dialogFormVisible = true" :disabled="arrayData.length >= 6" >+自定义</el-button>
             </el-form-item>
           </el-row>
 
@@ -266,7 +268,7 @@
             <el-input v-model='colData.msgAlert' autocomplete="off" placeholder="输入框提示文字，15字内" :maxlength="15"></el-input>
           </el-form-item>
           <el-form-item label='输入字数限制' prop='lengthLimit' >
-            <el-input-number v-model='colData.lengthLimit' :step="1" autocomplete="off" placeholder="不限制"></el-input-number>
+            <el-input v-model='colData.lengthLimit' autocomplete="off" placeholder="不限制" type="number"></el-input>
             <br/>不填写，则默认不限制
           </el-form-item>
           <el-form-item label="是否必填" prop="check">
@@ -303,6 +305,12 @@
 <style lang="scss">
 .el-scrollbar {
   display: block !important;
+}
+
+#treeselect{
+  .vue-treeselect__placeholder{
+    line-height: 40px !important
+  }
 }
 
 .mydiv {

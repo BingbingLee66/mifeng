@@ -171,9 +171,29 @@ export default {
     add() {
       console.log(this.arrayData)
       if (this.arrayData.length >= 6) {
-        alert('报名信息请限制在 10 个以内')
+        this.$message({
+          message: '报名信息请限制在 10 个以内',
+          type: 'warning'
+        });
+        // alert('报名信息请限制在 10 个以内')
         return
       }
+      if(this.colData.lengthLimit != ''){
+        if(this.colData.lengthLimit < 0){
+          this.$message({
+            message: '字数限制必须大于0',
+            type: 'warning'
+          });
+          return
+        }else if(this.colData.lengthLimit > 200){
+          this.$message({
+            message: '字数限制必须小于200',
+            type: 'warning'
+          });
+          return
+        }
+      }
+
       this.$refs['f2'].validate((valid) => {
         if (valid) {
           if (this.editCol) {
