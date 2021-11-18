@@ -45,7 +45,11 @@ export default {
       mulAuditFalg: null,
       chamberName: null,
       agreeCount: null,
-      applyCount: null
+      applyCount: null,
+      //if show showApplyDetail
+      showApplyDetail: false,
+      //current SignKeyValueVOS
+      currentSignKeyValueVOS: null
     }
   },
   created() {
@@ -67,14 +71,22 @@ export default {
   },
   methods: {
     has(tabName, actionName) {
-      return this.$store.getters.has({ tabName, actionName })
+      return this.$store.getters.has({
+        tabName,
+        actionName
+      })
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({ tabName, actionName })
+      return this.$store.getters.getId({
+        tabName,
+        actionName
+      })
     },
     // 获取活动详情
     getApplyDetail() {
-      getActivityApplyDetail({ activityId: this.actId }).then(res => {
+      getActivityApplyDetail({
+        activityId: this.actId
+      }).then(res => {
         if (res.state === 1) {
           this.applyDetail = res.data
         }
@@ -118,6 +130,11 @@ export default {
         this.total = res.data.totalRows
         this.listLoading = false
       })
+    },
+    //查看详细报名信息
+    showApplyDetailFunc(item){
+      this.showApplyDetail=true;
+      this.currentSignKeyValueVOS=item.signKeyValueVOS ? item.signKeyValueVOS : null;
     },
     handleClick(tab) {
       this.type = tab.name
@@ -172,8 +189,7 @@ export default {
               }
             }
           })
-        }).catch(() => {
-        })
+        }).catch(() => {})
       } else {
         this.auditFalg = null
         this.rejectReason = ''
@@ -211,8 +227,7 @@ export default {
               }
             }
           })
-        }).catch(() => {
-        })
+        }).catch(() => {})
       } else {
         this.rejectReason = ''
         this.showRejectDialog = true
