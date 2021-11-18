@@ -329,9 +329,9 @@
     <!-- 报名信息详情 -->
     <el-dialog title="查看全部" :visible.sync="showApplyDetail" width="400px">
       <div v-for="(item,index) in currentSignKeyValueVOS" :key="index" style="margin:0 auto">
-        <div v-if="item" style="display:flex">
-          <div style="width:100px;text-align:right">{{ item.signKey }}: </div>
-        <div>{{ item.signValue }}</div>
+        <div v-if="item" style="display:flex;margin-bottom:5px">
+          <div style="width:100px;text-align:right"><span v-if="item.checked" style="color:red">*</span> {{ item.signKey }}: </div>
+        <div style="margin-left:5px">{{ item.signValue }}</div>
         </div>
       </div>
       <div slot="footer" style="text-align: center">
