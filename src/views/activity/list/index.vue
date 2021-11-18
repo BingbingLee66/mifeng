@@ -116,11 +116,11 @@
           <template slot-scope="scope">
             <div v-if="type==1">
               <div class="blue-label" @click="showUpdate(scope.row,0)">取消发布</div>
-              <div class="blue-label" @click="editActivity(scope.row)">编辑</div>
+              <div v-if="ckey" class="blue-label" @click="editActivity(scope.row)">编辑</div>
             </div>
             <div v-else>
               <div class="blue-label" @click="showUpdate(scope.row,1)">发布</div>
-              <div class="blue-label" @click="editActivity(scope.row)">编辑</div>
+              <div  v-if="ckey" class="blue-label" @click="editActivity(scope.row)">编辑</div>
               <div class="blue-label" @click="showDel(scope.row)">删除</div>
             </div>
           </template>
