@@ -53,14 +53,14 @@
           <el-row>
             <el-col style="width: 700px;">
               <el-form-item class="date-wrap" label="活动时间：" prop="date">
-                <el-date-picker v-model="formObj.date" format="yyyy-MM-dd HH:mm:ss" value-format="timestamp" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"/>
+                <el-date-picker v-model="formObj.date" format="yyyy-MM-dd HH:mm:ss" value-format="timestamp" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :disabled="status != 1"/>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 120px">
               <el-form-item class="address-wrap" label="活动地点：" prop="addressInfo">
-                <el-select v-model="provinceValue" placeholder="请选择省份" @change="provinceChange">
+                <el-select v-model="provinceValue" placeholder="请选择省份" @change="provinceChange" :disabled="status != 1">
                   <el-option
                     v-for="item in provinceOptions"
                     :key="item.value"
@@ -68,7 +68,7 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-                <el-select v-model="cityValue" placeholder="请选择市" @change="cityChange">
+                <el-select v-model="cityValue" placeholder="请选择市" @change="cityChange" :disabled="status != 1">
                   <el-option
                     v-for="item in cityOptions"
                     :key="item.value"
@@ -76,7 +76,7 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-                <el-select v-model="countryValue" placeholder="请选择区" @change="countryChange">
+                <el-select v-model="countryValue" placeholder="请选择区" @change="countryChange" :disabled="status != 1">
                   <el-option
                     v-for="item in countryOptions"
                     :key="item.value"
@@ -84,21 +84,21 @@
                     :value="item.value">
                   </el-option>
                 </el-select>
-                <el-input class="address-inp" type="textarea" resize="none" :rows="2" v-model="formObj.addressInfo" show-word-limit maxlength="50" placeholder="详细地址，限50字内"></el-input>
+                <el-input class="address-inp" type="textarea" resize="none" :rows="2" v-model="formObj.addressInfo" show-word-limit maxlength="50" placeholder="详细地址，限50字内" :disabled="status != 1"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col  style="width: 700px;height: 40px;">
               <el-form-item label="报名对象：" required>
-                <el-checkbox v-model="applyObject.unlimit" @change="handleCheckTarget($event,0)">不限</el-checkbox>
-                <el-checkbox v-model="applyObject.limit" @change="handleCheckTarget($event,1)">
+                <el-checkbox v-model="applyObject.unlimit" @change="handleCheckTarget($event,0)" :disabled="status != 1">不限</el-checkbox>
+                <el-checkbox v-model="applyObject.limit" @change="handleCheckTarget($event,1)" :disabled="status != 1">
                   {{ ckey ? '限本商会成员' : '限云商会成员' }}
                 </el-checkbox>
-                <el-checkbox v-if="ckey" v-model="applyObject.port" @change="handleCheckTarget($event,2)">
+                <el-checkbox v-if="ckey" v-model="applyObject.port" @change="handleCheckTarget($event,2)" :disabled="status != 1">
                   限定本商会内指定职位
                 </el-checkbox>
-                <el-checkbox v-if="ckey" v-model="applyObject.department" @change="handleCheckTarget($event,3)">
+                <el-checkbox v-if="ckey" v-model="applyObject.department" @change="handleCheckTarget($event,3)" :disabled="status != 1">
                   限本商会内指定部门
                 </el-checkbox>
 <!--                <span style="margin-left: 20px;color: #ff0000" v-if="!ckey">指云商会平台的任意商会的任意成员</span>-->
@@ -108,7 +108,7 @@
           <el-row v-if="applyObject.port">
             <el-col style="width: 600px;height: 40px;">
               <el-form-item label="会内职位：" required>
-                <el-select v-model="portValue" multiple placeholder="请选择">
+                <el-select v-model="portValue" multiple placeholder="请选择" :disabled="status != 1">
                   <el-option
                     v-for="item in portSelect"
                     :key="item.value"
@@ -145,6 +145,7 @@
                     noResultsText="没找到部门"
                     id = "treeselect"
                     :default-expand-level="3"
+                    :disabled="status != 1"
                   />
                  <!-- <treeselect-value :value="valueTree" /> -->
                 </div>
@@ -155,9 +156,9 @@
           <el-row>
             <el-col style="width: 700px;">
               <el-form-item label="参加人数：" required>
-                <el-checkbox v-model="applyCount.unlimit" @change="handleCheckNum($event,0)">不限</el-checkbox>
-                <el-checkbox v-model="applyCount.limit" @change="handleCheckNum($event,1)">限</el-checkbox>
-                <el-input v-show="applyCount.limit" style="width: 200px;" placeholder="大于0的整数" maxlength="9" v-model="formObj.applyCount">
+                <el-checkbox v-model="applyCount.unlimit" @change="handleCheckNum($event,0)" :disabled="status != 1">不限</el-checkbox>
+                <el-checkbox v-model="applyCount.limit" @change="handleCheckNum($event,1)" :disabled="status != 1">限</el-checkbox>
+                <el-input v-show="applyCount.limit" style="width: 200px;" placeholder="大于0的整数" maxlength="9" v-model="formObj.applyCount" :disabled="status != 1">
                   <template slot="append">人</template>
                 </el-input>
                 <span style="margin-left: 20px;color: #ff0000">若这里限定了参加人数，在后台审核通过的，才能参加活动</span>
@@ -230,7 +231,7 @@
           </el-row>
           <el-row style="width: 600px;height: 50px">
             <el-form-item >
-            <el-button type="primary"  @click="dialogFormVisible = true" :disabled="arrayData.length >= 6" >+自定义</el-button>
+            <el-button type="primary"  @click="dialogFormVisible = true" :disabled="arrayData.length >= 6 || status != 1" >+自定义</el-button>
             </el-form-item>
           </el-row>
 

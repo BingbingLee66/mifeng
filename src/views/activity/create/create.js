@@ -21,6 +21,8 @@ export default {
       }
     }
     return {
+      // 编辑字段限制标识
+      status:1,
       // 树形下拉框 begin
       valueTree: [],
       options: [],
@@ -276,7 +278,9 @@ export default {
     // 获取活动详情
     fetchData() {
       getActivity({ id: this.activityId }).then(res => {
+       
         let resData = res.data
+        this.status = resData.status
         this.formObj.activityName = resData.activityName
         this.formObj.headImage = resData.headImage
         this.formObj.listImage = resData.listImage
