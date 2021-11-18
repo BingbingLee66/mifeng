@@ -306,13 +306,13 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="editorVisible">
+        <!-- <el-row v-if="editorVisible">
           <el-col :offset="2" :span="20">
             <el-form-item label="排序" prop="level">
               <el-input v-model="formObj.level" minlength="1"></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
         <el-form-item>
           <el-col :offset="6" :span="8">
             <el-button type="primary" v-dbClick @click="save">保存</el-button>
