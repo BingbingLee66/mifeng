@@ -371,10 +371,10 @@
         <el-col :offset="2" :span="8">账号密码</el-col>
         <el-col :span="10">{{detailObj.password}}</el-col>
       </el-row> -->
-      <el-row>
+      <!-- <el-row>
         <el-col :offset="2" :span="6">排序：</el-col>
         <el-col :span="10">{{ detailObj.level }}</el-col>
-      </el-row>
+      </el-row> -->
       <el-row>
         <hr />
       </el-row>
