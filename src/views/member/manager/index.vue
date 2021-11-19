@@ -29,11 +29,18 @@
         <el-form-item label="用户名">
           <el-input v-model="query.uname " />
         </el-form-item>
-        <el-form-item label="状态">
+        <el-form-item label="账号状态">
           <el-select v-model="query.status" placeholder="请选择">
             <el-option label="全部" :value="-1" />
             <el-option label="正常" :value="1" />
             <el-option label="已冻结" :value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="激活状态">
+          <el-select v-model="query.activatedState" placeholder="请选择激活状态" style="width:100%">
+            <el-option label="全部" :value="0" />
+            <el-option label="已激活" :value="1" />
+            <el-option label="未激活" :value="-1" />
           </el-select>
         </el-form-item>
         <el-form-item label="入会时间">
@@ -83,11 +90,18 @@
             <div>【部门】{{ scope.row.departmentName }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="100px">
+        <el-table-column label="账号状态" width="100px">
           <template slot-scope="scope">
             <div v-if="scope.row.status == 0">已冻结</div>
             <div v-if="scope.row.status == 1">正常</div>
             <div v-if="scope.row.status == 3">待邀请</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="激活状态" width="100px">
+          <template slot-scope="scope">
+            <div v-if="scope.row.activatedState == 1">已激活</div>
+            <div v-if="scope.row.activatedState == -1">未激活</div>
+<!--            <div v-else>待邀请</div>-->
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right">

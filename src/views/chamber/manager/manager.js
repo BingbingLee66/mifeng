@@ -1,6 +1,12 @@
-import { getList, getDetail, save, updateStatus, upload } from '@/api/chamber/manager'
+import {
+  getList,
+  getDetail,
+  save,
+  updateStatus,
+  upload
+} from '@/api/chamber/manager'
 // import { mapGetters } from 'vuex'
-
+import levelDialog from './component/levelDialog.vue'
 export default {
   data() {
     var checkPhone = (rule, value, callback) => {
@@ -60,34 +66,75 @@ export default {
       listLoading: false,
       detailObj: {},
       type: 'add',
+      //搜索表单
+      query: {
+        name: null,
+        userName: null,
+        status: null,
+        date: null
+      },
       rules: {
-        name: [
-          {required: true, message: '商/协会名称不能为空', trigger: 'blur'},
-          {min: 1, max: 50, message: '商/协会名称1-50个字', trigger: 'change'}
+        name: [{
+            required: true,
+            message: '商/协会名称不能为空',
+            trigger: 'blur'
+          },
+          {
+            min: 1,
+            max: 50,
+            message: '商/协会名称1-50个字',
+            trigger: 'change'
+          }
         ],
-        systemLogo: [
-          {required: true, message: '请上传商/协会logo', trigger: 'change'}
+        systemLogo: [{
+          required: true,
+          message: '请上传商/协会logo',
+          trigger: 'change'
+        }],
+        president: [{
+          required: true,
+          message: '联系人姓名不能为空',
+          trigger: 'blur'
+        }],
+        address: [{
+          required: true,
+          message: '办公地址不能为空',
+          trigger: 'blur'
+        }],
+        phone: [{
+            required: true,
+            message: '联系人手机号不能为空',
+            trigger: 'blur'
+          },
+          {
+            validator: checkPhone,
+            trigger: 'change'
+          }
         ],
-        president: [
-          {required: true, message: '联系人姓名不能为空', trigger: 'blur'}
+        license: [{
+          required: true,
+          message: '营业执照必须上传',
+          trigger: 'change'
+        }],
+        password: [{
+            required: true,
+            message: '账号密码不能为空',
+            trigger: 'blur'
+          },
+          {
+            validator: checkPass,
+            trigger: 'change'
+          }
         ],
-        address: [
-          {required: true, message: '办公地址不能为空', trigger: 'blur'}
-        ],
-        phone: [
-          {required: true, message: '联系人手机号不能为空', trigger: 'blur'},
-          {validator: checkPhone, trigger: 'change'}
-        ],
-        license: [
-          {required: true, message: '营业执照必须上传', trigger: 'change'}
-        ],
-        password: [
-          {required: true, message: '账号密码不能为空', trigger: 'blur'},
-          {validator: checkPass, trigger: 'change'}
-        ],
-        confirmPassword: [
-          {required: true, message: '确认密码不能为空', trigger: 'blur'},
-          {validator: confirmPass, trigger: 'blur'}
+        confirmPassword: [{
+            required: true,
+            message: '确认密码不能为空',
+            trigger: 'blur'
+          },
+          {
+            validator: confirmPass,
+            trigger: 'blur'
+          }
         ]
         /* level: [
           {required: true, message: '排序不能为空', trigger: 'blur'},
@@ -96,6 +143,9 @@ export default {
       }
     }
   },
+  components: {
+    levelDialog
+  },
   computed: {
     // ...mapGetters(['has'])
   },
@@ -103,11 +153,20 @@ export default {
     this.init()
   },
   methods: {
+    a() {
+      console.log("aa")
+    },
     has(tabName, actionName) {
-      return this.$store.getters.has({tabName, actionName})
+      return this.$store.getters.has({
+        tabName,
+        actionName
+      })
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({tabName, actionName})
+      return this.$store.getters.getId({
+        tabName,
+        actionName
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -142,18 +201,23 @@ export default {
     init() {
       this.fetchData()
     },
-    fetchData() {
-      this.listLoading = true
-      let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage
-      }
-      getList(params).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.totalRows
-        this.listLoading = false
-      })
+    selectData() {
+      this.currentpage = 1;
+      this.fetchData()
     },
+    // fetchData() {
+    //   this.listLoading = true
+    //   let params = {
+    //     'pageSize': this.limit,
+    //     'page': this.currentpage
+    //   }
+    //   console.log('query', this.query)
+    //   getList(params).then(response => {
+    //     this.list = response.data.data.list
+    //     this.total = response.data.data.totalRows
+    //     this.listLoading = false
+    //   })
+    // },
     beforeAvatarUpload(file) {
       if (file.type !== 'image/jpeg' &&
         file.type !== 'image/jpg' &&
@@ -177,11 +241,23 @@ export default {
       this.fetchData()
     },
     fetchData() {
-      this.listLoading = true
+      this.listLoading = true;
+      let {
+        name,
+        status,
+        userName,
+        date
+      } = this.query;
       let params = {
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        name,
+        status,
+        userName,
+        startTime: date ? date[0] : "",
+        endTime: date ? date[1] : ""
       }
+      console.log('query', this.query)
       getList(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
@@ -235,12 +311,19 @@ export default {
         if (valid) {
           console.log('this.formObj', this.formObj)
           save(this.formObj).then(response => {
-            this.$message({
-              message: '操作成功',
-              type: 'success'
-            })
-            this.fetchData()
-            this.editorVisible = false
+            if(response.state===1){
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              this.fetchData()
+              this.editorVisible = false
+            }else{
+              this.$message({
+                message: response.msg,
+                type: 'success'
+              })
+            }
           })
         } else {
           return false
@@ -248,7 +331,36 @@ export default {
       })
     },
     updateStatus(e, row) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      console.log('rew', row)
+      const h = this.$createElement;
+      let self = this;
+      if (row.status ===1 ) {
+        this.$msgbox({
+          title: '冻结',
+          message: h('p', null, [
+            h('div', null, '是否确定冻结该商会？'),
+            h('div', null, '冻结后，该商会无法登录商会后台，但是不会影响商会在小程序端的显示'),
+          ]),
+          showCancelButton: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+              self.updateStatusFunc(row)
+              done();
+            } else {
+              done();
+            }
+          }
+        }).then(action => {
+
+        });
+      } else {
+        this.updateStatusFunc(row)
+      }
+    },
+    updateStatusFunc(row) {
+      // window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let params = {
         'chamberId': row.id,
         'action': row.status === 0 ? 'active' : 'notactive'
@@ -266,11 +378,19 @@ export default {
           })
         }
         this.fetchData()
+
       })
     },
     enlarge(path) {
       var newwin = window.open()
       newwin.document.write('<img src="' + path + '"/>')
+    },
+    //修改权重
+    updateLevel(row) {
+      console.log('row', row)
+      this.$refs['levelDialog'].open(row.id).then(data => {
+        this.fetchData()
+      })
     }
   }
 }

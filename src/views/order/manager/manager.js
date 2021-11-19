@@ -109,7 +109,11 @@ export default {
         'pageSize': this.limit,
         'page': this.currentpage,
         'channelId': this.query.channelId,
-        'isFirst': this.query.isFirst
+        'isFirst': this.query.isFirst,
+        'giftId':this.query.giftId,
+        'giftName':this.query.giftName,
+        'templateId':this.query.templateId,
+        'couponName':this.query.couponName,
       }
       if (params.isFirst == -1) delete params.isFirst
       if (params.status == 5 || params.status == 6) {
@@ -190,13 +194,17 @@ export default {
           '推广渠道': data.channelName || '--',
           '用户属性': isFirstStr,
           '供货商家': data.supplierName,
+          '大礼包ID': data.giftId,
+          '大礼包名称': data.giftName,
+          '优惠券ID': data.templateId,
+          '优惠券名称': data.couponName,
           '订单所属商会': this.chamberName(data.ckey),
           '商品名称': data.name,
           '商品规格': !data.codeName ? '无' : data.codeName,
           '单价(元)': data.price,
           '下单数': data.count,
           '立减优惠(元)': data.totalDiscount,
-          '优惠券优惠(元)': data.couponPrice,
+          '优惠券优惠(元)': data.couponPrice / 100,
           '实付金额(元)': data.realPrice,
           '收件人': data.consignee,
           '收件人手机号': data.mobile,
@@ -234,13 +242,31 @@ export default {
           this.$message.warning('无记录')
           return
         }
-        this.handleSelectionChange(res.data.data.list)
+        if(res.data.data.list.length>4999){
+          this.$message.warning('请选择记录小于5000条')
+          return;
+        }
+        this.handleSelectionChange(res.data.data.list);
         exportJson2Excel('订单列表', this.selectionDatas)
       })
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '订单详情', params: { 'orderSn': row.orderSn } })
-    }
+    },
+     // 查看大礼包详情
+     goSpreeDetail(giftId) {
+      this.$router.push({
+        path: '/mall/spreeDetail',
+        query: { giftId }
+      })
+    },
+    // 查看优惠券详情
+    goCouponDetail(couponId) {
+      this.$router.push({
+        path: '/mall/couponDetail',
+        query: { couponId }
+      })
+    },
   }
 }

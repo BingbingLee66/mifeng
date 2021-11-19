@@ -32,7 +32,8 @@ export default {
         department: -1, // 部门
         type: -1, // 入会类型
         tradeType: -1, // 行业
-        date: '' // 入会时间
+        date: '', // 入会时间
+        activatedState: 0 // 激活状态 -1未激活 0全部 1已激活
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -148,6 +149,7 @@ export default {
         'type': this.query.type,
         'tradeType': this.query.tradeType,
         'department': this.query.department,
+        'activatedState': this.query.activatedState,
         'pageSize': this.limit,
         'page': this.currentpage
       }
@@ -219,7 +221,8 @@ export default {
           '入会类型': data.type === 0 ? '个人' : '企业',
           '联系信息': data.type === 0 ?'【会员姓名】'+data.name+'\n'+'【会员手机号】'+data.phone: '【企业/团体名称】'+data.companyName+'\n【联系人姓名】'+data.contactName+'\n【联系人手机号】'+data.contactPhone,
           '入会时间': '【入会时间】'+data.joinedTs+'\n【会内职位】'+data.postName+'\n【部门】'+data.departmentName,
-          '状态': data.status === 1 ? '正常' : '已冻结',
+          '账号状态': data.status === 1 ? '正常' : '已冻结',
+          '激活状态': data.activatedState === 1 ? '已激活' : '未激活',
 
         }
         this.selectionDatas.push(new_data)

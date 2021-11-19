@@ -66,6 +66,10 @@
             <span v-if="scope.row.applyObject === 0">不限</span>
             <span v-if="scope.row.applyObject === 1 && scope.row.chamberName === null">限云商会成员</span>
             <span v-if="scope.row.applyObject === 1 && scope.row.chamberName !== null">限本商会成员</span>
+            <span v-if="scope.row.applyObject === 2 && scope.row.chamberName === null">限商会内指定职位</span>
+            <span v-if="scope.row.applyObject === 2 && scope.row.chamberName !== null">限本商内指定职位</span>
+            <span v-if="scope.row.applyObject === 3 && scope.row.chamberName === null">限商会内指定部门</span>
+            <span v-if="scope.row.applyObject === 3 && scope.row.chamberName !== null">限本商内指定部门</span>
           </template>
         </el-table-column>
         <el-table-column label="参加人数" width="100px">
@@ -112,11 +116,11 @@
           <template slot-scope="scope">
             <div v-if="type==1">
               <div class="blue-label" @click="showUpdate(scope.row,0)">取消发布</div>
-              <div class="blue-label" @click="editActivity(scope.row)">编辑</div>
+              <div v-if="ckey || !scope.row.ckey" class="blue-label" @click="editActivity(scope.row)">编辑</div>
             </div>
             <div v-else>
               <div class="blue-label" @click="showUpdate(scope.row,1)">发布</div>
-              <div class="blue-label" @click="editActivity(scope.row)">编辑</div>
+              <div  v-if="ckey || !scope.row.ckey" class="blue-label" @click="editActivity(scope.row)">编辑</div>
               <div class="blue-label" @click="showDel(scope.row)">删除</div>
             </div>
           </template>

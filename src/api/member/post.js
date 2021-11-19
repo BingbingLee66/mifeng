@@ -8,6 +8,14 @@ export function getList(params) {
   })
 }
 
+export function getListOfSelect(params) {
+  return request({
+    url: '/ec/memberPost/list-select',
+    method: 'get',
+    params
+  })
+}
+
 export function save(params) {
   return request({
     url: '/ec/memberPost/save',

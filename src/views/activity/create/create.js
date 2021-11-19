@@ -1,10 +1,16 @@
 import { createActivity, uploadPortrait, getActivity } from '@/api/activity/activity'
+import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
+import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
 import area from '@/utils/area'
-
+// import the component
+import Treeselect from '@riophae/vue-treeselect'
+// import the styles
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 export default {
   components: {
-    Ckeditor
+    Ckeditor,
+   Treeselect,
   },
   data() {
     var checkSpace = (rule, value, callback) => {
@@ -15,9 +21,33 @@ export default {
       }
     }
     return {
+      // 编辑字段限制标识
+      status:1,
+      // 树形下拉框 begin
+      valueTree: [],
+      options: [],
+      // 树形下拉框 end
+      activeName: '1',
       activityId: null,
       type: null,
       ckey: '',
+      // 下拉选择 begin
+      portSelect: [],
+      portValue: '',
+      // 下拉选择 begin
+      // 活动报名表参数 begin
+      arrayData: [
+      ],
+      colData: {
+        title: '',
+        msgAlert: '',
+        lengthLimit: '',
+        check: 1
+      },
+      dialogFormVisible: false,
+      editCol: false, // 是否编辑
+      editIndex: 0, // 编辑索引
+      // 活动报名表参数 end
       formObj: {
         id: '',
         activityName: '', // 活动名称
@@ -36,7 +66,9 @@ export default {
       // 是否限制报名对象
       applyObject: {
         unlimit: false,
-        limit: false
+        limit: false,
+        port: false,
+        department: false
       },
       // 是否限制报名人数
       applyCount: {
@@ -87,8 +119,141 @@ export default {
     } else {
       this.fetchData()
     }
+    this.postSelectInit()
+    this.treeSelectInit()
   },
   methods: {
+    postSelectInit() {
+      const params = {
+        'ckey': this.$store.getters.ckey,
+      }
+      getListOfSelect(params).then(response => {
+        console.log(response.data.data)
+        this.portSelect = response.data.data
+      })
+    },
+    treeSelectInit() {
+      const params = {
+        'ckey': this.$store.getters.ckey,
+        'parentId': 0
+      }
+      getDepartmentListTreeSelect(params).then(response => {
+        console.log(response.data.data)
+        this.options = response.data.data
+      })
+    },
+    normalizer(node) {
+      // 去掉children=[]的children属性
+      if (node.children == null || node.children == 'null' || node.children && !node.children.length) {
+        delete node.children
+      }
+      return {
+        id: node.value,
+        label: node.label,
+        children: node.children
+      }
+    },
+    // 动态表单
+    // 取消
+    cancel1() {
+      this.dialogFormVisible = false
+      this.colData = {
+        title: '',
+        msgAlert: '',
+        lengthLimit: '',
+        check: 1
+      }
+      this.editCol = false
+      this.$refs['f2'].resetFields()
+    },
+    test() {
+      console.log(this.valueTree)
+    },
+    // 新增
+    add() {
+      console.log(this.arrayData)
+      if (this.arrayData.length >= 6) {
+        this.$message({
+          message: '报名信息请限制在 10 个以内',
+          type: 'warning'
+        });
+        // alert('报名信息请限制在 10 个以内')
+        return
+      }
+      if(this.colData.lengthLimit != ''){
+        if(this.colData.lengthLimit < 0){
+          this.$message({
+            message: '字数限制必须大于0',
+            type: 'warning'
+          });
+          return
+        }else if(this.colData.lengthLimit > 200){
+          this.$message({
+            message: '字数限制必须小于200',
+            type: 'warning'
+          });
+          return
+        }
+      }
+
+      this.$refs['f2'].validate((valid) => {
+        if (valid) {
+          if (this.editCol) {
+            // 编辑
+            this.arrayData[this.editIndex] = {...this.colData}
+          } else {
+            // 新增
+            this.arrayData.push(
+              {...this.colData}
+            )
+          }
+          this.cancel1()
+          return
+        } else {
+          console.log('error submit!!')
+          return
+        }
+      })
+    },
+    // 删除
+    del(index) {
+      console.log(index)
+      this.arrayData.splice(index, 1)
+    },
+    // 修改
+    edit(index) {
+      console.log(index)
+      this.dialogFormVisible = true
+      this.colData = {...this.arrayData[index]}
+      this.editCol = true
+      this.editIndex = index
+    },
+    // 上移
+    up(index) {
+      console.log(index)
+      if (index === 0) {
+        return
+      } else {
+        let data = this.arrayData[index]
+        this.arrayData[index] = this.arrayData[index - 1]
+        this.arrayData[index - 1] = data
+        this.$forceUpdate()
+        console.log(this.arrayData)
+      }
+    },
+    // 下移
+    down(index) {
+      console.log(index)
+      if (index === this.arrayData.length - 1) {
+        return
+      } else {
+        let data = this.arrayData[index]
+        this.arrayData[index] = this.arrayData[index + 1]
+        this.arrayData[index + 1] = data
+        this.$forceUpdate()
+      }
+    },
+
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
@@ -113,7 +278,9 @@ export default {
     // 获取活动详情
     fetchData() {
       getActivity({ id: this.activityId }).then(res => {
+       
         let resData = res.data
+        this.status = resData.status
         this.formObj.activityName = resData.activityName
         this.formObj.headImage = resData.headImage
         this.formObj.listImage = resData.listImage
@@ -144,14 +311,26 @@ export default {
           }
         }
         // 报名对象回显
+        this.applyObject.limit = false
+        this.applyObject.unlimit = false
+        this.applyObject.department = false
+        this.applyObject.port = false
+        this.portValue = []
+        this.valueTree = []
         if (resData.applyObject === 0) {
-          this.applyObject.limit = false
           this.applyObject.unlimit = true
           this.formObj.applyObject = 0
-        } else {
+        } else if (resData.applyObject === 1) {
           this.applyObject.limit = true
-          this.applyObject.unlimit = false
           this.formObj.applyObject = 1
+        } else if (resData.applyObject === 2) {
+          this.applyObject.port = true
+          this.formObj.applyObject = 2
+          this.portValue = resData.applyIdsArray
+        } else {
+          this.applyObject.department = true
+          this.formObj.applyObject = 3
+          this.valueTree = resData.applyIdsArray
         }
         // 参加人数回显
         if (resData.isLimit === 0) {
@@ -170,6 +349,8 @@ export default {
           this.$refs.ckeditor1.initHtml(resData.introduce ? resData.introduce : '')
         }, 500)
         this.formObj.introduce = resData.introduce
+        // 动态字段回显
+        this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
       })
     },
     // 上传图片校验
@@ -287,14 +468,24 @@ export default {
     },
     // 选择报名对象
     handleCheckTarget(e, val) {
+      this.applyObject.unlimit = false
+      this.applyObject.limit = false
+      this.applyObject.port = false
+      this.applyObject.department = false
       if (val === 0) {
         this.applyObject.unlimit = true
-        this.applyObject.limit = false
         this.formObj.applyObject = 0
-      } else {
-        this.applyObject.unlimit = false
+      } else if (val === 1) {
         this.applyObject.limit = true
         this.formObj.applyObject = 1
+      } else if (val === 2) {
+        this.applyObject.port = true
+        this.formObj.applyObject = 2
+        this.valueTree = []
+      } else if (val === 3) {
+        this.applyObject.department = true
+        this.formObj.applyObject = 3
+        this.portValue = []
       }
     },
     // 选择参加人数
@@ -314,6 +505,7 @@ export default {
       this.formObj.introduce = htmlStr
     },
     save() {
+      console.log(this.arrayData);
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (!this.areaData) {
@@ -350,6 +542,17 @@ export default {
           }
           if (this.activityId) {
             this.formObj['id'] = this.activityId
+          }
+
+          if (this.valueTree.length > 0) {
+            this.formObj['applyIds'] = this.valueTree.join(',')
+          }
+          if (this.portValue.length > 0) {
+            this.formObj['applyIds'] = this.portValue.join(',')
+          }
+
+          if (this.arrayData.length > 0) {
+            this.formObj['dtos'] = this.arrayData
           }
           createActivity(this.formObj).then(res => {
             this.$message.success(res.msg)

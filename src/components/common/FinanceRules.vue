@@ -24,8 +24,8 @@
           <div class="rule-item bbn">
             <div class="rule-left">应付款金额</div>
             <div class="rule-right">
-              表示应该结算给供货商的钱。<br />单个订单的应付款金额 =
-              供货价*数量-买家实付金额*（商品服务费率+微信服务费率）；
+              表示应该结算给供货商的钱。<br /><span class="zred">单个订单的应付款金额 =
+              供货价*数量-供货价*数量*微信服务费率-供货价*数量*商品服务费率；</span>
             </div>
           </div>
           <div class="rule-item bbn">
@@ -45,7 +45,7 @@
           <div class="rule-item bbn">
             <div class="rule-left">商品服务费</div>
             <div class="rule-right">
-              单个订单的【商品服务费】= 商品服务费率* 买家实付金额；
+              单个订单的【商品服务费】= 供货价*数量*商品服务费率；
             </div>
           </div>
           <div class="rule-item bbn">
@@ -60,7 +60,7 @@
           <div class="rule-item bbn">
             <div class="rule-left">微信手续费</div>
             <div class="rule-right">
-              单个订单的【微信手续费】 = 微信手续费率*买家实付金额；
+              <span class="zred">单个订单的【微信手续费】 = 供货价*数量*微信手续费率；</span>
             </div>
           </div>
           <div class="rule-item bbn">
@@ -95,14 +95,14 @@
           <div class="rule-item bbn">
             <div class="rule-left">应付款金额</div>
             <div class="rule-right">
-              表示应该结算给供货商的钱。<br />单个订单的应付款金额 =
-              供货价*数量-买家实付金额*（商品服务费率+微信服务费率）；<br />此处的【应付款金额】为该结算单内，所有订单的应付款金额的总和；
+              表示应该结算给供货商的钱。<br /><span class="zred">单个订单的应付款金额 =
+              供货价*数量-供货价*数量*商品服务费率-供货价*数量*商品服务费率；</span><br />此处的【应付款金额】为该结算单内，所有订单的应付款金额的总和；
             </div>
           </div>
           <div class="rule-item bbn">
             <div class="rule-left">商品服务费</div>
             <div class="rule-right">
-              单个订单的【商品服务费】= 商品服务费率* 买家实付金额；<br />此处的【商品服务费】为该结算单内，所有订单的商品服务费的总和；
+              单个订单的【商品服务费】= 供货价*数量*商品服务费率<br />此处的【商品服务费】为该结算单内，所有订单的商品服务费的总和；
             </div>
           </div>
           <div class="rule-item bbn">
@@ -110,7 +110,7 @@
             <div class="rule-right">
               <span class="text-important"
                 >单个商品的微信手续费率，在发布商品时设置，此处的“微信手续费”，不是微信商户那边收取的提现手续费不是同一个。</span
-              ><br />单个订单的【微信手续费】 = 微信手续费率*买家实付金额；<br />此处的【微信手续费】为该结算单内，所有订单的微信手续费的总和；
+              ><br /><span class="zred">单个订单的【微信手续费】 = 供货价*数量*微信手续费率；</span><br />此处的【微信手续费】为该结算单内，所有订单的微信手续费的总和；
             </div>
           </div>
           <div class="rule-item bbn">
@@ -181,6 +181,9 @@ export default {
     border-bottom: none;
   }
   .text-important {
+    color: red;
+  }
+  .zred {
     color: red;
   }
 }
