@@ -465,17 +465,19 @@ export default {
       })
     },
     addSupplier(val) {
-      if (val) {
+     //这里不能使用change事件，否则会开启无限套娃
+      // if (val) {
         if (this.supplierOptions.length === 0) {
           this.$confirm('你还未添加供货商家，添加后才可发布商品哦！', '提示', {
             confirmButtonText: '立即添加',
             cancelButtonText: '取消'
           }).then(() => {
+            console.log("then")
             this.$router.push({ name: '供货商家管理' })
           }).catch((err) => {
             console.log(err)
-          })
-        }
+          })     
+        // }
       }
     },
     setSku() {

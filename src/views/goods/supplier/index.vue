@@ -283,7 +283,7 @@
           @click="submitForm('settlementPeriodForm')"
           >确定</el-button
         >
-        <el-button @click.native="visible = false">取消</el-button>
+        <el-button @click.native="settlementPeriodVisible = false">取消</el-button>
       </span>
     </el-dialog>
   </div>

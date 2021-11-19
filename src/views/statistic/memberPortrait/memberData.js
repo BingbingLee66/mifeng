@@ -19,7 +19,8 @@ export default {
         monthlyJoin: 0,
         totalMembers: 0,
         unpaidMembers: 0,
-        paidMembers: 0
+        paidMembers: 0,
+        activeWxUserTotal: 0
       },
       query: {
         days: 7,
@@ -162,7 +163,8 @@ export default {
     // ...mapGetters(['has'])
   },
   created() {
-    this.init()
+    this.ckey = this.$store.getters.ckey
+    this.init();
   },
   methods: {
     has(tabName, actionName) {
@@ -207,6 +209,7 @@ export default {
         this.pfStatistics.totalMembers = response.data.totalMembers
         this.pfStatistics.unpaidMembers = response.data.unpaidMembers
         this.pfStatistics.paidMembers = response.data.paidMembers
+        this.pfStatistics.activeWxUserTotal = response.data.activeWxUserTotal
       })
     },
     fetchData() {
@@ -215,7 +218,8 @@ export default {
         'startTime': this.query.date[0],
         'endTime': this.query.date[1],
         'pageSize': this.limit,
-        'page': this.currentpage
+        'page': this.currentpage,
+        'ckey':this.ckey
       }
       getDailyStatistics(params).then(response => {
         this.list = response.data.data.list

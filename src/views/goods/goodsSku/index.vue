@@ -13,7 +13,7 @@
           </el-col>
           <el-col :span="18">
             <el-form-item label="供货商家：" prop="supplierId">
-              <el-select v-model="formObj.supplierId" placeholder="请选择商品的供货商家" @visible-change="addSupplier" filterable>
+              <el-select v-model="formObj.supplierId" placeholder="请选择商品的供货商家" @click.native="addSupplier"   filterable>
                 <el-option v-for="sp in supplierOptions" :label="sp.label" :value="sp.value" :key="sp.value"></el-option>
               </el-select>
             </el-form-item>
@@ -482,7 +482,13 @@
                 <el-input-number v-model="formObj.wxServiceFee" :min="0" :max="1" :controls="false" :precision="2"></el-input-number>
                 <div class="input-prepend">%</div>
               </div>
-              <div class="tips">商品服务费和微信手续费的初始值来自总后台的设置，都是从用户的实付金额中收取某个百分点，将在和供货商结算时抵扣。</div>
+              <div class="tips">商品服务费和微信手续费的初始值来自总后台的设置，
+                <!-- 都是从用户的实付金额中收取某个百分点， -->
+                将在和供货商结算时抵扣。</div>
+              <div class="tips">商品服务费=供货价*商品数量*商品服务费率;</div>
+              <div class="tips">微信服务费=供货价*商品数量*微信手续费率;</div>
+              <div class="tips">微信手续费率范围：0.00-1.00;</div>
+              <div class="tips">商品服务费率可输的范围：0.00-99.00;</div>
             </el-form-item>
           </el-col>
         </el-row>

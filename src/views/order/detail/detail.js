@@ -177,6 +177,20 @@ export default {
           return false
         }
       })
-    }
+    },
+    // 查看大礼包详情
+    goSpreeDetail(giftId) {
+      this.$router.push({
+        path: '/mall/spreeDetail',
+        query: { giftId }
+      })
+    },
+    // 查看优惠券详情
+    goCouponDetail(couponId) {
+      this.$router.push({
+        path: '/mall/couponDetail',
+        query: { couponId }
+      })
+    },
   }
 }
