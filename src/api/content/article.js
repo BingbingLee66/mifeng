@@ -200,3 +200,11 @@ export function uploadCoverImg(params) {
     data: params
   })
 }
+//栏目权重设置
+
+export function updateColumnLevel(params) {
+  return request({
+    url: '/ec/contentColumn/updateColumnLevelById?id='+params.id+'&level='+params.level,
+    method: 'get',
+  })
+}
