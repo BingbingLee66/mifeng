@@ -568,10 +568,17 @@ export default {
           if (this.type === 'add') {
             this.formObj['ckey'] = this.$store.getters.ckey
             add(this.formObj).then(response => {
-              this.$message({
-                message: '操作成功',
-                type: 'success'
-              })
+              if(response.state===1){
+                this.$message({
+                  message: '操作成功',
+                  type: 'success'
+                })
+              }else{
+                this.$message({
+                  message: response.msg,
+                  type: 'error'
+                })
+              }      
               this.closeTab()
             })
           } else if (this.type === 'edit') {
