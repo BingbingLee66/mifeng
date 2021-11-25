@@ -70,9 +70,9 @@
             </div>
           </div>
           <div class="rule-item">
-            <div class="rule-left">优惠卷金额</div>
+            <div class="rule-left">优惠券金额</div>
             <div class="rule-right">
-              单个订单的【优惠卷金额】为用户使用的各张优惠券的金额总和；
+              单个订单的【优惠券金额】为用户使用的各张优惠券的金额总和；
             </div>
           </div>
         </div>
@@ -120,9 +120,9 @@
             </div>
           </div>
           <div class="rule-item">
-            <div class="rule-left">优惠卷金额</div>
+            <div class="rule-left">优惠券金额</div>
             <div class="rule-right">
-              单个订单的【优惠卷金额】为用户使用的各张优惠券的金额总和；<br />此处的【优惠卷金额】为该结算单内，所有订单的【优惠卷金额】的总和；
+              单个订单的【优惠券金额】为用户使用的各张优惠券的金额总和；<br />此处的【优惠券金额】为该结算单内，所有订单的【优惠券金额】的总和；
             </div>
           </div>
         </div>
