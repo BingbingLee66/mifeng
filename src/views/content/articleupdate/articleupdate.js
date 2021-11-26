@@ -170,7 +170,9 @@ export default {
         'title': this.query.title,
         'contentModuleId': this.activeName,
         'contentColumnId': this.query.contentColumnId,
-        'status': this.query.status
+        'status': this.query.status,
+        'articleId':this.query.articleId,
+        'creator':this.query.creator
       }
       // if (sort) {
       //   params['order'] = sort
