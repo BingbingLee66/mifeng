@@ -109,15 +109,13 @@
               class="my-btn"
               type="text"
               @click="openVisible($event, scope.row)"
-              :actionid="getId('商会资讯', '编辑')"
-              v-if="has('商会资讯', '编辑') && scope.row.status != 3"
+              v-if="has('商会文章', '编辑') && scope.row.status != 3"
               >编辑</el-button
             ><el-button
               class="my-btn"
               type="text"
               @click="openVisible($event, scope.row)"
-              :actionid="getId('商会资讯', '编辑')"
-              v-if="has('商会资讯', '编辑') && scope.row.status == 3"
+              v-if="has('商会文章', '编辑') && scope.row.status == 3"
               disabled
               >编辑</el-button
             >
@@ -125,16 +123,14 @@
               class="my-btn"
               type="text"
               @click="updateStatus($event, scope.row)"
-              :actionid="getId('商会资讯', '冻结')"
-              v-if="has('商会资讯', '冻结') && scope.row.status == 1"
+              v-if="has('商会文章', '冻结') && scope.row.status == 1"
               >冻结</el-button
             >
             <el-button
               class="my-btn"
               type="text"
               @click="updateStatus($event, scope.row)"
-              :actionid="getId('商会资讯', '解冻')"
-              v-if="has('商会资讯', '解冻') && scope.row.status == 0"
+              v-if="has('商会文章', '解冻') && scope.row.status == 0"
               >解冻</el-button
             >
           </template>
@@ -184,16 +180,36 @@
             >
           </template>
         </el-table-column>
-        <el-table-column label="修改时间">
+               <el-table-column label="创建信息">
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.operator }}
+            </div>
+            <div>
+              {{ scope.row.createdTs }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="更新信息">
+          <template slot-scope="scope">
+            <div>
+              {{ scope.row.updater }}
+            </div>
+            <div>
+              {{ scope.row.updatedTs }}
+            </div>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="修改时间">
           <template slot-scope="scope">
             {{ scope.row.updatedTs }}
           </template>
-        </el-table-column>
-        <el-table-column label="修改人">
+        </el-table-column> -->
+        <!-- <el-table-column label="修改人">
           <template slot-scope="scope">
             {{ scope.row.operator }}
-          </template>
-        </el-table-column>
+          </template> 
+        </el-table-column>-->
         <el-table-column label="状态">
           <template slot-scope="scope">
             <div v-if="scope.row.status == 0">已冻结</div>
@@ -207,6 +223,7 @@
               @click="openVisible($event, scope.row)"
               :actionid="getId('关于商会', '编辑')"
               v-if="has('关于商会', '编辑')"
+              class="my-btn"
               >编辑</el-button
             >
             <el-button
@@ -214,12 +231,14 @@
               @click="updateStatus($event, scope.row)"
               :actionid="getId('关于商会', '冻结')"
               v-if="has('关于商会', '冻结') && scope.row.status == 1"
+              class="my-btn"
               >冻结</el-button
             >
             <el-button
               type="text"
               @click="updateStatus($event, scope.row)"
               :actionid="getId('关于商会', '解冻')"
+              class="my-btn"
               v-if="has('关于商会', '解冻') && scope.row.status == 0"
               >解冻</el-button
             >

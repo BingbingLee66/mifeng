@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="商会资讯" name="5"/>
+      <el-tab-pane label="商会文章" name="5"/>
       <el-tab-pane label="关于商会" name="6"/>
       <el-tab-pane label="联系我们" name="7"/>
     </el-tabs>
