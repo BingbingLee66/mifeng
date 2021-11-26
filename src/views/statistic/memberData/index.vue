@@ -165,6 +165,18 @@
 @import "src/styles/common.scss";
 </style>
 <style>
+/* .d-card-box {
+  float: left;
+  width: 19.5%;
+  height: 100%;
+  text-align: center;
+  display: table;
+} */
+/* .card-box-3 {
+  width: 100%;
+  display: table-cell;
+  vertical-align: middle;
+} */
 .data-card {
   width: 100%;
   height: 120px;
