@@ -3,7 +3,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="商会文章" name="5" />
       <el-tab-pane label="关于商会" name="6" />
-      <el-tab-pane label="联系我们" name="7" />
+      <el-tab-pane label="商会荣誉" name="8" />
     </el-tabs>
     <div v-if="activeName == '5'">
       <div class="block">
@@ -67,9 +67,9 @@
                   end-placeholder="结束日期"
                 />
               </el-form-item>
-            </el-col>
-            
-                <el-button
+            </el-col >
+         
+               <el-button
                   v-if="has('商会资讯', '查询')"
                   type="primary"
                   :actionid="getId('商会资讯', '查询')"
@@ -77,8 +77,6 @@
                 >
                   查询
                 </el-button>
-             
-           
           </el-row>
         </el-form>
       </div>
@@ -139,12 +137,12 @@
           </template>
         </el-table-column>
       
-        <el-table-column label="点赞量" width="100px">
+        <el-table-column prop="commentLikeNums" sortable="custom" label="点赞量" width="100px">
           <template slot-scope="scope">
             {{ scope.row.commentLikeNums }}
           </template>
         </el-table-column>
-        <el-table-column label="评论量" width="100px">
+        <el-table-column prop="commentNums" sortable="custom" label="评论量" width="100px">
           <template slot-scope="scope">
             {{ scope.row.commentNums }}
           </template>
@@ -274,7 +272,7 @@
     <div v-if="activeName == '6'">
       <el-row>
         <el-button type="primary" size="small" @click="addCloumn($event)"
-          >添加栏目</el-button
+          >新增栏目</el-button
         >
       </el-row>
       <el-table
@@ -307,7 +305,27 @@
             <div class="content-box" v-html="scope.row.contentHtml" />
           </template>
         </el-table-column>
-        <el-table-column label="修改时间">
+        <el-table-column label="权重" width="100px">
+          <template slot-scope="scope">
+            <span class="blue-label" @click="showSort(scope.row)">
+              {{ scope.row.sort }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建信息" width="240px">
+          <template slot-scope="scope">
+            <div>创建人：{{ scope.row.operator }}</div>
+             <div>创建时间：{{ scope.row.createdTs }}</div>
+            
+          </template>
+        </el-table-column>
+                <el-table-column label="更新信息" width="240px">
+          <template slot-scope="scope">
+            <div>更新人：{{ scope.row.updater }}</div>
+             <div>更新时间：{{ scope.row.updatedTs }}</div>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="修改时间">
           <template slot-scope="scope">
             {{ scope.row.updatedTs }}
           </template>
@@ -316,8 +334,8 @@
           <template slot-scope="scope">
             {{ scope.row.operator }}
           </template>
-        </el-table-column>
-        <el-table-column label="状态">
+        </el-table-column> -->
+        <el-table-column label="状态" width="100px">
           <template slot-scope="scope">
             <div
               v-if="
@@ -384,7 +402,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <div v-if="activeName == '7'">
+    <div v-if="activeName == '8'">
       <el-table
         id="out-table"
         v-loading="listLoading"
@@ -415,7 +433,20 @@
             <div class="content-box" v-html="scope.row.contentHtml" />
           </template>
         </el-table-column>
-        <el-table-column label="修改时间">
+        <el-table-column label="创建信息" width="240px">
+          <template slot-scope="scope">
+            <div>创建人：{{ scope.row.operator }}</div>
+             <div>创建时间：{{ scope.row.createdTs }}</div>
+            
+          </template>
+        </el-table-column>
+                <el-table-column label="更新信息" width="240px">
+          <template slot-scope="scope">
+            <div>更新人：{{ scope.row.updater }}</div>
+             <div>更新时间：{{ scope.row.updatedTs }}</div>
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="修改时间">
           <template slot-scope="scope">
             {{ scope.row.updatedTs }}
           </template>
@@ -424,7 +455,7 @@
           <template slot-scope="scope">
             {{ scope.row.operator }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
             <el-button class="my-btn" type="text" @click="openDetail(scope.row)"
@@ -538,8 +569,8 @@
 }
 
 .content-box {
-  max-height: 70px;
-  /*overflow-y: auto;*/
+  max-height: 140px;
+  overflow-y: auto;
 }
 </style>
 

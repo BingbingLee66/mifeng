@@ -26,7 +26,8 @@ export function getAboutChamberList(params) {
 
 export function getContactUs(params) {
   return request({
-    url: '/ec/article/contact-us',
+    // url: '/ec/article/contact-us',
+    url: '/ec/article/chamberHonor',
     method: 'get',
     params
   })
