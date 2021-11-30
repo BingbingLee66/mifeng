@@ -28,8 +28,8 @@
         <el-button
           type="primary"
           @click="add($event)"
-          :actionid="getId('商会资讯', '新增栏目')"
-          v-if="has('商会资讯', '新增栏目')"
+          :actionid="getId('商会文章', '新增栏目')"
+          v-if="has('商会文章', '新增栏目')"
           >新增栏目</el-button
         >
       </el-row>
@@ -109,13 +109,13 @@
               class="my-btn"
               type="text"
               @click="openVisible($event, scope.row)"
-              v-if="has('商会文章', '编辑') && scope.row.status != 3"
+              v-if=" scope.row.status != 3"
               >编辑</el-button
             ><el-button
               class="my-btn"
               type="text"
               @click="openVisible($event, scope.row)"
-              v-if="has('商会文章', '编辑') && scope.row.status == 3"
+              v-if=" scope.row.status == 3"
               disabled
               >编辑</el-button
             >
@@ -123,14 +123,14 @@
               class="my-btn"
               type="text"
               @click="updateStatus($event, scope.row)"
-              v-if="has('商会文章', '冻结') && scope.row.status == 1"
+              v-if=" scope.row.status == 1"
               >冻结</el-button
             >
             <el-button
               class="my-btn"
               type="text"
               @click="updateStatus($event, scope.row)"
-              v-if="has('商会文章', '解冻') && scope.row.status == 0"
+              v-if=" scope.row.status == 0"
               >解冻</el-button
             >
           </template>
