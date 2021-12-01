@@ -20,7 +20,7 @@
         </el-row>
         <el-row>
           <el-col :offset="2" :span="20">
-            <el-form-item label="排序：" prop="level">
+            <el-form-item label="权重：" prop="level">
               <el-input v-model="formObj.level" />
             </el-form-item>
           </el-col>
