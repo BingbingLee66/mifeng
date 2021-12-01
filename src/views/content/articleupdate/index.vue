@@ -52,7 +52,7 @@
           <el-row>
             <el-col :span="5">
               <el-form-item label="文章ID：">
-                <el-input v-model="query.articleId" />
+                <el-input v-model="query.articleId"  oninput="value=value.replace(/[^\d]/g,'')"/>
               </el-form-item>
             </el-col>
             <el-col :span="8" style="margin-left: 20px">

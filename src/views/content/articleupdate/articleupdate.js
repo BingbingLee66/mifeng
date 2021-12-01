@@ -103,7 +103,7 @@ export default {
       this.query.column=e.prop
       //有序
       if (e.order) {
-        this.query.orderType = e.order === "ascending" ? -1 : 1
+        this.query.orderType = e.order === "ascending" ? 1 : -1
       } else {
         //无序
         this.query.orderType = ""
