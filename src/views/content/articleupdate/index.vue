@@ -149,8 +149,8 @@
         </el-table-column>
          <el-table-column label="创建信息" width="180px">
           <template slot-scope="scope">
-            <div>创建人：{{ scope.row.operator }}</div>
-             <div>创建时间：{{ scope.row.createdTs }}</div>
+            <div>{{ scope.row.operator }}</div>
+             <div>{{ scope.row.createdTs }}</div>
             
           </template>
         </el-table-column>
@@ -314,15 +314,15 @@
         </el-table-column>
         <el-table-column label="创建信息" width="240px">
           <template slot-scope="scope">
-            <div>创建人：{{ scope.row.operator }}</div>
-             <div>创建时间：{{ scope.row.createdTs }}</div>
+            <div>{{ scope.row.operator }}</div>
+             <div>{{ scope.row.createdTs }}</div>
             
           </template>
         </el-table-column>
                 <el-table-column label="更新信息" width="240px">
           <template slot-scope="scope">
-            <div>更新人：{{ scope.row.updater }}</div>
-             <div>更新时间：{{ scope.row.updatedTs }}</div>
+            <div>{{ scope.row.updater }}</div>
+             <div>{{ scope.row.updatedTs }}</div>
           </template>
         </el-table-column>
         <!-- <el-table-column label="修改时间">
@@ -435,15 +435,15 @@
         </el-table-column>
         <el-table-column label="创建信息" width="240px">
           <template slot-scope="scope">
-            <div>创建人：{{ scope.row.operator }}</div>
-             <div>创建时间：{{ scope.row.createdTs }}</div>
+            <div>{{ scope.row.operator }}</div>
+             <div>{{ scope.row.createdTs }}</div>
             
           </template>
         </el-table-column>
                 <el-table-column label="更新信息" width="240px">
           <template slot-scope="scope">
-            <div>更新人：{{ scope.row.updater }}</div>
-             <div>更新时间：{{ scope.row.updatedTs }}</div>
+            <div>{{ scope.row.updater }}</div>
+             <div>{{ scope.row.updatedTs }}</div>
           </template>
         </el-table-column>
         <!-- <el-table-column label="修改时间">
