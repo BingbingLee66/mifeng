@@ -222,7 +222,7 @@
               type="text"
               @click="openVisible($event, scope.row)"
               :actionid="getId('关于商会', '编辑')"
-              v-if="has('关于商会', '编辑')"
+              v-if="has('关于商会', '编辑') && scope.row.status!==3"
               class="my-btn"
               >编辑</el-button
             >
