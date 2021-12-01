@@ -117,7 +117,7 @@
         <el-row>
           <!-- <el-col :offset="2" :span="20"> -->
             <el-form-item label="栏目名称：" prop="columnName">
-              <el-input v-model="formObj.columnName" maxLength="200"></el-input>
+              <el-input v-model.trim="formObj.columnName" maxLength="5"></el-input>
             </el-form-item>
           <!-- </el-col> -->
         </el-row>
