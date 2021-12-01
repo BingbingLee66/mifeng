@@ -8,7 +8,7 @@ import {
   getDetail
 } from '@/api/content/article'
 import {
-  getContentColumnOptionsWithCkey
+  getContentColumnOptionsWithCkey,updateColumnLevel
 } from '@/api/content/columnsetup'
 import addColumn from './editor/component/addColumn'
 
@@ -113,14 +113,15 @@ export default {
     },
     // 修改权重
     showSort(row) {
-      this.sortForm.id = row.id
+      this.sortForm.id = row.contentColumnId
       this.sortForm.sort = row.sort
       this.showSortDialog = true
     },
     updateSort(sortForm) {
       this.$refs[sortForm].validate((valid) => {
         if (valid) {
-          updateChamberContentSort(this.sortForm).then(response => {
+          let params={...this.sortForm,level:this.sortForm.sort}
+          updateColumnLevel(params).then(response => {
             if (response.state === 1) {
               this.$message({
                 message: '操作成功',
