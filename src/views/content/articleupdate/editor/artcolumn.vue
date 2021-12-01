@@ -5,7 +5,7 @@
         <el-col :span="24" v-if="activeName !== '8'">
           <el-form-item label="栏目：" prop="columnContent">
             <el-input v-model="formObj.columnContent" disabled></el-input> 
-            <el-input v-model="formObj.columnContent" ></el-input>
+            <!-- <el-input v-model="formObj.columnContent" ></el-input> -->
           </el-form-item>
         </el-col>
       </el-row>
