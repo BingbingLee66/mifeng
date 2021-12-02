@@ -12,14 +12,14 @@
           label-width="auto"
           label-position="right"
           :model="query"
+          :inline="true"
         >
           <el-row>
-            <el-col :span="5">
+
               <el-form-item label="文章标题：">
                 <el-input v-model="query.title" />
               </el-form-item>
-            </el-col>
-            <el-col :span="4">
+
               <el-form-item :span="12" label="栏目：">
                 <el-select v-model="query.contentColumnId">
                   <el-option
@@ -30,8 +30,8 @@
                   />
                 </el-select>
               </el-form-item>
-            </el-col>
-            <el-col :span="5">
+
+
               <el-form-item :span="12" label="状态：">
                 <el-select v-model="query.status">
                   <el-option label="全部" :value="-1" />
@@ -42,20 +42,20 @@
                   <el-option label="审核不通过" :value="8" />
                 </el-select>
               </el-form-item>
-            </el-col>
-            <el-col :span="5">
+
+
               <el-form-item label="创建人：">
                 <el-input v-model="query.creator" />
               </el-form-item>
-            </el-col>
+
           </el-row>
           <el-row>
-            <el-col :span="5">
+            <!-- <el-col :span="5"> -->
               <el-form-item label="文章ID：">
                 <el-input v-model="query.articleId"  oninput="value=value.replace(/[^\d]/g,'')"/>
               </el-form-item>
-            </el-col>
-            <el-col :span="8" style="margin-left: 20px">
+            <!-- </el-col> -->
+            <!-- <el-col :span="8" style="margin-left: 20px"> -->
               <el-form-item label="发布时间：">
                 <el-date-picker
                   v-model="query.date"
@@ -67,7 +67,7 @@
                   end-placeholder="结束日期"
                 />
               </el-form-item>
-            </el-col >
+            <!-- </el-col > -->
          
                <el-button
                   v-if="has('商会资讯', '查询')"

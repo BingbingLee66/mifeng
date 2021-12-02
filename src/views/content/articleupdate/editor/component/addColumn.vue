@@ -43,7 +43,7 @@ export default {
   data() {
     var checkNumber = (rule, value, callback) => {
       if (!/^([1-9]\d*)$/.test(value)) {
-        return callback(new Error('必须是大于0的整数'))
+        return callback(new Error('权重请控制在0-999，权重为0不在前台展示'))
       } else {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
