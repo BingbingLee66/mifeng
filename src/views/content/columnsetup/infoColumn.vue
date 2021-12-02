@@ -168,4 +168,7 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
+.a-link{
+  color: #409EFF;
+}
 </style>
