@@ -64,7 +64,7 @@ export default {
 
         ],
         level: [
-          { required: true, message: '请选择排序', trigger: 'blur' },
+          { required: true, message: '请输入权重', trigger: 'blur' },
           { validator: checkNumber, trigger: 'change' }
         ],
       },
