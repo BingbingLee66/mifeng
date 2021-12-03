@@ -209,3 +209,18 @@ export function updateColumnLevel(params) {
     method: 'get',
   })
 }
+//商会后台-置顶管理列表
+export function chamberTopList(ckey) {
+  return request({
+    url: '/ec/article/chamberTopList?ckey='+ckey,
+    method: 'get',
+  })
+}
+//商会后台-置顶/取消置顶
+export function updateChamberTop(params) {
+  return request({
+    url: '/ec/article/updateChamberTop',
+    method: 'put',
+   params
+  })
+}

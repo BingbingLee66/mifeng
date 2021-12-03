@@ -89,6 +89,14 @@ export const constantRoutes = [
         meta: { title: '添加/修改文章' }
       },
       {
+        path: '/content/article-stick',
+        name: '置顶管理',
+        component: () => import('@/views/content/articleupdate/stick/index'),
+        hidden: true,
+        meta: { title: '置顶管理' }
+      },
+      
+      {
         path: '/content/article-detail',
         name: '文章详情',
         component: () => import('@/views/content/articleupdate/detail/index'),

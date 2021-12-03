@@ -90,6 +90,16 @@
             <div>【部门】{{ scope.row.departmentName }}</div>
           </template>
         </el-table-column>
+         <el-table-column label="身份信息" width="200px">
+          <template slot-scope="scope">
+            <div v-if="scope.row.IdentityVO">
+               <div v-if="scope.row.IdentityVO.type==1">【企业】{{ scope.row.IdentityVO.unit}}</div>
+            <div>【职务】{{ scope.row.IdentityVO.post }}</div>
+            <div v-if="scope.row.IdentityVO.type==2">【机构】{{ scope.row.IdentityVO.unit}}</div>
+            </div>
+            <div v-else>--</div>
+          </template>
+        </el-table-column>
         <el-table-column label="账号状态" width="100px">
           <template slot-scope="scope">
             <div v-if="scope.row.status == 0">已冻结</div>

@@ -223,7 +223,9 @@ export default {
           '入会时间': '【入会时间】'+data.joinedTs+'\n【会内职位】'+data.postName+'\n【部门】'+data.departmentName,
           '账号状态': data.status === 1 ? '正常' : '已冻结',
           '激活状态': data.activatedState === 1 ? '已激活' : '未激活',
-
+        }
+        if(data.IdentityVO){
+          new_data['身份信息']='【企业】'+data.IdentityVO.type==1 ?data.IdentityVO.unit :''+'【职务】'+data.IdentityVO.post+'【机构】'+data.IdentityVO.type==2 ?data.IdentityVO.unit :''
         }
         this.selectionDatas.push(new_data)
       }

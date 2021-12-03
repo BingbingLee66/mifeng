@@ -15,68 +15,67 @@
           :inline="true"
         >
           <el-row>
+            <el-form-item label="文章标题：">
+              <el-input v-model="query.title" />
+            </el-form-item>
 
-              <el-form-item label="文章标题：">
-                <el-input v-model="query.title" />
-              </el-form-item>
+            <el-form-item :span="12" label="栏目：">
+              <el-select v-model="query.contentColumnId">
+                <el-option
+                  v-for="cc in contentColumnOptions"
+                  :key="cc.value"
+                  :label="cc.label"
+                  :value="cc.value"
+                />
+              </el-select>
+            </el-form-item>
 
-              <el-form-item :span="12" label="栏目：">
-                <el-select v-model="query.contentColumnId">
-                  <el-option
-                    v-for="cc in contentColumnOptions"
-                    :key="cc.value"
-                    :label="cc.label"
-                    :value="cc.value"
-                  />
-                </el-select>
-              </el-form-item>
+            <el-form-item :span="12" label="状态：">
+              <el-select v-model="query.status">
+                <el-option label="全部" :value="-1" />
+                <el-option label="已发布" :value="1" />
+                <el-option label="已冻结(商会)" :value="0" />
+                <el-option label="已冻结(平台)" :value="3" />
+                <el-option label="定时发布" :value="4" />
+                <el-option label="审核不通过" :value="8" />
+              </el-select>
+            </el-form-item>
 
-
-              <el-form-item :span="12" label="状态：">
-                <el-select v-model="query.status">
-                  <el-option label="全部" :value="-1" />
-                  <el-option label="已发布" :value="1" />
-                  <el-option label="已冻结(商会)" :value="0" />
-                  <el-option label="已冻结(平台)" :value="3" />
-                  <el-option label="定时发布" :value="4" />
-                  <el-option label="审核不通过" :value="8" />
-                </el-select>
-              </el-form-item>
-
-
-              <el-form-item label="创建人：">
-                <el-input v-model="query.creator" />
-              </el-form-item>
-
+            <el-form-item label="创建人：">
+              <el-input v-model="query.creator" />
+            </el-form-item>
           </el-row>
           <el-row>
             <!-- <el-col :span="5"> -->
-              <el-form-item label="文章ID：">
-                <el-input v-model="query.articleId"  oninput="value=value.replace(/[^\d]/g,'')"/>
-              </el-form-item>
+            <el-form-item label="文章ID：">
+              <el-input
+                v-model="query.articleId"
+                oninput="value=value.replace(/[^\d]/g,'')"
+              />
+            </el-form-item>
             <!-- </el-col> -->
             <!-- <el-col :span="8" style="margin-left: 20px"> -->
-              <el-form-item label="发布时间：">
-                <el-date-picker
-                  v-model="query.date"
-                  format="yyyy-MM-dd"
-                  value-format="yyyy-MM-dd"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                />
-              </el-form-item>
+            <el-form-item label="发布时间：">
+              <el-date-picker
+                v-model="query.date"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                type="daterange"
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+              />
+            </el-form-item>
             <!-- </el-col > -->
-         
-               <el-button
-                  v-if="has('商会资讯', '查询')"
-                  type="primary"
-                  :actionid="getId('商会资讯', '查询')"
-                  @click="fetchData($event)"
-                >
-                  查询
-                </el-button>
+
+            <el-button
+              v-if="has('商会资讯', '查询')"
+              type="primary"
+              :actionid="getId('商会资讯', '查询')"
+              @click="fetchData($event)"
+            >
+              查询
+            </el-button>
           </el-row>
         </el-form>
       </div>
@@ -87,9 +86,11 @@
           size="small"
           :actionid="getId('商会资讯', '添加文章')"
           @click="add($event)"
-         
         >
           创建文章
+        </el-button>
+        <el-button type="primary" size="small" @click="toStick($event)">
+          置顶管理
         </el-button>
       </el-row>
       <el-table
@@ -121,7 +122,7 @@
             </span>
           </template>
         </el-table-column> -->
-          <el-table-column label="栏目" width="180px">
+        <el-table-column label="栏目" width="180px">
           <template slot-scope="scope">
             {{ scope.row.contentColumn }}
           </template>
@@ -136,27 +137,36 @@
             {{ scope.row.readCount ? scope.row.readCount : "--" }}
           </template>
         </el-table-column>
-      
-        <el-table-column prop="commentLikeNums" sortable="custom" label="点赞量" width="100px">
+
+        <el-table-column
+          prop="commentLikeNums"
+          sortable="custom"
+          label="点赞量"
+          width="100px"
+        >
           <template slot-scope="scope">
             {{ scope.row.commentLikeNums }}
           </template>
         </el-table-column>
-        <el-table-column prop="commentNums" sortable="custom" label="评论量" width="100px">
+        <el-table-column
+          prop="commentNums"
+          sortable="custom"
+          label="评论量"
+          width="100px"
+        >
           <template slot-scope="scope">
             {{ scope.row.commentNums }}
           </template>
         </el-table-column>
-         <el-table-column label="创建信息" width="180px">
+        <el-table-column label="创建信息" width="180px">
           <template slot-scope="scope">
             <div>{{ scope.row.operator }}</div>
-             <div>{{ scope.row.createdTs }}</div>
-            
+            <div>{{ scope.row.createdTs }}</div>
           </template>
         </el-table-column>
         <el-table-column label="发布时间" width="160px">
           <template slot-scope="scope">
-            <div v-if=" scope.row.status===4">定时发布</div>
+            <div v-if="scope.row.status === 4">定时发布</div>
             {{ scope.row.publishTs }}
           </template>
         </el-table-column>
@@ -206,16 +216,18 @@
             </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="审核状态" width="100px">
-          <template slot-scope="scope">
-            <div v-if="scope.row.auditStatus == 0">未审核</div>
-            <div v-if="scope.row.auditStatus == 1">通过</div>
-            <div v-if="scope.row.auditStatus == 2">不通过</div>
-            <div v-if="scope.row.auditStatus == 3">审核失败</div>
-          </template>
-        </el-table-column> -->
+        <el-table-column label="是否置顶" width="100px">
+          否
+        </el-table-column>
         <el-table-column label="操作" width="200px" fixed="right">
           <template slot-scope="scope">
+            <el-button
+              class="my-btn"
+              type="text"
+              @click="updateTop(scope.row)"
+            >
+             置顶
+            </el-button>
             <el-button
               class="my-btn"
               v-if="has('商会资讯', '编辑')"
@@ -315,14 +327,13 @@
         <el-table-column label="创建信息" width="240px">
           <template slot-scope="scope">
             <div>{{ scope.row.operator }}</div>
-             <div>{{ scope.row.createdTs }}</div>
-            
+            <div>{{ scope.row.createdTs }}</div>
           </template>
         </el-table-column>
-                <el-table-column label="更新信息" width="240px">
+        <el-table-column label="更新信息" width="240px">
           <template slot-scope="scope">
             <div>{{ scope.row.updater }}</div>
-             <div>{{ scope.row.updatedTs }}</div>
+            <div>{{ scope.row.updatedTs }}</div>
           </template>
         </el-table-column>
         <!-- <el-table-column label="修改时间">
@@ -436,14 +447,13 @@
         <el-table-column label="创建信息" width="240px">
           <template slot-scope="scope">
             <div>{{ scope.row.operator }}</div>
-             <div>{{ scope.row.createdTs }}</div>
-            
+            <div>{{ scope.row.createdTs }}</div>
           </template>
         </el-table-column>
-                <el-table-column label="更新信息" width="240px">
+        <el-table-column label="更新信息" width="240px">
           <template slot-scope="scope">
             <div>{{ scope.row.updater }}</div>
-             <div>{{ scope.row.updatedTs }}</div>
+            <div>{{ scope.row.updatedTs }}</div>
           </template>
         </el-table-column>
         <!-- <el-table-column label="修改时间">

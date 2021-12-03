@@ -315,6 +315,24 @@
               </el-form-item>
             </el-col>
           </el-row> -->
+              <div class="title_block">身份信息</div>
+              <el-row v-if="formObj.IdentityVO">
+            <el-col :span="15" v-if="formObj.IdentityVO.type==1">
+              <el-form-item label="企业："  class="adress_style">
+                <el-input :value=" formObj.IdentityVO.unit" max-length="200" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="15">
+              <el-form-item label="职务：" class="adress_style">
+                <el-input :value="formObj.IdentityVO.post" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="15" v-if="formObj.IdentityVO.type==2">
+              <el-form-item label="机构：" class="adress_style">
+                <el-input :value="formObj.IdentityVO.unit" />
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-form-item>
             <el-button v-dbClick type="primary" @click="save">保存</el-button>
             <el-button @click="closeTab">取消</el-button>

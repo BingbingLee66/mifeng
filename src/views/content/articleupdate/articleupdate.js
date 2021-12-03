@@ -5,11 +5,14 @@ import {
   save,
   updateStatus,
   updateChamberContentSort,
-  getDetail
+  getDetail,
+  updateChamberTop
 } from '@/api/content/article'
 import {
-  getContentColumnOptionsWithCkey,updateColumnLevel
+  getContentColumnOptionsWithCkey,
+  updateColumnLevel
 } from '@/api/content/columnsetup'
+import router from '../../../router'
 import addColumn from './editor/component/addColumn'
 
 export default {
@@ -95,12 +98,12 @@ export default {
     // 排序
     handleSortChange(e) {
       // let sort = ''
-     
+
       console.log('e', e);
       if (!e.prop) {
         return;
       }
-      this.query.column=e.prop
+      this.query.column = e.prop
       //有序
       if (e.order) {
         this.query.orderType = e.order === "ascending" ? 1 : -1
@@ -120,7 +123,10 @@ export default {
     updateSort(sortForm) {
       this.$refs[sortForm].validate((valid) => {
         if (valid) {
-          let params={...this.sortForm,level:this.sortForm.sort}
+          let params = {
+            ...this.sortForm,
+            level: this.sortForm.sort
+          }
           updateColumnLevel(params).then(response => {
             if (response.state === 1) {
               this.$message({
@@ -224,7 +230,7 @@ export default {
       } else if (this.activeName === '8') {
         getContactUs(params).then(response => {
           this.list = response.data;
-          console.log('list',this.list)
+          console.log('list', this.list)
           this.listLoading = false
         })
       }
@@ -277,7 +283,7 @@ export default {
     editColumn(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('articleupdate', this.$route.path);
-      console.log('row',row)
+      console.log('row', row)
       this.$router.push({
         name: '修改栏目内容',
         params: {
@@ -328,6 +334,35 @@ export default {
         this.detailObj = response.data.dtl
       }).catch(() => {})
       this.detailVisible = true
+    },
+    //去置顶管理页面
+    toStick() {
+      router.push({
+        path: '/content/article-stick'
+      })
+    },
+    //update置顶
+    updateTop(row) {
+      console.log('row', row);
+      let params = {
+        articleId: row.id,
+        ckey: row.ckey,
+        type: row.istop ? 0 : 1
+      }
+      updateChamberTop(params).then(res => {
+        if(res.state===1){
+          this.$message({
+            message: res.msg,
+            type: 'success'
+          })
+        }else{
+          this.$message({
+            message: res.msg,
+            type: 'error'
+          })
+        }
+
+      })
     }
   }
 }
