@@ -21,7 +21,7 @@
                 <el-option label="全部" :value="-1" />
                 <el-option label="已发布" :value="1" />
                 <el-option label="已冻结" :value="3" />
-                <el-option label="定时发布" :value="2" />
+                <el-option label="定时发布" :value="4" />
               </el-select>
             </el-form-item>
           </el-col>
