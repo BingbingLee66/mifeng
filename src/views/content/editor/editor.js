@@ -15,7 +15,11 @@ export default {
       query: {
         title: '',
         contentColumnId: -1,
+        articleId: '',
         status: -1,
+        creator: '',
+        column: '',
+        orderType: 0,
         date: ''
       },
       contentColumnOptions: [],
@@ -31,6 +35,37 @@ export default {
     this.init()
   },
   methods: {
+
+    // 选择指定列进行排序
+    changeTableSort(column) {
+      console.log(column)
+
+      // 获取字段名称和排序类型
+      var fieldName = column.prop
+      var sortingType = column.order
+      this.listLoading = true
+      let params = {
+        'pageSize': this.limit,
+        'page': this.currentpage,
+        'title': this.query.title,
+        'contentColumnId': this.query.contentColumnId,
+        'creator': this.query.creator,
+        'articleId': this.query.articleId,
+        'column': fieldName,
+        'orderType': sortingType === 'ascending' ? 1 : -1,
+        'status': this.query.status
+      }
+      if (this.query.date) {
+        params['startTs'] = this.query.date[0]
+        params['endTs'] = this.query.date[1]
+      }
+      getGlobalContentList(params).then(response => {
+        this.list = response.data.data.list
+        this.total = response.data.data.totalRows
+        this.listLoading = false
+      })
+      console.log(this.tableData)
+    },
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
@@ -79,6 +114,10 @@ export default {
         'page': this.currentpage,
         'title': this.query.title,
         'contentColumnId': this.query.contentColumnId,
+        'creator': this.query.creator,
+        'articleId': this.query.articleId,
+        'column': this.query.column,
+        'orderType': this.query.orderType,
         'status': this.query.status
       }
       if (this.query.date) {
