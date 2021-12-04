@@ -13,11 +13,14 @@ export default {
   data() {
     return {
       visible: false,
+      activeName: '1',
       query: {
         title: '',
         status: 1,
-        contentColumnId: -1,
-        publishTimeType: 3
+        ckey: '',
+        contentColumnId: '',
+        publishTimeType: 3,
+        contentModuleId: 1
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -54,9 +57,9 @@ export default {
       this.currentpage = 1
       if (e.prop) {
         if (e.order === 'descending') {
-          this.sortFlag = 'read_count desc'
+          this.sortFlag = e.prop === 'readCount' ? 'read_count' : e.prop === 'commentLikeNums' ? 'like_nums' : 'comment_nums' + ' desc'
         } else {
-          this.sortFlag = 'read_count'
+          this.sortFlag = e.prop === 'readCount' ? 'read_count' : e.prop === 'commentLikeNums' ? 'like_nums' : 'comment_nums'
         }
         this.fetchData(1)
       }
@@ -100,8 +103,10 @@ export default {
         'pageSize': this.limit,
         'page': this.currentpage,
         'title': this.query.title,
+        'ckey': this.query.ckey,
         'contentColumn': this.query.contentColumnId,
         'status': this.query.status,
+        'contentModuleId': this.query.contentModuleId,
         'publishTimeType': this.query.publishTimeType
       }
       // if (sort) {
