@@ -46,7 +46,7 @@
       </el-form>
     </div>
     <el-row>
-      <el-button v-if="has('', '添加文章')" type="primary" size="small" :actionid="getId('', '添加文章')" @click="add">添加文章</el-button>
+      <el-button v-if="has('', '添加文章')" type="danger" size="small" :actionid="getId('', '添加文章')" @click="add" >创建文章</el-button>
       <el-button v-if="has('', '文章来源管理')" type="primary" size="small" :actionid="getId('', '文章来源管理')" @click="articleSourceManager($event)">文章来源管理</el-button>
     </el-row>
     <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
@@ -56,7 +56,7 @@
         <template slot-scope="scope">
           {{scope.row.id}}
         </template>
-      </el-table-column> 
+      </el-table-column>
       <el-table-column label="文章" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.title }}
