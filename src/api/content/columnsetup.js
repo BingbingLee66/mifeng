@@ -60,10 +60,18 @@ export function getAllContentColumnOptions() {
     method: 'get'
   })
 }
-//栏目权重设置
+// 商会指定模块下 栏目列表
+export function getOptionsWithCkey(params) {
+  return request({
+    url: '/ec/contentColumn/get-options-with-ckey',
+    method: 'get',
+    params
+  })
+}
+// 栏目权重设置
 export function updateColumnLevel(params) {
   return request({
-    url: '/ec/contentColumn/updateColumnLevelById?id='+params.id+'&level='+params.level,
+    url: '/ec/contentColumn/updateColumnLevelById?id=' + params.id + '&level=' + params.level,
     method: 'get',
   })
 }

@@ -5,80 +5,80 @@
       <el-tab-pane label="会员分享" name="2" />
       <el-tab-pane label="企业动态" name="3" />
     </el-tabs>
+    <div class="block">
+      <el-form ref="query" label-width="auto" label-position="right" :model="query">
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="文章标题：">
+              <el-input v-model="query.title" placeholder="请输入文章标题"/>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-left: 10px;">
+            <el-form-item label="文章状态：">
+              <el-select v-model="query.status">
+                <el-option label="已发布" :value="1"/>
+                <el-option label="已冻结(商会)" :value="0"/>
+                <el-option label="已冻结(平台)" :value="3"/>
+                <el-option label="审核不通过" :value="5"/>
+                <el-option label="定时发布" :value="4"/>
+                <el-option label="所有" :value="-1"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-left: 10px;">
+            <el-form-item :span="12" label="商会来源：">
+              <el-select v-model="query.ckey" filterable @change="selectionChange">
+                <el-option
+                  v-for="cc in chamberOptions"
+                  :key="cc.value"
+                  :label="cc.label"
+                  :value="cc.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-left: 10px;">
+            <el-form-item :span="12" label="栏目：">
+              <el-select v-model="query.contentColumnId" filterable>
+                <el-option
+                  v-for="cc in contentColumnOptions"
+                  :key="cc.value"
+                  :label="cc.label"
+                  :value="cc.label"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-left: 10px;">
+            <el-form-item label="发布时间：">
+              <el-select v-model="query.publishTimeType">
+                <el-option label="所有" :value="0"/>
+                <el-option label="24小时内" :value="1"/>
+                <el-option label="3天内" :value="2"/>
+                <el-option label="7天内" :value="3"/>
+                <el-option label="一个月内" :value="4"/>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-form-item label=" ">
+              <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="queryData($event)">查询
+              </el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </div>
+    <br>
+    <el-row>
+      <el-button v-if="has('', '删除')" type="danger" :actionid="getId('', '删除')" @click="batchDelArticle($event)">删除
+      </el-button>
+      <el-button v-if="has('', '冻结')" type="danger" :actionid="getId('', '冻结')" @click="batchUpdateStatus($event)">冻结
+      </el-button>
+      <el-button v-if="has('', '置顶管理')" type="primary" :actionid="getId('', '置顶管理')" @click="goSettop($event)">置顶管理
+      </el-button>
+    </el-row>
     <div v-if="activeName == '1'">
-      <div class="block">
-        <el-form ref="query" label-width="auto" label-position="right" :model="query">
-          <el-row>
-            <el-col :span="7">
-              <el-form-item label="文章标题：">
-                <el-input v-model="query.title" placeholder="请输入文章标题"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item label="文章状态：">
-                <el-select v-model="query.status">
-                  <el-option label="已发布" :value="1"/>
-                  <el-option label="已冻结(商会)" :value="0"/>
-                  <el-option label="已冻结(平台)" :value="3"/>
-                  <el-option label="审核不通过" :value="5"/>
-                  <el-option label="定时发布" :value="4"/>
-                  <el-option label="所有" :value="-1"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item :span="12" label="商会来源：">
-                <el-select v-model="query.contentColumnId">
-                  <el-option
-                    v-for="cc in contentColumnOptions"
-                    :key="cc.value"
-                    :label="cc.label"
-                    :value="cc.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item :span="12" label="栏目：">
-                <el-select v-model="query.contentColumnId">
-                  <el-option
-                    v-for="cc in contentColumnOptions"
-                    :key="cc.value"
-                    :label="cc.label"
-                    :value="cc.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item label="发布时间：">
-                <el-select v-model="query.publishTimeType">
-                  <el-option label="所有" :value="0"/>
-                  <el-option label="24小时内" :value="1"/>
-                  <el-option label="3天内" :value="2"/>
-                  <el-option label="7天内" :value="3"/>
-                  <el-option label="一个月内" :value="4"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="2">
-              <el-form-item label=" ">
-                <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="queryData($event)">查询
-                </el-button>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>
-      <br>
-      <el-row>
-        <el-button v-if="has('', '删除')" type="danger" :actionid="getId('', '删除')" @click="batchDelArticle($event)">删除
-        </el-button>
-        <el-button v-if="has('', '冻结')" type="danger" :actionid="getId('', '冻结')" @click="batchUpdateStatus($event)">冻结
-        </el-button>
-        <el-button v-if="has('', '置顶管理')" type="primary" :actionid="getId('', '置顶管理')" @click="goSettop($event)">置顶管理
-        </el-button>
-      </el-row>
       <el-table
         id="out-table"
         v-loading="listLoading"
@@ -256,79 +256,6 @@
       </div>
     </div>
     <div v-if="activeName == '2'">
-      <div class="block">
-        <el-form ref="query" label-width="auto" label-position="right" :model="query">
-          <el-row>
-            <el-col :span="7">
-              <el-form-item label="文章标题：">
-                <el-input v-model="query.title" placeholder="请输入文章标题"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item label="文章状态：">
-                <el-select v-model="query.status">
-                  <el-option label="已发布" :value="1"/>
-                  <el-option label="已冻结(商会)" :value="0"/>
-                  <el-option label="已冻结(平台)" :value="3"/>
-                  <el-option label="审核不通过" :value="5"/>
-                  <el-option label="定时发布" :value="4"/>
-                  <el-option label="所有" :value="-1"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item :span="12" label="商会来源：">
-                <el-select v-model="query.contentColumnId">
-                  <el-option
-                    v-for="cc in contentColumnOptions"
-                    :key="cc.value"
-                    :label="cc.label"
-                    :value="cc.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item :span="12" label="栏目：">
-                <el-select v-model="query.contentColumnId">
-                  <el-option
-                    v-for="cc in contentColumnOptions"
-                    :key="cc.value"
-                    :label="cc.label"
-                    :value="cc.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item label="发布时间：">
-                <el-select v-model="query.publishTimeType">
-                  <el-option label="所有" :value="0"/>
-                  <el-option label="24小时内" :value="1"/>
-                  <el-option label="3天内" :value="2"/>
-                  <el-option label="7天内" :value="3"/>
-                  <el-option label="一个月内" :value="4"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="2">
-              <el-form-item label=" ">
-                <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="queryData($event)">查询
-                </el-button>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>
-      <br>
-      <el-row>
-        <el-button v-if="has('', '删除')" type="danger" :actionid="getId('', '删除')" @click="batchDelArticle($event)">删除
-        </el-button>
-        <el-button v-if="has('', '冻结')" type="danger" :actionid="getId('', '冻结')" @click="batchUpdateStatus($event)">冻结
-        </el-button>
-        <el-button v-if="has('', '置顶管理')" type="primary" :actionid="getId('', '置顶管理')" @click="goSettop($event)">置顶管理
-        </el-button>
-      </el-row>
       <el-table
         id="out-table"
         v-loading="listLoading"
@@ -506,79 +433,6 @@
       </div>
     </div>
     <div v-if="activeName == '3'">
-      <div class="block">
-        <el-form ref="query" label-width="auto" label-position="right" :model="query">
-          <el-row>
-            <el-col :span="7">
-              <el-form-item label="文章标题：">
-                <el-input v-model="query.title" placeholder="请输入文章标题"/>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item label="文章状态：">
-                <el-select v-model="query.status">
-                  <el-option label="已发布" :value="1"/>
-                  <el-option label="已冻结(商会)" :value="0"/>
-                  <el-option label="已冻结(平台)" :value="3"/>
-                  <el-option label="审核不通过" :value="5"/>
-                  <el-option label="定时发布" :value="4"/>
-                  <el-option label="所有" :value="-1"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item :span="12" label="商会来源：">
-                <el-select v-model="query.contentColumnId">
-                  <el-option
-                    v-for="cc in contentColumnOptions"
-                    :key="cc.value"
-                    :label="cc.label"
-                    :value="cc.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item :span="12" label="栏目：">
-                <el-select v-model="query.contentColumnId">
-                  <el-option
-                    v-for="cc in contentColumnOptions"
-                    :key="cc.value"
-                    :label="cc.label"
-                    :value="cc.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="4" style="margin-left: 10px;">
-              <el-form-item label="发布时间：">
-                <el-select v-model="query.publishTimeType">
-                  <el-option label="所有" :value="0"/>
-                  <el-option label="24小时内" :value="1"/>
-                  <el-option label="3天内" :value="2"/>
-                  <el-option label="7天内" :value="3"/>
-                  <el-option label="一个月内" :value="4"/>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="2">
-              <el-form-item label=" ">
-                <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="queryData($event)">查询
-                </el-button>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>
-      <br>
-      <el-row>
-        <el-button v-if="has('', '删除')" type="danger" :actionid="getId('', '删除')" @click="batchDelArticle($event)">删除
-        </el-button>
-        <el-button v-if="has('', '冻结')" type="danger" :actionid="getId('', '冻结')" @click="batchUpdateStatus($event)">冻结
-        </el-button>
-        <el-button v-if="has('', '置顶管理')" type="primary" :actionid="getId('', '置顶管理')" @click="goSettop($event)">置顶管理
-        </el-button>
-      </el-row>
       <el-table
         id="out-table"
         v-loading="listLoading"

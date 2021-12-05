@@ -7,7 +7,8 @@ import {
   countTop,
   setTop
 } from '@/api/content/article'
-import { getAllContentColumnOptions } from '@/api/content/columnsetup'
+import { getAllContentColumnOptions,getOptionsWithCkey } from '@/api/content/columnsetup'
+import { getChamberOptions } from '@/api/finance/finance'
 
 export default {
   data() {
@@ -25,6 +26,7 @@ export default {
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
+      chamberName: '',
       currentpage: 1,
       limit: 10,
       listLoading: false,
@@ -36,7 +38,8 @@ export default {
       },
       selectId: '',
       remark: '内容违规',
-      contentColumnOptions: []
+      contentColumnOptions: [],
+      chamberOptions: []
     }
   },
   computed: {},
@@ -57,12 +60,24 @@ export default {
       this.currentpage = 1
       if (e.prop) {
         if (e.order === 'descending') {
-          this.sortFlag = e.prop === 'readCount' ? 'read_count' : e.prop === 'commentLikeNums' ? 'like_nums' : 'comment_nums' + ' desc'
+          this.sortFlag = (e.prop === 'readCount' ? 'read_count' : e.prop === 'commentLikeNums' ? 'like_nums' : 'comment_nums') + ' desc'
         } else {
           this.sortFlag = e.prop === 'readCount' ? 'read_count' : e.prop === 'commentLikeNums' ? 'like_nums' : 'comment_nums'
         }
         this.fetchData(1)
       }
+    },
+    selectionChange() {
+      let params = {
+        'ckey': this.query.ckey,
+        'contentModuleId': this.query.contentModuleId
+      }
+
+      // 指定模块下商会全部栏目
+      getOptionsWithCkey(params).then(response => {
+        this.contentColumnOptions = response.data.data
+        this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -81,7 +96,17 @@ export default {
       }
     },
     getContentColumnType() {
-      getAllContentColumnOptions().then(response => {
+      let params = {
+        'ckey': this.query.ckey,
+        'contentModuleId': this.query.contentModuleId
+      }
+      // 指定模块下商会全部列表
+      getChamberOptions().then(response => {
+        this.chamberOptions = response.data.data
+        this.chamberOptions.unshift({ 'label': '全部', 'value': '' })
+      })
+      // 指定模块下商会全部栏目
+      getOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
         this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
       })
@@ -92,6 +117,11 @@ export default {
       }
       this.currentpage = 1
       this.fetchData(e)
+    },
+    handleClick() {
+      this.currentpage = 1,
+      this.query.contentModuleId = this.activeName,
+      this.fetchData()
     },
     fetchData(e, sort) {
       if (e !== undefined && e !== 1) {
