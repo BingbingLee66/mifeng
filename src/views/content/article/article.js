@@ -26,6 +26,11 @@ export default {
       },
       articleId: '',
       uploadIndex: 0,
+      optionList: [
+        '标签聚合页',
+        '商会必参',
+        '标签聚合页/商会必参'
+      ],
       rules: {
         title: [
           { required: true, message: '文章标题不能为空', trigger: 'blur' },

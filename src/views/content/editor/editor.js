@@ -22,6 +22,11 @@ export default {
         orderType: 0,
         date: ''
       },
+      optionList: [
+        '标签聚合页',
+        '商会必参',
+        '标签聚合页/商会必参'
+      ],
       contentColumnOptions: [],
       formObj: {}
     }

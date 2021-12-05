@@ -11,7 +11,7 @@
           <el-col :span="4">
             <el-form-item :span="12" label="栏目：">
               <el-select v-model="query.contentColumnId">
-                <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label" :value="cc.value" />
+                <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label === '全部' ? cc.label : optionList[cc.typeUrl - 1] + '-' + cc.label" :value="cc.value" />
               </el-select>
             </el-form-item>
           </el-col>

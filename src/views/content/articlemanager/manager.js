@@ -32,6 +32,11 @@ export default {
       listLoading: false,
       sortFlag: '',
       selectionDatas: [],
+      optionList: [
+        '标签聚合页',
+        '商会必参',
+        '标签聚合页/商会必参'
+      ],
       detailObj: {
         title: '',
         contentHtml: ''
@@ -76,7 +81,7 @@ export default {
       // 指定模块下商会全部栏目
       getOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
-        this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
+        // this.contentColumnOptions.unshift({ 'label': '全部', 'value': '' })
       })
     },
     handleSizeChange(val) {
@@ -108,7 +113,7 @@ export default {
       // 指定模块下商会全部栏目
       getOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
-        this.contentColumnOptions.unshift({ 'label': '全部', 'value': '' })
+        // this.contentColumnOptions.unshift({ 'label': '全部', 'value': '' })
       })
     },
     queryData(e) {
