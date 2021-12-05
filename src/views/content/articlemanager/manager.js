@@ -108,7 +108,7 @@ export default {
       // 指定模块下商会全部栏目
       getOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
-        this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
+        this.contentColumnOptions.unshift({ 'label': '全部', 'value': '' })
       })
     },
     queryData(e) {
