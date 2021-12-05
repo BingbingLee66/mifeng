@@ -77,7 +77,7 @@
       </el-table-column>
       <el-table-column label="对应栏目" width="200px" prop="contentColumn">
         <template slot-scope="scope">
-          {{ scope.row.contentColumn }}
+          {{ optionList[scope.row.typeUrl - 1] + '-' + scope.row.contentColumn }}
         </template>
       </el-table-column>
       <el-table-column label="浏览量" width="200px" :sortable="'custom'" prop="readCount">
