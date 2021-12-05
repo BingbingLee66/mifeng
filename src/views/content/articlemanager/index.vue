@@ -8,7 +8,7 @@
     <div class="block">
       <el-form ref="query" label-width="auto" label-position="right" :model="query">
         <el-row>
-          <el-col :span="7">
+          <el-col :span="6">
             <el-form-item label="文章标题：">
               <el-input v-model="query.title" placeholder="请输入文章标题"/>
             </el-form-item>
@@ -26,7 +26,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left: 10px;">
-            <el-form-item :span="12" label="商会来源：">
+            <el-form-item :span="10" label="商会来源：">
               <el-select v-model="query.ckey" filterable @change="selectionChange">
                 <el-option
                   v-for="cc in chamberOptions"
@@ -38,7 +38,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left: 10px;">
-            <el-form-item :span="12" label="栏目：">
+            <el-form-item :span="10" label="栏目：">
               <el-select v-model="query.contentColumnId" filterable>
                 <el-option
                   v-for="cc in contentColumnOptions"
@@ -60,7 +60,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="2">
+          <el-col :span="1">
             <el-form-item label=" ">
               <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="queryData($event)">查询
               </el-button>
