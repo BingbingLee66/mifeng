@@ -19,7 +19,7 @@
         <el-col :span="8">
           <el-form-item v-if="this.formObj.publishType != 2 && this.formObj.contentModuleId != 7" label="对应栏目：" prop="contentColumnId">
             <el-select v-model="formObj.contentColumnId" placeholder="请选择对应栏目">
-              <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label" :value="cc.value" />
+              <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label === '全部' ? cc.label : optionList[cc.typeUrl - 1] + '-' + cc.label" :value="cc.value" />
             </el-select>
           </el-form-item>
         </el-col>

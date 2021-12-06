@@ -1,9 +1,10 @@
 import request from '@/utils/request'
 
-export function getList() {
+export function getList(params) {
   return request({
     url: '/ec/articleSource/list',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 

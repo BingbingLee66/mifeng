@@ -278,7 +278,7 @@ export default {
     // 获取活动详情
     fetchData() {
       getActivity({ id: this.activityId }).then(res => {
-       
+
         let resData = res.data
         this.status = resData.status
         this.formObj.activityName = resData.activityName

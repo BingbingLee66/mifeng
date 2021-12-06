@@ -7,33 +7,44 @@ import {
   countTop,
   setTop
 } from '@/api/content/article'
-import { getAllContentColumnOptions } from '@/api/content/columnsetup'
+import { getAllContentColumnOptions,getOptionsWithCkey } from '@/api/content/columnsetup'
+import { getChamberOptions } from '@/api/finance/finance'
 
 export default {
   data() {
     return {
       visible: false,
+      activeName: '1',
       query: {
         title: '',
         status: 1,
-        contentColumnId: -1,
-        publishTimeType: 3
+        ckey: '',
+        contentColumnId: '',
+        publishTimeType: 3,
+        contentModuleId: 1
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
+      chamberName: '',
       currentpage: 1,
       limit: 10,
       listLoading: false,
       sortFlag: '',
       selectionDatas: [],
+      optionList: [
+        '标签聚合页',
+        '商会必参',
+        '标签聚合页/商会必参'
+      ],
       detailObj: {
         title: '',
         contentHtml: ''
       },
       selectId: '',
       remark: '内容违规',
-      contentColumnOptions: []
+      contentColumnOptions: [],
+      chamberOptions: []
     }
   },
   computed: {},
@@ -54,12 +65,24 @@ export default {
       this.currentpage = 1
       if (e.prop) {
         if (e.order === 'descending') {
-          this.sortFlag = 'read_count desc'
+          this.sortFlag = (e.prop === 'readCount' ? 'read_count' : e.prop === 'commentLikeNums' ? 'like_nums' : 'comment_nums') + ' desc'
         } else {
-          this.sortFlag = 'read_count'
+          this.sortFlag = e.prop === 'readCount' ? 'read_count' : e.prop === 'commentLikeNums' ? 'like_nums' : 'comment_nums'
         }
         this.fetchData(1)
       }
+    },
+    selectionChange() {
+      let params = {
+        'ckey': this.query.ckey,
+        'contentModuleId': this.query.contentModuleId
+      }
+
+      // 指定模块下商会全部栏目
+      getOptionsWithCkey(params).then(response => {
+        this.contentColumnOptions = response.data.data
+        this.contentColumnOptions.unshift({ 'label': '全部', 'value': '' })
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -78,9 +101,19 @@ export default {
       }
     },
     getContentColumnType() {
-      getAllContentColumnOptions().then(response => {
+      let params = {
+        'ckey': this.query.ckey,
+        'contentModuleId': this.query.contentModuleId
+      }
+      // 指定模块下商会全部列表
+      getChamberOptions().then(response => {
+        this.chamberOptions = response.data.data
+        this.chamberOptions.unshift({ 'label': '全部', 'value': '' })
+      })
+      // 指定模块下商会全部栏目
+      getOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
-        this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
+        this.contentColumnOptions.unshift({ 'label': '全部', 'value': '' })
       })
     },
     queryData(e) {
@@ -89,6 +122,11 @@ export default {
       }
       this.currentpage = 1
       this.fetchData(e)
+    },
+    handleClick() {
+      this.currentpage = 1,
+      this.query.contentModuleId = this.activeName,
+      this.fetchData()
     },
     fetchData(e, sort) {
       if (e !== undefined && e !== 1) {
@@ -100,8 +138,10 @@ export default {
         'pageSize': this.limit,
         'page': this.currentpage,
         'title': this.query.title,
+        'ckey': this.query.ckey,
         'contentColumn': this.query.contentColumnId,
         'status': this.query.status,
+        'contentModuleId': this.query.contentModuleId,
         'publishTimeType': this.query.publishTimeType
       }
       // if (sort) {
