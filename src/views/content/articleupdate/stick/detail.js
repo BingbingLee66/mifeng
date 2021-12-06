@@ -1,6 +1,7 @@
 import {
   chamberTopList,
-  updateChamberTop
+  updateChamberTop,
+  getTopList
 } from '@/api/content/article'
 import { updateColumnLevel} from '@/api/content/columnsetup'
 import
@@ -54,21 +55,29 @@ export default {
     fetchData() {
       this.chamberTopListFunc()
     },
-    //拉取置顶列表
+    // 拉取置顶列表
     chamberTopListFunc() {
-      chamberTopList(this.ckey).then(res => {
-        if (res.state === 1) {
-          this.list = res.data
-        }
-      })
+      if (this.ckey) {
+        chamberTopList(this.ckey).then(res => {
+          if (res.state === 1) {
+            this.list = res.data
+          }
+        })
+      } else {
+        getTopList().then(res => {
+          if (res.state === 1) {
+            this.list = res.data.data
+          }
+        })
+      }
     },
-     //设置权重
+     // 设置权重
      setLevel(row) {
       this.currentId = row.id;
       this.$refs['levelDialog'].show()
     },
-     //保存权重数据
-     savePopupData(){
+     // 保存权重数据
+     savePopupData() {
       this.$refs['levelForm'].validate((valid) => {
         if (valid) {
           //发请求
