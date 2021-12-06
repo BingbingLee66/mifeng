@@ -49,6 +49,8 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="4" style="margin-left: 10px;">
             <el-form-item label="发布时间：">
               <el-select v-model="query.publishTimeType">
