@@ -165,6 +165,7 @@
               <el-button
                 v-if="!(!scope.row.title) && has('', '置顶')"
                 type="text"
+                :disabled="scope.row.istop"
                 :actionid="getId('', '置顶')"
                 @click="top($event, scope.row)"
               >
