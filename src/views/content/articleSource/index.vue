@@ -57,6 +57,16 @@
             {{scope.row.operator}}
           </div>
           <div>
+            {{scope.row.createdTs}}
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="更新信息">
+        <template slot-scope="scope">
+          <div>
+            {{scope.row.updater}}
+          </div>
+          <div>
             {{scope.row.updatedTs}}
           </div>
         </template>

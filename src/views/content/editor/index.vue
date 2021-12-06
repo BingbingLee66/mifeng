@@ -33,7 +33,7 @@
         </el-row>
         <el-row>
           <el-col :span="3">
-            <el-form-item label="文章id：">
+            <el-form-item label="文章ID：">
               <el-input v-model="query.articleId" placeholder="请输入文章id" />
             </el-form-item>
           </el-col>
@@ -70,7 +70,7 @@
           {{scope.row.id}}
         </template>
       </el-table-column>
-      <el-table-column label="文章" show-overflow-tooltip prop="title">
+      <el-table-column label="文章标题"  show-overflow-tooltip prop="title">
         <template slot-scope="scope">
           {{ scope.row.title }}
         </template>
@@ -80,17 +80,17 @@
           {{ optionList[scope.row.typeUrl - 1] + '-' + scope.row.contentColumn }}
         </template>
       </el-table-column>
-      <el-table-column label="浏览量" width="200px" :sortable="'custom'" prop="readCount">
+      <el-table-column label="浏览量" width="100px" :sortable="'custom'" prop="readCount">
         <template slot-scope="scope">
           {{ scope.row.readCount }}
         </template>
       </el-table-column>
-      <el-table-column label="点赞量" width="200px" :sortable="'custom'" prop="commentLikeNums">
+      <el-table-column label="点赞量" width="100px" :sortable="'custom'" prop="commentLikeNums">
         <template slot-scope="scope">
           {{ scope.row.commentLikeNums }}
         </template>
       </el-table-column>
-      <el-table-column label="评论量" width="200px" :sortable="'custom'" prop="commentNums">
+      <el-table-column label="评论量" width="100px" :sortable="'custom'" prop="commentNums">
         <template slot-scope="scope">
           {{ scope.row.commentNums }}
         </template>
@@ -110,11 +110,6 @@
           {{ scope.row.publishTs }}
         </template>
       </el-table-column>
-      <el-table-column label="添加人" width="120px" prop="operator">
-        <template slot-scope="scope">
-          {{ scope.row.operator }}
-        </template>
-      </el-table-column>
       <el-table-column label="状态" width="100px" prop="status">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 3">已冻结</div>
@@ -127,7 +122,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="180px">
+      <el-table-column label="操作" >
         <template slot-scope="scope">
           <div>
             <el-button v-if="has('', '编辑')" type="text" :actionid="getId('', '编辑')" @click="edit(scope.row)">编辑</el-button>
