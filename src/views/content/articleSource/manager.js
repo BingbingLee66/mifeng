@@ -30,6 +30,7 @@ export default {
   },
   methods: {
     queryData() {
+      this.currentpage = 1
       this.fetchData()
     },
     has(tabName, actionName) {

@@ -124,8 +124,8 @@ export default {
       this.fetchData(e)
     },
     handleClick() {
-      this.currentpage = 1,
-      this.query.contentModuleId = this.activeName,
+      this.currentpage = 1
+      this.query.contentModuleId = this.activeName
       this.fetchData()
     },
     fetchData(e, sort) {
