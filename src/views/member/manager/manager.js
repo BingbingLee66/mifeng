@@ -224,8 +224,19 @@ export default {
           '账号状态': data.status === 1 ? '正常' : '已冻结',
           '激活状态': data.activatedState === 1 ? '已激活' : '未激活',
         }
-        if(data.IdentityVO){
-          new_data['身份信息']='【企业】'+data.IdentityVO.type==1 ?data.IdentityVO.unit :''+'【职务】'+data.IdentityVO.post+'【机构】'+data.IdentityVO.type==2 ?data.IdentityVO.unit :''
+        console.log('data.identityVOList',data.identityVOList)
+        if(data.identityVOList.length>0){
+          console.log('data.identityVOList',data.identityVOList)
+          let str='';
+          data.identityVOList.forEach(element => {
+            if(element.type==1){
+              str=str+'【企业】'+element.unit
+            }else {
+              str=str+'【机构】'+element.unit
+            }
+            str=str+'【职务】'+element.post
+          });
+          new_data['身份信息']=str;
         }
         this.selectionDatas.push(new_data)
       }
