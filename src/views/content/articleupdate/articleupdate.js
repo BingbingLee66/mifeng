@@ -355,13 +355,13 @@ export default {
             message: res.msg,
             type: 'success'
           })
+          this.fetchData()
         }else{
           this.$message({
             message: res.msg,
             type: 'error'
           })
         }
-
       })
     }
   }
