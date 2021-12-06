@@ -46,8 +46,10 @@ export default {
       console.log(column)
 
       // 获取字段名称和排序类型
-      var fieldName = column.prop
-      var sortingType = column.order
+      // var fieldName = column.prop
+      // var sortingType = column.order
+      this.query.column = column.prop
+      this.query.orderType = column.order === 'ascending' ? 1 : -1
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
@@ -56,8 +58,9 @@ export default {
         'contentColumnId': this.query.contentColumnId,
         'creator': this.query.creator,
         'articleId': this.query.articleId,
-        'column': fieldName,
-        'orderType': sortingType === 'ascending' ? 1 : -1,
+        'column': this.query.column,
+        'orderType': this.query.orderType,
+        // 'orderType': sortingType === 'ascending' ? 1 : -1,
         'status': this.query.status
       }
       if (this.query.date) {
