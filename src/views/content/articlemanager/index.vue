@@ -159,9 +159,9 @@
             <div v-if="scope.row.istop == 0">否</div>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="80px" fixed="right">
+        <el-table-column label="操作" width="120px" fixed="right">
           <template slot-scope="scope">
-            <div>
+            <div style="display: inline-block">
               <el-button
                 v-if="!(!scope.row.title) && has('', '置顶')"
                 type="text"
@@ -171,8 +171,7 @@
               >
                 置顶
               </el-button>
-            </div>
-            <div>
+
               <el-button
                 v-if="has('', '详情')"
                 type="text"
@@ -181,8 +180,8 @@
               >
                 详情
               </el-button>
-            </div>
-            <div>
+              </div>
+            <div style="display: inline-block">
               <el-button
                 v-if="has('', '编辑')"
                 type="text"
@@ -192,8 +191,7 @@
               >
                 编辑
               </el-button>
-            </div>
-            <div>
+
               <el-button
                 v-if="has('', '冻结') && scope.row.status == 1"
                 type="text"
@@ -202,8 +200,6 @@
               >
                 冻结
               </el-button>
-            </div>
-            <div>
               <el-button
                 v-if="has('', '解冻') && scope.row.status == 0"
                 type="text"
@@ -211,8 +207,6 @@
               >
                 解冻
               </el-button>
-            </div>
-            <div>
               <el-button
                 v-if="has('', '解冻') && scope.row.status == 3"
                 type="text"
@@ -222,7 +216,7 @@
                 解冻
               </el-button>
             </div>
-            <div>
+            <div style="display: inline-block">
               <el-button
                 v-if="has('', '删除')"
                 type="text"
