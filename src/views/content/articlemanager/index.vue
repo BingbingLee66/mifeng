@@ -43,7 +43,7 @@
                 <el-option
                   v-for="cc in contentColumnOptions"
                   :key="cc.value"
-                  :label="cc.label === '全部' ? cc.label : optionList[cc.typeUrl - 1] + '-' + cc.label"
+                  :label="cc.label === '全部' || cc.typeUrl === 0 ? cc.label : optionList[cc.typeUrl - 1] + '-' + cc.label"
                   :value="cc.label"
                 />
               </el-select>
