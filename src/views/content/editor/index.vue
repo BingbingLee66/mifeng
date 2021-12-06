@@ -110,19 +110,19 @@
           {{ scope.row.publishTs }}
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="100px" prop="status">
+      <el-table-column label="状态" width="180px" prop="status">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 3">已冻结</div>
           <div v-if="scope.row.status == 1">
             已发布
           </div>
           <div v-if="scope.row.status == 4">
-            未发布(定时发布)
+            定时发布
             <div>{{ scope.row.publishTs }}</div>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" >
+      <el-table-column label="操作" width="80px">
         <template slot-scope="scope">
           <div>
             <el-button v-if="has('', '编辑')" type="text" :actionid="getId('', '编辑')" @click="edit(scope.row)">编辑</el-button>
