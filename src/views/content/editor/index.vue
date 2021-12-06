@@ -5,7 +5,7 @@
         <el-row>
           <el-col :span="5">
             <el-form-item label="文章标题：">
-              <el-input v-model="query.creator" placeholder="请输入文章标题" />
+              <el-input v-model="query.title" placeholder="请输入文章标题" />
             </el-form-item>
           </el-col>
           <el-col :span="4">
@@ -27,7 +27,7 @@
           </el-col>
           <el-col :span="3">
             <el-form-item label="创建人：">
-              <el-input v-model="query.title" placeholder="请输入创建人" />
+              <el-input v-model="query.creator" placeholder="请输入创建人" />
             </el-form-item>
           </el-col>
         </el-row>
