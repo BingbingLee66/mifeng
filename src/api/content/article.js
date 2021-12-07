@@ -1,4 +1,14 @@
 import request from '@/utils/request'
+
+// 总后台-修改置顶权重
+export function updateArticleTopLevel(params) {
+  return request({
+    url: '/ec/article/updateArticleTopLevel',
+    method: 'put',
+    params
+  })
+}
+
 // 修改权重
 export function updateChamberContentSort(params) {
   return request({

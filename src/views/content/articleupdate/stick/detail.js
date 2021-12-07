@@ -3,9 +3,8 @@ import {
   updateChamberTop,
   getTopList,
   cancelTop,
-  updateChamberContentSort
+  updateArticleTopLevel
 } from '@/api/content/article'
-import { updateColumnLevel } from '@/api/content/columnsetup'
 import kdDialog from '@/components/common/kdDialog'
 export default {
   components: {
@@ -23,6 +22,8 @@ export default {
     }
     return {
       ckey: '',
+      // 判断时总后台还是商会后台默认总后台
+      backFlag: true,
       // 权重rule
       levelRules: {
         level: [{
@@ -49,6 +50,7 @@ export default {
   computed: {},
   created() {
     this.ckey = this.$store.getters.ckey
+    this.backFlag = !this.$store.getters.ckey
     this.fetchData()
   },
   methods: {
@@ -81,9 +83,9 @@ export default {
       this.$refs['levelForm'].validate((valid) => {
         if (valid) {
           // 发请求
-          updateChamberContentSort({
+          updateArticleTopLevel({
             id: this.currentId,
-            sort: this.levelForm.level
+            level: this.levelForm.level
           }).then(res => {
             if (res.state === 1) {
               this.$message({

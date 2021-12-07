@@ -17,7 +17,7 @@
          <el-table-column label="权重" width="100px">
           <template slot-scope="scope">
             <span class="blue-label" @click="setLevel(scope.row)">
-              {{ scope.row.sort }}
+              {{backFlag ? scope.row.topLevel : scope.row.sort }}
             </span>
           </template>
         </el-table-column>
