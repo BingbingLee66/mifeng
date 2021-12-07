@@ -1,21 +1,21 @@
 <template>
   <div class="app-container">
     <div class="block">
-      <el-form ref="query" label-width="auto" label-position="right" :model="query">
+      <el-form ref="query" :inline="true"  label-position="right" :model="query">
         <el-row>
-          <el-col :span="5">
+          <!-- <el-col :span="5"> -->
             <el-form-item label="文章标题：">
               <el-input v-model="query.title" placeholder="请输入文章标题" />
             </el-form-item>
-          </el-col>
-          <el-col :span="4">
+          <!-- </el-col> -->
+          <!-- <el-col :span="4"> -->
             <el-form-item :span="12" label="栏目：">
               <el-select v-model="query.contentColumnId">
                 <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label === '全部' || cc.typeUrl === 0 ? cc.label : optionList[cc.typeUrl - 1] + '-' + cc.label" :value="cc.value" />
               </el-select>
             </el-form-item>
-          </el-col>
-          <el-col :span="3">
+          <!-- </el-col> -->
+          <!-- <el-col :span="3"> -->
             <el-form-item :span="12" label="状态：">
               <el-select v-model="query.status">
                 <el-option label="全部" :value="-1" />
@@ -24,20 +24,20 @@
                 <el-option label="定时发布" :value="4" />
               </el-select>
             </el-form-item>
-          </el-col>
-          <el-col :span="3">
+          <!-- </el-col> -->
+          <!-- <el-col :span="3"> -->
             <el-form-item label="创建人：">
               <el-input v-model="query.creator" placeholder="请输入创建人" />
             </el-form-item>
-          </el-col>
+          <!-- </el-col> -->
         </el-row>
         <el-row>
-          <el-col :span="3">
-            <el-form-item label="文章ID：">
+          <!-- <el-col :span="3"> -->
+            <el-form-item label="文章ID：" >
               <el-input v-model="query.articleId" placeholder="请输入文章id" />
             </el-form-item>
-          </el-col>
-          <el-col :span="5">
+          <!-- </el-col> -->
+          <!-- <el-col :span="5" style="margin-right:20px"> -->
             <el-form-item label="发布时间：" label-width="120px">
               <el-date-picker
                 v-model="query.date"
@@ -49,12 +49,12 @@
                 end-placeholder="结束日期"
               />
             </el-form-item>
-          </el-col>
-          <el-col :span="2">
+          <!-- </el-col> -->
+          <!-- <el-col :span="6">  -->
             <el-form-item label=" " >
               <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="queryData($event)">查询</el-button>
             </el-form-item>
-          </el-col>
+         <!-- </el-col> -->
         </el-row>
       </el-form>
     </div>
