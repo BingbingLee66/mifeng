@@ -1,12 +1,12 @@
 import {
   chamberTopList,
   updateChamberTop,
-  getTopList
+  getTopList,
+  cancelTop,
+  updateChamberContentSort
 } from '@/api/content/article'
-import { updateColumnLevel} from '@/api/content/columnsetup'
-import
-kdDialog
-from '@/components/common/kdDialog'
+import { updateColumnLevel } from '@/api/content/columnsetup'
+import kdDialog from '@/components/common/kdDialog'
 export default {
   components: {
     'kd-dialog': kdDialog
@@ -23,24 +23,24 @@ export default {
     }
     return {
       ckey: '',
-      //权重rule
+      // 权重rule
       levelRules: {
         level: [{
-            required: true,
-            message: '权重不能为空',
-            trigger: 'blur'
-          },
-          {
-            validator: checkLevel,
-            trigger: 'blur'
-          }
+          required: true,
+          message: '权重不能为空',
+          trigger: 'blur'
+        },
+        {
+          validator: checkLevel,
+          trigger: 'blur'
+        }
         ],
       },
-      //权重对象
+      // 权重对象
       levelForm: {
-        level: ""
+        level: ''
       },
-      list:[]
+      list: []
     }
   },
   mounted() {
@@ -48,7 +48,7 @@ export default {
   },
   computed: {},
   created() {
-    this.ckey = this.$store.getters.ckey;
+    this.ckey = this.$store.getters.ckey
     this.fetchData()
   },
   methods: {
@@ -71,19 +71,19 @@ export default {
         })
       }
     },
-     // 设置权重
-     setLevel(row) {
-      this.currentId = row.id;
+    // 设置权重
+    setLevel(row) {
+      this.currentId = row.id
       this.$refs['levelDialog'].show()
     },
-     // 保存权重数据
-     savePopupData() {
+    // 保存权重数据
+    savePopupData() {
       this.$refs['levelForm'].validate((valid) => {
         if (valid) {
-          //发请求
-          updateColumnLevel({
+          // 发请求
+          updateChamberContentSort({
             id: this.currentId,
-            level: this.levelForm.level
+            sort: this.levelForm.level
           }).then(res => {
             if (res.state === 1) {
               this.$message({
@@ -93,37 +93,69 @@ export default {
               this.fetchData()
             }
           })
-          //操作
-          this.$refs['levelDialog'].hide();
-          this.$refs['levelForm'].resetFields();
+          // updateColumnLevel({
+          //   id: this.currentId,
+          //   level: this.levelForm.level
+          // }).then(res => {
+          //   if (res.state === 1) {
+          //     this.$message({
+          //       message: res.msg,
+          //       type: 'success'
+          //     })
+          //     this.fetchData()
+          //   }
+          // })
+          // 操作
+          this.$refs['levelDialog'].hide()
+          this.$refs['levelForm'].resetFields()
         } else {
-          return false;
+          return false
         }
-      });
-    },
-      //update置顶
-    updateTop(row) {
-      console.log('row', row);
-      let params = {
-        articleId: row.id,
-        ckey: row.ckey,
-        //这里统一都是传0
-        type: 0
-      }
-      updateChamberTop(params).then(res => {
-        if(res.state===1){
-          this.$message({
-            message: res.msg,
-            type: 'success'
-          })
-        }else{
-          this.$message({
-            message: res.msg,
-            type: 'error'
-          })
-        }
-        this.fetchData()
       })
+    },
+    // update置顶 这里总后台/商会后台公用 要区分总后台和商会后台调用不同的接口
+    updateTop(row) {
+      console.log('row', row)
+      if (!this.$store.getters.ckey) {
+        let params = {
+          id: row.id,
+        }
+        cancelTop(params).then(res => {
+          if (res.state === 1) {
+            this.$message({
+              message: res.msg,
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'error'
+            })
+          }
+          this.fetchData()
+        })
+      } else {
+        let params = {
+          articleId: row.id,
+          ckey: row.ckey,
+          // 这里统一都是传0
+          type: 0
+        }
+        updateChamberTop(params).then(res => {
+          if (res.state === 1) {
+            this.$message({
+              message: res.msg,
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'error'
+            })
+          }
+          this.fetchData()
+        })
+      }
     }
   }
 }

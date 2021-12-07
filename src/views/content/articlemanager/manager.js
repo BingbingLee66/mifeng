@@ -279,35 +279,28 @@ export default {
       countTop().then(response => {
         const count = response.data.count
         if (count >= 3) {
-          this.$alert('3个置顶位已有内容，请到置顶管理页面调整后再置顶', {
+          this.$alert('3个置顶位已有内容，请到【置顶管理】页面调整后再置顶', {
             confirmButtonText: '确定'
           })
         } else {
           console.log(actionId)
           window.localStorage.setItem('actionId', actionId)
-          this.$prompt('设置置顶位置', '置顶文章', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            inputValue: row.typeName,
-            inputPattern: /^[0-9]{1,2}$/,
-            inputErrorMessage: '只能填数字'
-          }).then(({ value }) => {
-            let params = {
-              'id': row.id,
-              'level': value
-            }
-            setTop(params).then(response => {
+          let params = {
+            'id': row.id
+          }
+          setTop(params).then(response => {
+            if (response.state === 1) {
               this.$message({
                 message: '置顶成功',
                 type: 'success'
               })
               this.fetchData()
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '取消输入'
-            })
+            } else {
+              this.$message({
+                message: '置顶失败',
+                type: 'failed'
+              })
+            }
           })
         }
       })
