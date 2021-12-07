@@ -68,7 +68,10 @@ export default {
         level: 0
       },
       //current column  Id
-      currentId: null
+      currentId: null,
+      page:1,
+      pageSize:5,
+      totalRows:1000
     }
   },
   components: {
@@ -92,6 +95,8 @@ export default {
       })
     },
     handleClick() {
+      this.page=1;
+      console.log('this.page',this.page)
       this.fetchData()
     },
     init() {
@@ -101,11 +106,14 @@ export default {
       this.listLoading = true
       let params = {
         'ckey': this.$store.getters.ckey,
-        'contentModuleId': this.activeName
+        'contentModuleId': this.activeName,
+        page:this.page,
+        pageSize:this.pageSize,
       }
       getList(params).then(response => {
-        this.list = response.data.data
-        this.listLoading = false
+        this.list = response.data.data.list;
+        this.totalRows=response.data.data.totalRows
+        this.listLoading = false;
       })
     },
     openVisible(e, row) {
@@ -152,7 +160,6 @@ export default {
           this.formObj['ckey'] = this.$store.getters.ckey
           this.formObj['contentModuleId'] = this.activeName
           this.formObj['columnName'] = this.formObj['columnName'].replace(/\s*/g, '')
-          console.log('formObj', this.formObj)
           if (this.formObj['columnName'].length < 1) {
             this.$message({
               message: '栏目名称不能为空',
@@ -202,6 +209,11 @@ export default {
           return false;
         }
       });
+    },
+    //当前页发生改变时触发
+    currentChange(event){
+      this.page=event;
+      this.fetchData()
     }
   }
 }

@@ -44,11 +44,6 @@
       >
         <el-table-column type="index" label="序号" width="60px">
         </el-table-column>
-        <!-- <el-table-column label="ID">
-          <template slot-scope="scope">
-            {{scope.row.id}}
-          </template>
-        </el-table-column> -->
         <el-table-column label="所属模块">
           <template slot-scope="scope">
             {{ scope.row.contentModule }}
@@ -86,16 +81,6 @@
             </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="修改时间">
-          <template slot-scope="scope">
-            {{ scope.row.updatedTs }}
-          </template>
-        </el-table-column> -->
-        <!-- <el-table-column label="修改人">
-          <template slot-scope="scope">
-            {{ scope.row.operator }}
-          </template>
-        </el-table-column> -->
         <el-table-column label="状态">
           <template slot-scope="scope">
             <div v-if="scope.row.status == 0">已冻结</div>
@@ -109,13 +94,14 @@
               class="my-btn"
               type="text"
               @click="openVisible($event, scope.row)"
-              v-if=" scope.row.status != 3"
+              v-if="scope.row.status != 3"
               >编辑</el-button
-            ><el-button
+            >
+            <el-button
               class="my-btn"
               type="text"
               @click="openVisible($event, scope.row)"
-              v-if=" scope.row.status == 3"
+              v-if="scope.row.status == 3"
               disabled
               >编辑</el-button
             >
@@ -123,19 +109,24 @@
               class="my-btn"
               type="text"
               @click="updateStatus($event, scope.row)"
-              v-if=" scope.row.status == 1"
+              v-if="scope.row.status == 1"
               >冻结</el-button
             >
             <el-button
               class="my-btn"
               type="text"
               @click="updateStatus($event, scope.row)"
-              v-if=" scope.row.status == 0"
+              v-if="scope.row.status == 0"
               >解冻</el-button
             >
           </template>
         </el-table-column>
+
       </el-table>
+              <!-- <div class="block">
+          <el-pagination layout="prev, pager, next" :current-page.sync="page" :total="10000" @current-change="currentChange">
+          </el-pagination>
+        </div> -->
     </div>
     <div v-if="activeName == '4'">
       <el-row>
@@ -158,11 +149,6 @@
       >
         <el-table-column type="index" label="序号" width="60px">
         </el-table-column>
-        <!-- <el-table-column label="ID">
-          <template slot-scope="scope">
-            {{scope.row.id}}
-          </template>
-        </el-table-column> -->
         <el-table-column label="所属模块">
           <template slot-scope="scope">
             {{ scope.row.contentModule }}
@@ -180,7 +166,7 @@
             >
           </template>
         </el-table-column>
-               <el-table-column label="创建信息">
+        <el-table-column label="创建信息">
           <template slot-scope="scope">
             <div>
               {{ scope.row.operator }}
@@ -200,16 +186,6 @@
             </div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="修改时间">
-          <template slot-scope="scope">
-            {{ scope.row.updatedTs }}
-          </template>
-        </el-table-column> -->
-        <!-- <el-table-column label="修改人">
-          <template slot-scope="scope">
-            {{ scope.row.operator }}
-          </template> 
-        </el-table-column>-->
         <el-table-column label="状态">
           <template slot-scope="scope">
             <div v-if="scope.row.status == 0">已冻结</div>
@@ -222,10 +198,11 @@
               type="text"
               @click="openVisible($event, scope.row)"
               :actionid="getId('关于商会', '编辑')"
-              v-if="has('关于商会', '编辑') && scope.row.status!==3"
+              v-if="has('关于商会', '编辑') && scope.row.status !== 3"
               class="my-btn"
               >编辑</el-button
             >
+            <div v-else>--</div>
             <el-button
               type="text"
               @click="updateStatus($event, scope.row)"
@@ -245,7 +222,12 @@
           </template>
         </el-table-column>
       </el-table>
+      
     </div>
+      <div class="block">
+          <el-pagination  :current-page.sync="page"  :total="10000" layout="prev, pager, next" @current-change="currentChange">
+          </el-pagination>
+        </div>
     <el-dialog title="添加/编辑栏目" :visible.sync="visible" width="30%">
       <el-form
         ref="form"
@@ -257,14 +239,21 @@
         <el-row>
           <el-col :offset="2" :span="20">
             <el-form-item label="栏目名称：" prop="columnName">
-              <el-input v-model="formObj.columnName" maxLength="5" placeholder="限5个字符内"></el-input>
+              <el-input
+                v-model="formObj.columnName"
+                maxLength="5"
+                placeholder="限5个字符内"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row v-if="visible">
           <el-col :offset="2" :span="20">
             <el-form-item label="权重：" prop="level">
-              <el-input placeholder="请输入大于0的整数" v-model="formObj.level"></el-input>
+              <el-input
+                placeholder="请输入大于0的整数"
+                v-model="formObj.level"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
