@@ -33,13 +33,13 @@ export default {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
     }
-    var checkNumber = (rule, value, callback) => {
-      if (!/(^[1-9]\d*$)/.test(value)) {
-        return callback(new Error('必须是大于0的整数'))
-      } else {
-        callback() // 必须加上这个，不然一直塞在验证状态
-      }
-    }
+    // var checkNumber = (rule, value, callback) => {
+    //   if (!/(^[1-9]\d*$)/.test(value)) {
+    //     return callback(new Error('必须是大于0的整数'))
+    //   } else {
+    //     callback() // 必须加上这个，不然一直塞在验证状态
+    //   }
+    // }
     return {
       editorVisible: false,
       detailVisible: false,
