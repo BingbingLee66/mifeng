@@ -2,12 +2,11 @@ import {
   getManagerList,
   updateStatusPlatform,
   getDetail,
-  updateAudit,
   del,
   countTop,
   setTop
 } from '@/api/content/article'
-import { getAllContentColumnOptions,getOptionsWithCkey } from '@/api/content/columnsetup'
+import { getOptionsWithCkey } from '@/api/content/columnsetup'
 import { getChamberOptions } from '@/api/finance/finance'
 
 export default {
@@ -307,7 +306,7 @@ export default {
     },
     edit(row) {
       window.localStorage.setItem('articleeditor', this.$route.path)
-      this.$router.push({ name: '添加或编辑文章', params: { 'articleId': row.id } })
+      this.$router.push({ name: '添加或编辑文章', params: { 'articleId': row.id }})
     },
     goSettop(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
