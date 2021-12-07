@@ -108,7 +108,7 @@ export default {
       // 指定模块下商会全部列表
       getChamberOptions().then(response => {
         this.chamberOptions = response.data.data
-        this.chamberOptions.unshift({ 'label': '全部', 'value': '' })
+        this.chamberOptions.unshift({ 'label': '全部', 'value': '' }, { 'label': '凯迪云商会', 'value': 'kaidiyun' })
       })
       // 指定模块下商会全部栏目
       getOptionsWithCkey(params).then(response => {
