@@ -107,7 +107,12 @@
       </el-table-column>
       <el-table-column label="发布时间" width="200px" prop="publishTs">
         <template slot-scope="scope">
-          {{ scope.row.publishTs }}
+          <div v-if="scope.row.status == 4">
+            --
+          </div>
+          <div v-else >
+            {{ scope.row.publishTs }}
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="状态" width="180px" prop="status">
