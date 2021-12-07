@@ -96,6 +96,7 @@ export default {
     },
     handleClick() {
       this.page=1;
+      this.list=[]
       console.log('this.page',this.page)
       this.fetchData()
     },

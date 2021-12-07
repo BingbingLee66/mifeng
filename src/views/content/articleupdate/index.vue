@@ -318,6 +318,9 @@
           </template>
         </el-table-column>
         <el-table-column label="权重" width="100px">
+
+
+
           <template slot-scope="scope">
             <span class="blue-label" @click="showSort(scope.row)">
               {{ scope.row.sort }}
@@ -412,6 +415,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="pageSizes"
+        :page-size="limit"
+        :total="total"
+        :current-page.sync="currentpage"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
     <div v-if="activeName == '8'">
       <el-table

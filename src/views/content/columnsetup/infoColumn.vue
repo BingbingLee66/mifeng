@@ -105,7 +105,18 @@
           >
         </template>
       </el-table-column>
+       
     </el-table>
+    <el-pagination
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="pageSizes"
+        :page-size="limit"
+        :total="total"
+        :current-page.sync="currentpage"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     <el-dialog title="添加/编辑栏目" :visible.sync="visible" width="30%">
       <el-form
         ref="form"

@@ -56,7 +56,12 @@ export default {
       //权重对象
       levelForm:{
         level:""
-      }
+      },
+      currentpage:1,
+      limit:10,
+      total:0,
+      pageSize:10,
+      pageSizes: [10, 20, 50, 100, 500],
     }
   },
   computed: {
@@ -78,10 +83,15 @@ export default {
       this.fetchData()
     },
     fetchData() {
-      this.listLoading = true
-      getInfoColumnList().then(response => {
-        this.list = response.data.data
-        this.listLoading = false
+      this.listLoading = true;
+      let params={
+        page:this.currentpage,
+        pageSize:this.pageSize
+      }
+      getInfoColumnList(params).then(response => {
+        this.list = response.data.data.list
+        this.listLoading = false;
+        this.total=response.data.data.totalRows
       })
     },
     openVisible(e, row) {
@@ -176,6 +186,19 @@ export default {
           return false;
         }
       });
-    }
+    },
+    //size改变
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`)
+      this.limit = val
+      this.currentpage = 1;
+      this.pageSize=val
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`)
+      this.currentpage = val
+      this.fetchData()
+    },
   }
 }

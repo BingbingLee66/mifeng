@@ -8,10 +8,12 @@ export function getList(params) {
   })
 }
 
-export function getInfoColumnList() {
+export function getInfoColumnList(params) {
+  console.log('params',params)
   return request({
     url: '/ec/contentColumn/info-column-list',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 
