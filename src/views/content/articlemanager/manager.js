@@ -78,9 +78,10 @@ export default {
       }
 
       // 判断当商会来源是全部时 清空栏目选中值
-      if (!this.query.ckey) {
-        this.query.contentColumnId = ''
-      }
+      // if (!this.query.ckey) {
+      // 每一次选中商会来源 要将栏目置空
+      this.query.contentColumnId = ''
+      // }
       // 指定模块下商会全部栏目
       getOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
