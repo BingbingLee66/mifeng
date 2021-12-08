@@ -95,7 +95,6 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '置顶管理' }
       },
-      
       {
         path: '/content/article-detail',
         name: '文章详情',
