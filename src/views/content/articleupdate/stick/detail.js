@@ -3,6 +3,7 @@ import {
   updateChamberTop,
   getTopList,
   cancelTop,
+  updateChamberContentSort,
   updateArticleTopLevel
 } from '@/api/content/article'
 import kdDialog from '@/components/common/kdDialog'
@@ -27,14 +28,14 @@ export default {
       // 权重rule
       levelRules: {
         level: [{
-          required: true,
-          message: '权重不能为空',
-          trigger: 'blur'
-        },
-        {
-          validator: checkLevel,
-          trigger: 'blur'
-        }
+            required: true,
+            message: '权重不能为空',
+            trigger: 'blur'
+          },
+          {
+            validator: checkLevel,
+            trigger: 'blur'
+          }
         ],
       },
       // 权重对象
@@ -50,7 +51,6 @@ export default {
   computed: {},
   created() {
     this.ckey = this.$store.getters.ckey
-    this.backFlag = !this.$store.getters.ckey
     this.fetchData()
   },
   methods: {
@@ -83,10 +83,16 @@ export default {
       this.$refs['levelForm'].validate((valid) => {
         if (valid) {
           // 发请求
-          updateArticleTopLevel({
+          let interfaceName = this.ckey ? updateChamberContentSort : updateArticleTopLevel;
+          let params = this.ckey ? {
+            id: this.currentId,
+            sort: this.levelForm.level
+          } : {
             id: this.currentId,
             level: this.levelForm.level
-          }).then(res => {
+          };
+          console.log('interfaceName', interfaceName)
+          interfaceName(params).then(res => {
             if (res.state === 1) {
               this.$message({
                 message: res.msg,
@@ -95,19 +101,6 @@ export default {
               this.fetchData()
             }
           })
-          // updateColumnLevel({
-          //   id: this.currentId,
-          //   level: this.levelForm.level
-          // }).then(res => {
-          //   if (res.state === 1) {
-          //     this.$message({
-          //       message: res.msg,
-          //       type: 'success'
-          //     })
-          //     this.fetchData()
-          //   }
-          // })
-          // 操作
           this.$refs['levelDialog'].hide()
           this.$refs['levelForm'].resetFields()
         } else {
@@ -117,12 +110,18 @@ export default {
     },
     // update置顶 这里总后台/商会后台公用 要区分总后台和商会后台调用不同的接口
     updateTop(row) {
-      console.log('row', row)
-      if (!this.$store.getters.ckey) {
-        let params = {
-          id: row.id,
-        }
-        cancelTop(params).then(res => {
+      console.log('row', row);
+      //这里只有取消置顶
+      let interfaceName = this.ckey ? updateChamberTop : cancelTop;
+      let params = this.ckey ? {
+        articleId: row.id,
+        ckey: row.ckey,
+        // 这里统一都是传0
+        type: 0
+      } : {
+        id: row.id
+      };
+      interfaceName(params).then(res => {
           if (res.state === 1) {
             this.$message({
               message: res.msg,
@@ -136,28 +135,7 @@ export default {
           }
           this.fetchData()
         })
-      } else {
-        let params = {
-          articleId: row.id,
-          ckey: row.ckey,
-          // 这里统一都是传0
-          type: 0
-        }
-        updateChamberTop(params).then(res => {
-          if (res.state === 1) {
-            this.$message({
-              message: res.msg,
-              type: 'success'
-            })
-          } else {
-            this.$message({
-              message: res.msg,
-              type: 'error'
-            })
-          }
-          this.fetchData()
-        })
-      }
+      
     }
   }
 }
