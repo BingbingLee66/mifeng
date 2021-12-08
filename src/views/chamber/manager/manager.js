@@ -198,9 +198,9 @@ export default {
         this.formObj.systemLogo = response.data.filePath
       })
     },
-    init() {
-      this.fetchData()
-    },
+    // init() {
+    //   this.fetchData()
+    // },
     selectData() {
       this.currentpage = 1
       this.fetchData()
