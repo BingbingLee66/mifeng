@@ -225,7 +225,7 @@
       
     </div>
       <div class="block">
-          <el-pagination  :current-page.sync="page"  :total="10000" layout="prev, pager, next" @current-change="currentChange">
+          <el-pagination  :page-size="pageSize" :current-page.sync="page"  :total="totalRows" layout="prev, pager, next" @current-change="currentChange">
           </el-pagination>
         </div>
     <el-dialog title="添加/编辑栏目" :visible.sync="visible" width="30%">

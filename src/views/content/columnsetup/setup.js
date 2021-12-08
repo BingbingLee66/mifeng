@@ -70,8 +70,8 @@ export default {
       //current column  Id
       currentId: null,
       page:1,
-      pageSize:5,
-      totalRows:1000
+      pageSize:10,
+      totalRows:1000,
     }
   },
   components: {
