@@ -3,6 +3,7 @@ import {
   updateChamberTop,
   getTopList,
   cancelTop,
+  updateChamberContentSort,
   updateArticleTopLevel
 } from '@/api/content/article'
 import kdDialog from '@/components/common/kdDialog'
@@ -50,7 +51,6 @@ export default {
   computed: {},
   created() {
     this.ckey = this.$store.getters.ckey
-    this.backFlag = !this.$store.getters.ckey
     this.fetchData()
   },
   methods: {
@@ -83,10 +83,10 @@ export default {
       this.$refs['levelForm'].validate((valid) => {
         if (valid) {
           // 发请求
-          updateArticleTopLevel({
-            id: this.currentId,
-            level: this.levelForm.level
-          }).then(res => {
+          let interfaceName=this.ckey ? updateChamberContentSort: updateArticleTopLevel;
+          let params=this.ckey ? {id:this.currentId,sort:this.levelForm.level} :{id:this.currentId,level:this.levelForm.level};
+          console.log('interfaceName',interfaceName)
+          interfaceName(params).then(res => {
             if (res.state === 1) {
               this.$message({
                 message: res.msg,
@@ -95,19 +95,6 @@ export default {
               this.fetchData()
             }
           })
-          // updateColumnLevel({
-          //   id: this.currentId,
-          //   level: this.levelForm.level
-          // }).then(res => {
-          //   if (res.state === 1) {
-          //     this.$message({
-          //       message: res.msg,
-          //       type: 'success'
-          //     })
-          //     this.fetchData()
-          //   }
-          // })
-          // 操作
           this.$refs['levelDialog'].hide()
           this.$refs['levelForm'].resetFields()
         } else {
@@ -117,7 +104,8 @@ export default {
     },
     // update置顶 这里总后台/商会后台公用 要区分总后台和商会后台调用不同的接口
     updateTop(row) {
-      console.log('row', row)
+      console.log('row', row);
+    // let interfaceName=this.ckey ?  cancelTop
       if (!this.$store.getters.ckey) {
         let params = {
           id: row.id,
