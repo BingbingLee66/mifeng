@@ -102,7 +102,7 @@
         </el-table-column>
         <el-table-column label="文章标题">
           <template slot-scope="scope">
-            {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
+            {{ !scope.row.title ? '--' : scope.row.title }}
           </template>
         </el-table-column>
         <el-table-column label="来源商会" width="120px">
