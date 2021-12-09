@@ -169,7 +169,8 @@ export default {
             'sourceId': dataObj.sourceId
           }
           if (dataObj.status === 4) {
-            this.formObj['publishTs'] = dataObj.publishTs
+            // this.formObj['publishTs'] = dataObj.publishTs
+            this.$set(this.formObj, 'publishTs', dataObj.publishTs)
           }
           this.getContentColumnType()
           this.$refs.ckeditor1.init()
