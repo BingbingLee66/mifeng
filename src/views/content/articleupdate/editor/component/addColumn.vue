@@ -20,7 +20,7 @@
         </el-row>
         <el-row>
           <el-col :offset="2" :span="20">
-            <el-form-item label="排序：" prop="level">
+            <el-form-item label="权重：" prop="level">
               <el-input v-model="formObj.level" />
             </el-form-item>
           </el-col>
@@ -43,7 +43,7 @@ export default {
   data() {
     var checkNumber = (rule, value, callback) => {
       if (!/^([1-9]\d*)$/.test(value)) {
-        return callback(new Error('必须是大于0的整数'))
+        return callback(new Error('权重请控制在0-999，权重为0不在前台展示'))
       } else {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
@@ -64,7 +64,7 @@ export default {
 
         ],
         level: [
-          { required: true, message: '请选择排序', trigger: 'blur' },
+          { required: true, message: '请输入权重', trigger: 'blur' },
           { validator: checkNumber, trigger: 'change' }
         ],
       },

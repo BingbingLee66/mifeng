@@ -4,9 +4,15 @@ import {
   getContactUs,
   save,
   updateStatus,
-  updateChamberContentSort, getDetail
+  updateChamberContentSort,
+  getDetail,
+  updateChamberTop
 } from '@/api/content/article'
-import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
+import {
+  getContentColumnOptionsWithCkey,
+  updateColumnLevel
+} from '@/api/content/columnsetup'
+import router from '../../../router'
 import addColumn from './editor/component/addColumn'
 
 export default {
@@ -34,7 +40,9 @@ export default {
         title: '',
         contentColumnId: -1,
         status: -1,
-        date: ''
+        date: '',
+        column: "",
+        orderType: 1
       },
       detailObj: {
         contentHtml: '',
@@ -49,16 +57,22 @@ export default {
         id: null,
         sort: null
       },
+
       sortFormRules: {
-        sort: [
-          { required: true, message: '权重不能为空', trigger: 'blur' },
-          { validator: checkNumber, trigger: 'blur' }
+        sort: [{
+            required: true,
+            message: '权重不能为空',
+            trigger: 'blur'
+          },
+          {
+            validator: checkNumber,
+            trigger: 'blur'
+          }
         ]
       },
     }
   },
-  mounted() {
-  },
+  mounted() {},
   computed: {},
   created() {
     let activename = window.localStorage.getItem('activename')
@@ -70,34 +84,50 @@ export default {
   },
   methods: {
     has(tabName, actionName) {
-      return this.$store.getters.has({ tabName, actionName })
+      return this.$store.getters.has({
+        tabName,
+        actionName
+      })
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({ tabName, actionName })
+      return this.$store.getters.getId({
+        tabName,
+        actionName
+      })
     },
-    // 浏览量排序
+    // 排序
     handleSortChange(e) {
       // let sort = ''
-      this.currentpage = 1
-      if (e.prop) {
-        if (e.order === 'descending') {
-          this.sortFalg = 'read_count desc'
-        } else {
-          this.sortFalg = 'read_count'
-        }
-        this.fetchData(1)
+
+      console.log('e', e);
+      if (!e.prop) {
+        return;
       }
+      this.query.column = e.prop
+      //有序
+      if (e.order) {
+        this.query.orderType = e.order === "ascending" ? 1 : -1
+      } else {
+        //无序
+        this.query.orderType = ""
+      }
+      this.currentpage = 1;
+      this.fetchData(1)
     },
     // 修改权重
     showSort(row) {
-      this.sortForm.id = row.id
+      this.sortForm.id = row.contentColumnId
       this.sortForm.sort = row.sort
       this.showSortDialog = true
     },
     updateSort(sortForm) {
       this.$refs[sortForm].validate((valid) => {
         if (valid) {
-          updateChamberContentSort(this.sortForm).then(response => {
+          let params = {
+            ...this.sortForm,
+            level: this.sortForm.sort
+          }
+          updateColumnLevel(params).then(response => {
             if (response.state === 1) {
               this.$message({
                 message: '操作成功',
@@ -141,7 +171,7 @@ export default {
       }
     },
     getContentColumnType() {
-      let contentModuleId = 7
+      let contentModuleId = 8
       if (this.activeName === '5') {
         contentModuleId = 3
       } else if (this.activeName === '6') {
@@ -153,7 +183,10 @@ export default {
       }
       getContentColumnOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
-        this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
+        this.contentColumnOptions.unshift({
+          'label': '全部',
+          'value': -1
+        })
       })
     },
     fetchData(e, sort) {
@@ -163,14 +196,18 @@ export default {
       }
       this.listLoading = true
       let params = {
-        'order': this.sortFalg,
+        // 'order': this.sortFalg,
         'pageSize': this.limit,
         'page': this.currentpage,
         'ckey': this.$store.getters.ckey,
         'title': this.query.title,
         'contentModuleId': this.activeName,
         'contentColumnId': this.query.contentColumnId,
-        'status': this.query.status
+        'status': this.query.status,
+        'articleId': this.query.articleId,
+        'creator': this.query.creator,
+        'column': this.query.column,
+        'orderType': this.query.orderType,
       }
       // if (sort) {
       //   params['order'] = sort
@@ -190,9 +227,10 @@ export default {
           this.list = response.data.data
           this.listLoading = false
         })
-      } else if (this.activeName === '7') {
+      } else if (this.activeName === '8') {
         getContactUs(params).then(response => {
-          this.list = response.data.data
+          this.list = response.data;
+          console.log('list', this.list)
           this.listLoading = false
         })
       }
@@ -224,17 +262,35 @@ export default {
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('articleupdate', this.$route.path)
-      this.$router.push({ name: '添加/修改文章', params: { 'activeName': this.activeName } })
+      this.$router.push({
+        name: '添加/修改文章',
+        params: {
+          'activeName': this.activeName
+        }
+      })
     },
     edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('articleupdate', this.$route.path)
-      this.$router.push({ name: '添加/修改文章', params: { 'activeName': this.activeName, 'articleId': row.id } })
+      this.$router.push({
+        name: '添加/修改文章',
+        params: {
+          'activeName': this.activeName,
+          'articleId': row.id
+        }
+      })
     },
     editColumn(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      window.localStorage.setItem('articleupdate', this.$route.path)
-      this.$router.push({ name: '修改栏目内容', params: { 'activeName': this.activeName, 'articleObj': row } })
+      window.localStorage.setItem('articleupdate', this.$route.path);
+      console.log('row', row)
+      this.$router.push({
+        name: '修改栏目内容',
+        params: {
+          'activeName': this.activeName,
+          'articleObj': row
+        }
+      })
     },
     /* detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -259,7 +315,7 @@ export default {
       })
     },
     addCloumn() {
-      let contentModuleId = 7
+      let contentModuleId = 8
       if (this.activeName === '5') {
         contentModuleId = 3
       } else if (this.activeName === '6') {
@@ -276,9 +332,37 @@ export default {
       }
       getDetail(params).then(response => {
         this.detailObj = response.data.dtl
-      }).catch(() => {
-      })
+      }).catch(() => {})
       this.detailVisible = true
+    },
+    //去置顶管理页面
+    toStick() {
+      router.push({
+        path: '/content/article-stick'
+      })
+    },
+    //update置顶
+    updateTop(row) {
+      console.log('row', row);
+      let params = {
+        articleId: row.id,
+        ckey: row.ckey,
+        type: row.istop ? 0 : 1
+      }
+      updateChamberTop(params).then(res => {
+        if(res.state===1){
+          this.$message({
+            message: res.msg,
+            type: 'success'
+          })
+          this.fetchData()
+        }else{
+          this.$message({
+            message: res.msg,
+            type: 'error'
+          })
+        }
+      })
     }
   }
 }

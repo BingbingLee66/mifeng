@@ -3,7 +3,8 @@
     <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
       <el-row>
         <el-col :span="24">
-          <el-form-item v-if="!(this.articleId && !this.formObj.title)" label="文章标题：" prop="title">
+<!--         这里需要注意 注释掉会存在 文章原先就不存在标题 编辑就必须填写标题问题不然验证不通过 <el-form-item v-if="!(this.articleId && !this.formObj.title)" label="文章标题：" prop="title">-->
+          <el-form-item  label="文章标题：" prop="title">
             <el-input v-model="formObj.title" maxlength="60" placeholder="限输入5-60个字的标题" />
           </el-form-item>
         </el-col>
@@ -19,7 +20,7 @@
         <el-col :span="8">
           <el-form-item v-if="this.formObj.publishType != 2 && this.formObj.contentModuleId != 7" label="对应栏目：" prop="contentColumnId">
             <el-select v-model="formObj.contentColumnId" placeholder="请选择对应栏目">
-              <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label" :value="cc.value" />
+              <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label === '全部' ? cc.label : optionList[cc.typeUrl - 1] + '-' + cc.label" :value="cc.value" />
             </el-select>
           </el-form-item>
         </el-col>

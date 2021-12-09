@@ -64,7 +64,8 @@ export default {
         companyPositionId: '', // 会内职位
         license: '',
         companyIntroduction: '',
-        departmentId: ''
+        departmentId: '',
+        identityVOList:[]
       },
       memberPostOptions: [], // 会内职位选择列表
       bindTradeIds: [], // 已选择行业
@@ -563,6 +564,7 @@ export default {
     },
 
     save() {
+      console.log('identityVOList',this.formObj)
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.type === 'add') {

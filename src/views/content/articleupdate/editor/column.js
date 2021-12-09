@@ -27,6 +27,7 @@ export default {
     if (this.$route.params.activeName) {
       this.activeName = this.$route.params.activeName
     }
+    console.log('this.$route.params.articleObj',this.$route.params.articleObj)
     if (this.$route.params.articleObj !== undefined) {
       const article = this.$route.params.articleObj
       this.formObj['id'] = article.id

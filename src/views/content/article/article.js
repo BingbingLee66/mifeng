@@ -26,6 +26,11 @@ export default {
       },
       articleId: '',
       uploadIndex: 0,
+      optionList: [
+        '标签聚合页',
+        '商会必参',
+        '标签聚合页/商会必参'
+      ],
       rules: {
         title: [
           { required: true, message: '文章标题不能为空', trigger: 'blur' },
@@ -164,7 +169,8 @@ export default {
             'sourceId': dataObj.sourceId
           }
           if (dataObj.status === 4) {
-            this.formObj['publishTs'] = dataObj.publishTs
+            // this.formObj['publishTs'] = dataObj.publishTs
+            this.$set(this.formObj, 'publishTs', dataObj.publishTs)
           }
           this.getContentColumnType()
           this.$refs.ckeditor1.init()
