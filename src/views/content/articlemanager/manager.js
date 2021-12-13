@@ -74,7 +74,7 @@ export default {
     selectionChange() {
       let params = {
         'ckey': this.query.ckey,
-        'contentModuleId': this.query.contentModuleId
+        'contentModuleId': 3
       }
 
       // 判断当商会来源是全部时 清空栏目选中值
