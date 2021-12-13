@@ -224,7 +224,7 @@ export default {
         })
       } else if (this.activeName === '6') {
         getAboutChamberList(params).then(response => {
-          this.list = response.data.data
+          this.list = response.data.data.list
           this.listLoading = false
         })
       } else if (this.activeName === '8') {
