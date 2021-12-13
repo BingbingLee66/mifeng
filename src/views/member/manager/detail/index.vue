@@ -16,9 +16,9 @@
         <el-col :span="2" class="wx-col col-title">注册方式</el-col>
         <el-col :span="3" class="wx-col">
           <span v-if="member.registerType == 0">商会后台</span>
-          <span v-if="member.registerType == 1">微信小程序</span>
-          <span v-if="member.registerType == 2">商会邀请</span>
-         <span v-if="member.registerType == 3 || member.registerType == 4">会员邀请</span> 
+          <span v-else-if="member.registerType == 1">微信小程序</span>
+          <span v-else-if="member.registerType == 2">商会邀请</span>
+         <span v-else-if="member.registerType == 3 || member.registerType == 4">会员邀请</span> 
           <span v-else>空</span>
         </el-col>
       </el-row>
