@@ -3,9 +3,11 @@ import { getMemberOptions } from '@/api/member/post'
 import { getTradeOptions } from '@/api/system/trade'
 import { exportJson2Excel } from '@/utils/exportExcel'
 import { getDepartmentList } from '@/api/org-structure/org'
-
+import { downLoad } from '@/directive/down-load-url'
+import { getToken } from '@/utils/auth'
 export default {
   name: '商/协会成员',
+  directives: { downLoad },
   data() {
     var checkPass = (rule, value, callback) => {
       if (!/^\w*$/.test(value)) {
@@ -15,6 +17,7 @@ export default {
       }
     }
     return {
+      exportExcelModel: 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/static/%E5%95%86%E4%BC%9A%E6%88%90%E5%91%98%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx',
       departmentOptions: [],
       memberPostOptions: [],
       tradeOptions: [],
@@ -50,7 +53,16 @@ export default {
           { required: true, message: '账号密码不能为空', trigger: 'blur' },
           { validator: checkPass, trigger: 'change' }
         ]
-      }
+      },
+      visible: false,
+      importUrl: 'http://localhost:12012/ecservice/ec/member/import-excel',
+      execelDate: [],
+      importQuery: {
+        ckey: ''
+      },
+      uploadHeaders: {
+        'access-token': ''
+      },
     }
   },
   computed: {
@@ -68,6 +80,8 @@ export default {
     this.getTradeType() // 获取行业数据
     this.getdepartmentType() // 获取部门数据
     this.init()
+    this.importQuery.ckey = this.$store.getters.ckey
+    this.uploadHeaders['access-token'] = getToken() // 获取token
   },
   methods: {
     has(tabName, actionName) {
@@ -219,27 +233,30 @@ export default {
         let new_data = {
           '用户名': data.uname,
           '入会类型': data.type === 0 ? '个人' : '企业',
-          '联系信息': data.type === 0 ?'【会员姓名】'+data.name+'\n'+'【会员手机号】'+data.phone: '【企业/团体名称】'+data.companyName+'\n【联系人姓名】'+data.contactName+'\n【联系人手机号】'+data.contactPhone,
-          '入会时间': '【入会时间】'+data.joinedTs+'\n【会内职位】'+data.postName+'\n【部门】'+data.departmentName,
+          '联系信息': data.type === 0 ? '【会员姓名】' + data.name + '\n' + '【会员手机号】' + data.phone : '【企业/团体名称】' + data.companyName + '\n【联系人姓名】' + data.contactName + '\n【联系人手机号】' + data.contactPhone,
+          '入会时间': '【入会时间】' + data.joinedTs + '\n【会内职位】' + data.postName + '\n【部门】' + data.departmentName,
           '账号状态': data.status === 1 ? '正常' : '已冻结',
           '激活状态': data.activatedState === 1 ? '已激活' : '未激活',
         }
-        console.log('data.identityVOList',data.identityVOList)
-        if(data.identityVOList.length>0){
-          console.log('data.identityVOList',data.identityVOList)
-          let str='';
+        console.log('data.identityVOList', data.identityVOList)
+        if (data.identityVOList.length > 0) {
+          console.log('data.identityVOList', data.identityVOList)
+          let str = ''
           data.identityVOList.forEach(element => {
-            if(element.type==1){
-              str=str+'【企业】'+element.unit
-            }else {
-              str=str+'【机构】'+element.unit
+            if (element.type === 1) {
+              str = str + '【企业】' + element.unit
+            } else {
+              str = str + '【机构】' + element.unit
             }
-            str=str+'【职务】'+element.post
-          });
-          new_data['身份信息']=str;
+            str = str + '【职务】' + element.post
+          })
+          new_data['身份信息'] = str
         }
         this.selectionDatas.push(new_data)
       }
+    },
+    importMethod(response, file, fileList) {
+      console.log('fewfwf')
     },
     exportExcel(e) {
       if (this.selectionDatas.length === 0) {
@@ -250,6 +267,13 @@ export default {
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       exportJson2Excel('商会会员', this.selectionDatas)
+    },
+    // 导入excel表格打开弹窗
+    openVisible() {
+      this.visible = true
+    },
+    closeVisible() {
+      this.visible = false
     },
     openTransfer(row) {
       this.formObj = row

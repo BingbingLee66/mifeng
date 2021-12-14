@@ -115,6 +115,16 @@
         @click="exportExcel($event)"
         >导表
       </el-button>
+      <el-button
+        type="primary"
+        v-downLoad='exportExcelModel'
+      >下载导入模板
+      </el-button>
+      <el-button
+        type="primary"
+        @click="openVisible()"
+      >导入
+      </el-button>
     </div>
     <div style="margin-bottom: 20px">
       <el-table
@@ -174,7 +184,7 @@
         <el-table-column label="身份信息" width="200px">
           <template slot-scope="scope">
             <div v-if="scope.row.identityVOList && scope.row.identityVOList.length > 0">
-        
+
               <div
                 v-for="(item, index) in scope.row.identityVOList"
                 :key="index"
@@ -290,6 +300,37 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="数据导入"
+      :visible.sync="visible"
+      width="600px"
+    >
+        <div style="margin-left: 50px;margin-top: -25px;">
+          <span class="excelSpan" style="font-size: 20px;margin-left: 100px" >导入说明</span>
+          <span class="excelSpan">1、请勿增加、删除、修改表格中的字段</span>
+          <span class="excelSpan">2、其他字段多次导入数据会进行覆盖</span>
+        </div>
+        <div style="margin-left: 50px">
+          <el-upload
+            class="upload-demo"
+            :multiple="false"
+            :data="importQuery"
+            :show-file-list="false"
+            :headers="uploadHeaders"
+            :on-success="importMethod"
+            :action="importUrl"
+            >
+            <span style="width: 30px">导入文件：</span><el-button style="width: 200px"><i class="el-icon-upload" style="margin-right: 20px;"></i>点击上传</el-button>
+            <div slot="tip" class="el-upload__tip"><span style="width: 30px;margin-left: 70px;"></span>支持扩展名：xsl、xslx</div>
+          </el-upload>
+<!--          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em><div class="el-upload__tip" slot="tip">支持扩展名：xsl、xslx</div></div>-->
+<!--            <span  style="font-size: 15px;">导入文件：</span>
+            <el-button size="small" type="primary"><i class="el-icon-upload" style="margin-right: 20px;"></i>上传文件</el-button>
+            <div slot="tip" class="el-upload__tip">支持扩展名：xsl、xslx</div>-->
+        </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -309,5 +350,19 @@
       width: 184px;
     }
   }
+}
+.el-dialog__header{
+  background-color: #cfbbbb38;
+}
+.excelSpan{
+  margin-left: 300px;
+  word-break:normal;
+  width:auto;
+  display:block;
+  white-space:pre-wrap;
+  word-wrap : break-word ;
+  overflow: hidden ;
+  font-size: 15px;
+  margin: 12px;
 }
 </style>
