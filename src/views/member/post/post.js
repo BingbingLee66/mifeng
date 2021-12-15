@@ -1,4 +1,4 @@
-import { getList, save, updateStatus, del } from '@/api/member/post'
+import { getList, save, updateStatus, del,postNameExistValid } from '@/api/member/post'
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -63,13 +63,26 @@ export default {
     // input标签失焦点 校验职位是否重复
     postNameVaild(rule, value, callback) {
       // 如果没有输入任何东西，不调用接口
+      if (value === '') {
+        callback(new Error('职位名称不能为空'))
+        return false
+      }
       if (!value) {
         callback(new Error())
         return false
       }
       // 职位名称查重
-      callback()
-      return true
+      let params = {
+        ckey: this.$store.getters.ckey,
+        postName: this.formObj.postName
+      }
+      postNameExistValid(params).then(response => {
+        if (response.state === 1) {
+          callback()
+        } else {
+          return callback(new Error(response.msg))
+        }
+      })
     },
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
