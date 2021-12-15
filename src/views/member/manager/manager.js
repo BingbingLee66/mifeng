@@ -256,7 +256,7 @@ export default {
       }
     },
     successImport(response, file, fileList) {
-      this.execelDate = response.data
+      this.execelDate = response
     },
     exportExcel(e) {
       if (this.selectionDatas.length === 0) {

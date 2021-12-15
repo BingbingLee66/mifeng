@@ -330,12 +330,12 @@
             <el-button size="small" type="primary"><i class="el-icon-upload" style="margin-right: 20px;"></i>上传文件</el-button>
             <div slot="tip" class="el-upload__tip">支持扩展名：xsl、xslx</div>-->
         </div>
-      <div class="tableTitle" v-if="execelDate.total"></div>
-      <div style="margin-left: 50px;" v-if="execelDate.total">
-        <div>导入结果：导入成功 {{execelDate.successCount}} 条记录,导入失败 {{execelDate.failureCount}} 条记录</div>
+      <div class="tableTitle" v-if="execelDate.state"></div>
+      <div style="margin-left: 50px;" v-if="execelDate.state === 1">
+        <div>导入结果：导入成功 {{execelDate.data.successCount}} 条记录,导入失败 {{execelDate.data.failureCount}} 条记录</div>
         <div style="margin-top: 10px;margin-bottom: 10px;">导入失败详情：</div>
         <el-table
-          :data="execelDate.failureReasonList"
+          :data="execelDate.data.failureReasonList"
           border
           style="width: 100%">
           <el-table-column
@@ -349,6 +349,9 @@
             >
           </el-table-column>
         </el-table>
+      </div>
+      <div style="margin-left: 50px;" v-else>
+        <div>{{execelDate.msg}} </div>
       </div>
     </el-dialog>
   </div>
