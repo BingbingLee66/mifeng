@@ -304,7 +304,6 @@
     <el-dialog
       title="数据导入"
       :visible.sync="visible"
-      :close="closeVisible()"
       width="500px"
     >
         <div style="margin-left: 50px;margin-top: -25px;">
