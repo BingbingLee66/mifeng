@@ -2,7 +2,7 @@ import { getList, save, updateStatus, del } from '@/api/member/post'
 // import { mapGetters } from 'vuex'
 
 export default {
-  data () {
+  data() {
     var checkFee = (rule, value, callback) => {
       if (!/^[0]$|^(([1-9]\d*)|[0]\.\d{1,2}|([1-9]\d*)\.\d{1,2})$/.test(value)) {
         return callback(new Error('可以为0或最多两位小数的正数'))
@@ -29,9 +29,10 @@ export default {
       listLoading: false,
       type: 'add',
       rules: {
-        postName: [
-          { required: true, message: '职业名称不能为空', trigger: 'blur' }
-        ],
+        // postName: [
+        //   { required: true, message: '排序不能为空', trigger: 'blur' },
+        //   { validator: postNameVaild, trigger: 'blur' }
+        // ],
         memberFee: [
           { validator: checkFee, trigger: 'change' }
         ],
@@ -43,8 +44,8 @@ export default {
     }
   },
   computed: {
-    memberFeeCp () {
-      return function (memberFee) {
+    memberFeeCp() {
+      return function(memberFee) {
         let result = '￥' + memberFee
         if (memberFee >= 100000000) {
           result = '￥' + (memberFee / 100000000) + '亿'
@@ -55,20 +56,31 @@ export default {
       }
     }
   },
-  created () {
+  created() {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    // input标签失焦点 校验职位是否重复
+    postNameVaild(rule, value, callback) {
+      // 如果没有输入任何东西，不调用接口
+      if (!value) {
+        callback(new Error())
+        return false
+      }
+      // 职位名称查重
+      callback()
+      return true
+    },
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    init () {
+    init() {
       this.fetchData()
     },
-    fetchData () {
+    fetchData() {
       this.listLoading = true
       let params = {
         ckey: this.$store.getters.ckey
@@ -78,7 +90,7 @@ export default {
         this.listLoading = false
       })
     },
-    add (e) {
+    add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.formObj = {
         'ckey': this.$store.getters.ckey,
@@ -89,7 +101,7 @@ export default {
       this.type = 'add'
       this.visible = true
     },
-    edit (e, row) {
+    edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.type = 'edit'
       this.formObj = {
@@ -101,7 +113,7 @@ export default {
       }
       this.visible = true
     },
-    save () {
+    save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           save(this.formObj).then(response => {
@@ -117,7 +129,7 @@ export default {
         }
       })
     },
-    del (row) {
+    del(row) {
       this.$confirm('', '确定删除？', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
@@ -139,7 +151,7 @@ export default {
         })
       })
     },
-    updateStatus (row) {
+    updateStatus(row) {
       let params = {
         'id': row.id,
         'action': row.status === 0 ? 'active' : 'notactive'

@@ -68,8 +68,8 @@
       <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
         <el-row>
           <el-col :offset="2" :span="20">
-            <el-form-item label="职位名称：" prop="postName">
-              <el-input v-model="formObj.postName" maxLength="100"></el-input>
+            <el-form-item label="职位名称：" prop="postName" :rules="{required: true, message: '职位名称不能为空',validator: postNameVaild, trigger: 'blur'}">
+              <el-input v-model="formObj.postName" maxLength="100" ></el-input>
             </el-form-item>
           </el-col>
         </el-row>

@@ -117,7 +117,7 @@
       </el-button>
       <el-button
         type="primary"
-        v-down-load='exportExcelModel'
+        v-downLoad='exportExcelModel'
       >下载导入模板
       </el-button>
       <el-button

@@ -1,7 +1,7 @@
 import downLoad from './downLoad'
 
 const install = function(Vue) {
-  Vue.directive('downLoad', downLoad)
+  Vue.directive('downLoadUrl', downLoad)
 }
 
 downLoad.install = install
