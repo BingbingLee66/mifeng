@@ -117,12 +117,12 @@
       </el-button>
       <el-button
         type="primary"
-        v-downLoad='exportExcelModel'
+        v-down-load='exportExcelModel'
       >下载导入模板
       </el-button>
       <el-button
         type="primary"
-        @click="openVisible()"
+        @click="openVisible"
       >导入
       </el-button>
     </div>
@@ -304,21 +304,22 @@
     <el-dialog
       title="数据导入"
       :visible.sync="visible"
-      width="600px"
+      :close="closeVisible()"
+      width="500px"
     >
         <div style="margin-left: 50px;margin-top: -25px;">
           <span class="excelSpan" style="font-size: 20px;margin-left: 100px" >导入说明</span>
           <span class="excelSpan">1、请勿增加、删除、修改表格中的字段</span>
           <span class="excelSpan">2、其他字段多次导入数据会进行覆盖</span>
         </div>
-        <div style="margin-left: 50px">
+        <div style="margin-left: 50px" v-if="execelDate">
           <el-upload
             class="upload-demo"
             :multiple="false"
             :data="importQuery"
             :show-file-list="false"
             :headers="uploadHeaders"
-            :on-success="importMethod"
+            :on-success="successImport"
             :action="importUrl"
             >
             <span style="width: 30px">导入文件：</span><el-button style="width: 200px"><i class="el-icon-upload" style="margin-right: 20px;"></i>点击上传</el-button>
@@ -330,6 +331,26 @@
             <el-button size="small" type="primary"><i class="el-icon-upload" style="margin-right: 20px;"></i>上传文件</el-button>
             <div slot="tip" class="el-upload__tip">支持扩展名：xsl、xslx</div>-->
         </div>
+      <div class="tableTitle" v-if="execelDate.total"></div>
+      <div style="margin-left: 50px;" v-if="execelDate.total">
+        <div>导入结果：导入成功 {{execelDate.successCount}} 条记录,导入失败 {{execelDate.failureCount}} 条记录</div>
+        <div style="margin-top: 10px;margin-bottom: 10px;">导入失败详情：</div>
+        <el-table
+          :data="execelDate.failureReasonList"
+          border
+          style="width: 100%">
+          <el-table-column
+            prop="row"
+            label="行标(表头不算在内)"
+            >
+          </el-table-column>
+          <el-table-column
+            prop="reason"
+            label="失败原因"
+            >
+          </el-table-column>
+        </el-table>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -362,7 +383,24 @@
   white-space:pre-wrap;
   word-wrap : break-word ;
   overflow: hidden ;
-  font-size: 15px;
+  font-size: 7px;
   margin: 12px;
+}
+.tableTitle {
+  position: relative;
+  margin: 17px auto;
+  width: 100%;
+  height: 1px;
+  background-color: #d4d4d4;
+  text-align: center;
+  font-size: 16px;
+  color: rgba(101, 101, 101, 1);
+}
+.midText {
+  position: absolute;
+  left: 50%;
+  background-color: #ffffff;
+  padding: 0 15px;
+  transform: translateX(-50%) translateY(-50%);
 }
 </style>

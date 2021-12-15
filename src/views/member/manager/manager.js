@@ -56,7 +56,7 @@ export default {
       },
       visible: false,
       importUrl: 'http://localhost:12012/ecservice/ec/member/import-excel',
-      execelDate: [],
+      execelDate: {},
       importQuery: {
         ckey: ''
       },
@@ -255,8 +255,8 @@ export default {
         this.selectionDatas.push(new_data)
       }
     },
-    importMethod(response, file, fileList) {
-      console.log('fewfwf')
+    successImport(response, file, fileList) {
+      this.execelDate = response.data
     },
     exportExcel(e) {
       if (this.selectionDatas.length === 0) {
@@ -274,6 +274,7 @@ export default {
     },
     closeVisible() {
       this.visible = false
+      this.execelDate = {}
     },
     openTransfer(row) {
       this.formObj = row
