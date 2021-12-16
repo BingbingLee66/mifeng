@@ -9,6 +9,7 @@ import {
   updateCommentStatus
 } from '@/api/content/article'
 import moment from 'moment'
+import { getChamberOptions } from '@/api/finance/finance'
 // import {getCollectList, getRecycleList} from "@/api/content/crawler";
 
 export default {
@@ -19,10 +20,12 @@ export default {
       rejectVisible: false,
       batchRejectVisible: false,
       query: {
-        publishType: -1,
+        publishType: 1,
+        ckey: '',
         publishTimeType: 4,
         auditStatus: 0
       },
+      chamberOptions: [],
       queryComment: {
         commentKey: '', // 评论关键字
         uname: '', // 发布者
@@ -50,6 +53,7 @@ export default {
   computed: {},
 
   created() {
+
   },
 
   mounted() {
@@ -57,6 +61,7 @@ export default {
     if (activename) {
       this.activeName = activename
     }
+    this.chamberList()
     this.init()
   },
 
@@ -73,13 +78,22 @@ export default {
       })
     },
 
+    // 商会列表
+    chamberList() {
+      getChamberOptions().then(response => {
+        this.chamberOptions = response.data.data
+        this.chamberOptions.unshift({ label: '全部', value: '' }, { label: '凯迪云商会', value: 'kaidiyun' })
+        this.query.ckey = this.chamberOptions[0].value
+      })
+    },
     init() {
       this.selectionDatas = []
       this.list = []
       this.query = {
+        ckey: this.query.ckey,
         publishType: -1,
-        publishTimeType: 4,
-        auditStatus: 0
+        publishTimeType: 4, // 1-24h 2-3d 3-7d 4-1m
+        auditStatus: 0 // 审核  0未审核 1审核通过 2审核不通过
       }
       this.currentpage = 1
       this.limit = 10
@@ -88,8 +102,6 @@ export default {
     },
 
     handleClick(e) {
-      console.log(e)
-      console.log(this.activeName, 666)
       window.localStorage.setItem('activenamec', this.activeName)
       this.init()
     },
@@ -110,26 +122,34 @@ export default {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       this.listLoading = true
-      const params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'publishType': this.query.publishType,
-        'publishTimeType': this.query.publishTimeType,
-        'auditStatus': this.query.auditStatus
-      }
-      if (this.activeName === '1') {
+      if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
+        const params = {
+          'pageSize': this.limit,
+          'page': this.currentpage,
+          'ckey': this.query.ckey,
+          'publishType': this.activeName,
+          'publishTimeType': this.query.publishTimeType,
+          'auditStatus': this.query.auditStatus,
+        }
         await getAuditList(params).then(response => {
           this.list = response.data.data.list
           this.total = response.data.data.totalRows
           this.listLoading = false
         })
-      } else if (this.activeName === '2') {
+      } else if (this.activeName === '4') {
+        const params = {
+          'pageSize': this.limit,
+          'page': this.currentpage,
+          'publishType': this.query.publishType,
+          'publishTimeType': this.query.publishTimeType,
+          'auditStatus': this.query.auditStatus
+        }
         await getCompanyAuditList(params).then(response => {
           this.list = response.data.page.list
           this.total = response.data.page.totalRows
           this.listLoading = false
         })
-      } else if (this.activeName === '3') {
+      } else if (this.activeName === '5') {
         this.queryComment['pageSize'] = this.limit
         this.queryComment['page'] = this.currentpage
         if (this.queryDate) {
