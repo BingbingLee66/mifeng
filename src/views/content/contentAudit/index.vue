@@ -227,12 +227,14 @@
       <div class="d-preview-wrap">
         <div class="d-preview-area">
           <div class="d-article-title">
-            <span v-if="activeName == '1' || activeName == '3'">{{ detailObj.title }}</span>
+            <span v-if="activeName == '1' || activeName == '2'  || activeName == '3'  || activeName == '5'">{{ detailObj.title }}</span>
             <span v-else>{{
               detailObj.contentType === 1 ? '企业简介' : detailObj.contentType === 2 ? '发展历程' : detailObj.contentType === 3 ? '荣誉资质' : '联系我们'
             }}</span>
           </div>
-          <div v-if=" activeName== '1' || activeName == '3'" class="d-article-content" v-html="detailObj.contentHtml" />
+          <!--    视频渲染      -->
+          <div v-if="activeName == '1' || activeName == '2'  || activeName == '3'" class="detail-dialog-video" id="videoContent"></div>
+          <div v-if="activeName == '1' || activeName == '2'  || activeName == '3'  || activeName == '5'" class="d-article-content" v-html="detailObj.contentHtml" />
           <div v-else class="d-article-content" v-html="detailObj.content" />
         </div>
         <div v-if="detailObj.auditStatus===0" style="height:50px;">
@@ -247,11 +249,11 @@
         </div>
         <div v-else style="height:150px;">
           <el-col :offset="10" :span="8">
-            <div v-if="activeName !== '3'">
+            <div v-if="activeName !== '5'">
               <p>状态：{{ detailObj.auditStatus === 1 ? '审核通过' : detailObj.auditStatus === 2 ? '审核不通过' : '' }}</p>
               <p v-if="detailObj.auditStatus===2">
-                不通过原因：{{ activeName == '1' ? detailObj.auditRemark : detailObj.rejectRemark }}</p>
-              <p>操作人：{{ activeName == '1' ? detailObj.operator : detailObj.auditor }}</p>
+                不通过原因：{{ activeName == '1' || activeName == '2'  || activeName == '3'  ? detailObj.auditRemark : detailObj.rejectRemark }}</p>
+              <p>操作人：{{ activeName == '1' || activeName == '2'  || activeName == '3'  ? detailObj.operator : detailObj.auditor }}</p>
               <p>操作时间：{{ detailObj.updatedTs }}</p>
             </div>
             <el-button type="success" @click="visible=false">

@@ -53,7 +53,7 @@ export default {
   computed: {},
 
   created() {
-
+    this.getVideoSts()
   },
 
   mounted() {
@@ -85,6 +85,22 @@ export default {
         this.chamberOptions.unshift({ label: '全部', value: '' }, { label: '凯迪云商会', value: 'kaidiyun' })
         this.query.ckey = this.chamberOptions[0].value
       })
+    },
+    // 获取视频凭证
+    async getVideoSts() {
+      let { data: res } = await this.$api.getVideoSts()
+      if (res.code !== 200) return this.$message.error('获取视频凭证失败')
+      this.videoKey = res.data
+      window.localStorage.set('videosts', this.videoKey)
+    },
+    /**
+     * 渲染视频
+     */
+    async renderVideo() {
+      let sts = window.localStorage.get('videosts')
+      setTimeout(() => {
+        this.videoPlayer = this.$createPlayer('videoContent', { ...sts }, this.videoDetailInfo.vid, this.videoDetailInfo.cover, '535px')
+      }, 500)
     },
     init() {
       this.selectionDatas = []
@@ -186,21 +202,21 @@ export default {
       const params = {
         id: this.selectId
       }
-      if (this.activeName === '1') {
+      if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
         getDetail(params).then(response => {
           this.detailObj = response.data.dtl
         }).catch(error => {
           console.log(error)
         })
         this.visible = true
-      } else if (this.activeName === '2') {
+      } else if (this.activeName === '4') {
         getCompanyDetail(params).then(res => {
           this.detailObj = res.data.companyAudit
         }).catch(error => {
           console.log(error)
         })
         this.visible = true
-      } else if (this.activeName === '3') {
+      } else if (this.activeName === '5') {
         this.detailObj['title'] = '评论详情'
         this.detailObj['contentHtml'] = row.commentContent
         this.visible = true
