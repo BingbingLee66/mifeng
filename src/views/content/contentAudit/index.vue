@@ -223,7 +223,7 @@
     <div style="margin-top: 20px">
       <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
-    <el-dialog title="" :visible.sync="visible" width="80%">
+    <el-dialog title="" :visible.sync="visible" width="80%" @close="closeDia">
       <div class="d-preview-wrap">
         <div class="d-preview-area">
           <div class="d-article-title">
@@ -233,16 +233,16 @@
             }}</span>
           </div>
           <!--    视频渲染      -->
-          <div v-if="activeName == '1' || activeName == '2'  || activeName == '3'" class="detail-dialog-video" id="videoContent"></div>
+          <div v-if="(activeName == '1' || activeName == '2'  || activeName == '3') && detailObj.contentType === 2" class="detail-dialog-video" id="videoContent"></div>
           <div v-if="activeName == '1' || activeName == '2'  || activeName == '3'  || activeName == '5'" class="d-article-content" v-html="detailObj.contentHtml" />
           <div v-else class="d-article-content" v-html="detailObj.content" />
         </div>
         <div v-if="detailObj.auditStatus===0" style="height:50px;">
           <el-col :offset="10" :span="8">
-            <el-button v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
+            <el-button :disabled=vabled v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
               通过
             </el-button>
-            <el-button v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
+            <el-button :disabled=vabled v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
               不通过
             </el-button>
           </el-col>

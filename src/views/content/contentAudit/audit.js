@@ -10,6 +10,9 @@ import {
 } from '@/api/content/article'
 import moment from 'moment'
 import { getChamberOptions } from '@/api/finance/finance'
+import { getSts } from '@/api/vod/vod'
+import storage from '@/utils/saveLocal'
+import fa from "element-ui/src/locale/lang/fa";
 // import {getCollectList, getRecycleList} from "@/api/content/crawler";
 
 export default {
@@ -41,19 +44,33 @@ export default {
       selectionDatas: [],
       detailObj: {
         title: '',
-        contentHtml: ''
+        contentHtml: '',
+        vid: ''
       },
       selectId: '',
       remark: '内容违规',
       OffVisible: false,
-      delVisible: false
+      delVisible: false,
+      // 视频相关
+      videoKey: [],
+      // videoKey: {
+      //   accessKeyId: '',
+      //   accessKeySecret: '',
+      //   securityToken: '',
+      //   region: '',
+      // },
+      // 是否禁用
+      vabled: false,
+      videoDetailInfo: {},
+      detailDialogVisible: false,
+      videoPlayer: null,
+      videoPlayerMap: {},
     }
   },
 
   computed: {},
 
   created() {
-    this.getVideoSts()
   },
 
   mounted() {
@@ -87,20 +104,36 @@ export default {
       })
     },
     // 获取视频凭证
-    async getVideoSts() {
-      let { data: res } = await this.$api.getVideoSts()
-      if (res.code !== 200) return this.$message.error('获取视频凭证失败')
-      this.videoKey = res.data
-      window.localStorage.set('videosts', this.videoKey)
+    getVideoSts() {
+      getSts().then(response => {
+        // let { data: res } = response
+        if (response.code !== 200) return this.$message.error('获取视频凭证失败')
+        this.videoKey = response.data
+        console.log('videoKey' + this.videoKey)
+        // storage.setJson('videosts', this.videoKey)
+      })
+    },
+
+    // 关闭视频播放弹窗
+    closeDia() {
+      if ((this.activeName === '1' || this.activeName === '2' || this.activeName === '3') && this.detailObj.contentType === 2) {
+        this.videoPlayer.dispose()
+      }
+      this.visible = false
     },
     /**
      * 渲染视频
      */
-    async renderVideo() {
-      let sts = window.localStorage.get('videosts')
-      setTimeout(() => {
-        this.videoPlayer = this.$createPlayer('videoContent', { ...sts }, this.videoDetailInfo.vid, this.videoDetailInfo.cover, '535px')
-      }, 500)
+    renderVideo() {
+      getSts().then(response => {
+        this.videoKey = response.data
+        // 存在视频必须看完视频后才能点击审核
+        this.vabled = true
+        this.videoPlayer = this.$createPlayer('videoContent', this.videoKey.accessKeyId, this.videoKey.accessKeySecret, this.videoKey.securityToken, this.videoKey.region, this.detailObj.vid, '535px')
+        this.videoPlayer.on('ended', (e) => {
+          this.vabled = false
+        })
+      })
     },
     init() {
       this.selectionDatas = []
@@ -205,6 +238,10 @@ export default {
       if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
         getDetail(params).then(response => {
           this.detailObj = response.data.dtl
+          // 视频是否存在 渲染操作
+          if (this.detailObj.contentType === 2) {
+            this.renderVideo()
+          }
         }).catch(error => {
           console.log(error)
         })
