@@ -11,9 +11,6 @@ import {
 import moment from 'moment'
 import { getChamberOptions } from '@/api/finance/finance'
 import { getSts } from '@/api/vod/vod'
-import storage from '@/utils/saveLocal'
-import fa from "element-ui/src/locale/lang/fa";
-// import {getCollectList, getRecycleList} from "@/api/content/crawler";
 
 export default {
   data() {

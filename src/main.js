@@ -69,15 +69,6 @@ Vue.mixin({
   methods: {
     // 创建视频
     $createPlayer(id, accessKeyId, accessKeySecret, securityToken, region, vid, height = '300px') {
-      // key.accessKeyId = decrypt(key.accessKeyId)
-      // key.accessKeySecret = decrypt(key.accessKeySecret)
-      // key.securityToken = decrypt(key.securityToken)
-      // key.region = decrypt(key.region)
-
-      // key.accessKeyId = 'STS.NTxMGwLaaQc1LiFZq1Mj8wLYt'
-      // key.accessKeySecret = '79rfCpPmvVWCUsefjZHJytMGRuDtt3ZjVAmJHYR4mdWJ'
-      // key.securityToken = 'CAISwAJ1q6Ft5B2yfSjIr5fNBv3Dob5A5qHaTk/3vnFkQeUUmInyljz2IHtFdHRqCeEfsPkzlGFW7v0Zlq5tTJNfQkjJNV+kPhDjtlHPWZHInuDox01t6vT8a0nxZjf/2MjNGZKbKPrWZvaqbX3diyZ32sGUXD6+XlujQ/Lr5IBgYoZVJH7aCwBLH9BLPABvhdYHPH/KT5aXPwXtn3DbATgD2GM++0IdhI27xsqDkG286HTx1u4SoanoP5GgdLMCFZxjUtCzroMUG63ay3wSkW8okp17l6tZ4zzKk8iACl1KmXW8PvHT78dkIX0SBMF4OdYd96Gizqck4rSJyN6vlU0VB4wPDXSDHrLH6dDfBeakOuw+cbvGIHnX2riNTMKu4lN5OyJKbV0XJ4pwdCcrUgZOVDDWJ6ji4lfObxc99R1pMW/1uxqAAVrBc4jf86/IOa6K7WT1wY+qTFs9Nm36E3gfpxjE8xt61D+rbXjom/ZenfIl1Z9nOBPcjT/OsJNPkI5kl/p1JSS9yOmZl3gL2GzcirOZ3OcGH8XYXTk9V+5IWd+iyFfpDI/C6VffaC9XjkbwhwzXulrOHrkOswlC4U4wiREbPsV4'
-      // key.region = 'cn-shenzhen'
       console.log(accessKeyId)
       console.log(accessKeySecret)
       console.log(securityToken)
