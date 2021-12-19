@@ -3,11 +3,31 @@ import { getMemberOptions } from '@/api/member/post'
 import { getTradeOptions } from '@/api/system/trade'
 import { exportJson2Excel } from '@/utils/exportExcel'
 import { getDepartmentList } from '@/api/org-structure/org'
-import { downLoad } from '@/directive/down-load-url'
+// import { downLoad } from '@/directive/down-load-url'
 import { getToken } from '@/utils/auth'
 export default {
   name: '商/协会成员',
-  directives: { downLoad },
+  // directives: { downLoad },
+  directives: {
+    downLoad: {
+      inserted: (el, binding) => {
+        el.style.cssText = 'cursor:pointer;'
+        el.addEventListener('click', () => {
+          console.log(binding.value)
+          let link = document.createElement('a')
+          let url = binding.value
+          fetch(url).then(res => res.blob()).then(blob => {
+            link.href = URL.createObjectURL(blob)
+            console.log(link.href)
+            link.download = ''
+            document.body.appendChild(link)
+            link.click()
+          })
+        })
+      }
+    }
+  },
+
   data() {
     var checkPass = (rule, value, callback) => {
       if (!/^\w*$/.test(value)) {
@@ -17,7 +37,7 @@ export default {
       }
     }
     return {
-      exportExcelModel: 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/static/%E5%95%86%E4%BC%9A%E6%88%90%E5%91%98%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx',
+      exportExcelModel: 'http://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/static/%E5%95%86%E4%BC%9A%E6%88%90%E5%91%98%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx',
       departmentOptions: [],
       memberPostOptions: [],
       tradeOptions: [],
