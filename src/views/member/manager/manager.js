@@ -5,6 +5,7 @@ import { exportJson2Excel } from '@/utils/exportExcel'
 import { getDepartmentList } from '@/api/org-structure/org'
 // import { downLoad } from '@/directive/down-load-url'
 import { getToken } from '@/utils/auth'
+const baseUrl = process.env.VUE_APP_BASE_API
 export default {
   name: '商/协会成员',
   // directives: { downLoad },
@@ -75,7 +76,7 @@ export default {
         ]
       },
       visible: false,
-      importUrl: 'http://localhost:12012/ecservice/ec/member/import-excel',
+      importUrl: '',
       execelDate: {},
       importQuery: {
         ckey: ''
@@ -100,6 +101,7 @@ export default {
     this.getTradeType() // 获取行业数据
     this.getdepartmentType() // 获取部门数据
     this.init()
+    this.importUrl = baseUrl + '/ec/member/import-excel'
     this.importQuery.ckey = this.$store.getters.ckey
     this.uploadHeaders['access-token'] = getToken() // 获取token
   },
