@@ -332,7 +332,7 @@
         </div>
       <div class="tableTitle" v-if="execelDate.state"></div>
       <div style="margin-left: 50px;" v-if="execelDate.state === 1">
-        <div>导入结果：导入成功 {{execelDate.data.successCount}} 条记录,导入失败 {{execelDate.data.failureCount}} 条记录</div>
+        <div>导入结果：导入成功 <span style="color: red">{{execelDate.data.successCount}}</span> 条记录,导入失败 <span style="color: red">{{execelDate.data.failureCount}}</span> 条记录</div>
         <div style="margin-top: 10px;margin-bottom: 10px;">导入失败详情：</div>
         <el-table
           :data="execelDate.data.failureReasonList"
