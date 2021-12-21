@@ -138,7 +138,7 @@
     <div v-if="activeName == '1' || activeName == '2' || activeName == '3' || activeName == '4'">
       <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
         <!-- <el-table-column type="selection" width="55px"></el-table-column> -->
-        <el-table-column label="标题">
+        <el-table-column label="标题"  v-if="activeName == '1'  || activeName == '3'">
           <template slot-scope="scope">
             <span v-if="activeName == '1' || activeName == '2' || activeName == '3'">
               {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
@@ -148,6 +148,12 @@
                 scope.row.contentType === 1 ? '企业简介' : scope.row.contentType === 2 ? '发展历程' : scope.row.contentType === 3 ? '荣誉资质' : '联系我们'
               }}
             </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="内容"  v-if="activeName == '2'" show-overflow-tooltip="true">
+          <template slot-scope="scope">
+              <span class="myspan" v-html="scope.row.contentHtml"></span>
+<!--            <div v-html="$options.filters.ellipsis(scope.row.contentHtml )"></div>-->
           </template>
         </el-table-column>
         <el-table-column label="来源商会">
@@ -376,5 +382,12 @@
   .el-form-item__content {
     width: 280px;
   }
+}
+.myspan {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
 }
 </style>

@@ -69,7 +69,6 @@ export default {
 
   created() {
   },
-
   mounted() {
     const activename = window.localStorage.getItem('activenamec')
     if (activename) {
