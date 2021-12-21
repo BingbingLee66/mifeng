@@ -148,12 +148,12 @@ Vue.mixin({
             x: 10,
             y: 7
           }, // 时间线
-          // {
-          //   name: 'fullScreenButton',
-          //   align: 'tr',
-          //   x: 10,
-          //   y: 12
-          // }, // 全屏按钮按钮
+          {
+            name: 'fullScreenButton',
+            align: 'tr',
+            x: 10,
+            y: 12
+          }, // 全屏按钮按钮
           // {name:"subtitle", align:"tr",x:5, y:12},                // 字幕
           // {name:"setting", align:"tr",x:15, y:12},                // 设置
           {
