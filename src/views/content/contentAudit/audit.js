@@ -372,7 +372,7 @@ export default {
     reject() {
       const ids = []
       ids.push(this.selectId)
-      if (this.activeName === '1') {
+      if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
         const params = {
           'articleIds': ids,
           'auditStatus': 2,
