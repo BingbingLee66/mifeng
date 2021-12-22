@@ -69,11 +69,6 @@ Vue.mixin({
   methods: {
     // 创建视频
     $createPlayer(id, accessKeyId, accessKeySecret, securityToken, region, vid, height = '300px') {
-      console.log(accessKeyId)
-      console.log(accessKeySecret)
-      console.log(securityToken)
-      console.log(region)
-      console.log(vid)
       return new Aliplayer({
         id,
         autoplay: false,
