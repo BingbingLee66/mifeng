@@ -150,7 +150,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="内容"  v-if="activeName == '2'" show-overflow-tooltip="true">
+        <el-table-column label="内容"  v-if="activeName == '2'">
           <template slot-scope="scope">
               <span class="myspan" v-html="scope.row.contentHtml"></span>
 <!--            <div v-html="$options.filters.ellipsis(scope.row.contentHtml )"></div>-->
@@ -191,11 +191,11 @@
               <el-button type="text" @click="detail(scope.row)">详情</el-button>
             </div>
             <div>
-              <el-button type="text" :disabled="scope.row.auditStatus == 0 ? false : true" @click="rowPass(scope.row)">通过
+              <el-button type="text" :disabled="scope.row.auditStatus == 0 && scope.row.contentType == 2 ? false : true" @click="rowPass(scope.row)">通过
               </el-button>
             </div>
             <div>
-              <el-button type="text" :disabled="scope.row.auditStatus == 0 ? false : true" @click="rowReject(scope.row)">
+              <el-button type="text" :disabled="scope.row.auditStatus == 0 && scope.row.contentType == 2 ? false : true" @click="rowReject(scope.row)">
                 不通过
               </el-button>
             </div>
