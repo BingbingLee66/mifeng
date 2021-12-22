@@ -191,11 +191,11 @@
               <el-button type="text" @click="detail(scope.row)">详情</el-button>
             </div>
             <div>
-              <el-button type="text" :disabled="scope.row.auditStatus == 0 && scope.row.contentType == 2 ? false : true" @click="rowPass(scope.row)">通过
+              <el-button type="text" :disabled="scope.row.auditStatus == 0 ? false : true" @click="rowPass(scope.row)">通过
               </el-button>
             </div>
             <div>
-              <el-button type="text" :disabled="scope.row.auditStatus == 0 && scope.row.contentType == 2 ? false : true" @click="rowReject(scope.row)">
+              <el-button type="text" :disabled="scope.row.auditStatus == 0 ? false : true" @click="rowReject(scope.row)">
                 不通过
               </el-button>
             </div>
@@ -245,10 +245,10 @@
         </div>
         <div v-if="detailObj.auditStatus===0" style="height:50px;">
           <el-col :offset="10" :span="8">
-            <el-button :disabled=vabled v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
+            <el-button :disabled="detailObj.auditStatus == 0 && detailObj.contentType == 2 && vabled ? true : false " v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
               通过
             </el-button>
-            <el-button :disabled=vabled v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
+            <el-button :disabled="detailObj.auditStatus == 0 && detailObj.contentType == 2 && vabled ? true : false "  v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
               不通过
             </el-button>
           </el-col>
