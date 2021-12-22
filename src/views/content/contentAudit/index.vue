@@ -245,10 +245,10 @@
         </div>
         <div v-if="detailObj.auditStatus===0" style="height:50px;">
           <el-col :offset="10" :span="8">
-            <el-button :disabled="detailObj.auditStatus == 0 && detailObj.contentType == 2 && vabled ? true : false " v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
+            <el-button  v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
               通过
             </el-button>
-            <el-button :disabled="detailObj.auditStatus == 0 && detailObj.contentType == 2 && vabled ? true : false "  v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
+            <el-button   v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
               不通过
             </el-button>
           </el-col>
