@@ -138,7 +138,7 @@
     <div v-if="activeName == '1' || activeName == '2' || activeName == '3' || activeName == '4'">
       <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
         <!-- <el-table-column type="selection" width="55px"></el-table-column> -->
-        <el-table-column label="标题"  v-if="activeName == '1'  || activeName == '3'">
+        <el-table-column label="标题"  v-if="activeName == '1'  || activeName == '3'  || activeName == '4'">
           <template slot-scope="scope">
             <span v-if="activeName == '1' || activeName == '2' || activeName == '3'">
               {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
@@ -165,6 +165,13 @@
             </div>
             <div v-else>
               <span>{{ scope.row.uname ? scope.row.uname : '--'}}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="来源" v-if="activeName == '2' || activeName == '3'">
+          <template slot-scope="scope">
+            <div>
+              <span>{{ scope.row.sourceName ? scope.row.sourceName : '--'}}</span>
             </div>
           </template>
         </el-table-column>
