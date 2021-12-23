@@ -397,4 +397,8 @@
   -webkit-box-orient:vertical;
   -webkit-line-clamp:2;
 }
+.myspan img {
+  width: 20%;
+  height: 20%
+}
 </style>
