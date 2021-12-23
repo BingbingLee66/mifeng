@@ -158,7 +158,7 @@
         </el-table-column>
         <el-table-column label="来源商会">
           <template slot-scope="scope">
-            <div v-if="activeName == '1'">
+            <div v-if="activeName == '1' || activeName == '2' || activeName == '3'">
               <span>{{ scope.row.chamberName ? scope.row.chamberName : '--' }}</span>
               <!-- <span v-if="scope.row.publishType == 1">{{ scope.row.chamberName }}</span> -->
               <!-- <span v-if="scope.row.publishType == 2 || scope.row.publishType == 5">{{ scope.row.uname }}</span> -->
