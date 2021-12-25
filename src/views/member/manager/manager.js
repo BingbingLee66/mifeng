@@ -20,7 +20,7 @@ export default {
           fetch(url).then(res => res.blob()).then(blob => {
             link.href = URL.createObjectURL(blob)
             console.log(link.href)
-            link.download = ''
+            link.download = '商会成员信息导入模板.xlsx'
             document.body.appendChild(link)
             link.click()
           })

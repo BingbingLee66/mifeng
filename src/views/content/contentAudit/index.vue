@@ -138,7 +138,7 @@
     <div v-if="activeName == '1' || activeName == '2' || activeName == '3' || activeName == '4'">
       <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
         <!-- <el-table-column type="selection" width="55px"></el-table-column> -->
-        <el-table-column label="标题"  v-if="activeName == '1'  || activeName == '3'">
+        <el-table-column label="标题"  v-if="activeName == '1'  || activeName == '3'  || activeName == '4'">
           <template slot-scope="scope">
             <span v-if="activeName == '1' || activeName == '2' || activeName == '3'">
               {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
@@ -150,7 +150,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="内容"  v-if="activeName == '2'" show-overflow-tooltip="true">
+        <el-table-column label="内容"  v-if="activeName == '2'">
           <template slot-scope="scope">
               <span class="myspan" v-html="scope.row.contentHtml"></span>
 <!--            <div v-html="$options.filters.ellipsis(scope.row.contentHtml )"></div>-->
@@ -158,13 +158,20 @@
         </el-table-column>
         <el-table-column label="来源商会">
           <template slot-scope="scope">
-            <div v-if="activeName == '1'">
+            <div v-if="activeName == '1' || activeName == '2' || activeName == '3'">
               <span>{{ scope.row.chamberName ? scope.row.chamberName : '--' }}</span>
               <!-- <span v-if="scope.row.publishType == 1">{{ scope.row.chamberName }}</span> -->
               <!-- <span v-if="scope.row.publishType == 2 || scope.row.publishType == 5">{{ scope.row.uname }}</span> -->
             </div>
             <div v-else>
               <span>{{ scope.row.uname ? scope.row.uname : '--'}}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="来源" v-if="activeName == '2' || activeName == '3'">
+          <template slot-scope="scope">
+            <div>
+              <span>{{ scope.row.sourceName ? scope.row.sourceName : '--'}}</span>
             </div>
           </template>
         </el-table-column>
@@ -245,10 +252,10 @@
         </div>
         <div v-if="detailObj.auditStatus===0" style="height:50px;">
           <el-col :offset="10" :span="8">
-            <el-button :disabled=vabled v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
+            <el-button  v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
               通过
             </el-button>
-            <el-button :disabled=vabled v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
+            <el-button   v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
               不通过
             </el-button>
           </el-col>
@@ -389,5 +396,9 @@
   display:-webkit-box;
   -webkit-box-orient:vertical;
   -webkit-line-clamp:2;
+}
+.myspan img {
+  width: 20%;
+  height: 20%
 }
 </style>

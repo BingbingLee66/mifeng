@@ -332,7 +332,7 @@ export default {
       }
       const ids = []
       ids.push(this.selectId)
-      if (this.activeName === '1') {
+      if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
         const params = {
           'articleIds': ids,
           'auditStatus': 1
@@ -345,7 +345,7 @@ export default {
           this.visible = false
           this.fetchData()
         })
-      } else if (this.activeName === '2') {
+      } else if (this.activeName === '4') {
         const params = {
           'ids': ids,
           'auditStatus': 1
@@ -372,7 +372,7 @@ export default {
     reject() {
       const ids = []
       ids.push(this.selectId)
-      if (this.activeName === '1') {
+      if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
         const params = {
           'articleIds': ids,
           'auditStatus': 2,
