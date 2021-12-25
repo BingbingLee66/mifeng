@@ -11,7 +11,7 @@
         </el-table-column>
         <el-table-column label="关联内容" width="80px">
           <template slot-scope="scope">
-            {{ scope.row.type == 1 ? '文章' : scope.row.type == 2 ? '商品' : '- -' }}
+            {{ scope.row.type == 1 ? '文章' : scope.row.type == 2 ? '商品' : scope.row.type == 3 ? '邀请有礼' : '- -' }}
           </template>
         </el-table-column>
         <el-table-column label="标题/ID" width="300px">

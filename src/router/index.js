@@ -305,6 +305,13 @@ export const constantRoutes = [
         component: () => import('@/views/finance/settlementDetail/index'),
         hidden: true,
         meta: { title: '结算单详情' }
+      },
+      {
+        path: '/operate/detail',
+        name: '邀请有礼活动详情',
+        component: () => import('@/views/operate/detail/index'),
+        hidden: true,
+        meta: { title: '邀请有礼活动详情' }
       }
     ]
   }
