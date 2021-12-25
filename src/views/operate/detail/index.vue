@@ -20,7 +20,7 @@
         </el-table-column>
         <el-table-column label="邀请者">
           <template slot-scope="scope">
-            {{ scope.row.inviterName }}
+            {{ scope.row.inviterName ? scope.row.inviterName : "--" }}
           </template>
         </el-table-column>
         <el-table-column label="邀请者-奖励金额" >
@@ -30,14 +30,14 @@
         </el-table-column>
         <el-table-column label="受邀者">
           <template slot-scope="scope">
-            {{ scope.row.inviteeName }}
+            {{ scope.row.inviteeName ? scope.row.inviteeName  : "--" }}
           </template>
         </el-table-column>
         <el-table-column label="受邀者-所属商会">
           <template slot-scope="scope">
-            {% for a in scope.row.inviteeChamberNames %}
-            <div>{{ a }}</div>
-            {% endfor %}
+            <div v-for="(val) in scope.row.inviteeChamberNames">
+              {{val}}
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="受邀者-奖励" >
