@@ -58,23 +58,46 @@ export default {
     },
     openDialog() {
       this.visible = true
+      this.query.id = ''
+      this.query.name = ''
+      this.query.queryDate = ''
+      this.query.totalPrice = ''
+    },
+    closeDialog() {
+      this.visible = false
     },
     detail(e, row) {
       window.localStorage.setItem('operateDetail', this.$route.path)
       console.log(row.id)
-      this.$router.push({ name: '邀请有礼活动详情', params: { 'operateId': row.id }})
+      this.$router.push({ name: '邀请有礼活动详情',
+        params: { 'operateId': row.id, 'beginTime': row.validDateStart, 'endTime': row.validDateEnd }})
     },
     edit(e, row) {
       this.visible = true
-      console.log(row.id)
-      console.log(row.validDateStart)
-      console.log(row.validDateEnd)
-      console.log(row.totalAmount)
       this.query.id = row.id
       this.query.name = row.name
-      // this.query.queryDate[0] = row.validDateStart
-      // this.query.queryDate[1] = row.validDateEnd
+      this.query.queryDate = this.$set(
+        this.query,
+        'queryDate',
+        new Array(this.getStringDateToLong(row.validDateStart), this.getStringDateToLong(row.validDateEnd))
+      )
       this.query.totalPrice = row.totalAmount
+    },
+    getStringDateToLong(data) {
+      let date = new Date(data)
+      let y = date.getFullYear()// 年
+      let MM = date.getMonth() + 1// 月
+      MM = MM < 10 ? ('0' + MM) : MM
+      let d = date.getDate()// 日
+      d = d < 10 ? ('0' + d) : d
+      let h = date.getHours()// 时
+      h = h < 10 ? ('0' + h) : h
+      let m = date.getMinutes()// 分
+      m = m < 10 ? ('0' + m) : m
+      let s = date.getSeconds()// 秒
+      s = s < 10 ? ('0' + s) : s
+      var timer = y + '-' + MM + '-' + d
+      return timer
     },
     onSubmit() {
       let params = {
@@ -87,6 +110,7 @@ export default {
       add(params).then(res => {
         if (res.state === 1) {
           this.visible = false
+          this.fetchData()
         } else {
           this.errMsg = res.msg
         }

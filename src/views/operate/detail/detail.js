@@ -11,20 +11,19 @@ export default {
       list: [],
       currentpage: 1,
       limit: 10,
-      operateId: ''
+      operateId: '',
+      beginTime: '',
+      endTime: ''
     }
   },
   created() {
     if (this.$route.params.operateId) {
       this.operateId = this.$route.params.operateId
+      this.beginTime = this.$route.params.beginTime
+      this.endTime = this.$route.params.endTime
     }
     this.fetchData()
   },
-  // mounted() {
-  //   if (this.$route.params.operateId) {
-  //     this.operateId = this.$route.params.operateId
-  //   }
-  // },
   methods: {
     // 查询活动列表
     fetchData(e) {
@@ -53,6 +52,18 @@ export default {
       console.log(`当前页: ${val}`)
       this.currentpage = val
       this.fetchData()
+    },
+    exportList() {
+      let params = {
+        'id': this.operateId,
+        'pageSize': this.limit,
+        'page': this.currentpage,
+      }
+      guideTable(params).then(res => {
+        this.list = res.data.list
+        this.total = res.data.totalRows
+        this.listLoading = false
+      })
     }
   }
 }

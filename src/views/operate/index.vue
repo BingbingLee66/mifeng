@@ -1,17 +1,12 @@
 <template>
   <div class="app-container">
     <div>
-      <el-form ref="form"  label-position="right" label-width="100px">
-        <el-row>
-          <el-col :span="24">
-            <el-form-item>
-              <el-button type="primary" @click="openDialog()" >
-                新增邀请有礼
-              </el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+      <el-button type="text"  style="float: left;margin-bottom: 10px;color: #161515;">
+        邀请有礼
+      </el-button>
+      <el-button type="primary" @click="openDialog()" style="float: right;margin-bottom: 10px;">
+        新增邀请有礼
+      </el-button>
     </div>
     <div>
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
@@ -27,8 +22,7 @@
         </el-table-column>
         <el-table-column label="有效期" >
           <template slot-scope="scope">
-            <div>{{ scope.row.validDateStart | dateFormat2 }} ~</div>
-            <div>{{ scope.row.validDateEnd	 | dateFormat2 }}</div>
+            <div>{{ scope.row.validDateStart | dateFormat2 }} 至 {{ scope.row.validDateEnd	 | dateFormat2 }}</div>
           </template>
         </el-table-column>
         <el-table-column label="兑奖池/剩余">
@@ -78,13 +72,14 @@
       <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
     <!--  打开新增邀请活动弹窗  -->
-    <el-dialog title="新增邀请有礼" :visible.sync="visible" width="30%">
-      <el-form ref="query"  :model="query" label-width="100px" >
+    <el-dialog :title="query.id ? '编辑邀请有礼' : '新增邀请有礼'" :visible.sync="visible" width="600px">
+      <el-form ref="query"  :model="query" label-width="100px">
         <el-form-item label="活动名称" >
           <el-input v-model="query.name" placeholder="请输入活动名称" type="text" maxlength="10" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="有效期" class="query_form_item_t">
           <el-date-picker
+            :disabled="query.queryDate ? true : false"
             v-model="query.queryDate"
             format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
@@ -95,13 +90,13 @@
           />
         </el-form-item>
         <el-form-item label="总奖池金额">
-          <el-input v-model="query.totalPrice" placeholder=请输入奖池总金额 type="text" maxlength="7" show-word-limit/>
+          <el-input v-model="query.totalPrice" placeholder=请输入奖池总金额 type="text" maxlength="7" show-word-limit :disabled="query.totalPrice ? true : false"/>
         </el-form-item>
         <el-form-item label="">
           <div if="query.errMsg">{{query.errMsg}}</div>
         </el-form-item>
         <el-form-item>
-          <el-button>取消</el-button>
+          <el-button @click="closeDialog">取消</el-button>
           <el-button type="primary" @click="onSubmit">确认提交</el-button>
         </el-form-item>
       </el-form>
@@ -114,10 +109,5 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
 
-.activity-img {
-  width: 88px;
-  height: 60px;
-  object-fit: cover;
-}
 </style>
 

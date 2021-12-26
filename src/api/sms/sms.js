@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export function getList (params) {
+export function getList(params) {
   return request({
     url: '/ec/smsMt/list',
     method: 'get',
@@ -8,7 +8,7 @@ export function getList (params) {
   })
 }
 
-export function sendSms (params) {
+export function sendSms(params) {
   return request({
     url: '/ec/smsMt/send-msg',
     method: 'post',

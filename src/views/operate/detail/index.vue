@@ -1,15 +1,12 @@
 <template>
   <div class="app-container">
     <div>
-      <el-form ref="form"  label-position="right" label-width="100px">
-        <el-row>
-          <el-col :span="24">
-            <el-form-item>
-                活动详情
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+      <el-button type="text"  style="float: left;margin-bottom: 10px;color: #161515;">
+        邀请有礼 {{beginTime | dateFormat2}} 至 {{endTime | dateFormat2}}
+      </el-button>
+      <el-button type="primary" @click="exportList()" style="float: right;margin-bottom: 10px;">
+        导出表格
+      </el-button>
     </div>
     <div>
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
