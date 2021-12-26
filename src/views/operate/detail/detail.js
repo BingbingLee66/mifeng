@@ -4,6 +4,25 @@ import {
 } from '@/api/operate/operate'
 
 export default {
+  directives: {
+    downLoad: {
+      inserted: (el, binding) => {
+        el.style.cssText = 'cursor:pointer;'
+        el.addEventListener('click', () => {
+          console.log(binding.value)
+          let link = document.createElement('a')
+          let url = binding.value
+          fetch(url).then(res => res.blob()).then(blob => {
+            link.href = URL.createObjectURL(blob)
+            console.log(link.href)
+            link.download = '商会成员信息导入模板.xlsx'
+            document.body.appendChild(link)
+            link.click()
+          })
+        })
+      }
+    }
+  },
   data() {
     return {
       pageSizes: [10, 20, 50, 100, 500],
@@ -13,7 +32,8 @@ export default {
       limit: 10,
       operateId: '',
       beginTime: '',
-      endTime: ''
+      endTime: '',
+      exportUrl: ''
     }
   },
   created() {
@@ -56,14 +76,29 @@ export default {
     exportList() {
       let params = {
         'id': this.operateId,
-        'pageSize': this.limit,
-        'page': this.currentpage,
       }
       guideTable(params).then(res => {
-        this.list = res.data.list
-        this.total = res.data.totalRows
-        this.listLoading = false
-      })
+        console.log(res);
+        var blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' }); //application/vnd.openxmlformats-officedocument.spreadsheetml.sheet这里表示xlsx类型
+
+        //浏览器兼容，Google和火狐支持a标签的download，IE不支持
+        if (window.navigator && window.navigator.msSaveBlob) {
+          //IE浏览器、微软浏览器
+          /* 经过测试，微软浏览器Microsoft Edge下载文件时必须要重命名文件才可以打开，
+            IE可不重命名，以防万一，所以都写上比较好 */
+          window.navigator.msSaveBlob(blob, '文件.xlsx');
+        } else {
+          //其他浏览器
+          let link = document.createElement('a'); // 创建a标签
+          link.style.display = 'none';
+          let objectUrl = URL.createObjectURL(blob);
+          link.href = objectUrl;
+          link.click();
+          URL.revokeObjectURL(objectUrl);
+        }
+        }).catch(err => {
+        this.$message.error(err.message);
+      });
     }
   }
 }

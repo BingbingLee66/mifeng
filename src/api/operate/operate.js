@@ -26,9 +26,9 @@ export function excitataionTime(params) {
 // 邀请有礼列表导出表格
 export function guideTable(params) {
   return request({
-    url: '/api/ec/memberExcitation/guideTable/{id}',
-    method: 'get',
-    params
+    url: '/api/ec/memberExcitation/guideTable/' + params.id,
+    method: 'post',
+    responseType: 'blob'
   })
 }
 // 邀请有礼列表
