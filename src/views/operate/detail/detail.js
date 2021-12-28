@@ -79,8 +79,10 @@ export default {
 
       for (let data of datas) {
         let chambers = ''
-        for (let chamber of data.inviteeChamberNames) {
-          chambers = chambers + chamber + ';'
+        if (data.inviteeChamberNames){
+          for (let chamber of data.inviteeChamberNames) {
+            chambers = chambers + chamber + ';'
+          }
         }
         let new_data = {
           '邀请成功时间': formatDateTime(new Date(data.createdTs), 'yyyy-MM-dd hh:mm:ss'),
@@ -96,7 +98,7 @@ export default {
     exportExcel() {
       let params = {
         'id': this.operateId,
-        'pageSize': 1000,
+        'pageSize': 10000,
         'page': 1,
       }
       detailList(params).then(res => {
