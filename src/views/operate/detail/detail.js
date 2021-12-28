@@ -1,7 +1,6 @@
-import {
-  detailList,
-  guideTable
-} from '@/api/operate/operate'
+import { detailList } from '@/api/operate/operate'
+import { exportJson2Excel } from '@/utils/exportExcel'
+import { formatDateTime } from '@/utils/date' // 格式化时间戳
 
 export default {
   directives: {
@@ -33,6 +32,7 @@ export default {
       operateId: '',
       beginTime: '',
       endTime: '',
+      selectionDatas: [],
       exportUrl: ''
     }
   },
@@ -73,32 +73,36 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    exportList() {
+    handleSelectionChange(value) {
+      let datas = value
+      this.selectionDatas = []
+
+      for (let data of datas) {
+        let chambers = ''
+        for (let chamber of data.inviteeChamberNames) {
+          chambers = chambers + chamber + ';'
+        }
+        let new_data = {
+          '邀请成功时间': formatDateTime(new Date(data.createdTs), 'yyyy-MM-dd hh:mm:ss'),
+          '邀请者': data.inviterName ? data.inviterName : '--',
+          '邀请者-奖励金额': data.inviterAmount,
+          '受邀者': data.inviteeName ? data.inviteeName : '--',
+          '受邀者-所属商会': chambers,
+          '受邀者-奖励': data.inviteeAmount,
+        }
+        this.selectionDatas.push(new_data)
+      }
+    },
+    exportExcel() {
       let params = {
         'id': this.operateId,
+        'pageSize': 1000,
+        'page': 1,
       }
-      guideTable(params).then(res => {
-        console.log(res);
-        var blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' }); //application/vnd.openxmlformats-officedocument.spreadsheetml.sheet这里表示xlsx类型
-
-        //浏览器兼容，Google和火狐支持a标签的download，IE不支持
-        if (window.navigator && window.navigator.msSaveBlob) {
-          //IE浏览器、微软浏览器
-          /* 经过测试，微软浏览器Microsoft Edge下载文件时必须要重命名文件才可以打开，
-            IE可不重命名，以防万一，所以都写上比较好 */
-          window.navigator.msSaveBlob(blob, '文件.xlsx');
-        } else {
-          //其他浏览器
-          let link = document.createElement('a'); // 创建a标签
-          link.style.display = 'none';
-          let objectUrl = URL.createObjectURL(blob);
-          link.href = objectUrl;
-          link.click();
-          URL.revokeObjectURL(objectUrl);
-        }
-        }).catch(err => {
-        this.$message.error(err.message);
-      });
-    }
+      detailList(params).then(res => {
+        this.handleSelectionChange(res.data.list)
+        exportJson2Excel('邀请列表', this.selectionDatas)
+      })
+    },
   }
 }

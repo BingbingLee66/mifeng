@@ -4,7 +4,7 @@
       <el-button type="text"  style="float: left;margin-bottom: 10px;color: #161515;">
         邀请有礼 {{beginTime | dateFormat2}} 至 {{endTime | dateFormat2}}
       </el-button>
-      <el-button type="primary" @click="exportList()" style="float: right;margin-bottom: 10px;">
+      <el-button type="primary" @click="exportExcel()" style="float: right;margin-bottom: 10px;">
         导出表格
       </el-button>
     </div>

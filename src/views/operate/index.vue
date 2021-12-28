@@ -79,7 +79,6 @@
         </el-form-item>
         <el-form-item label="有效期" class="query_form_item_t">
           <el-date-picker
-            :disabled="query.queryDate ? true : false"
             v-model="query.queryDate"
             format="yyyy-MM-dd"
             value-format="yyyy-MM-dd"
@@ -90,7 +89,7 @@
           />
         </el-form-item>
         <el-form-item label="总奖池金额">
-          <el-input v-model="query.totalPrice" placeholder=请输入奖池总金额 type="text" maxlength="7" show-word-limit :disabled="query.totalPrice ? true : false"/>
+          <el-input v-model="query.totalPrice" placeholder=请输入奖池总金额 type="text" maxlength="5" show-word-limit/>
         </el-form-item>
         <el-form-item label="">
           <div if="query.errMsg">{{query.errMsg}}</div>
