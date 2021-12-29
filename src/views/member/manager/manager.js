@@ -38,7 +38,7 @@ export default {
       }
     }
     return {
-      exportExcelModel: 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/static/%E5%95%86%E4%BC%9A%E6%88%90%E5%91%98%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF%20%281%29.xlsx',
+      exportExcelModel: 'https://ysh-cdn.kaidicloud.com/prod/static/%E5%95%86%E4%BC%9A%E6%88%90%E5%91%98%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF%20%281%29.xlsx',
       departmentOptions: [],
       memberPostOptions: [],
       tradeOptions: [],

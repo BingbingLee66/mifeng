@@ -43,7 +43,7 @@
                   <!--                  <img :src="gal" class="goods-avatar">-->
                   <!-- https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/video-pre.jpg -->
                   <img :src="gal" class="goods-avatar" v-if="gal.indexOf('.jpeg') != -1 || gal.indexOf('.jpg') != -1 || gal.indexOf('.png') != -1" />
-                  <img src="https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/video-pre.jpg" class="goods-avatar" v-else />
+                  <img src="https://ysh-cdn.kaidicloud.com/prod/png/video-pre.jpg" class="goods-avatar" v-else />
                   <div class="goods-pre-btn" @click="openPreviewModal(gal)">预览</div>
                 </div>
               </div>
