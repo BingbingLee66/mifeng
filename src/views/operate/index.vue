@@ -89,7 +89,7 @@
           />
         </el-form-item>
         <el-form-item label="总奖池金额">
-          <el-input v-model="query.totalPrice" placeholder=请输入奖池总金额 type="text" maxlength="5" show-word-limit/>
+          <el-input v-model="query.totalPrice" placeholder=请输入奖池总金额 onkeyup="value=value.replace(/[^\d]/g,'')" type="text" min=“0” max="99999" maxlength="5" show-word-limit/>
         </el-form-item>
         <el-form-item label="">
           <div if="query.errMsg">{{query.errMsg}}</div>
