@@ -62,6 +62,9 @@ export default {
   methods: {
     // input标签失焦点 校验职位是否重复
     postNameVaild(rule, value, callback) {
+      if (this.formObj.id) {
+        callback()
+      }
       // 如果没有输入任何东西，不调用接口
       if (value === '') {
         callback(new Error('职位名称不能为空'))
