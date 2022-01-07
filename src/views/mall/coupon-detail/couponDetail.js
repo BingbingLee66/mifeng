@@ -11,7 +11,6 @@ export default {
   },
   created() {
     this.couponId = this.$route.query.couponId
-    console.log('优惠卷模板id', this.couponId)
     if (this.couponId) {
       this.fetchData()
     }

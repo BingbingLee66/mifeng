@@ -9,7 +9,8 @@ import {
   updateCommentStatus
 } from '@/api/content/article'
 import moment from 'moment'
-// import {getCollectList, getRecycleList} from "@/api/content/crawler";
+import { getChamberOptions } from '@/api/finance/finance'
+import { getSts } from '@/api/vod/vod'
 
 export default {
   data() {
@@ -19,10 +20,12 @@ export default {
       rejectVisible: false,
       batchRejectVisible: false,
       query: {
-        publishType: -1,
+        publishType: 1,
+        ckey: '',
         publishTimeType: 4,
         auditStatus: 0
       },
+      chamberOptions: [],
       queryComment: {
         commentKey: '', // 评论关键字
         uname: '', // 发布者
@@ -38,12 +41,27 @@ export default {
       selectionDatas: [],
       detailObj: {
         title: '',
-        contentHtml: ''
+        contentHtml: '',
+        vid: ''
       },
       selectId: '',
       remark: '内容违规',
       OffVisible: false,
-      delVisible: false
+      delVisible: false,
+      // 视频相关
+      videoKey: [],
+      // videoKey: {
+      //   accessKeyId: '',
+      //   accessKeySecret: '',
+      //   securityToken: '',
+      //   region: '',
+      // },
+      // 是否禁用
+      vabled: false,
+      videoDetailInfo: {},
+      detailDialogVisible: false,
+      videoPlayer: null,
+      videoPlayerMap: {},
     }
   },
 
@@ -51,12 +69,12 @@ export default {
 
   created() {
   },
-
   mounted() {
     const activename = window.localStorage.getItem('activenamec')
     if (activename) {
       this.activeName = activename
     }
+    this.chamberList()
     this.init()
   },
 
@@ -73,13 +91,54 @@ export default {
       })
     },
 
+    // 商会列表
+    chamberList() {
+      getChamberOptions().then(response => {
+        this.chamberOptions = response.data.data
+        this.chamberOptions.unshift({ label: '全部', value: '' }, { label: '凯迪云商会', value: 'kaidiyun' })
+        this.query.ckey = this.chamberOptions[0].value
+      })
+    },
+    // 获取视频凭证
+    getVideoSts() {
+      getSts().then(response => {
+        // let { data: res } = response
+        if (response.code !== 200) return this.$message.error('获取视频凭证失败')
+        this.videoKey = response.data
+        console.log('videoKey' + this.videoKey)
+        // storage.setJson('videosts', this.videoKey)
+      })
+    },
+
+    // 关闭视频播放弹窗
+    closeDia() {
+      if ((this.activeName === '1' || this.activeName === '2' || this.activeName === '3') && this.detailObj.contentType === 2) {
+        this.videoPlayer.dispose()
+      }
+      this.visible = false
+    },
+    /**
+     * 渲染视频
+     */
+    renderVideo() {
+      getSts().then(response => {
+        this.videoKey = response.data
+        // 存在视频必须看完视频后才能点击审核
+        this.vabled = true
+        this.videoPlayer = this.$createPlayer('videoContent', this.videoKey.accessKeyId, this.videoKey.accessKeySecret, this.videoKey.securityToken, this.videoKey.region, this.detailObj.vid, '535px')
+        this.videoPlayer.on('ended', (e) => {
+          this.vabled = false
+        })
+      })
+    },
     init() {
       this.selectionDatas = []
       this.list = []
       this.query = {
+        ckey: this.query.ckey,
         publishType: -1,
-        publishTimeType: 4,
-        auditStatus: 0
+        publishTimeType: 4, // 1-24h 2-3d 3-7d 4-1m
+        auditStatus: 0 // 审核  0未审核 1审核通过 2审核不通过
       }
       this.currentpage = 1
       this.limit = 10
@@ -88,8 +147,6 @@ export default {
     },
 
     handleClick(e) {
-      console.log(e)
-      console.log(this.activeName, 666)
       window.localStorage.setItem('activenamec', this.activeName)
       this.init()
     },
@@ -110,26 +167,34 @@ export default {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       this.listLoading = true
-      const params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'publishType': this.query.publishType,
-        'publishTimeType': this.query.publishTimeType,
-        'auditStatus': this.query.auditStatus
-      }
-      if (this.activeName === '1') {
+      if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
+        const params = {
+          'pageSize': this.limit,
+          'page': this.currentpage,
+          'ckey': this.query.ckey,
+          'publishType': this.activeName,
+          'publishTimeType': this.query.publishTimeType,
+          'auditStatus': this.query.auditStatus,
+        }
         await getAuditList(params).then(response => {
           this.list = response.data.data.list
           this.total = response.data.data.totalRows
           this.listLoading = false
         })
-      } else if (this.activeName === '2') {
+      } else if (this.activeName === '4') {
+        const params = {
+          'pageSize': this.limit,
+          'page': this.currentpage,
+          'publishType': this.query.publishType,
+          'publishTimeType': this.query.publishTimeType,
+          'auditStatus': this.query.auditStatus
+        }
         await getCompanyAuditList(params).then(response => {
           this.list = response.data.page.list
           this.total = response.data.page.totalRows
           this.listLoading = false
         })
-      } else if (this.activeName === '3') {
+      } else if (this.activeName === '5') {
         this.queryComment['pageSize'] = this.limit
         this.queryComment['page'] = this.currentpage
         if (this.queryDate) {
@@ -166,21 +231,25 @@ export default {
       const params = {
         id: this.selectId
       }
-      if (this.activeName === '1') {
+      if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
         getDetail(params).then(response => {
           this.detailObj = response.data.dtl
+          // 视频是否存在 渲染操作
+          if (this.detailObj.contentType === 2) {
+            this.renderVideo()
+          }
         }).catch(error => {
           console.log(error)
         })
         this.visible = true
-      } else if (this.activeName === '2') {
+      } else if (this.activeName === '4') {
         getCompanyDetail(params).then(res => {
           this.detailObj = res.data.companyAudit
         }).catch(error => {
           console.log(error)
         })
         this.visible = true
-      } else if (this.activeName === '3') {
+      } else if (this.activeName === '5') {
         this.detailObj['title'] = '评论详情'
         this.detailObj['contentHtml'] = row.commentContent
         this.visible = true
@@ -263,7 +332,7 @@ export default {
       }
       const ids = []
       ids.push(this.selectId)
-      if (this.activeName === '1') {
+      if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
         const params = {
           'articleIds': ids,
           'auditStatus': 1
@@ -276,7 +345,7 @@ export default {
           this.visible = false
           this.fetchData()
         })
-      } else if (this.activeName === '2') {
+      } else if (this.activeName === '4') {
         const params = {
           'ids': ids,
           'auditStatus': 1
@@ -303,7 +372,7 @@ export default {
     reject() {
       const ids = []
       ids.push(this.selectId)
-      if (this.activeName === '1') {
+      if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
         const params = {
           'articleIds': ids,
           'auditStatus': 2,

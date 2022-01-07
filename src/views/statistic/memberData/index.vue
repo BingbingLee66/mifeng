@@ -7,38 +7,24 @@
       </div>
       <div class="data-card">
         <div class="d-card-box">
-          <div class="card-box-3">
             <div class="card-key">本月入会人数</div>
             <div class="card-value">{{ pfStatistics.monthlyJoin }}</div>
-          </div>
         </div>
-        <div class="h-cut-line"></div>
         <div class="d-card-box">
-          <div class="card-box-3">
             <div class="card-key">累计会员数</div>
             <div class="card-value">{{ pfStatistics.totalMembers }}</div>
-          </div>
         </div>
-        <div class="h-cut-line"></div>
         <div class="d-card-box">
-          <div class="card-box-3">
             <div class="card-key">逾期未缴会费人数</div>
             <div class="card-value" style="color: #FF0000;">{{ pfStatistics.unpaidMembers }}</div>
-          </div>
         </div>
-        <div class="h-cut-line"></div>
         <div class="d-card-box">
-          <div class="card-box-3">
             <div class="card-key">已缴会费人数</div>
             <div class="card-value">{{ pfStatistics.paidMembers }}</div>
-          </div>
         </div>
-        <div class="h-cut-line"></div>
         <div class="d-card-box">
-          <div class="card-box-3">
             <div class="card-key">累计授权登录人数</div>
             <div class="card-value">{{ pfStatistics.activeWxUserTotal }}</div>
-          </div>
         </div>
       </div>
     </div>
@@ -179,25 +165,33 @@
 @import "src/styles/common.scss";
 </style>
 <style>
-.data-card {
-  width: 100%;
-  height: 120px;
-  border-radius: 2px;
-  border: 1px solid #ccc;
-}
-
-.d-card-box {
+/* .d-card-box {
   float: left;
   width: 19.5%;
   height: 100%;
   text-align: center;
   display: table;
-}
-
-.card-box-3 {
+} */
+/* .card-box-3 {
   width: 100%;
   display: table-cell;
   vertical-align: middle;
+} */
+.data-card {
+  width: 100%;
+  height: 120px;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  display: flex;
+  border-right: none;
+}
+.d-card-box{
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #ccc;
 }
 .color-red{
   color: red;

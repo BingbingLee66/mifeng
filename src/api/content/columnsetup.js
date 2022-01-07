@@ -8,10 +8,12 @@ export function getList(params) {
   })
 }
 
-export function getInfoColumnList() {
+export function getInfoColumnList(params) {
+  console.log('params',params)
   return request({
     url: '/ec/contentColumn/info-column-list',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 
@@ -58,5 +60,20 @@ export function getAllContentColumnOptions() {
   return request({
     url: '/ec/contentColumn/get-all-options',
     method: 'get'
+  })
+}
+// 商会指定模块下 栏目列表
+export function getOptionsWithCkey(params) {
+  return request({
+    url: '/ec/contentColumn/get-options-with-ckey',
+    method: 'get',
+    params
+  })
+}
+// 栏目权重设置
+export function updateColumnLevel(params) {
+  return request({
+    url: '/ec/contentColumn/updateColumnLevelById?id=' + params.id + '&level=' + params.level,
+    method: 'get',
   })
 }

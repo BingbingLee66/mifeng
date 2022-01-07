@@ -89,6 +89,13 @@ export const constantRoutes = [
         meta: { title: '添加/修改文章' }
       },
       {
+        path: '/content/article-stick',
+        name: '置顶管理',
+        component: () => import('@/views/content/articleupdate/stick/index'),
+        hidden: true,
+        meta: { title: '置顶管理' }
+      },
+      {
         path: '/content/article-detail',
         name: '文章详情',
         component: () => import('@/views/content/articleupdate/detail/index'),
@@ -298,6 +305,13 @@ export const constantRoutes = [
         component: () => import('@/views/finance/settlementDetail/index'),
         hidden: true,
         meta: { title: '结算单详情' }
+      },
+      {
+        path: '/operate/detail',
+        name: '邀请有礼活动详情',
+        component: () => import('@/views/operate/detail/index'),
+        hidden: true,
+        meta: { title: '邀请有礼活动详情' }
       }
     ]
   }

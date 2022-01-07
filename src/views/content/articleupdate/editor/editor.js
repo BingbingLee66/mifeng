@@ -181,11 +181,19 @@ export default {
           this.formObj['ckey'] = this.$store.getters.ckey
           this.formObj['contentModuleId'] = this.activeName
           save(this.formObj).then(response => {
-            this.$message({
-              message: '操作成功',
-              type: 'success'
-            })
-            this.closeTab()
+            if(response.state===1){
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              this.closeTab()
+            }else{
+              this.$message({
+                message: response.msg,
+                type: 'error'
+              })
+            }
+            
           })
         } else {
           return false

@@ -33,13 +33,13 @@ export default {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
     }
-    var checkNumber = (rule, value, callback) => {
-      if (!/(^[1-9]\d*$)/.test(value)) {
-        return callback(new Error('必须是大于0的整数'))
-      } else {
-        callback() // 必须加上这个，不然一直塞在验证状态
-      }
-    }
+    // var checkNumber = (rule, value, callback) => {
+    //   if (!/(^[1-9]\d*$)/.test(value)) {
+    //     return callback(new Error('必须是大于0的整数'))
+    //   } else {
+    //     callback() // 必须加上这个，不然一直塞在验证状态
+    //   }
+    // }
     return {
       editorVisible: false,
       detailVisible: false,
@@ -66,7 +66,7 @@ export default {
       listLoading: false,
       detailObj: {},
       type: 'add',
-      //搜索表单
+      // 搜索表单
       query: {
         name: null,
         userName: null,
@@ -75,16 +75,16 @@ export default {
       },
       rules: {
         name: [{
-            required: true,
-            message: '商/协会名称不能为空',
-            trigger: 'blur'
-          },
-          {
-            min: 1,
-            max: 50,
-            message: '商/协会名称1-50个字',
-            trigger: 'change'
-          }
+          required: true,
+          message: '商/协会名称不能为空',
+          trigger: 'blur'
+        },
+        {
+          min: 1,
+          max: 50,
+          message: '商/协会名称1-50个字',
+          trigger: 'change'
+        }
         ],
         systemLogo: [{
           required: true,
@@ -102,14 +102,14 @@ export default {
           trigger: 'blur'
         }],
         phone: [{
-            required: true,
-            message: '联系人手机号不能为空',
-            trigger: 'blur'
-          },
-          {
-            validator: checkPhone,
-            trigger: 'change'
-          }
+          required: true,
+          message: '联系人手机号不能为空',
+          trigger: 'blur'
+        },
+        {
+          validator: checkPhone,
+          trigger: 'change'
+        }
         ],
         license: [{
           required: true,
@@ -117,24 +117,24 @@ export default {
           trigger: 'change'
         }],
         password: [{
-            required: true,
-            message: '账号密码不能为空',
-            trigger: 'blur'
-          },
-          {
-            validator: checkPass,
-            trigger: 'change'
-          }
+          required: true,
+          message: '账号密码不能为空',
+          trigger: 'blur'
+        },
+        {
+          validator: checkPass,
+          trigger: 'change'
+        }
         ],
         confirmPassword: [{
-            required: true,
-            message: '确认密码不能为空',
-            trigger: 'blur'
-          },
-          {
-            validator: confirmPass,
-            trigger: 'blur'
-          }
+          required: true,
+          message: '确认密码不能为空',
+          trigger: 'blur'
+        },
+        {
+          validator: confirmPass,
+          trigger: 'blur'
+        }
         ]
         /* level: [
           {required: true, message: '排序不能为空', trigger: 'blur'},
@@ -154,7 +154,7 @@ export default {
   },
   methods: {
     a() {
-      console.log("aa")
+      console.log('aa')
     },
     has(tabName, actionName) {
       return this.$store.getters.has({
@@ -198,11 +198,11 @@ export default {
         this.formObj.systemLogo = response.data.filePath
       })
     },
-    init() {
-      this.fetchData()
-    },
+    // init() {
+    //   this.fetchData()
+    // },
     selectData() {
-      this.currentpage = 1;
+      this.currentpage = 1
       this.fetchData()
     },
     // fetchData() {
@@ -241,21 +241,21 @@ export default {
       this.fetchData()
     },
     fetchData() {
-      this.listLoading = true;
+      this.listLoading = true
       let {
         name,
         status,
         userName,
         date
-      } = this.query;
+      } = this.query
       let params = {
         'pageSize': this.limit,
         'page': this.currentpage,
         name,
         status,
         userName,
-        startTime: date ? date[0] : "",
-        endTime: date ? date[1] : ""
+        startTime: date ? date[0] : '',
+        endTime: date ? date[1] : ''
       }
       console.log('query', this.query)
       getList(params).then(response => {
@@ -311,14 +311,14 @@ export default {
         if (valid) {
           console.log('this.formObj', this.formObj)
           save(this.formObj).then(response => {
-            if(response.state===1){
+            if (response.state === 1) {
               this.$message({
                 message: '操作成功',
                 type: 'success'
               })
               this.fetchData()
               this.editorVisible = false
-            }else{
+            } else {
               this.$message({
                 message: response.msg,
                 type: 'success'
@@ -332,9 +332,9 @@ export default {
     },
     updateStatus(e, row) {
       console.log('rew', row)
-      const h = this.$createElement;
-      let self = this;
-      if (row.status ===1 ) {
+      const h = this.$createElement
+      let self = this
+      if (row.status === 1) {
         this.$msgbox({
           title: '冻结',
           message: h('p', null, [
@@ -347,14 +347,14 @@ export default {
           beforeClose: (action, instance, done) => {
             if (action === 'confirm') {
               self.updateStatusFunc(row)
-              done();
+              done()
             } else {
-              done();
+              done()
             }
           }
         }).then(action => {
 
-        });
+        })
       } else {
         this.updateStatusFunc(row)
       }
@@ -378,14 +378,13 @@ export default {
           })
         }
         this.fetchData()
-
       })
     },
     enlarge(path) {
       var newwin = window.open()
       newwin.document.write('<img src="' + path + '"/>')
     },
-    //修改权重
+    // 修改权重
     updateLevel(row) {
       console.log('row', row)
       this.$refs['levelDialog'].open(row.id).then(data => {

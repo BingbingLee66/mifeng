@@ -11,7 +11,7 @@
         </el-table-column>
         <el-table-column label="关联内容" width="80px">
           <template slot-scope="scope">
-            {{ scope.row.type == 1 ? '文章' : scope.row.type == 2 ? '商品' : '- -' }}
+            {{ scope.row.type == 1 ? '文章' : scope.row.type == 2 ? '商品' : scope.row.type == 3 ? '邀请有礼' : '- -' }}
           </template>
         </el-table-column>
         <el-table-column label="标题/ID" width="300px">
@@ -62,21 +62,22 @@
               <el-select v-model="formObj.type" placeholder="请选择" clearable @clear="handleClear">
                 <el-option label="文章" :value="1"></el-option>
                 <el-option label="商品" :value="2"></el-option>
+                <el-option label="邀请有礼" :value="3"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="formObj.type==1 || formObj.type==2">
+        <el-row>
           <el-col :offset="2" :span="20">
-            <el-form-item :label="formObj.type==1?'文章ID：':'商品ID：'" prop="articleId">
+            <el-form-item :label="formObj.type==1 ? '文章ID：': formObj.type==2 ? '商品ID：' : '活动ID: '" prop="articleId">
               <el-input v-model="formObj.articleId" placeholder="请输入"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row v-if="formObj.type==1 || formObj.type==2">
+        <el-row>
           <el-col :offset="2" :span="20">
             <el-form-item label="轮播图标题：" prop="title" class="title-input">
-              <el-input v-model="formObj.title" show-word-limit :maxlength="formObj.type==1?60:30" :placeholder="formObj.type==1?'60字内':'30字内'"></el-input>
+              <el-input v-model="formObj.title" show-word-limit :maxlength="formObj.type == 1 || formObj.type == 3 ?60:30" :placeholder="formObj.type == 1 || formObj.type == 3 ?'60字内':'30字内'"></el-input>
             </el-form-item>
           </el-col>
         </el-row>

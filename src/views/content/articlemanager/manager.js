@@ -2,38 +2,48 @@ import {
   getManagerList,
   updateStatusPlatform,
   getDetail,
-  updateAudit,
   del,
   countTop,
   setTop
 } from '@/api/content/article'
-import { getAllContentColumnOptions } from '@/api/content/columnsetup'
+import { getOptionsWithCkey } from '@/api/content/columnsetup'
+import { getChamberOptions } from '@/api/finance/finance'
 
 export default {
   data() {
     return {
       visible: false,
+      activeName: '1',
       query: {
         title: '',
         status: 1,
-        contentColumnId: -1,
-        publishTimeType: 3
+        ckey: '',
+        contentColumnId: '',
+        publishTimeType: 3,
+        contentModuleId: 1
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
+      chamberName: '',
       currentpage: 1,
       limit: 10,
       listLoading: false,
       sortFlag: '',
       selectionDatas: [],
+      optionList: [
+        '标签聚合页',
+        '商会必参',
+        '标签聚合页/商会必参'
+      ],
       detailObj: {
         title: '',
         contentHtml: ''
       },
       selectId: '',
       remark: '内容违规',
-      contentColumnOptions: []
+      contentColumnOptions: [],
+      chamberOptions: []
     }
   },
   computed: {},
@@ -54,12 +64,29 @@ export default {
       this.currentpage = 1
       if (e.prop) {
         if (e.order === 'descending') {
-          this.sortFlag = 'read_count desc'
+          this.sortFlag = (e.prop === 'readCount' ? 'read_count' : e.prop === 'commentLikeNums' ? 'like_nums' : 'comment_nums') + ' desc'
         } else {
-          this.sortFlag = 'read_count'
+          this.sortFlag = e.prop === 'readCount' ? 'read_count' : e.prop === 'commentLikeNums' ? 'like_nums' : 'comment_nums'
         }
         this.fetchData(1)
       }
+    },
+    selectionChange() {
+      let params = {
+        'ckey': this.query.ckey,
+        'contentModuleId': 3
+      }
+
+      // 判断当商会来源是全部时 清空栏目选中值
+      // if (!this.query.ckey) {
+      // 每一次选中商会来源 要将栏目置空
+      this.query.contentColumnId = ''
+      // }
+      // 指定模块下商会全部栏目
+      getOptionsWithCkey(params).then(response => {
+        this.contentColumnOptions = response.data.data
+        this.contentColumnOptions.unshift({ 'label': '全部', 'value': '' })
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -78,9 +105,19 @@ export default {
       }
     },
     getContentColumnType() {
-      getAllContentColumnOptions().then(response => {
+      let params = {
+        'ckey': this.query.ckey,
+        'contentModuleId': this.query.contentModuleId
+      }
+      // 指定模块下商会全部列表
+      getChamberOptions().then(response => {
+        this.chamberOptions = response.data.data
+        this.chamberOptions.unshift({ 'label': '全部', 'value': '' }, { 'label': '凯迪云商会', 'value': 'kaidiyun' })
+      })
+      // 指定模块下商会全部栏目
+      getOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
-        this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
+        this.contentColumnOptions.unshift({ 'label': '全部', 'value': '' })
       })
     },
     queryData(e) {
@@ -89,6 +126,11 @@ export default {
       }
       this.currentpage = 1
       this.fetchData(e)
+    },
+    handleClick() {
+      this.currentpage = 1
+      this.query.contentModuleId = this.activeName
+      this.fetchData()
     },
     fetchData(e, sort) {
       if (e !== undefined && e !== 1) {
@@ -100,8 +142,10 @@ export default {
         'pageSize': this.limit,
         'page': this.currentpage,
         'title': this.query.title,
+        'ckey': this.query.ckey,
         'contentColumn': this.query.contentColumnId,
         'status': this.query.status,
+        'contentModuleId': this.query.contentModuleId,
         'publishTimeType': this.query.publishTimeType
       }
       // if (sort) {
@@ -239,42 +283,35 @@ export default {
       countTop().then(response => {
         const count = response.data.count
         if (count >= 3) {
-          this.$alert('3个置顶位已有内容，请到置顶管理页面调整后再置顶', {
+          this.$alert('3个置顶位已有内容，请到【置顶管理】页面调整后再置顶', {
             confirmButtonText: '确定'
           })
         } else {
           console.log(actionId)
           window.localStorage.setItem('actionId', actionId)
-          this.$prompt('设置置顶位置', '置顶文章', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            inputValue: row.typeName,
-            inputPattern: /^[0-9]{1,2}$/,
-            inputErrorMessage: '只能填数字'
-          }).then(({ value }) => {
-            let params = {
-              'id': row.id,
-              'level': value
-            }
-            setTop(params).then(response => {
+          let params = {
+            'id': row.id
+          }
+          setTop(params).then(response => {
+            if (response.state === 1) {
               this.$message({
                 message: '置顶成功',
                 type: 'success'
               })
               this.fetchData()
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '取消输入'
-            })
+            } else {
+              this.$message({
+                message: '置顶失败',
+                type: 'failed'
+              })
+            }
           })
         }
       })
     },
     edit(row) {
       window.localStorage.setItem('articleeditor', this.$route.path)
-      this.$router.push({ name: '添加或编辑文章', params: { 'articleId': row.id } })
+      this.$router.push({ name: '添加或编辑文章', params: { 'articleId': row.id }})
     },
     goSettop(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))

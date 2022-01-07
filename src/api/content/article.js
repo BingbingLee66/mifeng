@@ -1,4 +1,14 @@
 import request from '@/utils/request'
+
+// 总后台-修改置顶权重
+export function updateArticleTopLevel(params) {
+  return request({
+    url: '/ec/article/updateArticleTopLevel',
+    method: 'put',
+    params
+  })
+}
+
 // 修改权重
 export function updateChamberContentSort(params) {
   return request({
@@ -26,7 +36,8 @@ export function getAboutChamberList(params) {
 
 export function getContactUs(params) {
   return request({
-    url: '/ec/article/contact-us',
+    // url: '/ec/article/contact-us',
+    url: '/ec/article/chamberHonor',
     method: 'get',
     params
   })
@@ -198,5 +209,28 @@ export function uploadCoverImg(params) {
     method: 'post',
     headers: {'Content-Type': 'multipart/form-data'},
     data: params
+  })
+}
+// 栏目权重设置
+
+export function updateColumnLevel(params) {
+  return request({
+    url: '/ec/contentColumn/updateColumnLevelById?id=' + params.id + '&level=' + params.level,
+    method: 'get',
+  })
+}
+// 商会后台-置顶管理列表
+export function chamberTopList(ckey) {
+  return request({
+    url: '/ec/article/chamberTopList?ckey=' + ckey,
+    method: 'get',
+  })
+}
+// 商会后台-置顶/取消置顶
+export function updateChamberTop(params) {
+  return request({
+    url: '/ec/article/updateChamberTop',
+    method: 'put',
+   params
   })
 }

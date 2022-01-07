@@ -2,27 +2,32 @@
   <div class="app-container">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="文章" name="1" />
-      <el-tab-pane label="企业官网" name="2" />
-      <el-tab-pane label="评论" name="3" />
+      <el-tab-pane label="会员分享" name="2" />
+      <el-tab-pane label="企业动态" name="3" />
+      <el-tab-pane label="企业官网" name="4" />
+      <el-tab-pane label="评论" name="5" />
     </el-tabs>
 
-    <div v-if="activeName == '1'">
+    <div v-if="activeName == '1' || activeName == '2' || activeName == '3'">
       <div class="block">
         <el-form ref="query" label-width="90px" label-position="right" :model="query">
           <el-row>
             <el-col :span="5">
-              <el-form-item label="文章来源：">
-                <el-select v-model="query.publishType">
-                  <el-option label="所有" :value="-1" />
-                  <el-option label="商会后台" :value="1" />
-                  <el-option label="小程序" :value="2" />
+              <el-form-item label="来源商会：">
+                <el-select v-model="query.ckey" filterable>
+                  <el-option
+                    v-for="cc in chamberOptions"
+                    :key="cc.value"
+                    :label="cc.label"
+                    :value="cc.value"
+                  />
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :offset="1" :span="5">
               <el-form-item label="审核状态：">
                 <el-select v-model="query.auditStatus">
-                  <el-option label="所有" :value="-1" />
+                  <el-option label="全部" :value="-1" />
                   <el-option label="待审核" :value="0" />
                   <el-option label="审核通过" :value="1" />
                   <el-option label="审核不通过" :value="2" />
@@ -32,6 +37,7 @@
             <el-col :offset="1" :span="5">
               <el-form-item label="发布时间：">
                 <el-select v-model="query.publishTimeType">
+                  <el-option label="全部" :value="0" />
                   <el-option label="24h内" :value="1" />
                   <el-option label="3天内" :value="2" />
                   <el-option label="7天内" :value="3" />
@@ -50,7 +56,7 @@
         </el-form>
       </div>
     </div>
-    <div v-if="activeName == '2'">
+    <div v-if="activeName == '4'">
       <div class="block">
         <el-form ref="query" label-width="90px" label-position="right" :model="query">
           <el-row>
@@ -84,7 +90,7 @@
         </el-form>
       </div>
     </div>
-    <div v-if="activeName == '3'">
+    <div v-if="activeName == '5'">
       <div class="block">
         <el-form ref="queryComment" label-width="110px" :inline="true" label-position="right" :model="queryComment">
           <el-form-item label="评论关键字：" class="query_form_item_c">
@@ -129,12 +135,12 @@
     <div style="width:100%;margin-bottom: 20px;text-align: right;color: #ccc;">
       待审核指通过了微信内容安全审核，待审核的内容前端可见，人工审核不通过之后，前端不可见。
     </div>
-    <div v-if="activeName == '1' || activeName == '2'">
+    <div v-if="activeName == '1' || activeName == '2' || activeName == '3' || activeName == '4'">
       <el-table id="out-table" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
         <!-- <el-table-column type="selection" width="55px"></el-table-column> -->
-        <el-table-column label="标题">
+        <el-table-column label="标题"  v-if="activeName == '1'  || activeName == '3'  || activeName == '4'">
           <template slot-scope="scope">
-            <span v-if="activeName == '1'">
+            <span v-if="activeName == '1' || activeName == '2' || activeName == '3'">
               {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
             </span>
             <span v-else>
@@ -144,15 +150,28 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="文章来源">
+        <el-table-column label="内容"  v-if="activeName == '2'">
           <template slot-scope="scope">
-            <div v-if="activeName == '1'">
-              <span>{{ scope.row.sourceName }}</span>
+              <span class="myspan" v-html="scope.row.contentHtml"></span>
+<!--            <div v-html="$options.filters.ellipsis(scope.row.contentHtml )"></div>-->
+          </template>
+        </el-table-column>
+        <el-table-column label="来源商会">
+          <template slot-scope="scope">
+            <div v-if="activeName == '1' || activeName == '2' || activeName == '3'">
+              <span>{{ scope.row.chamberName ? scope.row.chamberName : '--' }}</span>
               <!-- <span v-if="scope.row.publishType == 1">{{ scope.row.chamberName }}</span> -->
               <!-- <span v-if="scope.row.publishType == 2 || scope.row.publishType == 5">{{ scope.row.uname }}</span> -->
             </div>
             <div v-else>
-              <span>{{ scope.row.uname }}</span>
+              <span>{{ scope.row.uname ? scope.row.uname : '--'}}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="来源" v-if="activeName == '2' || activeName == '3'">
+          <template slot-scope="scope">
+            <div>
+              <span>{{ scope.row.sourceName ? scope.row.sourceName : '--'}}</span>
             </div>
           </template>
         </el-table-column>
@@ -166,9 +185,8 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="150px">
+        <el-table-column label="审核状态" width="150px">
           <template slot-scope="scope">
-            <div v-if="scope.row.auditStatus == -1">全部</div>
             <div v-if="scope.row.auditStatus == 0">待审核</div>
             <div v-if="scope.row.auditStatus == 1">审核通过</div>
             <div v-if="scope.row.auditStatus == 2">审核不通过</div>
@@ -176,17 +194,23 @@
         </el-table-column>
         <el-table-column label="操作" width="200px">
           <template slot-scope="scope">
-            <el-button type="text" @click="detail(scope.row)">详情</el-button>
-            <el-button type="text" :disabled="scope.row.auditStatus == 0 ? false : true" @click="rowPass(scope.row)">通过
-            </el-button>
-            <el-button type="text" :disabled="scope.row.auditStatus == 0 ? false : true" @click="rowReject(scope.row)">
-              不通过
-            </el-button>
+            <div>
+              <el-button type="text" @click="detail(scope.row)">详情</el-button>
+            </div>
+            <div>
+              <el-button type="text" :disabled="scope.row.auditStatus == 0 ? false : true" @click="rowPass(scope.row)">通过
+              </el-button>
+            </div>
+            <div>
+              <el-button type="text" :disabled="scope.row.auditStatus == 0 ? false : true" @click="rowReject(scope.row)">
+                不通过
+              </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <div v-if="activeName == '3'">
+    <div v-if="activeName == '5'">
       <el-table id="out-table-1" v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
         <el-table-column label="评论内容" prop="commentContent" show-overflow-tooltip />
         <el-table-column label="发布者" prop="uname" />
@@ -212,35 +236,37 @@
     <div style="margin-top: 20px">
       <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
-    <el-dialog title="" :visible.sync="visible" width="80%">
+    <el-dialog title="" :visible.sync="visible" width="80%" @close="closeDia">
       <div class="d-preview-wrap">
         <div class="d-preview-area">
           <div class="d-article-title">
-            <span v-if="activeName == '1' || activeName == '3'">{{ detailObj.title }}</span>
+            <span v-if="activeName == '1' || activeName == '2'  || activeName == '3'  || activeName == '5'">{{ detailObj.title }}</span>
             <span v-else>{{
               detailObj.contentType === 1 ? '企业简介' : detailObj.contentType === 2 ? '发展历程' : detailObj.contentType === 3 ? '荣誉资质' : '联系我们'
             }}</span>
           </div>
-          <div v-if=" activeName== '1' || activeName == '3'" class="d-article-content" v-html="detailObj.contentHtml" />
+          <!--    视频渲染      -->
+          <div v-if="(activeName == '1' || activeName == '2'  || activeName == '3') && detailObj.contentType === 2" class="detail-dialog-video" id="videoContent"></div>
+          <div v-if="activeName == '1' || activeName == '2'  || activeName == '3'  || activeName == '5'" class="d-article-content" v-html="detailObj.contentHtml" />
           <div v-else class="d-article-content" v-html="detailObj.content" />
         </div>
         <div v-if="detailObj.auditStatus===0" style="height:50px;">
           <el-col :offset="10" :span="8">
-            <el-button v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
+            <el-button  v-if="has('', '通过')" type="primary" :actionid="getId('', '通过')" @click.native="passThrough($event)">
               通过
             </el-button>
-            <el-button v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
+            <el-button   v-if="has('', '不通过')" type="danger" :actionid="getId('', '不通过')" @click.native="openReject($event)">
               不通过
             </el-button>
           </el-col>
         </div>
         <div v-else style="height:150px;">
           <el-col :offset="10" :span="8">
-            <div v-if="activeName !== '3'">
+            <div v-if="activeName !== '5'">
               <p>状态：{{ detailObj.auditStatus === 1 ? '审核通过' : detailObj.auditStatus === 2 ? '审核不通过' : '' }}</p>
               <p v-if="detailObj.auditStatus===2">
-                不通过原因：{{ activeName == '1' ? detailObj.auditRemark : detailObj.rejectRemark }}</p>
-              <p>操作人：{{ activeName == '1' ? detailObj.operator : detailObj.auditor }}</p>
+                不通过原因：{{ activeName == '1' || activeName == '2'  || activeName == '3'  ? detailObj.auditRemark : detailObj.rejectRemark }}</p>
+              <p>操作人：{{ activeName == '1' || activeName == '2'  || activeName == '3'  ? detailObj.operator : detailObj.auditor }}</p>
               <p>操作时间：{{ detailObj.updatedTs }}</p>
             </div>
             <el-button type="success" @click="visible=false">
@@ -363,5 +389,16 @@
   .el-form-item__content {
     width: 280px;
   }
+}
+.myspan {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+.myspan img {
+  width: 20%;
+  height: 20%
 }
 </style>

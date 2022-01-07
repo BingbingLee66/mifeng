@@ -47,3 +47,12 @@ export function getMemberOptions(params) {
     params
   })
 }
+
+// 职位唯一性校验
+export function postNameExistValid(params) {
+  return request({
+    url: '/ec/memberPost/post-name-valid',
+    method: 'get',
+    params
+  })
+}

@@ -159,9 +159,9 @@
           <el-form-item label="确认密码" prop="confirmPassword">
             <el-input type="password" v-model="detailObj.confirmPassword"></el-input>
           </el-form-item>
-          <el-form-item label="排序" prop="level">
+          <!-- <el-form-item label="排序" prop="level">
             <el-input v-model="detailObj.level" minlength=1></el-input>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
