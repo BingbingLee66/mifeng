@@ -1,6 +1,6 @@
 // var httpUrl = 'https://ysh.9kd.com/ecservice/upload/richhtml-custom-img-upload'; //  图片上传路径
 var httpUrl = ''
-window.location.host === 'ysh.9kd.com' ?  httpUrl = 'https://ysh.9kd.com/ecservice/upload/richhtml-custom-img-upload' : httpUrl = 'https://tysh.9kd.com/ecservice/upload/richhtml-custom-img-upload'
+window.location.host === 'ysh.kaidicloud.com' ?  httpUrl = 'https://ysh.kaidicloud.com/ecservice/upload/richhtml-custom-img-upload' : httpUrl = 'https://ysh-test.kaidicloud.com/ecservice/upload/richhtml-custom-img-upload'
 console.log(httpUrl)
 CKEDITOR.plugins.add(
   'addpic', { // 注册名为addpic的插件
