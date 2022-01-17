@@ -173,6 +173,7 @@ height: 10px;
   word-wrap: break-word;
   word-break: break-all;
   overflow: hidden;
+  border: none !important;
 }
 .phone-article-content>p>img {
   width: 100% !important;
