@@ -234,3 +234,11 @@ export function updateChamberTop(params) {
    params
   })
 }
+//文章预览
+export function previewArticle(params) {
+  return request({
+    url: '/article/preview',
+    method: 'post',
+    data:params
+  })
+}

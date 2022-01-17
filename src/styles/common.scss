@@ -104,3 +104,152 @@ a{
 .mb-20 {
   margin-bottom: 20px;
 }
+.flex,
+.flex-x {
+  display: flex
+}
+
+.flex-x {
+  flex-direction: row
+}
+
+.flex-y {
+  display: flex;
+  flex-direction: column
+}
+
+.flex-x-start {
+  color: red
+}
+
+.flex-x-start,
+.flex-x-start-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start
+}
+
+.flex-x-start-center {
+  align-items: center
+}
+
+.flex-x-space,
+.flex-x-space-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly
+}
+
+
+.flex-x-center,
+.flex-x-center-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center
+}
+
+.flex-x-center-center {
+  align-items: center
+}
+
+.flex-x-0-center {
+  align-items: center
+}
+
+.flex-x-icon-right {
+  align-items: right
+}
+
+.flex-x-0-center,
+.flex-x-end {
+  display: flex;
+  flex-direction: row
+}
+
+.flex-x-end {
+  justify-content: flex-end
+}
+
+.flex-x-end-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center
+}
+
+.flex-x-between,
+.flex-x-between-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between
+}
+
+.flex-x-between-center {
+  align-items: center
+}
+
+.flex-x-around,
+.flex-x-around-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around
+}
+
+.flex-x-around-center {
+  align-items: center
+}
+
+.flex-y-start,
+.flex-y-start-center {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start
+}
+
+.flex-y-start-center {
+  justify-content: center
+}
+
+.flex-y-center,
+.flex-y-center-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center
+}
+
+.flex-y-center-center {
+  justify-content: center
+}
+
+.flex-y-end,
+.flex-y-end-center {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end
+}
+
+.flex-y-end-center {
+  justify-content: center
+}
+
+.flex-y-between {
+  justify-content: space-between
+}
+
+.flex-y-around,
+.flex-y-between {
+  display: flex;
+  flex-direction: column
+}
+
+.flex-y-around {
+  justify-content: space-around
+}
+
+.flex-wrap {
+  flex-wrap: wrap
+}
+
+.flex-1 {
+  flex: 1
+}

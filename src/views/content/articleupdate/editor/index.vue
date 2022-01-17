@@ -19,6 +19,7 @@
           </el-col>
         </div>
         <el-button @click="addColumnFunc" type="primary" style="margin-left:10px">添加栏目</el-button>
+          <el-button @click="showPreview" type="primary" style="margin-left:10px">实时预览</el-button>
       </el-row>
       <el-row>
         <el-col :span="18">
@@ -27,9 +28,9 @@
             <!-- <UEditor ref="ueditor" /> -->
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <!-- <el-col :span="4">
           <preview-ph :title="formObj.title" :htmlObj="formObj.contentHtml"></preview-ph>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row>
         <el-col :span="18">
@@ -127,6 +128,7 @@
       </el-form-item>
     </el-form>
     <addColumn ref="addColumnRef"></addColumn>
+    <preview ref="preview"></preview>
   </div>
 
 </template>

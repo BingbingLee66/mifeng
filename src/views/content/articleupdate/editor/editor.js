@@ -4,12 +4,14 @@ import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
 import PreviewPh from '@/components/ArticlePreview'
 import addColumn from '../editor/component/addColumn'
+import preview from './component/preview'
 export default {
   components: {
     Ckeditor,
     PreviewPh,
     addColumn,
-    UEditor
+    UEditor,
+    preview
   },
   data() {
     return {
@@ -207,6 +209,10 @@ export default {
       })
       console.log('htmlStr', htmlStr) */
       this.formObj.contentHtml = htmlStr
+    },
+    showPreview(){
+      this.$refs['preview'].open(this.formObj.title,this.formObj.contentHtml)
+
     }
   }
 }
