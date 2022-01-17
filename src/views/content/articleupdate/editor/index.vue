@@ -23,13 +23,14 @@
       <el-row>
         <el-col :span="18">
           <el-form-item label="文章内容：" class="ue-wrap">
-            <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor>
+            <!-- <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor> -->
             <!-- <UEditor ref="ueditor" /> -->
+            <editorElem @addParentHtml="addParentHtml" ref="editorElem"></editorElem>
           </el-form-item>
         </el-col>
-        <el-col :span="4">
+        <!-- <el-col :span="4">
           <preview-ph :title="formObj.title" :htmlObj="formObj.contentHtml"></preview-ph>
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row>
         <el-col :span="18">

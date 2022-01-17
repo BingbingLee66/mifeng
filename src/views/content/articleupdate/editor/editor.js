@@ -4,12 +4,14 @@ import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
 import PreviewPh from '@/components/ArticlePreview'
 import addColumn from '../editor/component/addColumn'
+import editorElem from '@/components/wangEditor/index'
 export default {
   components: {
     Ckeditor,
     PreviewPh,
     addColumn,
-    UEditor
+    UEditor,
+    editorElem
   },
   data() {
     return {
@@ -170,7 +172,13 @@ export default {
         })
       })
     },
+    addParentHtml(html){
+      console.log('子组件的',html)
+      this.formObj.contentHtml = html
+    },
     save() {
+      console.log('editorElem',this.$refs['editorElem'])
+      // return;
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.formObj.coverType === 0) {
