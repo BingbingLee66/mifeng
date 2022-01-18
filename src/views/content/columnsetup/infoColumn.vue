@@ -33,8 +33,8 @@
       <el-table-column label="展示路径">
         <template slot-scope="scope">
           <span v-if="scope.row.typeUrl==1">标签聚合页</span>
-          <span v-else-if="scope.row.typeUrl==2">商会必参</span>
-          <span v-else>标签聚合页与商会必参</span>
+          <span v-else-if="scope.row.typeUrl==2">合作商会</span>
+          <span v-else>标签聚合页与合作商会</span>
         </template>
       </el-table-column>
       <el-table-column label="权重">
@@ -105,7 +105,7 @@
           >
         </template>
       </el-table-column>
-       
+
     </el-table>
     <el-pagination
         background
@@ -144,7 +144,7 @@
         <label><span style="color: red">*</span>展示路径：</label>
         <el-checkbox-group v-model="typeUrl">
           <el-checkbox label="1" >标签聚合页</el-checkbox>
-            <el-checkbox label="2" >商会必参</el-checkbox>
+            <el-checkbox label="2" >合作商会</el-checkbox>
         </el-checkbox-group>
       </div>
       <div style="margin:10px 50px;color:#7F7F7F">提示：该栏目在前台展示的位置</div>
