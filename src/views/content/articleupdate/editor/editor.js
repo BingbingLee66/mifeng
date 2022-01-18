@@ -1,17 +1,19 @@
-import { getUpdateDetail, uploadCoverImg, save } from '@/api/content/article'
+import { getUpdateDetail, uploadCoverImg, save ,getWechatContent} from '@/api/content/article'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
 import PreviewPh from '@/components/ArticlePreview'
 import addColumn from '../editor/component/addColumn'
 import preview from './component/preview'
+import kdDialog from '@/components/common/kdDialog'
 export default {
   components: {
     Ckeditor,
     PreviewPh,
     addColumn,
     UEditor,
-    preview
+    preview,
+    kdDialog
   },
   data() {
     return {
@@ -47,7 +49,8 @@ export default {
         coverImg3: [
           { required: true, message: '封面图片必须上传', trigger: 'blur' }
         ]
-      }
+      },
+      articleUrl:''
     }
   },
   mounted() {
@@ -213,6 +216,31 @@ export default {
     showPreview(){
       this.$refs['preview'].open(this.formObj.title,this.formObj.contentHtml)
 
+    },
+    //导入微信文章按钮行为
+    importArticle(){
+      this.$refs['kdDialog'].show()
+    },
+    //点击保存导入微信文章行为
+    savePopupData(){
+      this.getWechatContentFunc()
+
+    },
+    //抓取微信文章
+    getWechatContentFunc(){
+      getWechatContent(this.articleUrl).then(res=>{
+        console.log('res',res)
+        if(res.state===1){
+          this.$refs.ckeditor1.init()
+          setTimeout(() => {
+            this.$refs.ckeditor1.initHtml(res.data.text === null ? '' : res.data.text);
+            this.formObj.contentHtml = res.data.text;
+            this.articleUrl=null
+          }, 500)
+          this.$refs['kdDialog'].hide()
+        }
+
+      })
     }
   }
 }
