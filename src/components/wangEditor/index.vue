@@ -4,7 +4,6 @@
     <div id="div1">
       <div></div>
     </div>
-    <el-button @click="getText"></el-button>
   </div>
 </template>
 <script>
@@ -17,9 +16,13 @@ export default {
       editorContent: "",
     };
   },
-  props: ["catchData", "content"], // 接收父组件的方法
+  props: [ "content"], // 接收父组件的内容
   watch: {
-    content() {
+    content(newVal, oldVal) {
+      // console.log('newVal',newVal),
+      // console.log('oldVal',oldVal)
+      // 重新设置编辑器内容
+      // console.log('content',this.content)
       this.editor.txt.html(this.content);
     },
   },
@@ -27,25 +30,75 @@ export default {
     const editor = new E("#div1");
     // 设置编辑区域高度为 500px
     editor.config.height = 500;
-
-    editor.config.uploadImgServer = 'https://ysh-test.kaidicloud.com/ecservice/upload/richhtml-custom-img-upload'
-    editor.config.uploadFileName = 'upload'
-// editor.config.uploadImgParams = {
-//     upload
-// }
+    //上传图片的请求地址
+    editor.config.uploadImgServer =
+      "https://ysh-test.kaidicloud.com/ecservice/upload/richhtml-custom-img-upload";
+    //上传图片的参数名称
+    editor.config.uploadFileName = "upload";
+    // 创建富文本实例
     editor.create();
-    editor.txt.html("<p>用 JS 设置的内容</p>"); // 重新设置编辑器内容
-    editor.txt.html("<p>我改了</p>"); // 更改
+    
+    // editor.txt.html("<p>用 JS 设置的内容</p>");
+    // editor.txt.html("<p>我改了</p>"); // 更改
     let txt = editor.txt.text();
     console.log("txt", txt);
-   
-    // this.editor = new E(this.$refs.editorElem)
+
+    //如果内容更改，就传给父组件
     editor.config.onchange = (html) => {
       this.$emit("addParentHtml", html);
-      console.log('html',html)
+      console.log("html", html);
       // this.editorContent = html
       // this.catchData(this.editorContent)  // 把这个html通过catchData的方法传入父组件
-    }
+    };
+    editor.config.uploadImgHooks = {
+      before: function (xhr, editor, files) {
+        console.log("xhr", xhr);
+        console.log("editor", editor);
+        console.log("files", files);
+        // 图片上传之前触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，files 是选择的图片文件
+
+        // 如果返回的结果是 {prevent: true, msg: 'xxxx'} 则表示用户放弃上传
+        // return {
+        //     prevent: true,
+        //     msg: '放弃上传'
+        // }
+      },
+      success: function (xhr, editor, result) {
+        // 图片上传并返回结果，图片插入成功之后触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
+        this.imgUrl = Object.values(result.data).toString();
+      },
+      fail: function (xhr, editor, result) {
+        // 图片上传并返回结果，但图片插入错误时触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
+      },
+      error: function (xhr, editor) {
+        console.log("xhr", xhr);
+        console.log("editor", editor);
+        console.log("files", files);
+        // 图片上传出错时触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
+      },
+      timeout: function (xhr, editor) {
+        // 图片上传超时时触发
+        // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
+      },
+
+      // 如果服务器端返回的不是 {errno:0, data: [...]} 这种格式，可使用该配置
+      // （但是，服务器端返回的必须是一个 JSON 格式字符串！！！否则会报错）
+      customInsert: function (insertImg, result, editor) {
+        // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
+        // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
+
+        // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
+        let url = Object.values(result.data); // result.data就是服务器返回的图片名字和链接
+        JSON.stringify(url); // 在这里转成JSON格式
+        insertImg(url);
+        // result 必须是一个 JSON 格式字符串！！！否则报错
+      },
+    };
+    this.editor = editor;
     // this.editor.customConfig.uploadImgServer = '你的上传图片的接口'
     // this.editor.customConfig.uploadFileName = '你自定义的文件名'
     // this.editor.customConfig.menus = [          // 菜单配置
@@ -70,72 +123,29 @@ export default {
     //   'redo'  // 重复
     // ]
     //                   // 下面是最重要的的方法
-    editor.config.uploadImgHooks = {
-      before: function (xhr, editor, files) {
-        console.log('xhr',xhr);
-          console.log('editor',editor);
-          console.log('files',files)
-                  // 图片上传之前触发
-                  // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，files 是选择的图片文件
-
-                  // 如果返回的结果是 {prevent: true, msg: 'xxxx'} 则表示用户放弃上传
-                  // return {
-                  //     prevent: true,
-                  //     msg: '放弃上传'
-                  // }
-      },
-      success: function (xhr, editor, result) {
-                  // 图片上传并返回结果，图片插入成功之后触发
-                  // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
-        this.imgUrl = Object.values(result.data).toString()
-      },
-      fail: function (xhr, editor, result) {
-                  // 图片上传并返回结果，但图片插入错误时触发
-                  // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
-      },
-      error: function (xhr, editor) {
-        console.log('xhr',xhr);
-          console.log('editor',editor);
-          console.log('files',files)
-                  // 图片上传出错时触发
-                  // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
-      },
-      timeout: function (xhr, editor) {
-                  // 图片上传超时时触发
-                  // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
-      },
-
-              // 如果服务器端返回的不是 {errno:0, data: [...]} 这种格式，可使用该配置
-              // （但是，服务器端返回的必须是一个 JSON 格式字符串！！！否则会报错）
-      customInsert: function (insertImg, result, editor) {
-                  // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
-                  // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
-
-                  // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
-        let url = Object.values(result.data)      // result.data就是服务器返回的图片名字和链接
-        JSON.stringify(url)    // 在这里转成JSON格式
-        insertImg(url)
-                  // result 必须是一个 JSON 格式字符串！！！否则报错
-      }
-    }
- this.editor = editor;
-    // this.editor.create()     // 创建富文本实例
-    // if (!this.content) {
-    //   this.editor.txt.html('请编辑内容1')
-    // }
   },
   methods: {
     getText() {
       //       let txt=this.editor.txt.text();
       // console.log('txt',txt)
-       let h=this.editor.txt.html();
-      console.log('h',h)
+      let h = this.editor.txt.html();
+      console.log("h", h);
     },
   },
 };
 </script>
 <style lang="scss" rel="stylesheet/scss">
 #wangeditor {
-  width: 50rem;
+  width: 200px;
 }
+.w-e-toolbar{
+  z-index: 2 !important;
+}
+.w-e-menu {
+  z-index: 2 !important;
+}
+.w-e-text-container {
+  z-index: 1 !important;
+}
+
 </style>

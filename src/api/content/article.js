@@ -234,3 +234,18 @@ export function updateChamberTop(params) {
    params
   })
 }
+//文章预览
+export function previewArticle(params) {
+  return request({
+    url: '/article/preview',
+    method: 'post',
+    data:params
+  })
+}
+//抓取微信文章内容
+export function getWechatContent(url ) {
+  return request({
+    url: `/ec/article/getWechatContent?url=${url}`,
+    method: 'get',
+  })
+}

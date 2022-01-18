@@ -1,17 +1,21 @@
-import { getUpdateDetail, uploadCoverImg, save } from '@/api/content/article'
+import { getUpdateDetail, uploadCoverImg, save ,getWechatContent} from '@/api/content/article'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
 import PreviewPh from '@/components/ArticlePreview'
 import addColumn from '../editor/component/addColumn'
 import editorElem from '@/components/wangEditor/index'
+import preview from './component/preview'
+import kdDialog from '@/components/common/kdDialog'
 export default {
   components: {
     Ckeditor,
     PreviewPh,
     addColumn,
     UEditor,
-    editorElem
+    editorElem,
+    preview,
+    kdDialog
   },
   data() {
     return {
@@ -47,7 +51,8 @@ export default {
         coverImg3: [
           { required: true, message: '封面图片必须上传', trigger: 'blur' }
         ]
-      }
+      },
+      articleUrl:''
     }
   },
   mounted() {
@@ -61,10 +66,10 @@ export default {
       this.init()
     } else {
       // this.$refs.ueditor.setContent(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      this.$refs.ckeditor1.init()
-      setTimeout(() => {
-        this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      }, 500)
+      // this.$refs.ckeditor1.init()
+      // setTimeout(() => {
+      //   this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      // }, 500)
     }
   },
   computed: {},
@@ -163,10 +168,10 @@ export default {
             'istop': dataObj.istop
           }
           // this.$refs.ueditor.setContent(htmlObj === null ? '' : htmlObj)
-          this.$refs.ckeditor1.init()
-          setTimeout(() => {
-            this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
-          }, 500)
+          // this.$refs.ckeditor1.init()
+          // setTimeout(() => {
+          //   this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
+          // }, 500)
         }).catch(error => {
           reject(error)
         })
@@ -215,6 +220,43 @@ export default {
       })
       console.log('htmlStr', htmlStr) */
       this.formObj.contentHtml = htmlStr
+    },
+    showPreview(){
+      this.$refs['preview'].open(this.formObj.title,this.formObj.contentHtml)
+    },
+    //导入微信文章按钮行为
+    importArticle(){
+      this.$refs['kdDialog'].show()
+    },
+    //点击保存导入微信文章行为
+    savePopupData(){
+      this.getWechatContentFunc()
+
+    },
+     //抓取微信文章
+     getWechatContentFunc(){
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(255, 255, 255,.5)'
+      });
+      getWechatContent(this.articleUrl).then(res=>{
+        if(res.state===1){
+          setTimeout(() => {
+            this.formObj.contentHtml = res.data.text;
+            this.articleUrl=null
+          }, 500)
+          this.$refs['kdDialog'].hide();
+          
+        }else{
+          this.$message.error(res.msg);
+          // 请输入微信公众号文章链接
+        }
+        this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+          loading.close();
+        });
+      })
     }
   }
 }

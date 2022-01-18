@@ -19,13 +19,15 @@
           </el-col>
         </div>
         <el-button @click="addColumnFunc" type="primary" style="margin-left:10px">添加栏目</el-button>
+          <el-button @click="showPreview" type="primary" style="margin-left:10px">实时预览</el-button>
+          <el-button @click="importArticle" type="primary" style="margin-left:10px">导入微信文章</el-button>
       </el-row>
       <el-row>
         <el-col :span="18">
           <el-form-item label="文章内容：" class="ue-wrap">
             <!-- <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor> -->
             <!-- <UEditor ref="ueditor" /> -->
-            <editorElem @addParentHtml="addParentHtml" ref="editorElem"></editorElem>
+            <editorElem :content="formObj.contentHtml" @addParentHtml="addParentHtml" ref="editorElem"></editorElem>
           </el-form-item>
         </el-col>
         <!-- <el-col :span="4">
@@ -128,6 +130,17 @@
       </el-form-item>
     </el-form>
     <addColumn ref="addColumnRef"></addColumn>
+    <preview ref="preview"></preview>
+    <kdDialog ref="kdDialog" dialogTitle="导入微信文章" @savePopupData="savePopupData">
+      <div slot="content" class="content">
+        <el-input v-model="articleUrl"  placeholder="请输入微信文章链接地址" ></el-input>
+        <div class="case">支持导入微信公众号文章</div>
+        <div >注意：1.如需获得正式使用权，请自行联系版权所有者
+          <br/> <span v-for="item in 10" :key="item">&nbsp;</span>2.多次导入内容会进行覆盖
+         
+        </div>
+      </div>
+    </kdDialog>
   </div>
 
 </template>
@@ -165,5 +178,16 @@
   .el-form-item__content {
     line-height: 1;
   }
+}
+.content{
+font-family: '微软雅黑', sans-serif;
+    font-weight: 400;
+      font-size: 14px;
+    
+}
+.case{
+  margin:8px 0px 10px 0px;
+  font-size: 16px;
+    line-height: 20px;
 }
 </style>
