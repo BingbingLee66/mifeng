@@ -62,7 +62,7 @@
               <el-select v-model="formObj.type" placeholder="请选择" clearable @clear="handleClear">
                 <el-option label="文章" :value="1"></el-option>
                 <el-option label="商品" :value="2"></el-option>
-                <el-option label="邀请有礼" :value="3"></el-option>
+                <el-option label="邀请有礼" :value="3" v-if="!this.ckey"></el-option>
               </el-select>
             </el-form-item>
           </el-col>

@@ -65,6 +65,10 @@
             <span v-if="scope.row.applyObject === 0">不限</span>
             <span v-if="scope.row.applyObject === 1 && scope.row.chamberName === null">限云商会成员</span>
             <span v-if="scope.row.applyObject === 1 && scope.row.chamberName !== null">限本商会成员</span>
+            <span v-if="scope.row.applyObject === 2 && scope.row.chamberName === null">限商会内指定职位</span>
+            <span v-if="scope.row.applyObject === 2 && scope.row.chamberName !== null">限本商内指定职位</span>
+            <span v-if="scope.row.applyObject === 3 && scope.row.chamberName === null">限商会内指定部门</span>
+            <span v-if="scope.row.applyObject === 3 && scope.row.chamberName !== null">限本商内指定部门</span>
           </template>
         </el-table-column>
         <el-table-column label="参加人数" width="100px">

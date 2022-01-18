@@ -139,7 +139,7 @@ export default {
       } else if (type === 2) {
         this.rejectRemark += ''
         this.rejectRemark = this.rejectRemark.trim()
-        if(!this.rejectRemark) return this.$message.error('请输入1-30字的驳回理由')
+        if (!this.rejectRemark) return this.$message.error('请输入1-30字的驳回理由')
         this.reject(row)
       }
     },
@@ -150,7 +150,8 @@ export default {
         'level': this.detailObj.level,
         'auditStatus': 1
       }
-      updateAudit(params).then(response => {
+      updateAudit(params).then(res => {
+        if (res.state !== 1) return this.$message.error(res.msg)
         this.$message({
           message: '通过成功',
           type: 'success'
@@ -170,8 +171,8 @@ export default {
           'rejectRemark': this.rejectRemark,
           'auditStatus': 2
         }
-        console.log(params,this.detailObj,111);
-        updateAudit(params).then(response => {
+        updateAudit(params).then(res => {
+          if (res.state !== 1) return this.$message.error(res.msg)
           this.$message({
             message: '驳回成功',
             type: 'success'
