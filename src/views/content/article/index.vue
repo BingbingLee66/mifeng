@@ -48,9 +48,9 @@
             <Ckeditor ref="ckeditor1" @getHtml="getHtml" />
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <!-- <el-col :span="6">
           <preview-ph :title="formObj.title" :html-obj="formObj.contentHtml" />
-        </el-col>
+        </el-col> -->
       </el-row>
       <el-row>
         <el-col :span="18">
