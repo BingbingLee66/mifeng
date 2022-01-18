@@ -134,7 +134,10 @@
       <div slot="content" class="content">
         <el-input v-model="articleUrl"  placeholder="请输入微信文章链接地址" ></el-input>
         <div class="case">支持导入微信公众号文章</div>
-        <div >注意：如需获得正式使用权，请自行联系版权所有者</div>
+        <div >注意：1.如需获得正式使用权，请自行联系版权所有者
+          <br/> <span v-for="item in 10" :key="item">&nbsp;</span>2.多次导入内容会进行覆盖
+         
+        </div>
       </div>
     </kdDialog>
   </div>

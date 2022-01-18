@@ -215,7 +215,6 @@ export default {
     },
     showPreview(){
       this.$refs['preview'].open(this.formObj.title,this.formObj.contentHtml)
-
     },
     //导入微信文章按钮行为
     importArticle(){
@@ -226,10 +225,15 @@ export default {
       this.getWechatContentFunc()
 
     },
-    //抓取微信文章
-    getWechatContentFunc(){
+     //抓取微信文章
+     getWechatContentFunc(){
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(255, 255, 255,.5)'
+      });
       getWechatContent(this.articleUrl).then(res=>{
-        console.log('res',res)
         if(res.state===1){
           this.$refs.ckeditor1.init()
           setTimeout(() => {
@@ -237,9 +241,15 @@ export default {
             this.formObj.contentHtml = res.data.text;
             this.articleUrl=null
           }, 500)
-          this.$refs['kdDialog'].hide()
+          this.$refs['kdDialog'].hide();
+          
+        }else{
+          this.$message.error(res.msg);
+          // 请输入微信公众号文章链接
         }
-
+        this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+          loading.close();
+        });
       })
     }
   }

@@ -1,13 +1,17 @@
-import { getUpdateDetail, save, uploadCoverImg } from '@/api/content/article'
+import { getUpdateDetail, save, uploadCoverImg ,getWechatContent} from '@/api/content/article'
 import { getContentColumnOptions, getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import { getOptions } from '@/api/content/articleSource'
 import Ckeditor from '@/components/CKEditor'
 import PreviewPh from '@/components/ArticlePreview'
-
+import preview from '../articleupdate/editor/component/preview'
+import kdDialog from '@/components/common/kdDialog'
+import { Loading } from 'element-ui';
 export default {
   components: {
     Ckeditor,
-    PreviewPh
+    PreviewPh,
+    preview,
+    kdDialog
   },
   data() {
     return {
@@ -51,7 +55,8 @@ export default {
         coverImg3: [
           { required: true, message: '封面图片必须上传', trigger: 'blur' }
         ]
-      }
+      },
+      articleUrl:'',
     }
   },
   mounted() {
@@ -202,6 +207,51 @@ export default {
     },
     getHtml(htmlStr) {
       this.formObj.contentHtml = htmlStr
+    },
+    showPreview(){
+      this.$refs['preview'].open(this.formObj.title,this.formObj.contentHtml)
+    },
+    //导入微信文章按钮行为
+    importArticle(){
+      this.$refs['kdDialog'].show()
+    },
+    //点击保存导入微信文章行为
+    savePopupData(){
+      if(this.articleUrl){
+        this.getWechatContentFunc()
+      }else{
+        this.$message.error('请填写导入微信文章路径');
+
+      }
+
+    },
+    //抓取微信文章
+    getWechatContentFunc(){
+      const loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(255, 255, 255,.5)'
+      });
+      getWechatContent(this.articleUrl).then(res=>{
+        console.log('res',res)
+        if(res.state===1){
+          this.$refs.ckeditor1.init()
+          setTimeout(() => {
+            this.$refs.ckeditor1.initHtml(res.data.text === null ? '' : res.data.text);
+            this.formObj.contentHtml = res.data.text;
+            this.articleUrl=null
+          }, 500)
+          this.$refs['kdDialog'].hide();
+          
+        }else{
+          this.$message.error(res.msg);
+          // 请输入微信公众号文章链接
+        }
+        this.$nextTick(() => { // 以服务的方式调用的 Loading 需要异步关闭
+          loading.close();
+        });
+      })
     }
   }
 }

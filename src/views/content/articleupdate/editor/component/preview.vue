@@ -89,6 +89,7 @@ export default {
   right: 0;
   top: 0;
   bottom: 0;
+  z-index: 100;
   .left {
     font-size: 16px;
     margin-right: 50px;
@@ -125,11 +126,11 @@ export default {
         height: 40px;
         position: absolute;
         right: -26px;
-        z-index: 2;
+          z-index: 102;
     }
   }
   .right-bg {
-    z-index: 1;
+    z-index: 101;
   }
   .right-content {
       margin-top: 110px ;
@@ -137,7 +138,7 @@ export default {
       height: 600px;
       overflow-y: scroll;
       overflow-x: visible;
-    z-index: 2;
+     z-index: 102;
     .content{
         padding: 0px 30px 0px 40px;
     }

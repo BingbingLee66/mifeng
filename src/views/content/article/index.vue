@@ -1,9 +1,20 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
+        <preview ref="preview"></preview>
+    <kdDialog ref="kdDialog" dialogTitle="导入微信文章" @savePopupData="savePopupData" >
+      <div slot="content" class="content">
+        <el-input v-model="articleUrl"  placeholder="请输入微信文章链接地址" ></el-input>
+        <div class="case">支持导入微信公众号文章</div>
+        <div >注意：1.如需获得正式使用权，请自行联系版权所有者
+          <br/> <span v-for="item in 10" :key="item">&nbsp;</span>2.多次导入内容会进行覆盖
+         
+        </div>
+      </div>
+    </kdDialog>
+    <el-form   ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
       <el-row>
         <el-col :span="24">
-<!--         这里需要注意 注释掉会存在 文章原先就不存在标题 编辑就必须填写标题问题不然验证不通过 <el-form-item v-if="!(this.articleId && !this.formObj.title)" label="文章标题：" prop="title">-->
+<!-- 这里需要注意 注释掉会存在 文章原先就不存在标题 编辑就必须填写标题问题不然验证不通过 <el-form-item v-if="!(this.articleId && !this.formObj.title)" label="文章标题：" prop="title">-->
           <el-form-item  label="文章标题：" prop="title">
             <el-input v-model="formObj.title" maxlength="60" placeholder="限输入5-60个字的标题" />
           </el-form-item>
@@ -25,6 +36,12 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row style="margin-left:100px">
+        
+ <el-button @click="showPreview" type="primary" style="margin-left:10px">实时预览</el-button>
+          <el-button @click="importArticle" type="primary" style="margin-left:10px">导入微信文章</el-button>
+      </el-row>
+       
       <el-row>
         <el-col :span="18">
           <el-form-item label="文章内容：">
@@ -200,5 +217,16 @@
 .license-box img {
   width: 100%;
   height: 100%;
+}
+.content{
+font-family: '微软雅黑', sans-serif;
+    font-weight: 400;
+      font-size: 14px;
+    
+}
+.case{
+  margin:8px 0px 10px 0px;
+  font-size: 16px;
+    line-height: 20px;
 }
 </style>
