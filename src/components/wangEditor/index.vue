@@ -35,6 +35,10 @@ export default {
       "https://ysh-test.kaidicloud.com/ecservice/upload/richhtml-custom-img-upload";
     //上传图片的参数名称
     editor.config.uploadFileName = "upload";
+    //剔除少数菜单
+    editor.config.excludeMenus = [
+        'video'
+    ]
     // 创建富文本实例
     editor.create();
     
@@ -122,7 +126,7 @@ export default {
     //   'undo',  // 撤销
     //   'redo'  // 重复
     // ]
-    //                   // 下面是最重要的的方法
+    //                   
   },
   methods: {
     getText() {
