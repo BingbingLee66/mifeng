@@ -2,7 +2,8 @@ import {
   getList,
   save,
   updateStatus,
-  updateColumnLevel
+  updateColumnLevel,
+  delColumn
 } from '@/api/content/columnsetup'
 import
 kdDialog
@@ -215,6 +216,34 @@ export default {
     currentChange(event){
       this.page=event;
       this.fetchData()
+    },
+    // 删除栏目
+    delColumn(row){
+      this.$confirm('确认删除该栏目吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        delColumn(row.id).then(response => {
+          if (response.state === 1) {
+            this.fetchData()
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+          }else{
+            this.$message({
+              type: 'error',
+              message: response.msg
+            });
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
     }
   }
 }

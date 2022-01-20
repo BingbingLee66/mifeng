@@ -4,7 +4,11 @@ import {
   getDetail,
   del,
   countTop,
-  setTop
+  setTop,
+  freezeList,
+  unFreezeList,
+  unFreeze,
+  freeze
 } from '@/api/content/article'
 import { getOptionsWithCkey } from '@/api/content/columnsetup'
 import { getChamberOptions } from '@/api/finance/finance'
@@ -43,7 +47,16 @@ export default {
       selectId: '',
       remark: '内容违规',
       contentColumnOptions: [],
-      chamberOptions: []
+      chamberOptions: [],
+      // 会员分享冻结/解冻相关
+      freezeVisible:false,
+      freezeOperationRow:{},
+      freezeOperationList:[],
+      freezeSelectedList:[],
+      unFreezeVisible:false,
+      unFreezeOperationRow:{},
+      unFreezeOperationList:[],
+      unFreezeSelectedList:[]
     }
   },
   computed: {},
@@ -316,6 +329,77 @@ export default {
     goSettop(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '置顶管理' })
+    },
+    // 会员分享 冻结/解冻相关
+    freezeClose(){
+      this.freezeVisible=false;
+      this.freezeOperationRow={};
+      this.freezeOperationList=[];
+      this.freezeSelectedList=[];
+    },
+    unFreezeClose(){
+      this.unFreezeVisible=false;
+      this.unFreezeOperationRow={};
+      this.unFreezeOperationList=[];
+      this.unFreezeSelectedList=[];
+    },
+    openFreeze(row){
+      this.freezeOperationRow=row;
+      this.freezeVisible=true;
+      freezeList(row.id).then(response => {
+        this.freezeOperationList = response.data;
+      })
+    },
+    openUnFreeze(row){
+      this.unFreezeOperationRow=row;
+      this.unFreezeVisible=true;
+      unFreezeList(row.id).then(response => {
+        this.unFreezeOperationList = response.data;
+      })
+    },
+    commitFreeze(){
+      let params = {};
+      params.freezeTargets=this.freezeSelectedList;
+      freeze(this.freezeOperationRow.id,params).then(response => {
+      this.freezeVisible=false;
+      this.freezeOperationRow={};
+      this.freezeOperationList=[];
+      this.freezeSelectedList=[];
+        if (response.state === 1) {
+          this.$message({
+            message: '冻结成功',
+            type: 'success'
+          })
+          this.fetchData()
+        } else {
+          this.$message({
+            message: '冻结失败',
+            type: 'failed'
+          })
+        }
+      })
+    },
+    commitUnFreeze(){
+      let params = {};
+      params.freezeTargets=this.unFreezeSelectedList;
+      unFreeze(this.unFreezeOperationRow.id,params).then(response => {
+        this.unFreezeVisible=false;
+        this.unFreezeOperationRow={};
+        this.unFreezeOperationList=[];
+        this.unFreezeSelectedList=[];
+        if (response.state === 1) {
+          this.$message({
+            message: '解冻成功',
+            type: 'success'
+          })
+          this.fetchData()
+        } else {
+          this.$message({
+            message: '解冻失败',
+            type: 'failed'
+          })
+        }
+      })
     }
   }
 }
