@@ -80,7 +80,7 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
 
 .preview-container {
   background-color: rgba(0, 0, 0, 0.447058823529412);
@@ -166,34 +166,18 @@ height: 10px;
 
 }
 
-// .phone-article-content {
-//   width: 100%;
-//   position: relative;
-//   font-size: 14px;
-//   font-weight: 500;
-//   word-wrap: break-word;
-//   word-break: break-all;
-//   overflow: hidden;
-//   border: none !important;
+// .content-html img{
+//     width: auto;
+//      height: auto ;
 // }
-// .phone-article-content>p>img {
+// .content-html>p>img {
+//   width: 100% !important;
+ 
+//   max-height: 100% !important;
+// }
+// .content-html>p>video {
 //   width: 100% !important;
 //   height: auto !important;
 //   max-height: 100% !important;
 // }
-// .phone-article-content>p>video {
-//   width: 100% !important;
-//   height: auto !important;
-//   max-height: 100% !important;
-// }
-.content-html>p>img {
-  width: 100% !important;
-  height: auto !important;
-  max-height: 100% !important;
-}
-.content-html>p>video {
-  width: 100% !important;
-  height: auto !important;
-  max-height: 100% !important;
-}
 </style>
