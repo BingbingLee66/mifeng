@@ -23,7 +23,8 @@
           <el-button @click="importArticle" type="primary" style="margin-left:10px">导入微信文章</el-button>
       </el-row>
       <el-row>
-        <el-col :span="18">
+        <el-col :span="20">
+             <!-- <el-col > -->
           <el-form-item label="文章内容：" class="ue-wrap">
             <!-- <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor> -->
             <!-- <UEditor ref="ueditor" /> -->
@@ -137,7 +138,6 @@
         <div class="case">支持导入微信公众号文章</div>
         <div >注意：1.如需获得正式使用权，请自行联系版权所有者
           <br/> <span v-for="item in 10" :key="item">&nbsp;</span>2.多次导入内容会进行覆盖
-         
         </div>
       </div>
     </kdDialog>

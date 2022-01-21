@@ -156,15 +156,15 @@ margin-top: 14px;
     }
   }
 }
-::-webkit-scrollbar {
+// ::-webkit-scrollbar {
 
-// background: red;
+// // background: red;
 
-width: 10px;
+// width: 10px;
 
-height: 10px;
+// height: 10px;
 
-}
+// }
 
 // .content-html img{
 //     width: auto;
