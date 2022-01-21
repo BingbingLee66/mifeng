@@ -23,7 +23,7 @@
             <span>文章出处</span>
              <span>2022年12月12日</span>
         </div>
-        <div class="phone-article-content" v-html="htmlObj"> 
+        <div class="phone-article-content" id="my-phone-article-content" v-html="htmlObj"> 
         </div>
           </div>
         
@@ -80,7 +80,7 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
 
 .preview-container {
   background-color: rgba(0, 0, 0, 0.447058823529412);
@@ -176,24 +176,51 @@ height: 10px;
   overflow: hidden;
   border: none !important;
 }
-.phone-article-content>p>img {
-  width: 100% !important;
+
+
+#my-phone-article-content{
+   width: 100%;
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
+  border: none !important;
+}
+#my-phone-article-content img{
+    width: 100% !important;
   height: auto !important;
   max-height: 100% !important;
 }
-.phone-article-content>p>video {
-  width: 100% !important;
+// .phone-article-content>p>img {
+//   width: 100% !important;
+//   height: auto !important;
+//   max-height: 100% !important;
+// }
+.phone-article-content img{
+    width: 100% !important;
   height: auto !important;
   max-height: 100% !important;
 }
-.content-html>p>img {
-  width: 100% !important;
-  height: auto !important;
-  max-height: 100% !important;
-}
-.content-html>p>video {
-  width: 100% !important;
-  height: auto !important;
-  max-height: 100% !important;
-}
+// .phone-article-content >p>span>img{
+//     width: 100% !important;
+//   height: auto !important;
+//   max-height: 100% !important;
+// }
+// .phone-article-content>p>video {
+//   width: 100% !important;
+//   height: auto !important;
+//   max-height: 100% !important;
+// }
+// .content-html>p>img {
+//   width: 100% !important;
+//   height: auto !important;
+//   max-height: 100% !important;
+// }
+// .content-html>p>video {
+//   width: 100% !important;
+//   height: auto !important;
+//   max-height: 100% !important;
+// }
 </style>
