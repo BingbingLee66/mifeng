@@ -131,7 +131,13 @@ export default {
 </script>
 <style lang="scss" rel="stylesheet/scss">
 #div1 {
-  resize: vertical;
+  // resize: vertical;
+  overflow-x: hidden;
+}
+#div1  img{
+  width: 100% !important;
+  height: auto !important;
+  max-height: 100% !important;
 }
 .w-e-toolbar {
   z-index: 2 !important;

@@ -45,7 +45,8 @@
       <el-row>
         <el-col :span="18">
           <el-form-item label="文章内容：">
-            <Ckeditor ref="ckeditor1" @getHtml="getHtml" />
+             <editorElem :content="formObj.contentHtml" @addParentHtml="addParentHtml" ref="editorElem"></editorElem>
+    
           </el-form-item>
         </el-col>
         <!-- <el-col :span="6">

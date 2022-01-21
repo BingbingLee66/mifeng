@@ -6,12 +6,14 @@ import PreviewPh from '@/components/ArticlePreview'
 import preview from '../articleupdate/editor/component/preview'
 import kdDialog from '@/components/common/kdDialog'
 import { Loading } from 'element-ui';
+import editorElem from '@/components/wangEditor/index'
 export default {
   components: {
     Ckeditor,
     PreviewPh,
     preview,
-    kdDialog
+    kdDialog,
+    editorElem
   },
   data() {
     return {
@@ -236,9 +238,9 @@ export default {
       getWechatContent(this.articleUrl).then(res=>{
         console.log('res',res)
         if(res.state===1){
-          this.$refs.ckeditor1.init()
+          // this.$refs.ckeditor1.init()
           setTimeout(() => {
-            this.$refs.ckeditor1.initHtml(res.data.text === null ? '' : res.data.text);
+            // this.$refs.ckeditor1.initHtml(res.data.text === null ? '' : res.data.text);
             this.formObj.contentHtml = res.data.text;
             this.articleUrl=null
           }, 500)
@@ -252,6 +254,10 @@ export default {
           loading.close();
         });
       })
-    }
+    },
+    addParentHtml(html){
+      console.log('子组件的',html)
+      this.formObj.contentHtml = html
+    },
   }
 }

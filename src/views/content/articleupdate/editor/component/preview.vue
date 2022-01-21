@@ -23,7 +23,7 @@
             <span>文章出处</span>
              <span>2022年12月12日</span>
         </div>
-        <div class="content-html" v-html="htmlObj"> 
+        <div class="phone-article-content" id="my-phone-article-content" v-html="htmlObj"> 
         </div>
           </div>
         
@@ -173,11 +173,41 @@ margin-top: 14px;
 // .content-html>p>img {
 //   width: 100% !important;
  
-//   max-height: 100% !important;
-// }
-// .content-html>p>video {
+.phone-article-content {
+  width: 100%;
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
+  border: none !important;
+}
+
+
+#my-phone-article-content{
+   width: 100%;
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+  word-wrap: break-word;
+  word-break: break-all;
+  overflow: hidden;
+  border: none !important;
+}
+#my-phone-article-content img{
+    width: 100% !important;
+  height: auto !important;
+  max-height: 100% !important;
+}
+// .phone-article-content>p>img {
 //   width: 100% !important;
 //   height: auto !important;
 //   max-height: 100% !important;
 // }
+.phone-article-content img{
+    width: 100% !important;
+  height: auto !important;
+  max-height: 100% !important;
+}
 </style>
