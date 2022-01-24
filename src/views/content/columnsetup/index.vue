@@ -119,6 +119,12 @@
               v-if="scope.row.status == 0"
               >解冻</el-button
             >
+            <el-button
+              class="my-btn"
+              type="text"
+              @click="delColumn(scope.row)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
 

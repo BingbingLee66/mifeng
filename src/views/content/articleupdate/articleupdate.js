@@ -6,7 +6,8 @@ import {
   updateStatus,
   updateChamberContentSort,
   getDetail,
-  updateChamberTop
+  updateChamberTop,
+  del
 } from '@/api/content/article'
 import {
   getContentColumnOptionsWithCkey,
@@ -364,6 +365,38 @@ export default {
           })
         }
       })
+    },
+    // 删除文章
+    delArticle(row){
+      this.$confirm('确认删除该文章吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let params ={};
+        let articleIds = [];
+        articleIds.push(row.id +'');
+        params.articleIds=articleIds;
+        del(params).then(response => {
+          if (response.state === 1) {
+            this.fetchData()
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+          }else{
+            this.$message({
+              type: 'error',
+              message: response.msg
+            });
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
     }
   }
 }

@@ -249,3 +249,33 @@ export function getWechatContent(url ) {
     method: 'get',
   })
 }
+// 会员分享-查询可冻结列表
+export function freezeList(id) {
+  return request({
+    url: `/ec/article/get-can-freeze-list?id=${id}`,
+    method: 'get',
+  })
+}
+// 会员分享-查询可解冻列表
+export function unFreezeList(id) {
+  return request({
+    url: `/ec/article/get-can-un-freeze-list?id=${id}`,
+    method: 'get',
+  })
+}
+//会员分享-冻结
+export function freeze(id,params) {
+  return request({
+    url: `/ec/article/freeze/${id}`,
+    method: 'post',
+    data:params
+  })
+}
+//会员分享-解冻
+export function unFreeze(id,params) {
+  return request({
+    url: `/ec/article/unFreeze/${id}`,
+    method: 'post',
+    data:params
+  })
+}
