@@ -466,8 +466,9 @@
               不通过理由：{{ detailObj.auditRemark }}
             </div>
             <div class="m-preview-area">
-              <div class="m-article-title">{{ detailObj.title }}</div>
-              <div class="m-article-content" v-html="detailObj.contentHtml"/>
+              <div class="m-article-title">{{ detailObj.title }}测试</div>
+              <div v-if=" detailObj.contentType === 2" class="m-article-content" id="videoContent"></div>
+              <div v-else class="m-article-content" v-html="detailObj.contentHtml"/>
             </div>
           </div>
         </el-dialog>
