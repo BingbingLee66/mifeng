@@ -196,7 +196,7 @@ margin-top: 14px;
   border: none !important;
 }
 #my-phone-article-content img{
-    width: 100% !important;
+    max-width: 100% ;
   height: auto !important;
   max-height: 100% !important;
 }
@@ -206,7 +206,7 @@ margin-top: 14px;
 //   max-height: 100% !important;
 // }
 .phone-article-content img{
-    width: 100% !important;
+    max-width: 100% ;
   height: auto !important;
   max-height: 100% !important;
 }

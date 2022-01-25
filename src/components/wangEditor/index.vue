@@ -133,9 +133,14 @@ export default {
 #div1 {
   // resize: vertical;
   overflow-x: hidden;
+  width: 800px;
+}
+.w-e-text{
+  width: 800px;
+  overflow-x: hidden;
 }
 #div1  img{
-  width: 100% !important;
+  max-width: 100% ;
   height: auto !important;
   max-height: 100% !important;
 }
