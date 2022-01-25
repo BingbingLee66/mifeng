@@ -698,18 +698,6 @@
   width: 0px;
 }
 
-.myspan {
-  overflow:hidden;
-  text-overflow:ellipsis;
-  display:-webkit-box;
-  -webkit-box-orient:vertical;
-  -webkit-line-clamp:2;
-}
-.myspan img {
-  width: 20%;
-  height: 20%
-}
-
 .m-preview-area img {
   width: 100% !important;
   height: auto !important;
@@ -723,6 +711,17 @@
     height: 90vh;
     overflow: hidden;
   }
+}
+.myspan {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+.myspan img {
+  width: 20%;
+  height: 20%
 }
 </style>
 
