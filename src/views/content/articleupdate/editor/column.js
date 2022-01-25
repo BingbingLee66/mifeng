@@ -1,11 +1,12 @@
 import { save } from '@/api/content/article'
 import Ckeditor from '@/components/CKEditor'
 import PreviewPh from '@/components/ArticlePreview'
-
+import editorElem from '@/components/wangEditor/index'
 export default {
   components: {
     Ckeditor,
-    PreviewPh
+    PreviewPh,
+    editorElem
   },
   data() {
     return {
@@ -39,7 +40,7 @@ export default {
         this.formObj['contentHtml'] = article.contentHtml ? article.contentHtml : ''
       }
     }
-    this.init()
+    // this.init()
   },
   computed: {
   },
@@ -60,9 +61,9 @@ export default {
         }
       }
     },
-    init () {
-      this.$refs.ckeditor2.initHtml(this.formObj.contentHtml)
-    },
+    // init () {
+    //   this.$refs.ckeditor2.initHtml(this.formObj.contentHtml)
+    // },
     save () {
       this.$refs['form'].validate((valid) => {
         if (valid) {
@@ -82,6 +83,9 @@ export default {
     },
     getHtml(htmlStr) {
       this.formObj.contentHtml = htmlStr
-    }
+    },
+    addParentHtml(html){
+      this.formObj.contentHtml = html
+    },
   }
 }

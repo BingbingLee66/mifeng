@@ -256,7 +256,6 @@ export default {
       })
     },
     addParentHtml(html){
-      console.log('子组件的',html)
       this.formObj.contentHtml = html
     },
   }

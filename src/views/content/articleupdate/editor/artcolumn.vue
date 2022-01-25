@@ -12,11 +12,12 @@
       <el-row>
         <el-col :span="18">
           <el-form-item label="文章内容：">
-            <Ckeditor ref="ckeditor2" @getHtml="getHtml"></Ckeditor>
+              <editorElem :content="formObj.contentHtml" @addParentHtml="addParentHtml" ref="editorElem"></editorElem>
+            <!-- <Ckeditor ref="ckeditor2" @getHtml="getHtml"></Ckeditor> -->
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <preview-ph :title="formObj.columnContent" :htmlObj="formObj.contentHtml"></preview-ph>
+          <!-- <preview-ph :title="formObj.columnContent" :htmlObj="formObj.contentHtml"></preview-ph> -->
         </el-col>
       </el-row>
       <el-form-item>
