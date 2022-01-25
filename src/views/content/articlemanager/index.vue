@@ -460,15 +460,19 @@
         @current-change="handleCurrentChange"
       />
       <div class="art-preview-wrap">
-        <el-dialog title="" :visible.sync="visible" width="60%">
+        <el-dialog title="" :visible.sync="visible" width="60%" @close="closeDia">
           <div class="m-preview-wrap">
             <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="m-article-remark">
               不通过理由：{{ detailObj.auditRemark }}
             </div>
             <div class="m-preview-area">
-              <div class="m-article-title">{{ detailObj.title }}测试</div>
-              <div v-if=" detailObj.contentType === 2" class="m-article-content" id="videoContent"></div>
+              <div class="m-article-title">{{ detailObj.title }}</div>
+              <div v-if=" detailObj.contentType === 2">
+                <div  v-if="detailObj.contentHtml" v-html="detailObj.contentHtml"/>
+                <div v-if=" detailObj.contentType === 2" class="m-article-content" id="videoContent"></div>
+              </div>
               <div v-else class="m-article-content" v-html="detailObj.contentHtml"/>
+
             </div>
           </div>
         </el-dialog>
@@ -692,7 +696,7 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 1.8;
-  margin: 20px;
+  //margin: 20px;
 }
 
 ::-webkit-scrollbar {
