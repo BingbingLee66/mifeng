@@ -14,6 +14,7 @@ export default {
     return {
       editor: null,
       editorContent: "",
+      isChange: false,//是否改变内容的变量
     };
   },
   props: ["content"], // 接收父组件的内容
@@ -22,8 +23,12 @@ export default {
       // console.log('newVal',newVal),
       // console.log('oldVal',oldVal)
       // 重新设置编辑器内容
-      // console.log('content',this.content)
-      this.editor.txt.html(this.content);
+      // console.log('content',this.content);
+      if (!this.isChange) {
+        this.editor.txt.html(this.content);
+      }
+
+      this.isChange = false;
     },
   },
   mounted() {
@@ -31,11 +36,13 @@ export default {
     // 设置编辑区域高度为 500px
     editor.config.height = 500;
     //上传图片的请求地址
-    editor.config.uploadImgServer =process.env.VUE_APP_BASE_API + "/upload/richhtml-custom-img-upload";
+    editor.config.uploadImgServer =
+      process.env.VUE_APP_BASE_API + "/upload/richhtml-custom-img-upload";
     //上传图片的参数名称
     editor.config.uploadFileName = "upload";
     //剔除少数菜单
     editor.config.excludeMenus = ["video"];
+    // editor.config.menuTooltipPosition = "down";
     // 创建富文本实例
     editor.create();
     this.editor = editor;
@@ -56,6 +63,7 @@ export default {
     //监听内容的改变
     addEditorChange(editor) {
       editor.config.onchange = (html) => {
+        this.isChange = true;
         this.$emit("addParentHtml", html);
         console.log("html", html);
         // this.editorContent = html
@@ -86,7 +94,7 @@ export default {
           //     msg: '放弃上传'
           // }
         },
-        success: function (xhr, editor, result) {
+        essuccess: function (xhr, editor, result) {
           // 图片上传并返回结果，图片插入成功之后触发
           // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
           this.imgUrl = Object.values(result.data).toString();
@@ -128,19 +136,19 @@ export default {
     },
   },
 };
-</script>
+</script>18
 <style lang="scss" rel="stylesheet/scss">
 #div1 {
   // resize: vertical;
-  overflow-x: hidden;
+  // overflow-x: hidden;
   width: 1000px;
 }
-.w-e-text{
+.w-e-text {
   width: 800px;
   overflow-x: hidden;
 }
-#div1  img{
-  max-width: 100% ;
+#div1 img {
+  max-width: 100%;
   height: auto !important;
   max-height: 100% !important;
 }
