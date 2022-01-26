@@ -664,7 +664,12 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
-
+/deep/ .el-checkbox__label{
+  width: 270px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
 .m-preview-wrap {
   width: 100%;
   height: 80vh;
@@ -728,5 +733,6 @@
   width: 20%;
   height: 20%
 }
+
 </style>
 
