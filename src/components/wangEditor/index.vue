@@ -133,7 +133,7 @@ export default {
 #div1 {
   // resize: vertical;
   overflow-x: hidden;
-  width: 800px;
+  width: 1000px;
 }
 .w-e-text{
   width: 800px;
