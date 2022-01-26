@@ -68,17 +68,21 @@
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
+              <div class="tips">建议尺寸：176 x 176;支持格式：jpeg、png、jpg</div>
           </el-form-item>
+        
         </el-col>
       </el-row>
-      <el-row v-if="formObj.coverType == 2">
+      <el-row v-if="formObj.coverType == 2" style="margin-bottom:0px">
         <el-col :span="5">
           <el-form-item label="封面图片：" prop="coverImgs[0]" :rules="rules.coverImg1">
             <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 0) }" :http-request="upload">
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
+            
           </el-form-item>
+            
         </el-col>
         <el-col :span="5">
           <el-form-item label="" prop="coverImgs[1]" :rules="rules.coverImg2">
@@ -97,6 +101,7 @@
           </el-form-item>
         </el-col>
       </el-row>
+         <div style="margin:0px 0px 10px 100px" v-if="formObj.coverType == 2" class="tips">建议尺寸：220 x 220;支持格式：jpeg、png、jpg</div>
       <el-row>
         <el-col :span="8">
           <el-form-item label="发布时间：">
@@ -189,5 +194,9 @@ font-family: '微软雅黑', sans-serif;
   margin:8px 0px 10px 0px;
   font-size: 16px;
     line-height: 20px;
+}
+.tips{
+  color:#bdbdbd;
+  font-size: 14px !important;
 }
 </style>

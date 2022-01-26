@@ -258,5 +258,6 @@ export default {
     addParentHtml(html){
       this.formObj.contentHtml = html
     },
+
   }
 }

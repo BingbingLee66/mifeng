@@ -179,7 +179,7 @@
       <el-form-item>
         <el-col :span="8">
           <el-button v-dbClick type="primary" @click="save">确定</el-button>
-          <!-- <el-button>取消</el-button> -->
+          <el-button  @click="closeTab">取消</el-button>
         </el-col>
       </el-form-item>
     </el-form>
