@@ -112,12 +112,13 @@ export default {
   border-top: 2px solid #d9dde2;
 }
 .phone-article-content>p>img {
-  width: 100% !important;
+  /* width: 100% !important; */
+  max-width: 100%!important;
   height: auto !important;
   max-height: 100% !important;
 }
 .phone-article-content>p>video {
-  width: 100% !important;
+  max-width: 100%!important;
   height: auto !important;
   max-height: 100% !important;
 }

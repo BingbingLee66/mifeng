@@ -26,7 +26,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="4" style="margin-left: 10px;">
-            <el-form-item :span="10" label="商会来源：">
+            <el-form-item :span="10" label="来源商会：">
               <el-select v-model="query.ckey" filterable @change="selectionChange">
                 <el-option
                   v-for="cc in chamberOptions"
@@ -75,9 +75,9 @@
     <el-row>
       <el-button v-if="has('', '删除')" type="danger" :actionid="getId('', '删除')" @click="batchDelArticle($event)">删除
       </el-button>
-      <el-button v-if="has('', '冻结')" type="danger" :actionid="getId('', '冻结')" @click="batchUpdateStatus($event)">冻结
+      <el-button v-if="has('', '冻结') && activeName == '1'" type="danger" :actionid="getId('', '冻结')" @click="batchUpdateStatus($event)">冻结
       </el-button>
-      <el-button v-if="has('', '置顶管理')" type="primary" :actionid="getId('', '置顶管理')" @click="goSettop($event)">置顶管理
+      <el-button v-if="has('', '置顶管理') && activeName == '1'" type="primary" :actionid="getId('', '置顶管理')" @click="goSettop($event)">置顶管理
       </el-button>
     </el-row>
     <div v-if="activeName == '1'">
@@ -255,6 +255,32 @@
       </div>
     </div>
     <div v-if="activeName == '2'">
+      <el-dialog
+        title="冻结"
+        :visible.sync="freezeVisible"
+        width="25%"
+        :before-close="freezeClose">
+          <el-checkbox-group v-model="freezeSelectedList" >
+            <el-checkbox style="display: block; padding-top: 10px;margin-left:10px" v-for="item in freezeOperationList" :key="item.value" :label="item.value">{{item.label}}</el-checkbox>
+          </el-checkbox-group>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="freezeClose">取 消</el-button>
+          <el-button type="primary" @click="commitFreeze">确 定</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog
+        title="解冻"
+        :visible.sync="unFreezeVisible"
+        width="25%"
+        :before-close="unFreezeClose">
+          <el-checkbox-group v-model="unFreezeSelectedList" >
+            <el-checkbox style="display: block; padding-top: 10px;margin-left:10px" v-for="item in unFreezeOperationList" :key="item.value" :label="item.value">{{item.label}}</el-checkbox>
+          </el-checkbox-group>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="unFreezeClose">取 消</el-button>
+          <el-button type="primary" @click="commitUnFreeze">确 定</el-button>
+        </span>
+      </el-dialog>
       <el-table
         id="out-table"
         v-loading="listLoading"
@@ -274,21 +300,28 @@
             {{ scope.row.id }}
           </template>
         </el-table-column>
-        <el-table-column label="文章标题">
+        <!-- <el-table-column label="动态标题">
           <template slot-scope="scope">
             {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
           </template>
-        </el-table-column>
-        <el-table-column label="来源商会" width="120px">
+        </el-table-column> -->
+
+        <el-table-column label="来源商会" width="150px">
           <template slot-scope="scope">
             {{ scope.row.chamberName }}
           </template>
         </el-table-column>
-        <el-table-column label="栏目" width="120px">
+        <el-table-column label="内容">
+          <template slot-scope="scope">
+              <span class="myspan" v-html="scope.row.contentHtml"></span>
+<!--            <div v-html="$options.filters.ellipsis(scope.row.contentHtml )"></div>-->
+          </template>
+        </el-table-column>
+        <!-- <el-table-column label="栏目" width="120px">
           <template slot-scope="scope">
             {{ scope.row.contentColumn }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="浏览量" width="120px" prop="readCount" sortable="custom">
           <template slot-scope="scope">
             {{ scope.row.readCount ? scope.row.readCount : '--' }}
@@ -319,22 +352,36 @@
             <div v-else>{{ scope.row.publishTs }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="100px">
+        <el-table-column label="状态" width="200px">
           <template slot-scope="scope">
-            <div v-if="scope.row.status == 0">已冻结(商会)</div>
-            <div v-if="scope.row.status == 1">已发布</div>
-            <div v-if="scope.row.status == 3">已冻结(平台)</div>
+                <div v-if="scope.row.status == 0">已冻结(商会)</div>
+                <div v-if="scope.row.status == 3 || scope.row.status == 1">
+                <div v-if="scope.row.statusNameVO.freezeList.length > 0">
+                  【已冻结（平台）】
+                  <span v-for="(item, index) in scope.row.statusNameVO.freezeList" :key="index">
+                    {{index==scope.row.statusNameVO.freezeList.length-1?item:item+"、"}}
+                  </span>
+                </div>
+                <div v-if="scope.row.statusNameVO.unFreezeList.length > 0">
+                  【已发布】
+                  <span v-for="(item, index) in scope.row.statusNameVO.unFreezeList" :key="index">
+                    {{index==scope.row.statusNameVO.unFreezeList.length-1?item:item+"、"}}
+                  </span>
+                </div>
+            </div>
+              <div v-if="scope.row.status == 4">定时发布<div>{{ scope.row.publishTs }}</div></div>
+              <div v-if="scope.row.status == 5">审核不通过</div>
             <div v-if="scope.row.status == 4">定时发布<div>{{ scope.row.publishTs }}</div></div>
             <div v-if="scope.row.status == 5">审核不通过</div>
           </template>
         </el-table-column>
-        <el-table-column label="是否置顶" width="100px">
+        <!-- <el-table-column label="是否置顶" width="100px">
           <template slot-scope="scope">
             <div v-if="scope.row.istop == 1">是</div>
             <div v-if="scope.row.istop == 0">否</div>
           </template>
-        </el-table-column>
-        <el-table-column label="操作" width="80" fixed="right">
+        </el-table-column> -->
+        <el-table-column label="操作" width="120" fixed="right">
           <template slot-scope="scope">
 <!--            <div>-->
 <!--              <el-button-->
@@ -346,7 +393,7 @@
 <!--                置顶-->
 <!--              </el-button>-->
 <!--            </div>-->
-            <div>
+            <!-- <div> -->
               <el-button
                 v-if="has('', '详情')"
                 type="text"
@@ -355,7 +402,18 @@
               >
                 详情
               </el-button>
-            </div>
+            <!-- </div> -->
+            <!-- <div> -->
+              <el-button
+                v-if="has('', '删除')"
+                type="text"
+                :actionid="getId('', '删除')"
+                @click="delArticle($event, scope.row)"
+              >
+                删除
+              </el-button>
+              <br/>
+            <!-- </div> -->
 <!--            <div>-->
 <!--              <el-button-->
 <!--                v-if="has('', '编辑')"-->
@@ -367,45 +425,27 @@
 <!--                编辑-->
 <!--              </el-button>-->
 <!--            </div>-->
-            <div>
+            <!-- <div> -->
               <el-button
-                v-if="has('', '冻结') && scope.row.status == 1"
+                v-if="has('', '冻结') && scope.row.isCanFreeze == 1"
                 type="text"
                 :actionid="getId('', '冻结')"
-                @click="updateStatus($event, scope.row)"
+                @click="openFreeze(scope.row)"
               >
                 冻结
               </el-button>
-            </div>
-            <div>
+            <!-- </div> -->
+            <!-- <div> -->
               <el-button
-                v-if="has('', '解冻') && scope.row.status == 0"
-                type="text"
-                disabled
-              >
-                解冻
-              </el-button>
-            </div>
-            <div>
-              <el-button
-                v-if="has('', '解冻') && scope.row.status == 3"
+                v-if="has('', '解冻') && scope.row.isCanUnFreeze == 1"
                 type="text"
                 :actionid="getId('', '解冻')"
-                @click="updateStatus($event, scope.row)"
+                @click="openUnFreeze(scope.row)"
               >
                 解冻
               </el-button>
-            </div>
-            <div>
-              <el-button
-                v-if="has('', '删除')"
-                type="text"
-                :actionid="getId('', '删除')"
-                @click="delArticle($event, scope.row)"
-              >
-                删除
-              </el-button>
-            </div>
+            <!-- </div> -->
+
           </template>
         </el-table-column>
       </el-table>
@@ -420,14 +460,19 @@
         @current-change="handleCurrentChange"
       />
       <div class="art-preview-wrap">
-        <el-dialog title="" :visible.sync="visible" width="60%">
+        <el-dialog title="" :visible.sync="visible" width="60%" @close="closeDia">
           <div class="m-preview-wrap">
             <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="m-article-remark">
               不通过理由：{{ detailObj.auditRemark }}
             </div>
             <div class="m-preview-area">
               <div class="m-article-title">{{ detailObj.title }}</div>
-              <div class="m-article-content" v-html="detailObj.contentHtml"/>
+              <div v-if=" detailObj.contentType === 2">
+                <div  v-if="detailObj.contentHtml" v-html="detailObj.contentHtml"/>
+                <div v-if=" detailObj.contentType === 2" class="m-article-content" id="videoContent"></div>
+              </div>
+              <div v-else class="m-article-content" v-html="detailObj.contentHtml"/>
+
             </div>
           </div>
         </el-dialog>
@@ -453,21 +498,21 @@
             {{ scope.row.id }}
           </template>
         </el-table-column>
-        <el-table-column label="文章标题">
+        <el-table-column label="动态标题">
           <template slot-scope="scope">
             {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
           </template>
         </el-table-column>
-        <el-table-column label="来源商会" width="120px">
+        <el-table-column label="来源商会" width="200px">
           <template slot-scope="scope">
             {{ scope.row.chamberName }}
           </template>
         </el-table-column>
-        <el-table-column label="栏目" width="120px">
+        <!-- <el-table-column label="栏目" width="120px">
           <template slot-scope="scope">
             {{ scope.row.contentColumn }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="浏览量" width="120px" prop="readCount" sortable="custom">
           <template slot-scope="scope">
             {{ scope.row.readCount ? scope.row.readCount : '--' }}
@@ -507,12 +552,12 @@
             <div v-if="scope.row.status == 5">审核不通过</div>
           </template>
         </el-table-column>
-        <el-table-column label="是否置顶" width="100px">
+        <!-- <el-table-column label="是否置顶" width="100px">
           <template slot-scope="scope">
             <div v-if="scope.row.istop == 1">是</div>
             <div v-if="scope.row.istop == 0">否</div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="操作" width="270" fixed="right">
           <template slot-scope="scope">
 <!--            <div>-->
@@ -525,7 +570,7 @@
 <!--                置顶-->
 <!--              </el-button>-->
 <!--            </div>-->
-            <div>
+            <!-- <div> -->
               <el-button
                 v-if="has('', '详情')"
                 type="text"
@@ -534,7 +579,7 @@
               >
                 详情
               </el-button>
-            </div>
+            <!-- </div> -->
 <!--            <div>-->
 <!--              <el-button-->
 <!--                v-if="has('', '编辑')"-->
@@ -546,7 +591,7 @@
 <!--                编辑-->
 <!--              </el-button>-->
 <!--            </div>-->
-            <div>
+            <!-- <div> -->
               <el-button
                 v-if="has('', '冻结') && scope.row.status == 1"
                 type="text"
@@ -555,7 +600,7 @@
               >
                 冻结
               </el-button>
-            </div>
+            <!-- </div> -->
             <div>
               <el-button
                 v-if="has('', '解冻') && scope.row.status == 0"
@@ -619,7 +664,12 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
-
+/deep/ .el-checkbox__label{
+  width: 270px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
 .m-preview-wrap {
   width: 100%;
   height: 80vh;
@@ -651,14 +701,14 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 1.8;
-  margin: 20px;
+  //margin: 20px;
 }
 
 ::-webkit-scrollbar {
   width: 0px;
 }
 
-> > > .m-preview-area img {
+.m-preview-area img {
   width: 100% !important;
   height: auto !important;
 }
@@ -672,5 +722,17 @@
     overflow: hidden;
   }
 }
+.myspan {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+}
+.myspan img {
+  width: 20%;
+  height: 20%
+}
+
 </style>
 

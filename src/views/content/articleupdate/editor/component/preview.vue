@@ -156,16 +156,23 @@ margin-top: 14px;
     }
   }
 }
-::-webkit-scrollbar {
+// ::-webkit-scrollbar {
 
-// background: red;
+// // background: red;
 
-width: 10px;
+// width: 10px;
 
-height: 10px;
+// height: 10px;
 
-}
+// }
 
+// .content-html img{
+//     width: auto;
+//      height: auto ;
+// }
+// .content-html>p>img {
+//   width: 100% !important;
+ 
 .phone-article-content {
   width: 100%;
   position: relative;
@@ -189,7 +196,7 @@ height: 10px;
   border: none !important;
 }
 #my-phone-article-content img{
-    width: 100% !important;
+    max-width: 100% ;
   height: auto !important;
   max-height: 100% !important;
 }
@@ -199,28 +206,8 @@ height: 10px;
 //   max-height: 100% !important;
 // }
 .phone-article-content img{
-    width: 100% !important;
+    max-width: 100% ;
   height: auto !important;
   max-height: 100% !important;
 }
-// .phone-article-content >p>span>img{
-//     width: 100% !important;
-//   height: auto !important;
-//   max-height: 100% !important;
-// }
-// .phone-article-content>p>video {
-//   width: 100% !important;
-//   height: auto !important;
-//   max-height: 100% !important;
-// }
-// .content-html>p>img {
-//   width: 100% !important;
-//   height: auto !important;
-//   max-height: 100% !important;
-// }
-// .content-html>p>video {
-//   width: 100% !important;
-//   height: auto !important;
-//   max-height: 100% !important;
-// }
 </style>

@@ -4,6 +4,7 @@ import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
 import PreviewPh from '@/components/ArticlePreview'
 import addColumn from '../editor/component/addColumn'
+import editorElem from '@/components/wangEditor/index'
 import preview from './component/preview'
 import kdDialog from '@/components/common/kdDialog'
 export default {
@@ -12,6 +13,7 @@ export default {
     PreviewPh,
     addColumn,
     UEditor,
+    editorElem,
     preview,
     kdDialog
   },
@@ -64,10 +66,10 @@ export default {
       this.init()
     } else {
       // this.$refs.ueditor.setContent(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      this.$refs.ckeditor1.init()
-      setTimeout(() => {
-        this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      }, 500)
+      // this.$refs.ckeditor1.init()
+      // setTimeout(() => {
+      //   this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      // }, 500)
     }
   },
   computed: {},
@@ -166,16 +168,22 @@ export default {
             'istop': dataObj.istop
           }
           // this.$refs.ueditor.setContent(htmlObj === null ? '' : htmlObj)
-          this.$refs.ckeditor1.init()
-          setTimeout(() => {
-            this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
-          }, 500)
+          // this.$refs.ckeditor1.init()
+          // setTimeout(() => {
+          //   this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
+          // }, 500)
         }).catch(error => {
           reject(error)
         })
       })
     },
+    addParentHtml(html){
+      console.log('子组件的',html)
+      this.formObj.contentHtml = html
+    },
     save() {
+      console.log('editorElem',this.$refs['editorElem'])
+      // return;
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.formObj.coverType === 0) {
@@ -235,9 +243,7 @@ export default {
       });
       getWechatContent(this.articleUrl).then(res=>{
         if(res.state===1){
-          this.$refs.ckeditor1.init()
           setTimeout(() => {
-            this.$refs.ckeditor1.initHtml(res.data.text === null ? '' : res.data.text);
             this.formObj.contentHtml = res.data.text;
             this.articleUrl=null
           }, 500)

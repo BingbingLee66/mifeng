@@ -23,10 +23,12 @@
           <el-button @click="importArticle" type="primary" style="margin-left:10px">导入微信文章</el-button>
       </el-row>
       <el-row>
-        <el-col :span="18">
+        <el-col :span="20">
+             <!-- <el-col > -->
           <el-form-item label="文章内容：" class="ue-wrap">
-            <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor>
+            <!-- <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor> -->
             <!-- <UEditor ref="ueditor" /> -->
+            <editorElem :content="formObj.contentHtml" @addParentHtml="addParentHtml" ref="editorElem"></editorElem>
           </el-form-item>
         </el-col>
         <!-- <el-col :span="4">
@@ -66,17 +68,21 @@
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
+              <div class="tips">建议尺寸：176 x 176;支持格式：jpeg、png、jpg</div>
           </el-form-item>
+        
         </el-col>
       </el-row>
-      <el-row v-if="formObj.coverType == 2">
+      <el-row v-if="formObj.coverType == 2" style="margin-bottom:0px">
         <el-col :span="5">
           <el-form-item label="封面图片：" prop="coverImgs[0]" :rules="rules.coverImg1">
             <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 0) }" :http-request="upload">
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
+            
           </el-form-item>
+            
         </el-col>
         <el-col :span="5">
           <el-form-item label="" prop="coverImgs[1]" :rules="rules.coverImg2">
@@ -95,6 +101,7 @@
           </el-form-item>
         </el-col>
       </el-row>
+         <div style="margin:0px 0px 10px 100px" v-if="formObj.coverType == 2" class="tips">建议尺寸：220 x 220;支持格式：jpeg、png、jpg</div>
       <el-row>
         <el-col :span="8">
           <el-form-item label="发布时间：">
@@ -136,7 +143,6 @@
         <div class="case">支持导入微信公众号文章</div>
         <div >注意：1.如需获得正式使用权，请自行联系版权所有者
           <br/> <span v-for="item in 10" :key="item">&nbsp;</span>2.多次导入内容会进行覆盖
-         
         </div>
       </div>
     </kdDialog>
@@ -188,5 +194,9 @@ font-family: '微软雅黑', sans-serif;
   margin:8px 0px 10px 0px;
   font-size: 16px;
     line-height: 20px;
+}
+.tips{
+  color:#bdbdbd;
+  font-size: 14px !important;
 }
 </style>

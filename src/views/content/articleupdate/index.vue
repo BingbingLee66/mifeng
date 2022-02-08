@@ -237,6 +237,7 @@
             >
               编辑
             </el-button>
+            <br/>
             <el-button
               class="my-btn"
               v-if="
@@ -267,6 +268,13 @@
             >
               详情
             </el-button>
+            <br/>
+            <el-button
+              class="my-btn"
+              type="text"
+              @click="delArticle(scope.row)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>

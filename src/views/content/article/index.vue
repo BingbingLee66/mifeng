@@ -45,7 +45,8 @@
       <el-row>
         <el-col :span="18">
           <el-form-item label="文章内容：">
-            <Ckeditor ref="ckeditor1" @getHtml="getHtml" />
+             <editorElem :content="formObj.contentHtml" @addParentHtml="addParentHtml" ref="editorElem"></editorElem>
+    
           </el-form-item>
         </el-col>
         <!-- <el-col :span="6">
@@ -91,10 +92,11 @@
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
+            <div class="tips">建议尺寸：176 x 176;支持格式：jpeg、png、jpg</div>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-if="formObj.coverType == 2">
+      <el-row v-if="formObj.coverType == 2" style="margin-bottom:0px">
         <el-col :span="5">
           <el-form-item label="封面图片：" prop="coverImgs[0]" :rules="rules.coverImg1">
             <el-upload
@@ -107,6 +109,7 @@
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
+           
           </el-form-item>
         </el-col>
         <el-col :span="5">
@@ -135,9 +138,13 @@
               <img v-if="formObj.coverImgs[2]" :src="formObj.coverImgs[2]" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
+             
           </el-form-item>
+          
         </el-col>
-      </el-row>
+       
+      </el-row >
+        <div style="margin:0px 0px 10px 100px" v-if="formObj.coverType == 2" class="tips">建议尺寸：220 x 220;支持格式：jpeg、png、jpg</div>
       <el-row>
         <el-col :span="8">
           <el-form-item label="发布时间：">
@@ -172,7 +179,7 @@
       <el-form-item>
         <el-col :span="8">
           <el-button v-dbClick type="primary" @click="save">确定</el-button>
-          <!-- <el-button>取消</el-button> -->
+          <el-button  @click="closeTab">取消</el-button>
         </el-col>
       </el-form-item>
     </el-form>
@@ -228,5 +235,9 @@ font-family: '微软雅黑', sans-serif;
   margin:8px 0px 10px 0px;
   font-size: 16px;
     line-height: 20px;
+}
+.tips{
+  color:#bdbdbd;
+  font-size: 14px !important;
 }
 </style>

@@ -77,3 +77,10 @@ export function updateColumnLevel(params) {
     method: 'get',
   })
 }
+// 删除栏目
+export function delColumn(id) {
+  return request({
+    url: '/ec/contentColumn/delete?id=' + id,
+    method: 'delete',
+  })
+}
