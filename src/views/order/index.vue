@@ -204,7 +204,7 @@
         <el-form-item>
           <el-col :offset="6" :span="20">
             <el-button type="primary" @click="sendOut('shipping')">发布</el-button>
-            <el-button>取消</el-button>
+            <el-button @click="showSendOutDialog = false">取消</el-button>
           </el-col>
         </el-form-item>
       </el-form>
