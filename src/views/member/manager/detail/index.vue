@@ -10,7 +10,10 @@
         <el-col :span="2" class="wx-col col-title">微信</el-col>
         <el-col :span="3" class="wx-col els-title">{{ member.uname ? member.uname : '未绑定' }}</el-col>
         <el-col :span="2" class="wx-col col-title">手机号</el-col>
-        <el-col :span="3" class="wx-col">{{ member.phone ? member.phone : '空' }}</el-col>
+        <el-col :span="3" class="wx-col">
+          <span v-if="type===1">{{member.phone ? member.phone : '空'}}</span>
+          <span v-else>{{member.contactPhone ? member.contactPhone : '空'}}</span>
+          </el-col>
         <el-col :span="2" class="wx-col col-title">注册时间</el-col>
         <el-col :span="4" class="wx-col">{{ member.createdTs ? member.createdTs : '空' }}</el-col>
         <el-col :span="2" class="wx-col col-title">注册方式</el-col>
