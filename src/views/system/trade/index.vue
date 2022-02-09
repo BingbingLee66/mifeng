@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-col :span="11">
-      <el-table :data="firstlist" v-loading="flistLoading" element-loading-text="Loading" border fit highlight-current-row
+      <el-table ref="myTable" :data="firstlist" v-loading="flistLoading" element-loading-text="Loading" border fit highlight-current-row
       @row-click="rowClick">
         <el-table-column label="一级行业分类">
           <template slot-scope="scope">
