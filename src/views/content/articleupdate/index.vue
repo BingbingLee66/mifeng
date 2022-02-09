@@ -237,7 +237,7 @@
             >
               编辑
             </el-button>
-            <br/>
+            <!-- <br/> -->
             <el-button
               class="my-btn"
               v-if="
@@ -268,7 +268,7 @@
             >
               详情
             </el-button>
-            <br/>
+            <!-- <br/> -->
             <el-button
               class="my-btn"
               type="text"
