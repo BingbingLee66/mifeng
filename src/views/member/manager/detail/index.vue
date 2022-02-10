@@ -11,7 +11,7 @@
         <el-col :span="3" class="wx-col els-title">{{ member.uname ? member.uname : '未绑定' }}</el-col>
         <el-col :span="2" class="wx-col col-title">手机号</el-col>
         <el-col :span="3" class="wx-col">
-          <span v-if="type==0">{{member.phone ? member.phone : '空'}}</span>
+          <span v-if="type==0">{{userInfo.phone ? userInfo.phone : '空'}}</span>
           <span v-else>{{member.contactPhone ? member.contactPhone : '空'}}</span>
           </el-col>
         <el-col :span="2" class="wx-col col-title">注册时间</el-col>
