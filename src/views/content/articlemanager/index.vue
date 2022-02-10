@@ -37,7 +37,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4" style="margin-left: 10px;" v-if="query.ckey">
+          <el-col :span="4" style="margin-left: 10px;" v-if="query.ckey && activeName==1">
             <el-form-item :span="10" label="栏目：">
               <el-select v-model="query.contentColumnId" filterable>
                 <el-option
