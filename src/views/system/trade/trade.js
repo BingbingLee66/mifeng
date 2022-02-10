@@ -110,7 +110,16 @@ export default {
             message: '删除成功',
             type: 'success'
           })
-          this.init()
+          if(row.parentId!==0){
+            this.firstlist.find(item=>{
+              if(item.parentId===row.parentId){
+                this.setCurrent(item)
+              }
+            })
+            this.secondTrade ()
+          }else{
+            this.init()
+          }
         })
       }).catch(() => {
         this.$message({
