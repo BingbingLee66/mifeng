@@ -349,7 +349,8 @@ export default {
       let params = {
         articleId: row.id,
         ckey: row.ckey,
-        type: row.istop ? 0 : 1
+        type: 1
+        // type: row.istop ? 0 : 1
       }
       updateChamberTop(params).then(res => {
         if(res.state===1){
