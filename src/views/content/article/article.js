@@ -65,7 +65,7 @@ export default {
     this.getArticleSourceType()
     if (this.$route.params.articleId) {
       this.articleId = this.$route.params.articleId
-      // this.init()
+      this.init()
     } else {
       this.getContentColumnType()
       // this.$refs.ckeditor1.init()
