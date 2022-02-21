@@ -168,9 +168,16 @@ export default {
 
     // 关闭视频播放弹窗
     closeDia() {
-      if ((this.activeName === '1' || this.activeName === '2' || this.activeName === '3') && this.detailObj.contentType === 2) {
-        this.$refs['videoRef'].closeDia()
+      // if ((this.activeName === '1' || this.activeName === '2' || this.activeName === '3') && this.detailObj.contentType === 2) {
+      //   console.log('this.$refs[videoRef]关闭',this.$refs['videoRef'])
+      //   this.$refs['videoRef'].closeDia();
+      //   this.showVideo=false;
+      // }
+      // console.log('进父销毁')
+      if(this.detailObj.vid){
+        this.$refs['videoRef'].closeDia();
       }
+      
       this.visible = false
     },
     /**
@@ -222,6 +229,7 @@ export default {
       let params = {
         id: this.selectId
       }
+      this.visible = true
       getDetail(params).then(response => {
         this.detailObj = response.data.dtl
         // 视频是否存在 渲染操作
@@ -229,12 +237,21 @@ export default {
           console.log('进')
         //  videoUtils('videoContent',this.detailObj.vid)
           //  this.renderVideo()
-          this.showVideo=true;
+          // this.visible = true
+          // this.showVideo=true;
+          this.$nextTick(() => {
+            console.log('this.$refs[videoRef]',this.$refs['videoRef'])
+         
+            this.$refs['videoRef'].show(this.detailObj.vid)
+          })
+         
+        
         }
-      }).catch(error => {
-        reject(error)
       })
-      this.visible = true
+      // .catch(error => {
+      //   reject(error)
+      // })
+      
     },
     handlerChange(value) {
       this.query.tradeType = value[value.length - 1]

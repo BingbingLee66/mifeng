@@ -470,7 +470,7 @@
               <div v-if=" detailObj.contentType === 2">
                 <div  v-if="detailObj.contentHtml" v-html="detailObj.contentHtml"/>
                 <!-- <div v-if=" detailObj.contentType === 2" class="m-article-content" id="videoContent"></div> -->
-                <videoComponent ref="videoRef" :vid="detailObj.vid" v-if="showVideo" height="530px"></videoComponent>
+                <videoComponent ref="videoRef" v-if="detailObj.vid" :vid="detailObj.vid"  height="530px"></videoComponent>
               </div>
               <div v-else class="m-article-content" v-html="detailObj.contentHtml"/>
 
@@ -645,7 +645,7 @@
         @current-change="handleCurrentChange"
       />
       <div class="art-preview-wrap">
-        <el-dialog title="" :visible.sync="visible" width="60%">
+        <el-dialog title="" :visible.sync="visible" width="60%" @close="closeDia">
           <div class="m-preview-wrap">
             <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="m-article-remark">
               不通过理由：{{ detailObj.auditRemark }}
@@ -653,7 +653,8 @@
             <div class="m-preview-area">
               <div class="m-article-title">{{ detailObj.title }}</div>
               <div class="m-article-content" v-html="detailObj.contentHtml"/>
-                <videoComponent ref="videoRef" :vid="detailObj.vid" v-if="showVideo" height="530px"></videoComponent>
+             
+                <videoComponent  ref="videoRef" v-if="detailObj.vid" :vid="detailObj.vid" height="530px"></videoComponent>
             </div>
           </div>
         </el-dialog>
