@@ -469,7 +469,8 @@
               <div class="m-article-title">{{ detailObj.title }}</div>
               <div v-if=" detailObj.contentType === 2">
                 <div  v-if="detailObj.contentHtml" v-html="detailObj.contentHtml"/>
-                <div v-if=" detailObj.contentType === 2" class="m-article-content" id="videoContent"></div>
+                <!-- <div v-if=" detailObj.contentType === 2" class="m-article-content" id="videoContent"></div> -->
+                <videoComponent ref="videoRef" :vid="detailObj.vid" v-if="showVideo" height="530px"></videoComponent>
               </div>
               <div v-else class="m-article-content" v-html="detailObj.contentHtml"/>
 
@@ -652,6 +653,7 @@
             <div class="m-preview-area">
               <div class="m-article-title">{{ detailObj.title }}</div>
               <div class="m-article-content" v-html="detailObj.contentHtml"/>
+                <videoComponent ref="videoRef" :vid="detailObj.vid" v-if="showVideo" height="530px"></videoComponent>
             </div>
           </div>
         </el-dialog>
