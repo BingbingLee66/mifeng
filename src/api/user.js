@@ -24,3 +24,19 @@ export function logout(token) {
     method: 'post'
   })
 }
+//官方账号列表
+export function officialUserList(params) {
+  return request({
+    url: '/ec/official-user/officialUserList',
+    method: 'get',
+    params
+  })
+}
+//筛选可添加为官方账号的用户账号
+export function availableWxUser(params) {
+  return request({
+    url: '/ec/official-user/availableWxUser',
+    method: 'get',
+    params
+  })
+}

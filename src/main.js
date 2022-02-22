@@ -40,7 +40,9 @@ Vue.component('v-chart', ECharts)
 Vue.config.productionTip = false
 
 Vue.use(VueClipboard)
+import kdDialog from './components/common/kdDialog'
 
+Vue.component('kdDialog', kdDialog)
 const vue=new Vue({
   el: '#app',
   router,
