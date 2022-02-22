@@ -24,7 +24,17 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :offset="1" :span="5">
+            <el-col :offset="1" :span="4" v-if="activeName !== '1'">
+              <el-form-item label="动态类型：">
+                <el-select v-model="query.dynamicType">
+                  <el-option :label="item.label" :value="item.value"  v-for="item in dynamicTypeList" :key="item.value"/>
+                  <!-- <el-option label="待审核" :value="0" />
+                  <el-option label="审核通过" :value="1" />
+                  <el-option label="审核不通过" :value="2" /> -->
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :offset="1" :span="4">
               <el-form-item label="审核状态：">
                 <el-select v-model="query.auditStatus">
                   <el-option label="全部" :value="-1" />
@@ -34,7 +44,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :offset="1" :span="5">
+            <el-col :offset="1" :span="4">
               <el-form-item label="发布时间：">
                 <el-select v-model="query.publishTimeType">
                   <el-option label="全部" :value="0" />
@@ -132,7 +142,7 @@
       </el-button>
     </el-row> -->
 
-    <div style="width:100%;margin-bottom: 20px;text-align: right;color: #ccc;">
+    <div style="width:100%;margin-bottom: 20px;text-align: left;color: #ccc;">
       待审核指通过了微信内容安全审核，待审核的内容前端可见，人工审核不通过之后，前端不可见。
     </div>
     <div v-if="activeName == '1' || activeName == '2' || activeName == '3' || activeName == '4'">
@@ -150,10 +160,23 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="内容"  v-if="activeName == '2'">
+        <el-table-column label="内容"  v-if="activeName == '2' ">
           <template slot-scope="scope">
               <span class="myspan" v-html="scope.row.contentHtml"></span>
 <!--            <div v-html="$options.filters.ellipsis(scope.row.contentHtml )"></div>-->
+          </template>
+        </el-table-column>
+        <el-table-column label="动态类型"  v-if="activeName == '2' || activeName == '3'">
+          <template slot-scope="scope">
+            <span v-if="scope.row.contentType ==1">
+              图文动态
+            </span>
+             <span v-else-if="scope.row.contentType ==2">
+             视频动态
+            </span>
+             <span v-else>
+             其他
+            </span>
           </template>
         </el-table-column>
         <el-table-column label="来源商会">

@@ -9,8 +9,12 @@ import {
   updateCommentStatus
 } from '@/api/content/article'
 import moment from 'moment'
-import { getChamberOptions } from '@/api/finance/finance'
-import { getSts } from '@/api/vod/vod'
+import {
+  getChamberOptions
+} from '@/api/finance/finance'
+import {
+  getSts
+} from '@/api/vod/vod'
 
 export default {
   data() {
@@ -23,7 +27,8 @@ export default {
         publishType: 1,
         ckey: '',
         publishTimeType: 4,
-        auditStatus: 0
+        auditStatus: 0,
+        dynamicType:"0"
       },
       chamberOptions: [],
       queryComment: {
@@ -62,13 +67,27 @@ export default {
       detailDialogVisible: false,
       videoPlayer: null,
       videoPlayerMap: {},
+      //动态类型数组
+      dynamicTypeList: [{
+          label: '全部',
+          value: "0",
+        },
+        {
+          label: '图文动态',
+          value: "1",
+        },
+        {
+          label: '视频动态',
+          value: "2",
+        }
+      ]
+
     }
   },
 
   computed: {},
 
-  created() {
-  },
+  created() {},
   mounted() {
     const activename = window.localStorage.getItem('activenamec')
     if (activename) {
@@ -81,13 +100,15 @@ export default {
   methods: {
     has(tabName, actionName) {
       return this.$store.getters.has({
-        tabName, actionName
+        tabName,
+        actionName
       })
     },
 
     getId(tabName, actionName) {
       return this.$store.getters.getId({
-        tabName, actionName
+        tabName,
+        actionName
       })
     },
 
@@ -95,7 +116,13 @@ export default {
     chamberList() {
       getChamberOptions().then(response => {
         this.chamberOptions = response.data.data
-        this.chamberOptions.unshift({ label: '全部', value: '' }, { label: '凯迪云商会', value: 'kaidiyun' })
+        this.chamberOptions.unshift({
+          label: '全部',
+          value: ''
+        }, {
+          label: '凯迪云商会',
+          value: 'kaidiyun'
+        })
         this.query.ckey = this.chamberOptions[0].value
       })
     },
@@ -138,7 +165,8 @@ export default {
         ckey: this.query.ckey,
         publishType: -1,
         publishTimeType: 4, // 1-24h 2-3d 3-7d 4-1m
-        auditStatus: 0 // 审核  0未审核 1审核通过 2审核不通过
+        auditStatus: 0, // 审核  0未审核 1审核通过 2审核不通过
+        dynamicType:"0"//动态类型 
       }
       this.currentpage = 1
       this.limit = 10
@@ -175,6 +203,7 @@ export default {
           'publishType': this.activeName,
           'publishTimeType': this.query.publishTimeType,
           'auditStatus': this.query.auditStatus,
+          dynamicType: this.query.dynamicType
         }
         await getAuditList(params).then(response => {
           this.list = response.data.data.list
@@ -216,7 +245,9 @@ export default {
     },
     fitterSecond() {
       let arr = this.list
-      if (arr.length < 1) { return }
+      if (arr.length < 1) {
+        return
+      }
       arr.forEach(item => {
         if (item.createdTs) {
           let now = item.createdTs
@@ -406,8 +437,8 @@ export default {
     },
 
     /*
-    * 多选通过/不通过
-    * */
+     * 多选通过/不通过
+     * */
     batchPassThrough(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
