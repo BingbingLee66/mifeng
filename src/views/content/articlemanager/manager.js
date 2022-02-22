@@ -25,7 +25,10 @@ export default {
         ckey: '',
         contentColumnId: '',
         publishTimeType: 3,
-        contentModuleId: 1
+        contentModuleId: 1,
+        dynamicType:"0",
+        // 0 否 1 是 '' 全部
+        backgroundRelease:''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -64,6 +67,35 @@ export default {
       unFreezeSelectedList:[],
       //展示视频组件
       showVideo:false,
+         //动态类型数组
+         dynamicTypeList: [{
+          label: '全部',
+          value: "0",
+        },
+        {
+          label: '图文动态',
+          value: "1",
+        },
+        {
+          label: '视频动态',
+          value: "2",
+        }
+      ],
+      //后台发布类型
+      backstageList:[
+        {
+          label: '全部',
+          value: "",
+        },
+        {
+          label: '否',
+          value: "0",
+        },
+        {
+          label: '是',
+          value: "1",
+        },
+      ]
     }
   },
   components:{
@@ -212,7 +244,9 @@ export default {
         'contentColumn': this.query.contentColumnId,
         'status': this.query.status,
         'contentModuleId': this.query.contentModuleId,
-        'publishTimeType': this.query.publishTimeType
+        'publishTimeType': this.query.publishTimeType,
+        'dynamicType':this.query.dynamicType,
+        'backgroundRelease':this.query.backgroundRelease
       }
       // if (sort) {
       //   params['order'] = sort

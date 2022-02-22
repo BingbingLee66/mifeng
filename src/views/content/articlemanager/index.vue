@@ -6,14 +6,14 @@
       <el-tab-pane label="企业动态" name="3" />
     </el-tabs>
     <div class="block">
-      <el-form ref="query" label-width="auto" label-position="right" :model="query">
+      <el-form ref="query" label-width="auto"  :model="query">
         <el-row>
           <el-col :span="6">
             <el-form-item label="文章标题：">
               <el-input v-model="query.title" placeholder="请输入文章标题"/>
             </el-form-item>
           </el-col>
-          <el-col :span="4" style="margin-left: 10px;">
+          <el-col :offset="1" :span="4" >
             <el-form-item label="文章状态：">
               <el-select v-model="query.status">
                 <el-option label="已发布" :value="1"/>
@@ -25,7 +25,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4" style="margin-left: 10px;">
+          <el-col  :offset="1" :span="4" >
             <el-form-item :span="10" label="来源商会：">
               <el-select v-model="query.ckey" filterable @change="selectionChange">
                 <el-option
@@ -37,6 +37,14 @@
               </el-select>
             </el-form-item>
           </el-col>
+            <el-col :offset="1" :span="4" v-if="activeName !== '1'">
+              <el-form-item label="动态类型：">
+                <el-select v-model="query.dynamicType">
+                  <el-option :label="item.label" :value="item.value"  v-for="item in dynamicTypeList" :key="item.value"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            
           <el-col :span="4" style="margin-left: 10px;" v-if="query.ckey && activeName==1">
             <el-form-item :span="10" label="栏目：">
               <el-select v-model="query.contentColumnId" filterable>
@@ -51,7 +59,14 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="4" style="margin-left: 10px;">
+           <el-col  :span="4" v-if="activeName == '2'">
+              <el-form-item label="是否是后台发布：">
+                <el-select v-model="query.backgroundRelease">
+                  <el-option :label="item.label" :value="item.value"  v-for="item in backstageList" :key="item.value"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          <el-col :span="4" >
             <el-form-item label="发布时间：">
               <el-select v-model="query.publishTimeType">
                 <el-option label="所有" :value="0"/>
@@ -311,6 +326,19 @@
             {{ scope.row.chamberName }}
           </template>
         </el-table-column>
+        <el-table-column label="动态类型"  >
+          <template slot-scope="scope">
+            <span v-if="scope.row.contentType ==1">
+              图文动态
+            </span>
+             <span v-else-if="scope.row.contentType ==2">
+             视频动态
+            </span>
+             <span v-else>
+             其他
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column label="内容">
           <template slot-scope="scope">
               <span class="myspan" v-html="scope.row.contentHtml"></span>
@@ -346,10 +374,14 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="发布时间" width="180px">
+        <el-table-column label="发布时间" width="200px">
           <template slot-scope="scope">
             <div v-if="scope.row.status != 1">--</div>
-            <div v-else>{{ scope.row.publishTs }}</div>
+            <div v-else>
+              <div> {{ scope.row.publishTs }}</div>
+             
+              <div v-if="scope.row.backgroundRelease==1">(后台发布)</div>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="状态" width="200px">
@@ -507,6 +539,19 @@
         <el-table-column label="来源商会" width="200px">
           <template slot-scope="scope">
             {{ scope.row.chamberName }}
+          </template>
+        </el-table-column>
+        <el-table-column label="动态类型"  >
+          <template slot-scope="scope">
+            <span v-if="scope.row.contentType ==1">
+              图文动态
+            </span>
+             <span v-else-if="scope.row.contentType ==2">
+             视频动态
+            </span>
+             <span v-else>
+             其他
+            </span>
           </template>
         </el-table-column>
         <!-- <el-table-column label="栏目" width="120px">

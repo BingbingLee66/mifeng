@@ -28,9 +28,6 @@
               <el-form-item label="动态类型：">
                 <el-select v-model="query.dynamicType">
                   <el-option :label="item.label" :value="item.value"  v-for="item in dynamicTypeList" :key="item.value"/>
-                  <!-- <el-option label="待审核" :value="0" />
-                  <el-option label="审核通过" :value="1" />
-                  <el-option label="审核不通过" :value="2" /> -->
                 </el-select>
               </el-form-item>
             </el-col>
