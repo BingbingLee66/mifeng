@@ -68,10 +68,10 @@ export default {
       this.init()
     } else {
       this.getContentColumnType()
-      this.$refs.ckeditor1.init()
-      setTimeout(() => {
-        this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      }, 500)
+      // this.$refs.ckeditor1.init()
+      // setTimeout(() => {
+      //   this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
+      // }, 500)
     }
   },
   computed: {},
@@ -180,27 +180,34 @@ export default {
             this.$set(this.formObj, 'publishTs', dataObj.publishTs)
           }
           this.getContentColumnType()
-          this.$refs.ckeditor1.init()
-          setTimeout(() => {
-            this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
-          }, 500)
+          // this.$refs.ckeditor1.init()
+          // setTimeout(() => {
+          //   this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
+          // }, 500)
         }).catch(error => {
           reject(error)
         })
       })
     },
-    save() {
+    saveFunc() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.formObj.coverType === 0) {
             this.formObj.coverImgs = []
           }
           save(this.formObj).then(response => {
-            this.$message({
-              message: '操作成功',
-              type: 'success'
-            })
-            this.closeTab()
+            if(response.state===1){
+              this.$message({
+                message: '操作成功',
+                type: 'success'
+              })
+              this.closeTab()
+            }else{
+              this.$message({
+                message: response.msg,
+                type: 'error'
+              })
+            }
           })
         } else {
           return false

@@ -522,11 +522,13 @@ export default {
               return this.$message.error('参加人数为大于0的正整数')
             }
           } else if (!this.formObj.introduce) {
+            this.activeName='2'
             return this.$message.error('活动介绍不能为空')
           }
           let introHtml = this.formObj.introduce.replace(/<\/?p[^>]*>/gi, '')
           let introHtml2 = introHtml.replace(/&nbsp;/ig, '')
           if (introHtml2.match(/^\s+$/) || introHtml2.length === 0) {
+            this.activeName='2'
             return this.$message.error('活动介绍不能为空')
           }
           this.formObj.ckey = this.ckey

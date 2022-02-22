@@ -56,6 +56,9 @@ export default {
         this.slistLoading = false
       })
     },
+    setCurrent(row) {
+      this.$refs.myTable.setCurrentRow(row);
+    },
     updateTrade (e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$prompt('请输入行业分类名称', '提示', {
@@ -74,7 +77,17 @@ export default {
             message: '更新成功',
             type: 'success'
           })
-          this.init()
+          if(row.parentId!==0){
+            this.firstlist.find(item=>{
+              if(item.parentId===row.parentId){
+                this.setCurrent(item)
+              }
+            })
+            this.secondTrade ()
+          }else{
+            this.firstTrade()
+          }
+        
         })
       }).catch(() => {
         this.$message({
@@ -97,7 +110,16 @@ export default {
             message: '删除成功',
             type: 'success'
           })
-          this.init()
+          if(row.parentId!==0){
+            this.firstlist.find(item=>{
+              if(item.parentId===row.parentId){
+                this.setCurrent(item)
+              }
+            })
+            this.secondTrade ()
+          }else{
+            this.init()
+          }
         })
       }).catch(() => {
         this.$message({

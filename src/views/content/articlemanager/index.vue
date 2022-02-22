@@ -37,7 +37,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="4" style="margin-left: 10px;" v-if="query.ckey">
+          <el-col :span="4" style="margin-left: 10px;" v-if="query.ckey && activeName==1">
             <el-form-item :span="10" label="栏目：">
               <el-select v-model="query.contentColumnId" filterable>
                 <el-option
@@ -469,7 +469,8 @@
               <div class="m-article-title">{{ detailObj.title }}</div>
               <div v-if=" detailObj.contentType === 2">
                 <div  v-if="detailObj.contentHtml" v-html="detailObj.contentHtml"/>
-                <div v-if=" detailObj.contentType === 2" class="m-article-content" id="videoContent"></div>
+                <!-- <div v-if=" detailObj.contentType === 2" class="m-article-content" id="videoContent"></div> -->
+                <videoComponent ref="videoRef" v-if="detailObj.vid" :vid="detailObj.vid"  height="530px"></videoComponent>
               </div>
               <div v-else class="m-article-content" v-html="detailObj.contentHtml"/>
 
@@ -644,7 +645,7 @@
         @current-change="handleCurrentChange"
       />
       <div class="art-preview-wrap">
-        <el-dialog title="" :visible.sync="visible" width="60%">
+        <el-dialog title="" :visible.sync="visible" width="60%" @close="closeDia">
           <div class="m-preview-wrap">
             <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="m-article-remark">
               不通过理由：{{ detailObj.auditRemark }}
@@ -652,6 +653,8 @@
             <div class="m-preview-area">
               <div class="m-article-title">{{ detailObj.title }}</div>
               <div class="m-article-content" v-html="detailObj.contentHtml"/>
+             
+                <videoComponent  ref="videoRef" v-if="detailObj.vid" :vid="detailObj.vid" height="530px"></videoComponent>
             </div>
           </div>
         </el-dialog>

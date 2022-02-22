@@ -120,7 +120,7 @@
             </el-col>
           </el-row>
           <el-row v-if="applyObject.department">
-            <el-col style="width: 600px;height: 40px;">
+            <el-col style="width: 600px;">
               <el-form-item label="会内部门：" required>
                 <div>
                   <!-- <el-cascader

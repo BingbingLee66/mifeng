@@ -41,14 +41,14 @@ Vue.config.productionTip = false
 
 Vue.use(VueClipboard)
 
-new Vue({
+const vue=new Vue({
   el: '#app',
   router,
   store,
   i18n,
   render: h => h(App)
 })
-
+export default vue
 window.ysh = {
   baseApiUrl: process.env.VUE_APP_BASE_API
 }

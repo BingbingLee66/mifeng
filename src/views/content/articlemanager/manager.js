@@ -12,8 +12,8 @@ import {
 } from '@/api/content/article'
 import { getOptionsWithCkey } from '@/api/content/columnsetup'
 import { getChamberOptions } from '@/api/finance/finance'
-import { getSts } from '@/api/vod/vod'
-
+import { getSts } from '@/api/vod/vod';
+import videoComponent from '@/components/video/index'
 export default {
   data() {
     return {
@@ -61,8 +61,13 @@ export default {
       unFreezeVisible:false,
       unFreezeOperationRow:{},
       unFreezeOperationList:[],
-      unFreezeSelectedList:[]
+      unFreezeSelectedList:[],
+      //展示视频组件
+      showVideo:false,
     }
+  },
+  components:{
+    videoComponent
   },
   computed: {},
   created() {
@@ -163,9 +168,16 @@ export default {
 
     // 关闭视频播放弹窗
     closeDia() {
-      if ((this.activeName === '1' || this.activeName === '2' || this.activeName === '3') && this.detailObj.contentType === 2) {
-        this.videoPlayer.dispose()
+      // if ((this.activeName === '1' || this.activeName === '2' || this.activeName === '3') && this.detailObj.contentType === 2) {
+      //   console.log('this.$refs[videoRef]关闭',this.$refs['videoRef'])
+      //   this.$refs['videoRef'].closeDia();
+      //   this.showVideo=false;
+      // }
+      // console.log('进父销毁')
+      if(this.detailObj.vid){
+        this.$refs['videoRef'].closeDia();
       }
+      
       this.visible = false
     },
     /**
@@ -175,11 +187,15 @@ export default {
       getSts().then(response => {
         this.videoKey = response.data
         // 存在视频必须看完视频后才能点击审核
-        this.vabled = true
-        this.videoPlayer = this.$createPlayer('videoContent', this.videoKey.accessKeyId, this.videoKey.accessKeySecret, this.videoKey.securityToken, this.videoKey.region, this.detailObj.vid, '535px')
-        this.videoPlayer.on('ended', (e) => {
+        this.vabled = true;
+        const videoPlayer = this.$createPlayer('videoContent', this.videoKey.accessKeyId, this.videoKey.accessKeySecret, this.videoKey.securityToken, this.videoKey.region, this.detailObj.vid, '535px')
+        videoPlayer.on('ended', (e) => {
           this.vabled = false
         })
+        // this.videoPlayer = this.$createPlayer('videoContent', this.videoKey.accessKeyId, this.videoKey.accessKeySecret, this.videoKey.securityToken, this.videoKey.region, this.detailObj.vid, '535px')
+        // this.videoPlayer.on('ended', (e) => {
+        //   this.vabled = false
+        // })
       })
     },
     fetchData(e, sort) {
@@ -213,16 +229,29 @@ export default {
       let params = {
         id: this.selectId
       }
+      this.visible = true
       getDetail(params).then(response => {
         this.detailObj = response.data.dtl
         // 视频是否存在 渲染操作
-        if (this.detailObj.contentType === 2) {
-          this.renderVideo()
+        if (this.detailObj.contentType === 2 || this.detailObj.contentType === 3) {
+          console.log('进')
+        //  videoUtils('videoContent',this.detailObj.vid)
+          //  this.renderVideo()
+          // this.visible = true
+          // this.showVideo=true;
+          this.$nextTick(() => {
+            console.log('this.$refs[videoRef]',this.$refs['videoRef'])
+         
+            this.$refs['videoRef'].show(this.detailObj.vid)
+          })
+         
+        
         }
-      }).catch(error => {
-        reject(error)
       })
-      this.visible = true
+      // .catch(error => {
+      //   reject(error)
+      // })
+      
     },
     handlerChange(value) {
       this.query.tradeType = value[value.length - 1]
