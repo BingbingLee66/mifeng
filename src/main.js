@@ -43,14 +43,13 @@ Vue.use(VueClipboard)
 import kdDialog from './components/common/kdDialog'
 
 Vue.component('kdDialog', kdDialog)
-const vue=new Vue({
+new Vue({
   el: '#app',
   router,
   store,
   i18n,
   render: h => h(App)
 })
-export default vue
 window.ysh = {
   baseApiUrl: process.env.VUE_APP_BASE_API
 }
