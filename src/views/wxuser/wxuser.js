@@ -28,6 +28,11 @@ export default {
     this.init()
   },
   methods: {
+    clickRouter() {
+      this.$router.push({
+        name: '新加的官方号'
+      })
+    },
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },

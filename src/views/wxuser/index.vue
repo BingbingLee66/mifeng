@@ -44,6 +44,10 @@
           <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
           </el-button>
         </el-form-item>
+        <el-form-item label="">
+          <el-button  type="primary"  @click="clickRouter($event)">跳转
+          </el-button>
+        </el-form-item>
       </el-form>
     </div>
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>

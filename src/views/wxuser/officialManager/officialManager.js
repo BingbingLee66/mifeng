@@ -43,7 +43,11 @@ export default {
     this.fetchData()
   },
   methods: {
-
+    clickRouter() {
+      this.$router.push({
+        name: '新加的官方号'
+      })
+    },
     handleSizeChange(val) {
       this.limit = val
       this.currentpage = 1
@@ -160,16 +164,15 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         beforeClose: (action, instance, done) => {
-        //点确定
+          //点确定
           if (action === 'confirm') {
             this.deleteOfficialFunc(row.id)
-          } else {  
-          }
-          console.log('beforeClose',action)
+          } else {}
+          console.log('beforeClose', action)
           done();
         }
       })
     },
-  
+
   }
 }

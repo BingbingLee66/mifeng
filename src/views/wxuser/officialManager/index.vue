@@ -31,6 +31,10 @@
           <el-button  type="primary"  @click="fetchData($event)">查询
           </el-button>
         </el-form-item>
+        <el-form-item label="">
+          <el-button  type="primary"  @click="clickRouter($event)">跳转
+          </el-button>
+        </el-form-item>
         <el-row>
             <el-button  type="primary"  @click="showOfficialDialog($event)">添加官方账号
           </el-button>
@@ -97,7 +101,7 @@
 
 </template>
 
-<script src="./index.js"></script>
+<script src="./officialManager.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
