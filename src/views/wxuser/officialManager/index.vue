@@ -4,13 +4,16 @@
     <div class="block">
       <el-form ref="query" label-width="auto" label-position="left" :model="query" :inline="true">
         <el-form-item label="用户ID：">
-          <el-input v-model="query.mulValue" placeholder="请输入ID"/>
+          <el-input v-model="query.wxUserId" placeholder="请输入ID"/>
         </el-form-item>
         <el-form-item label="用户名：">
           <el-input v-model="query.uname" placeholder="请输入用户名"/>
         </el-form-item>
+        <el-form-item label="手机号：">
+                  <el-input v-model="query.phone" placeholder="请输入手机号" />
+                </el-form-item>
         <el-form-item label="所属商会：">
-          <el-select v-model="query.chamberId" placeholder="请选择职业类型" filterable>
+          <el-select v-model="query.chamberId" placeholder="请选择" filterable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id" />
           </el-select>
           <!-- <el-input v-model="query.chamberName" placeholder="请输入所属商会"/> -->

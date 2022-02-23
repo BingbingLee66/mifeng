@@ -48,3 +48,10 @@ export function addOfficial(data) {
     data
   })
 }
+//删除官方账号
+export function deleteOfficial(id) {
+  return request({
+    url: `/ec/official-user/delete/${id}`,
+    method: 'delete',
+  })
+}
