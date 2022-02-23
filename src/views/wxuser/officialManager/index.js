@@ -110,6 +110,7 @@ export default {
     async officialUserListFunc(params){
      await officialUserList(params).then(res=>{
        if(res.state===1){
+         this.list=res.data.list
 
        }
 
@@ -118,7 +119,9 @@ export default {
     },
     /** 行为操作类 */
     showOfficialDialog(){
-      this.$refs["officialDialog"].show(this.chamberOptions);
+      this.$refs["officialDialog"].show(this.chamberOptions).then(()=>{
+        this.fetchData()
+      });
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))

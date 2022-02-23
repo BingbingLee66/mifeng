@@ -38,7 +38,7 @@
       <!-- <el-table-column type="index" label="序号" width="60px"/> -->
       <el-table-column label="用户ID" width="70px">
         <template slot-scope="scope">
-          {{ scope.row.id }}
+          {{ scope.row.wxUserId }}
         </template>
       </el-table-column>
       <el-table-column label="用户名">

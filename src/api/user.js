@@ -40,3 +40,11 @@ export function availableWxUser(params) {
     params
   })
 }
+//添加官方账号
+export function addOfficial(data) {
+  return request({
+    url: '/ec/official-user/add',
+    method: 'post',
+    data
+  })
+}
