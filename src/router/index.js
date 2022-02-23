@@ -146,10 +146,10 @@ export const constantRoutes = [
       },
       {
         path: '/wxuser/officialManager',
-        name: '新加的官方号',
+        name: '官方号管理',
         component: () => import('@/views/wxuser/officialManager/index'),
         hidden: true,
-        meta: { title: '新加的官方号' }
+        meta: { title: '官方号管理' }
       },
       {
         path: '/authority/manager/setup',

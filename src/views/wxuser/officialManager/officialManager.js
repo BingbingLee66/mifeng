@@ -43,11 +43,7 @@ export default {
     this.fetchData()
   },
   methods: {
-    clickRouter() {
-      this.$router.push({
-        name: '新加的官方号'
-      })
-    },
+    
     handleSizeChange(val) {
       this.limit = val
       this.currentpage = 1
@@ -76,10 +72,8 @@ export default {
           this.chamberOptions.unshift({
             'name': '全部',
             'id': -1
-          }, {
-            'name': '未加入商会',
-            'id': -2
-          })
+          }
+          )
           this.aLLChamberlist
           this.listLoading = false
         } else {
