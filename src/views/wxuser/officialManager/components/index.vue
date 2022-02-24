@@ -24,7 +24,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="用户名：">
-                  <el-input v-model="query.uname" placeholder="请输入用户名" />
+                  <el-input v-model="query.uName" placeholder="请输入用户名" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">

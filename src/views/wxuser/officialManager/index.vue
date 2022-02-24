@@ -7,7 +7,7 @@
           <el-input v-model="query.wxUserId" placeholder="请输入ID"/>
         </el-form-item>
         <el-form-item label="用户名：">
-          <el-input v-model="query.uname" placeholder="请输入用户名"/>
+          <el-input v-model="query.uName" placeholder="请输入用户名"/>
         </el-form-item>
         <el-form-item label="手机号：">
                   <el-input v-model="query.phone" placeholder="请输入手机号" />
