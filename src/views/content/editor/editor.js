@@ -1,9 +1,21 @@
-import { getGlobalContentList, save, updateStatusPlatform } from '@/api/content/article'
-import { getContentColumnOptions } from '@/api/content/columnsetup'
-
+import {
+  getGlobalContentList,
+  save,
+  updateStatusPlatform
+} from '@/api/content/article'
+import {
+  getContentColumnOptions
+} from '@/api/content/columnsetup'
+import {
+  dynamicTypeList,
+  statusList,
+  publishTimeTypeList
+} from '@/utils/commonData.js'
+import {
+  getChamberAllList
+} from '@/api/goods/goods'
 export default {
-  components: {
-  },
+  components: {},
   data() {
     return {
       pageSizes: [10, 20, 50, 100, 500],
@@ -16,11 +28,20 @@ export default {
         title: '',
         contentColumnId: -1,
         articleId: '',
+        //发布状态
         status: '-1',
         creator: '',
         column: '',
         orderType: 0,
-        date: ''
+        date: '',
+        //动态类型
+        dynamicType:'1',
+        //发布时间
+        publishTimeType:'1',
+        //动态类型
+        dynamicType:'1',
+        //来源商会
+        ckey:''
       },
       optionList: [
         '标签聚合页',
@@ -30,29 +51,20 @@ export default {
       contentColumnOptions: [],
       formObj: {},
       //当前激活tab
-      activeName:'1',
+      activeName: '1',
       //发布时间list
-      publishTimeTypeList:[
-        {label:'24小时',value:'1'},
-        {label:'3天',value:'2'},
-        {label:'7天',value:'3'},
-        {label:'本月',value:'4'},
-        {label:'所有',value:'0'}
-      ],
+      publishTimeTypeList,
       //状态list
-    statusList:[
-      {label:'全部',value:'-1'},
-      {label:'已发布',value:'1'},
-      {label:'已冻结',value:'3'},
-      {label:'定时发布',value:'4'},
-    ]
+      statusList,
+      //动态类型数组
+      dynamicTypeList,
+      //来源商会list
+      chamberOptions:[]
     }
-    
+
   },
-  mounted() {
-  },
-  computed: {
-  },
+  mounted() {},
+  computed: {},
   created() {
     this.getContentColumnType()
     this.init()
@@ -93,10 +105,16 @@ export default {
       console.log(this.tableData)
     },
     has(tabName, actionName) {
-      return this.$store.getters.has({ tabName, actionName })
+      return this.$store.getters.has({
+        tabName,
+        actionName
+      })
     },
     getId(tabName, actionName) {
-      return this.$store.getters.getId({ tabName, actionName })
+      return this.$store.getters.getId({
+        tabName,
+        actionName
+      })
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -111,8 +129,8 @@ export default {
     },
     //切换tab
     handleClick(event) {
-      console.log('activeName',this.activeName)
-      
+      console.log('activeName', this.activeName)
+
       this.fetchData()
     },
     init() {
@@ -123,7 +141,10 @@ export default {
     getContentColumnType() {
       getContentColumnOptions().then(response => {
         this.contentColumnOptions = response.data.data
-        this.contentColumnOptions.unshift({ 'label': '全部', 'value': -1 })
+        this.contentColumnOptions.unshift({
+          'label': '全部',
+          'ckey': ''
+        })
       })
     },
     queryData(e) {
@@ -133,10 +154,25 @@ export default {
       this.currentpage = 1
       this.fetchData(e)
     },
+    /**请求类 */
+  //拉取全部商会
+    getAllChamberList() {
+      getChamberAllList().then(res => {
+        if (res.state === 1) {
+          this.chamberOptions = res.data.data
+          this.chamberOptions.unshift({
+            'name': '全部',
+            'id': -1
+          }
+          )
+        } 
+      })
+    },
     fetchData(e) {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
+      this.getAllChamberList()
       this.listLoading = true
       let params = {
         'pageSize': this.limit,
@@ -187,19 +223,33 @@ export default {
     },
     add() {
       window.localStorage.setItem('articleeditor', this.$route.path)
-      this.$router.push({ name: '添加或编辑文章' })
+      this.$router.push({
+        name: '添加或编辑文章'
+      })
     },
     edit(row) {
       window.localStorage.setItem('articleeditor', this.$route.path)
-      this.$router.push({ name: '添加或编辑文章', params: { 'articleId': row.id }})
+      this.$router.push({
+        name: '添加或编辑文章',
+        params: {
+          'articleId': row.id
+        }
+      })
     },
     articleSourceManager(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '文章来源管理' })
+      this.$router.push({
+        name: '文章来源管理'
+      })
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '文章详情', params: { 'articleId': row.id }})
+      this.$router.push({
+        name: '文章详情',
+        params: {
+          'articleId': row.id
+        }
+      })
     },
     save() {
       this.$refs['form'].validate((valid) => {

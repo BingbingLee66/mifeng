@@ -26,12 +26,9 @@
             </el-form-item>
         </el-row>
         <el-row>
-          <!-- <el-col :span="3"> -->
             <el-form-item label="文章ID：" >
               <el-input v-model="query.articleId" placeholder="请输入文章id" />
             </el-form-item>
-          <!-- </el-col> -->
-          <!-- <el-col :span="5" style="margin-right:20px"> -->
             <el-form-item label="发布时间：" label-width="120px">
               <el-date-picker
                 v-model="query.date"
@@ -43,12 +40,36 @@
                 end-placeholder="结束日期"
               />
             </el-form-item>
-          <!-- </el-col> -->
-          <!-- <el-col :span="6">  -->
             <el-form-item label=" " >
               <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="queryData($event)">查询</el-button>
             </el-form-item>
-         <!-- </el-col> -->
+        </el-row>
+        </div>
+          <div v-if="activeName==='2'">
+          <el-row>
+            <el-form-item label="来源商会：">
+              <el-select v-model="query.ckey">
+                <el-option v-for="(item,index) in chamberOptions" :key="index" :label="item.name" :value="item.ckey" />
+              </el-select>
+            </el-form-item>
+             <el-form-item label="动态类型：">
+              <el-select v-model="query.dynamicType">
+                <el-option v-for="(item,index) in dynamicTypeList" :key="index" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+             <el-form-item label="发布状态：">
+              <el-select v-model="query.status">
+                <el-option v-for="(item,index) in statusList" :key="index" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+             <el-form-item label="发布时间：">
+              <el-select v-model="query.publishTimeType">
+                <el-option v-for="(item,index) in publishTimeTypeList" :key="index" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+             <el-form-item label=" " >
+              <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="queryData($event)">查询</el-button>
+            </el-form-item>
         </el-row>
         </div>
         
