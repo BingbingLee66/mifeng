@@ -279,3 +279,11 @@ export function unFreeze(id,params) {
     data:params
   })
 }
+//分页查询动态列表
+export function dynamicPagedList(params) {
+  return request({
+    url: `/ec/dynamic-record/pc-dynamic-paged-list`,
+    method: 'get',
+    params
+  })
+}
