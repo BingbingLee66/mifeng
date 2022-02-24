@@ -1,35 +1,29 @@
 <template>
   <div class="app-container">
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="发布文章" name="1" />
+      <el-tab-pane label="发布动态" name="2" />
+    </el-tabs>
     <div class="block">
       <el-form ref="query" :inline="true"  label-position="right" :model="query">
-        <el-row>
-          <!-- <el-col :span="5"> -->
+        <div v-if="activeName==='1'">
+          <el-row>
             <el-form-item label="文章标题：">
               <el-input v-model="query.title" placeholder="请输入文章标题" />
             </el-form-item>
-          <!-- </el-col> -->
-          <!-- <el-col :span="4"> -->
             <el-form-item :span="12" label="栏目：">
               <el-select v-model="query.contentColumnId">
                 <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label === '全部' || cc.typeUrl === 0 ? cc.label : optionList[cc.typeUrl - 1] + '-' + cc.label" :value="cc.value" />
               </el-select>
             </el-form-item>
-          <!-- </el-col> -->
-          <!-- <el-col :span="3"> -->
             <el-form-item :span="12" label="状态：">
               <el-select v-model="query.status">
-                <el-option label="全部" :value="-1" />
-                <el-option label="已发布" :value="1" />
-                <el-option label="已冻结" :value="3" />
-                <el-option label="定时发布" :value="4" />
+                <el-option v-for="(item,index) in statusList" :key="index" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-          <!-- </el-col> -->
-          <!-- <el-col :span="3"> -->
             <el-form-item label="创建人：">
               <el-input v-model="query.creator" placeholder="请输入创建人" />
             </el-form-item>
-          <!-- </el-col> -->
         </el-row>
         <el-row>
           <!-- <el-col :span="3"> -->
@@ -56,6 +50,8 @@
             </el-form-item>
          <!-- </el-col> -->
         </el-row>
+        </div>
+        
       </el-form>
     </div>
     <el-row>

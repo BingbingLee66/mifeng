@@ -16,7 +16,7 @@ export default {
         title: '',
         contentColumnId: -1,
         articleId: '',
-        status: -1,
+        status: '-1',
         creator: '',
         column: '',
         orderType: 0,
@@ -28,8 +28,26 @@ export default {
         '标签聚合页/商会必参'
       ],
       contentColumnOptions: [],
-      formObj: {}
+      formObj: {},
+      //当前激活tab
+      activeName:'1',
+      //发布时间list
+      publishTimeTypeList:[
+        {label:'24小时',value:'1'},
+        {label:'3天',value:'2'},
+        {label:'7天',value:'3'},
+        {label:'本月',value:'4'},
+        {label:'所有',value:'0'}
+      ],
+      //状态list
+    statusList:[
+      {label:'全部',value:'-1'},
+      {label:'已发布',value:'1'},
+      {label:'已冻结',value:'3'},
+      {label:'定时发布',value:'4'},
+    ]
     }
+    
   },
   mounted() {
   },
@@ -91,7 +109,10 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    handleClick() {
+    //切换tab
+    handleClick(event) {
+      console.log('activeName',this.activeName)
+      
       this.fetchData()
     },
     init() {
