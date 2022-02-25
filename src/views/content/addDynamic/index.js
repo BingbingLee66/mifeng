@@ -12,7 +12,9 @@ export default {
       //动态类型 1 图文 2 视频
      type:1,
      //新增 or 编辑
-     mode:'add'
+     mode:'add',
+     //已选发布者
+     tableData:[]
     }
 
   },

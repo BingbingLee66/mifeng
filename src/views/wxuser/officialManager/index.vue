@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <officialComponent ref="officialDialog" :chamberOptions="chamberOptions"></officialComponent>
+    <officialComponent :type="1" ref="officialDialog" :chamberOptions="chamberOptions"></officialComponent>
     <div class="block">
       <el-form ref="query" label-width="auto" label-position="left" :model="query" :inline="true">
         <el-form-item label="用户ID：">
