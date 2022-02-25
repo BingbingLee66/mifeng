@@ -55,3 +55,11 @@ export function deleteOfficial(id) {
     method: 'delete',
   })
 }
+//分页查询发布者信息
+export function getPromulgator(params) {
+  return request({
+    url: '/ec/dynamic-record/getPromulgator',
+    method: 'get',
+    params
+  })
+}

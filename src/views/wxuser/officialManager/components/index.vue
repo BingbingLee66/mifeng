@@ -101,12 +101,12 @@
   </div>
 </template>
 <script>
-import { availableWxUser, addOfficial } from "@/api/user";
+import { availableWxUser, addOfficial,getPromulgator } from "@/api/user";
 export default {
   name: "officialComponent",
   data() {
     return {
-      title: "添加官方账号",
+      // title: "添加官方账号",
       //表单参数
       query: {
         chamberId: "",
@@ -127,7 +127,23 @@ export default {
       reject: null,
     };
   },
-  props: ["chamberOptions"], // 接收父组件的内容
+  props: {
+    chamberOptions: {
+      type: Array,
+      default: function () {
+        return [];
+      },
+    },
+    title: {
+      type: String,
+      default: "添加官方账号",
+    },
+    //1.官方号管理处引入 2发布动态选择发布者引入
+    type: {
+      type: Number,
+      value: 1,
+    },
+  }, // 接收父组件的内容
 
   mounted() {},
   methods: {
@@ -143,17 +159,30 @@ export default {
       });
     },
     fetchData() {
-      this.availableWxUserFunc();
+      this.availableWxUserFunc()
     },
     /**请求类 */
     availableWxUserFunc() {
-      availableWxUser({ ...this.query }).then((res) => {
-        if (res.state === 1) {
-          const resData = res.data;
-          this.tableData = resData.list;
-          this.total = resData.totalRows;
-        }
-      });
+      console.log('type',this.type)
+      //拉取用户列表
+      if (this.type === 1) {
+        availableWxUser({ ...this.query }).then((res) => {
+          if (res.state === 1) {
+            const resData = res.data;
+            this.tableData = resData.list;
+            this.total = resData.totalRows;
+          }
+        });
+      } else {
+        //拉取发布者列表
+        getPromulgator({ ...this.query }).then((res) => {
+          if (res.state === 1) {
+            const resData = res.data;
+            this.tableData = resData.list;
+            this.total = resData.totalRows;
+          }
+        });
+      }
     },
     addOfficialFunc() {
       let arr = [];
@@ -167,7 +196,7 @@ export default {
             message: "添加成功!",
           });
           this.resolve();
-          this.close()
+          this.close();
         }
       });
     },
@@ -196,7 +225,9 @@ export default {
         });
         return;
       }
-      this.$confirm(
+
+      if(this.type===1){
+         this.$confirm(
         `确认添加这${this.selectList.length}个官方号吗？?`,
         "提示",
         {
@@ -208,6 +239,11 @@ export default {
         console.log("then");
         self.addOfficialFunc();
       });
+      }else if(this.type===2){
+        this.resolve(this.selectList);
+          this.close()
+      }
+     
     },
   },
 };

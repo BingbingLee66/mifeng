@@ -311,6 +311,11 @@ export default {
         this.fetchData()
       })
     },
+    addDynamic(){
+      this.$router.push({
+        name: '发布动态',
+      })
+    },
     add() {
       window.localStorage.setItem('articleeditor', this.$route.path)
       this.$router.push({

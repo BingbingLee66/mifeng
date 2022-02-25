@@ -138,12 +138,12 @@
              <el-row>
             <el-button
               type="primary"
-              @click="add"
+              @click="addDynamic"
               >发布图文动态</el-button
             >
             <el-button
               type="primary"
-              @click="articleSourceManager($event)"
+              @click="addDynamic"
               >发布视频动态</el-button
             >
           </el-row>

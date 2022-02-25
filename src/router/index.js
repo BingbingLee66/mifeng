@@ -138,6 +138,13 @@ export const constantRoutes = [
         meta: { title: '添加或编辑文章' }
       },
       {
+        path: '/content/addDynamic',
+        name: '发布动态',
+        component: () => import('@/views/content/addDynamic/index'),
+        hidden: true,
+        meta: { title: '发布动态' }
+      },
+      {
         path: '/wxuser/detail',
         name: '用户详情',
         component: () => import('@/views/wxuser/detail/index'),
