@@ -101,7 +101,7 @@
   </div>
 </template>
 <script>
-import { availableWxUser, addOfficial,getPromulgator } from "@/api/user";
+import { availableWxUser, addOfficial, getPromulgator } from "@/api/user";
 export default {
   name: "officialComponent",
   data() {
@@ -159,11 +159,11 @@ export default {
       });
     },
     fetchData() {
-      this.availableWxUserFunc()
+      this.availableWxUserFunc();
     },
     /**请求类 */
     availableWxUserFunc() {
-      console.log('type',this.type)
+      console.log("type", this.type);
       //拉取用户列表
       if (this.type === 1) {
         availableWxUser({ ...this.query }).then((res) => {
@@ -197,7 +197,12 @@ export default {
           });
           this.resolve();
           this.close();
-        }
+        }else{
+            this.$message({
+            type: "error",
+            message: res.msg,
+          });
+          }
       });
     },
     /**行为操作类 */
@@ -218,7 +223,7 @@ export default {
     savePopupData() {
       const self = this;
       console.log("selectList", this.selectList);
-      if (this.selectList < 1) {
+      if (this.selectList.length < 1) {
         this.$message({
           type: "info",
           message: "您还没有选择",
@@ -226,24 +231,32 @@ export default {
         return;
       }
 
-      if(this.type===1){
-         this.$confirm(
-        `确认添加这${this.selectList.length}个官方号吗？?`,
-        "提示",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }
-      ).then(() => {
-        console.log("then");
-        self.addOfficialFunc();
-      });
-      }else if(this.type===2){
-        this.resolve(this.selectList);
-          this.close()
+      if (this.type === 1) {
+        this.$confirm(
+          `确认添加这${this.selectList.length}个官方号吗？?`,
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          }
+        ).then(() => {
+          console.log("then");
+          self.addOfficialFunc();
+        });
+        //type为2时，需要把数组传递给父组件
+      } else if (this.type === 2) {
+        // return;
+        if (this.selectList.length > 1) {
+        this.$message({
+          type: "error",
+          message: "只能选择一位发布者",
+        });
+        return;
       }
-     
+        this.resolve(this.selectList);
+        this.close();
+      }
     },
   },
 };

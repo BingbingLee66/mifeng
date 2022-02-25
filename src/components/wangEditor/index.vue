@@ -14,10 +14,11 @@ export default {
     return {
       editor: null,
       editorContent: "",
-      isChange: false,//是否改变内容的变量
+      isChange: false, //是否改变内容的变量
     };
   },
-  props: ["content"], // 接收父组件的内容
+  //hiddenMenu 隐藏菜单栏
+  props: ["content", "hiddenMenu","height"], // 接收父组件的内容
   watch: {
     content(newVal, oldVal) {
       // console.log('newVal',newVal),
@@ -29,6 +30,12 @@ export default {
       }
 
       this.isChange = false;
+    },
+    hiddenMenu() {
+      console.log("this.hiddenMenu", this.hiddenMenu);
+      if (this.hiddenMenu) {
+        this.editor.config.menus = [];
+      }
     },
   },
   mounted() {
@@ -42,6 +49,10 @@ export default {
     editor.config.uploadFileName = "upload";
     //剔除少数菜单
     editor.config.excludeMenus = ["video"];
+    if (this.hiddenMenu) {
+      editor.config.menus = [];
+      editor.config.height = this.height ? this.height : 500;
+    }
     // editor.config.menuTooltipPosition = "down";
     // 创建富文本实例
     editor.create();
@@ -65,7 +76,8 @@ export default {
       editor.config.onchange = (html) => {
         this.isChange = true;
         this.$emit("addParentHtml", html);
-        console.log("html", html);
+        this.getText()
+        // console.log("html", html);
         // this.editorContent = html
         // this.catchData(this.editorContent)  // 把这个html通过catchData的方法传入父组件
       };
