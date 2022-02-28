@@ -24,7 +24,7 @@
           stripe
           style="width: 100%"
         >
-          <el-table-column prop="id" label="用户ID" width="180">
+          <el-table-column prop="wxUserId" label="用户ID" width="180">
           </el-table-column>
           <el-table-column prop="uname" label="用户名" width="180">
           </el-table-column>
@@ -86,19 +86,31 @@
         </div>
         <span class="handle dynamic-text">选择同步商会</span>
         <div class="chamber-view">
-          <div>在这些商会内同步动态</div>
+          <div class="chamber-view-text">在这些商会内同步动态</div>
           <div>
-            <span style="color:#1890FF">已选:</span>  
+            <span style="color: #1890ff">已选:</span>
             <el-tag
               :key="tag"
-              v-for="(tag,index) in selectChamberList"
+              v-for="(tag, index) in selectChamberList"
               @keydown="tag.id"
               closable
               :disable-transitions="false"
-              @close="handleClose(tag,index)"
+              @close="handleClose(tag, index)"
             >
               {{ tag.name }}
             </el-tag>
+          </div>
+          <div class="chamber-view-text" style="margin-top:10px">不同步到以下商会</div>
+          <div
+            class="noChamber"
+          >
+            <div   :key="tag"  v-for="(tag, index) in noChamberList"  @close="noChamberList(tag, index)" class="noChamber-list">
+            <span class="noChamberList-item-text"> {{ tag.name }}</span> 
+              <i class="el-icon-circle-plus add" @click="addSelectChamber(tag, index)"></i>
+               <!-- <div class="add">+</div> -->
+            </div>
+
+           
           </div>
         </div>
       </div>
@@ -133,7 +145,7 @@
                 :src="dynamicExtendDTO.shareFriendPicture"
                 class="goods-avatar"
               />
-              <div class="goods-pre-btn" @click="openPreviewModal(val)">
+              <div class="goods-pre-btn" @click="openPreviewModal(dynamicExtendDTO.shareFriendPicture)">
                 预览
               </div>
             </div>
@@ -162,7 +174,7 @@
                 :src="dynamicExtendDTO.sharePoster"
                 class="goods-avatar"
               />
-              <div class="goods-pre-btn" @click="openPreviewModal(val)">
+              <div class="goods-pre-btn" @click="openPreviewModal(dynamicExtendDTO.sharePoster)">
                 预览
               </div>
             </div>
@@ -170,7 +182,7 @@
           <div class="share-tips">
             建议尺寸：600 × 446 ； 支持格式：png、jpg
           </div>
-          <el-form-item>
+          <el-form-item style="margin-top:14px">
             <el-button type="primary" @click="submitForm">发布</el-button>
             <el-button @click="resetForm"> 取消</el-button>
           </el-form-item>
@@ -183,7 +195,10 @@
       ref="OfficialComponent"
       title="添加发布者"
     ></officialComponent>
-    <kdDialog ref="kdDialog" :showFooter="false" dialogTitle=""> </kdDialog>
+    <kdDialog ref="kdDialog" :showFooter="false" dialogTitle="" dialogWidth="60%">
+      <div slot="content">
+        <img :src="currentImg" style="max-width:90%"/>
+        </div> </kdDialog>
   </div>
 </template>
 
@@ -283,7 +298,7 @@
   font-size: 13px;
   color: #aaaaaa;
 }
-.chamber-view{
+.chamber-view {
   border: 1px solid #ededed;
   padding: 20px 10px 20px 10px;
   margin-top: 20px;
@@ -299,6 +314,40 @@
     height: 20% !important;
   }
 }
+.noChamber {
+  
+  display: flex;
+  .add {
+    position: absolute;
+    top: -8px;
+    right: -6px;
+    color: rgb(24, 144, 255);
+    z-index: 4;
+    font-size: 16px;
+    // border: 1px solid rgb(24, 144, 255);
+    // width: 18px;
+    // height: 18px;
+    // text-align: center;
+    // border-radius: 50%;
+  }
+  .noChamber-list{
+    padding: 7px 5px;
+    border: 1px solid #555555;
+    border-radius: 2px;
+position: relative;
+display: flex;
+margin-right: 6px;
+font-size: 13px;
+  }
+  
+  .noChamberList-item-text{
+    position: relative;
+    z-index: 2;
+  }
+}
+.chamber-view-text{
+    margin-bottom: 10px;
+  }
 #myhtml img {
   width: 20% !important;
   height: 20% !important;

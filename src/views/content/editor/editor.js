@@ -311,9 +311,13 @@ export default {
         this.fetchData()
       })
     },
-    addDynamic(){
+    addDynamic(val){
       this.$router.push({
         name: '发布动态',
+        params:{
+          type:val,
+          mode:'add'
+        }
       })
     },
     add() {
@@ -328,6 +332,19 @@ export default {
         name: '添加或编辑文章',
         params: {
           'articleId': row.id
+        }
+      })
+    },
+    editDynamic(row){
+      console.log('row',row);
+      let articleResp=row.articleResp;
+    
+      this.$router.push({
+        name: '发布动态',
+        params:{
+          type:row.articleResp.contentType,
+          mode:'update',
+          id:row.articleResp.id
         }
       })
     },

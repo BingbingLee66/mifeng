@@ -318,3 +318,10 @@ export function getChamberList(wxUserId) {
     method: 'get',
   })
 }
+//查询可同步的商会
+export function getDynamicDetail(id) {
+  return request({
+    url: `/ec/dynamic-record/detail/${id}`,
+    method: 'get',
+  })
+}

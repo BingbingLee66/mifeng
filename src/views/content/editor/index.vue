@@ -138,12 +138,12 @@
              <el-row>
             <el-button
               type="primary"
-              @click="addDynamic"
+              @click="addDynamic(1)"
               >发布图文动态</el-button
             >
             <el-button
               type="primary"
-              @click="addDynamic"
+              @click="addDynamic(2)"
               >发布视频动态</el-button
             >
           </el-row>
@@ -247,7 +247,7 @@
               v-if="has('', '编辑')"
               type="text"
               :actionid="getId('', '编辑')"
-              @click="edit(scope.row)"
+               @click="edit(scope.row)"
               >编辑</el-button
             >
           </div>
@@ -393,7 +393,8 @@
               v-if="has('', '编辑')"
               type="text"
               :actionid="getId('', '编辑')"
-              @click="edit(scope.row)"
+               @click="editDynamic(scope.row)"
+            
               >编辑</el-button
             >
           </div>
