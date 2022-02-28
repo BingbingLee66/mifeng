@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <div class="hd">动态信息</div>
     <div class="promulgator">
       <div>
         <span style="color: #ff0101">*</span>
@@ -38,8 +39,142 @@
         </el-table>
       </div>
       <div class="dynamic">
-  <div class="handle dynamic-text">动态内容</div>
-  <editorElem :hiddenMenu="true" :height="200" @addParentHtml="addParentHtml"></editorElem>
+        <div class="handle dynamic-text">动态内容</div>
+        <editorElem
+          :hiddenMenu="true"
+          :height="200"
+          @addParentHtml="addParentHtml"
+        ></editorElem>
+      </div>
+      <div class="dynamic">
+        <div>
+          <span class="handle dynamic-text">动态图片</span>
+          <span class="text-tips">拖拽可调整图片顺序</span>
+        </div>
+        <div class="dynamic-list">
+          <div
+            v-for="(val, index) in gallery"
+            class="dynamic-list-item"
+            :key="index"
+          >
+            <!-- {{ index }}--index -->
+            <el-upload
+              v-if="!val"
+              action="/"
+              list-type="picture-card"
+              :before-upload="beforeAvatarUpload"
+              :http-request="function (content) {return clickUpload(content, index, 'articleCoverImg');}"
+              :show-file-list="false"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+            <div class="goods-pre" v-else>
+              <i
+                class="el-icon-error"
+                @click="deleteCurrentImg(index, 'articleCoverImg')"
+              ></i>
+              <el-image
+                :preview-src-list="previewList"
+                :src="val"
+                class="goods-avatar"
+              />
+              <div class="goods-pre-btn" @click="openPreviewModal(val)">
+                预览
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="handle dynamic-text">选择同步商会</span>
+        <div class="chamber-view">
+          <div>在这些商会内同步动态</div>
+          <div>
+            <span style="color:#1890FF">已选:</span>  
+            <el-tag
+              :key="tag"
+              v-for="(tag,index) in selectChamberList"
+              @keydown="tag.id"
+              closable
+              :disable-transitions="false"
+              @close="handleClose(tag,index)"
+            >
+              {{ tag.name }}
+            </el-tag>
+          </div>
+        </div>
+      </div>
+      <div class="share-msg">
+        <div class="hd">分享信息</div>
+        <el-form
+          label-position="top"
+          label-width="80px"
+          :model="dynamicExtendDTO"
+        >
+          <el-form-item label="分享标题">
+            <el-input v-model="dynamicExtendDTO.shareTitle"></el-input>
+          </el-form-item>
+          <el-form-item label="分享微信好友图">
+            <el-upload
+              v-if="!dynamicExtendDTO.shareFriendPicture"
+              action="/"
+              list-type="picture-card"
+              :before-upload="beforeAvatarUpload"
+              :http-request="function (content) {return clickUpload(content, index, 'share');}"
+              :show-file-list="false"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+
+            <div class="goods-pre" v-else>
+              <i
+                class="el-icon-error"
+                @click="deleteCurrentImg(1, 'share', 1)"
+              ></i>
+              <el-image
+                :src="dynamicExtendDTO.shareFriendPicture"
+                class="goods-avatar"
+              />
+              <div class="goods-pre-btn" @click="openPreviewModal(val)">
+                预览
+              </div>
+            </div>
+          </el-form-item>
+          <div class="share-tips">
+            建议尺寸：750 × 600 ； 支持格式：png、jpg
+          </div>
+          <el-form-item label="分享海报图">
+            <el-upload
+              v-if="!dynamicExtendDTO.sharePoster"
+              action="/"
+              list-type="picture-card"
+              :before-upload="beforeAvatarUpload"
+              :http-request="function (content) {return clickUpload(content, 2, 'share', 2);}"
+              :show-file-list="false"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+
+            <div class="goods-pre" v-else>
+              <i
+                class="el-icon-error"
+                @click="deleteCurrentImg(1, 'share', 2)"
+              ></i>
+              <el-image
+                :src="dynamicExtendDTO.sharePoster"
+                class="goods-avatar"
+              />
+              <div class="goods-pre-btn" @click="openPreviewModal(val)">
+                预览
+              </div>
+            </div>
+          </el-form-item>
+          <div class="share-tips">
+            建议尺寸：600 × 446 ； 支持格式：png、jpg
+          </div>
+          <el-form-item>
+            <el-button type="primary" @click="submitForm">发布</el-button>
+            <el-button @click="resetForm"> 取消</el-button>
+          </el-form-item>
+        </el-form>
       </div>
     </div>
 
@@ -48,6 +183,7 @@
       ref="OfficialComponent"
       title="添加发布者"
     ></officialComponent>
+    <kdDialog ref="kdDialog" :showFooter="false" dialogTitle=""> </kdDialog>
   </div>
 </template>
 
@@ -70,12 +206,87 @@
   .table {
     margin-top: 20px;
   }
-  .dynamic{
+  .dynamic {
     margin: 30px 0px;
   }
-  .dynamic-text{
+  .dynamic-text {
     margin: 0px 0px 20px 5px;
   }
+}
+.hd {
+  padding: 12px 14px;
+  color: #333333;
+  background: #f2f2f2;
+  font-family: "Arial Negreta", "Arial Normal", "Arial", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+.dynamic-list {
+  width: 560px;
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.dynamic-list-item {
+  margin-right: 18px;
+  margin-bottom: 10px;
+  width: 148px;
+  height: 148px;
+}
+.goods-pre {
+  // border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  position: relative;
+  width: 148px;
+  height: 148px;
+  // overflow: hidden;
+  /*float: left;*/
+  // margin-right: 10px;
+}
+.goods-avatar {
+  width: 148px;
+  height: 148px;
+}
+.goods-pre:hover .goods-pre-btn {
+  display: block;
+}
+
+.goods-pre:hover .el-icon-error {
+  display: block;
+}
+
+.goods-pre .el-icon-error {
+  right: 3px;
+  top: 3px;
+  cursor: pointer;
+  position: absolute;
+  z-index: 10;
+  display: none;
+}
+
+.goods-pre-btn {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  margin-top: -30px;
+  color: #fff;
+  cursor: pointer;
+  position: absolute;
+  text-align: center;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
+}
+.share-tips {
+  font-size: 13px;
+  color: #aaaaaa;
+}
+.chamber-view{
+  border: 1px solid #ededed;
+  padding: 20px 10px 20px 10px;
+  margin-top: 20px;
 }
 .contentHtml {
   overflow: hidden;

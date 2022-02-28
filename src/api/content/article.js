@@ -287,3 +287,34 @@ export function dynamicPagedList(params) {
     params
   })
 }
+//校验文件
+export function checkFile(params) {
+  return request({
+    url: `/ec/dynamic-record/check-file`,
+    method: 'post',
+    data:params
+  })
+}
+//上传文件到对应目录
+export function uploadFile(params,query) {
+  return request({
+    url: `/ec/upload/file?folder=${query}`,
+    method: 'post',
+    data:params
+  })
+}
+//新增或更新动态
+export function editDynamic(params) {
+  return request({
+    url: `/ec/dynamic-record/api/wechatAuth/dynamic`,
+    method: 'post',
+    data:params
+  })
+}
+//查询可同步的商会
+export function getChamberList(wxUserId) {
+  return request({
+    url: `/ec/dynamic-record/get-can-synchronize-list?wxUserId=${wxUserId}`,
+    method: 'get',
+  })
+}
