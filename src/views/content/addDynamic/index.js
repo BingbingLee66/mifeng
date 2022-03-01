@@ -8,7 +8,8 @@ import {
   editDynamic,
   getChamberList,
   getDynamicDetail,
-  uploadVideo
+  uploadVideo,
+  queryVideo
 } from '@/api/content/article'
 import {
   getPromulgator
@@ -69,10 +70,10 @@ export default {
       //上传视频id
       vid: '',
       //视频封面
-      videoDetail:'',
+      videoDetail: '',
       //文章id
-      articleId:'',
-      loading:false
+      articleId: '',
+      loading: false
     }
 
   },
@@ -180,7 +181,7 @@ export default {
           })
         })
       }
-      
+
 
     },
     //点击上次动态图片行为
@@ -210,29 +211,30 @@ export default {
       }
     },
     //删除当前视频
-    deleteCurrentVideo(){
-      this.vid=''
+    deleteCurrentVideo() {
+      this.vid = ''
 
     },
     //上传视频
     uploadVideoFunc(content) {
-      this.loading=true;
-      console.log('content',content)
+      this.loading = true;
+      console.log('content', content)
       let formData = new FormData();
       formData.append('file', content.file);
-  const self=this;
-      uploadVideo(formData,this.mode==='add' ? 0:this.articleId).then(res => {
+      const self = this;
+      uploadVideo(formData, this.mode === 'add' ? 0 : this.articleId).then(res => {
         if (res.code === 200) {
-      
+
           // this.vid='4fa4d6d08c0a41a6b6168428326cae8e'
-          this.vid=res.data.videoId;
-          setTimeout(() => {
-            this.$nextTick(()=>{
-             
-              this.$refs['videoRef'].show(this.vid);
-              this.loading=false;
-            })
-          }, 6000);         
+          this.vid = res.data.videoId;
+          this.timer = setInterval(this.queryVideoFunc, 1000);
+          // setTimeout(() => {
+          //   this.$nextTick(() => {
+
+          //     this.$refs['videoRef'].show(this.vid);
+          //     this.loading = false;
+          //   })
+          // }, 6000);
         }
       })
     },
@@ -252,8 +254,8 @@ export default {
               //分享海报图
               this.dynamicExtendDTO.sharePoster = res.data
             }
-          }else if(folder==='video-cover'){
-            this.videoDetail=res.data;
+          } else if (folder === 'video-cover') {
+            this.videoDetail = res.data;
           }
 
         }
@@ -296,6 +298,7 @@ export default {
       this.selectChamberList.forEach(item => {
         chamberIds.push(item.id)
       })
+      let arr= this.handleNullDelete()
       let params = {
         dynamicExtendDTO: this.dynamicExtendDTO,
         dynamicReq: {
@@ -304,8 +307,8 @@ export default {
           contentHtml: this.contentHtml,
           contentType: this.type,
           type: chamberIds.length > 0 ? 7 : 6,
-          urlArr:this.type === 1? this.gallery :[this.videoDetail],
-          vid:this.vid
+          urlArr: arr,
+          vid: this.vid
         }
       }
       params.dynamicExtendDTO.wxUserId = this.tableData[0].wxUserId;
@@ -326,6 +329,17 @@ export default {
       })
     },
     /**工具类 */
+    //去除表单空元素
+    handleNullDelete() {
+      let arr=this.type === 1 ? this.gallery : [this.videoDetail];
+      if (arr.length < 1) {
+        return []
+      };
+      let r = arr.filter(function (s) {
+        return s && s.trim();
+      });
+      return r
+    },
     //校验表单
     verifyForm() {
       let tableData = this.tableData;
@@ -333,13 +347,12 @@ export default {
         this.$message.error('请填写发布者!');
         return false;
       }
-      if(this.type===1){
-      }else {
-        if(!this.vid){  this.$message.error('请上传视频!');
-        return false;
+      if (this.type === 1) {} else {
+        if (!this.vid) {
+          this.$message.error('请上传视频!');
+          return false;
+        }
       }
-      }
-     
       return true;
     },
     //剔除已同步的商会
@@ -414,10 +427,10 @@ export default {
           this.dynamicExtendDTO = data.dynamicExtendVO;
           this.contentHtml = data.articleDetailResp.contentHtml;
           this.gallery = data.articleDetailResp.urlArr;
-          this.articleId=data.articleDetailResp.articleId;
-          this.vid=data.articleDetailResp.vid;
-          if(data.articleDetailResp.urlArr){
-            this.videoDetail=this.mode==='update' ? data.articleDetailResp.urlArr[0]:''
+          this.articleId = data.articleDetailResp.articleId;
+          this.vid = data.articleDetailResp.vid;
+          if (data.articleDetailResp.urlArr) {
+            this.videoDetail = this.mode === 'update' ? data.articleDetailResp.urlArr[0] : ''
           }
           this.getChamberListFunc(true);
           this.handleGallery()
@@ -425,6 +438,19 @@ export default {
 
         }
       })
+    },
+    //查视频动态
+    queryVideoFunc(){
+      queryVideo(this.vid).then(res=>{
+        if(res.code===200){
+          clearInterval(this.timer);
+          this.$nextTick(() => {
+            this.$refs['videoRef'].show(this.vid);
+            this.loading = false;
+          })
+        }
+      })
+
     },
 
     //校验图片是否合规
