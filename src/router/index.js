@@ -140,7 +140,7 @@ export const constantRoutes = [
       {
         path: '/content/addDynamic',
         name: '发布动态',
-        component: () => import('@/views/content/addDynamic/index'),
+        component: () => import('@/views/content/addDynamic/index.vue'),
         hidden: true,
         meta: { title: '发布动态' }
       },
