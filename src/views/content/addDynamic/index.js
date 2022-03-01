@@ -17,11 +17,13 @@ import router from '../../../router';
 import officialComponent from '../../wxuser/officialManager/components/index'
 import editorElem from '@/components/wangEditor/index'
 import kdDialog from '@/components/common/kdDialog'
+import videoComponent from '@/components/video/index'
 export default {
   components: {
     officialComponent,
     editorElem,
-    kdDialog
+    kdDialog,
+    videoComponent
   },
   data() {
     return {
@@ -64,7 +66,13 @@ export default {
       companyId: ',',
       //当前预览的图片
       currentImg: '',
-      vid: ''
+      //上传视频id
+      vid: '',
+      //视频封面
+      videoDetail:'',
+      //文章id
+      articleId:'',
+      loading:false
     }
 
   },
@@ -153,22 +161,26 @@ export default {
           return false
         }
       }
-      return new Promise((resolve, reject) => {
-        // console.log('file',file);
-        let formData = new FormData();
-        // console.log('formData',formData)
-        formData.append('file', file);
-        checkFile(formData).then(res => {
-          //校验合规
-          // console.log('res',res)
-          if (res.state === 1) {
-            resolve()
-          } else {
-            this.$message.error('上传图片不合规')
-            reject()
-          }
+      //图片才需要校验
+      if (file.type.indexOf('image/') !== -1) {
+        return new Promise((resolve, reject) => {
+          // console.log('file',file);
+          let formData = new FormData();
+          // console.log('formData',formData)
+          formData.append('file', file);
+          checkFile(formData).then(res => {
+            //校验合规
+            // console.log('res',res)
+            if (res.state === 1) {
+              resolve()
+            } else {
+              this.$message.error('上传图片不合规')
+              reject()
+            }
+          })
         })
-      })
+      }
+      
 
     },
     //点击上次动态图片行为
@@ -196,13 +208,32 @@ export default {
           this.dynamicExtendDTO.sharePoster = ''
         }
       }
+    },
+    //删除当前视频
+    deleteCurrentVideo(){
+      this.vid=''
 
     },
     //上传视频
-    uploadVideoFunc() {
-      uploadVideo().then(res => {
-        if (res.state === 1) {}
-
+    uploadVideoFunc(content) {
+      this.loading=true;
+      console.log('content',content)
+      let formData = new FormData();
+      formData.append('file', content.file);
+  const self=this;
+      uploadVideo(formData,this.mode==='add' ? 0:this.articleId).then(res => {
+        if (res.code === 200) {
+      
+          // this.vid='4fa4d6d08c0a41a6b6168428326cae8e'
+          this.vid=res.data.videoId;
+          setTimeout(() => {
+            this.$nextTick(()=>{
+             
+              this.$refs['videoRef'].show(this.vid);
+              this.loading=false;
+            })
+          }, 6000);         
+        }
       })
     },
     uploadFileFunc(formData, folder, index, type = 1) {
@@ -221,6 +252,8 @@ export default {
               //分享海报图
               this.dynamicExtendDTO.sharePoster = res.data
             }
+          }else if(folder==='video-cover'){
+            this.videoDetail=res.data;
           }
 
         }
@@ -271,7 +304,8 @@ export default {
           contentHtml: this.contentHtml,
           contentType: this.type,
           type: chamberIds.length > 0 ? 7 : 6,
-          urlArr: this.gallery
+          urlArr:this.type === 1? this.gallery :[this.videoDetail],
+          vid:this.vid
         }
       }
       params.dynamicExtendDTO.wxUserId = this.tableData[0].wxUserId;
@@ -373,6 +407,11 @@ export default {
           this.dynamicExtendDTO = data.dynamicExtendVO;
           this.contentHtml = data.articleDetailResp.contentHtml;
           this.gallery = data.articleDetailResp.urlArr;
+          this.articleId=data.articleDetailResp.articleId;
+          this.vid=data.articleDetailResp.vid;
+          if(data.articleDetailResp.urlArr){
+            this.videoDetail=this.mode==='update' ? data.articleDetailResp.urlArr[0]:''
+          }
           this.getChamberListFunc(true);
           this.handleGallery()
           // this.handleNoChamberListFunc()

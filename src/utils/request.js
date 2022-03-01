@@ -54,7 +54,7 @@ service.interceptors.response.use(
       store.dispatch('user/updateToken', { token: response.headers.token })
     }
     // if the custom code is not 1, it is judged as an error.
-    if (res.state !== 1 && res.state !== -1 && res.state !== 0) {
+    if (res.state !== 1 && res.state !== -1 && res.state !== 0 && res.code!==200) {
       Message({
         message: res.msg === undefined ? '系统错误，请重试' : res.msg,
         type: 'error',

@@ -48,38 +48,69 @@
         ></editorElem>
       </div>
       <el-form  label-position="top" label-width="80px" v-if="type===2">
-        <el-form-item label="动态视频">
+        
+          <el-form-item label="动态视频"  v-loading="loading">
+            <el-upload
+           
+              v-if="!vid"
+              action="/"
+              list-type="picture-card"
+              :before-upload="beforeAvatarUpload"
+              :http-request="function (content) {return uploadVideoFunc(content);}"
+              :show-file-list="false"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+
+            <div class="goods-pre" v-else>
+              <videoComponent  ref="videoRef" v-if="vid" :vid="vid" height="148px"></videoComponent>
+              <i
+                class="el-icon-error"
+                style="font-size:20px;color:red;"
+                @click="deleteCurrentVideo"
+              ></i>
+              <!-- <i
+                class="el-icon-error"
+                @click="deleteCurrentVideo"
+              ></i>
+              <el-image
+                :src="dynamicExtendDTO.shareFriendPicture"
+                class="goods-avatar"
+              />
+              <div class="goods-pre-btn" @click="openPreviewModal(dynamicExtendDTO.shareFriendPicture)">
+                预览
+              </div> -->
+            </div>
+          </el-form-item>
+          
+        <!-- <el-form-item label="动态视频">
             <el-upload
               v-if="!vid"
               action="/"
               :before-upload="beforeAvatarUpload"
-              :http-request="function (content) {return clickUpload(content, index, 'share');}"
+              :http-request="function (content) {return uploadVideoFunc(content);}"
               :show-file-list="false"
             >
               <i class="el-icon-plus"></i>
             </el-upload>
 
             <div class="goods-pre" v-else>
+               <videoComponent  ref="videoRef" v-if="vid" :vid="vid" height="148px"></videoComponent>
               <i
                 class="el-icon-error"
-                @click="deleteCurrentImg(1, 'share', 1)"
+                style="font-size:20px;color:red;"
+                @click="deleteCurrentVideo"
               ></i>
-              <el-image
-                :src="dynamicExtendDTO.shareFriendPicture"
-                class="goods-avatar"
-              />
-              <div class="goods-pre-btn" @click="openPreviewModal(dynamicExtendDTO.shareFriendPicture)">
-                预览
-              </div>
+
             </div>
-          </el-form-item>
+          </el-form-item> -->
  <el-form-item label="视频封面">
             <el-upload
-              v-if="!dynamicExtendDTO.shareFriendPicture"
+              v-if="!videoDetail"
               action="/"
               list-type="picture-card"
               :before-upload="beforeAvatarUpload"
-              :http-request="function (content) {return clickUpload(content, index, 'share');}"
+              :http-request="function (content) {return clickUpload(content, 1, 'video-cover');}"
               :show-file-list="false"
             >
               <i class="el-icon-plus"></i>
@@ -91,7 +122,7 @@
                 @click="deleteCurrentImg(1, 'share', 1)"
               ></i>
               <el-image
-                :src="dynamicExtendDTO.shareFriendPicture"
+                :src="videoDetail"
                 class="goods-avatar"
               />
               <div class="goods-pre-btn" @click="openPreviewModal(dynamicExtendDTO.shareFriendPicture)">
@@ -99,12 +130,16 @@
               </div>
             </div>
           </el-form-item>
+          <div class="share-tips">
+            支持格式：jpeg、png、jpg
+          </div>
       </el-form>
         
       <div class="dynamic">
-        <div>
+        <div v-if="type===1">
+          <div>
           <span class="handle dynamic-text">动态图片</span>
-          <span class="text-tips">拖拽可调整图片顺序</span>
+          <!-- <span class="text-tips">拖拽可调整图片顺序</span> -->
         </div>
         <div class="dynamic-list">
           <div
@@ -139,6 +174,8 @@
             </div>
           </div>
         </div>
+        </div>
+        
         <span class="handle dynamic-text">选择同步商会</span>
         <div class="chamber-view">
           <div class="chamber-view-text">在这些商会内同步动态</div>
@@ -251,10 +288,12 @@
       ref="OfficialComponent"
       title="添加发布者"
     ></officialComponent>
+       
     <kdDialog ref="kdDialog" :showFooter="false" dialogTitle="" dialogWidth="60%">
       <div slot="content">
         <img :src="currentImg" style="max-width:90%"/>
         </div> </kdDialog>
+
   </div>
 </template>
 
@@ -333,7 +372,7 @@
   top: 3px;
   cursor: pointer;
   position: absolute;
-  z-index: 10;
+  z-index: 12;
   display: none;
 }
 
