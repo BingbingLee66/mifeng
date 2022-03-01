@@ -101,7 +101,6 @@ export default {
           router.push({
             name: '官方号管理'
           })
-          console.log("then");
 
         });
         return;
@@ -109,7 +108,6 @@ export default {
       this.$refs['OfficialComponent'].show().then(res => {
         this.tableData = res;
         this.getChamberListFunc()
-        console.log('res', res)
       })
     },
     beforeAvatarUpload(file) {
@@ -253,8 +251,7 @@ export default {
     },
     //添加已选商会
     addSelectChamber(tag,index){
-      console.log('tag',tag);
-      console.log('index',index)
+     
       this.selectChamberList.splice(-1,0,tag);
       this.noChamberList.splice(index,1);
     },
@@ -313,21 +310,18 @@ router.push({name:'编辑台'})
     handleNoChamberListFunc(){
 let chamberList=this.chamberList;
 let _selectChamberList=this.selectChamberList;
-console.log('chamberList',chamberList);
-console.log('_selectChamberList',_selectChamberList);
+
 chamberList.forEach((item,index)=>{
   _selectChamberList.forEach((item2,index2)=>{
-    console.log('item',item);
-    console.log('item2',item2)
+    
     if(item.id===item2.id){
-      console.log('==')
+     
       this.chamberList.splice(index,1);
-      console.log('this.chamberList',this.chamberList)
     }
   })
 })
 this.noChamberList=JSON.parse(JSON.stringify(this.chamberList)) ;
-console.log('this.selectChamberList',this.chamberList)
+console.log('this.chamberList',this.chamberList)
 // _selectChamberList.forEach((index,item=>{
 //   console.log('item',item)
 // }))
@@ -391,11 +385,21 @@ console.log('this.selectChamberList',this.chamberList)
           this.dynamicExtendDTO=data.dynamicExtendVO;
           this.contentHtml=data.articleDetailResp.contentHtml;
           this.gallery=data.articleDetailResp.urlArr;
-        this.getChamberListFunc(true)
+        this.getChamberListFunc(true);
+        this.handleGallery()
           // this.handleNoChamberListFunc()
 
         }
       })
+    },
+    handleGallery(){
+      let gallery=this.gallery;
+      for(let i=0;i<10;i++){
+        if(gallery[i]){
+        }else{
+          gallery.splice(i,1,'')
+        }
+      }
     },
     //校验图片是否合规
     checkFileFunc(file) {

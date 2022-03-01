@@ -281,7 +281,7 @@
     <el-table
       v-if="activeName === '2'"
       id="out-table"
-      v-loading="listLoading"
+     
       :data="dynamicList"
       element-loading-text="Loading"
       border

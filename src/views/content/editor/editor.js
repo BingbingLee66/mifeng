@@ -221,6 +221,7 @@ export default {
         params.order = column.prop +' '+type;
       }
       dynamicPagedList(params).then(res => {
+        console.log('res',res)
         if (res.state === 1) {
           this.dynamicList = res.data.list
         }
@@ -263,7 +264,11 @@ export default {
       this.getAllChamberList()
       this.listLoading = true;
       console.log('fetchData')
-      this.getGlobalContentListFunc()
+      if (this.activeName == '1') {
+        this.getGlobalContentListFunc()
+      } else {
+        this.dynamicPagedListFunc()
+      }
       // let params = {
       //   'pageSize': this.limit,
       //   'page': this.currentpage,
