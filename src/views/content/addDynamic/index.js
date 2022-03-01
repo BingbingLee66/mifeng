@@ -73,7 +73,9 @@ export default {
       videoDetail: '',
       //文章id
       articleId: '',
-      loading: false
+      loading: false,
+      //轮询定时器
+      timer:null
     }
 
   },
@@ -227,6 +229,7 @@ export default {
 
           // this.vid='4fa4d6d08c0a41a6b6168428326cae8e'
           this.vid = res.data.videoId;
+         
           this.timer = setInterval(this.queryVideoFunc, 1000);
           // setTimeout(() => {
           //   this.$nextTick(() => {
@@ -432,6 +435,13 @@ export default {
           if (data.articleDetailResp.urlArr) {
             this.videoDetail = this.mode === 'update' ? data.articleDetailResp.urlArr[0] : ''
           }
+          if(this.type===2 && this.mode==='update'){
+              this.$nextTick(() => {
+
+              this.$refs['videoRef'].show(this.vid);
+              this.loading = false;
+            })
+          }
           this.getChamberListFunc(true);
           this.handleGallery()
           // this.handleNoChamberListFunc()
@@ -442,7 +452,7 @@ export default {
     //查视频动态
     queryVideoFunc(){
       queryVideo(this.vid).then(res=>{
-        if(res.code===200){
+        if(res.state===1){
           clearInterval(this.timer);
           this.$nextTick(() => {
             this.$refs['videoRef'].show(this.vid);

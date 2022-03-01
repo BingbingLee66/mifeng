@@ -333,3 +333,11 @@ export function uploadVideo(params,id=0,source=1) {
     data:params
   })
 }
+//轮询查视频动态
+export function queryVideo(vid) {
+  return request({
+    url: `/ec/dynamic-record/vod/info/${vid}`,
+    method: 'get',
+  })
+}
+
