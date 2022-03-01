@@ -74,7 +74,6 @@ export default {
 
     // 选择指定列进行排序
     changeTableSort(column) {
-      console.log(column)
       if (this.activeName == '1') {
         this.getGlobalContentListFunc(true, column)
       } else {
@@ -138,19 +137,17 @@ export default {
       })
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
       this.fetchData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
       this.fetchData()
     },
     //切换tab
     handleClick(event) {
-      console.log('activeName', this.activeName);
+
       this.currentpage=1
       this.query.orderType='';
       this.limit = this.pageSizes[0];
@@ -221,7 +218,6 @@ export default {
         params.order = column.prop +' '+type;
       }
       dynamicPagedList(params).then(res => {
-        console.log('res',res)
         if (res.state === 1) {
           this.dynamicList = res.data.list
         }
@@ -229,7 +225,6 @@ export default {
     },
     //拉取文章列表；
     getGlobalContentListFunc(sort = false, column) {
-      console.log('getGlobalContentListFunc')
       this.listLoading = true;
       //为排序拉取数据时
       if (sort) {
@@ -263,7 +258,6 @@ export default {
       }
       this.getAllChamberList()
       this.listLoading = true;
-      console.log('fetchData')
       if (this.activeName == '1') {
         this.getGlobalContentListFunc()
       } else {
@@ -341,9 +335,7 @@ export default {
       })
     },
     editDynamic(row){
-      console.log('row',row);
-      let articleResp=row.articleResp;
-    
+      let articleResp=row.articleResp;  
       this.$router.push({
         name: '发布动态',
         params:{

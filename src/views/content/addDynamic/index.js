@@ -7,7 +7,8 @@ import {
   uploadFile,
   editDynamic,
   getChamberList,
-  getDynamicDetail
+  getDynamicDetail,
+  uploadVideo
 } from '@/api/content/article'
 import {
   getPromulgator
@@ -29,7 +30,7 @@ export default {
       //新增 or 编辑 add update
       mode: 'add',
       //当前动态id
-      id:null,
+      id: null,
       //已选发布者
       tableData: [],
       //动态列表图
@@ -47,46 +48,49 @@ export default {
         //分享海报图
         sharePoster: '',
         //分享扩展字段id(新增传null，修改传返回的id)
-        id:null
+        id: null
       },
-      //分享上传图片类型 1.微信好友图 2.分享海报图
+      //分享上传图片类型 1.微信好友图 2.分享海报图 3.视频封面
       // type: 1,
       //商会list
-      chamberList:[],
+      chamberList: [],
       //已选商会
-      selectChamberList:[],
+      selectChamberList: [],
       //不同步的商会
-      noChamberList:[],
+      noChamberList: [],
       //动态内容
-      contentHtml:'',
+      contentHtml: '',
       //企业id
-      companyId:',',
+      companyId: ',',
       //当前预览的图片
-      currentImg:''
+      currentImg: '',
+      vid: ''
     }
 
   },
- async mounted() {
-    console.log('this.$route.params',this.$route.params)
-    if(Object.keys(this.$route.params).length>0){
-      let params=this.$route.params
-      this.type=params.type;
-      this.mode=params.mode;
-      this.id=params.id;
+  async mounted() {
+    console.log('this.$route.params', this.$route.params)
+    if (Object.keys(this.$route.params).length > 0) {
+      let params = this.$route.params
+      this.type = params.type;
+      this.mode = params.mode;
+      this.id = params.id;
     }
     //如果有id并且mode为update 则为编辑模式
-    if(this.id && this.mode==='update'){
-      await  this.getDynamicDetailFunc()
+    if (this.id && this.mode === 'update') {
+      await this.getDynamicDetailFunc()
     }
   },
   computed: {},
   created() {
-// this.getChamberListFunc()
+    // this.getChamberListFunc()
   },
   methods: {
     /**行为操作类 */
     async showOfficialComponent() {
-      if(this.mode==='update'){return}
+      if (this.mode === 'update') {
+        return
+      }
       let re = await this.getPromulgatorFunc();
       if (re < 1) {
         this.$confirm(
@@ -161,7 +165,6 @@ export default {
             resolve()
           } else {
             this.$message.error('上传图片不合规')
-
             reject()
           }
         })
@@ -170,18 +173,15 @@ export default {
     },
     //点击上次动态图片行为
     clickUpload(content, index, folder, type = 1) {
-      // console.log('content',content);
       let formData = new FormData();
       formData.append('file', content.file);
-      // console.log('formData',formData)
       this.uploadFileFunc(formData, folder, index, type)
     },
     //预览
     openPreviewModal(val) {
-      // this.previewList[val];
-      console.log('val',val)
+      console.log('val', val)
       this.$refs['kdDialog'].show();
-      this.currentImg=val;
+      this.currentImg = val;
     },
     //删除当前上传图片
     deleteCurrentImg(index, folder, type) {
@@ -197,6 +197,13 @@ export default {
         }
       }
 
+    },
+    //上传视频
+    uploadVideoFunc() {
+      uploadVideo().then(res => {
+        if (res.state === 1) {}
+
+      })
     },
     uploadFileFunc(formData, folder, index, type = 1) {
       // console.log('formData',formData)
@@ -217,14 +224,6 @@ export default {
           }
 
         }
-
-        // if (this.gallery.length === this.galleryLimit) {
-        //   // 上传达到限制不添加
-        // }
-        //  else {
-        //   this.gallery.push('')
-        // }
-
       })
 
     },
@@ -242,99 +241,88 @@ export default {
       });
     },
     //移除已选商会
-    handleClose(tag,index){
+    handleClose(tag, index) {
       //从已选商会删除
-      this.selectChamberList.splice(index,1);
+      this.selectChamberList.splice(index, 1);
       //从不同步商会新增
-      this.noChamberList.splice(-1,0,tag)
-      console.log('tag',tag)
+      this.noChamberList.splice(-1, 0, tag)
     },
     //添加已选商会
-    addSelectChamber(tag,index){
-     
-      this.selectChamberList.splice(-1,0,tag);
-      this.noChamberList.splice(index,1);
+    addSelectChamber(tag, index) {
+      this.selectChamberList.splice(-1, 0, tag);
+      this.noChamberList.splice(index, 1);
     },
     //提交表单
-    submitForm(){
+    submitForm() {
       //两种规则：新增 编辑，两种类型 ：图文 
-      let result =this.verifyForm()
-      if(!result){return;};
-      let chamberIds=[];
-      this.selectChamberList.forEach(item=>{
+      let result = this.verifyForm()
+      if (!result) {
+        return;
+      };
+      let chamberIds = [];
+      this.selectChamberList.forEach(item => {
         chamberIds.push(item.id)
       })
-      let params={
-        dynamicExtendDTO:this.dynamicExtendDTO,
-        dynamicReq:{
-          chamberIds:chamberIds,
-          companyId:this.type===1 ? null :this.companyId,
-          contentHtml:this.contentHtml,
-          contentType:this.type,
-          type:chamberIds.length>0 ? 7 :6,
-          urlArr:this.gallery
+      let params = {
+        dynamicExtendDTO: this.dynamicExtendDTO,
+        dynamicReq: {
+          chamberIds: chamberIds,
+          companyId: this.type === 1 ? null : this.companyId,
+          contentHtml: this.contentHtml,
+          contentType: this.type,
+          type: chamberIds.length > 0 ? 7 : 6,
+          urlArr: this.gallery
         }
       }
-      params.dynamicExtendDTO.wxUserId=this.tableData[0].wxUserId;
-      console.log('params',params)
-      editDynamic(params).then(res=>{
-        if(res.state===1){
+      params.dynamicExtendDTO.wxUserId = this.tableData[0].wxUserId;
+      console.log('params', params)
+      editDynamic(params).then(res => {
+        if (res.state === 1) {
           this.$message.success('提交成功');
           this.resetForm()
-        }else{
+        } else {
           this.$message.error(res.msg);
         }
       })
-      // if(mode==='add'){
-
-      // }else{
-
-      // }
-
     },
     //点击取消表单按钮
-    resetForm(){
-router.push({name:'编辑台'})
+    resetForm() {
+      router.push({
+        name: '编辑台'
+      })
     },
     /**工具类 */
     //校验表单
-    verifyForm(){
-      let tableData=this.tableData;
-      if(tableData.length<1){
+    verifyForm() {
+      let tableData = this.tableData;
+      if (tableData.length < 1) {
         this.$message.error('请填写发布者!');
         return false;
       }
       return true;
     },
     //剔除已同步的商会
-    handleNoChamberListFunc(){
-let chamberList=this.chamberList;
-let _selectChamberList=this.selectChamberList;
+    handleNoChamberListFunc() {
+      let chamberList = this.chamberList;
+      let _selectChamberList = this.selectChamberList;
 
-chamberList.forEach((item,index)=>{
-  _selectChamberList.forEach((item2,index2)=>{
-    
-    if(item.id===item2.id){
-     
-      this.chamberList.splice(index,1);
-    }
-  })
-})
-this.noChamberList=JSON.parse(JSON.stringify(this.chamberList)) ;
-console.log('this.chamberList',this.chamberList)
-// _selectChamberList.forEach((index,item=>{
-//   console.log('item',item)
-// }))
-// _selectChamberList.forEach((index,item)=>{
-//   console.log('item',item);
-// let result=  this.chamberList.indexOf((val,index2)=>{
-//     if(val.id===item.id){
-//       return index2
-//     }
-//   })
-//   this.selectChamberList.splice(result,1);
-//   console.log('this.selectChamberList',this.selectChamberList)
-// })
+      chamberList.forEach((item, index) => {
+        _selectChamberList.forEach((item2, index2) => {
+          if (item.id === item2.id) {
+            this.chamberList.splice(index, 1);
+          }
+        })
+      })
+      this.noChamberList = JSON.parse(JSON.stringify(this.chamberList));
+    },
+    //编辑是给图片数组赋空值
+    handleGallery() {
+      let gallery = this.gallery;
+      for (let i = 0; i < 10; i++) {
+        if (gallery[i]) {} else {
+          gallery.splice(i, 1, '')
+        }
+      }
     },
     /**
      * 请求类
@@ -358,49 +346,41 @@ console.log('this.chamberList',this.chamberList)
 
     },
     //flag 是否需要剔除功能 false 不需要 true需要
-  async  getChamberListFunc(flag=false){
-      let wxUserId=null
-      if(this.tableData.length>0){
-        wxUserId=this.tableData[0].wxUserId
+    async getChamberListFunc(flag = false) {
+      let wxUserId = null
+      if (this.tableData.length > 0) {
+        wxUserId = this.tableData[0].wxUserId
       }
-   await   getChamberList(wxUserId).then(res=>{
-        if(res.state===1){
-          this.chamberList=res.data;
-          this.noChamberList=res.data;
-          if(flag){
+      await getChamberList(wxUserId).then(res => {
+        if (res.state === 1) {
+          this.chamberList = res.data;
+          this.noChamberList = res.data;
+          if (flag) {
             this.handleNoChamberListFunc()
           }
         }
       })
     },
     //拉取动态详情
-  async  getDynamicDetailFunc(){
-    await  getDynamicDetail(this.id).then(res=>{
-        if(res.state===1){
-          let data=res.data;
+    async getDynamicDetailFunc() {
+      await getDynamicDetail(this.id).then(res => {
+        if (res.state === 1) {
+          let data = res.data;
           //已选商会
-          this.selectChamberList=data.chamberVOList;
+          this.selectChamberList = data.chamberVOList;
           //已选发布者
-          this.tableData=[data.dynamicWxUserVO];
-          this.dynamicExtendDTO=data.dynamicExtendVO;
-          this.contentHtml=data.articleDetailResp.contentHtml;
-          this.gallery=data.articleDetailResp.urlArr;
-        this.getChamberListFunc(true);
-        this.handleGallery()
+          this.tableData = [data.dynamicWxUserVO];
+          this.dynamicExtendDTO = data.dynamicExtendVO;
+          this.contentHtml = data.articleDetailResp.contentHtml;
+          this.gallery = data.articleDetailResp.urlArr;
+          this.getChamberListFunc(true);
+          this.handleGallery()
           // this.handleNoChamberListFunc()
 
         }
       })
     },
-    handleGallery(){
-      let gallery=this.gallery;
-      for(let i=0;i<10;i++){
-        if(gallery[i]){
-        }else{
-          gallery.splice(i,1,'')
-        }
-      }
-    },
+
     //校验图片是否合规
     checkFileFunc(file) {
       return;
@@ -426,8 +406,7 @@ console.log('this.chamberList',this.chamberList)
      */
     //富文本变化
     addParentHtml(event) {
-      console.log('event', event);
-      this.contentHtml=event
+      this.contentHtml = event
     }
   }
 }

@@ -325,3 +325,11 @@ export function getDynamicDetail(id) {
     method: 'get',
   })
 }
+//上传视频
+export function uploadVideo(params,id=0,source=1) {
+  return request({
+    url: `/ec/dynamic-record/vod/upload/video/${id}/${source}`,
+    method: 'post',
+    data:params
+  })
+}

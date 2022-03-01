@@ -47,6 +47,60 @@
           :content="contentHtml"
         ></editorElem>
       </div>
+      <el-form  label-position="top" label-width="80px" v-if="type===2">
+        <el-form-item label="动态视频">
+            <el-upload
+              v-if="!vid"
+              action="/"
+              :before-upload="beforeAvatarUpload"
+              :http-request="function (content) {return clickUpload(content, index, 'share');}"
+              :show-file-list="false"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+
+            <div class="goods-pre" v-else>
+              <i
+                class="el-icon-error"
+                @click="deleteCurrentImg(1, 'share', 1)"
+              ></i>
+              <el-image
+                :src="dynamicExtendDTO.shareFriendPicture"
+                class="goods-avatar"
+              />
+              <div class="goods-pre-btn" @click="openPreviewModal(dynamicExtendDTO.shareFriendPicture)">
+                预览
+              </div>
+            </div>
+          </el-form-item>
+ <el-form-item label="视频封面">
+            <el-upload
+              v-if="!dynamicExtendDTO.shareFriendPicture"
+              action="/"
+              list-type="picture-card"
+              :before-upload="beforeAvatarUpload"
+              :http-request="function (content) {return clickUpload(content, index, 'share');}"
+              :show-file-list="false"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+
+            <div class="goods-pre" v-else>
+              <i
+                class="el-icon-error"
+                @click="deleteCurrentImg(1, 'share', 1)"
+              ></i>
+              <el-image
+                :src="dynamicExtendDTO.shareFriendPicture"
+                class="goods-avatar"
+              />
+              <div class="goods-pre-btn" @click="openPreviewModal(dynamicExtendDTO.shareFriendPicture)">
+                预览
+              </div>
+            </div>
+          </el-form-item>
+      </el-form>
+        
       <div class="dynamic">
         <div>
           <span class="handle dynamic-text">动态图片</span>
@@ -125,6 +179,7 @@
           <el-form-item label="分享标题">
             <el-input v-model="dynamicExtendDTO.shareTitle"></el-input>
           </el-form-item>
+         
           <el-form-item label="分享微信好友图">
             <el-upload
               v-if="!dynamicExtendDTO.shareFriendPicture"
