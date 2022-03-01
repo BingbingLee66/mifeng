@@ -63,7 +63,7 @@ export default {
       //动态内容
       contentHtml: '',
       //企业id
-      companyId: ',',
+      companyId: '',
       //当前预览的图片
       currentImg: '',
       //上传视频id
@@ -333,6 +333,13 @@ export default {
         this.$message.error('请填写发布者!');
         return false;
       }
+      if(this.type===1){
+      }else {
+        if(!this.vid){  this.$message.error('请上传视频!');
+        return false;
+      }
+      }
+     
       return true;
     },
     //剔除已同步的商会
