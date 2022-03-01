@@ -66,7 +66,7 @@ export default {
     }
 
   },
-  mounted() {
+ async mounted() {
     console.log('this.$route.params',this.$route.params)
     if(Object.keys(this.$route.params).length>0){
       let params=this.$route.params
@@ -76,8 +76,7 @@ export default {
     }
     //如果有id并且mode为update 则为编辑模式
     if(this.id && this.mode==='update'){
-      this.getDynamicDetailFunc()
-
+      await  this.getDynamicDetailFunc()
     }
   },
   computed: {},
@@ -87,6 +86,7 @@ export default {
   methods: {
     /**行为操作类 */
     async showOfficialComponent() {
+      if(this.mode==='update'){return}
       let re = await this.getPromulgatorFunc();
       if (re < 1) {
         this.$confirm(
@@ -300,6 +300,7 @@ export default {
 router.push({name:'编辑台'})
     },
     /**工具类 */
+    //校验表单
     verifyForm(){
       let tableData=this.tableData;
       if(tableData.length<1){
@@ -307,6 +308,39 @@ router.push({name:'编辑台'})
         return false;
       }
       return true;
+    },
+    //剔除已同步的商会
+    handleNoChamberListFunc(){
+let chamberList=this.chamberList;
+let _selectChamberList=this.selectChamberList;
+console.log('chamberList',chamberList);
+console.log('_selectChamberList',_selectChamberList);
+chamberList.forEach((item,index)=>{
+  _selectChamberList.forEach((item2,index2)=>{
+    console.log('item',item);
+    console.log('item2',item2)
+    if(item.id===item2.id){
+      console.log('==')
+      this.chamberList.splice(index,1);
+      console.log('this.chamberList',this.chamberList)
+    }
+  })
+})
+this.noChamberList=JSON.parse(JSON.stringify(this.chamberList)) ;
+console.log('this.selectChamberList',this.chamberList)
+// _selectChamberList.forEach((index,item=>{
+//   console.log('item',item)
+// }))
+// _selectChamberList.forEach((index,item)=>{
+//   console.log('item',item);
+// let result=  this.chamberList.indexOf((val,index2)=>{
+//     if(val.id===item.id){
+//       return index2
+//     }
+//   })
+//   this.selectChamberList.splice(result,1);
+//   console.log('this.selectChamberList',this.selectChamberList)
+// })
     },
     /**
      * 请求类
@@ -329,28 +363,36 @@ router.push({name:'编辑台'})
       })
 
     },
-    getChamberListFunc(){
+    //flag 是否需要剔除功能 false 不需要 true需要
+  async  getChamberListFunc(flag=false){
       let wxUserId=null
       if(this.tableData.length>0){
         wxUserId=this.tableData[0].wxUserId
       }
-      getChamberList(wxUserId).then(res=>{
+   await   getChamberList(wxUserId).then(res=>{
         if(res.state===1){
           this.chamberList=res.data;
           this.noChamberList=res.data;
+          if(flag){
+            this.handleNoChamberListFunc()
+          }
         }
       })
     },
     //拉取动态详情
-    getDynamicDetailFunc(){
-      getDynamicDetail(this.id).then(res=>{
+  async  getDynamicDetailFunc(){
+    await  getDynamicDetail(this.id).then(res=>{
         if(res.state===1){
           let data=res.data;
           //已选商会
           this.selectChamberList=data.chamberVOList;
           //已选发布者
           this.tableData=[data.dynamicWxUserVO];
-          this.dynamicExtendDTO=data.dynamicExtendVO
+          this.dynamicExtendDTO=data.dynamicExtendVO;
+          this.contentHtml=data.articleDetailResp.contentHtml;
+          this.gallery=data.articleDetailResp.urlArr;
+        this.getChamberListFunc(true)
+          // this.handleNoChamberListFunc()
 
         }
       })

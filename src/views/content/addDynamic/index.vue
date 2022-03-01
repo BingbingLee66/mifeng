@@ -6,7 +6,7 @@
         <span style="color: #ff0101">*</span>
         <span class="handle">选择发布者</span>
         <el-button
-          type="primary"
+          :type="mode==='add'? 'primary' :'info'"
           size="small"
           @click="showOfficialComponent($event)"
           >去选择
@@ -33,7 +33,7 @@
           </el-table-column>
           <el-table-column prop="name" label="操作" width="180">
             <template>
-              <el-button type="text" @click="deleteUser"> 移除 </el-button>
+              <el-button type="text" @click="deleteUser" v-if="mode==='add'"> 移除 </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -44,6 +44,7 @@
           :hiddenMenu="true"
           :height="200"
           @addParentHtml="addParentHtml"
+          :content="contentHtml"
         ></editorElem>
       </div>
       <div class="dynamic">
@@ -93,7 +94,7 @@
               :key="tag"
               v-for="(tag, index) in selectChamberList"
               @keydown="tag.id"
-              closable
+              :closable="mode==='add' ?true :false"
               :disable-transitions="false"
               @close="handleClose(tag, index)"
             >
@@ -106,7 +107,7 @@
           >
             <div   :key="tag"  v-for="(tag, index) in noChamberList"  @close="noChamberList(tag, index)" class="noChamber-list">
             <span class="noChamberList-item-text"> {{ tag.name }}</span> 
-              <i class="el-icon-circle-plus add" @click="addSelectChamber(tag, index)"></i>
+              <i v-if="mode==='add'" class="el-icon-circle-plus add" @click="addSelectChamber(tag, index)"></i>
                <!-- <div class="add">+</div> -->
             </div>
 

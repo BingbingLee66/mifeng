@@ -306,7 +306,7 @@
         <template slot-scope="scope">
           <span
             class="contentHtml"
-            id="myhtml"
+            id="myspan"
             v-html="scope.row.articleResp.contentHtml"
           ></span>
         </template>
@@ -440,7 +440,7 @@
 
 <script src="./editor.js"></script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss" >
 @import "src/styles/common.scss";
 .contentHtml {
   overflow: hidden;
@@ -452,6 +452,10 @@
     width: 20% !important;
     height: 20% !important;
   }
+}
+.myspan img {
+    width: 20%;
+    height: 20%;
 }
 #myhtml img {
   width: 20% !important;
