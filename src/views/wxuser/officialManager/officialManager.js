@@ -53,6 +53,12 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
+    queryData(){
+      this.currentpage=1;
+      this.limit=10;
+      this.fetchData()
+
+    },
     fetchData() {
       let params = {
         'pageSize': this.limit,

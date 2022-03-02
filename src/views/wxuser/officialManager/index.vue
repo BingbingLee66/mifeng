@@ -28,7 +28,7 @@
         </el-form-item>
      
         <el-form-item label="">
-          <el-button  type="primary"  @click="fetchData($event)">查询
+          <el-button  type="primary"  @click="queryData">查询
           </el-button>
         </el-form-item>
         
