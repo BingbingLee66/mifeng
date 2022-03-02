@@ -125,7 +125,7 @@
                 :src="videoDetail"
                 class="goods-avatar"
               />
-              <div class="goods-pre-btn" @click="openPreviewModal(dynamicExtendDTO.shareFriendPicture)">
+              <div class="goods-pre-btn" @click="openPreviewModal(videoDetail)">
                 预览
               </div>
             </div>
@@ -287,7 +287,6 @@
       :type="2"
       ref="OfficialComponent"
       title="添加发布者"
-      :chamberOptions="chamberList"
     ></officialComponent>
        
     <kdDialog ref="kdDialog" :showFooter="false" dialogTitle="" dialogWidth="60%">

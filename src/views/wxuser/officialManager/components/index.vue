@@ -133,6 +133,7 @@ export default {
       //状态
       resolve: null,
       reject: null,
+      chamberOptions:[]
     };
   },
   props: {
