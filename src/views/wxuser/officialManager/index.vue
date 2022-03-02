@@ -74,6 +74,12 @@
           <div v-if="scope.row.status == 0">已冻结</div>
         </template>
       </el-table-column>
+      <el-table-column label="添加信息">
+        <template slot-scope="scope">
+          <div >【添加人】:{{scope.row.createdName}}</div>
+             <div >【添加时间】:{{scope.row.createdTs|dateFormat}}</div>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button  type="text"  @click="detail($event, scope.row)">
