@@ -2,7 +2,8 @@ import {
   getGlobalContentList,
   save,
   updateStatusPlatform,
-  dynamicPagedList
+  dynamicPagedList,
+  deleteDynamicByID
 } from '@/api/content/article'
 import {
   getContentColumnOptions
@@ -148,20 +149,20 @@ export default {
     //切换tab
     handleClick(event) {
 
-      this.currentpage=1
-      this.query.orderType='';
+      this.currentpage = 1
+      this.query.orderType = '';
       this.limit = this.pageSizes[0];
-      this.query.column='';
-     
-    //  this.$refs['tableData'].clearSort();
+      this.query.column = '';
+
+      //  this.$refs['tableData'].clearSort();
       if (this.activeName == '1') {
         this.getGlobalContentListFunc()
       } else {
         this.dynamicPagedListFunc()
       }
-      this.$nextTick(() =>{
-        this.$refs['tableData'].clearSort(); 
-       })
+      this.$nextTick(() => {
+        this.$refs['tableData'].clearSort();
+      })
     },
     init() {
       if (this.has('', '查询')) {
@@ -214,8 +215,8 @@ export default {
         'status': this.query.status
       }
       if (sort) {
-        let type='ascending' ? 'desc' : 'asc';
-        params.order = column.prop +' '+type;
+        let type = 'ascending' ? 'desc' : 'asc';
+        params.order = column.prop + ' ' + type;
       }
       dynamicPagedList(params).then(res => {
         if (res.state === 1) {
@@ -229,7 +230,7 @@ export default {
       //为排序拉取数据时
       if (sort) {
         this.query.column = column.prop;
-        this.query.orderType = column.order === 'ascending' ? 1:-1
+        this.query.orderType = column.order === 'ascending' ? 1 : -1
       }
       let params = {
         'pageSize': this.limit,
@@ -310,12 +311,12 @@ export default {
         this.fetchData()
       })
     },
-    addDynamic(val){
+    addDynamic(val) {
       this.$router.push({
         name: '发布动态',
-        params:{
-          type:val,
-          mode:'add'
+        params: {
+          type: val,
+          mode: 'add'
         }
       })
     },
@@ -334,14 +335,48 @@ export default {
         }
       })
     },
-    editDynamic(row){
-      let articleResp=row.articleResp;  
+    editDynamic(row) {
+      let articleResp = row.articleResp;
       this.$router.push({
         name: '发布动态',
-        params:{
-          type:row.articleResp.contentType,
-          mode:'update',
-          id:row.articleResp.id
+        params: {
+          type: row.articleResp.contentType,
+          mode: 'update',
+          id: row.articleResp.id
+        }
+      })
+    },
+    //删除动态
+    deleteDynamic(row) {
+      console.log('row', row);
+      let id = row.articleResp.id;
+      const self=this;
+      this.$confirm('确定删除动态嘛?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {      
+        self.deleteDynamicFunc([id])
+      }).catch(() => {
+        return;
+       
+      });
+    },
+    deleteDynamicFunc(articleIds){
+      console.log('articleIds',articleIds)
+      deleteDynamicByID({articleIds}).then(res=>{
+        console.log('res',res)
+        if(res.state===1){
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.init()
+        }else{
+          this.$message({
+            type: 'success',
+            message: res.msg
+          });
         }
       })
     },

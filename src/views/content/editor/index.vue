@@ -134,6 +134,15 @@
                 >查询</el-button
               >
             </el-form-item>
+                        <el-form-item label=" ">
+              <el-button
+                v-if="has('', '查询')"
+                type="primary"
+                :actionid="getId('', '查询')"
+                @click="queryData($event)"
+                >查询</el-button
+              >
+            </el-form-item>
           </el-row>
              <el-row>
             <el-button
@@ -371,10 +380,10 @@
       </el-table-column>
       <el-table-column label="创建信息" width="200px" prop="operator">
         <template slot-scope="scope">
-          <div>【创建人】{{ scope.row.articleResp.operator }}</div>
-          <div>【创建时间】{{ scope.row.articleResp.createdTs }}</div>
-          <div>【更新人】{{ scope.row.articleResp.updater }}</div>
-          <div>【更新时间】{{ scope.row.articleResp.updatedTs }}</div>
+          <div>【创建人】{{ scope.row.dynamicExtendVO.createName }}</div>
+          <div>【创建时间】{{ scope.row.dynamicExtendVO.createdTs |dateFormat}}</div>
+          <div>【更新人】{{ scope.row.dynamicExtendVO.updatedName }}</div>
+          <div>【更新时间】{{ scope.row.dynamicExtendVO.updatedTs |dateFormat}}</div>
         </template>
       </el-table-column>
       <el-table-column label="发布时间" width="200px" prop="publishTs">
@@ -396,6 +405,13 @@
                @click="editDynamic(scope.row)"
             
               >编辑</el-button
+            >
+          </div>
+           <div>
+            <el-button
+              type="text"
+               @click="deleteDynamic(scope.row)"           
+              >删除</el-button
             >
           </div>
           <div>

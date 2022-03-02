@@ -340,4 +340,13 @@ export function queryVideo(vid) {
     method: 'get',
   })
 }
+//批量删除动态
+export function deleteDynamicByID(articleIds) {
+  console.log('articleIds',articleIds)
+  return request({
+    url: `/ec/dynamic-record/delete`,
+    method: 'delete',
+    params:articleIds
+  })
+}
 

@@ -315,7 +315,8 @@ export default {
           contentType: this.type,
           type: chamberIds.length > 0 ? 7 : 6,
           urlArr: arr,
-          vid: this.vid
+          vid: this.vid,
+          id:this.articleId
         }
       }
       params.dynamicExtendDTO.wxUserId = this.tableData[0].wxUserId;
@@ -354,7 +355,16 @@ export default {
         this.$message.error('请填写发布者!');
         return false;
       }
-      if (this.type === 1) {} else {
+      if (this.type === 1) {
+       let arr= this.handleNullDelete()
+        if(this.contentHtml ||arr.length>0){
+          return true;
+        }else{
+          this.$message.error('图片或者内容不能为空!');
+          return false;
+        }
+        
+      } else {
         if (!this.vid) {
           this.$message.error('请上传视频!');
           return false;
@@ -434,7 +444,7 @@ export default {
           this.dynamicExtendDTO = data.dynamicExtendVO;
           this.contentHtml = data.articleDetailResp.contentHtml;
           this.gallery = data.articleDetailResp.urlArr;
-          this.articleId = data.articleDetailResp.articleId;
+          this.articleId = data.articleDetailResp.id;
           this.vid = data.articleDetailResp.vid;
           if (data.articleDetailResp.urlArr) {
             this.videoDetail = this.mode === 'update' ? data.articleDetailResp.urlArr[0] : ''
