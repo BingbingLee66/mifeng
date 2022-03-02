@@ -25,12 +25,20 @@ export const dynamicTypeList = [{
         value: '1'
       },
       {
-        label: '已冻结',
+        label: '商会已冻结',
+        value: '0'
+      },
+      {
+        label: '平台已冻结',
         value: '3'
       },
       {
         label: '定时发布',
         value: '4'
+      },
+      {
+        label: '审核不通过',
+        value: '5'
       },
     ];
     //发布时间list
