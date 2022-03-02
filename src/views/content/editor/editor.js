@@ -214,8 +214,9 @@ export default {
         'pageNum': this.currentpage,
         'status': this.query.status
       }
+      console.log('column',column)
       if (sort) {
-        let type = 'ascending' ? 'desc' : 'asc';
+        let type = column.order==='ascending' ? 'desc' : 'asc';
         params.order = column.prop + ' ' + type;
       }
       dynamicPagedList(params).then(res => {
