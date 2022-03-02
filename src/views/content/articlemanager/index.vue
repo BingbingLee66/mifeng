@@ -388,7 +388,7 @@
           <template slot-scope="scope">
                 <div v-if="scope.row.status == 0">已冻结(商会)</div>
                 <div v-if="scope.row.status == 3 || scope.row.status == 1">
-                <div v-if="scope.row.statusNameVO.freezeList.length > 0">
+                <div v-if="scope.row.statusNameVO.freezeList && scope.row.statusNameVO.freezeList.length > 0">
                   【已冻结（平台）】
                   <span v-for="(item, index) in scope.row.statusNameVO.freezeList" :key="index">
                     {{index==scope.row.statusNameVO.freezeList.length-1?item:item+"、"}}
@@ -543,15 +543,16 @@
         </el-table-column>
         <el-table-column label="动态类型"  >
           <template slot-scope="scope">
-            <span v-if="scope.row.contentType ==1">
+            <div v-if="scope.row.contentType ==1">
               图文动态
-            </span>
-             <span v-else-if="scope.row.contentType ==2">
+            </div>
+             <div v-else-if="scope.row.contentType ==2">
              视频动态
-            </span>
-             <span v-else>
+            </div>
+             <div v-else>
              其他
-            </span>
+            </div>
+              <div v-if="scope.row.backgroundRelease==1">(后台发布)</div>
           </template>
         </el-table-column>
         <!-- <el-table-column label="栏目" width="120px">
