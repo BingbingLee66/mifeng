@@ -361,7 +361,6 @@ export default {
         return false;
       }
       if(this.contentHtmlNumber>this.contentNumber){
-
         this.$message.error(`内容超出${this.contentNumber}字!`);
         return false;
        }

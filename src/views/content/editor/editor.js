@@ -153,6 +153,7 @@ export default {
       this.query.orderType = '';
       this.limit = this.pageSizes[0];
       this.query.column = '';
+      this.total=0;
 
       //  this.$refs['tableData'].clearSort();
       if (this.activeName == '1') {
@@ -221,7 +222,8 @@ export default {
       }
       dynamicPagedList(params).then(res => {
         if (res.state === 1) {
-          this.dynamicList = res.data.list
+          this.dynamicList = res.data.list;
+          this.total=res.data.totalRows
         }
       })
     },
