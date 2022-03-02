@@ -91,10 +91,11 @@ export default {
     if (this.id && this.mode === 'update') {
       await this.getDynamicDetailFunc()
     }
+    this.getChamberListFunc()
   },
   computed: {},
   created() {
-    // this.getChamberListFunc()
+    
   },
   methods: {
     /**行为操作类 */
@@ -228,8 +229,7 @@ export default {
         if (res.code === 200) {
 
           // this.vid='4fa4d6d08c0a41a6b6168428326cae8e'
-          this.vid = res.data.videoId;
-         
+          this.vid = res.data.videoId;        
           this.timer = setInterval(this.queryVideoFunc, 1000);
           // setTimeout(() => {
           //   this.$nextTick(() => {

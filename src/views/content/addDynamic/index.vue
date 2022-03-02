@@ -287,6 +287,7 @@
       :type="2"
       ref="OfficialComponent"
       title="添加发布者"
+      :chamberOptions="chamberList"
     ></officialComponent>
        
     <kdDialog ref="kdDialog" :showFooter="false" dialogTitle="" dialogWidth="60%">

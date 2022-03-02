@@ -106,6 +106,9 @@
   </div>
 </template>
 <script>
+import {
+  getChamberAllList
+} from '@/api/goods/goods'
 import { availableWxUser, addOfficial, getPromulgator } from "@/api/user";
 export default {
   name: "officialComponent",
@@ -133,12 +136,12 @@ export default {
     };
   },
   props: {
-    chamberOptions: {
-      type: Array,
-      default: function () {
-        return [];
-      },
-    },
+    // chamberOptions: {
+    //   type: Array,
+    //   default: function () {
+    //     return [];
+    //   },
+    // },
     title: {
       type: String,
       default: "添加官方账号",
@@ -161,6 +164,7 @@ export default {
         this.reject = reject;
         this.$refs["kdDialog"].show();
         this.fetchData();
+        this.getAllChamberList()
       });
     },
     fetchData() {
@@ -209,6 +213,18 @@ export default {
           });
           }
       });
+    },
+    getAllChamberList() {
+      getChamberAllList().then(res => {
+        if (res.state === 1) {
+          this.chamberOptions = res.data.data
+          this.chamberOptions.unshift({
+            'name': '全部',
+            'id': -1
+          }
+          )
+        } 
+      })
     },
     /**行为操作类 */
     //pageSize 改变时会触发
