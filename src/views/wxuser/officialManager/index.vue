@@ -4,7 +4,7 @@
     <div class="block">
       <el-form ref="query" label-width="auto" label-position="left" :model="query" :inline="true">
         <el-form-item label="用户ID：">
-          <el-input v-model="query.wxUserId" placeholder="请输入ID"/>
+          <el-input v-model="query.wxUserId" maxlength="10" onkeyup="this.value=this.value.replace(/\D/g,'')" placeholder="请输入ID" />
         </el-form-item>
         <el-form-item label="用户名：">
           <el-input v-model="query.uName" placeholder="请输入用户名"/>
