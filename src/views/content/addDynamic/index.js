@@ -161,8 +161,8 @@ export default {
             this.$message.error('上传视频只能是 MP4 格式!')
             return false
           }
-          if (file.size > 1024 * 1024 * 200) {
-            this.$message.error('上传视频大小不能超过 200MB!')
+          if (file.size > 1024 * 1024 * 30) {
+            this.$message.error('上传视频大小不能超过 30MB!')
             return false
           }
         } else {
