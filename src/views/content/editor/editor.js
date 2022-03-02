@@ -140,11 +140,11 @@ export default {
     handleSizeChange(val) {
       this.limit = val
       this.currentpage = 1
-      this.fetchData()
+      this.fetchData(undefined,true)
     },
     handleCurrentChange(val) {
       this.currentpage = val
-      this.fetchData()
+      this.fetchData(undefined,true)
     },
     //切换tab
     handleClick(event) {
@@ -217,7 +217,7 @@ export default {
       }
       console.log('column',column)
       if (sort) {
-        let type = column.order==='ascending' ? 'desc' : 'asc';
+        let type = column.order==='ascending' ?  'asc':'desc';
         params.order = column.prop + ' ' + type;
       }
       dynamicPagedList(params).then(res => {
@@ -256,7 +256,7 @@ export default {
         this.listLoading = false
       })
     },
-    fetchData(e) {
+    fetchData(e,sort=false) {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
@@ -265,7 +265,7 @@ export default {
       if (this.activeName == '1') {
         this.getGlobalContentListFunc()
       } else {
-        this.dynamicPagedListFunc()
+        this.dynamicPagedListFunc(sort)
       }
       // let params = {
       //   'pageSize': this.limit,
