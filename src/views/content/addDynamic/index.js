@@ -75,7 +75,11 @@ export default {
       articleId: '',
       loading: false,
       //轮询定时器
-      timer:null
+      timer:null,
+      //富文本字数
+      contentHtmlNumber:0,
+      //规划动态字数 视频100  图文2000
+      contentNumber:100
     }
 
   },
@@ -91,6 +95,7 @@ export default {
     if (this.id && this.mode === 'update') {
       await this.getDynamicDetailFunc()
     }
+    this.contentNumber=this.type===1 ? 2000 :100
     this.getChamberListFunc()
   },
   computed: {},
@@ -355,8 +360,14 @@ export default {
         this.$message.error('请填写发布者!');
         return false;
       }
+      if(this.contentHtmlNumber>this.contentNumber){
+
+        this.$message.error(`内容超出${this.contentNumber}字!`);
+        return false;
+       }
       if (this.type === 1) {
-       let arr= this.handleNullDelete()
+       let arr= this.handleNullDelete();
+      
         if(this.contentHtml ||arr.length>0){
           return true;
         }else{
@@ -503,6 +514,10 @@ export default {
     //富文本变化
     addParentHtml(event) {
       this.contentHtml = event
+    },
+    //字数
+    textNumber(val){
+      this.contentHtmlNumber=val.length
     }
   }
 }

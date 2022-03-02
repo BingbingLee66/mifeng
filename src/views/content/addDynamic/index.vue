@@ -44,8 +44,11 @@
           :hiddenMenu="true"
           :height="200"
           @addParentHtml="addParentHtml"
+          @textNumber="textNumber"
           :content="contentHtml"
         ></editorElem>
+        <div class="textNumber"> {{contentHtmlNumber}}/{{contentNumber}}</div>
+       
       </div>
       <el-form  label-position="top" label-width="80px" v-if="type===2">
         
@@ -214,7 +217,7 @@
           :model="dynamicExtendDTO"
         >
           <el-form-item label="分享标题">
-            <el-input v-model="dynamicExtendDTO.shareTitle"></el-input>
+            <el-input maxlength="25" show-word-limit v-model="dynamicExtendDTO.shareTitle"></el-input>
           </el-form-item>
          
           <el-form-item label="分享微信好友图">
@@ -446,5 +449,10 @@ font-size: 13px;
 #myhtml img {
   width: 20% !important;
   height: 20% !important;
+}
+.textNumber{
+  width: 1000px;
+  text-align: right;
+  margin-top: 4px;
 }
 </style>

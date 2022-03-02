@@ -76,6 +76,7 @@ export default {
       editor.config.onchange = (html) => {
         this.isChange = true;
         this.$emit("addParentHtml", html);
+        this.$emit('textNumber',this.editor.txt.text())
         this.getText()
         // console.log("html", html);
         // this.editorContent = html
@@ -144,7 +145,6 @@ export default {
     //获取富文本区域html内容
     getText() {
       let h = this.editor.txt.html();
-      console.log("h", h);
     },
   },
 };
