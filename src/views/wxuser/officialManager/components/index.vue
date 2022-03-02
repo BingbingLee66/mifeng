@@ -82,6 +82,11 @@
               show-overflow-tooltip
             >
             </el-table-column>
+            <el-table-column
+              prop="chamberName"
+              label="所属商会"
+            >
+            </el-table-column>
           </el-table>
           <div class="block">
             <el-pagination
