@@ -205,13 +205,17 @@ export default {
       if (folder === 'articleCoverImg') {
         this.gallery.splice(index, 1);
         this.gallery.push('')
-      } else {
+      } else if(folder==='share'){
         if (type === 1) {
           this.dynamicExtendDTO.shareFriendPicture = ''
         } else if (type === 2) {
           this.dynamicExtendDTO.sharePoster = ''
         }
+      }else if(folder==='video-cover'){
+        this.videoDetail=''
       }
+       
+      
     },
     //删除当前视频
     deleteCurrentVideo() {

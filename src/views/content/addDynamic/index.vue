@@ -119,7 +119,7 @@
             <div class="goods-pre" v-else>
               <i
                 class="el-icon-error"
-                @click="deleteCurrentImg(1, 'share', 1)"
+                @click="deleteCurrentImg(1, 'video-cover', 1)"
               ></i>
               <el-image
                 :src="videoDetail"
