@@ -345,8 +345,8 @@ export function deleteDynamicByID(articleIds) {
   console.log('articleIds',articleIds)
   return request({
     url: `/ec/dynamic-record/delete`,
-    method: 'delete',
-    params:articleIds
+    method: 'put',
+    data:articleIds
   })
 }
 

@@ -389,7 +389,7 @@ export default {
     //编辑是给图片数组赋空值
     handleGallery() {
       let gallery = this.gallery;
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 9; i++) {
         if (gallery[i]) {} else {
           gallery.splice(i, 1, '')
         }
