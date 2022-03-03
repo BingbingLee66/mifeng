@@ -192,6 +192,23 @@ export default {
 
 
     },
+    beforeAvatarUploadVideo(file) {
+      console.log('content', file)
+        if (file.type.indexOf('video/') !== -1) { // 视频
+          if (file.type !== 'video/mp4') {
+            this.$message.error('上传视频只能是 MP4 格式!')
+            return false
+          }
+          if (file.size > 1024 * 1024 * 30) {
+            this.$message.error('上传视频大小不能超过 30MB!')
+            return false
+          }
+        } else {
+          this.$message.error('不支持的文件格式!');
+          return false   
+        }
+      },
+ 
     //点击上次动态图片行为
     clickUpload(content, index, folder, type = 1) {
       let formData = new FormData();

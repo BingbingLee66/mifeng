@@ -63,7 +63,7 @@
               v-if="!vid"
               action="/"
               list-type="picture-card"
-              :before-upload="beforeAvatarUpload"
+              :before-upload="beforeAvatarUploadVideo"
               :http-request="function (content) {return uploadVideoFunc(content);}"
               :show-file-list="false"
             >
