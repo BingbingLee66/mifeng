@@ -241,8 +241,10 @@
       </el-table-column>
       <el-table-column label="状态" width="180px" prop="status">
         <template slot-scope="scope">
-          <div v-if="scope.row.status == 3">已冻结</div>
+          <div v-if="scope.row.status == 3">平台已冻结</div>
+                 <div v-if="scope.row.status == 0">商会已冻结</div>
           <div v-if="scope.row.status == 1">已发布</div>
+             <div v-if="scope.row.status == 5">审核不通过</div>
           <div v-if="scope.row.status == 4">
             定时发布
             <div>{{ scope.row.publishTs }}</div>
