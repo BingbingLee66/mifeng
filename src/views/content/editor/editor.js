@@ -428,14 +428,12 @@ export default {
     },
     //展示动态详情
     showDialog(row){
-      console.log('row',row);
       getDetail({id:row.articleResp.id}).then(res=>{
         if(res.state===1){
           this.detailObj=res.data.dtl;
           this.$nextTick(()=>{
             this.$refs['videoRef'].show(this.detailObj.vid)
-          })
-         
+          }) 
           console.log(' this.detailObj', this.detailObj);
           this.visible = true
         }else{
@@ -449,7 +447,11 @@ export default {
     
     },
     closeDia(){
-
+      if(this.detailObj.vid){
+        this.$refs['videoRef'].closeDia();
+      }
+      
+      this.visible = false
     }
   }
 }
