@@ -169,6 +169,7 @@ export default {
       if (this.has('', '查询')) {
         this.fetchData()
       }
+      this.getAllChamberList()
     },
     getContentColumnType() {
       getContentColumnOptions().then(response => {
@@ -215,8 +216,8 @@ export default {
         'pageNum': this.currentpage,
         'status': this.query.status
       }
-      console.log('column',column)
-      if (sort) {
+      // console.log('column',column)
+      if (sort && column) {
         let type = column.order==='ascending' ?  'asc':'desc';
         params.order = column.prop + ' ' + type;
       }
@@ -260,7 +261,6 @@ export default {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
-      this.getAllChamberList()
       this.listLoading = true;
       if (this.activeName == '1') {
         this.getGlobalContentListFunc()

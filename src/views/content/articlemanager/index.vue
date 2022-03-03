@@ -337,6 +337,7 @@
              <span v-else>
              其他
             </span>
+             <div v-if="scope.row.backgroundRelease==1">(后台发布)</div>
           </template>
         </el-table-column>
         <el-table-column label="内容">
@@ -380,7 +381,7 @@
             <div v-else>
               <div> {{ scope.row.publishTs }}</div>
              
-              <div v-if="scope.row.backgroundRelease==1">(后台发布)</div>
+             
             </div>
           </template>
         </el-table-column>
@@ -552,7 +553,7 @@
              <div v-else>
              其他
             </div>
-              <div v-if="scope.row.backgroundRelease==1">(后台发布)</div>
+             <div v-if="scope.row.backgroundRelease==1">(后台发布)</div>
           </template>
         </el-table-column>
         <!-- <el-table-column label="栏目" width="120px">

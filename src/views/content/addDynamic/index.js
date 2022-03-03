@@ -167,7 +167,7 @@ export default {
           }
         } else {
           this.$message.error('不支持的文件格式!');
-          return false
+          return false   
         }
       }
       //图片才需要校验

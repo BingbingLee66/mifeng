@@ -358,9 +358,11 @@
 
       <el-table-column label="动态类型" width="80px" prop="contentType">
         <template slot-scope="scope">
-          {{
+          <div>{{
             scope.row.articleResp.contentType === 1 ? "图文动态" : "视频动态"
-          }}
+          }}</div>
+           
+            <div v-if="scope.row.backgroundRelease==1">(后台发布)</div>
         </template>
       </el-table-column>
       <el-table-column label="发布时间" width="80px" prop="publishTs">
