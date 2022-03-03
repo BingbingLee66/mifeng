@@ -438,7 +438,7 @@
             >
           </div>
           <div>
-            <el-button type="text" @click="detail($event, scope.row)"
+            <el-button type="text" @click="showDialog( scope.row)"
               >详情</el-button
             >
           </div>
@@ -455,6 +455,27 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
+          <div class="art-preview-wrap">
+        <el-dialog
+          :visible.sync="visible"
+          width="60%"
+          @close="closeDia"
+        >
+          <div class="m-preview-wrap">
+            <div class="m-preview-area">
+              <div class="m-article-title">{{ detailObj.title }}</div>
+              <div class="m-article-content" v-html="detailObj.contentHtml" />
+
+              <videoComponent
+                ref="videoRef"
+                v-if="detailObj.vid"
+                :vid="detailObj.vid"
+                height="530px"
+              ></videoComponent>
+            </div>
+          </div>
+        </el-dialog>
+      </div>
   </div>
 </template>
 
@@ -462,6 +483,19 @@
 
 <style rel="stylesheet/scss" lang="scss" >
 @import "src/styles/common.scss";
+.m-preview-area img {
+  width: 100% !important;
+  height: auto !important;
+}
+.art-preview-wrap {
+  overflow-y: scroll;
+  .el-dialog {
+    margin-top: 5vh !important;
+    height: 90vh;
+    
+  }
+}
+
 .contentHtml {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -480,5 +514,50 @@
 #myhtml img {
   width: 20% !important;
     height: 20% !important;
+}
+</style>
+<style rel="stylesheet/scss" lang="scss" scoped>
+
+.m-preview-wrap {
+  width: 100%;
+  height: 80vh;
+}
+
+.m-preview-area {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin: 0 auto;
+  border: 1px solid #d9dde2;
+  overflow-y: auto;
+}
+
+.m-article-remark {
+  font-size: 19px;
+  font-weight: 500;
+  margin: 0px 20px;
+}
+
+.m-article-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 20px 40px 20px 40px;
+}
+
+.m-article-content {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.8;
+  //margin: 20px;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+.m-preview-area img {
+  width: 100% !important;
+  height: auto !important;
 }
 </style>

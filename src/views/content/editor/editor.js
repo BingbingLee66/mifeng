@@ -3,7 +3,8 @@ import {
   save,
   updateStatusPlatform,
   dynamicPagedList,
-  deleteDynamicByID
+  deleteDynamicByID,
+  getDetail
 } from '@/api/content/article'
 import {
   getContentColumnOptions
@@ -16,8 +17,10 @@ import {
 import {
   getChamberAllList
 } from '@/api/goods/goods'
+import videoComponent from '@/components/video/index'
+
 export default {
-  components: {},
+  components: {videoComponent},
   data() {
     return {
       pageSizes: [10, 20, 50, 100, 500],
@@ -61,7 +64,9 @@ export default {
       //来源商会list
       chamberOptions: [],
       //动态列表
-      dynamicList: []
+      dynamicList: [],
+      visible:false,
+      detailObj:{}
     }
 
   },
@@ -390,11 +395,18 @@ export default {
       })
     },
     detail(e, row) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      console.log('row',row)
+      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'));
+      let articleId= row.id
+      if(this.actionName==='1'){
+        articleId= articleResp.id
+      }else if(this.actionName==='2'){
+
+      }
       this.$router.push({
         name: '文章详情',
         params: {
-          'articleId': row.id
+          'articleId':articleId
         }
       })
     },
@@ -413,6 +425,31 @@ export default {
           return false
         }
       })
+    },
+    //展示动态详情
+    showDialog(row){
+      console.log('row',row);
+      getDetail({id:row.articleResp.id}).then(res=>{
+        if(res.state===1){
+          this.detailObj=res.data.dtl;
+          this.$nextTick(()=>{
+            this.$refs['videoRef'].show(this.detailObj.vid)
+          })
+         
+          console.log(' this.detailObj', this.detailObj);
+          this.visible = true
+        }else{
+          this.$message({
+            message: res.msg,
+            type: 'error'
+          })
+        }
+      })
+      // this.detailObj={...row.articleResp,...row.dynamicExtendVO};
+    
+    },
+    closeDia(){
+
     }
   }
 }
