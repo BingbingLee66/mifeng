@@ -134,15 +134,6 @@
                 >查询</el-button
               >
             </el-form-item>
-                        <el-form-item label=" ">
-              <el-button
-                v-if="has('', '查询')"
-                type="primary"
-                :actionid="getId('', '查询')"
-                @click="queryData($event)"
-                >查询</el-button
-              >
-            </el-form-item>
           </el-row>
              <el-row>
             <el-button
@@ -374,8 +365,9 @@
       </el-table-column>
       <el-table-column label="状态" width="180px" prop="status">
         <template slot-scope="scope">
-          <div v-if="scope.row.articleResp.status == 3">已冻结</div>
+          <div v-if="scope.row.articleResp.status == 3">平台已冻结</div>
           <div v-if="scope.row.articleResp.status == 1">已发布</div>
+          <div v-if="scope.row.articleResp.status == 5">审核不通过</div>
           <div v-if="scope.row.articleResp.status == 4">
             定时发布
             <div>{{ scope.row.articleResp.publishTs }}</div>
@@ -390,14 +382,14 @@
           <div>【更新时间】{{ scope.row.dynamicExtendVO.updatedTs |dateFormat}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="发布时间" width="200px" prop="publishTs">
+      <!-- <el-table-column label="发布时间" width="200px" prop="publishTs">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 4">--</div>
           <div v-else>
             {{ scope.row.publishTs }}
           </div>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <el-table-column label="操作" width="80px">
         <template slot-scope="scope">
