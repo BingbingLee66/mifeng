@@ -164,6 +164,7 @@
             <div class="goods-pre" v-else>
               <i
                 class="el-icon-error"
+                style="font-size:24px"
                 @click="deleteCurrentImg(index, 'articleCoverImg')"
               ></i>
               <el-image
