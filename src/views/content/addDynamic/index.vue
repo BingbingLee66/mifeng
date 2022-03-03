@@ -27,6 +27,11 @@
           <el-table-column prop="wxUserId" label="用户ID" width="180">
           </el-table-column>
           <el-table-column prop="uname" label="用户名" width="180">
+             <template slot-scope="scope">
+          <div v-if="mode==='add'">{{scope.row.uname}}</div>
+           <div v-if="mode==='update'">{{scope.row.userName}}</div>
+
+        </template>
           </el-table-column>
           <el-table-column prop="phone" label="手机号"> </el-table-column>
           <el-table-column prop="chamberName" label="所属商会" width="180">
