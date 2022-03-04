@@ -18,7 +18,7 @@ export default {
     };
   },
   //hiddenMenu 隐藏菜单栏
-  props: ["content", "hiddenMenu","height"], // 接收父组件的内容
+  props: ["content", "hiddenMenu", "height"], // 接收父组件的内容
   watch: {
     content(newVal, oldVal) {
       // console.log('newVal',newVal),
@@ -76,8 +76,8 @@ export default {
       editor.config.onchange = (html) => {
         this.isChange = true;
         this.$emit("addParentHtml", html);
-        this.$emit('textNumber',this.editor.txt.text())
-        this.getText()
+        this.$emit("textNumber", this.editor.txt.text());
+        this.getText();
         // console.log("html", html);
         // this.editorContent = html
         // this.catchData(this.editorContent)  // 把这个html通过catchData的方法传入父组件
@@ -110,11 +110,14 @@ export default {
         success: function (xhr, editor, result) {
           // 图片上传并返回结果，图片插入成功之后触发
           // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
-       
-          console.log('result',result)
-          console.log('Object.values(result.data).toString()',Object.values(result.data).toString())
-          console.log('this.imgUrl',this.imgUrl);
-             this.imgUrl = Object.values(result.data).toString();
+
+          console.log("result", result);
+          console.log(
+            "Object.values(result.data).toString()",
+            Object.values(result.data).toString()
+          );
+          console.log("this.imgUrl", this.imgUrl);
+          this.imgUrl = Object.values(result.data).toString();
         },
         fail: function (xhr, editor, result) {
           // 图片上传并返回结果，但图片插入错误时触发
@@ -139,9 +142,9 @@ export default {
           // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
           // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
           let url = Object.values(result.data); // result.data就是服务器返回的图片名字和链接
-        let str=  JSON.stringify(url); // 在这里转成JSON格式
-          console.log('str instanceof Array',str instanceof Array)
-           console.log('typeof str',typeof str)
+          let str = JSON.stringify(url); // 在这里转成JSON格式
+          console.log("str instanceof Array", str instanceof Array);
+          console.log("typeof str", typeof str);
           insertImg(str);
           // result 必须是一个 JSON 格式字符串！！！否则报错
         },
