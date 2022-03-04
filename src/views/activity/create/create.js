@@ -119,8 +119,11 @@ export default {
     } else {
       this.fetchData()
     }
-    this.postSelectInit()
-    this.treeSelectInit()
+    this.postSelectInit();
+    if(this.$store.getters.ckey){
+      this.treeSelectInit()
+    }
+   
   },
   methods: {
     postSelectInit() {
