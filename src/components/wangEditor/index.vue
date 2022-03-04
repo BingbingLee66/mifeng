@@ -107,7 +107,7 @@ export default {
           //     msg: '放弃上传'
           // }
         },
-        essuccess: function (xhr, editor, result) {
+        success: function (xhr, editor, result) {
           // 图片上传并返回结果，图片插入成功之后触发
           // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
           this.imgUrl = Object.values(result.data).toString();
