@@ -111,6 +111,9 @@ export default {
           // 图片上传并返回结果，图片插入成功之后触发
           // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
           this.imgUrl = Object.values(result.data).toString();
+          console.log('result',result)
+          console.log('Object.values(result.data).toString()',Object.values(result.data).toString())
+          console.log('this.imgUrl',this.imgUrl)
         },
         fail: function (xhr, editor, result) {
           // 图片上传并返回结果，但图片插入错误时触发
