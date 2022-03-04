@@ -86,7 +86,7 @@
         <div v-if="activeName === '2'">
           <el-row style="margin-bottom:0">
             <el-form-item label="来源商会：">
-              <el-select v-model="query.ckey">
+              <el-select v-model="query.ckey" filterable >
                 <el-option
                   v-for="(item, index) in chamberOptions"
                   :key="index"
