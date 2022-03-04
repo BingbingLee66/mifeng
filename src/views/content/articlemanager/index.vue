@@ -548,7 +548,7 @@
               定时发布
               <div>{{ scope.row.publishTs }}</div>
             </div>
-            <div v-if="scope.row.status == 5">审核不通过</div>
+            <!-- <div v-if="scope.row.status == 5">审核不通过</div> -->
             <div v-if="scope.row.status == 4">
               定时发布
               <div>{{ scope.row.publishTs }}</div>
