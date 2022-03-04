@@ -137,11 +137,12 @@ export default {
         customInsert: function (insertImg, result, editor) {
           // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
           // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
-
           // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
           let url = Object.values(result.data); // result.data就是服务器返回的图片名字和链接
-          JSON.stringify(url); // 在这里转成JSON格式
-          insertImg(url);
+        let str=  JSON.stringify(url); // 在这里转成JSON格式
+          console.log('str instanceof Array',str instanceof Array)
+           console.log('typeof str',typeof str)
+          insertImg(str);
           // result 必须是一个 JSON 格式字符串！！！否则报错
         },
       };
