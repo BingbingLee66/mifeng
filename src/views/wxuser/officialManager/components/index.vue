@@ -51,7 +51,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-button type="primary" @click="fetchData($event)"
+                <el-button type="primary" @click="queryData($event)"
                   >查询
                 </el-button>
               </el-col>
@@ -167,6 +167,12 @@ export default {
         this.fetchData();
         this.getAllChamberList()
       });
+    },
+    queryData(){
+      this.currentPage=1;
+      this.query.page=1
+      this.fetchData()
+
     },
     fetchData() {
       this.availableWxUserFunc();
