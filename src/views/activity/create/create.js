@@ -58,14 +58,14 @@ export default {
         city: '', // 活动地点(市)
         area: '', // 活动地点(区)
         addressInfo: '', // 活动地点（详细地址）
-        applyObject: '', // 报名对象
+        applyObject: 0, // 报名对象
         isLimit: null, // 是否限制参加人数
         applyCount: '', // 参加人数
         introduce: '', // 活动介绍
       },
       // 是否限制报名对象
       applyObject: {
-        unlimit: false,
+        unlimit: true,
         limit: false,
         port: false,
         department: false
@@ -88,19 +88,19 @@ export default {
           { required: true, message: '活动名称不能为空', trigger: 'blur' },
           { validator: checkSpace, trigger: 'blur' }
         ],
-        headImage: [
-          { required: true, message: '活动头图不能为空', trigger: 'blur' }
-        ],
-        listImage: [
-          { required: true, message: '活动列表图不能为空', trigger: 'blur' }
-        ],
+        // headImage: [
+        //   { required: true, message: '活动头图不能为空', trigger: 'blur' }
+        // ],
+        // listImage: [
+        //   { required: true, message: '活动列表图不能为空', trigger: 'blur' }
+        // ],
         date: [
           { required: true, message: '活动时间不能为空', trigger: 'blur' }
         ],
-        addressInfo: [
-          { required: true, message: '活动地点不能为空', trigger: 'blur' },
-          { validator: checkSpace, trigger: 'blur' }
-        ]
+        // addressInfo: [
+        //   { required: true, message: '活动地点不能为空', trigger: 'blur' },
+        //   { validator: checkSpace, trigger: 'blur' }
+        // ]
       }
     }
   },
@@ -511,11 +511,12 @@ export default {
       console.log(this.arrayData);
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          if (!this.areaData) {
-            return this.$message.error('请选择省份')
-          } else if (!this.areaData.hasOwnProperty('city')) {
-            return this.$message.error('请选择城市')
-          } else if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
+          // if (!this.areaData) {
+          //   return this.$message.error('请选择省份')
+          // } else if (!this.areaData.hasOwnProperty('city')) {
+          //   return this.$message.error('请选择城市')
+          // } else 
+          if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
             return this.$message.error('请选择报名对象')
           } else if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
             return this.$message.error('请选择参加人数')
@@ -537,14 +538,19 @@ export default {
           this.formObj.ckey = this.ckey
           this.formObj['activityStartTime'] = this.formObj['date'][0]
           this.formObj['activityEndTime'] = this.formObj['date'][1]
-          this.formObj.province = this.areaData.province.name
-          this.formObj.provinceCode = this.areaData.province.code
-          this.formObj.city = this.areaData.city.name
-          this.formObj.cityCode = this.areaData.city.code
-          if (this.areaData.hasOwnProperty('country')) {
-            this.formObj.area = this.areaData.country.name
-            this.formObj.areaCode = this.areaData.country.code
+          if (this.areaData) {
+            this.formObj.province = this.areaData.province.name
+            this.formObj.provinceCode = this.areaData.province.code
+            if (this.areaData.hasOwnProperty('city')) {
+              this.formObj.city = this.areaData.city.name
+              this.formObj.cityCode = this.areaData.city.code
+            }
+            if (this.areaData.hasOwnProperty('country')) {
+              this.formObj.area = this.areaData.country.name
+              this.formObj.areaCode = this.areaData.country.code
+            }
           }
+
           if (this.activityId) {
             this.formObj['id'] = this.activityId
           }

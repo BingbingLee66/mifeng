@@ -5,7 +5,7 @@ const baseUrl2 = process.env.VUE_APP_BASE_API_2
 // 创建活动
 export function createActivity(params) {
   return request({
-    url: '/api/ec/activity/activity-save',
+    url: '/api/ec/activity/activity-save-v1',
     method: 'post',
     data: params
   })

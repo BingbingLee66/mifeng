@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-tabs v-model="activeName" >
-      <el-tab-pane v-bind:label="activityId ? '编辑活动' : '创建新活动'" name="1"></el-tab-pane>
+      <el-tab-pane v-bind:label="activityId ? '编辑活动' : '创建活动'" name="1"></el-tab-pane>
       <el-tab-pane label="活动介绍" name="2"></el-tab-pane>
       <el-tab-pane label="活动报名表" name="3"></el-tab-pane>
     </el-tabs>
@@ -35,7 +35,7 @@
           </el-row>
           <el-row>
             <el-col style="width: 600px;height: 120px">
-              <el-form-item label="活动列表图：" prop="listImage" class="upload-style">
+              <el-form-item label="活动分享图：" prop="listImage" class="upload-style">
                 <el-upload
                   class="uploader-lpic-wrap"
                   action="/"
@@ -176,7 +176,7 @@
     </div>
     <div v-show="activeName == '2'">
       <div class="create-container mydiv"  >
-        <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="120px">
+        <el-form ref="form2" :model="formObj" :rules="rules" label-position="right" label-width="120px">
           <el-row>
             <el-col style="width: 700px;">
               <el-form-item label="活动介绍：" required class="upload-style">
@@ -215,7 +215,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <!-- <el-row>
             <el-col style="width: 600px;height: 50px">
               <el-form-item label="邮箱：" prop="email">
                 <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
@@ -228,7 +228,7 @@
                 <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row> -->
           <el-row style="width: 600px;height: 50px">
             <el-form-item >
             <el-button type="primary"  @click="dialogFormVisible = true" :disabled="arrayData.length >= 6 || status != 1" >+自定义</el-button>
