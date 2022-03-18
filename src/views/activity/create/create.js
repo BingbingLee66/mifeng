@@ -59,7 +59,7 @@ export default {
         area: '', // 活动地点(区)
         addressInfo: '', // 活动地点（详细地址）
         applyObject: 0, // 报名对象
-        isLimit: null, // 是否限制参加人数
+        isLimit: 0, // 是否限制参加人数
         applyCount: '', // 参加人数
         introduce: '', // 活动介绍
       },
@@ -72,7 +72,7 @@ export default {
       },
       // 是否限制报名人数
       applyCount: {
-        unlimit: false,
+        unlimit: true,
         limit: false
       },
       // 活动地点选择
@@ -123,7 +123,7 @@ export default {
     if(this.$store.getters.ckey){
       this.treeSelectInit()
     }
-   
+
   },
   methods: {
     postSelectInit() {
@@ -515,7 +515,7 @@ export default {
           //   return this.$message.error('请选择省份')
           // } else if (!this.areaData.hasOwnProperty('city')) {
           //   return this.$message.error('请选择城市')
-          // } else 
+          // } else
           if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
             return this.$message.error('请选择报名对象')
           } else if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
@@ -525,16 +525,17 @@ export default {
             if (!regexp.test(this.formObj.applyCount)) {
               return this.$message.error('参加人数为大于0的正整数')
             }
-          } else if (!this.formObj.introduce) {
-            this.activeName='2'
-            return this.$message.error('活动介绍不能为空')
           }
-          let introHtml = this.formObj.introduce.replace(/<\/?p[^>]*>/gi, '')
-          let introHtml2 = introHtml.replace(/&nbsp;/ig, '')
-          if (introHtml2.match(/^\s+$/) || introHtml2.length === 0) {
-            this.activeName='2'
-            return this.$message.error('活动介绍不能为空')
-          }
+          // } else if (!this.formObj.introduce) {
+          //   this.activeName='2'
+          //   return this.$message.error('活动介绍不能为空')
+          // }
+          // let introHtml = this.formObj.introduce.replace(/<\/?p[^>]*>/gi, '')
+          // let introHtml2 = introHtml.replace(/&nbsp;/ig, '')
+          // if (introHtml2.match(/^\s+$/) || introHtml2.length === 0) {
+          //   this.activeName='2'
+          //   return this.$message.error('活动介绍不能为空')
+          // }
           this.formObj.ckey = this.ckey
           this.formObj['activityStartTime'] = this.formObj['date'][0]
           this.formObj['activityEndTime'] = this.formObj['date'][1]

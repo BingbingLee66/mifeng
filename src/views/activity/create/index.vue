@@ -179,7 +179,7 @@
         <el-form ref="form2" :model="formObj" :rules="rules" label-position="right" label-width="120px">
           <el-row>
             <el-col style="width: 700px;">
-              <el-form-item label="活动介绍：" required class="upload-style">
+              <el-form-item label="活动介绍：" class="upload-style">
                 <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor>
               </el-form-item>
             </el-col>
@@ -201,7 +201,7 @@
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="姓名：" prop="name" 
+              <el-form-item label="姓名：" prop="name"
               :rules="[{required: true, message: '不能为空'},]" >
                 <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
               </el-form-item>

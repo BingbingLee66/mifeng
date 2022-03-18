@@ -150,7 +150,7 @@ export default {
     editActivity(row) {
       window.localStorage.setItem('activityeditor', this.$route.path)
       this.$router.push({
-        name: '创建新活动',
+        name: '创建活动',
         query: {
           activityId: row.id,
           type: this.type
