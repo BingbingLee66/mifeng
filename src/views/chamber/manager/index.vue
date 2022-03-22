@@ -27,7 +27,7 @@
             <el-option label="已冻结" :value="2" />
           </el-select>
         </el-form-item>
-        <el-form-item label="入会时间">
+        <el-form-item label="创建时间">
           <el-date-picker
             v-model="query.date"
             format="yyyy-MM-dd"
