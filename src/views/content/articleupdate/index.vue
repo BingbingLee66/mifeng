@@ -217,14 +217,18 @@
           </template>
         </el-table-column>
         <el-table-column label="是否置顶" width="100px">
-          否
+        <template  slot-scope="scope">
+        {{scope.row.isChamberTop===1 ? '是' :'否'}}
+        </template> 
         </el-table-column>
         <el-table-column label="操作" width="200px" fixed="right">
           <template slot-scope="scope">
+            <span  v-if="scope.row.isChamberTop===1" style="color:#c0c4cc">置顶</span>
             <el-button
               class="my-btn"
               type="text"
               @click="updateTop(scope.row)"
+             v-else
             >
              置顶
             </el-button>

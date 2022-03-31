@@ -256,8 +256,8 @@
         </el-table-column>
         <el-table-column label="是否置顶" width="100px">
           <template slot-scope="scope">
-            <div v-if="scope.row.istop == 1">是</div>
-            <div v-if="scope.row.istop == 0">否</div>
+            <div v-if="scope.row.istop ">是</div>
+            <div v-else>否</div>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="120px" fixed="right">
