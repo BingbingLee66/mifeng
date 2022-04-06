@@ -1,4 +1,4 @@
-import { createActivity, uploadPortrait, getActivity } from '@/api/activity/activity'
+import { createActivity, uploadPortrait, getActivity,setLinkAndCompetence } from '@/api/activity/activity'
 import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
 import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
@@ -62,6 +62,8 @@ export default {
         isLimit: 0, // 是否限制参加人数
         applyCount: '', // 参加人数
         introduce: '', // 活动介绍
+        competence:'0',//观看权限 0 不限 1 限本商会会员
+        link:'',//直播链接
       },
       // 是否限制报名对象
       applyObject: {
@@ -346,6 +348,9 @@ export default {
           this.formObj.isLimit = 1
           this.formObj.applyCount = resData.applyCount
         }
+        this.formObj.link=resData.link;
+        this.formObj.competence=resData.competence+''
+
         // 活动介绍回显
         // this.$refs.ckeditor1.init()
         setTimeout(() => {
@@ -396,6 +401,7 @@ export default {
         })
       }
     },
+    
     resetCityAndCountryData() {
       this.cityValue = ''
       this.countryValue = ''
@@ -565,6 +571,9 @@ export default {
 
           if (this.arrayData.length > 0) {
             this.formObj['dtos'] = this.arrayData
+          }
+          if(this.formObj.competence){
+            this.formObj['competence'] = Number(this.formObj['competence'])
           }
           createActivity(this.formObj).then(res => {
             this.$message.success(res.msg)

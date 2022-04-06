@@ -74,3 +74,12 @@ export function uploadPortrait(params) {
     data: params
   })
 }
+
+// 设置直播间链接和观看权限
+export function setLinkAndCompetence(params) {
+  return request({
+    url: '/api/ecservice/api/ec/activity/',
+    method: 'post',
+    data: params
+  })
+}

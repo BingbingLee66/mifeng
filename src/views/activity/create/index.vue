@@ -1,24 +1,42 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="activeName" >
-      <el-tab-pane v-bind:label="activityId ? '编辑活动' : '创建活动'" name="1"></el-tab-pane>
+    <el-tabs v-model="activeName">
+      <el-tab-pane
+        v-bind:label="activityId ? '编辑活动' : '创建活动'"
+        name="1"
+      ></el-tab-pane>
       <el-tab-pane label="活动介绍" name="2"></el-tab-pane>
       <el-tab-pane label="活动报名表" name="3"></el-tab-pane>
     </el-tabs>
 
     <div v-show="activeName == '1'">
-      <div class="create-container  mydiv">
-        <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="120px">
+      <div class="create-container mydiv">
+        <el-form
+          ref="form"
+          :model="formObj"
+          :rules="rules"
+          label-position="right"
+          label-width="120px"
+        >
           <el-row>
-            <el-col style="width: 600px;height: 50px">
+            <el-col style="width: 600px; height: 50px">
               <el-form-item label="活动名称：" prop="activityName">
-                <el-input v-model="formObj.activityName" show-word-limit maxlength="30" placeholder="限30字内"></el-input>
+                <el-input
+                  v-model="formObj.activityName"
+                  show-word-limit
+                  maxlength="30"
+                  placeholder="限30字内"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col style="width: 600px;height: 160px">
-              <el-form-item label="活动头图：" prop="headImage" class="upload-style">
+            <el-col style="width: 600px; height: 160px">
+              <el-form-item
+                label="活动头图："
+                prop="headImage"
+                class="upload-style"
+              >
                 <el-upload
                   class="uploader-pic-wrap"
                   action="/"
@@ -26,16 +44,26 @@
                   :before-upload="beforeUpload"
                   :http-request="uploadHeadImage"
                 >
-                  <img v-if="formObj.headImage" :src="formObj.headImage" class="pic">
+                  <img
+                    v-if="formObj.headImage"
+                    :src="formObj.headImage"
+                    class="pic"
+                  />
                   <i v-else class="el-icon-plus uploader-pic-icon"></i>
                 </el-upload>
-                <div style="color: #999;line-height: 1.3;margin-top: 8px;">建议尺寸 744*300，支持jpg、png</div>
+                <div style="color: #999; line-height: 1.3; margin-top: 8px">
+                  建议尺寸 744*300，支持jpg、png
+                </div>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col style="width: 600px;height: 120px">
-              <el-form-item label="活动分享图：" prop="listImage" class="upload-style">
+            <el-col style="width: 600px; height: 120px">
+              <el-form-item
+                label="活动分享图："
+                prop="listImage"
+                class="upload-style"
+              >
                 <el-upload
                   class="uploader-lpic-wrap"
                   action="/"
@@ -43,84 +71,156 @@
                   :before-upload="beforeUpload"
                   :http-request="uploadListImage"
                 >
-                  <img v-if="formObj.listImage" :src="formObj.listImage" class="lpic">
+                  <img
+                    v-if="formObj.listImage"
+                    :src="formObj.listImage"
+                    class="lpic"
+                  />
                   <i v-else class="el-icon-plus uploader-lpic-icon"></i>
                 </el-upload>
-                <div style="color: #999;line-height: 1.3;margin-top: 8px;">建议尺寸 300*205，支持jpg、png</div>
+                <div style="color: #999; line-height: 1.3; margin-top: 8px">
+                  建议尺寸 300*205，支持jpg、png
+                </div>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col style="width: 700px;">
+            <el-col style="width: 700px">
               <el-form-item class="date-wrap" label="活动时间：" prop="date">
-                <el-date-picker v-model="formObj.date" format="yyyy-MM-dd HH:mm:ss" value-format="timestamp" type="datetimerange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :disabled="status != 1"/>
+                <el-date-picker
+                  v-model="formObj.date"
+                  format="yyyy-MM-dd HH:mm:ss"
+                  value-format="timestamp"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :disabled="status != 1"
+                />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col style="width: 600px;height: 120px">
-              <el-form-item class="address-wrap" label="活动地点：" prop="addressInfo">
-                <el-select v-model="provinceValue" placeholder="请选择省份" @change="provinceChange" :disabled="status != 1">
+            <el-col style="width: 600px; height: 120px">
+              <el-form-item
+                class="address-wrap"
+                label="活动地点："
+                prop="addressInfo"
+              >
+                <el-select
+                  v-model="provinceValue"
+                  placeholder="请选择省份"
+                  @change="provinceChange"
+                  :disabled="status != 1"
+                >
                   <el-option
                     v-for="item in provinceOptions"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">
+                    :value="item.value"
+                  >
                   </el-option>
                 </el-select>
-                <el-select v-model="cityValue" placeholder="请选择市" @change="cityChange" :disabled="status != 1">
+                <el-select
+                  v-model="cityValue"
+                  placeholder="请选择市"
+                  @change="cityChange"
+                  :disabled="status != 1"
+                >
                   <el-option
                     v-for="item in cityOptions"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">
+                    :value="item.value"
+                  >
                   </el-option>
                 </el-select>
-                <el-select v-model="countryValue" placeholder="请选择区" @change="countryChange" :disabled="status != 1">
+                <el-select
+                  v-model="countryValue"
+                  placeholder="请选择区"
+                  @change="countryChange"
+                  :disabled="status != 1"
+                >
                   <el-option
                     v-for="item in countryOptions"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">
+                    :value="item.value"
+                  >
                   </el-option>
                 </el-select>
-                <el-input class="address-inp" type="textarea" resize="none" :rows="2" v-model="formObj.addressInfo" show-word-limit maxlength="50" placeholder="详细地址，限50字内" :disabled="status != 1"></el-input>
+                <el-input
+                  class="address-inp"
+                  type="textarea"
+                  resize="none"
+                  :rows="2"
+                  v-model="formObj.addressInfo"
+                  show-word-limit
+                  maxlength="50"
+                  placeholder="详细地址，限50字内"
+                  :disabled="status != 1"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col  style="width: 700px;height: 40px;">
+            <el-col style="width: 700px; height: 40px">
               <el-form-item label="报名对象：" required>
-                <el-checkbox v-model="applyObject.unlimit" @change="handleCheckTarget($event,0)" :disabled="status != 1">不限</el-checkbox>
-                <el-checkbox v-model="applyObject.limit" @change="handleCheckTarget($event,1)" :disabled="status != 1">
-                  {{ ckey ? '限本商会成员' : '限云商会成员' }}
+                <el-checkbox
+                  v-model="applyObject.unlimit"
+                  @change="handleCheckTarget($event, 0)"
+                  :disabled="status != 1"
+                  >不限</el-checkbox
+                >
+                <el-checkbox
+                  v-model="applyObject.limit"
+                  @change="handleCheckTarget($event, 1)"
+                  :disabled="status != 1"
+                >
+                  {{ ckey ? "限本商会成员" : "限云商会成员" }}
                 </el-checkbox>
-                <el-checkbox v-if="ckey" v-model="applyObject.port" @change="handleCheckTarget($event,2)" :disabled="status != 1">
+                <el-checkbox
+                  v-if="ckey"
+                  v-model="applyObject.port"
+                  @change="handleCheckTarget($event, 2)"
+                  :disabled="status != 1"
+                >
                   限定本商会内指定职位
                 </el-checkbox>
-                <el-checkbox v-if="ckey" v-model="applyObject.department" @change="handleCheckTarget($event,3)" :disabled="status != 1">
+                <el-checkbox
+                  v-if="ckey"
+                  v-model="applyObject.department"
+                  @change="handleCheckTarget($event, 3)"
+                  :disabled="status != 1"
+                >
                   限本商会内指定部门
                 </el-checkbox>
-<!--                <span style="margin-left: 20px;color: #ff0000" v-if="!ckey">指云商会平台的任意商会的任意成员</span>-->
+                <!--                <span style="margin-left: 20px;color: #ff0000" v-if="!ckey">指云商会平台的任意商会的任意成员</span>-->
               </el-form-item>
             </el-col>
           </el-row>
           <el-row v-if="applyObject.port">
-            <el-col style="width: 600px;height: 40px;">
+            <el-col style="width: 600px; height: 40px">
               <el-form-item label="会内职位：" required>
-                <el-select v-model="portValue" multiple placeholder="请选择" :disabled="status != 1">
+                <el-select
+                  v-model="portValue"
+                  multiple
+                  placeholder="请选择"
+                  :disabled="status != 1"
+                >
                   <el-option
                     v-for="item in portSelect"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">
+                    :value="item.value"
+                  >
                   </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row v-if="applyObject.department">
-            <el-col style="width: 600px;">
+            <el-col style="width: 600px">
               <el-form-item label="会内部门：" required>
                 <div>
                   <!-- <el-cascader
@@ -143,30 +243,78 @@
                     noChildrenText="无子部门"
                     noOptionsText="暂时没有部门"
                     noResultsText="没找到部门"
-                    id = "treeselect"
+                    id="treeselect"
                     :default-expand-level="3"
                     :disabled="status != 1"
                   />
-                 <!-- <treeselect-value :value="valueTree" /> -->
+                  <!-- <treeselect-value :value="valueTree" /> -->
                 </div>
               </el-form-item>
             </el-col>
           </el-row>
 
           <el-row>
-            <el-col style="width: 700px;">
+            <el-col style="width: 700px">
               <el-form-item label="参加人数：" required>
-                <el-checkbox v-model="applyCount.unlimit" @change="handleCheckNum($event,0)" :disabled="status != 1">不限</el-checkbox>
-                <el-checkbox v-model="applyCount.limit" @change="handleCheckNum($event,1)" :disabled="status != 1">限</el-checkbox>
-                <el-input v-show="applyCount.limit" style="width: 200px;" placeholder="大于0的整数" maxlength="9" v-model="formObj.applyCount" :disabled="status != 1">
+                <el-checkbox
+                  v-model="applyCount.unlimit"
+                  @change="handleCheckNum($event, 0)"
+                  :disabled="status != 1"
+                  >不限</el-checkbox
+                >
+                <el-checkbox
+                  v-model="applyCount.limit"
+                  @change="handleCheckNum($event, 1)"
+                  :disabled="status != 1"
+                  >限</el-checkbox
+                >
+                <el-input
+                  v-show="applyCount.limit"
+                  style="width: 200px"
+                  placeholder="大于0的整数"
+                  maxlength="9"
+                  v-model="formObj.applyCount"
+                  :disabled="status != 1"
+                >
                   <template slot="append">人</template>
                 </el-input>
-                <span style="margin-left: 20px;color: #ff0000">若这里限定了参加人数，在后台审核通过的，才能参加活动</span>
+                <span style="margin-left: 20px; color: #ff0000"
+                  >若这里限定了参加人数，在后台审核通过的，才能参加活动</span
+                >
               </el-form-item>
             </el-col>
           </el-row>
+          <!-- <div v-if="ckey === 'fIk3Ay'"> -->
+            <el-row>
+              <el-col style="width: 600px; height: 50px">
+                <el-form-item label="直播间链接：" prop="link">
+                  <el-input
+                    v-model="formObj.link"
+                    show-word-limit
+                    maxlength="2000"
+                    placeholder="输入直播间链接，在活动开始后的活动详情页面会显示相应的入口"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <div class="tips" style="width: 600px; padding-left: 120px">
+                <div>提示：</div>
+                <div style="margin: 5px 0px">若不输入链接，则不显示入口；</div>
+                <div>在发布活动后，也可以修改链接。</div>
+              </div>
+            </el-row>
+
+            <el-row>
+              <el-rol>
+                <el-form-item label="观看权限：" prop="competence">
+                  <el-radio v-model="formObj.competence" label="0">不限</el-radio>
+                  <el-radio v-model="formObj.competence" label="1">限本商会会员</el-radio>
+                </el-form-item>
+              </el-rol>
+            </el-row>
+          <!-- </div> -->
+
           <el-row>
-            <el-col style="width: 600px;padding-left: 120px;">
+            <el-col style="width: 600px; padding-left: 120px">
               <el-button type="primary" v-dbClick @click="save">保存</el-button>
               <el-button @click="cancel">取消</el-button>
             </el-col>
@@ -175,17 +323,23 @@
       </div>
     </div>
     <div v-show="activeName == '2'">
-      <div class="create-container mydiv"  >
-        <el-form ref="form2" :model="formObj" :rules="rules" label-position="right" label-width="120px">
+      <div class="create-container mydiv">
+        <el-form
+          ref="form2"
+          :model="formObj"
+          :rules="rules"
+          label-position="right"
+          label-width="120px"
+        >
           <el-row>
-            <el-col style="width: 700px;">
+            <el-col style="width: 700px">
               <el-form-item label="活动介绍：" class="upload-style">
                 <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col style="width: 600px;padding-left: 120px;">
+            <el-col style="width: 600px; padding-left: 120px">
               <el-button type="primary" v-dbClick @click="save">保存</el-button>
               <el-button @click="cancel">取消</el-button>
             </el-col>
@@ -194,24 +348,47 @@
       </div>
     </div>
     <div v-show="activeName == '3'">
-      <div class="create-container mydiv" >
-        <el-form ref="form1" :rules="rules" label-position="right" label-width="120px">
+      <div class="create-container mydiv">
+        <el-form
+          ref="form1"
+          :rules="rules"
+          label-position="right"
+          label-width="120px"
+        >
           <el-row style="margin-top: 8px">
-            <span style="color: #F5222D;margin-left: 60px;">提示：报名信息请限制在 10 个以内</span>
+            <span style="color: #f5222d; margin-left: 60px"
+              >提示：报名信息请限制在 10 个以内</span
+            >
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="姓名：" prop="name"
-              :rules="[{required: true, message: '不能为空'},]" >
-                <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
+              <el-form-item
+                label="姓名："
+                prop="name"
+                :rules="[{ required: true, message: '不能为空' }]"
+              >
+                <el-input
+                  show-word-limit
+                  maxlength="30"
+                  placeholder="请输入"
+                  :disabled="true"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
-            <el-col style="width: 600px;height: 50px">
-              <el-form-item label="手机：" prop="phone"
-              :rules="[{required: true, message: '不能为空'},]">
-                <el-input show-word-limit maxlength="30" placeholder="请输入" :disabled="true"></el-input>
+            <el-col style="width: 600px; height: 50px">
+              <el-form-item
+                label="手机："
+                prop="phone"
+                :rules="[{ required: true, message: '不能为空' }]"
+              >
+                <el-input
+                  show-word-limit
+                  maxlength="30"
+                  placeholder="请输入"
+                  :disabled="true"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -229,52 +406,88 @@
               </el-form-item>
             </el-col>
           </el-row> -->
-          <el-row style="width: 600px;height: 50px">
-            <el-form-item >
-            <el-button type="primary"  @click="dialogFormVisible = true" :disabled="arrayData.length >= 6 || status != 1" >+自定义</el-button>
+          <el-row style="width: 600px; height: 50px">
+            <el-form-item>
+              <el-button
+                type="primary"
+                @click="dialogFormVisible = true"
+                :disabled="arrayData.length >= 6 || status != 1"
+                >+自定义</el-button
+              >
             </el-form-item>
           </el-row>
 
-          <div v-for="(item,index) in arrayData" :key="item.id">
+          <div v-for="(item, index) in arrayData" :key="item.id">
             <el-row>
               <el-col :span="12">
-                <el-form-item :label="item.title" :prop="'col'+index" :required="item.check===1">
-                  <el-input show-word-limit :maxlength="item.lengthLimit" :placeholder="item.msgAlert" :disabled="true"></el-input>
+                <el-form-item
+                  :label="item.title"
+                  :prop="'col' + index"
+                  :required="item.check === 1"
+                >
+                  <el-input
+                    show-word-limit
+                    :maxlength="item.lengthLimit"
+                    :placeholder="item.msgAlert"
+                    :disabled="true"
+                  ></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" style="margin-top: 10px;margin-left: 10px;">
-                <el-link type="primary"  @click="edit(index)">编辑</el-link>
-                <el-link type="primary"  @click="up(index)">上移</el-link>
-                <el-link type="primary"  @click="down(index)">下移</el-link>
-                <el-link type="primary"  @click="del(index)">删除</el-link>
+              <el-col :span="8" style="margin-top: 10px; margin-left: 10px">
+                <el-link type="primary" @click="edit(index)">编辑</el-link>
+                <el-link type="primary" @click="up(index)">上移</el-link>
+                <el-link type="primary" @click="down(index)">下移</el-link>
+                <el-link type="primary" @click="del(index)">删除</el-link>
               </el-col>
             </el-row>
           </div>
         </el-form>
       </div>
-      <el-dialog :title="(this.editCol ? '编辑' : '新增') + '自定义信息'" :visible.sync="dialogFormVisible" width="500px" @close="cancel1()" >
+      <el-dialog
+        :title="(this.editCol ? '编辑' : '新增') + '自定义信息'"
+        :visible.sync="dialogFormVisible"
+        width="500px"
+        @close="cancel1()"
+      >
         <el-form :model="colData" label-width="120px" ref="f2">
-          <el-form-item label = '标题' prop= 'title'
-          :rules="[
-            {required: true, message: '不能为空'},
-          ]">
-            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15"></el-input>
+          <el-form-item
+            label="标题"
+            prop="title"
+            :rules="[{ required: true, message: '不能为空' }]"
+          >
+            <el-input
+              v-model="colData.title"
+              autocomplete="off"
+              placeholder="标题，15字内"
+              :maxlength="15"
+            ></el-input>
           </el-form-item>
-          <el-form-item label='输入框提示' prop='msgAlert'
-          :rules="[
-            {required: true, message: '不能为空'},
-          ]">
-            <el-input v-model='colData.msgAlert' autocomplete="off" placeholder="输入框提示文字，15字内" :maxlength="15"></el-input>
+          <el-form-item
+            label="输入框提示"
+            prop="msgAlert"
+            :rules="[{ required: true, message: '不能为空' }]"
+          >
+            <el-input
+              v-model="colData.msgAlert"
+              autocomplete="off"
+              placeholder="输入框提示文字，15字内"
+              :maxlength="15"
+            ></el-input>
           </el-form-item>
-          <el-form-item label='输入字数限制' prop='lengthLimit' >
-            <el-input v-model='colData.lengthLimit' autocomplete="off" placeholder="不限制" type="number"></el-input>
-            <br/>不填写，则默认不限制
+          <el-form-item label="输入字数限制" prop="lengthLimit">
+            <el-input
+              v-model="colData.lengthLimit"
+              autocomplete="off"
+              placeholder="不限制"
+              type="number"
+            ></el-input>
+            <br />不填写，则默认不限制
           </el-form-item>
           <el-form-item label="是否必填" prop="check">
-              <el-radio-group v-model="colData.check">
-                <el-radio :label="1">必填</el-radio>
-                <el-radio :label="0">选填</el-radio>
-              </el-radio-group>
+            <el-radio-group v-model="colData.check">
+              <el-radio :label="1">必填</el-radio>
+              <el-radio :label="0">选填</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -284,13 +497,12 @@
       </el-dialog>
 
       <el-row>
-        <el-col style="width: 600px;padding-left: 120px;">
+        <el-col style="width: 600px; padding-left: 120px">
           <el-button type="primary" v-dbClick @click="save">保存</el-button>
           <el-button @click="cancel">取消</el-button>
         </el-col>
       </el-row>
     </div>
-
   </div>
 </template>
 
@@ -298,7 +510,6 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
-
 </style>
 
 <style lang="scss">
@@ -306,9 +517,9 @@
   display: block !important;
 }
 
-#treeselect{
-  .vue-treeselect__placeholder{
-    line-height: 40px !important
+#treeselect {
+  .vue-treeselect__placeholder {
+    line-height: 40px !important;
   }
 }
 
@@ -318,9 +529,9 @@
   margin-left: 30px;
   margin-top: 30px;
   padding-top: 30px;
-  height:auto;
-  min-height:500px;
-  min-width:700px;
+  height: auto;
+  min-height: 500px;
+  min-width: 700px;
 }
 .create-container {
   .upload-style {
@@ -420,6 +631,12 @@
   .date-wrap .el-date-editor .el-range-input {
     width: 45%;
   }
+}
+.tips {
+  font-weight: 400;
+  font-style: normal;
+  color: #666666;
+  font-size: 14px;
 }
 </style>
 
