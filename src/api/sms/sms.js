@@ -15,3 +15,12 @@ export function sendSms(params) {
     data: params
   })
 }
+
+export function sendSmsBatch(params) {
+  return request({
+    url: '/ec/smsMt/sendMemberMsg',
+    method: 'post',
+    data: params,
+    contentType: 'application/json',
+  })
+}

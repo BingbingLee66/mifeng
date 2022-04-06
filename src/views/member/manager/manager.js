@@ -2,6 +2,7 @@ import { list, updateStatus, transferPresident } from '@/api/member/manager'
 import { getMemberOptions } from '@/api/member/post'
 import { getTradeOptions } from '@/api/system/trade'
 import { exportJson2Excel } from '@/utils/exportExcel'
+import { sendSmsBatch } from '@/api/sms/sms.js'
 import { getDepartmentList } from '@/api/org-structure/org'
 // import { downLoad } from '@/directive/down-load-url'
 import { getToken } from '@/utils/auth'
@@ -66,6 +67,7 @@ export default {
       limit: 10,
       listLoading: false,
       selectionDatas: [],
+      selectionIds: [],
       roleId: this.$store.state.user.profile.roleId,
       transferVisible: false,
       formObj: {},
@@ -251,7 +253,9 @@ export default {
     handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
+      this.selectionIds = []
       for (let data of datas) {
+        this.selectionIds.push(data.id)
         let new_data = {
           '用户名': data.uname,
           '入会类型': data.type === 0 ? '个人' : '企业',
@@ -297,18 +301,26 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        if (this.selectionDatas.length === 0) {
+        if (this.selectionIds.length === 0) {
           this.$message.error({
             message: '没有选择记录，操作失败'
           })
           return
         }
-        alert(this.selectionDatas)
-        this.$message({
-          type: 'success',
-          message: '短信发送成功!'
+        sendSmsBatch(this.selectionIds).then(response => {
+          if (response.data.state === 1) {
+            this.$message({
+              type: 'success',
+              message: '短信发送成功!'
+            })
+            this.selectionIds = []
+          } else {
+            this.$message({
+              type: 'error',
+              message: '短信发送失败'
+            })
+          }
         })
-        this.selectionDatas = []
       }).catch(() => {
         this.$message({
           type: 'error',
