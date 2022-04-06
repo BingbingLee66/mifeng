@@ -290,6 +290,32 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       exportJson2Excel('商会会员', this.selectionDatas)
     },
+
+    openSmsTab() {
+      this.$confirm('确认发送短信?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.selectionDatas.length === 0) {
+          this.$message.error({
+            message: '没有选择记录，操作失败'
+          })
+          return
+        }
+        alert(this.selectionDatas)
+        this.$message({
+          type: 'success',
+          message: '短信发送成功!'
+        })
+        this.selectionDatas = []
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '短信发送失败'
+        })
+      })
+    },
     // 导入excel表格打开弹窗
     openVisible() {
       this.visible = true

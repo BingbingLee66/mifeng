@@ -78,6 +78,16 @@
             <el-option label="未激活" :value="-1" />
           </el-select>
         </el-form-item>
+        <el-form-item label="短信发送状态">
+          <el-select
+            v-model="query.activatedState"
+            placeholder="请选择短信发送状态"
+            style="width: 100%"
+          >
+            <el-option label="未发送" :value="0" />
+            <el-option label="已发送" :value="1" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="入会时间">
           <el-date-picker
             v-model="query.date"
@@ -124,6 +134,11 @@
         type="primary"
         @click="openVisible"
       >导入
+      </el-button>
+      <el-button
+        type="primary"
+        @click="openSmsTab"
+      >发送短信
       </el-button>
     </div>
     <div style="margin-bottom: 20px">
@@ -212,6 +227,13 @@
           <template slot-scope="scope">
             <div v-if="scope.row.activatedState == 1">已激活</div>
             <div v-if="scope.row.activatedState == -1">未激活</div>
+            <!--            <div v-else>待邀请</div>-->
+          </template>
+        </el-table-column>
+        <el-table-column label="短信发送状态" width="200px">
+          <template slot-scope="scope">
+            <div v-if="scope.row.activatedState == 1">已发送</div>
+            <div v-if="scope.row.activatedState == -1">未发送</div>
             <!--            <div v-else>待邀请</div>-->
           </template>
         </el-table-column>
