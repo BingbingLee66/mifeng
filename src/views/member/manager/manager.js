@@ -47,6 +47,7 @@ export default {
       departmentCas: -1,
       query: {
         status: 1, // 状态
+        sendStatus: '',
         uname: '', // 用户名
         name: '', // 会员姓名
         phone: '', // 会员手机号
@@ -176,6 +177,7 @@ export default {
       // this.listLoading = true
       const params = {
         'status': this.query.status,
+        'sendStatus': this.query.sendStatus,
         'uname': this.query.uname,
         'ckey': this.$store.getters.ckey,
         'companyName': this.query.companyName,

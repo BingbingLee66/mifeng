@@ -80,7 +80,7 @@
         </el-form-item>
         <el-form-item label="短信发送状态">
           <el-select
-            v-model="query.activatedState"
+            v-model="query.sendStatus"
             placeholder="请选择短信发送状态"
             style="width: 100%"
           >
@@ -232,8 +232,8 @@
         </el-table-column>
         <el-table-column label="短信发送状态" width="200px">
           <template slot-scope="scope">
-            <div v-if="scope.row.activatedState == 1">已发送</div>
-            <div v-if="scope.row.activatedState == -1">未发送</div>
+            <div v-if="scope.row.sendStatus == 1">已发送</div>
+            <div v-if="scope.row.sendStatus == 0">未发送</div>
             <!--            <div v-else>待邀请</div>-->
           </template>
         </el-table-column>
