@@ -140,7 +140,8 @@
         @click="openSmsTab"
       >发送短信
       </el-button>
-      <el-tooltip  icon="el-icon-warning" content="针对未激活会员，可发送一次短信；短信模板示例：广东省江西商会引进凯迪云商会平台，助力商协会建设， 【这里是商会主页链接】 您可实时接收资讯动态。" placement="bottom" >
+      <el-tooltip  icon="el-icon-warning"  placement="top" >
+        <div slot="content">针对未激活会员，可发送一次短信；<br/>短信模板示例：广东省江西商会引进凯迪云商会平台，助力商协会建设， 【这里是商会主页链接】 您可实时接收资讯动态。</div>
         <i class="el-icon-question"></i>
       </el-tooltip>
     </div>
