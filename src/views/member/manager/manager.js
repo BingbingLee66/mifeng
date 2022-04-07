@@ -298,17 +298,17 @@ export default {
     },
 
     openSmsTab() {
+      if (this.selectionIds.length === 0) {
+        this.$message.error({
+          message: '请至少选择一位未激活的会员'
+        })
+        return
+      }
       this.$confirm('确认发送短信?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        if (this.selectionIds.length === 0) {
-          this.$message.error({
-            message: '没有选择记录，操作失败'
-          })
-          return
-        }
         sendSmsBatch(this.selectionIds).then(response => {
           if (response.data.state === 1) {
             this.$message({
@@ -319,14 +319,9 @@ export default {
           } else {
             this.$message({
               type: 'error',
-              message: '短信发送失败'
+              message: '短信发送失败1'
             })
           }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'error',
-          message: '短信发送失败'
         })
       })
     },

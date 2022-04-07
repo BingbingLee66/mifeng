@@ -140,6 +140,9 @@
         @click="openSmsTab"
       >发送短信
       </el-button>
+      <el-tooltip  icon="el-icon-warning" content="针对未激活会员，可发送一次短信" placement="bottom" >
+        <i class="el-icon-question"></i>
+      </el-tooltip>
     </div>
     <div style="margin-bottom: 20px">
       <el-table
