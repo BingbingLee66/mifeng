@@ -140,7 +140,7 @@
         @click="openSmsTab"
       >发送短信
       </el-button>
-      <el-tooltip  icon="el-icon-warning" content="针对未激活会员，可发送一次短信" placement="bottom" >
+      <el-tooltip  icon="el-icon-warning" content="针对未激活会员，可发送一次短信；短信模板示例：广东省江西商会引进凯迪云商会平台，助力商协会建设， 【这里是商会主页链接】 您可实时接收资讯动态。" placement="bottom" >
         <i class="el-icon-question"></i>
       </el-tooltip>
     </div>
@@ -235,8 +235,9 @@
         </el-table-column>
         <el-table-column label="短信发送状态" width="200px">
           <template slot-scope="scope">
-            <div v-if="scope.row.sendStatus == 1">已发送</div>
-            <div v-if="scope.row.sendStatus == 0">未发送</div>
+            <div v-if="scope.row.activatedState == 1">--</div>
+            <div v-else-if="scope.row.sendStatus == 1">已发送</div>
+            <div v-else-if="scope.row.sendStatus == 0">未发送</div>
             <!--            <div v-else>待邀请</div>-->
           </template>
         </el-table-column>
