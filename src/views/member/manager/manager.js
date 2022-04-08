@@ -267,7 +267,7 @@ export default {
           '入会时间': '【入会时间】' + data.joinedTs + '\n【会内职位】' + data.postName + '\n【部门】' + data.departmentName,
           '账号状态': data.status === 1 ? '正常' : '已冻结',
           '激活状态': data.activatedState === 1 ? '已激活' : '未激活',
-          '短信发送状态': data.activatedState === 1 ? '--' : data.sendStatus === 1 ? '已激活' : '未激活',
+          '短信发送状态': data.activatedState === 1 ? '--' : data.sendStatus === 1 ? '已发送' : '未发送',
         }
         console.log('data.identityVOList', data.identityVOList)
         if (data.identityVOList.length > 0) {
