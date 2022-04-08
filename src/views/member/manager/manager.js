@@ -47,7 +47,7 @@ export default {
       departmentCas: -1,
       query: {
         status: 1, // 状态
-        sendStatus: '',
+        sendStatus: -1,
         uname: '', // 用户名
         name: '', // 会员姓名
         phone: '', // 会员手机号
@@ -177,7 +177,6 @@ export default {
       // this.listLoading = true
       const params = {
         'status': this.query.status,
-        'sendStatus': this.query.sendStatus,
         'uname': this.query.uname,
         'ckey': this.$store.getters.ckey,
         'companyName': this.query.companyName,
@@ -196,6 +195,9 @@ export default {
       if (this.query.date) {
         params['startTs'] = this.query.date[0]
         params['endTs'] = this.query.date[1]
+      }
+      if (this.query.sendStatus !== -1) {
+        params['sendStatus'] = this.query.sendStatus
       }
       list(params).then(response => {
         if (Object.keys(response.data).length > 0) {

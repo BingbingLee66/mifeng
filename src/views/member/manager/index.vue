@@ -84,6 +84,7 @@
             placeholder="请选择短信发送状态"
             style="width: 100%"
           >
+            <el-option label="全部" :value="-1" />
             <el-option label="未发送" :value="0" />
             <el-option label="已发送" :value="1" />
           </el-select>
