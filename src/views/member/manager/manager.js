@@ -264,7 +264,9 @@ export default {
           '用户名': data.uname,
           '入会类型': data.type === 0 ? '个人' : '企业',
           '联系信息': data.type === 0 ? '【会员姓名】' + data.name + '\n' + '【会员手机号】' + data.phone : '【企业/团体名称】' + data.companyName + '\n【联系人姓名】' + data.contactName + '\n【联系人手机号】' + data.contactPhone,
-          '入会时间': '【入会时间】' + data.joinedTs + '\n【会内职位】' + data.postName + '\n【部门】' + data.departmentName,
+          '入会时间': data.joinedTs ? data.joinedTs : '',
+          '会内职位': data.postName ? data.postName : '',
+          '部门': data.departmentName ? data.departmentName : '',
           '账号状态': data.status === 1 ? '正常' : '已冻结',
           '激活状态': data.activatedState === 1 ? '已激活' : '未激活',
           '短信发送状态': data.activatedState === 1 ? '--' : data.sendStatus === 1 ? '已发送' : '未发送',
@@ -280,6 +282,7 @@ export default {
               str = str + '【机构】' + element.unit
             }
             str = str + '【职务】' + element.post
+            str = str + '\n'
           })
           new_data['身份信息'] = str
         }
