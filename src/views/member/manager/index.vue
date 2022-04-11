@@ -339,7 +339,7 @@
           <span class="excelSpan">1、请勿增加、删除、修改表格中的字段</span>
           <span class="excelSpan">2、其他字段多次导入数据会进行覆盖</span>
         </div>
-        <div style="margin-left: 50px" v-if="execelDate">
+        <div style="margin-left: 50px;" v-if="execelDate">
           <el-upload
             class="upload-demo"
             :multiple="false"
@@ -349,8 +349,9 @@
             :on-success="successImport"
             :action="importUrl"
             >
-            <span style="width: 30px">导入文件：</span><el-button style="width: 200px"><i class="el-icon-upload" style="margin-right: 20px;"></i>点击上传</el-button>
-            <div slot="tip" class="el-upload__tip"><span style="width: 30px;margin-left: 70px;"></span>支持扩展名：xsl、xslx</div>
+            <span >导入文件：</span>
+            <el-button ><i class="el-icon-upload" ></i>点击上传</el-button>
+            <div slot="tip" class="el-upload__tip"><span style="margin-left: 7px;"></span>支持扩展名：xsl、xslx</div>
           </el-upload>
 <!--          <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em><div class="el-upload__tip" slot="tip">支持扩展名：xsl、xslx</div></div>-->
@@ -392,6 +393,12 @@
 </style>
 
 <style lang="scss">
+.upload-demo{
+display:flex;
+// justify-content: center;
+// align-content: center;
+align-items: center;
+}
 .query-form .el-form-item {
   margin-right: 20px;
 
