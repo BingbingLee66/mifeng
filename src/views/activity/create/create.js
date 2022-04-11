@@ -576,13 +576,18 @@ export default {
             this.formObj['competence'] = Number(this.formObj['competence'])
           }
           createActivity(this.formObj).then(res => {
-            this.$message.success(res.msg)
-            this.$router.push({
-              name: '活动列表',
-              params: {
-                type: this.activityId ? this.type : 0
-              }
-            })
+            if(res.state===1){
+              this.$message.success(res.msg)
+              this.$router.push({
+                name: '活动列表',
+                params: {
+                  type: this.activityId ? this.type : 0
+                }
+              })
+            }else{
+              this.$message.error(res.msg)
+            }
+           
           })
         } else {
           return false

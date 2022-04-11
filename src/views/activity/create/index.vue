@@ -284,7 +284,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <!-- <div v-if="ckey === 'fIk3Ay'"> -->
+          <div v-if="ckey === 'nJ3VNk'">
             <el-row>
               <el-col style="width: 600px; height: 50px">
                 <el-form-item label="直播间链接：" prop="link">
@@ -311,7 +311,7 @@
                 </el-form-item>
               </el-rol>
             </el-row>
-          <!-- </div> -->
+          </div>
 
           <el-row>
             <el-col style="width: 600px; padding-left: 120px">
