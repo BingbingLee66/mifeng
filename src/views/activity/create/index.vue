@@ -79,7 +79,7 @@
                   <i v-else class="el-icon-plus uploader-lpic-icon"></i>
                 </el-upload>
                 <div style="color: #999; line-height: 1.3; margin-top: 8px">
-                  建议尺寸 300*205，支持jpg、png
+                  建议尺寸 678*540，支持jpg、png
                 </div>
               </el-form-item>
             </el-col>
