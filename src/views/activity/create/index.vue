@@ -284,7 +284,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <div v-if="ckey&& ckey === 'fIk3Ay'">
+          <div v-if="ckey&& ruleCkeys.includes(ckey)">
             <el-row>
               <el-col style="width: 600px; height: 50px">
                 <el-form-item label="直播间链接：" prop="link">
