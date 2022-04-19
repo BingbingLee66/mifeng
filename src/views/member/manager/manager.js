@@ -2,6 +2,7 @@ import { list, updateStatus, transferPresident } from '@/api/member/manager'
 import { getMemberOptions } from '@/api/member/post'
 import { getTradeOptions } from '@/api/system/trade'
 import { exportJson2Excel } from '@/utils/exportExcel'
+import { sendSmsBatch } from '@/api/sms/sms.js'
 import { getDepartmentList } from '@/api/org-structure/org'
 // import { downLoad } from '@/directive/down-load-url'
 import { getToken } from '@/utils/auth'
@@ -46,6 +47,7 @@ export default {
       departmentCas: -1,
       query: {
         status: 1, // 状态
+        sendStatus: -1,
         uname: '', // 用户名
         name: '', // 会员姓名
         phone: '', // 会员手机号
@@ -66,6 +68,7 @@ export default {
       limit: 10,
       listLoading: false,
       selectionDatas: [],
+      selectionIds: [],
       roleId: this.$store.state.user.profile.roleId,
       transferVisible: false,
       formObj: {},
@@ -193,6 +196,9 @@ export default {
         params['startTs'] = this.query.date[0]
         params['endTs'] = this.query.date[1]
       }
+      if (this.query.sendStatus !== -1) {
+        params['sendStatus'] = this.query.sendStatus
+      }
       list(params).then(response => {
         if (Object.keys(response.data).length > 0) {
           this.list = response.data.data.list
@@ -251,14 +257,19 @@ export default {
     handleSelectionChange(value) {
       let datas = value
       this.selectionDatas = []
+      this.selectionIds = []
       for (let data of datas) {
+        this.selectionIds.push(data.id)
         let new_data = {
           '用户名': data.uname,
           '入会类型': data.type === 0 ? '个人' : '企业',
           '联系信息': data.type === 0 ? '【会员姓名】' + data.name + '\n' + '【会员手机号】' + data.phone : '【企业/团体名称】' + data.companyName + '\n【联系人姓名】' + data.contactName + '\n【联系人手机号】' + data.contactPhone,
-          '入会时间': '【入会时间】' + data.joinedTs + '\n【会内职位】' + data.postName + '\n【部门】' + data.departmentName,
+          '入会时间': data.joinedTs ? data.joinedTs : '',
+          '会内职位': data.postName ? data.postName : '',
+          '部门': data.departmentName ? data.departmentName : '',
           '账号状态': data.status === 1 ? '正常' : '已冻结',
           '激活状态': data.activatedState === 1 ? '已激活' : '未激活',
+          '短信发送状态': data.activatedState === 1 ? '--' : data.sendStatus === 1 ? '已发送' : '未发送',
         }
         console.log('data.identityVOList', data.identityVOList)
         if (data.identityVOList.length > 0) {
@@ -271,6 +282,7 @@ export default {
               str = str + '【机构】' + element.unit
             }
             str = str + '【职务】' + element.post
+            str = str + '\n'
           })
           new_data['身份信息'] = str
         }
@@ -289,6 +301,39 @@ export default {
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       exportJson2Excel('商会会员', this.selectionDatas)
+    },
+
+    openSmsTab() {
+      console.log(this.selectionIds)
+      if (this.selectionIds.length === 0) {
+        this.$message.error({
+          message: '请至少选择一位未激活的会员'
+        })
+        return
+      }
+      this.$confirm('确认发送短信?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        sendSmsBatch(this.selectionIds).then(res => {
+          console.log(res)
+          if (res.state === 1) {
+            this.$message({
+              type: 'success',
+              message: '短信发送成功!'
+            })
+            this.selectionIds = []
+            this.selectionDatas = []
+            this.handleSizeChange(this.limit)
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            })
+          }
+        }).catch(() => {})
+      })
     },
     // 导入excel表格打开弹窗
     openVisible() {

@@ -78,6 +78,17 @@
             <el-option label="未激活" :value="-1" />
           </el-select>
         </el-form-item>
+        <el-form-item label="短信发送状态">
+          <el-select
+            v-model="query.sendStatus"
+            placeholder="请选择短信发送状态"
+            style="width: 100%"
+          >
+            <el-option label="全部" :value="-1" />
+            <el-option label="未发送" :value="0" />
+            <el-option label="已发送" :value="1" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="入会时间">
           <el-date-picker
             v-model="query.date"
@@ -125,6 +136,15 @@
         @click="openVisible"
       >导入
       </el-button>
+      <el-button
+        type="primary"
+        @click="openSmsTab"
+      >发送短信
+      </el-button>
+      <el-tooltip  icon="el-icon-warning"  placement="right-start" >
+        <div slot="content">针对未激活会员，可发送一次短信；<br/>短信模板示例：广东省江西商会引进凯迪云商会平台，助力商协会建设， 【这里是商会主页链接】 您可实时接收资讯动态。</div>
+        <i class="el-icon-question"></i>
+      </el-tooltip>
     </div>
     <div style="margin-bottom: 20px">
       <el-table
@@ -212,6 +232,14 @@
           <template slot-scope="scope">
             <div v-if="scope.row.activatedState == 1">已激活</div>
             <div v-if="scope.row.activatedState == -1">未激活</div>
+            <!--            <div v-else>待邀请</div>-->
+          </template>
+        </el-table-column>
+        <el-table-column label="短信发送状态" width="200px">
+          <template slot-scope="scope">
+            <div v-if="scope.row.activatedState == 1">--</div>
+            <div v-else-if="scope.row.sendStatus == 1">已发送</div>
+            <div v-else-if="scope.row.sendStatus == 0">未发送</div>
             <!--            <div v-else>待邀请</div>-->
           </template>
         </el-table-column>
@@ -311,7 +339,7 @@
           <span class="excelSpan">1、请勿增加、删除、修改表格中的字段</span>
           <span class="excelSpan">2、其他字段多次导入数据会进行覆盖</span>
         </div>
-        <div style="margin-left: 50px" v-if="execelDate">
+        <div style="margin-left: 50px;" v-if="execelDate">
           <el-upload
             class="upload-demo"
             :multiple="false"
@@ -321,8 +349,9 @@
             :on-success="successImport"
             :action="importUrl"
             >
-            <span style="width: 30px">导入文件：</span><el-button style="width: 200px"><i class="el-icon-upload" style="margin-right: 20px;"></i>点击上传</el-button>
-            <div slot="tip" class="el-upload__tip"><span style="width: 30px;margin-left: 70px;"></span>支持扩展名：xsl、xslx</div>
+            <span >导入文件：</span>
+            <el-button ><i class="el-icon-upload" ></i>点击上传</el-button>
+            <div slot="tip" class="el-upload__tip"><span style="margin-left: 7px;"></span>支持扩展名：xsl、xslx</div>
           </el-upload>
 <!--          <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em><div class="el-upload__tip" slot="tip">支持扩展名：xsl、xslx</div></div>-->
@@ -364,6 +393,12 @@
 </style>
 
 <style lang="scss">
+.upload-demo{
+display:flex;
+// justify-content: center;
+// align-content: center;
+align-items: center;
+}
 .query-form .el-form-item {
   margin-right: 20px;
 
