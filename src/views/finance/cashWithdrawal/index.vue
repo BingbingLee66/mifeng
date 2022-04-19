@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="提现" name="10"></el-tab-pane>
-      <el-tab-pane label="提现银行卡设置" name="11"></el-tab-pane>
+      <el-tab-pane  label="提现银行卡设置" name="11"></el-tab-pane>
     </el-tabs>
     <div v-if="activeName == '10'">
       <div class="block">
@@ -55,7 +55,7 @@
         <el-table-column type="selection" width="55px">
         </el-table-column>
         <!-- <el-table-column type="index" label="序号" width="60px">
-        </el-table-column> --> 
+        </el-table-column> -->
         <el-table-column label="提现日期">
           <template slot-scope="scope">
             {{scope.row.createTime | dateFormat2}}
@@ -149,7 +149,7 @@
         </el-row>
         <el-form-item>
           <el-col :span="8">
-            <el-button type="danger" v-dbClick @click="openVisible($event)">修改</el-button>
+            <el-button type="danger" v-if="has('提现银行卡设置', '修改')" v-dbClick @click="openVisible($event)">修改</el-button>
           </el-col>
         </el-form-item>
       </el-form>
