@@ -284,7 +284,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <div v-if="ckey&& ruleCkeys.includes(ckey)">
+          <div v-if="ruleCkeys.includes(ckey) || (!ckey)">
             <el-row>
               <el-col style="width: 600px; height: 50px">
                 <el-form-item label="直播间链接：" prop="link">
@@ -305,9 +305,10 @@
 
             <el-row>
               <el-rol>
-                <el-form-item label="观看权限：" prop="competence">
+                <el-form-item label="观看权限：" prop="competence" >
                   <el-radio v-model="formObj.competence" label="0">不限</el-radio>
-                  <el-radio v-model="formObj.competence" label="1">限本商会会员</el-radio>
+                  <el-radio v-model="formObj.competence" label="1" v-if="ckey">限本商会会员</el-radio>
+                   <el-radio v-model="formObj.competence" label="2" v-else>限云商会会员</el-radio>
                 </el-form-item>
               </el-rol>
             </el-row>
