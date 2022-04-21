@@ -22,7 +22,7 @@
           </div>
           <div class="card-box">
             <div class="card-box-3">
-              <el-button type="danger" :actionid="getId('提现', '申请提现')" v-if="has('提现', '申请提现')" @click="applyForMember($event)">申请提现</el-button>
+              <el-button type="danger" :disabled="!pfStatistics.memberLave > 0" :actionid="getId('提现', '申请提现')" v-if="has('提现', '申请提现')" @click="applyForMember($event)">申请提现</el-button>
             </div>
           </div>
         </div>

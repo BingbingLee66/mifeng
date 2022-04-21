@@ -116,33 +116,30 @@ export default {
         this.pfStatistics = response.data.financeFullDataResp
       })
     },
-    fetchData () {
-      if (this.activeName === '10') {
-        this.listLoading = true
-        let params = {
-          'pageSize': this.limit,
-          'page': this.currentpage,
-          'startTime': this.query.date[0],
-          'endTime': this.query.date[1]
-        }
-        getChamberFinanceWithdraw(params).then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.totalRows
-          this.listLoading = false
-        })
-      } else if (this.activeName === '11') {
-        getBank().then(response => {
-          this.cardSet = response.data.theBank
-          if (this.cardSet === null) {
-            this.cardSet = {
-              chamberName: this.chamberName(this.$store.getters.ckey),
-              user: '',
-              bank: '',
-              account: ''
-            }
-          }
-        })
+    fetchData() {
+      this.listLoading = true
+      let params = {
+        'pageSize': this.limit,
+        'page': this.currentpage,
+        'startTime': this.query.date[0],
+        'endTime': this.query.date[1]
       }
+      getChamberFinanceWithdraw(params).then(response => {
+        this.list = response.data.data.list
+        this.total = response.data.data.totalRows
+        this.listLoading = false
+      })
+      getBank().then(response => {
+        this.cardSet = response.data.theBank
+        if (this.cardSet === null) {
+          this.cardSet = {
+            chamberName: this.chamberName(this.$store.getters.ckey),
+            user: '',
+            bank: '',
+            account: ''
+          }
+        }
+      })
     },
     handleSelectionChange (value) {
       let datas = value
@@ -222,11 +219,17 @@ export default {
           'type': 1
         }
         applyWithdrawalAdd(params).then(response => {
-          this.$message({
-            message: '提现申请提交成功',
-            type: 'success'
-          })
-          this.fetchData()
+          if (response.data.status === 1) {
+            this.$message({
+              message: '提现申请提交成功',
+              type: 'success'
+            })
+            this.fetchData()
+          } else {
+            this.$message.error({
+              message: response.msg
+            })
+          }
         })
       }).catch(() => {
         this.$message({
