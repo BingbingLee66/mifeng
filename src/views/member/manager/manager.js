@@ -294,15 +294,30 @@ export default {
     },
     exportExcel(e) {
       if (this.selectionDatas.length === 0) {
-        this.$message.error({
-          message: '没有选择记录，操作失败'
+        this.$message.error({ message: '没有选择记录，操作失败'
         })
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       exportJson2Excel('商会会员', this.selectionDatas)
     },
-
+    // 认证会员身份
+    async authMember(e, row) {
+      if (this.selectionIds.length === 0) {
+        this.$message.error({ message: '请选择认证数据' })
+        return
+      }
+      await this.$confirm(`
+      <p>确定给所选用户进行商会认证吗？  </p>
+      <p style='color:red;'>商会认证主要是对该用户的个人信息、企业信息进行认证</p>
+      <p>1、认证后，该用户发布的所有供需内容，均显示“商会认证”标识</p>
+      <p>2、由于某种原因，可对已认证的用户取消认证，取消后，该用户将不会展示“商会认证”标识</p>
+      `, '商会认证', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true,
+      })
+    },
     openSmsTab() {
       console.log(this.selectionIds)
       if (this.selectionIds.length === 0) {
