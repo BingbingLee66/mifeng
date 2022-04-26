@@ -90,10 +90,6 @@ export default {
   methods: {
     // 认证会员身份
     async authMember(e, row) {
-      if (this.selectionIds.length === 0) {
-        this.$message.error({ message: '请选择认证数据' })
-        return
-      }
       await this.$confirm(`
       <p>确定给所选用户进行商会认证吗？  </p>
       <p style='color:red;'>商会认证主要是对该用户的个人信息、企业信息进行认证</p>
@@ -107,10 +103,6 @@ export default {
     },
     // 取消认证
     async cancelAuthMember(e, row) {
-      if (this.selectionIds.length === 0) {
-        this.$message.error({ message: '请选择认证数据' })
-        return
-      }
       await this.$confirm(`
       <p>确定给该用户取消商会认证吗？      </p>
       <p>1、认证后，该用户发布的所有供需内容，均显示“商会认证”标识</p>
