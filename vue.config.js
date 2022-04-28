@@ -45,16 +45,16 @@ module.exports = {
     },
     after: require('./mock/mock-server.js')
   },
-  configureWebpack: {
-    // provide the app's title in webpack's name field, so that
-    // it can be accessed in index.html to inject the correct title.
-    name: name,
-    resolve: {
-      alias: {
-        '@': resolve('src')
-      }
-    }
-  },
+  // configureWebpack: {
+  //   // provide the app's title in webpack's name field, so that
+  //   // it can be accessed in index.html to inject the correct title.
+  //   name: name,
+  //   resolve: {
+  //     alias: {
+  //       '@': resolve('src')
+  //     }
+  //   }
+  // },
   chainWebpack(config) {
     config.plugins.delete('preload')
     config.plugins.delete('prefetch')
@@ -84,9 +84,7 @@ module.exports = {
       .tap(options => {
         options.compilerOptions.preserveWhitespace = true
         return options
-      })
-      .
-    end()
+      }).end()
 
     config
       // https://webpack.js.org/configuration/devtool/#development
@@ -134,12 +132,14 @@ module.exports = {
       )
   },
   configureWebpack: {
+    name: name,
     externals: {
       'CKEDITOR': 'window.CKEDITOR'
     },
     resolve: {
       alias: {
-        vue$: 'vue/dist/vue.esm.js' //加上这一句
+        '@': resolve('src'),
+        vue$: 'vue/dist/vue.esm.js' // 加上这一句
       }
     }
   },
