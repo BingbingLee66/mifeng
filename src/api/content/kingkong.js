@@ -14,7 +14,7 @@ export function deleteKingKongList(params) {
   return request({
     url: '/ec/king-kong-area/delBatch',
     method: 'delete',
-    params
+    data:params
   })
 }
 
@@ -30,6 +30,7 @@ export function saveKingKong(params) {
 //总后台-首页更新-修改金刚区权重
 export function saveKingKongWeight(params) {
   return request({
+    method: 'put',
     url: `/ec/king-kong-area/weight/${params.id}/${params.value}`,
   })
 }
