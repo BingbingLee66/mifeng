@@ -59,6 +59,12 @@ export default {
     this.fetchData()
   },
   methods: {
+    /**
+     * 状态类
+     */
+    hide() {
+      this.$refs["weightKdDialog"].hide();
+    },
     /** 
       请求类函数
     */
@@ -90,6 +96,7 @@ export default {
             message: "已成功移除",
             type: "success",
           });
+          this.kingKongAreaListFunc()
         } else {
           this.$message({
             message: res.msg,
@@ -106,6 +113,8 @@ export default {
             message: "保存成功",
             type: "success",
           });
+          this.hide();
+          this.kingKongAreaListFunc()
         } else {
           this.$message({
             message: res.msg,
@@ -153,7 +162,7 @@ export default {
     //点击权重编辑
     updateWeight(row) {
       this.currentId = row.id;
-      this.formWeight.weight=row.weight;
+      this.formWeight.weight = row.weight;
       this.$refs['weightKdDialog'].show()
     },
     //点击保存权重

@@ -125,7 +125,8 @@ export default {
     hide() {
       this.$refs["kdDialog"].hide();
       this.resolve = null;
-      this.reject = null;
+      this.reject = null;     
+      this.$refs['formKingKongDialog'].resetField();
       this.$refs['formKingKongDialog'].clearValidate();
     },
     handleClose() {},
