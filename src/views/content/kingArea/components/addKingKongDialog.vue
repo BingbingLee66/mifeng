@@ -6,6 +6,7 @@
       :dialogTitle="dialogTitle"
       dialogWidth="50%"
       @savePopupData="submit"
+      @hide="hide"
     >
       <div slot="content">
         <el-form
@@ -117,7 +118,7 @@ export default {
         this.resolve = resolve;
         this.reject = reject;
         this.show();
-        this.formKingKongDialog = row;
+        this.formKingKongDialog = JSON.parse(JSON.stringify(row)) ;
         this.dialogTitle="编辑金刚区"
       });
     },
@@ -125,6 +126,7 @@ export default {
       this.$refs["kdDialog"].hide();
       this.resolve = null;
       this.reject = null;
+      this.$refs['formKingKongDialog'].clearValidate();
     },
     handleClose() {},
 

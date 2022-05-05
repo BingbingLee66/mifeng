@@ -48,6 +48,7 @@ export default {
     cancel() {
       if (this.closeCancel) {
         this.hide();
+        this.$emit("hide");
       } else {
         this.$emit("cancelPopupData");
       }
