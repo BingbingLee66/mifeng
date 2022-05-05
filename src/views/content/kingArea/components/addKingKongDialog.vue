@@ -10,7 +10,7 @@
     >
       <div slot="content">
         <el-form
-          ref="formKingKongDialog"
+          ref="formKingKongDialogRef"
           :rules="rules"
           label-width="120px"
           :model="formKingKongDialog"
@@ -126,8 +126,8 @@ export default {
       this.$refs["kdDialog"].hide();
       this.resolve = null;
       this.reject = null;     
-      this.$refs['formKingKongDialog'].resetField();
-      this.$refs['formKingKongDialog'].clearValidate();
+      this.$refs['formKingKongDialogRef'].resetFields();
+      this.$refs['formKingKongDialogRef'].clearValidate();
     },
     handleClose() {},
 
@@ -147,7 +147,7 @@ export default {
     },
     //点击表单确定按钮
     submit() {
-      this.$refs["formKingKongDialog"].validate((valid) => {
+      this.$refs["formKingKongDialogRef"].validate((valid) => {
         if (valid) {
           this.saveKingKongFunc();
         } else {
