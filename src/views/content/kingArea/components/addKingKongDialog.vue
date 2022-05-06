@@ -93,7 +93,7 @@ export default {
       //可支持的图片格式
       imgType: ["image/jpeg", "image/jpg", "image/png", "image/gif"],
       //对话框标题
-      dialogTitle:'添加金刚区'
+      dialogTitle: "添加金刚区",
     };
   },
   props: {},
@@ -118,16 +118,16 @@ export default {
         this.resolve = resolve;
         this.reject = reject;
         this.show();
-        this.formKingKongDialog = JSON.parse(JSON.stringify(row)) ;
-        this.dialogTitle="编辑金刚区"
+        this.formKingKongDialog = JSON.parse(JSON.stringify(row));
+        this.dialogTitle = "编辑金刚区";
       });
     },
     hide() {
       this.$refs["kdDialog"].hide();
       this.resolve = null;
-      this.reject = null;     
-      this.$refs['formKingKongDialogRef'].resetFields();
-      this.$refs['formKingKongDialogRef'].clearValidate();
+      this.reject = null;
+      this.$refs["formKingKongDialogRef"].resetFields();
+      this.$refs["formKingKongDialogRef"].clearValidate();
     },
     handleClose() {},
 
@@ -176,7 +176,7 @@ export default {
             message: "保存成功",
             type: "success",
           });
-          this.resolve()
+          this.resolve();
           this.hide();
         } else {
           this.$message({
@@ -214,15 +214,5 @@ export default {
   height: 96px;
   display: block;
 }
-// .pic,.uploader-pic-wrap{
-//   width: 96px;
-//   height: 96px;
-// }
-// .uploader-pic-wrap {
-//     border: 1px dashed #d9d9d9;
-//     border-radius: 3px;
-//     text-align: center;
-//    padding-top: 28px;
-//   }
 </style>
 
