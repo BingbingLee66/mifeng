@@ -49,13 +49,13 @@ export default {
     cancel() {
       if (this.closeCancel) {
         this.hide();
-        this.close()
       } else {
         this.$emit("cancelPopupData");
       }
     },
     //关闭的回调
     close() {
+      console.log('执行close')
       this.$emit("hide");
     },
     save() {

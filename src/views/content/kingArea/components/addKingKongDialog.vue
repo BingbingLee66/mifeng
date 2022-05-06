@@ -107,6 +107,7 @@ export default {
         this.resolve = resolve;
         this.reject = reject;
         this.show();
+         this.dialogTitle = "新增金刚区";
       });
     },
     //显示对话框子组件
