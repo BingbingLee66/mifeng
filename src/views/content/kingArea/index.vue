@@ -116,7 +116,7 @@
           class="demo-ruleForm"
         >
           <el-form-item label="权重：" prop="weight">
-            <el-input v-model="formWeight.weight"></el-input>
+            <el-input onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  v-model="formWeight.weight" ></el-input>
           </el-form-item>
         </el-form>
       </div>

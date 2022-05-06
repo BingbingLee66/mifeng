@@ -12,6 +12,18 @@ export default {
     addKingKongDialog
   },
   data() {
+    //权重表单验证
+    var validateWeight = (rule, value, callback) => {
+
+      if(!(/^[1-9]\d*$/.test(value))){
+        callback(new Error('请输入正整数'));
+      }else if(value<0 || value>999){
+        callback(new Error('权重范围0-999'));
+      }
+      else {
+        callback();
+      }
+    };
     return {
       //表单对象
       formKingKong: {
@@ -35,6 +47,9 @@ export default {
           required: true,
           message: "请输入权重",
           trigger: "blur"
+        },
+        {
+          validator: validateWeight, trigger: 'blur'
         }]
       },
       //金刚区列表数组
@@ -50,7 +65,7 @@ export default {
       //总数
       total: 0
     }
-
+    
   },
 
   mounted() {},
