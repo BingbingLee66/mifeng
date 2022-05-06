@@ -75,7 +75,7 @@ export default {
     //拉取金刚区列表
     kingKongAreaListFunc() {
       let params = this.formKingKong;
-      if (this.formKingKong.createdTime && this.formKingKong.createdTime.length === 1) {
+      if (this.formKingKong.createdTime && this.formKingKong.createdTime.length >0) {
         params.createdTsBegin = this.formKingKong.createdTime[0];
         params.createdTsEnd = this.formKingKong.createdTime[1];
       }
