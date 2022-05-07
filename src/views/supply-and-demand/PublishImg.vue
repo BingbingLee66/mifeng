@@ -164,8 +164,8 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
       }).then(e => {
-        const index = this.publisherList.findIndex(v => v.id === row.id)
-        this.publisherList.splice(index, 1)
+        const index = this.supplyData.publisherList.findIndex(v => v.id === row.id)
+        this.supplyData.publisherList.splice(index, 1)
       })
     },
     // 移除标签
