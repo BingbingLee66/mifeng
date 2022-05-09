@@ -6,24 +6,13 @@ import {
 } from '@/api/content/kingkong'
 import kdDialog from '@/components/common/kdDialog'
 import addKingKongDialog from './components/addKingKongDialog'
+import {validateWeight} from './utilRules'
 export default {
   components: {
     kdDialog,
     addKingKongDialog
   },
   data() {
-    //权重表单验证
-    var validateWeight = (rule, value, callback) => {
-
-      if(!(/^[0-9]\d*$/.test(value))){
-        callback(new Error('请输入正整数'));
-      }else if(value<0 || value>999){
-        callback(new Error('权重范围0-999'));
-      }
-      else {
-        callback();
-      }
-    };
     return {
       //表单对象
       formKingKong: {
@@ -48,7 +37,7 @@ export default {
           message: "请输入权重",
           trigger: "blur"
         },
-        {
+        { 
           validator: validateWeight, trigger: 'blur'
         }]
       },

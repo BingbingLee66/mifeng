@@ -49,7 +49,7 @@
             <el-input v-model="formKingKongDialog.url"></el-input>
           </el-form-item>
           <el-form-item label="权重：" prop="weight">
-            <el-input v-model="formKingKongDialog.weight"></el-input>
+            <el-input onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')" v-model="formKingKongDialog.weight"></el-input>
           </el-form-item>
           <!-- <el-form-item>
         <el-button type="primary" @click="kingKongAreaListFunc">查询</el-button>
@@ -65,6 +65,7 @@
 import kdDialog from "@/components/common/kdDialog";
 import { uploadFile } from "@/api/content/article";
 import { saveKingKong } from "@/api/content/kingkong";
+import {validateWeight} from '../utilRules'
 export default {
   components: { kdDialog },
   name: "addKingKongDialog",
@@ -88,7 +89,9 @@ export default {
           { required: true, message: "请输入金刚区名称", trigger: "blur" },
         ],
         url: [{ required: true, message: "请输入跳转地址", trigger: "blur" }],
-        weight: [{ required: true, message: "请输入权重", trigger: "blur" }],
+        weight: [{ required: true, message: "请输入权重", trigger: "blur" },{ 
+          validator: validateWeight, trigger: 'blur'
+        }],
       },
       //可支持的图片格式
       imgType: ["image/jpeg", "image/jpg", "image/png", "image/gif"],
