@@ -55,7 +55,6 @@ export default {
     },
     //关闭的回调
     close() {
-      console.log('执行close')
       this.$emit("hide");
     },
     save() {

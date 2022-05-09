@@ -119,7 +119,8 @@ export default {
         this.resolve = resolve;
         this.reject = reject;
         this.show();
-        this.formKingKongDialog = JSON.parse(JSON.stringify(row));
+        //为了解决form的mounted还没结束，导致关闭弹框置空时，表单的初始值为父组件传入对象
+        this.$nextTick(()=>{ this.formKingKongDialog = JSON.parse(JSON.stringify(row));})
         this.dialogTitle = "编辑金刚区";
       });
     },
@@ -129,6 +130,7 @@ export default {
       this.reject = null;
       this.$refs["formKingKongDialogRef"].resetFields();
       this.$refs["formKingKongDialogRef"].clearValidate();
+      this.formKingKongDialog.id=null;
     },
     handleClose() {},
 
