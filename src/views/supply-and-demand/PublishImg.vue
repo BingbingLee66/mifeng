@@ -76,6 +76,32 @@
     <div class="margin-bottom">
       <commontitle>供需图片</commontitle>
       <span class="span">选填，最多9张</span>
+      <div class="image-list">
+        <div
+          v-for="(file,i) in supplyData.imageList"
+          :key="file.url"
+          draggable
+          class="image-item"
+          :style="{backgroundImage: `url(${file.url})`}"
+          @dragstart="onDragStart(i)"
+        >
+          <i class="el-icon-circle-close" @click="handleRemove(file)" />
+          <div class="image-preview">预览</div>
+          <div class="drag-left" @drop="onDrop('left', i)" />
+          <div class="drag-right" @drop="onDrop('right', i)" />
+        </div>
+        <el-upload
+          v-show="supplyData.imageList.length < 9"
+          action="#"
+          class="image-upload"
+          list-type="picture-card"
+          :http-request="upload"
+          :show-file-list="false"
+          :before-upload="beforeUpload"
+        >
+          <i class="el-icon-plus" />
+        </el-upload>
+      </div>
     </div>
     <div class="margin-bottom">
       <commontitle>选择同步商/协会</commontitle>
@@ -97,6 +123,7 @@
 
 <script>
 import editorElem from '@/components/wangEditor/index'
+import { uploadCoverImg } from '@/api/content/article'
 
 const dialogTitleMap = {
   Publisher: '添加发布者',
@@ -139,8 +166,9 @@ export default {
         publisherList: [], // 发布人列表
         supplyLableList: [], // 供需标签
         industryLableList: [], // 行业标签
-        publisherStationList: [] // 发布者常驻地
-      }
+        publisherStationList: [], // 发布者常驻地
+        imageList: [] // 供需图片
+      },
     }
   },
   methods: {
@@ -186,6 +214,39 @@ export default {
     onConfirm({ type, data }) {
       this.$refs.kdDialog.hide()
       this.dialogData = this.supplyData[this.normalizeField(type)] = data
+    },
+
+    beforeUpload(file, index) {
+      console.log(file)
+      if (!['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type)) {
+        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+        return false
+      }
+      // if (file.size > 1024 * 1024 * 2) {
+      //   this.$message.error('上传头像图片大小不能超过 2MB!')
+      //   return false
+      // }
+    },
+    upload(content) {
+      let formData = new FormData()
+      formData.append('file', content.file)
+      uploadCoverImg(formData).then(({ data }) => {
+        this.supplyData.imageList.push({ url: data.filePath })
+      })
+    },
+    handleRemove(file) {
+      const i = this.supplyData.imageList.findIndex(v => v.url === file.url)
+      this.supplyData.imageList.splice(i, 1)
+    },
+
+    onDragStart(i) {
+      this.dragIndex = i
+    },
+    onDrop(type, i) {
+      if (this.dragIndex === i) return
+      const dragItem = this.supplyData.imageList.splice(this.dragIndex, 1)[0]
+      if (this.dragIndex < i) i--
+      this.supplyData.imageList.splice(type === 'left' ? i : i + 1, 0, dragItem)
     }
   }
 }
@@ -206,6 +267,74 @@ export default {
   }
   .span {
     color: #bbb;
+  }
+
+  .image-list {
+    width: 500px;
+    display: flex;
+    flex-wrap: wrap;
+
+    .image-item {
+      width: 150px;
+      height: 150px;
+      border: 1px solid #c0ccda;
+      border-radius: 6px;
+      margin: 0 8px 8px 0;
+      position: relative;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 220px;
+      cursor: pointer;
+
+      .el-icon-circle-close {
+        display: none;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        font-size: 20px;
+        color: #fd5d5d;
+      }
+
+      .image-preview {
+        display: none;
+        position: absolute;
+        padding: 5px 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        background-color: rgba($color: #000000, $alpha: 0.5);
+        color: #fff;
+      }
+
+      &:hover {
+        .el-icon-circle-close,.image-preview {
+          display: block;
+        }
+      }
+
+      .drag-left,.drag-right {
+        position: absolute;
+        top: -4px;
+        width: 79px;
+        height: 83px;
+      }
+
+      .drag-left {
+        left: 4px;
+        background: #333;
+      }
+
+      .drag-right {
+        left: 50%;
+        background: red;
+      }
+    }
+
+    .image-upload {
+      width: 150px;
+      height: 150px;
+    }
   }
 }
 </style>
