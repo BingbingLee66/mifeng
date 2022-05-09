@@ -149,6 +149,12 @@ export default {
     /** 
      * 行为操作
      */
+    //点击表单查询
+    queryData(){
+      this.currentPage=1;
+      this.pageSize=10;
+      this.kingKongAreaListFunc()
+    },
     //点击添加金刚区
     showAddDialog() {
       this.$refs['addDialog'].open()
