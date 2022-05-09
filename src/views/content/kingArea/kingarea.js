@@ -69,7 +69,13 @@ export default {
   },
 
   mounted() {},
-  computed: {},
+  computed: {
+    srcList(){
+      return function(url) {
+        return[url]
+    }
+    }
+  },
   created() {
     this.fetchData()
   },

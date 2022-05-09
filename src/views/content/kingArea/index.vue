@@ -43,7 +43,7 @@
       </el-table-column>
       <el-table-column prop="image" label="金刚区图片" width="180">
         <template slot-scope="scope">
-          <img :src="scope.row.image" class="king-img" />
+          <el-image :src="scope.row.image" class="king-img" :preview-src-list="srcList(scope.row.image)"/>
         </template>
       </el-table-column>
       <el-table-column prop="url" label="跳转链接" width="180">
