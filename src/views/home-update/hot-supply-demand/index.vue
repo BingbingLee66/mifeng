@@ -8,7 +8,7 @@
       :model="query"
     >
       <el-form-item label="供需标题">
-        <el-input v-model="query.title" placeholder="关键词" />
+        <el-input  clearable v-model="query.title" placeholder="关键词" />
       </el-form-item>
       <el-form-item label="来源商会">
         <el-select
@@ -60,27 +60,32 @@
         <el-input v-model="query.id" placeholder="请输入" clearable />
       </el-form-item>
       <el-form-item label="">
-        <el-button @click="fetchData($event)">查询 </el-button>
+        <el-button type="primary" @click="fetchData($event)">查询 </el-button>
       </el-form-item>
     </el-form>
     <!-- 搜索表单end -->
 
+    <!-- 按钮栏目 -->
+<div style="margin-bottom:10px">
+   <el-button type="danger" @click="deleteIdsFunc(null,1)">移除 </el-button>
+      <el-button type="primary" @click="fetchData($event)">添加供需 </el-button>
+</div>
     <!-- 供需列表start -->
     <el-table
       ref="multipleTable"
       :data="tableData"
       tooltip-effect="dark"
-      style="width: 100%"
+       border
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column label="供需ID/名称" width="120">
+      <el-table-column label="供需ID/名称" width="220">
         <template slot-scope="scope">
           <div>{{ scope.row.id }}</div>
           <div>{{ scope.row.title }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="发布信息" width="120">
+      <el-table-column label="发布信息" width="180">
         <template slot-scope="scope">
           <div>{{ scope.row.publishName }}</div>
           <div>{{ scope.row.publishTime }}</div>
@@ -107,7 +112,7 @@
           <div v-else-if="scope.row.status === 3">商会冻结</div>
         </template>
       </el-table-column>
-      <el-table-column label="创建信息" width="120">
+      <el-table-column label="创建信息" width="180">
         <template slot-scope="scope">
           <div>{{ scope.row.operatorName }}</div>
           <div>{{ scope.row.createdTs }}</div>
@@ -115,13 +120,27 @@
       </el-table-column>
       <el-table-column prop="weight" label="权重" width="120">
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" >
         <template slot-scope="scope">
-          <el-button type="text" @click="delete scope.row">移除</el-button>
+          <el-button type="text" @click="deleteIdsFunc(scope.row.id,2)">移除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!-- 供需列表end -->
+       <!-- 分页start -->
+    <div class="block">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="pageSizes"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      >
+      </el-pagination>
+    </div>
+      <!-- 分页end -->
   </div>
 </template>
 
