@@ -89,10 +89,11 @@ export default {
     },
     //拉取金刚区列表
     kingKongAreaListFunc() {
-      let params = this.formKingKong;
+      let params = JSON.parse(JSON.stringify(this.formKingKong)) ;
       if (this.formKingKong.createdTime && this.formKingKong.createdTime.length >0) {
         params.createdTsBegin = this.formKingKong.createdTime[0];
-        params.createdTsEnd = this.formKingKong.createdTime[1];
+        //将截止时间设为选中的当天的23.59.59秒
+        params.createdTsEnd = this.formKingKong.createdTime[1]-1000;
       }
       params.pageNum = this.currentPage;
       params.pageSize = this.pageSize;
@@ -197,6 +198,8 @@ export default {
     //点击重置表单
     reset() {
       this.$refs['formKingKong'].resetFields();
+      this.formKingKong.createdTime=[];
+      this.kingKongAreaListFunc()
     },
     //分页大小改变
     handleSizeChange(val) {
