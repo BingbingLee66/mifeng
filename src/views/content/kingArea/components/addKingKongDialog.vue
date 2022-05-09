@@ -20,7 +20,7 @@
           <el-form-item label="金刚区名称：" prop="name">
             <el-input
               v-model="formKingKongDialog.name"
-              placeholder="限4个字内"
+              placeholder="限5个字内"
             ></el-input>
           </el-form-item>
           <el-form-item label="金刚区图片：" prop="image" class="upload-style">
@@ -49,7 +49,7 @@
             <el-input v-model="formKingKongDialog.url"></el-input>
           </el-form-item>
           <el-form-item label="权重：" prop="weight">
-            <el-input v-model="formKingKongDialog.weight"></el-input>
+            <el-input onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')" v-model="formKingKongDialog.weight"></el-input>
           </el-form-item>
           <!-- <el-form-item>
         <el-button type="primary" @click="kingKongAreaListFunc">查询</el-button>
@@ -65,6 +65,7 @@
 import kdDialog from "@/components/common/kdDialog";
 import { uploadFile } from "@/api/content/article";
 import { saveKingKong } from "@/api/content/kingkong";
+import {validateWeight} from '../utilRules'
 export default {
   components: { kdDialog },
   name: "addKingKongDialog",
@@ -84,11 +85,13 @@ export default {
       //表单校验规则
       rules: {
         name: [
-          { min: 1, max: 4, message: "只限4个字以内哦", trigger: "blur" },
+          { min: 1, max: 5, message: "只限5个字以内哦", trigger: "blur" },
           { required: true, message: "请输入金刚区名称", trigger: "blur" },
         ],
         url: [{ required: true, message: "请输入跳转地址", trigger: "blur" }],
-        weight: [{ required: true, message: "请输入权重", trigger: "blur" }],
+        weight: [{ required: true, message: "请输入权重", trigger: "blur" },{ 
+          validator: validateWeight, trigger: 'blur'
+        }],
       },
       //可支持的图片格式
       imgType: ["image/jpeg", "image/jpg", "image/png", "image/gif"],
@@ -119,7 +122,8 @@ export default {
         this.resolve = resolve;
         this.reject = reject;
         this.show();
-        this.formKingKongDialog = JSON.parse(JSON.stringify(row));
+        //为了解决form的mounted还没结束，导致关闭弹框置空时，表单的初始值为父组件传入对象
+        this.$nextTick(()=>{ this.formKingKongDialog = JSON.parse(JSON.stringify(row));})
         this.dialogTitle = "编辑金刚区";
       });
     },
@@ -129,6 +133,7 @@ export default {
       this.reject = null;
       this.$refs["formKingKongDialogRef"].resetFields();
       this.$refs["formKingKongDialogRef"].clearValidate();
+      this.formKingKongDialog.id=null;
     },
     handleClose() {},
 

@@ -28,7 +28,7 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="kingKongAreaListFunc">查询</el-button>
+        <el-button type="primary" @click="queryData">查询</el-button>
         <el-button type="primary" @click="reset">重置</el-button>
       </el-form-item>
     </el-form>
@@ -43,7 +43,7 @@
       </el-table-column>
       <el-table-column prop="image" label="金刚区图片" width="180">
         <template slot-scope="scope">
-          <img :src="scope.row.image" class="king-img" />
+          <el-image :src="scope.row.image" class="king-img" :preview-src-list="srcList(scope.row.image)"/>
         </template>
       </el-table-column>
       <el-table-column prop="url" label="跳转链接" width="180">
@@ -58,7 +58,7 @@
 
       <el-table-column label="更新信息" width="180">
         <template slot-scope="scope">
-          <div>{{ scope.row.creatorName }}</div>
+          <div>{{ scope.row.operatorName || '-'}}</div>
           <div>{{ scope.row.updatedTs | dateFormat(scope.row.updatedTs) }}</div>
         </template>
       </el-table-column>
@@ -105,6 +105,7 @@
       dialogTitle="编辑权重"
       dialogWidth="40%"
       @savePopupData="submitWeight"
+     @hide="hide"
     >
       <div slot="content">
         <el-form

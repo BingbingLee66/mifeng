@@ -6,24 +6,13 @@ import {
 } from '@/api/content/kingkong'
 import kdDialog from '@/components/common/kdDialog'
 import addKingKongDialog from './components/addKingKongDialog'
+import {validateWeight} from './utilRules'
 export default {
   components: {
     kdDialog,
     addKingKongDialog
   },
   data() {
-    //权重表单验证
-    var validateWeight = (rule, value, callback) => {
-
-      if(!(/^[1-9]\d*$/.test(value))){
-        callback(new Error('请输入正整数'));
-      }else if(value<0 || value>999){
-        callback(new Error('权重范围0-999'));
-      }
-      else {
-        callback();
-      }
-    };
     return {
       //表单对象
       formKingKong: {
@@ -48,7 +37,7 @@ export default {
           message: "请输入权重",
           trigger: "blur"
         },
-        {
+        { 
           validator: validateWeight, trigger: 'blur'
         }]
       },
@@ -69,7 +58,13 @@ export default {
   },
 
   mounted() {},
-  computed: {},
+  computed: {
+    srcList(){
+      return function(url) {
+        return[url]
+    }
+    }
+  },
   created() {
     this.fetchData()
   },
@@ -79,6 +74,7 @@ export default {
      */
     hide() {
       this.$refs["weightKdDialog"].hide();
+      this.$refs['formWeightKdDialog'].clearValidate();
     },
     /** 
       请求类函数
@@ -89,13 +85,7 @@ export default {
     },
     //拉取金刚区列表
     kingKongAreaListFunc() {
-      let params = this.formKingKong;
-      if (this.formKingKong.createdTime && this.formKingKong.createdTime.length >0) {
-        params.createdTsBegin = this.formKingKong.createdTime[0];
-        params.createdTsEnd = this.formKingKong.createdTime[1];
-      }
-      params.pageNum = this.currentPage;
-      params.pageSize = this.pageSize;
+     let params=this.formatRequestData()
       kingKongAreaList(params).then(res => {
         if (res.state === 1) {
           this.tableData = res.data.list;
@@ -141,6 +131,12 @@ export default {
     /** 
      * 行为操作
      */
+    //点击表单查询
+    queryData(){
+      this.currentPage=1;
+      this.pageSize=10;
+      this.kingKongAreaListFunc()
+    },
     //点击添加金刚区
     showAddDialog() {
       this.$refs['addDialog'].open()
@@ -197,6 +193,8 @@ export default {
     //点击重置表单
     reset() {
       this.$refs['formKingKong'].resetFields();
+      this.formKingKong.createdTime=[];
+      this.kingKongAreaListFunc()
     },
     //分页大小改变
     handleSizeChange(val) {
@@ -209,8 +207,21 @@ export default {
       this.kingKongAreaListFunc()
     },
     /** 
-     * 父子组件通信之类
+     * 工具类
      */
+    //format请求参数
+    formatRequestData(){
+      let params = JSON.parse(JSON.stringify(this.formKingKong)) ;
+      if (this.formKingKong.createdTime ) {
+        //解决日期选择器，只能选到某天凌晨    
+          //eg:如果选5号到6号，组件库给的是5号凌晨到6号凌晨，所以结束时间手动加上23.59.59
+          params.createdTsEnd = this.formKingKong.createdTime[1]+24*60*60*1000-1;
+        params.createdTsBegin = this.formKingKong.createdTime[0];
+      }
+      params.pageNum = this.currentPage;
+      params.pageSize = this.pageSize;
+      return params;
+    }
 
 
   }
