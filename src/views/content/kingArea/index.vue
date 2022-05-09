@@ -58,7 +58,7 @@
 
       <el-table-column label="更新信息" width="180">
         <template slot-scope="scope">
-          <div>{{ scope.row.creatorName }}</div>
+          <div>{{ scope.row.operatorName || '-'}}</div>
           <div>{{ scope.row.updatedTs | dateFormat(scope.row.updatedTs) }}</div>
         </template>
       </el-table-column>
@@ -105,6 +105,7 @@
       dialogTitle="编辑权重"
       dialogWidth="40%"
       @savePopupData="submitWeight"
+     @hide="hide"
     >
       <div slot="content">
         <el-form

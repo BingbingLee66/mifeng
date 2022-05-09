@@ -79,6 +79,7 @@ export default {
      */
     hide() {
       this.$refs["weightKdDialog"].hide();
+      this.$refs['formWeightKdDialog'].clearValidate();
     },
     /** 
       请求类函数
