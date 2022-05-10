@@ -6,7 +6,6 @@
       :data="treeData"
       :props="props"
       show-checkbox
-      default-expand-all
       node-key="id"
       :default-checked-keys="selectIds"
       @check="onCheckChange"
@@ -16,9 +15,10 @@
 </template>
 
 <script>
+import { getTradeLabelList } from '@/api/lable'
 
 export default {
-  name: 'IndustryLableDialog',
+  name: 'IndustryLable',
   components: {},
   props: {
     data: {
@@ -31,8 +31,8 @@ export default {
   data() {
     return {
       props: {
-        label: 'name',
-        children: 'childs'
+        label: 'typeName',
+        children: 'subList'
       },
       treeData: [],
       checkedNumber: 0
@@ -44,18 +44,12 @@ export default {
     }
   },
   created() {
-    this.getData()
+    this.getLableList()
   },
   methods: {
-    getData() {
-      setTimeout(() => {
-        this.treeData = [
-          { name: 'O2O', id: 1, childs: [{ name: '电商行业', id: 2, level: 2 }] },
-          { name: '外卖行业', id: 3, childs: [{ name: '外卖行业', id: 4, level: 2 }] },
-          { name: '外卖行业1', id: 5, childs: [{ name: '外卖行业2', id: 6, level: 2 }] },
-          { name: '外卖行业3', id: 7, childs: [{ name: '外卖行业4', id: 8, level: 2 }] },
-        ]
-      }, 100)
+    async getLableList() {
+      const { data = [] } = await getTradeLabelList()
+      this.treeData = data
     },
     initData() {
       this.$refs.tree.setCheckedKeys(this.data.map(v => v.id))
@@ -63,6 +57,7 @@ export default {
     },
     handleConfirm() {
       const selectedData = this.$refs.tree.getCheckedNodes(true)
+      console.log(selectedData)
       if (!selectedData.length) return this.$message({ message: '请选择行业标签', type: 'warning' })
       if (selectedData.length > 3) return this.$message({ message: '最多可选3个行业标签', type: 'warning' })
       this.$emit('confirm', { type: 'IndustryLable', data: selectedData })
