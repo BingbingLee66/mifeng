@@ -51,6 +51,9 @@ export default {
     this.getLableList()
     this.selectedData = this.data
   },
+  activated() {
+    this.initData()
+  },
   methods: {
     async getLableList() {
       const { data = [] } = await getAvailableLabelList()
@@ -59,6 +62,7 @@ export default {
       this.initData()
     },
     initData() {
+      if (!this.tableData.length) return
       const selectedIds = this.data.map(v => v.id)
       this.tableData.forEach(v => {
         this.$refs.table.toggleRowSelection(v, selectedIds.includes(v.id))

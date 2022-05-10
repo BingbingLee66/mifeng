@@ -113,13 +113,24 @@ export default {
       this.$emit('hideFooter', this.isUserEmpty)
     })
   },
+  activated() {
+    this.initData()
+  },
   methods: {
     normalizeParams(query = {}) {
       const params = {}
       Object.entries(query).forEach(([key, value]) => {
         if (value) params[key] = value
+        if (key === 'ckey' && value === '全部') delete params[key]
       })
       return params
+    },
+    initData() {
+      if (this.isUserEmpty) {
+        this.$emit('hideFooter', this.isUserEmpty)
+      } else if (this.tableData.length) {
+        this.selectedData = this.data
+      }
     },
     async getChamberList() {
       const { data: { data = [] }} = await getChamberAllList()

@@ -46,12 +46,16 @@ export default {
   created() {
     this.getLableList()
   },
+  activated() {
+    this.initData()
+  },
   methods: {
     async getLableList() {
       const { data = [] } = await getTradeLabelList()
       this.treeData = data
     },
     initData() {
+      if (!this.treeData.length) return
       this.$refs.tree.setCheckedKeys(this.data.map(v => v.id))
       this.checkedNumber = this.data.length
     },

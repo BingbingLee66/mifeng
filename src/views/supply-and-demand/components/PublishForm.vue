@@ -110,7 +110,9 @@
       @savePopupData="$refs.dialogContent.handleConfirm()"
     >
       <template slot="content">
-        <component :is="dialogType" ref="dialogContent" :data="dialogData" @confirm="onDialogConfirm" />
+        <keep-alive>
+          <component :is="dialogType" ref="dialogContent" :data="dialogData" @confirm="onDialogConfirm" />
+        </keep-alive>
       </template>
     </kdDialog>
   </div>

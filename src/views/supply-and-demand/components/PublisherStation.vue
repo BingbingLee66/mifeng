@@ -40,6 +40,9 @@ export default {
   created() {
     this.getAreaTree()
   },
+  activated() {
+    this.initData()
+  },
   methods: {
     async getAreaTree() {
       const { data = [] } = await getAreaTree()
@@ -52,6 +55,7 @@ export default {
       this.treeData = data
     },
     initData() {
+      if (!this.treeData.length) return
       this.$refs.tree.setCheckedKeys(this.data.map(v => v.id))
     },
     handleConfirm() {
