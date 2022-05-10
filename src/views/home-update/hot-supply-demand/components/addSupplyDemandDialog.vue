@@ -16,9 +16,6 @@
           :inline="true"
           :model="query"
         >
-          <el-form-item label="供需标题">
-            <el-input clearable v-model="query.title" placeholder="关键词" />
-          </el-form-item>
           <el-form-item label="来源商会">
             <el-select
               v-model="query.ckey"
@@ -34,7 +31,12 @@
               />
             </el-select>
           </el-form-item>
-
+          <el-form-item label="供需ID">
+            <el-input v-model="query.id" placeholder="请输入" clearable />
+          </el-form-item>
+          <el-form-item label="供需标题">
+            <el-input clearable v-model="query.title" placeholder="关键词" />
+          </el-form-item>
           <el-form-item label="供需状态">
             <el-select v-model="query.status" placeholder="请选择状态">
               <el-option
@@ -55,10 +57,17 @@
               />
             </el-select>
           </el-form-item>
-
-          <el-form-item label="供需ID">
-            <el-input v-model="query.id" placeholder="请输入" clearable />
+          <el-form-item label="可见性">
+            <el-select v-model="query.platform" placeholder="请选择">
+              <el-option
+                v-for="chamber in platformList"
+                :key="chamber.value"
+                :label="chamber.label"
+                :value="chamber.value"
+              />
+            </el-select>
           </el-form-item>
+
           <el-form-item label="">
             <el-button type="primary" @click="fetchData($event)"
               >查询
@@ -78,7 +87,7 @@ import { saveKingKong } from "@/api/home/kingkong";
 export default {
   components: { kdDialog },
   name: "addSupplyDemandDialog",
-  props:["statusList","publishStatusList"],
+  props: ["statusList", "publishStatusList"],
   data() {
     return {
       //状态
@@ -86,17 +95,28 @@ export default {
       reject: null,
       //表单对象 字段注释参考父组件
       query: {
-       title: null,
+        title: null,
         ckey: null,
         //0-全部 1-生效中 2-已关闭(过期关闭) 3-已关闭(成功合作) 4-已关闭(终止对接)
-        status: '0',
+        status: "0",
         //冻结状态  0-全部 1-正常 2-平台冻结 3-商会冻结,
-        publishStatus: '0',
+        publishStatus: "0",
         id: null,
       },
       //对话框标题
       dialogTitle: "添加供需",
-      chamberOptions:[]
+      //商会list
+      chamberOptions: [],
+      platformList: [
+        {
+          label: "全平台可见",
+          value: "1",
+        },
+        {
+          label: "部分商会可见",
+          value: "0",
+        },
+      ],
     };
   },
   methods: {
@@ -104,7 +124,7 @@ export default {
      * 状态
      */
     //打开当前添加金刚区对话框
-    open() {     
+    open() {
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
         this.reject = reject;

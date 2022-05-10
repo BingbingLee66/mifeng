@@ -88,7 +88,7 @@
       <el-table-column label="发布信息" width="180">
         <template slot-scope="scope">
           <div>{{ scope.row.publishName }}</div>
-          <div>{{ scope.row.publishTime }}</div>
+          <div>{{ scope.row.publishTime | dateFormat}}</div>
         </template>
       </el-table-column>
       <el-table-column label="可见性" width="120">
@@ -115,7 +115,7 @@
       <el-table-column label="创建信息" width="180">
         <template slot-scope="scope">
           <div>{{ scope.row.operatorName }}</div>
-          <div>{{ scope.row.createdTs }}</div>
+          <div>{{ scope.row.createdTs | dateFormat }}</div>
         </template>
       </el-table-column>
       <el-table-column prop="weight" label="权重" width="120">
