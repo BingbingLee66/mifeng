@@ -11,6 +11,7 @@ import {
 } from './utils/utilsData'
 import addSupplyDemandDialog from './components/addSupplyDemandDialog'
 import {getChamberOptions} from '@/api/mall/channel'
+import weightKdDialog from '@/views/content/kingArea/components/weightKdDialog'
 export default {
   data() {
     return {
@@ -48,7 +49,7 @@ export default {
       deleteIds: []
     }
   },
-  components:{addSupplyDemandDialog},
+  components:{addSupplyDemandDialog,weightKdDialog},
   created() {
 
     this.fetchData()
@@ -150,6 +151,12 @@ export default {
       this.currentPage = 1;
       this.pageSize = 10;
       this.hotSupplyDemandListFunc()
+    },
+     //点击权重编辑
+     updateWeight(row) {
+      this.$refs['weightKdDialog'].open(row.id,row.weight,weightSupplyDemand).then(() => {
+        this.queryData()
+      })
     },
 
     /**工具类 */

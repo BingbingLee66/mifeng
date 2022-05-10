@@ -23,12 +23,12 @@
               clearable
               filterable
             >
-                      <el-option
-            v-for="chamber in chamberOptions"
-            :key="chamber.value"
-            :label="chamber.label"
-            :value="chamber.value"
-          />
+              <el-option
+                v-for="chamber in chamberOptions"
+                :key="chamber.value"
+                :label="chamber.label"
+                :value="chamber.value"
+              />
             </el-select>
           </el-form-item>
           <el-form-item label="供需ID" prop="id">
@@ -57,8 +57,8 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="可见性" prop="platform">
-            <el-select v-model="query.platform" placeholder="请选择">
+          <el-form-item label="可见性" prop="visibility">
+            <el-select v-model="query.visibility" placeholder="请选择">
               <el-option
                 v-for="chamber in platformList"
                 :key="chamber.value"
@@ -69,57 +69,56 @@
           </el-form-item>
 
           <el-form-item label="">
-            <el-button type="primary" @click="fetchData($event)"
+            <el-button type="primary" @click="supplyDemandListFunc"
               >查询
             </el-button>
           </el-form-item>
         </el-form>
         <!-- 搜索表单end -->
-         <!-- 供需列表start -->
-    <el-table
-      ref="multipleTable"
-      :data="tableData"
-      tooltip-effect="dark"
-       border
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column label="供需ID/名称" width="220">
-        <template slot-scope="scope">
-          <div>{{ scope.row.id }}</div>
-          <div>{{ scope.row.title }}</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="发布信息" width="180">
-        <template slot-scope="scope">
-          <div>{{ scope.row.publishName }}</div>
-          <div>{{ scope.row.publishTime | dateFormat}}</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="可见性" width="120">
-        <template slot-scope="scope">
-          <div v-if="scope.row.platform === 1">全平台可见</div>
-          <div v-else>部分商会可见</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="供需状态" width="120">
-        <template slot-scope="scope">
-          <div v-if="scope.row.status === 1">生效中</div>
-          <div v-else-if="scope.row.status === 2">已关闭(过期关闭)</div>
-          <div v-else-if="scope.row.status === 3">已关闭(成功合作)</div>
-          <div v-else-if="scope.row.status === 4">已关闭(终止对接)</div>
-        </template>
-      </el-table-column>
-      <el-table-column label="冻结状态" width="120">
-        <template slot-scope="scope">
-          <div v-if="scope.row.publishStatus === 1">正常</div>
-          <div v-else-if="scope.row.publishStatus === 2">平台冻结</div>
-          <div v-else-if="scope.row.status === 3">商会冻结</div>
-        </template>
-      </el-table-column>
-
-    </el-table>
-    <!-- 供需列表end -->
+        <!-- 供需列表start -->
+        <el-table
+          ref="multipleTable"
+          :data="tableData"
+          tooltip-effect="dark"
+          border
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" width="55"> </el-table-column>
+          <el-table-column label="供需ID/名称" width="220">
+            <template slot-scope="scope">
+              <div>{{ scope.row.id }}</div>
+              <div>{{ scope.row.title }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="发布信息" width="180">
+            <template slot-scope="scope">
+              <div>{{ scope.row.createInfo.userName }}</div>
+              <div>{{ scope.row.createdTs | dateFormat }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="可见性" width="120">
+            <template slot-scope="scope">
+              <div v-if="scope.row.visibility === 1">全平台可见</div>
+              <div v-else>部分商会可见</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="供需状态" width="120">
+            <template slot-scope="scope">
+              <div v-if="scope.row.status === 1">生效中</div>
+              <div v-else-if="scope.row.status === 2">已关闭(过期关闭)</div>
+              <div v-else-if="scope.row.status === 3">已关闭(成功合作)</div>
+              <div v-else-if="scope.row.status === 4">已关闭(终止对接)</div>
+            </template>
+          </el-table-column>
+          <el-table-column label="冻结状态" width="120">
+            <template slot-scope="scope">
+              <div v-if="scope.row.publishStatus === 1">正常</div>
+              <div v-else-if="scope.row.publishStatus === 2">平台冻结</div>
+              <div v-else-if="scope.row.status === 3">商会冻结</div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 供需列表end -->
       </div>
     </kdDialog>
   </div>
@@ -127,12 +126,13 @@
 
 <script>
 import kdDialog from "@/components/common/kdDialog";
-import {addHotSupplyDemand} from '@/api/home/hotSupplyDemand'
+import { addHotSupplyDemand } from "@/api/home/hotSupplyDemand";
+import { supplyDemandList } from "@/api/home/supplyDemandManger";
 export default {
   components: { kdDialog },
   name: "addSupplyDemandDialog",
   //供需状态字段 冻结状态 商会数组
-  props: ["statusList", "publishStatusList","chamberOptions"],
+  props: ["statusList", "publishStatusList", "chamberOptions"],
   data() {
     return {
       //状态
@@ -140,14 +140,14 @@ export default {
       reject: null,
       //表单对象 字段注释参考父组件
       query: {
-        title: null,
-        ckey: null,
-        status: "0",
+        title: '',
+        ckey: '',
+        status: '-1',
         //冻结状态  0-全部 1-正常 2-平台冻结 3-商会冻结,
-        publishStatus: "0",
-        id: null,
+        // publishStatus: "0",
+        id: '',
         //平台性
-        platform:"0"
+        visibility:'-1'
       },
       //对话框标题
       dialogTitle: "添加供需",
@@ -158,13 +158,13 @@ export default {
         },
         {
           label: "部分商会可见",
-          value: "0",
+          value: "2",
         },
       ],
       //当前选中需要添加的ids
-      addIds:[],
+      addIds: [],
       //表格数据源
-      tableData:[]
+      tableData: [],
     };
   },
   methods: {
@@ -200,7 +200,6 @@ export default {
       this.resolve = null;
       this.reject = null;
       this.$refs["formHotSupplyDemand"].resetFields();
-
     },
     handleClose() {},
 
@@ -208,15 +207,14 @@ export default {
      * 行为类
      */
     //点击表单确定按钮
-    submit() {
-    },
+    submit() {},
     /**
      * 监听类
      */
     //表单选框变化
-    handleSelectionChange(val){
-      const map1 = val.map(item => item.id);
-      this.addIds=map1
+    handleSelectionChange(val) {
+      const map1 = val.map((item) => item.id);
+      this.addIds = map1;
     },
     /**
      * 请求类
@@ -240,17 +238,27 @@ export default {
         }
       });
     },
-      //查询可添加的热门供需
-    addHotSupplyDemandFunc() {
-      let params = this.formKingKongDialog;
-      addHotSupplyDemand(params).then((res) => {
+    //查询可添加的热门供需
+    supplyDemandListFunc() {
+      let params = {...this.query};
+      params.isHot = 2;
+      //产品说只拉100条数据
+      params.pageNum = 1;
+      params.pageSize = 100;
+      //后端不新增接口和供需列表公用一个接口，所以很多参数需要写死
+      params.readSort=0;
+      params.reportStatus=-1;
+      params.collectSort=0;
+      params.chatSort=0;
+      params.freezeStatus=-1;
+      params.deleteStatus=-1;
+        params.publishTime=-1
+      console.log('params',params)
+      supplyDemandList(params).then((res) => {
         if (res.state === 1) {
-          this.$message({
-            message: "保存成功",
-            type: "success",
-          });
-          this.resolve();
-          this.hide();
+          // this.resolve();
+          // this.hide();
+          this.tableData=res.data.list
         } else {
           this.$message({
             message: res.msg,

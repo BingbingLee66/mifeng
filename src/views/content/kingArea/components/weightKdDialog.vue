@@ -32,7 +32,6 @@
 
 <script>
 import kdDialog from "@/components/common/kdDialog";
-import { saveKingKongWeight } from "@/api/home/kingkong";
 import { validateWeight } from "../utils/utilRules";
 export default {
   components: { kdDialog },
@@ -70,12 +69,13 @@ export default {
      * 状态
      */
     //打开当前添加金刚区对话框
-    open(id,fn) {
+    open(id,value,fn) {
       return new Promise((resolve, reject) => {
         this.resolve = resolve;
         this.reject = reject;
         this.show();
         this.fn=fn;
+        this.formWeight.weight=value
         this.currentId = id;
       });
     },
@@ -110,9 +110,10 @@ export default {
     /**
      * 请求类
      */
-    //保存权重 ,hn为传入需要执行的函数
+    //保存权重 ,fn为传入需要执行的函数
     saveKingKongWeightFunc(params) {
       let api=this.fn;
+      console.log('params',params)
       api(params).then((res) => {
         if (res.state === 1) {
           this.$message({
@@ -120,8 +121,7 @@ export default {
             type: "success",
           });
           this.resolve();
-          this.hide();
-          
+          this.hide();  
         } else {
           this.$message({
             message: res.msg,

@@ -8,7 +8,7 @@
       :model="query"
     >
       <el-form-item label="供需标题">
-        <el-input  clearable v-model="query.title" placeholder="关键词" />
+        <el-input clearable v-model="query.title" placeholder="关键词" />
       </el-form-item>
       <el-form-item label="来源商会">
         <el-select
@@ -66,16 +66,16 @@
     <!-- 搜索表单end -->
 
     <!-- 按钮栏目 -->
-<div style="margin-bottom:10px">
-   <el-button type="danger" @click="deleteIdsFunc(null,1)">移除 </el-button>
+    <div style="margin-bottom: 10px">
+      <el-button type="danger" @click="deleteIdsFunc(null, 1)">移除 </el-button>
       <el-button type="primary" @click="addSupplyDemand">添加供需 </el-button>
-</div>
+    </div>
     <!-- 供需列表start -->
     <el-table
       ref="multipleTable"
       :data="tableData"
       tooltip-effect="dark"
-       border
+      border
       @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="55"> </el-table-column>
@@ -88,7 +88,7 @@
       <el-table-column label="发布信息" width="180">
         <template slot-scope="scope">
           <div>{{ scope.row.publishName }}</div>
-          <div>{{ scope.row.publishTime | dateFormat}}</div>
+          <div>{{ scope.row.publishTime | dateFormat }}</div>
         </template>
       </el-table-column>
       <el-table-column label="可见性" width="120">
@@ -120,17 +120,21 @@
       </el-table-column>
       <el-table-column prop="weight" label="权重" width="120">
         <template slot-scope="scope">
-          <el-button type="text" @click="deleteIdsFunc(scope.row.id,2)">{{scope.row.weight}}</el-button>
+          <el-button type="text" @click="updateWeight(scope.row)">{{
+            scope.row.weight
+          }}</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="操作" >
+      <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="text" @click="deleteIdsFunc(scope.row.id,2)">移除</el-button>
+          <el-button type="text" @click="deleteIdsFunc(scope.row.id, 2)"
+            >移除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
     <!-- 供需列表end -->
-       <!-- 分页start -->
+    <!-- 分页start -->
     <div class="block">
       <el-pagination
         @size-change="handleSizeChange"
@@ -143,32 +147,16 @@
       >
       </el-pagination>
     </div>
-      <!-- 分页end -->
-      <!-- 添加供需对话框 -->
-      <addSupplyDemandDialog :chamberOptions="chamberOptions" :statusList="statusList" :publishStatusList="publishStatusList" ref="addSupplyDemandDialogRef"></addSupplyDemandDialog>
-          <!-- 编辑权重对话框 -->
-    <kdDialog
-      ref="weightKdDialog"
-      dialogTitle="编辑权重"
-      dialogWidth="40%"
-      @savePopupData="submitWeight"
-     @hide="hide"
-    >
-      <div slot="content">
-        <el-form
-          ref="formWeightKdDialog"
-          :rules="weightRules"
-          label-width="120px"
-          :model="formWeight"
-          label-position="right"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="权重：" prop="weight">
-            <el-input onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  v-model="formWeight.weight" ></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-    </kdDialog>
+    <!-- 分页end -->
+    <!-- 添加供需对话框 -->
+    <addSupplyDemandDialog
+      :chamberOptions="chamberOptions"
+      :statusList="statusList"
+      :publishStatusList="publishStatusList"
+      ref="addSupplyDemandDialogRef"
+    ></addSupplyDemandDialog>
+    <!-- 编辑权重对话框 -->
+    <weightKdDialog ref="weightKdDialog"></weightKdDialog>
   </div>
 </template>
 

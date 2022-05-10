@@ -18,9 +18,9 @@ export function deleteHotSupplyDemand(params) {
   })
 }
 //热门供需-权重修改
-export function weightSupplyDemand(id,value) {
+export function weightSupplyDemand(params) {
   return request({
-    url: `/ec/demand/${id}/demand-weight/${value}`,
+    url: `/ec/demand/${params.id}/demand-weight/${params.value}`,
     method: 'put',
   })
 }

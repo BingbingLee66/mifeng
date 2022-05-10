@@ -135,10 +135,7 @@ export default {
     },
     //点击权重编辑
     updateWeight(row) {
-      // this.currentId = row.id;
-      // this.formWeight.weight = row.weight;
-      console.log('权重')
-      this.$refs['weightKdDialog'].open(row.id,saveKingKongWeight).then(() => {
+      this.$refs['weightKdDialog'].open(row.id,row.weight,saveKingKongWeight).then(() => {
         this.queryData()
       })
     },
