@@ -4,6 +4,7 @@
     :title="dialogTitle"
     :visible.sync="dialogVisible"
     :width="dialogWidth"
+    @close="close"
   >
     <slot name="content"></slot>
     <span slot="footer" class="dialog-footer" v-if="showFooter">
@@ -51,6 +52,10 @@ export default {
       } else {
         this.$emit("cancelPopupData");
       }
+    },
+    //关闭的回调
+    close() {
+      this.$emit("hide");
     },
     save() {
       this.$emit("savePopupData");

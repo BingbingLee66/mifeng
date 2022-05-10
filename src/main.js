@@ -57,7 +57,7 @@ window.ysh = {
  *时间戳过滤器
  */
 Vue.filter('dateFormat', (dataStr) => {
-  return dataStr === null ? '--' : formatDateTime(new Date(dataStr), 'yyyy-MM-dd hh:mm:ss')
+  return dataStr === null ? '--' : formatDateTime(new Date(parseInt(dataStr)), 'yyyy-MM-dd hh:mm:ss')
 })
 /**
  *时间戳过滤器

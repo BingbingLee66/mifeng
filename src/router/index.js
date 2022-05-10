@@ -52,6 +52,12 @@ export const constantRoutes = [
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
       meta: { title: 'dashboard', icon: 'dashboard', affix: true }
+    },
+    {
+      path: '/home-update/hot-supply-demand',
+      name: '热门供需',
+      component: () => import('@/views/home-update/hot-supply-demand/index'),
+      meta: { title: '热门供需'}
     }]
   },
   {
