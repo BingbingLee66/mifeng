@@ -42,7 +42,7 @@
               ></i>
             </el-upload>
             <div style="color: #999; line-height: 1.3; margin-top: 8px">
-              建议尺寸 96*96，支持jpg、png、gif
+              建议尺寸 76px*76px(2倍图)，支持jpg、png、gif
             </div>
           </el-form-item>
           <el-form-item label="跳转链接：" prop="url">
