@@ -4,11 +4,14 @@
       v-for="(item,index) in list"
       :key="item.id"
       class="lable-item"
+      :style="itemStyle"
     >
       {{ item[nameKey] }}
-      <i class="el-icon-circle-close" @click.stop="$emit('delete',{list,item,index})" />
+      <slot name="icon" :list="list" :item="item" :index="index">
+        <i class="lable-icon el-icon-circle-close" @click.stop="$emit('delete',{list,item,index})" />
+      </slot>
     </span>
-    <el-button v-if="list.length<maxlength" type="success" :icon="icon" @click.stop="$emit('click')"><slot /></el-button>
+    <el-button v-if="list.length<limit" type="success" :icon="icon" @click.stop="$emit('click')"><slot /></el-button>
   </span>
 </template>
 
@@ -31,9 +34,15 @@ export default {
       type: String,
       default: ''
     },
-    maxlength: {
+    limit: {
       type: String || Number,
       default: Infinity
+    },
+    itemStyle: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   data() { return {} }
@@ -46,6 +55,7 @@ export default {
     position: relative;
     padding: 12px 20px;
     margin-right: 8px;
+    margin-bottom: 8px;
     font-size: 14px;
     border-radius: 4px;
     border: 1px solid #409eff;
@@ -57,11 +67,14 @@ export default {
     }
   }
 
-  .el-icon-circle-close {
+  .lable-icon {
     position: absolute;
     right: 0;
     top: 0;
     font-size: 16px;
+  }
+
+  .el-icon-circle-close {
     color: #fd5d5d;
   }
 </style>

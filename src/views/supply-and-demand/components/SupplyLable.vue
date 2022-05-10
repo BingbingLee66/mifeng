@@ -19,9 +19,10 @@
 </template>
 
 <script>
+import { getAvailableLabelList } from '@/api/lable'
 
 export default {
-  name: 'SupplyLableDialog',
+  name: 'SupplyLable',
   components: {},
   props: {
     data: {
@@ -34,11 +35,11 @@ export default {
   data() {
     return {
       tableData: [
-        // { id: 137, lableName: '新电商' }
+        // { id: 137, name: '新电商' }
       ],
       tableRows: [
         { prop: 'id', lable: '标签id' },
-        { prop: 'lableName', lable: '标签名称' }
+        { prop: 'name', lable: '标签名称' }
       ],
       selectedData: []
     }
@@ -47,26 +48,18 @@ export default {
 
   },
   created() {
-    this.getData()
+    this.getLableList()
     this.selectedData = this.data
   },
   methods: {
-    getData() {
-      setTimeout(() => {
-        this.tableData = [
-          { id: 137, lableName: '新电商' },
-          { id: 138, lableName: '新电商2' },
-          { id: 139, lableName: '新电商3' },
-          { id: 140, lableName: '新电商4' },
-          { id: 141, lableName: '新电商5' },
-          { id: 142, lableName: '新电商6' },
-        ]
-        this.$nextTick(() => this.initData())
-      }, 100)
+    async getLableList() {
+      const { data = [] } = await getAvailableLabelList()
+      this.tableData = data
+      await this.$nextTick()
+      this.initData()
     },
     initData() {
       const selectedIds = this.data.map(v => v.id)
-      console.log(selectedIds)
       this.tableData.forEach(v => {
         this.$refs.table.toggleRowSelection(v, selectedIds.includes(v.id))
       })

@@ -9,14 +9,14 @@
           :type="mode==='add'? 'primary' :'info'"
           size="small"
           @click="showOfficialComponent($event)"
-          >去选择
+        >去选择
         </el-button>
-        <span class="text-tips"
-          >仅可选择一位发布者，重选后，新选择的发布者将会替换已选发布者</span
-        >
+        <span
+          class="text-tips"
+        >仅可选择一位发布者，重选后，新选择的发布者将会替换已选发布者</span>
       </div>
 
-      <div class="table" v-if="tableData.length > 0">
+      <div v-if="tableData.length > 0" class="table">
         <el-table
           class="table"
           :data="tableData"
@@ -24,21 +24,19 @@
           stripe
           style="width: 100%"
         >
-          <el-table-column prop="wxUserId" label="用户ID" width="180">
-          </el-table-column>
+          <el-table-column prop="wxUserId" label="用户ID" width="180" />
           <el-table-column prop="uname" label="用户名" width="180">
-             <template slot-scope="scope">
-          <div v-if="mode==='add'">{{scope.row.uname}}</div>
-           <div v-if="mode==='update'">{{scope.row.userName}}</div>
+            <template slot-scope="scope">
+              <div v-if="mode==='add'">{{ scope.row.uname }}</div>
+              <div v-if="mode==='update'">{{ scope.row.userName }}</div>
 
-        </template>
+            </template>
           </el-table-column>
-          <el-table-column prop="phone" label="手机号"> </el-table-column>
-          <el-table-column prop="chamberName" label="所属商会" width="180">
-          </el-table-column>
+          <el-table-column prop="phone" label="手机号" />
+          <el-table-column prop="chamberName" label="所属商会" width="180" />
           <el-table-column prop="name" label="操作" width="180">
             <template>
-              <el-button type="text" @click="deleteUser" v-if="mode==='add'"> 移除 </el-button>
+              <el-button v-if="mode==='add'" type="text" @click="deleteUser"> 移除 </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -46,38 +44,38 @@
       <div class="dynamic">
         <div class="handle dynamic-text">动态内容</div>
         <editorElem
-          :hiddenMenu="true"
+          :hidden-menu="true"
           :height="200"
+          :content="contentHtml"
           @addParentHtml="addParentHtml"
           @textNumber="textNumber"
-          :content="contentHtml"
-        ></editorElem>
-        <div class="textNumber"> {{contentHtmlNumber}}/{{contentNumber}}</div>
-       
-      </div>
-      <el-form  label-position="top" label-width="80px" v-if="type===2">
-        
-          <el-form-item label="动态视频"  v-loading="loading">
-            <el-upload
-           
-              v-if="!vid"
-              action="/"
-              list-type="picture-card"
-              :before-upload="beforeAvatarUploadVideo"
-              :http-request="function (content) {return uploadVideoFunc(content);}"
-              :show-file-list="false"
-            >
-              <i class="el-icon-plus"></i>
-            </el-upload>
+        />
+        <div class="textNumber"> {{ contentHtmlNumber }}/{{ contentNumber }}</div>
 
-            <div class="goods-pre" v-else>
-              <videoComponent  ref="videoRef" v-if="vid" :vid="vid" height="148px"></videoComponent>
-              <i
-                class="el-icon-error"
-                style="font-size:20px;color:red;"
-                @click="deleteCurrentVideo"
-              ></i>
-              <!-- <i
+      </div>
+      <el-form v-if="type===2" label-position="top" label-width="80px">
+
+        <el-form-item v-loading="loading" label="动态视频">
+          <el-upload
+
+            v-if="!vid"
+            action="/"
+            list-type="picture-card"
+            :before-upload="beforeAvatarUploadVideo"
+            :http-request="function (content) {return uploadVideoFunc(content);}"
+            :show-file-list="false"
+          >
+            <i class="el-icon-plus" />
+          </el-upload>
+
+          <div v-else class="goods-pre">
+            <videoComponent v-if="vid" ref="videoRef" :vid="vid" height="148px" />
+            <i
+              class="el-icon-error"
+              style="font-size:20px;color:red;"
+              @click="deleteCurrentVideo"
+            />
+            <!-- <i
                 class="el-icon-error"
                 @click="deleteCurrentVideo"
               ></i>
@@ -88,9 +86,9 @@
               <div class="goods-pre-btn" @click="openPreviewModal(dynamicExtendDTO.shareFriendPicture)">
                 预览
               </div> -->
-            </div>
-          </el-form-item>
-          
+          </div>
+        </el-form-item>
+
         <!-- <el-form-item label="动态视频">
             <el-upload
               v-if="!vid"
@@ -112,90 +110,90 @@
 
             </div>
           </el-form-item> -->
- <el-form-item label="视频封面">
-            <el-upload
-              v-if="!videoDetail"
-              action="/"
-              list-type="picture-card"
-              :before-upload="beforeAvatarUpload"
-              :http-request="function (content) {return clickUpload(content, 1, 'video-cover');}"
-              :show-file-list="false"
-            >
-              <i class="el-icon-plus"></i>
-            </el-upload>
+        <el-form-item label="视频封面">
+          <el-upload
+            v-if="!videoDetail"
+            action="/"
+            list-type="picture-card"
+            :before-upload="beforeAvatarUpload"
+            :http-request="function (content) {return clickUpload(content, 1, 'video-cover');}"
+            :show-file-list="false"
+          >
+            <i class="el-icon-plus" />
+          </el-upload>
 
-            <div class="goods-pre" v-else>
-              <i
-                class="el-icon-error"
-                @click="deleteCurrentImg(1, 'video-cover', 1)"
-              ></i>
-              <el-image
-                :src="videoDetail"
-                class="goods-avatar"
-              />
-              <div class="goods-pre-btn" @click="openPreviewModal(videoDetail)">
-                预览
-              </div>
+          <div v-else class="goods-pre">
+            <i
+              class="el-icon-error"
+              @click="deleteCurrentImg(1, 'video-cover', 1)"
+            />
+            <el-image
+              :src="videoDetail"
+              class="goods-avatar"
+            />
+            <div class="goods-pre-btn" @click="openPreviewModal(videoDetail)">
+              预览
             </div>
-          </el-form-item>
-          <div class="share-tips">
-            支持格式：jpeg、png、jpg
           </div>
+        </el-form-item>
+        <div class="share-tips">
+          支持格式：jpeg、png、jpg
+        </div>
       </el-form>
-        
+
       <div class="dynamic">
         <div v-if="type===1">
           <div>
-          <span class="handle dynamic-text">动态图片</span>
+            <span class="handle dynamic-text">动态图片</span>
           <!-- <span class="text-tips">拖拽可调整图片顺序</span> -->
-        </div>
-        <div class="dynamic-list">
-          <div
-            v-for="(val, index) in gallery"
-            class="dynamic-list-item"
-            :key="index"
-          >
-            <!-- {{ index }}--index -->
-            <el-upload
-              v-if="!val"
-              action="/"
-              list-type="picture-card"
-              :before-upload="beforeAvatarUpload"
-              :http-request="function (content) {return clickUpload(content, index, 'articleCoverImg');}"
-              :show-file-list="false"
+          </div>
+          <div class="dynamic-list">
+            <div
+              v-for="(val, index) in gallery"
+              :key="index"
+              class="dynamic-list-item"
             >
-              <i class="el-icon-plus"></i>
-            </el-upload>
-            <div class="goods-pre" v-else>
-              <i
-                class="el-icon-error"
-                style="font-size:24px"
-                @click="deleteCurrentImg(index, 'articleCoverImg')"
-              ></i>
-              <el-image
-                :preview-src-list="previewList"
-                :src="val"
-                class="goods-avatar"
-              />
-              <div class="goods-pre-btn" @click="openPreviewModal(val)">
-                预览
+              <!-- {{ index }}--index -->
+              <el-upload
+                v-if="!val"
+                action="/"
+                list-type="picture-card"
+                :before-upload="beforeAvatarUpload"
+                :http-request="function (content) {return clickUpload(content, index, 'articleCoverImg');}"
+                :show-file-list="false"
+              >
+                <i class="el-icon-plus" />
+              </el-upload>
+              <div v-else class="goods-pre">
+                <i
+                  class="el-icon-error"
+                  style="font-size:24px"
+                  @click="deleteCurrentImg(index, 'articleCoverImg')"
+                />
+                <el-image
+                  :preview-src-list="previewList"
+                  :src="val"
+                  class="goods-avatar"
+                />
+                <div class="goods-pre-btn" @click="openPreviewModal(val)">
+                  预览
+                </div>
               </div>
             </div>
           </div>
         </div>
-        </div>
-        
+
         <span class="handle dynamic-text">选择同步商会</span>
         <div class="chamber-view">
           <div class="chamber-view-text">在这些商会内同步动态</div>
           <div>
             <span style="color: #1890ff">已选:</span>
             <el-tag
-              :key="tag"
               v-for="(tag, index) in selectChamberList"
-              @keydown="tag.id"
+              :key="tag"
               :closable="mode==='add' ?true :false"
               :disable-transitions="false"
+              @keydown="tag.id"
               @close="handleClose(tag, index)"
             >
               {{ tag.name }}
@@ -205,13 +203,12 @@
           <div
             class="noChamber"
           >
-            <div   :key="tag"  v-for="(tag, index) in noChamberList"  @close="noChamberList(tag, index)" class="noChamber-list">
-            <span class="noChamberList-item-text"> {{ tag.name }}</span> 
-              <i v-if="mode==='add'" class="el-icon-circle-plus add" @click="addSelectChamber(tag, index)"></i>
-               <!-- <div class="add">+</div> -->
+            <div v-for="(tag, index) in noChamberList" :key="tag" class="noChamber-list" @close="noChamberList(tag, index)">
+              <span class="noChamberList-item-text"> {{ tag.name }}</span>
+              <i v-if="mode==='add'" class="el-icon-circle-plus add" @click="addSelectChamber(tag, index)" />
+              <!-- <div class="add">+</div> -->
             </div>
 
-           
           </div>
         </div>
       </div>
@@ -223,9 +220,9 @@
           :model="dynamicExtendDTO"
         >
           <el-form-item label="分享标题">
-            <el-input maxlength="25" show-word-limit v-model="dynamicExtendDTO.shareTitle"></el-input>
+            <el-input v-model="dynamicExtendDTO.shareTitle" maxlength="25" show-word-limit />
           </el-form-item>
-         
+
           <el-form-item label="分享微信好友图">
             <el-upload
               v-if="!dynamicExtendDTO.shareFriendPicture"
@@ -235,14 +232,14 @@
               :http-request="function (content) {return clickUpload(content, index, 'share');}"
               :show-file-list="false"
             >
-              <i class="el-icon-plus"></i>
+              <i class="el-icon-plus" />
             </el-upload>
 
-            <div class="goods-pre" v-else>
+            <div v-else class="goods-pre">
               <i
                 class="el-icon-error"
                 @click="deleteCurrentImg(1, 'share', 1)"
-              ></i>
+              />
               <el-image
                 :src="dynamicExtendDTO.shareFriendPicture"
                 class="goods-avatar"
@@ -264,14 +261,14 @@
               :http-request="function (content) {return clickUpload(content, 2, 'share', 2);}"
               :show-file-list="false"
             >
-              <i class="el-icon-plus"></i>
+              <i class="el-icon-plus" />
             </el-upload>
 
-            <div class="goods-pre" v-else>
+            <div v-else class="goods-pre">
               <i
                 class="el-icon-error"
                 @click="deleteCurrentImg(1, 'share', 2)"
-              ></i>
+              />
               <el-image
                 :src="dynamicExtendDTO.sharePoster"
                 class="goods-avatar"
@@ -293,15 +290,15 @@
     </div>
 
     <officialComponent
-      :type="2"
       ref="OfficialComponent"
+      :type="2"
       title="添加发布者"
-    ></officialComponent>
-       
-    <kdDialog ref="kdDialog" :showFooter="false" dialogTitle="" dialogWidth="60%">
+    />
+
+    <kdDialog ref="kdDialog" :show-footer="false" dialog-title="" dialog-width="60%">
       <div slot="content">
-        <img :src="currentImg" style="max-width:90%"/>
-        </div> </kdDialog>
+        <img :src="currentImg" style="max-width:90%">
+      </div> </kdDialog>
 
   </div>
 </template>
@@ -419,7 +416,7 @@
   }
 }
 .noChamber {
-  
+
   display: flex;
   .add {
     position: absolute;
@@ -443,7 +440,7 @@ display: flex;
 margin-right: 6px;
 font-size: 13px;
   }
-  
+
   .noChamberList-item-text{
     position: relative;
     z-index: 2;
