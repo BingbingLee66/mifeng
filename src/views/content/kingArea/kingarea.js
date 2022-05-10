@@ -4,13 +4,15 @@ import {
   saveKingKong,
   saveKingKongWeight
 } from '@/api/home/kingkong'
+
 import kdDialog from '@/components/common/kdDialog'
 import addKingKongDialog from './components/addKingKongDialog'
-import {validateWeight} from './utils/utilRules'
+import weightKdDialog from './components/weightKdDialog'
 export default {
   components: {
     kdDialog,
-    addKingKongDialog
+    addKingKongDialog,
+    weightKdDialog
   },
   data() {
     return {
@@ -25,22 +27,7 @@ export default {
         // createdTsBegin:null,
         // createdTsEnd:null
       },
-      //权重对话框表单对象
-      formWeight: {
-        weight: null
-      },
-      //当前编辑的权重id
-      currentId: null,
-      weightRules: {
-        weight: [{
-          required: true,
-          message: "请输入权重",
-          trigger: "blur"
-        },
-        { 
-          validator: validateWeight, trigger: 'blur'
-        }]
-      },
+
       //金刚区列表数组
       tableData: [],
 
@@ -54,28 +41,21 @@ export default {
       //总数
       total: 0
     }
-    
+
   },
 
   mounted() {},
   computed: {
-    srcList(){
-      return function(url) {
-        return[url]
-    }
+    srcList() {
+      return function (url) {
+        return [url]
+      }
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
-    /**
-     * 状态类
-     */
-    hide() {
-      this.$refs["weightKdDialog"].hide();
-      this.$refs['formWeightKdDialog'].clearValidate();
-    },
     /** 
       请求类函数
     */
@@ -85,7 +65,7 @@ export default {
     },
     //拉取金刚区列表
     kingKongAreaListFunc() {
-     let params=this.formatRequestData()
+      let params = this.formatRequestData()
       kingKongAreaList(params).then(res => {
         if (res.state === 1) {
           this.tableData = res.data.list;
@@ -110,31 +90,14 @@ export default {
         }
       })
     },
-    //保存权重
-    saveKingKongWeightFunc(params) {
-      saveKingKongWeight(params).then(res => {
-        if (res.state === 1) {
-          this.$message({
-            message: "保存成功",
-            type: "success",
-          });
-          this.hide();
-          this.kingKongAreaListFunc()
-        } else {
-          this.$message({
-            message: res.msg,
-            type: "error",
-          });
-        }
-      })
-    },
+
     /** 
      * 行为操作
      */
     //点击表单查询
-    queryData(){
-      this.currentPage=1;
-      this.pageSize=10;
+    queryData() {
+      this.currentPage = 1;
+      this.pageSize = 10;
       this.kingKongAreaListFunc()
     },
     //点击添加金刚区
@@ -172,28 +135,18 @@ export default {
     },
     //点击权重编辑
     updateWeight(row) {
-      this.currentId = row.id;
-      this.formWeight.weight = row.weight;
-      this.$refs['weightKdDialog'].show()
+      // this.currentId = row.id;
+      // this.formWeight.weight = row.weight;
+      console.log('权重')
+      this.$refs['weightKdDialog'].open(row.id,saveKingKongWeight).then(() => {
+        this.queryData()
+      })
     },
-    //点击保存权重
-    submitWeight() {
-      this.$refs['formWeightKdDialog'].validate((valid) => {
-        if (valid) {
-          let params = {
-            id: this.currentId,
-            value: this.formWeight.weight
-          }
-          this.saveKingKongWeightFunc(params)
-        } else {
-          return false;
-        }
-      });
-    },
+
     //点击重置表单
     reset() {
       this.$refs['formKingKong'].resetFields();
-      this.formKingKong.createdTime=[];
+      this.formKingKong.createdTime = [];
       this.kingKongAreaListFunc()
     },
     //分页大小改变
@@ -210,12 +163,12 @@ export default {
      * 工具类
      */
     //format请求参数
-    formatRequestData(){
-      let params = JSON.parse(JSON.stringify(this.formKingKong)) ;
-      if (this.formKingKong.createdTime ) {
+    formatRequestData() {
+      let params = JSON.parse(JSON.stringify(this.formKingKong));
+      if (this.formKingKong.createdTime) {
         //解决日期选择器，只能选到某天凌晨    
-          //eg:如果选5号到6号，组件库给的是5号凌晨到6号凌晨，所以结束时间手动加上23.59.59
-          params.createdTsEnd = this.formKingKong.createdTime[1]+24*60*60*1000-1;
+        //eg:如果选5号到6号，组件库给的是5号凌晨到6号凌晨，所以结束时间手动加上23.59.59
+        params.createdTsEnd = this.formKingKong.createdTime[1] + 24 * 60 * 60 * 1000 - 1;
         params.createdTsBegin = this.formKingKong.createdTime[0];
       }
       params.pageNum = this.currentPage;

@@ -10,7 +10,7 @@ import {
   publishTimeList
 } from './utils/utilsData'
 import addSupplyDemandDialog from './components/addSupplyDemandDialog'
-import {getList} from '@/api/chamber/manager'
+import {getChamberOptions} from '@/api/mall/channel'
 export default {
   data() {
     return {
@@ -56,15 +56,15 @@ export default {
   methods: {
     fetchData() {
       this.hotSupplyDemandListFunc();
-      this.getChamberOptions()
+      this.getChamberOptionsFunc()
     },
     /**
      * 请求类
      */
     //拉取商会
-    getChamberOptions() {
-      getList().then(res => {
-        this.chamberOptions = res.data
+    getChamberOptionsFunc() {
+      getChamberOptions().then(res => {
+        this.chamberOptions = res.data.data
 
       })
     },
@@ -144,8 +144,13 @@ export default {
     //点击添加供需按钮
     addSupplyDemand(){
       this.$refs['addSupplyDemandDialogRef'].open()
-      
-    }
+    },
+    //点击表单查询
+    queryFunc(){
+      this.currentPage = 1;
+      this.pageSize = 10;
+      this.hotSupplyDemandListFunc()
+    },
 
     /**工具类 */
   }

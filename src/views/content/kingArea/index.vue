@@ -97,31 +97,10 @@
 
     <!-- 添加金刚区对话框start -->
     <addKingKongDialog ref="addDialog"></addKingKongDialog>
-    <!-- <kdDialog title=""></kdDialog> -->
     <!-- 添加金刚区对话框end -->
-    <!-- 编辑权重对话框 -->
-    <kdDialog
-      ref="weightKdDialog"
-      dialogTitle="编辑权重"
-      dialogWidth="40%"
-      @savePopupData="submitWeight"
-     @hide="hide"
-    >
-      <div slot="content">
-        <el-form
-          ref="formWeightKdDialog"
-          :rules="weightRules"
-          label-width="120px"
-          :model="formWeight"
-          label-position="right"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="权重：" prop="weight">
-            <el-input onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  v-model="formWeight.weight" ></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-    </kdDialog>
+    <!-- 权重对话框 -->
+    <weightKdDialog ref="weightKdDialog"></weightKdDialog>
+
   </div>
 </template>
 

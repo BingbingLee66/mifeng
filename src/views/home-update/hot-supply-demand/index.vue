@@ -19,9 +19,9 @@
         >
           <el-option
             v-for="chamber in chamberOptions"
-            :key="chamber.ckey"
-            :label="chamber.name"
-            :value="chamber.ckey"
+            :key="chamber.value"
+            :label="chamber.label"
+            :value="chamber.value"
           />
         </el-select>
       </el-form-item>
@@ -60,7 +60,7 @@
         <el-input v-model="query.id" placeholder="请输入" clearable />
       </el-form-item>
       <el-form-item label="">
-        <el-button type="primary" @click="fetchData($event)">查询 </el-button>
+        <el-button type="primary" @click="queryFunc">查询 </el-button>
       </el-form-item>
     </el-form>
     <!-- 搜索表单end -->
@@ -119,6 +119,9 @@
         </template>
       </el-table-column>
       <el-table-column prop="weight" label="权重" width="120">
+        <template slot-scope="scope">
+          <el-button type="text" @click="deleteIdsFunc(scope.row.id,2)">{{scope.row.weight}}</el-button>
+        </template>
       </el-table-column>
       <el-table-column label="操作" >
         <template slot-scope="scope">
@@ -142,7 +145,30 @@
     </div>
       <!-- 分页end -->
       <!-- 添加供需对话框 -->
-      <addSupplyDemandDialog :statusList="statusList" :publishStatusList="publishStatusList" ref="addSupplyDemandDialogRef"></addSupplyDemandDialog>
+      <addSupplyDemandDialog :chamberOptions="chamberOptions" :statusList="statusList" :publishStatusList="publishStatusList" ref="addSupplyDemandDialogRef"></addSupplyDemandDialog>
+          <!-- 编辑权重对话框 -->
+    <kdDialog
+      ref="weightKdDialog"
+      dialogTitle="编辑权重"
+      dialogWidth="40%"
+      @savePopupData="submitWeight"
+     @hide="hide"
+    >
+      <div slot="content">
+        <el-form
+          ref="formWeightKdDialog"
+          :rules="weightRules"
+          label-width="120px"
+          :model="formWeight"
+          label-position="right"
+          class="demo-ruleForm"
+        >
+          <el-form-item label="权重：" prop="weight">
+            <el-input onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  v-model="formWeight.weight" ></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+    </kdDialog>
   </div>
 </template>
 
