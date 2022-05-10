@@ -64,8 +64,8 @@
 <script>
 import kdDialog from "@/components/common/kdDialog";
 import { uploadFile } from "@/api/content/article";
-import { saveKingKong } from "@/api/content/kingkong";
-import {validateWeight} from '../utilRules'
+import { saveKingKong } from "@/api/home/kingkong";
+import {validateWeight} from '../utils/utilRules'
 export default {
   components: { kdDialog },
   name: "addKingKongDialog",

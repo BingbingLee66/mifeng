@@ -68,7 +68,7 @@
     <!-- 按钮栏目 -->
 <div style="margin-bottom:10px">
    <el-button type="danger" @click="deleteIdsFunc(null,1)">移除 </el-button>
-      <el-button type="primary" @click="fetchData($event)">添加供需 </el-button>
+      <el-button type="primary" @click="addSupplyDemand">添加供需 </el-button>
 </div>
     <!-- 供需列表start -->
     <el-table
@@ -141,6 +141,8 @@
       </el-pagination>
     </div>
       <!-- 分页end -->
+      <!-- 添加供需对话框 -->
+      <addSupplyDemandDialog :statusList="statusList" :publishStatusList="publishStatusList" ref="addSupplyDemandDialogRef"></addSupplyDemandDialog>
   </div>
 </template>
 

@@ -3,12 +3,14 @@ import {
   deleteHotSupplyDemand,
   weightSupplyDemand,
   addHotSupplyDemand,
-} from '@/api/content/hotSupplyDemand'
+} from '@/api/home/hotSupplyDemand'
 import {
   statusList,
   publishStatusList,
   publishTimeList
 } from './utils/utilsData'
+import addSupplyDemandDialog from './components/addSupplyDemandDialog'
+import {getList} from '@/api/chamber/manager'
 export default {
   data() {
     return {
@@ -46,6 +48,7 @@ export default {
       deleteIds: []
     }
   },
+  components:{addSupplyDemandDialog},
   created() {
 
     this.fetchData()
@@ -53,14 +56,14 @@ export default {
   methods: {
     fetchData() {
       this.hotSupplyDemandListFunc();
-      // this.getChamberOptions()
+      this.getChamberOptions()
     },
     /**
      * 请求类
      */
     //拉取商会
     getChamberOptions() {
-      getActivitySource().then(res => {
+      getList().then(res => {
         this.chamberOptions = res.data
 
       })
@@ -138,6 +141,11 @@ export default {
 
 
     },
+    //点击添加供需按钮
+    addSupplyDemand(){
+      this.$refs['addSupplyDemandDialogRef'].open()
+      
+    }
 
     /**工具类 */
   }

@@ -3,10 +3,10 @@ import {
   deleteKingKongList,
   saveKingKong,
   saveKingKongWeight
-} from '@/api/content/kingkong'
+} from '@/api/home/kingkong'
 import kdDialog from '@/components/common/kdDialog'
 import addKingKongDialog from './components/addKingKongDialog'
-import {validateWeight} from './utilRules'
+import {validateWeight} from './utils/utilRules'
 export default {
   components: {
     kdDialog,
