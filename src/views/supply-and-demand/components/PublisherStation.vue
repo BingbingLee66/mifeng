@@ -4,16 +4,16 @@
     :data="treeData"
     :props="props"
     show-checkbox
-    default-expand-all
     node-key="id"
     :default-checked-keys="selectIds"
   />
 </template>
 
 <script>
+import { getAreaTree } from '@/api/area'
 
 export default {
-  name: 'IndustryLableDialog',
+  name: 'PublisherStation',
   components: {},
   props: {
     data: {
@@ -27,7 +27,7 @@ export default {
     return {
       props: {
         label: 'name',
-        children: 'childs'
+        children: 'children'
       },
       treeData: []
     }
@@ -38,18 +38,18 @@ export default {
     }
   },
   created() {
-    this.getData()
+    this.getAreaTree()
   },
   methods: {
-    getData() {
-      setTimeout(() => {
-        this.treeData = [
-          { name: '广州省', id: 1, childs: [{ name: '广州市', id: 2, level: 2 }, { name: '广州市11', id: 9, level: 2 }] },
-          { name: '广州省1', id: 3, childs: [{ name: '广州市2', id: 4, level: 2 }] },
-          { name: '广州省2', id: 5, childs: [{ name: '广州市3', id: 6, level: 2 }] },
-          { name: '广州省3', id: 7, childs: [{ name: '广州市4', id: 8, level: 2 }] },
-        ]
-      }, 100)
+    async getAreaTree() {
+      const { data = [] } = await getAreaTree()
+      data.forEach(province => {
+        province.children && province.children.forEach(city => {
+          city.fullName = `${province.name}-${city.name}`
+          delete city.children
+        })
+      })
+      this.treeData = data
     },
     initData() {
       this.$refs.tree.setCheckedKeys(this.data.map(v => v.id))

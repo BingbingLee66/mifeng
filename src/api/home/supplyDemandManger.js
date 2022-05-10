@@ -1,7 +1,6 @@
 import request from '@/utils/request'
 
-
-//分页查询供需列表
+// 分页查询供需列表
 export function supplyDemandList(params) {
   return request({
     url: '/ec/ysh-content/pagedList',
@@ -9,3 +8,5 @@ export function supplyDemandList(params) {
     params
   })
 }
+
+export const publishSupplyDemand = data => request({ url: '/ec/ysh-content', method: 'post', data })
