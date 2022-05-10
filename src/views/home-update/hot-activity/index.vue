@@ -54,7 +54,7 @@
         </el-table-column>
         <el-table-column label="活动时间" width="166px">
           <template slot-scope="scope">
-            {{ scope.row.activityStartTime | dateFormat }} - {{ scope.row.activityEndTime | dateFormat }}
+            {{ scope.row.activityStartTime }} - {{ scope.row.activityEndTime }}
           </template>
         </el-table-column>
         <el-table-column label="活动地点" width="200px">
