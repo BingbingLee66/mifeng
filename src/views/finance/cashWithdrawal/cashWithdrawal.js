@@ -167,7 +167,7 @@ export default {
               message: '更新成功',
               type: 'success'
             })
-            this.fetchData()
+            this.fetchData();
           })
           this.visible = false
         } else {
@@ -224,7 +224,8 @@ export default {
               message: '提现申请提交成功',
               type: 'success'
             })
-            this.fetchData()
+            this.fetchData();
+            this.getStatistics()
           } else {
             this.$message.error({
               message: response.msg
