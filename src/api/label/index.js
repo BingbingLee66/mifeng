@@ -23,3 +23,15 @@ export const unFreezeLabel = params => request({ url: '/ec/label/unFreezeLabel',
 
 // 查询冻结原因
 export const getFreezeReasons = id => request({ url: `/ec/label/getFrozenReasons/${id}`, method: 'get' })
+
+// 查询自定义标签列表
+export const getCustomLabelList = params => request({ url: '/ec/labelCustom/labelCustomList', method: 'get', params })
+
+// 编辑自定义标签
+export const updateCustomLabel = params => request({ url: '/ec/labelCustom/redact', method: 'post', params })
+
+// 采集自定义标签
+export const gatherCustomLabel = params => request({ url: '/ec/labelCustom/gatherLabel', method: 'post', params })
+
+// 查询自定义标签使用人数
+export const getCustomLabelUsers = id => request({ url: `/ec/labelCustom/getUserCount/${id}`, method: 'get' })
