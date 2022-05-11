@@ -65,7 +65,7 @@
       background
       layout="total, sizes, prev, pager, next, jumper"
       :page-sizes="[10, 20, 50, 100, 500]"
-      :page-size="pageSize"
+      :page-size="query.pageSize"
       :total="total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -102,6 +102,12 @@ const deleteMap = {
   4: '商会删除',
 }
 
+const sourceMap = {
+  1: '是（平台）',
+  2: '是（商会）',
+  3: '否',
+}
+
 export default {
   data() {
     return {
@@ -136,10 +142,10 @@ export default {
         { prop: 'isSyncChamber', lable: '是否同步本商/协会' },
         { prop: 'freezeDesc', lable: '冻结状态' },
         { prop: 'deleteDesc', lable: '删除状态' },
-        { prop: 'chamberName', lable: '供需成功匹配人' },
-        { prop: 'chamberName', lable: '是否后台发布' },
-        { prop: 'chamberName', lable: '创建信息（后台发布）' },
-        { prop: 'chamberName', lable: '更新信息' },
+        { prop: 'matchDesc', lable: '供需成功匹配人' },
+        { prop: 'isBackgroundPublish', lable: '是否后台发布' },
+        { prop: 'createInfoDesc', lable: '创建信息（后台发布）' },
+        { prop: 'updateInfoDesc', lable: '更新信息' },
         { prop: 'chamberName', lable: '商/协会认证状态' },
       ]
     }
@@ -163,7 +169,14 @@ export default {
       // 删除状态
       data.deleteDesc = deleteMap[data.deleteStatus]
       // 供需成功匹配人
-      data.matchDesc = matchInfo
+      data.matchDesc = `${data.mathInfo.userName}${data.mathInfo.phone}` || '--'
+      // 是否后台发布
+      data.isBackgroundPublish = sourceMap[data.source]
+      // 创建信息
+      data.createInfoDesc = `${data.createInfo.userName}${formatDate(new Date(data.createInfo.time, 'yyyy-MM-dd hh:mm:ss'))}`
+      // 更新信息
+      data.updateInfoDesc = `${data.updateInfo.userName}${formatDate(new Date(data.updateInfo.time, 'yyyy-MM-dd hh:mm:ss'))}`
+
       return data
     },
     async querySupplyDemandList() {

@@ -61,6 +61,7 @@ export default {
     border: 1px solid #409eff;
     color: #409eff;
     cursor: pointer;
+    line-height: 1.15;
 
     &:last-child {
       margin-right: 0;
