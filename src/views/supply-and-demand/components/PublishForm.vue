@@ -328,6 +328,7 @@ export default {
           selectedChamberList,
         }} = this
 
+        if (!publisherList.length) this.alert('请选择发布者', reject)
         if (!tarType) return this.alert('请选择类型', reject)
         if (!supplyLableList.length) return this.alert('请选择供需标签', reject)
         if (!industryLableList.length) return this.alert('请选择行业标签', reject)
