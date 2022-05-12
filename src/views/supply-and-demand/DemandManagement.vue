@@ -124,7 +124,7 @@
           <div v-for="item in row.sourceChamberVOList" :key="item.id">{{ item.name }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="可见性">
+      <el-table-column label="可见性" width="120">
         <template slot-scope="{row:{visibility}}">
           <div v-if="+visibility === -1">计算中</div>
           <div v-else-if="+visibility === 1">全平台可见</div>
@@ -144,11 +144,14 @@
       </el-table-column>
 
       <el-table-column label="供需状态">
-        <template slot-scope="{row:{status}}">
+        <template slot-scope="{row:{status,closeReason}}">
           <div v-if="+status === 1">生效中</div>
           <div v-else-if="+status === 2">已关闭（过期关闭）</div>
           <div v-else-if="+status === 3">已关闭（成功合作）</div>
-          <div v-else-if="+status === 4">已关闭（终止对接）</div>
+          <div v-else-if="+status === 4">
+            <div>已关闭（终止对接）</div>
+            <el-button v-if="closeReason" type="text" size="small" @click="$confirm(closeReason, '关闭原因', { showCancelButton: false, confirmButtonText: '我知道了', })">查看原因</el-button>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="同步商/协会" width="180">
@@ -186,7 +189,7 @@
           <template v-else>--</template>
         </template>
       </el-table-column>
-      <el-table-column label="是否后台发布">
+      <el-table-column label="是否后台发布" width="120">
         <template slot-scope="{row:{source}}">
           <div v-if="+source === 1">是（平台）</div>
           <div v-else-if="+source === 2">是（商会）</div>
@@ -220,7 +223,7 @@
       <el-table-column label="操作">
         <template slot-scope="{row}">
           <el-button type="text" size="small">编辑</el-button> <br>
-          <el-button type="text" size="small">冻结</el-button> <br>
+          <el-button type="text" size="small" @click="showFreezeDialog(row)">冻结</el-button> <br>
           <el-button type="text" size="small">详情</el-button> <br>
           <el-button type="text" size="small">删除</el-button> <br>
         </template>
@@ -236,12 +239,26 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
+
+    <el-dialog :visible.sync="freezeVisible" title="冻结">
+      <div style="margin-bottom:10px;">请选择冻结发布商/协会 <span style="color:red;">（可复选，冻结后，该动态不展示在已选商会中）</span></div>
+      <el-checkbox-group v-model="freezeCheckList">
+        <template v-for="item in freezeAbleList">
+          <el-checkbox v-if="item.value" :key="item.id" style="display:block;margin-bottom:10px;" :label="item.label" />
+        </template>
+      </el-checkbox-group>
+      <div slot="footer">
+        <el-button @click.native="freezeVisible=false">取消</el-button>
+        <el-button type="primary">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { supplyDemandList } from '@/api/home/supplyDemandManger'
+import { supplyDemandList, getReportList, getFreezeAbleList, getUnFreezeAbleList } from '@/api/home/supplyDemandManger'
 import { getChamberOptions } from '@/api/finance/finance'
+import { formatDateTime } from '@/utils/date'
 
 export default {
   data() {
@@ -267,6 +284,12 @@ export default {
 
       tableData: [],
 
+      freezeVisible: false,
+      freezeData: { },
+      freezeAbleList: [],
+      unFreezeAbleList: [],
+      freezeCheckList: []
+
     }
   },
   created() {
@@ -291,11 +314,11 @@ export default {
     },
 
     handleSizeChange(val) {
-      this.query.pageNum = val
+      this.query.pageSize = val
       this.querySupplyDemandList()
     },
     handleCurrentChange(val) {
-      this.query.pageSize = val
+      this.query.pageNum = val
       this.querySupplyDemandList()
     },
 
@@ -308,9 +331,42 @@ export default {
       this.querySupplyDemandList()
     },
 
-    showRepostInfo() {
+    async showRepostInfo(row) {
+      const { data: { list = [] }} = await getReportList({ tarId: row.id, page: 1, pageSize: 100 })
 
+      this.$confirm(`
+        <div style="margin:-10px -15px;border-top:1px solid #eee;">
+          ${list.map(v => `<div style="padding:20px;border-bottom:1px solid #eee;">
+            <div>举报人信息：${v.uname}</div>
+            <div>举报人手机号：${v.phone}</div>
+            <div>举报内容：${v.reason}</div>
+            <div>举报时间：${formatDateTime(new Date(+v.createdTs), 'yyyy-MM-dd hh:mm:ss')}</div>
+          </div>`).join('')}
+        </div>
+      `,
+      '举报信息', {
+        showCancelButton: false,
+        confirmButtonText: '我知道了',
+        dangerouslyUseHTMLString: true
+      })
     },
+
+    async getFreezeAbleList(id) {
+      const { data = [] } = await getFreezeAbleList({ id })
+      this.freezeAbleList = data
+    },
+
+    async getUnFreezeAbleList(id) {
+      const { data } = await getUnFreezeAbleList({ id })
+      this.unFreezeAbleList = data
+    },
+
+    async showFreezeDialog(row) {
+      this.freezeVisible = true
+      this.freezeData = row
+      this.getFreezeAbleList(row.id)
+      this.getUnFreezeAbleList(row.id)
+    }
   },
 }
 </script>

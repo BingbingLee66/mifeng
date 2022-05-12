@@ -154,7 +154,8 @@ export default {
           ...params,
           contentType: 2,
           coverType: 1,
-          vcover: this.vcover ? this.vcover : void 0
+          vcover: this.vcover ? this.vcover : void 0,
+          vid: this.vid
         })
         if (state === 1) {
           this.$message({ message: '发布成功', type: 'success' })
