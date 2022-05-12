@@ -5,7 +5,7 @@
         <el-input v-model="query.name" clearable placeholder="关键词" />
       </el-form-item>
       <el-form-item label="采集状态" label-width="80px">
-        <el-select v-model="query.status" placeholder="采集状态">
+        <el-select v-model="query.gatherType" placeholder="采集状态">
           <el-option label="全部" :value="-1" />
           <el-option label="采集" :value="1" />
           <el-option label="未采集" :value="2" />

@@ -296,6 +296,7 @@ export default {
         )
         const { state, msg } = await unFreezeLabel({ id: row.id })
         this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+        state === 1 && this.getList()
       } catch (error) {
         //
       }
