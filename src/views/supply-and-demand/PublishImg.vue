@@ -144,6 +144,7 @@ export default {
     width: 500px;
     display: flex;
     flex-wrap: wrap;
+    line-height: 1.15;
 
     .image-item {
       width: 150px;

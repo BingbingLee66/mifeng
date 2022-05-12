@@ -98,8 +98,8 @@
     </el-form>
 
     <div class="footer">
-      <el-button @click="$router.push('/management')">取消</el-button>
-      <el-button type="primary" @click="onSubmit">发布</el-button>
+      <el-button style="margin-left:20px;" @click="$router.push('/management')">取消</el-button>
+      <el-button style="margin-left:20px;" type="primary" @click="onSubmit">发布</el-button>
     </div>
 
     <!-- 弹窗表单 -->
@@ -343,10 +343,9 @@ export default {
 
   .footer {
     display: flex;
-    justify-content: center;
     align-items: center;
     padding: 20px 0;
-    border: 1px solid #d7d7d7;
+    margin-bottom: 20px;
   }
 }
 </style>

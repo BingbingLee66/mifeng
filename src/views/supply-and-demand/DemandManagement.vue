@@ -3,45 +3,67 @@
     <el-form ref="query" :inline="true" label-position="right" :model="query">
       <el-row>
         <el-form-item :span="8" label="供需标题">
-          <el-input v-model="query.title" clearable placeholder="关键词" />
+          <el-input v-model="query.title" clearable placeholder="关键词" maxlength="40" />
+        </el-form-item>
+        <el-form-item :span="8" label="来源商/协会">
+          <el-select v-model="query.ckey" filterable no-match-text="暂无数据">
+            <el-option
+              v-for="cc in chamberOptions"
+              :key="cc.value"
+              :label="cc.label"
+              :value="cc.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item :span="8" label="供需状态">
-          <el-select v-model="query.contentColumnId">
-            <el-option label="全部" value="全部" />
+          <el-select v-model="query.status">
+            <el-option label="全部" :value="-1" />
+            <el-option label="生效中" :value="1" />
+            <el-option label="已关闭（过期关闭）" :value="2" />
+            <el-option label="已关闭（成功合作）" :value="3" />
+            <el-option label="已关闭（终止对接）" :value="4" />
           </el-select>
         </el-form-item>
         <el-form-item :span="8" label="冻结状态">
-          <el-select v-model="query.contentColumnId">
-            <el-option label="全部" value="全部" />
+          <el-select v-model="query.freezeStatus">
+            <el-option label="全部" :value="-1" />
+            <el-option label="正常" :value="1" />
+            <el-option label="平台冻结" :value="2" />
+            <el-option label="商会冻结" :value="3" />
           </el-select>
         </el-form-item>
-        <el-form-item :span="8" label="删除状态">
-          <el-select v-model="query.contentColumnId">
-            <el-option label="全部" value="全部" />
-          </el-select>
-        </el-form-item>
+
       </el-row>
       <el-row>
+        <el-form-item :span="8" label="删除状态">
+          <el-select v-model="query.deleteStatus">
+            <el-option label="全部" :value="-1" />
+            <el-option label="正常" :value="1" />
+            <el-option label="用户删除" :value="2" />
+            <el-option label="商会后台删除" :value="3" />
+            <el-option label="总后台删除" :value="4" />
+          </el-select>
+        </el-form-item>
         <el-form-item :span="8" label="举报状态">
-          <el-select v-model="query.contentColumnId">
-            <el-option label="全部" value="全部" />
+          <el-select v-model="query.reportStatus">
+            <el-option label="全部" :value="-1" />
+            <el-option label="正常" :value="1" />
+            <el-option label="被举报" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item :span="8" label="发布时间">
-          <el-date-picker
-            v-model="query.date"
-            format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-          />
+          <el-select v-model="query.publishTime">
+            <el-option label="全部" :value="-1" />
+            <el-option label="24小时内" :value="1" />
+            <el-option label="3天内" :value="2" />
+            <el-option label="7天内" :value="3" />
+            <el-option label="一个月内" :value="4" />
+          </el-select>
         </el-form-item>
         <el-form-item :span="8" label="供需ID">
-          <el-input v-model="query.title" placeholder="关键词" clearable />
+          <el-input v-model="query.id" placeholder="关键词" clearable />
         </el-form-item>
-        <el-button :span="8" type="primary">查询</el-button>
+        <el-button :span="8" type="primary" @click="handleCurrentChange(1)">查询</el-button>
       </el-row>
       <el-row>
         <el-button type="primary">批量认证身份信息</el-button>
@@ -57,8 +79,152 @@
       header-row-class-name="tableheader"
       empty-text="暂无数据"
     >
-      <el-table-column width="55px" type="selection" />
-      <el-table-column v-for="it in tableRows" :key="it.prop" :prop="it.prop" :label="it.lable" min-width="100px" />
+      <!-- <el-table-column width="55" type="selection" /> -->
+      <el-table-column label="供需ID" width="120" prop="id" />
+      <el-table-column label="供需标题" width="240">
+        <template slot-scope="{row}">
+          <el-tooltip effect="light" :content="row.title" placement="top">
+            <div class="ellipsis">{{ row.title }}</div>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column>
+        <template slot-scope="{row}">
+          {{ row.readPeopleNum || 0 }}
+        </template>
+        <template slot="header">
+          <el-button type="text" @click="handleSort('readSort')">浏览量<i class="el-icon-sort" /></el-button>
+        </template>
+
+      </el-table-column>
+      <el-table-column>
+        <template slot-scope="{row}">
+          {{ row.collectNum || 0 }}
+        </template>
+        <template slot="header">
+          <el-button type="text" @click="handleSort('collectSort')">收藏量<i class="el-icon-sort" /></el-button>
+        </template>
+      </el-table-column>
+      <el-table-column>
+        <template slot-scope="{row}">
+          {{ row.chatPeopleNum || 0 }}
+        </template>
+        <template slot="header">
+          <el-button type="text" @click="handleSort('chatSort')">洽谈量<i class="el-icon-sort" /></el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="发布信息" width="180">
+        <template slot-scope="{row}">
+          <div>{{ row.sourceInfo ? row.sourceInfo.userName : '' }}</div>
+          <div>{{ +row.createdTs | dateFormat }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="来源商/协会" width="180">
+        <template slot-scope="{row}">
+          <div v-for="item in row.sourceChamberVOList" :key="item.id">{{ item.name }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="可见性">
+        <template slot-scope="{row:{visibility}}">
+          <div v-if="+visibility === -1">计算中</div>
+          <div v-else-if="+visibility === 1">全平台可见</div>
+          <div v-else-if="+visibility === 2">部分商会可见</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="举报状态">
+        <template slot-scope="{row:{reportStatus}}">
+          <div v-if="+reportStatus === 1">正常</div>
+          <div v-else-if="+reportStatus === 2">被举报</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="举报信息">
+        <template slot-scope="{row}">
+          <el-button :disabled="!+row.repostNum" type="text" size="small" @click="showRepostInfo(row)">{{ row.repostNum }}</el-button>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="供需状态">
+        <template slot-scope="{row:{status}}">
+          <div v-if="+status === 1">生效中</div>
+          <div v-else-if="+status === 2">已关闭（过期关闭）</div>
+          <div v-else-if="+status === 3">已关闭（成功合作）</div>
+          <div v-else-if="+status === 4">已关闭（终止对接）</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="同步商/协会" width="180">
+        <template slot-scope="{row}">
+          <div v-for="item in row.syncChamberVOList" :key="item.id">{{ item.name }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="冻结状态" width="180">
+        <template slot-scope="{row}">
+          <div v-if="+row.freezeStatus === 1">正常</div>
+          <div v-else-if="+row.freezeStatus === 2">
+            <strong>【平台冻结】</strong>
+            <div v-for="item in row.syncPlatformFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
+          </div>
+          <div v-else-if="+row.freezeStatus === 3">
+            <strong>【商会冻结】</strong>
+            <div v-for="item in row.syncChamberFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="删除状态">
+        <template slot-scope="{row:{deleteStatus}}">
+          <div v-if="+deleteStatus === 1">正常</div>
+          <div v-else-if="+deleteStatus === 2">用户删除</div>
+          <div v-else-if="+deleteStatus === 3">商会后台删除</div>
+          <div v-else-if="+deleteStatus === 4">总后台删除</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="供需成功匹配人" width="180">
+        <template slot-scope="{row:{matchInfo}}">
+          <template v-if="matchInfo">
+            <div>{{ matchInfo.userName }}</div>
+            <div>{{ matchInfo.phone }}</div>
+          </template>
+          <template v-else>--</template>
+        </template>
+      </el-table-column>
+      <el-table-column label="是否后台发布">
+        <template slot-scope="{row:{source}}">
+          <div v-if="+source === 1">是（平台）</div>
+          <div v-else-if="+source === 2">是（商会）</div>
+          <div v-else-if="+source === 3">否</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建信息 (后台发布)" width="180">
+        <template slot-scope="{row:{createInfo}}">
+          <template v-if="createInfo">
+            <div>{{ createInfo.userName }}</div>
+            <div>{{ +createInfo.time | dateFormat }}</div>
+          </template>
+          <template v-else>--</template>
+        </template>
+      </el-table-column>
+      <el-table-column label="更新信息" width="180">
+        <template slot-scope="{row:{updateInfo}}">
+          <template v-if="updateInfo">
+            <div>{{ updateInfo.userName }}</div>
+            <div>{{ +updateInfo.time | dateFormat }}</div>
+          </template>
+          <template v-else>--</template>
+        </template>
+      </el-table-column>
+      <el-table-column label="商/协会认证状态">
+        <template slot-scope="{row:{authenticate}}">
+          <div v-if="authenticate">已认证</div>
+          <div v-else>未认证</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="{row}">
+          <el-button type="text" size="small">编辑</el-button> <br>
+          <el-button type="text" size="small">冻结</el-button> <br>
+          <el-button type="text" size="small">详情</el-button> <br>
+          <el-button type="text" size="small">删除</el-button> <br>
+        </template>
+      </el-table-column>
     </el-table>
 
     <el-pagination
@@ -75,38 +241,7 @@
 
 <script>
 import { supplyDemandList } from '@/api/home/supplyDemandManger'
-import { formatDate } from '@/utils/date'
-
-const reportMap = {
-  1: '正常',
-  2: '被举报'
-}
-
-const supplyDemandMap = {
-  1: '生效中',
-  2: '已关闭（过期关闭）',
-  3: '已关闭（成功合作）',
-  4: '已关闭（终止对接）',
-}
-
-const freezeMap = {
-  1: '正常',
-  2: '平台冻结',
-  3: '商会冻结',
-}
-
-const deleteMap = {
-  1: '正常',
-  2: '用户删除',
-  3: '平台删除',
-  4: '商会删除',
-}
-
-const sourceMap = {
-  1: '是（平台）',
-  2: '是（商会）',
-  3: '否',
-}
+import { getChamberOptions } from '@/api/finance/finance'
 
 export default {
   data() {
@@ -115,6 +250,7 @@ export default {
         pageSize: 10,
         pageNum: 1,
         deleteStatus: -1,
+        ckey: '',
         reportStatus: -1,
         status: -1,
         freezeStatus: -1,
@@ -127,65 +263,54 @@ export default {
       },
       total: 0,
 
+      chamberOptions: [],
+
       tableData: [],
 
-      tableRows: [
-        { prop: 'id', lable: '供需ID' },
-        { prop: 'title', lable: '供需标题' },
-        { prop: 'readPeopleNum', lable: '浏览量' },
-        { prop: 'collectNum', lable: '收藏量' },
-        { prop: 'chatPeopleNum', lable: '洽谈量' },
-        { prop: 'publishInfo', lable: '发布信息' },
-        { prop: 'reportDesc', lable: '举报状态' },
-        { prop: 'repostNum', lable: '举报信息' },
-        { prop: 'supplyDemandDesc', lable: '供需状态' },
-        { prop: 'isSyncChamber', lable: '是否同步本商/协会' },
-        { prop: 'freezeDesc', lable: '冻结状态' },
-        { prop: 'deleteDesc', lable: '删除状态' },
-        { prop: 'matchDesc', lable: '供需成功匹配人' },
-        { prop: 'isBackgroundPublish', lable: '是否后台发布' },
-        { prop: 'createInfoDesc', lable: '创建信息（后台发布）' },
-        { prop: 'updateInfoDesc', lable: '更新信息' },
-        { prop: 'chamberName', lable: '商/协会认证状态' },
-      ]
     }
   },
   created() {
     this.querySupplyDemandList()
+    this.getChamberOptions()
   },
   methods: {
-    nomorlizeData(data) {
-      // 发布信息
-      data.publishInfo = `${data.sourceInfo.userName}
-      ${formatDate(new Date(data.createdTs, 'yyyy-MM-dd hh:mm:ss'))}`
-      // 举报状态
-      data.reportDesc = reportMap[data.reportStatus]
-      // 供需状态
-      data.supplyDemandDesc = supplyDemandMap[data.status]
-      // 是否同步商协会
-      data.isSyncChamber = !!data.syncChamberVOList.length
-      // 冻结状态
-      data.freezeDesc = freezeMap[data.freezeStatus]
-      // 删除状态
-      data.deleteDesc = deleteMap[data.deleteStatus]
-      // 供需成功匹配人
-      data.matchDesc = `${data.mathInfo.userName}${data.mathInfo.phone}` || '--'
-      // 是否后台发布
-      data.isBackgroundPublish = sourceMap[data.source]
-      // 创建信息
-      data.createInfoDesc = `${data.createInfo.userName}${formatDate(new Date(data.createInfo.time, 'yyyy-MM-dd hh:mm:ss'))}`
-      // 更新信息
-      data.updateInfoDesc = `${data.updateInfo.userName}${formatDate(new Date(data.updateInfo.time, 'yyyy-MM-dd hh:mm:ss'))}`
-
-      return data
+    async getChamberOptions() {
+      const { data } = await getChamberOptions()
+      this.chamberOptions = data.data
+      this.chamberOptions.unshift({ 'label': '全部商会', 'value': '' }, { 'label': '凯迪云商会', 'value': 'kaidiyun' })
     },
+
     async querySupplyDemandList() {
-      const { data: { list, totalRows }} = await supplyDemandList(this.query)
-      this.tableData = list.map(this.nomorlizeData)
+      const params = { ...this.query }
+      Object.entries(params).forEach(([key, value]) => {
+        if (value === '') delete params[key]
+      })
+      const { data: { list, totalRows }} = await supplyDemandList(params)
+      this.tableData = list
       this.total = totalRows
     },
-    handleSizeChange() {},
-    handleCurrentChange() {},
+
+    handleSizeChange(val) {
+      this.query.pageNum = val
+      this.querySupplyDemandList()
+    },
+    handleCurrentChange(val) {
+      this.query.pageSize = val
+      this.querySupplyDemandList()
+    },
+
+    handleSort(sortType) {
+      const oldSort = this.query[sortType]
+      this.query.readSort = 0
+      this.query.collectSort = 0
+      this.query.chatSort = 0
+      this.query[sortType] = ({ '-1': 1, 0: 1, 1: -1 })[oldSort]
+      this.querySupplyDemandList()
+    },
+
+    showRepostInfo() {
+
+    },
   },
 }
 </script>
@@ -193,5 +318,9 @@ export default {
 <style scoped lang="scss">
 .demand-management {
   padding: 20px;
+}
+
+.ellipsis {
+  @include ellipsis(2)
 }
 </style>
