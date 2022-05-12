@@ -1,10 +1,10 @@
 <template>
-  <div class="publish-img">
+  <div class="publish-form">
     <h1 class="title">供需信息</h1>
 
     <el-form>
       <el-form-item label="发布者" required>
-        <el-button type="warning" icon="el-icon-edit" plain @click="showDialog('Publisher')">选择发布者</el-button>
+        <el-button :disabled="isEdit" type="warning" icon="el-icon-edit" plain @click="showDialog('Publisher')">选择发布者</el-button>
         <span class="span">仅可选择一位发布者，重选后，新选择的发布者将会替换已选发布者</span>
       </el-form-item>
       <!-- 发布者表格 -->
@@ -12,7 +12,8 @@
         <el-table-column v-for="it in tableRows" :key="it.prop" :prop="it.prop" :label="it.lable" :width="it.width" />
         <el-table-column label="操作" width="120">
           <template slot-scope="scope">
-            <el-button type="text" size="small" @click.native.prevent="deleteRow(scope.row)">
+            <template v-if="isEdit">--</template>
+            <el-button v-else type="text" size="small" @click.native.prevent="deleteRow(scope.row)">
               移除
             </el-button>
           </template>
@@ -70,12 +71,14 @@
       </el-form-item>
       <el-form-item label="供需内容" required>
         <editorElem
+          ref="editor"
           :hidden-menu="true"
           :height="200"
           :content="formData.content"
           @addParentHtml="addParentHtml"
           @textNumber="textNumber"
         />
+        <div class="textNumber"> {{ contentNumber }} / 2000</div>
       </el-form-item>
 
       <slot />
@@ -83,12 +86,12 @@
       <el-form-item label="选择同步商/协会">
         <div class="association-sync">
           <div class="association-sync-title"> 在这些商/协会内同步供需 </div>
-          <div class="association-selected">
-            已选：<LableList :list="formData.selectedChamberList" limit="0" @delete="onChamberChange($event,'unSelecteChamberList')" />
+          <div class="association-selected" :class="{disable:isEdit}">
+            已选：<LableList :disable="isEdit" :list="formData.selectedChamberList" limit="0" @delete="onChamberChange($event,'unSelecteChamberList')" />
           </div>
           <div class="association-sync-title"> 不同步到以下商/协会 </div>
           <div class="association-unselect">
-            <LableList :list="formData.unSelecteChamberList" limit="0" :item-style="{color: '#555',border:'1px solid #555'}">
+            <LableList :disable="isEdit" :list="formData.unSelecteChamberList" limit="0" :item-style="{color: '#555',border:'1px solid #555'}">
               <i slot="icon" slot-scope="event" class="lable-icon el-icon-circle-plus-outline" @click="onChamberChange(event,'selectedChamberList')" />
             </LableList>
           </div>
@@ -99,7 +102,7 @@
 
     <div class="footer">
       <el-button style="margin-left:20px;" @click="$router.push('/management')">取消</el-button>
-      <el-button style="margin-left:20px;" type="primary" @click="onSubmit">发布</el-button>
+      <el-button style="margin-left:20px;" type="primary" @click="onSubmit">{{ isEdit?'确定':'发布' }}</el-button>
     </div>
 
     <!-- 弹窗表单 -->
@@ -107,11 +110,19 @@
       ref="kdDialog"
       :dialog-title="dialogTitle"
       dialog-width="60%"
+      :show-footer="showFooter"
       @savePopupData="$refs.dialogContent.handleConfirm()"
     >
       <template slot="content">
         <keep-alive>
-          <component :is="dialogType" ref="dialogContent" :data="dialogData" @confirm="onDialogConfirm" />
+          <component
+            :is="dialogType"
+            ref="dialogContent"
+            :data="dialogData"
+            @confirm="onDialogConfirm"
+            @close="hideDialog"
+            @hideFooter="showFooter=false"
+          />
         </keep-alive>
       </template>
     </kdDialog>
@@ -133,18 +144,24 @@ export default {
   name: 'PublishForm',
   components: {
     editorElem,
-    kdDialog: () => import('@/components/common/kdDialog'),
     Publisher: () => import(/* webpackChunkName: "Publisher" */ './Publisher'),
     SupplyLable: () => import(/* webpackChunkName: 'SupplyLable' */'./SupplyLable'),
     IndustryLable: () => import(/* webpackChunkName: 'IndustryLable' */'./IndustryLable'),
     LableList: () => import(/* webpackChunkName: 'LableList' */'./LableList'),
     PublisherStation: () => import(/* webpackChunkName: 'PublisherStation' */'./PublisherStation'),
   },
+  props: {
+    detail: {
+      type: Object,
+      default: null
+    },
+  },
   data() {
     return {
       dialogType: '',
       dialogTitle: '',
       dialogData: [],
+      showFooter: true,
       contentNumber: 0,
 
       tableRows: [ // 表格行的初始化
@@ -170,8 +187,22 @@ export default {
       },
     }
   },
+  computed: {
+    isEdit() {
+      return !!this.detail
+    }
+  },
   watch: {
+
+    detail: {
+      handler(newObj) {
+        newObj && this.initData()
+      },
+      immediate: true
+    },
+
     'formData.publisherList'([publisher]) {
+      if (this.isEdit) return
       if (publisher) {
         this.getChamberList(publisher.wxUserId)
       } else {
@@ -181,6 +212,38 @@ export default {
     }
   },
   methods: {
+    initData() {
+      const {
+        chamberVOList = [],
+        dynamicWxUserVO = {},
+        yshContentEditVO: {
+          tarType, content, validType, validEndTs, title, labelVOList, tradeVOList, city, province
+        } = {}
+      } = this.detail
+
+      this.formData = {
+        content: '', // 供需内容
+        tarType, // 供应: 1 or 需求: 2
+        validType, // 长期有效: 1  自定义时间: 2
+        title, // 供需标题
+        publisherList: [dynamicWxUserVO], // 发布人列表
+        supplyLableList: labelVOList, // 供需标签
+        industryLableList: tradeVOList.map(v => ({ ...v, typeName: v.name })), // 行业标签
+        publisherStationList: [{ ...city, fullName: `${city.name}-${province.name}`, fulleCode: `${city.code}-${province.code}` }], // 发布者常驻地
+        date: validEndTs ? new Date(+validEndTs) : '',
+        selectedChamberList: chamberVOList, // 已选择商协会
+        unSelecteChamberList: [] // 未选择商协会
+      }
+
+      getChamberList(dynamicWxUserVO.wxUserId).then(({ data = [] }) => {
+        const selectedChamberIds = chamberVOList.map(v => v.id)
+        this.formData.unSelecteChamberList = data.filter(v => !selectedChamberIds.includes(v.id))
+      })
+
+      this.$nextTick(() => {
+        this.formData.content = content
+      })
+    },
     // 序列化字段
     normalizeField(type) {
       return type[0].toLocaleLowerCase() + type.slice(1) + 'List'
@@ -188,6 +251,7 @@ export default {
     // 弹窗显示
     showDialog(type) {
       this.dialogTitle = dialogTitleMap[type]
+      this.showFooter = true
       this.$refs.kdDialog.show()
       this.dialogData = this.formData[this.normalizeField(type)]
       if (this.dialogType === type) {
@@ -196,6 +260,9 @@ export default {
       } else {
         this.dialogType = type
       }
+    },
+    hideDialog() {
+      this.$refs.kdDialog.hide()
     },
     // 移除，发布者
     deleteRow(row) {
@@ -223,7 +290,7 @@ export default {
     },
     // 弹窗确认
     onDialogConfirm({ type, data }) {
-      this.$refs.kdDialog.hide()
+      this.hideDialog()
       this.dialogData = this.formData[this.normalizeField(type)] = data
     },
 
@@ -267,8 +334,9 @@ export default {
         if (!publisherStationList.length) return this.alert('请选择发布者常驻地', reject)
         if (!title) return this.alert('请填写标题', reject)
         if (!content) return this.alert('请填写内容', reject)
+        if (this.contentNumber > 2000) this.alert('内容超出2000字', reject)
 
-        const [province, city] = publisherStationList[0].fullName.split('-')
+        const [province, city] = publisherStationList[0].fullCode.split('-')
 
         resolve({
           chamberIds: selectedChamberList.map(v => v.id),
@@ -289,21 +357,16 @@ export default {
 
     // 表单提交
     async onSubmit() {
-      try {
-        const params = await this.normalizeFormData()
-        this.$emit('submit', params)
-      } catch (error) {
-        //
-      }
+      this.normalizeFormData().then(params => this.$emit('submit', params))
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.publish-img {
+.publish-form {
   padding: 0 20px;
-  // max-width: 1000px;
+  min-width: 1000px;
 
   .margin-bottom {
     margin-bottom: 20px;
@@ -338,6 +401,10 @@ export default {
 
     .association-selected {
       color: #409eff;
+
+      &.disable {
+        color: #666;
+      }
     }
   }
 
@@ -346,6 +413,12 @@ export default {
     align-items: center;
     padding: 20px 0;
     margin-bottom: 20px;
+  }
+
+  .textNumber{
+    width: 1000px;
+    text-align: right;
+    margin-top: 4px;
   }
 }
 </style>

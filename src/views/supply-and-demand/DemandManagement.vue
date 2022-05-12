@@ -72,6 +72,7 @@
 
     <el-table
       ref="table"
+      v-loading="loading"
       :data="tableData"
       style="width:100%;"
       stripe
@@ -220,12 +221,20 @@
           <div v-else>未认证</div>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="120">
         <template slot-scope="{row}">
-          <el-button type="text" size="small">编辑</el-button> <br>
-          <el-button type="text" size="small" @click="showFreezeDialog(row)">冻结</el-button> <br>
-          <el-button type="text" size="small">详情</el-button> <br>
-          <el-button type="text" size="small">删除</el-button> <br>
+          <div>
+            <el-button type="text" size="small" @click="goToEdit(row)">编辑</el-button>
+            <el-button type="text" size="small" @click="showDetail(row)">详情</el-button>
+          </div>
+          <div>
+            <el-button type="text" size="small" @click="showFreezeDialog(row, true)">冻结</el-button>
+            <el-button :disabled="row.freezeStatus===1" type="text" size="small" @click="showFreezeDialog(row, false)">解冻</el-button>
+          </div>
+          <div>
+            <el-button :disabled="row.deleteStatus !== 1" type="text" size="small" @click="handleDelete(row)">删除</el-button>
+            <el-button :disabled="row.deleteStatus === 1" type="text" size="small" @click="handleUnDelete(row)">撤销删除</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -240,30 +249,66 @@
       @current-change="handleCurrentChange"
     />
 
-    <el-dialog :visible.sync="freezeVisible" title="冻结">
-      <div style="margin-bottom:10px;">请选择冻结发布商/协会 <span style="color:red;">（可复选，冻结后，该动态不展示在已选商会中）</span></div>
-      <el-checkbox-group v-model="freezeCheckList">
-        <template v-for="item in freezeAbleList">
-          <el-checkbox v-if="item.value" :key="item.id" style="display:block;margin-bottom:10px;" :label="item.label" />
+    <!-- 冻结相关弹窗 -->
+    <el-dialog :visible.sync="freezeAboutDialog.visible" :title="freezeAboutDialog.isFreeze?'冻结':'解冻'">
+      <div style="margin-bottom:10px;">请选择{{ freezeAboutDialog.isFreeze?'冻结':'解冻' }}发布商/协会
+        <span style="color:red;">
+          （{{ freezeAboutDialog.isFreeze?'可复选，冻结后，该动态不展示在已选商会中':'解冻后，该动态将恢复展示在已选商会中' }}）
+        </span>
+      </div>
+      <el-checkbox-group v-model="freezeAboutDialog.checkList" v-loading="freezeAboutDialog.loading">
+        <template v-for="item in freezeAboutDialog.list">
+          <el-checkbox v-if="item.value" :key="item.id" style="display:block;margin-bottom:10px;" :label="item.value">{{ item.label }}</el-checkbox>
         </template>
       </el-checkbox-group>
       <div slot="footer">
-        <el-button @click.native="freezeVisible=false">取消</el-button>
-        <el-button type="primary">确定</el-button>
+        <el-button @click.native="freezeAboutDialog.visible=false">取消</el-button>
+        <el-button type="primary" @click="handleFreeze">确定</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :visible.sync="detailDialog.visible" width="60%" @close="$refs.videoRef&&$refs.videoRef.closeDia()">
+      <div v-loading="detailDialog.loading" class="m-preview-wrap">
+        <div class="m-preview-area">
+          <div class="m-article-title">{{ detailDialog.data.title }}</div>
+          <div class="content" style="padding: 0rpx;">
+            <p class="text" style="font-size: 16px; line-height: 34px;letter-spacing: 2px;white-space: pre-wrap;" v-html="detailDialog.data.content" />
+            <div class="img-list" style="display: flex;flex-wrap: wrap;min-height:2rpx;margin:20rpx auto 0;">
+              <img v-for="(v,i) in detailDialog.data.imgs" :key="i" mode="widthFix" :src="v" style="width:226rpx;height:156rpx;margin:3rpx;border-radius: 2px;flex-shrink: 0;">
+            </div>
+          </div>
+          <videoComponent v-if="detailDialog.data.vid" ref="videoRef" :vid="detailDialog.data.vid" height="530px" />
+        </div>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
 <script>
-import { supplyDemandList, getReportList, getFreezeAbleList, getUnFreezeAbleList } from '@/api/home/supplyDemandManger'
+import { supplyDemandList,
+  getReportList,
+  getFreezeAbleList,
+  getUnFreezeAbleList,
+  freezeSupplyDemandByUpBackground,
+  unFreezeSupplyDemandByUpBackground,
+  deleteSupplyDemand,
+  unDeleteSupplyDemand,
+  getSupplyDemandDetail
+} from '@/api/home/supplyDemandManger'
 import { getChamberOptions } from '@/api/finance/finance'
 import { formatDateTime } from '@/utils/date'
+import videoComponent from '@/components/video/index'
 
 export default {
+  name: 'DemandManagement',
+  components: {
+    videoComponent
+  },
   data() {
     return {
       query: {
+        title: '',
         pageSize: 10,
         pageNum: 1,
         deleteStatus: -1,
@@ -280,15 +325,26 @@ export default {
       },
       total: 0,
 
+      loading: false,
+
       chamberOptions: [],
 
       tableData: [],
 
-      freezeVisible: false,
-      freezeData: { },
-      freezeAbleList: [],
-      unFreezeAbleList: [],
-      freezeCheckList: []
+      freezeAboutDialog: {
+        isFreeze: true, // 是否为冻结
+        visible: false,
+        data: {},
+        list: [],
+        checkList: [],
+        loading: true
+      },
+
+      detailDialog: {
+        visible: false,
+        data: {},
+        loading: true
+      },
 
     }
   },
@@ -304,13 +360,17 @@ export default {
     },
 
     async querySupplyDemandList() {
+      this.loading = true
       const params = { ...this.query }
       Object.entries(params).forEach(([key, value]) => {
         if (value === '') delete params[key]
       })
-      const { data: { list, totalRows }} = await supplyDemandList(params)
-      this.tableData = list
-      this.total = totalRows
+      try {
+        const { data: { list, totalRows }} = await supplyDemandList(params)
+        this.tableData = list
+        this.total = totalRows
+      } catch (error) { /*  */ }
+      this.loading = false
     },
 
     handleSizeChange(val) {
@@ -351,21 +411,81 @@ export default {
       })
     },
 
-    async getFreezeAbleList(id) {
-      const { data = [] } = await getFreezeAbleList({ id })
-      this.freezeAbleList = data
+    async showFreezeDialog(row, isFreeze) {
+      this.freezeAboutDialog = { isFreeze, visible: true, data: row, list: [], checkList: [], loading: true }
+      try {
+        const { data = [] } = await (isFreeze ? getFreezeAbleList : getUnFreezeAbleList)({ id: row.id })
+        this.freezeAboutDialog.list = data
+      } catch (error) { /*  */ }
+      this.freezeAboutDialog.loading = false
     },
 
-    async getUnFreezeAbleList(id) {
-      const { data } = await getUnFreezeAbleList({ id })
-      this.unFreezeAbleList = data
+    async handleFreeze() {
+      try {
+        const { data, checkList, isFreeze } = this.freezeAboutDialog
+
+        const { state } = await (
+          isFreeze
+            ? freezeSupplyDemandByUpBackground
+            : unFreezeSupplyDemandByUpBackground
+        )(data.id, { freezeTargets: checkList })
+
+        if (state === 1) {
+          this.$message({ message: '冻结成功', type: 'success' })
+          this.freezeAboutDialog.visible = false
+          this.querySupplyDemandList()
+          return
+        }
+      } catch (error) { /*  */ }
+
+      this.$message({ message: '冻结失败', type: 'error' })
     },
 
-    async showFreezeDialog(row) {
-      this.freezeVisible = true
-      this.freezeData = row
-      this.getFreezeAbleList(row.id)
-      this.getUnFreezeAbleList(row.id)
+    async handleDelete(row) {
+      try {
+        await this.$confirm('确定删除该供需吗', '提示')
+        const { state, msg } = await deleteSupplyDemand(row.id)
+        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+        state === 1 && this.querySupplyDemandList()
+      } catch (error) { /*  */ }
+    },
+
+    async handleUnDelete(row) {
+      try {
+        await this.$confirm(`
+        <div>您确定撤销删除该供需吗？</div>
+        <div style="color: #ccc;">撤销删除后，供需将恢复为正常状态，前台将恢复显示</div>
+        `, '提示', { dangerouslyUseHTMLString: true })
+        const { state, msg } = await unDeleteSupplyDemand(row.id)
+        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+        state === 1 && this.querySupplyDemandList()
+      } catch (error) { /*  */ }
+    },
+
+    async showDetail(row) {
+      this.detailDialog = { visible: true, data: {}, loading: true }
+      try {
+        const { data: { yshContentEditVO = {}}} = await getSupplyDemandDetail(row.id)
+        this.detailDialog.data = yshContentEditVO
+        if (yshContentEditVO.vid) {
+          await this.$nextTick()
+          this.$refs.videoRef.show(yshContentEditVO.vid)
+        }
+      } catch (error) { /*  */ }
+      this.detailDialog.loading = false
+    },
+
+    async goToEdit(row) {
+      try {
+        const { data } = await getSupplyDemandDetail(row.id)
+        const detailMap = JSON.parse(localStorage.getItem('supply_demand_detail') || '{}')
+        detailMap[row.id] = data
+        localStorage.setItem('supply_demand_detail', JSON.stringify(detailMap))
+        this.$router.push({
+          path: data.yshContentEditVO.contentType === 1 ? '/supply-and-demand/edit/img' : '/supply-and-demand/edit/video',
+          query: { isEdit: 1, id: row.id }
+        })
+      } catch (error) { /*  */ }
     }
   },
 }
@@ -378,5 +498,26 @@ export default {
 
 .ellipsis {
   @include ellipsis(2)
+}
+
+.m-preview-wrap {
+  width: 100%;
+  height: 80vh;
+}
+
+.m-preview-area {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin: 0 auto;
+  border: 1px solid #d9dde2;
+  overflow-y: auto;
+}
+
+.m-article-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 20px 40px 20px 40px;
 }
 </style>

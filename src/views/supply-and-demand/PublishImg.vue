@@ -1,5 +1,5 @@
 <template>
-  <PublishForm @submit="onSubmit">
+  <PublishForm :detail="detail" @submit="onSubmit">
     <el-form-item v-loading="loading">
       <div slot="label">
         <span>供需图片</span>
@@ -56,10 +56,21 @@ export default {
     return {
       imgs: [],
       loading: false,
-      currentImg: ''
+      currentImg: '',
+      detail: null
     }
   },
+  created() {
+    this.getEditData()
+  },
   methods: {
+    getEditData() {
+      const { isEdit, id } = this.$route.query
+      if (!isEdit) return
+      const detailMap = JSON.parse(localStorage.getItem('supply_demand_detail') || '{}')
+      this.detail = detailMap[id]
+      this.imgs = this.detail.yshContentEditVO.imgs || []
+    },
     // 图片拖拽排序
     onDragStart(i) {
       this.dragIndex = i

@@ -1,5 +1,5 @@
 <template>
-  <PublishForm @submit="onSubmit">
+  <PublishForm :detail="detail" @submit="onSubmit">
     <el-form-item v-loading="videoLoading" label="供需视频" required>
       <el-upload
         v-if="!vid"
@@ -68,13 +68,34 @@ export default {
       vid: '',
       vcover: '',
       videoLoading: false,
-      imgLoading: false
+      imgLoading: false,
+      detail: null
     }
+  },
+  watch: {
+    vid() {
+      clearInterval(this.time)
+      this.timer = setInterval(this.queryVideoFunc, 1000)
+    }
+  },
+
+  created() {
+    this.getEditData()
   },
   beforeDestroy() {
     clearInterval(this.timer)
   },
   methods: {
+
+    getEditData() {
+      const { isEdit, id } = this.$route.query
+      if (!isEdit) return
+      const detailMap = JSON.parse(localStorage.getItem('supply_demand_detail') || '{}')
+      this.detail = detailMap[id]
+      this.vcover = this.detail.yshContentEditVO.vcover
+      this.vid = this.detail.yshContentEditVO.vid
+    },
+
     // 上传前校验
     beforeUpload(file, index) {
       if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
@@ -131,7 +152,7 @@ export default {
       uploadVideo(formData, 0).then(res => {
         if (res.code === 200) {
           this.vid = res.data.videoId
-          this.timer = setInterval(this.queryVideoFunc, 1000)
+          // this.timer = setInterval(this.queryVideoFunc, 1000)
         }
       })
     },

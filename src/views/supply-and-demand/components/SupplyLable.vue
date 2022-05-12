@@ -3,6 +3,7 @@
     <div class="dialog-desc">提示：最多可选5个，已选 {{ selectedData.length }} 个</div>
     <el-table
       ref="table"
+      v-loading="loading"
       class="margin-bottom"
       :data="tableData"
       style="width:100%;"
@@ -41,7 +42,8 @@ export default {
         { prop: 'id', lable: '标签id' },
         { prop: 'name', lable: '标签名称' }
       ],
-      selectedData: []
+      selectedData: [],
+      loading: false
     }
   },
   computed: {
@@ -56,8 +58,12 @@ export default {
   },
   methods: {
     async getLableList() {
-      const { data = [] } = await getAvailableLabelList()
-      this.tableData = data
+      this.loading = true
+      try {
+        const { data = [] } = await getAvailableLabelList()
+        this.tableData = data
+      } catch (error) { /*  */ }
+      this.loading = false
       await this.$nextTick()
       this.initData()
     },

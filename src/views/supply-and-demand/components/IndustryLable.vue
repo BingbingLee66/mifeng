@@ -3,6 +3,7 @@
     <div class="dialog-desc">提示：最多可选5个，已选 {{ checkedNumber }} 个</div>
     <el-tree
       ref="tree"
+      v-loading="loading"
       :data="treeData"
       :props="props"
       show-checkbox
@@ -35,7 +36,8 @@ export default {
         children: 'subList'
       },
       treeData: [],
-      checkedNumber: 0
+      checkedNumber: 0,
+      loading: false
     }
   },
   computed: {
@@ -51,8 +53,12 @@ export default {
   },
   methods: {
     async getLableList() {
-      const { data = [] } = await getTradeLabelList()
-      this.treeData = data
+      this.loading = true
+      try {
+        const { data = [] } = await getTradeLabelList()
+        this.treeData = data
+      } catch (error) { /*  */ }
+      this.loading = false
     },
     initData() {
       if (!this.treeData.length) return

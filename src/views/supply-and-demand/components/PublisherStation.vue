@@ -1,6 +1,7 @@
 <template>
   <el-tree
     ref="tree"
+    v-loading="loading"
     :data="treeData"
     :props="props"
     show-checkbox
@@ -29,7 +30,8 @@ export default {
         label: 'name',
         children: 'children'
       },
-      treeData: []
+      treeData: [],
+      loading: false
     }
   },
   computed: {
@@ -45,14 +47,19 @@ export default {
   },
   methods: {
     async getAreaTree() {
-      const { data = [] } = await getAreaTree()
-      data.forEach(province => {
-        province.children && province.children.forEach(city => {
-          city.fullName = `${province.name}-${city.name}`
-          delete city.children
+      this.loading = true
+      try {
+        const { data = [] } = await getAreaTree()
+        data.forEach(province => {
+          province.children && province.children.forEach(city => {
+            city.fullName = `${province.name}-${city.name}`
+            city.fullCode = `${province.code}-${city.code}`
+            delete city.children
+          })
         })
-      })
-      this.treeData = data
+        this.treeData = data
+      } catch (error) { /*  */ }
+      this.loading = false
     },
     initData() {
       if (!this.treeData.length) return

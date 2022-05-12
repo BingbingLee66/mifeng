@@ -326,7 +326,21 @@ export const constantRoutes = [
         component: () => import('@/views/operate/detail/index'),
         hidden: true,
         meta: { title: '邀请有礼活动详情' }
-      }
+      },
+      {
+        path: '/supply-and-demand/edit/img',
+        name: '编辑图文供需',
+        component: () => import('@/views/supply-and-demand/PublishImg'),
+        hidden: true,
+        meta: { title: '编辑图文供需' }
+      },
+      {
+        path: '/supply-and-demand/edit/video',
+        name: '编辑视频供需',
+        component: () => import('@/views/supply-and-demand/PublishVideo'),
+        hidden: true,
+        meta: { title: '编辑视频供需' }
+      },
     ]
   }
 ]

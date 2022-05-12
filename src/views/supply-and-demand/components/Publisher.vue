@@ -2,7 +2,7 @@
   <!-- 无任何数据 -->
   <div v-if="isUserEmpty" class="empty-user">
     <span class="empty-user-text">无符合条件的用户</span>
-    <el-button type="primary" @click="handleClose">我知道了</el-button>
+    <el-button type="primary" @click="$emit('close')">我知道了</el-button>
   </div>
   <div v-else>
     <!-- 搜索表单区域 -->
@@ -36,6 +36,7 @@
     <!-- 搜索结果区域 -->
     <el-table
       ref="table"
+      v-loading="loading"
       class="margin-bottom"
       :data="filterTableData"
       style="width:100%;"
@@ -95,7 +96,8 @@ export default {
         { prop: 'chamberName', lable: '所属商会' }
       ],
       selectedData: {},
-      total: 0
+      total: 0,
+      loading: false
     }
   },
   computed: {
@@ -110,7 +112,7 @@ export default {
     this.getChamberList()
     this.getUserList().then(() => {
       this.isUserEmpty = !this.tableData.length
-      this.$emit('hideFooter', this.isUserEmpty)
+      if (this.isUserEmpty) this.$emit('hideFooter')
     })
   },
   activated() {
@@ -127,7 +129,7 @@ export default {
     },
     initData() {
       if (this.isUserEmpty) {
-        this.$emit('hideFooter', this.isUserEmpty)
+        this.$emit('hideFooter')
       } else if (this.tableData.length) {
         this.selectedData = this.data
       }
@@ -138,9 +140,13 @@ export default {
     },
     // 拉取用户列表
     async getUserList() {
-      const { data } = await getJoinChamberAndNoFreezesUsers(this.normalizeParams(this.query))
-      this.total = data.totalRows
-      this.tableData = data.list || []
+      this.loading = true
+      try {
+        const { data } = await getJoinChamberAndNoFreezesUsers(this.normalizeParams(this.query))
+        this.total = data.totalRows
+        this.tableData = data.list || []
+      } catch (error) { /*  */ }
+      this.loading = false
     },
     handleSearch() {
       this.query.pageNum = 1
