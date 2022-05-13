@@ -106,7 +106,7 @@
             type="primary"
             :actionid="getId('', '查询')"
             @click="fetchData($event)"
-            >查询
+          >查询
           </el-button>
         </el-form-item>
       </el-form>
@@ -117,18 +117,18 @@
         type="primary"
         :actionid="getId('', '添加会员')"
         @click="add($event)"
-        >添加会员
+      >添加会员
       </el-button>
       <el-button
         v-if="has('', '导表')"
         type="primary"
         :actionid="getId('', '导表')"
         @click="exportExcel($event)"
-        >导表
+      >导表
       </el-button>
       <el-button
+        v-downLoad="exportExcelModel"
         type="primary"
-        v-downLoad='exportExcelModel'
       >下载导入模板
       </el-button>
       <el-button
@@ -141,10 +141,11 @@
         @click="openSmsTab"
       >发送短信
       </el-button>
-      <el-tooltip  icon="el-icon-warning"  placement="right-start" >
-        <div slot="content">针对未激活会员，可发送一次短信；<br/>短信模板示例：广东省江西商会引进凯迪云商会平台，助力商协会建设， 【这里是商会主页链接】 您可实时接收资讯动态。</div>
-        <i class="el-icon-question"></i>
+      <el-tooltip icon="el-icon-warning" placement="right-start">
+        <div slot="content">针对未激活会员，可发送一次短信；<br>短信模板示例：广东省江西商会引进凯迪云商会平台，助力商协会建设， 【这里是商会主页链接】 您可实时接收资讯动态。</div>
+        <i class="el-icon-question" />
       </el-tooltip>
+      <el-button type="primary" @click="authMember">批量认证身份信息</el-button>
     </div>
     <div style="margin-bottom: 20px">
       <el-table
@@ -172,7 +173,7 @@
                   ? scope.row.uavatar
                   : 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/yunshanghui-nologo.png.png'
               "
-            />
+            >
           </template>
         </el-table-column>
         <el-table-column label="用户名" width="200px" prop="uname" />
@@ -243,11 +244,19 @@
             <!--            <div v-else>待邀请</div>-->
           </template>
         </el-table-column>
+        <el-table-column label="商会认证状态" width="200px">
+          <template slot-scope="scope">
+            <div v-if="scope.row.activatedState == 1">--</div>
+            <div v-else-if="scope.row.sendStatus == 1">已认证</div>
+            <div v-else-if="scope.row.sendStatus == 0">去认证</div>
+            <div v-else>去查看</div>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
             <div
-              class="text-btn-style"
               v-if="has('', '详情')"
+              class="text-btn-style"
               :actionid="getId('', '详情')"
               @click="detail($event, scope.row)"
             >
@@ -257,16 +266,16 @@
               修改
             </div>
             <div
-              class="text-btn-style"
               v-if="has('', '冻结') && scope.row.status == 1"
+              class="text-btn-style"
               :actionid="getId('', '冻结')"
               @click="updateStatus($event, scope.row)"
             >
               冻结
             </div>
             <div
-              class="text-btn-style"
               v-if="has('', '解冻') && scope.row.status == 0"
+              class="text-btn-style"
               :actionid="getId('', '解冻')"
               @click="updateStatus($event, scope.row)"
             >
@@ -320,9 +329,11 @@
         </el-row>
         <el-form-item>
           <el-col :offset="6" :span="8">
-            <el-button v-dbClick type="primary" @click="transferPresident"
-              >确定</el-button
-            >
+            <el-button
+              v-dbClick
+              type="primary"
+              @click="transferPresident"
+            >确定</el-button>
             <el-button @click.native="transferVisible = false">取消</el-button>
           </el-col>
         </el-form-item>
@@ -334,53 +345,52 @@
       :visible.sync="visible"
       width="500px"
     >
-        <div style="margin-left: 50px;margin-top: -25px;">
-          <span class="excelSpan" style="font-size: 20px;margin-left: 100px" >导入说明</span>
-          <span class="excelSpan">1、请勿增加、删除、修改表格中的字段</span>
-          <span class="excelSpan">2、其他字段多次导入数据会进行覆盖</span>
-        </div>
-        <div style="margin-left: 50px;" v-if="execelDate">
-          <el-upload
-            class="upload-demo"
-            :multiple="false"
-            :data="importQuery"
-            :show-file-list="false"
-            :headers="uploadHeaders"
-            :on-success="successImport"
-            :action="importUrl"
-            >
-            <span >导入文件：</span>
-            <el-button ><i class="el-icon-upload" ></i>点击上传</el-button>
-            <div slot="tip" class="el-upload__tip"><span style="margin-left: 7px;"></span>支持扩展名：xsl、xslx</div>
-          </el-upload>
-<!--          <i class="el-icon-upload"></i>
+      <div style="margin-left: 50px;margin-top: -25px;">
+        <span class="excelSpan" style="font-size: 20px;margin-left: 100px">导入说明</span>
+        <span class="excelSpan">1、请勿增加、删除、修改表格中的字段</span>
+        <span class="excelSpan">2、其他字段多次导入数据会进行覆盖</span>
+      </div>
+      <div v-if="execelDate" style="margin-left: 50px;">
+        <el-upload
+          class="upload-demo"
+          :multiple="false"
+          :data="importQuery"
+          :show-file-list="false"
+          :headers="uploadHeaders"
+          :on-success="successImport"
+          :action="importUrl"
+        >
+          <span>导入文件：</span>
+          <el-button><i class="el-icon-upload" />点击上传</el-button>
+          <div slot="tip" class="el-upload__tip"><span style="margin-left: 7px;" />支持扩展名：xsl、xslx</div>
+        </el-upload>
+        <!--          <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em><div class="el-upload__tip" slot="tip">支持扩展名：xsl、xslx</div></div>-->
-<!--            <span  style="font-size: 15px;">导入文件：</span>
+        <!--            <span  style="font-size: 15px;">导入文件：</span>
             <el-button size="small" type="primary"><i class="el-icon-upload" style="margin-right: 20px;"></i>上传文件</el-button>
             <div slot="tip" class="el-upload__tip">支持扩展名：xsl、xslx</div>-->
-        </div>
-      <div class="tableTitle" v-if="execelDate.state"></div>
-      <div style="margin-left: 50px;" v-if="execelDate.state === 1">
-        <div>导入结果：导入成功 <span style="color: red">{{execelDate.data.successCount}}</span> 条记录,导入失败 <span style="color: red">{{execelDate.data.failureCount}}</span> 条记录</div>
+      </div>
+      <div v-if="execelDate.state" class="tableTitle" />
+      <div v-if="execelDate.state === 1" style="margin-left: 50px;">
+        <div>导入结果：导入成功 <span style="color: red">{{ execelDate.data.successCount }}</span> 条记录,导入失败 <span style="color: red">{{ execelDate.data.failureCount }}</span> 条记录</div>
         <div style="margin-top: 10px;margin-bottom: 10px;">导入失败详情：</div>
         <el-table
           :data="execelDate.data.failureReasonList"
           border
-          style="width: 100%">
+          style="width: 100%"
+        >
           <el-table-column
             prop="row"
             label="行标(表头不算在内)"
-            >
-          </el-table-column>
+          />
           <el-table-column
             prop="reason"
             label="失败原因"
-            >
-          </el-table-column>
+          />
         </el-table>
       </div>
-      <div style="margin-left: 50px;" v-else>
-        <div>{{execelDate.msg}} </div>
+      <div v-else style="margin-left: 50px;">
+        <div>{{ execelDate.msg }} </div>
       </div>
     </el-dialog>
   </div>
