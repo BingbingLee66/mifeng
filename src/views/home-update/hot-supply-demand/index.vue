@@ -60,7 +60,10 @@
         <el-input v-model="query.id" placeholder="请输入" clearable />
       </el-form-item>
       <el-form-item label="">
-        <el-button type="primary" @click="handleCurrentChange(1)">查询</el-button>
+        <el-button
+          type="primary"
+          @click="handleCurrentChange(1)"
+        >查询</el-button>
       </el-form-item>
     </el-form>
     <!-- 搜索表单end -->
@@ -82,7 +85,7 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="供需ID/名称" width="400">
         <template slot-scope="scope">
-          <div style="color:red;">{{ scope.row.id }}</div>
+          <div style="color: red">{{ scope.row.id }}</div>
           <div class="ellipsis">{{ scope.row.title }}</div>
         </template>
       </el-table-column>
@@ -99,7 +102,7 @@
         </template>
       </el-table-column>
       <el-table-column label="供需状态">
-        <template slot-scope="{row:{status}}">
+        <template slot-scope="{ row: { status } }">
           <div v-if="status === 1">生效中</div>
           <div v-else-if="status === 2">已关闭(过期关闭)</div>
           <div v-else-if="status === 3">已关闭(成功合作)</div>
@@ -107,14 +110,14 @@
         </template>
       </el-table-column>
       <el-table-column label="冻结状态">
-        <template slot-scope="{row:{publishStatus}}">
+        <template slot-scope="{ row: { publishStatus } }">
           <div v-if="+publishStatus === 1">正常</div>
           <div v-else-if="+publishStatus === 2">平台冻结</div>
           <div v-else-if="+publishStatus === 3">商会冻结</div>
         </template>
       </el-table-column>
       <el-table-column label="创建信息">
-        <template slot-scope="{row}">
+        <template slot-scope="{ row }">
           <div>{{ row.operatorName }}</div>
           <div>{{ +row.createdTs | dateFormat }}</div>
         </template>
@@ -136,7 +139,7 @@
     <!-- 分页start -->
     <div class="block">
       <el-pagination
-        :current-page="currentPage"
+        :current-page="query.pageNum"
         :page-sizes="pageSizes"
         :page-size="query.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
@@ -147,7 +150,11 @@
     </div>
     <!-- 分页end -->
     <!-- 添加供需对话框 -->
-    <addSupplyDemandDialog ref="addSupplyDemandDialogRef" :chamber-options="chamberOptions" @success="hotSupplyDemandListFunc" />
+    <addSupplyDemandDialog
+      ref="addSupplyDemandDialogRef"
+      :chamber-options="chamberOptions"
+      @success="hotSupplyDemandListFunc"
+    />
     <!-- 编辑权重对话框 -->
     <weightKdDialog ref="weightKdDialog" />
   </div>
@@ -159,7 +166,11 @@ import {
   deleteHotSupplyDemand,
   weightSupplyDemand,
 } from '@/api/home/hotSupplyDemand'
-import { statusList, publishStatusList, publishTimeList } from './utils/utilsData'
+import {
+  statusList,
+  publishStatusList,
+  publishTimeList,
+} from './utils/utilsData'
 import addSupplyDemandDialog from './components/addSupplyDemandDialog'
 import { getChamberOptions } from '@/api/mall/channel'
 import weightKdDialog from '@/views/content/kingArea/components/weightKdDialog'
@@ -179,7 +190,7 @@ export default {
         // 发布时间 1-24小时,2-3天,3-7天,4-本月,0-所有
         publishTime: '0',
         pageSize: 10,
-        pageNum: 1
+        pageNum: 1,
       },
       // 表格数据
       tableData: [],
@@ -196,7 +207,7 @@ export default {
       // 总数
       total: 0,
 
-      loading: false
+      loading: false,
     }
   },
   computed: {
@@ -206,7 +217,7 @@ export default {
     // 是否为总后台
     isTopBackStage() {
       return !this.ckey
-    }
+    },
   },
   created() {
     if (this.ckey) this.query.ckey = this.ckey
@@ -216,30 +227,39 @@ export default {
   methods: {
     // 拉取商会
     async getChamberOptionsFunc() {
-      const { data: { data = [] }} = await getChamberOptions()
+      const {
+        data: { data = [] },
+      } = await getChamberOptions()
       this.chamberOptions = data
-      this.chamberOptions.unshift({ 'label': '全部商会', 'value': '' }, { 'label': '凯迪云商会', 'value': 'kaidiyun' })
+      this.chamberOptions.unshift(
+        { label: '全部商会', value: '' },
+        { label: '凯迪云商会', value: 'kaidiyun' }
+      )
     },
 
     // 拉取热门供需
     async hotSupplyDemandListFunc() {
       this.loading = true
       try {
-        const { data: { list = [], totalRows = 0 }} = await hotSupplyDemandList(this.query)
+        const {
+          data: { list = [], totalRows = 0 },
+        } = await hotSupplyDemandList(this.query)
         this.tableData = list
         this.total = totalRows
-      } catch (error) { /*  */ }
+      } catch (error) {
+        /*  */
+      }
       this.loading = false
     },
     // 批量删除供需
     async deleteHotSupplyDemandFunc(ids) {
       const { state, msg } = await deleteHotSupplyDemand(ids)
       if (state === 1) {
-        this.$message({ message: '已成功移除', type: 'success', })
+        this.$message({ message: '已成功移除', type: 'success' })
         this.hotSupplyDemandListFunc()
         return
       }
-      this.$message({ message: msg, type: 'error', })
+      this.$message({ message: msg, type: 'error' })
     },
     /** 行为操作类 */
     // 表格复选框改变
@@ -258,20 +278,28 @@ export default {
     },
     onBatchDelete() {
       const { selectedData = [] } = this
-      if (!selectedData.length) return this.$message({ message: '请勾选移除供需', type: 'warning' })
-      this.handleDelete(selectedData.map(v => v.id))
+      if (!selectedData.length) {
+        return this.$message({ message: '请勾选移除供需', type: 'warning' })
+      }
+      this.handleDelete(selectedData.map((v) => v.id))
     },
     // 点击移除按钮，type===1:批量操作 type===2单行删除
     handleDelete(ids) {
-      this.$confirm('移除后，该供需将不再展示在热门供需板块，不影响在其他页面展示', '确认将供需从热门供需中移除？', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.deleteHotSupplyDemandFunc(ids)
-      }).catch(() => {
-        this.$message({ type: 'warning', message: '已取消移除' })
-      })
+      this.$confirm(
+        '移除后，该供需将不再展示在热门供需板块，不影响在其他页面展示',
+        '确认将供需从热门供需中移除？',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      )
+        .then(() => {
+          this.deleteHotSupplyDemandFunc(ids)
+        })
+        .catch(() => {
+          this.$message({ type: 'warning', message: '已取消移除' })
+        })
     },
 
     // 点击添加供需按钮
@@ -281,21 +309,22 @@ export default {
 
     // 点击权重编辑
     updateWeight(row) {
-      this.$refs['weightKdDialog'].open(row.id, row.weight, weightSupplyDemand).then(() => {
-        this.hotSupplyDemandListFunc()
-      })
+      this.$refs['weightKdDialog']
+        .open(row.id, row.weight, weightSupplyDemand)
+        .then(() => {
+          this.hotSupplyDemandListFunc()
+        })
     },
 
     /** 工具类 */
-  }
+  },
 }
-
 </script>
 
 <style lang="scss" scoped>
 // @import "src/styles/common.scss";
 
 .ellipsis {
-  @include ellipsis(2)
+  @include ellipsis(2);
 }
 </style>

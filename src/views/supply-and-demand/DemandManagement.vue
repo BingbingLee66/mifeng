@@ -561,10 +561,10 @@ export default {
       try {
         await this.$confirm(`
         <div>
-          <div>确定给所选用户进行商会认证吗？</div>
+          <div>确定给该用户进行商会认证吗？</div>
           <div style="color:red;">商会认证主要是对该用户的个人信息、企业信息进行认证</div>
-          <div style="color:#ccc;">1、认证后，该用户发布的所有供需内容，均显示“商会认证”标识</div>
-          <div style="color:#ccc;">2、由于某种原因，可对已认证的用户取消认证，取消后，该用户将不会展示“商会认证”标识</div>
+          <div style="color:#ccc;">1、认证后，该用户显示“商会认证”标识</div>
+          <div style="color:#ccc;">2、认证后，可在【商协会成员-详情】页取消认证</div>
         </div>
         `, '商会认证', { dangerouslyUseHTMLString: true })
         const { state, msg } = await authorizeMemberAuthBatch({ ckey: this.ckey, wxUserIds: selectedSupplyList.map(({ sourceInfo }) => +sourceInfo.userId) })
