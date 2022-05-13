@@ -175,18 +175,12 @@ export default {
     async editTag() {
       const { name, id } = this.dialogFormData
       if (!name) return this.$message({ message: '请输入标签名称', type: 'warning' })
-      try {
-        const { state } = await updateCustomLabel({ name, id })
-        if (state === 1) {
-          this.getLabelList()
-          this.dialogVisible = false
-          this.$message({ message: '采集成功，请在标签设置查看', type: 'success' })
-          return
-        }
-      } catch (error) {
-        //
+      const { state, msg } = await updateCustomLabel({ name, id })
+      if (state === 1) {
+        this.getLabelList()
+        this.dialogVisible = false
       }
-      this.$message({ message: '采集失败，请重新操作', type: 'error' })
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
     },
 
     handleGather(row) {
@@ -198,12 +192,16 @@ export default {
       this.$refs.gatherForm.validate(async valid => {
         if (!valid) return false
         const { id, name, weight } = this.gatherFormData
-        const { state, msg } = await gatherCustomLabel({ id, name, weight })
-        if (state === 1) {
-          this.gatherVisible = false
-          this.getLabelList()
-        }
-        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+        try {
+          const { state } = await gatherCustomLabel({ id, name, weight })
+          if (state === 1) {
+            this.gatherVisible = false
+            this.getLabelList()
+            this.$message({ message: '采集成功，请在标签设置查看', type: 'success' })
+            return
+          }
+        } catch (error) { /*  */ }
+        this.$message({ message: '采集失败，请重新操作', type: 'error' })
       })
     },
 
