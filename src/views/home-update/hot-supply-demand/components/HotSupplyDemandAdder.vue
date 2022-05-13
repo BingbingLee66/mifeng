@@ -164,8 +164,11 @@ export default {
     }
   },
   computed: {
+    ckey() {
+      return this.$store.getters.ckey
+    },
     isTopBackStage() {
-      return !this.$store.getters.ckey
+      return !this.ckey
     }
   },
   methods: {
@@ -184,7 +187,7 @@ export default {
     async submit() {
       const { selectedData = [] } = this
       if (!selectedData.length) return this.$message({ message: '请选择供需', type: 'warning' })
-      const { state } = await addHotSupplyDemand({ ids: selectedData.map(v => v.id) })
+      const { state } = await addHotSupplyDemand({ ids: selectedData.map(v => v.id) }, this.ckey || 'ysh')
       if (state === 1) {
         this.$message({ message: '添加成功', type: 'success' })
         this.hide()

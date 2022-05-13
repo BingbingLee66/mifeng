@@ -71,7 +71,7 @@
     <!-- 按钮栏目 -->
     <div style="margin-bottom: 10px">
       <el-button type="danger" @click="onBatchDelete">移除</el-button>
-      <el-button type="primary" @click="addSupplyDemand">添加供需 </el-button>
+      <el-button type="primary" @click="$refs.hotSupplyDemandAdder.show()">添加供需 </el-button>
     </div>
     <!-- 供需列表start -->
     <el-table
@@ -150,8 +150,8 @@
     </div>
     <!-- 分页end -->
     <!-- 添加供需对话框 -->
-    <addSupplyDemandDialog
-      ref="addSupplyDemandDialogRef"
+    <HotSupplyDemandAdder
+      ref="hotSupplyDemandAdder"
       :chamber-options="chamberOptions"
       @success="hotSupplyDemandListFunc"
     />
@@ -171,11 +171,11 @@ import {
   publishStatusList,
   publishTimeList,
 } from './utils/utilsData'
-import addSupplyDemandDialog from './components/addSupplyDemandDialog'
+import HotSupplyDemandAdder from './components/HotSupplyDemandAdder'
 import { getChamberOptions } from '@/api/mall/channel'
 import weightKdDialog from '@/views/content/kingArea/components/weightKdDialog'
 export default {
-  components: { addSupplyDemandDialog, weightKdDialog },
+  components: { HotSupplyDemandAdder, weightKdDialog },
   data() {
     return {
       // 查询表单对象
@@ -220,9 +220,12 @@ export default {
     },
   },
   created() {
-    if (this.ckey) this.query.ckey = this.ckey
+    if (this.ckey) {
+      this.query.ckey = this.ckey
+    } else {
+      this.getChamberOptionsFunc()
+    }
     this.hotSupplyDemandListFunc()
-    this.getChamberOptionsFunc()
   },
   methods: {
     // 拉取商会
@@ -261,7 +264,6 @@ export default {
       }
       this.$message({ message: msg, type: 'error' })
     },
-    /** 行为操作类 */
     // 表格复选框改变
     handleSelectionChange(val) {
       this.selectedData = val
@@ -276,6 +278,7 @@ export default {
       this.query.pageNum = val
       this.hotSupplyDemandListFunc()
     },
+    // 批量删除
     onBatchDelete() {
       const { selectedData = [] } = this
       if (!selectedData.length) {
@@ -283,7 +286,7 @@ export default {
       }
       this.handleDelete(selectedData.map((v) => v.id))
     },
-    // 点击移除按钮，type===1:批量操作 type===2单行删除
+
     handleDelete(ids) {
       this.$confirm(
         '移除后，该供需将不再展示在热门供需板块，不影响在其他页面展示',
@@ -302,11 +305,6 @@ export default {
         })
     },
 
-    // 点击添加供需按钮
-    addSupplyDemand() {
-      this.$refs['addSupplyDemandDialogRef'].show()
-    },
-
     // 点击权重编辑
     updateWeight(row) {
       this.$refs['weightKdDialog']
@@ -315,14 +313,11 @@ export default {
           this.hotSupplyDemandListFunc()
         })
     },
-
-    /** 工具类 */
   },
 }
 </script>
 
 <style lang="scss" scoped>
-// @import "src/styles/common.scss";
 
 .ellipsis {
   @include ellipsis(2);

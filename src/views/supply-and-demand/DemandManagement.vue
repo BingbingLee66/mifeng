@@ -236,7 +236,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120" fixed="right">
+      <el-table-column label="操作" :width="isTopBackStage?120:80" fixed="right">
         <template slot-scope="{row}">
           <template v-if="isTopBackStage">
             <div>
@@ -385,7 +385,7 @@ export default {
   },
   created() {
     this.querySupplyDemandList()
-    this.getChamberOptions()
+    this.isTopBackStage && this.getChamberOptions()
   },
   methods: {
     async getChamberOptions() {
