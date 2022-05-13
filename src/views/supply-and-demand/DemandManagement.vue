@@ -74,7 +74,7 @@
         <el-button :span="8" type="primary" @click="handleCurrentChange(1)">查询</el-button>
       </el-row>
       <el-row>
-        <el-button v-if="!isTopBackStage" type="primary">批量认证身份信息</el-button>
+        <el-button v-if="!isTopBackStage" style="margin-bottom:20px;" type="primary" @click="handleBatchAuthorize">批量认证身份信息</el-button>
       </el-row>
     </el-form>
 
@@ -87,6 +87,7 @@
       border
       header-row-class-name="tableheader"
       empty-text="暂无数据"
+      @selection-change="onSelectionChange"
     >
       <el-table-column v-if="!isTopBackStage" width="55" type="selection" />
       <el-table-column label="供需ID" width="120" prop="id" />
@@ -224,14 +225,14 @@
         </template>
       </el-table-column>
       <el-table-column label="商/协会认证状态">
-        <template slot-scope="{row:{authenticate}}">
+        <template slot-scope="{row,row:{authenticate}}">
           <div v-if="authenticate">
             已认证
-            <div v-if="!isTopBackStage"><el-button type="text">去查看</el-button></div>
+            <div v-if="!isTopBackStage"><el-button type="text" @click="goMemberDetail(row)">去查看</el-button></div>
           </div>
           <div v-else>
             未认证
-            <div v-if="!isTopBackStage"><el-button type="text" style="color:red;">去认证</el-button></div>
+            <div v-if="!isTopBackStage"><el-button type="text" style="color:red;" @click="goMemberDetail(row)">去认证</el-button></div>
           </div>
         </template>
       </el-table-column>
@@ -319,9 +320,11 @@ import { supplyDemandList,
   unDeleteSupplyDemand,
   getSupplyDemandDetail,
   freezeSupplyDemandByChamber,
-  unFreezeSupplyDemandByChamber
+  unFreezeSupplyDemandByChamber,
 } from '@/api/home/supplyDemandManger'
 import { getChamberOptions } from '@/api/finance/finance'
+import { authorizeMemberAuthBatch } from '@/api/member/manager'
+
 import { formatDateTime } from '@/utils/date'
 import videoComponent from '@/components/video/index'
 import { mapState } from 'vuex'
@@ -547,6 +550,35 @@ export default {
 
       this.$message({ message: '解冻失败', type: 'error' })
     },
+
+    onSelectionChange(e) {
+      this.selectedSupplyList = e
+    },
+
+    async handleBatchAuthorize() {
+      const { selectedSupplyList = [] } = this
+      if (!selectedSupplyList.length) return this.$message({ message: '请选择认证数据', type: 'warning' })
+      try {
+        await this.$confirm(`
+        <div>
+          <div>确定给所选用户进行商会认证吗？</div>
+          <div style="color:red;">商会认证主要是对该用户的个人信息、企业信息进行认证</div>
+          <div style="color:#ccc;">1、认证后，该用户发布的所有供需内容，均显示“商会认证”标识</div>
+          <div style="color:#ccc;">2、由于某种原因，可对已认证的用户取消认证，取消后，该用户将不会展示“商会认证”标识</div>
+        </div>
+        `, '商会认证', { dangerouslyUseHTMLString: true })
+        const { state, msg } = await authorizeMemberAuthBatch({ ckey: this.ckey, wxUserIds: selectedSupplyList.map(({ sourceInfo }) => +sourceInfo.userId) })
+        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+        state === 1 && this.querySupplyDemandList()
+      } catch (error) { /*  */ }
+    },
+
+    goMemberDetail(row) {
+      this.$router.push({
+        name: '会员详情',
+        params: { memberDetail: { id: row.sourceInfo.userId }, 'querytype': '0' }
+      })
+    }
   },
 }
 </script>

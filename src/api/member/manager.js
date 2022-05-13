@@ -172,3 +172,12 @@ export function examineDetail(params) {
     params
   })
 }
+
+// 批量认证会员
+export const authorizeMemberAuthBatch = data => request({ url: '/ec/memberAuth/batchAuthenticate', method: 'post', data })
+
+// 会员认证
+export const authorizeMemberAuth = params => request({ url: '/ec/memberAuth/authenticate', method: 'post', params })
+
+// 取消会员认证
+export const cancelAuthorizeMemberAuth = params => request({ url: '/ec/memberAuth/unauthenticate', method: 'post', params })

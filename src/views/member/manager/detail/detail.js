@@ -1,4 +1,4 @@
-import { getMemberDetail, getMemberAuditDetail, updateAudit, updateReaudit } from '@/api/member/manager'
+import { getMemberDetail, getMemberAuditDetail, updateAudit, updateReaudit, authorizeMemberAuth, cancelAuthorizeMemberAuth } from '@/api/member/manager'
 
 export default {
   name: 'memebrDetails',
@@ -54,6 +54,9 @@ export default {
         }
         return result
       }
+    },
+    ckey() {
+      return this.$store.getters.ckey
     }
   },
   activated() {
@@ -88,30 +91,24 @@ export default {
   created() {
   },
   methods: {
-    // 认证会员身份
-    async authMember(e, row) {
-      await this.$confirm(`
-      <p>确定给所选用户进行商会认证吗？  </p>
-      <p style='color:red;'>商会认证主要是对该用户的个人信息、企业信息进行认证</p>
-      <p>1、认证后，该用户发布的所有供需内容，均显示“商会认证”标识</p>
-      <p>2、由于某种原因，可对已认证的用户取消认证，取消后，该用户将不会展示“商会认证”标识</p>
-      `, '商会认证', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        dangerouslyUseHTMLString: true,
-      })
-    },
-    // 取消认证
-    async cancelAuthMember(e, row) {
-      await this.$confirm(`
-      <p>确定给该用户取消商会认证吗？      </p>
-      <p>1、认证后，该用户发布的所有供需内容，均显示“商会认证”标识</p>
-      <p>2、由于某种原因，可对已认证的用户取消认证，取消后，该用户将不会展示“商会认证”标识</p>
-      `, '取消认证', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        dangerouslyUseHTMLString: true,
-      })
+    // 执行会员认证或者取消
+    async handleAuthMember(isAuth) {
+      try {
+        await this.$confirm(`
+        <p>确定给该用户${isAuth ? '取消' : '进行'}商会认证吗？      </p>
+        <p>1、认证后，该用户发布的所有供需内容，均显示“商会认证”标识</p>
+        <p>2、由于某种原因，可对已认证的用户取消认证，取消后，该用户将不会展示“商会认证”标识</p>
+        `, '取消认证', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          dangerouslyUseHTMLString: true,
+        })
+        const { state, msg } = await (isAuth ? cancelAuthorizeMemberAuth : authorizeMemberAuth)({ ckey: this.ckey, wxUserId: this.member.wxUserId })
+        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+        if (state === 1) {
+          this.member.authenticate = !isAuth
+        }
+      } catch (error) { /*  */ }
     },
 
     closeTab() {

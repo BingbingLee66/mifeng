@@ -30,8 +30,7 @@
       <el-row>
         <span class="row-title">入会信息</span>
         <el-button v-if="type == 0" @click="goEdit">修改</el-button>
-        <el-button @click="authMember">认证身份信息</el-button>
-        <el-button @click="cancelAuthMember">取消身份认证</el-button>
+        <el-button @click="handleAuthMember(member.authenticate)">{{ member.authenticate?'取消身份认证':'认证身份信息' }}</el-button>
       </el-row>
       <table width="100%" align="center" cellspacing="0">
         <tr align="center" height="45">
@@ -213,10 +212,10 @@
           <td width="8%">企业职位</td>
           <td width="20%" style="border: 1px solid #dcdfe6">{{ member.companyPosition }}</td>
         </tr>
-        <!-- <tr height="45" align="center">
-          <td width="8%">企业职位</td>
-          <td width="20%" style="border-right: 1px solid #dcdfe6">{{ member.companyPosition }}</td>
-        </tr> -->
+        <tr height="45" align="center">
+          <td width="8%">商会认证状态</td>
+          <td width="20%" style="border-right: 1px solid #dcdfe6">{{ member.authenticate?'已认证':'未认证' }}</td>
+        </tr>
 
       </table>
       <div v-if="type == 2" style="font-size: 20px;">

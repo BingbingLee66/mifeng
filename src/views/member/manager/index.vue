@@ -245,11 +245,15 @@
           </template>
         </el-table-column>
         <el-table-column label="商会认证状态" width="200px">
-          <template slot-scope="scope">
-            <div v-if="scope.row.activatedState == 1">--</div>
-            <div v-else-if="scope.row.sendStatus == 1">已认证</div>
-            <div v-else-if="scope.row.sendStatus == 0">去认证</div>
-            <div v-else>去查看</div>
+          <template slot-scope="{row:{authenticate}}">
+            <div v-if="authenticate">
+              已认证
+              <div class="text-btn-style" :actionid="getId('', '详情')" @click="detail($event, row)">去查看</div>
+            </div>
+            <div v-else>
+              未认证
+              <div class="text-btn-style" :actionid="getId('', '详情')" style="color:red;" @click="detail($event, row)">去认证</div>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right">

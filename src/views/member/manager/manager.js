@@ -1,4 +1,4 @@
-import { list, updateStatus, transferPresident } from '@/api/member/manager'
+import { list, updateStatus, transferPresident, authorizeMemberAuthBatch } from '@/api/member/manager'
 import { getMemberOptions } from '@/api/member/post'
 import { getTradeOptions } from '@/api/system/trade'
 import { exportJson2Excel } from '@/utils/exportExcel'
@@ -15,12 +15,12 @@ export default {
       inserted: (el, binding) => {
         el.style.cssText = 'cursor:pointer;'
         el.addEventListener('click', () => {
-          console.log(binding.value)
+          // console.log(binding.value)
           let link = document.createElement('a')
           let url = binding.value
           fetch(url).then(res => res.blob()).then(blob => {
             link.href = URL.createObjectURL(blob)
-            console.log(link.href)
+            // console.log(link.href)
             link.download = '商会成员信息导入模板.xlsx'
             document.body.appendChild(link)
             link.click()
@@ -258,8 +258,10 @@ export default {
       let datas = value
       this.selectionDatas = []
       this.selectionIds = []
+      this.selectionWxUserIds = []
       for (let data of datas) {
         this.selectionIds.push(data.id)
+        this.selectionWxUserIds.push(data.wxUserId)
         let new_data = {
           '用户名': data.uname,
           '入会类型': data.type === 0 ? '个人' : '企业',
@@ -271,9 +273,9 @@ export default {
           '激活状态': data.activatedState === 1 ? '已激活' : '未激活',
           '短信发送状态': data.activatedState === 1 ? '--' : data.sendStatus === 1 ? '已发送' : '未发送',
         }
-        console.log('data.identityVOList', data.identityVOList)
+        // console.log('data.identityVOList', data.identityVOList)
         if (data.identityVOList.length > 0) {
-          console.log('data.identityVOList', data.identityVOList)
+          // console.log('data.identityVOList', data.identityVOList)
           let str = ''
           data.identityVOList.forEach(element => {
             if (element.type === 1) {
@@ -302,24 +304,26 @@ export default {
       exportJson2Excel('商会会员', this.selectionDatas)
     },
     // 认证会员身份
-    async authMember(e, row) {
-      if (this.selectionIds.length === 0) {
-        this.$message.error({ message: '请选择认证数据' })
-        return
-      }
-      await this.$confirm(`
-      <p>确定给所选用户进行商会认证吗？  </p>
-      <p style='color:red;'>商会认证主要是对该用户的个人信息、企业信息进行认证</p>
-      <p>1、认证后，该用户发布的所有供需内容，均显示“商会认证”标识</p>
-      <p>2、由于某种原因，可对已认证的用户取消认证，取消后，该用户将不会展示“商会认证”标识</p>
-      `, '商会认证', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        dangerouslyUseHTMLString: true,
-      })
+    async authMember() {
+      const { selectionWxUserIds = [] } = this
+      if (selectionWxUserIds.length === 0) return this.$message({ message: '请选择认证数据', type: 'warning' })
+      try {
+        await this.$confirm(`
+        <p>确定给所选用户进行商会认证吗？  </p>
+        <p style="color:red;">商会认证主要是对该用户的个人信息、企业信息进行认证</p>
+        <p style="color:#ccc;">1、认证后，该用户发布的所有供需内容，均显示“商会认证”标识</p>
+        <p style="color:#ccc;">2、由于某种原因，可对已认证的用户取消认证，取消后，该用户将不会展示“商会认证”标识</p>
+        `, '商会认证', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          dangerouslyUseHTMLString: true,
+        })
+        const { state, msg } = await authorizeMemberAuthBatch({ ckey: this.$store.getters.ckey, wxUserIds: selectionWxUserIds })
+        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+        state === 1 && this.fetchData()
+      } catch (error) { /*  */ }
     },
     openSmsTab() {
-      console.log(this.selectionIds)
       if (this.selectionIds.length === 0) {
         this.$message.error({
           message: '请至少选择一位未激活的会员'
@@ -332,7 +336,6 @@ export default {
         type: 'warning'
       }).then(() => {
         sendSmsBatch(this.selectionIds).then(res => {
-          console.log(res)
           if (res.state === 1) {
             this.$message({
               type: 'success',
