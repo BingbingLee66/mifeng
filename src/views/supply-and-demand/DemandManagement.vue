@@ -172,14 +172,20 @@
       <el-table-column label="冻结状态" width="180">
         <template slot-scope="{row}">
           <div v-if="+row.freezeStatus === 1">正常</div>
-          <div v-else-if="+row.freezeStatus === 2">
-            <strong>【平台冻结】</strong>
-            <div v-for="item in row.syncPlatformFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
-          </div>
-          <div v-else-if="+row.freezeStatus === 3">
-            <strong>【商会冻结】</strong>
-            <div v-for="item in row.syncChamberFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
-          </div>
+          <template v-if="isTopBackStage">
+            <div v-if="+row.freezeStatus === 2">
+              <strong>【平台冻结】</strong>
+              <div v-for="item in row.syncPlatformFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
+            </div>
+            <div v-else-if="+row.freezeStatus === 3">
+              <strong>【商会冻结】</strong>
+              <div v-for="item in row.syncChamberFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
+            </div>
+          </template>
+          <template v-else>
+            <div v-if="+row.freezeStatus === 2"> 平台冻结 </div>
+            <div v-else-if="+row.freezeStatus === 3"> 商会冻结 </div>
+          </template>
         </template>
       </el-table-column>
       <el-table-column label="删除状态">
@@ -255,7 +261,7 @@
           <template v-else slot-scope="{row}">
             <el-button type="text" size="small" @click="goToEdit(row)">编辑</el-button> <br>
             <div v-if="row.freezeStatus === 1"><el-button type="text" size="small" @click="handleChamberFreeze(row)">冻结</el-button></div>
-            <div v-else><el-button v-if="row.freezeStatus !== 1" type="text" size="small" @click="handleChamberUnFreeze(row)">解冻</el-button> </div>
+            <div v-else><el-button :disabled="row.freezeStatus===2" type="text" size="small" @click="handleChamberUnFreeze(row)">解冻</el-button> </div>
             <el-button type="text" size="small" @click="showDetail(row)">详情</el-button> <br>
             <el-button :disabled="row.deleteStatus !== 1" type="text" size="small" @click="handleDelete(row)">删除</el-button> <br>
           </template>
@@ -523,8 +529,8 @@ export default {
     },
 
     async handleChamberFreeze(row) {
+      await this.$confirm(`<div>您确定要冻结供需吗？ <span style="color:red;">(冻结后，该供需不会展示在商/协会主页)</span></div>`, '冻结', { dangerouslyUseHTMLString: true })
       try {
-        await this.$confirm(`<div>您确定要冻结供需吗？ <span style="color:red;">(冻结后，该供需不会展示在商/协会主页)</span></div>`, '冻结', { dangerouslyUseHTMLString: true })
         const { state } = await freezeSupplyDemandByChamber(row.id)
         if (state === 1) {
           this.$message({ message: '冻结成功', type: 'success' })
@@ -537,8 +543,8 @@ export default {
       this.$message({ message: '冻结失败', type: 'error' })
     },
     async handleChamberUnFreeze(row) {
+      await this.$confirm(`<div>确认解冻该供需？ <span style="color:red;">(解冻后，该供需将恢复展示在用户端)</span></div>`, '冻结', { dangerouslyUseHTMLString: true })
       try {
-        await this.$confirm(`<div>确认解冻该供需？ <span style="color:red;">(解冻后，该供需将恢复展示在用户端)</span></div>`, '冻结', { dangerouslyUseHTMLString: true })
         const { state } = await unFreezeSupplyDemandByChamber(row.id)
         if (state === 1) {
           this.$message({ message: '解冻成功', type: 'success' })
@@ -578,6 +584,10 @@ export default {
         name: '会员详情',
         params: { memberDetail: { wxUserId: row.sourceInfo.userId, ckey: this.ckey }, 'querytype': '0' }
       })
+    },
+    isChamberPower(row) {
+      if (row.freezeStatus === 1) return true
+      // if ()
     }
   },
 }

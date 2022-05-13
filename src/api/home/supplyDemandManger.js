@@ -28,7 +28,7 @@ export const freezeSupplyDemandByUpBackground = (id, data) => request({ url: `/e
 export const freezeSupplyDemandByChamber = id => request({ url: `/ec/ysh-content/chamberFreeze/${id}`, method: 'put' })
 
 // 商会后台解冻
-export const unFreezeSupplyDemandByChamber = id => request({ url: `/ec/ysh-content/chamberFreeze/${id}`, method: 'put' })
+export const unFreezeSupplyDemandByChamber = id => request({ url: `/ec/ysh-content/chamberUnFreeze/${id}`, method: 'put' })
 
 // 总后台解冻
 export const unFreezeSupplyDemandByUpBackground = (id, data) => request({ url: `/ec/ysh-content/unFreeze/${id}`, method: 'put', data })
