@@ -130,17 +130,19 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      const params = {
-        'memberId': this.memberDetail.id
+      const { id, wxUserId, ckey } = this.memberDetail
+      let params = {
+        'memberId': id
       }
-      console.log('paramsparams', params)
+      // console.log('paramsparams', params)
       if (this.type === '0') {
+        if (!params.memberId) params = { wxUserId, ckey }
         getMemberDetail(params).then(response => {
           this.member = response.data.dtl[0]
           if (response.data.userInfo) {
             this.userInfo = response.data.userInfo
           }
-          console.log('member', this.member)
+          // console.log('member', this.member)
         })
       } else {
         params['type'] = this.type

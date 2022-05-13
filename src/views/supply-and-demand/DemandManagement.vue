@@ -576,7 +576,7 @@ export default {
     goMemberDetail(row) {
       this.$router.push({
         name: '会员详情',
-        params: { memberDetail: { id: row.sourceInfo.userId }, 'querytype': '0' }
+        params: { memberDetail: { wxUserId: row.sourceInfo.userId, ckey: this.ckey }, 'querytype': '0' }
       })
     }
   },

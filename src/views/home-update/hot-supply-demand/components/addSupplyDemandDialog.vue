@@ -3,8 +3,8 @@
   <div>
     <kdDialog
       ref="kdDialog"
-      :dialogTitle="dialogTitle"
-      dialogWidth="60%"
+      :dialog-title="dialogTitle"
+      dialog-width="60%"
       @savePopupData="submit"
       @hide="hide"
     >
@@ -16,105 +16,79 @@
           :inline="true"
           :model="query"
         >
-          <el-form-item label="来源商会" prop="ckey">
-            <el-select
-              v-model="query.ckey"
-              placeholder="请选择"
-              clearable
-              filterable
-            >
-              <el-option
-                v-for="chamber in chamberOptions"
-                :key="chamber.value"
-                :label="chamber.label"
-                :value="chamber.value"
-              />
+          <el-form-item v-if="isTopBackStage" label="来源商会" prop="ckey">
+            <el-select v-model="query.ckey" placeholder="请选择" clearable filterable>
+              <el-option v-for="chamber in chamberOptions" :key="chamber.value" :label="chamber.label" :value="chamber.value" />
             </el-select>
           </el-form-item>
-          <el-form-item label="供需ID" prop="id">
+          <el-form-item label="供需ID">
             <el-input v-model="query.id" placeholder="请输入" clearable />
           </el-form-item>
-          <el-form-item label="供需标题" prop="title">
-            <el-input clearable v-model="query.title" placeholder="关键词" />
+          <el-form-item label="供需标题">
+            <el-input v-model="query.title" clearable placeholder="关键词" />
           </el-form-item>
-          <el-form-item label="供需状态" prop="status">
+          <el-form-item label="供需状态">
             <el-select v-model="query.status" placeholder="请选择状态">
-              <el-option
-                v-for="chamber in statusList"
-                :key="chamber.value"
-                :label="chamber.label"
-                :value="chamber.value"
-              />
+              <el-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
-          <el-form-item label="冻结状态" prop="publishStatus">
-            <el-select v-model="query.publishStatus" placeholder="请选择状态">
-              <el-option
-                v-for="chamber in publishStatusList"
-                :key="chamber.value"
-                :label="chamber.label"
-                :value="chamber.value"
-              />
+          <el-form-item label="冻结状态">
+            <el-select v-model="query.freezeStatus" placeholder="请选择状态">
+              <el-option v-for="item in freezeStatusList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
-          <el-form-item label="可见性" prop="visibility">
+          <el-form-item v-if="isTopBackStage" label="可见性">
             <el-select v-model="query.visibility" placeholder="请选择">
-              <el-option
-                v-for="chamber in platformList"
-                :key="chamber.value"
-                :label="chamber.label"
-                :value="chamber.value"
-              />
+              <el-option v-for="item in platformList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
 
           <el-form-item label="">
-            <el-button type="primary" @click="supplyDemandListFunc"
-              >查询
-            </el-button>
+            <el-button type="primary" @click="supplyDemandListFunc">查询</el-button>
           </el-form-item>
         </el-form>
         <!-- 搜索表单end -->
         <!-- 供需列表start -->
         <el-table
           ref="multipleTable"
+          v-loading="loading"
           :data="tableData"
           tooltip-effect="dark"
           border
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55"> </el-table-column>
-          <el-table-column label="供需ID/名称" width="220">
+          <el-table-column type="selection" width="55" />
+          <el-table-column label="供需ID/名称" width="400">
             <template slot-scope="scope">
-              <div>{{ scope.row.id }}</div>
-              <div>{{ scope.row.title }}</div>
+              <div style="color:red;">{{ scope.row.id }}</div>
+              <div class="ellipsis">{{ scope.row.title }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="发布信息" width="180">
+          <el-table-column label="发布信息">
             <template slot-scope="scope">
               <div>{{ scope.row.createInfo.userName }}</div>
               <div>{{ scope.row.createdTs | dateFormat }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="可见性" width="120">
+          <el-table-column label="可见性">
             <template slot-scope="scope">
               <div v-if="scope.row.visibility === 1">全平台可见</div>
               <div v-else>部分商会可见</div>
             </template>
           </el-table-column>
-          <el-table-column label="供需状态" width="120">
-            <template slot-scope="scope">
-              <div v-if="scope.row.status === 1">生效中</div>
-              <div v-else-if="scope.row.status === 2">已关闭(过期关闭)</div>
-              <div v-else-if="scope.row.status === 3">已关闭(成功合作)</div>
-              <div v-else-if="scope.row.status === 4">已关闭(终止对接)</div>
+          <el-table-column label="供需状态">
+            <template slot-scope="{row:{status}}">
+              <div v-if="+status === 1">生效中</div>
+              <div v-else-if="+status === 2">已关闭(过期关闭)</div>
+              <div v-else-if="+status === 3">已关闭(成功合作)</div>
+              <div v-else-if="+status === 4">已关闭(终止对接)</div>
             </template>
           </el-table-column>
-          <el-table-column label="冻结状态" width="120">
-            <template slot-scope="scope">
-              <div v-if="scope.row.publishStatus === 1">正常</div>
-              <div v-else-if="scope.row.publishStatus === 2">平台冻结</div>
-              <div v-else-if="scope.row.status === 3">商会冻结</div>
+          <el-table-column label="冻结状态">
+            <template slot-scope="{row:{freezeStatus}}">
+              <div v-if="+freezeStatus === 1">正常</div>
+              <div v-else-if="+freezeStatus === 2"> 平台冻结 </div>
+              <div v-else-if="+freezeStatus === 3"> 商会冻结 </div>
             </template>
           </el-table-column>
         </el-table>
@@ -125,152 +99,126 @@
 </template>
 
 <script>
-import kdDialog from "@/components/common/kdDialog";
-import { addHotSupplyDemand } from "@/api/home/hotSupplyDemand";
-import { supplyDemandList } from "@/api/home/supplyDemandManger";
+import kdDialog from '@/components/common/kdDialog'
+import { addHotSupplyDemand } from '@/api/home/hotSupplyDemand'
+import { supplyDemandList } from '@/api/home/supplyDemandManger'
 export default {
+  name: 'AddSupplyDemandDialog',
   components: { kdDialog },
-  name: "addSupplyDemandDialog",
-  //供需状态字段 冻结状态 商会数组
-  props: ["statusList", "publishStatusList", "chamberOptions"],
+  // 商会数组
+  props: {
+    chamberOptions: {
+      type: Array,
+      default() {
+        return []
+      }
+    }
+  },
   data() {
     return {
-      //状态
-      resolve: null,
-      reject: null,
-      //表单对象 字段注释参考父组件
+      // 表单对象 字段注释参考父组件
       query: {
-        title: '',
-        ckey: '',
-        status: '-1',
-        //冻结状态  0-全部 1-正常 2-平台冻结 3-商会冻结,
-        // publishStatus: "0",
-        id: '',
-        //平台性
-        visibility:'-1'
+        title: '', // 供需标题
+        ckey: '', // 商会来源
+        status: -1, // 供需状态
+        id: '', // 平台性
+        visibility: -1, // 可见性
+
+        // 一下参数写死
+        pageSize: 100,
+        pageNum: 1,
+        readSort: 0,
+        reportStatus: -1,
+        collectSort: 0,
+        chatSort: 0,
+        freezeStatus: -1, // 冻结状态  0-全部 1-正常 2-平台冻结 3-商会冻结,
+        deleteStatus: -1,
+        publishTime: -1,
+        isHot: 2
       },
-      //对话框标题
-      dialogTitle: "添加供需",
-      platformList: [
-        {
-          label: "全平台可见",
-          value: "1",
-        },
-        {
-          label: "部分商会可见",
-          value: "2",
-        },
+      // 对话框标题
+      dialogTitle: '添加供需',
+      freezeStatusList: [
+        { label: '全部', value: -1 },
+        { label: '正常', value: 1 },
+        { label: '平台冻结', value: 2 },
+        { label: '商会冻结', value: 3 }
       ],
-      //当前选中需要添加的ids
-      addIds: [],
-      //表格数据源
+      statusList: [
+        { label: '全部', value: -1 },
+        { label: '生效中', value: 1 },
+        { label: '已关闭(过期关闭)', value: 2 },
+        { label: '已关闭(成功合作)', value: 3 },
+        { label: '已关闭(终止对接)', value: 4 }
+      ],
+      platformList: [
+        { label: '全部', value: -1, },
+        { label: '全平台可见', value: 1, },
+        { label: '部分商会可见', value: 2, },
+      ],
+
+      // 表格数据源
       tableData: [],
-    };
+
+      loading: false
+    }
+  },
+  computed: {
+    isTopBackStage() {
+      return !this.$store.getters.ckey
+    }
   },
   methods: {
-    /**
-     * 状态
-     */
-    //打开当前添加金刚区对话框
-    open() {
-      return new Promise((resolve, reject) => {
-        this.resolve = resolve;
-        this.reject = reject;
-        this.show();
-      });
-    },
-    //显示对话框子组件
+    // 显示对话框子组件
     show() {
-      this.$refs["kdDialog"].show();
-    },
-    edit(row) {
-      return new Promise((resolve, reject) => {
-        this.resolve = resolve;
-        this.reject = reject;
-        this.show();
-        //为了解决form的mounted还没结束，导致关闭弹框置空时，表单的初始值为父组件传入对象
-        this.$nextTick(() => {
-          this.formKingKongDialog = JSON.parse(JSON.stringify(row));
-        });
-        this.dialogTitle = "编辑金刚区";
-      });
+      this.$refs.kdDialog.show()
+      this.supplyDemandListFunc()
     },
     hide() {
-      this.$refs["kdDialog"].hide();
-      this.resolve = null;
-      this.reject = null;
-      this.$refs["formHotSupplyDemand"].resetFields();
+      this.$refs['kdDialog'].hide()
+      this.$refs['formHotSupplyDemand'].resetFields()
+      this.selectedData = []
     },
-    handleClose() {},
 
-    /**
-     * 行为类
-     */
-    //点击表单确定按钮
-    submit() {},
-    /**
-     * 监听类
-     */
-    //表单选框变化
+    // 点击表单确定按钮
+    async submit() {
+      const { selectedData = [] } = this
+      if (!selectedData.length) return this.$message({ message: '请选择供需', type: 'warning' })
+      const { state } = await addHotSupplyDemand({ ids: selectedData.map(v => v.id) })
+      if (state === 1) {
+        this.$message({ message: '添加成功', type: 'success' })
+        this.hide()
+        this.$emit('success')
+      } else {
+        this.$message({ message: '添加失败', type: 'error' })
+      }
+    },
+
+    // 表单选框变化
     handleSelectionChange(val) {
-      const map1 = val.map((item) => item.id);
-      this.addIds = map1;
+      this.selectedData = val
     },
-    /**
-     * 请求类
-     */
-    //批量添加供需到热门
-    addHotSupplyDemandFunc() {
-      let params = this.addIds;
-      addHotSupplyDemand(params).then((res) => {
-        if (res.state === 1) {
-          this.$message({
-            message: "添加成功",
-            type: "success",
-          });
-          this.resolve();
-          this.hide();
-        } else {
-          this.$message({
-            message: res.msg,
-            type: "error",
-          });
-        }
-      });
-    },
-    //查询可添加的热门供需
-    supplyDemandListFunc() {
-      let params = {...this.query};
-      params.isHot = 2;
-      //产品说只拉100条数据
-      params.pageNum = 1;
-      params.pageSize = 100;
-      //后端不新增接口和供需列表公用一个接口，所以很多参数需要写死
-      params.readSort=0;
-      params.reportStatus=-1;
-      params.collectSort=0;
-      params.chatSort=0;
-      params.freezeStatus=-1;
-      params.deleteStatus=-1;
-        params.publishTime=-1
-      console.log('params',params)
-      supplyDemandList(params).then((res) => {
-        if (res.state === 1) {
-          // this.resolve();
-          // this.hide();
-          this.tableData=res.data.list
-        } else {
-          this.$message({
-            message: res.msg,
-            type: "error",
-          });
-        }
-      });
+
+    // 查询可添加的热门供需
+    async supplyDemandListFunc() {
+      this.loading = true
+      try {
+        const params = Object.entries(this.query).reduce((params, [key, value]) => {
+          if (value !== '') params[key] = value
+          return params
+        }, {})
+        const { data: { list = [] }} = await supplyDemandList(params)
+        this.tableData = list
+      } catch (error) { /*  */ }
+      this.loading = false
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
+.ellipsis {
+  @include ellipsis(2);
+}
 </style>
 

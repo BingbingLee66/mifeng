@@ -8,9 +8,9 @@
       :model="query"
     >
       <el-form-item label="供需标题">
-        <el-input clearable v-model="query.title" placeholder="关键词" />
+        <el-input v-model="query.title" clearable placeholder="关键词" />
       </el-form-item>
-      <el-form-item label="来源商会">
+      <el-form-item v-if="isTopBackStage" label="来源商会">
         <el-select
           v-model="query.ckey"
           placeholder="请选择"
@@ -60,14 +60,14 @@
         <el-input v-model="query.id" placeholder="请输入" clearable />
       </el-form-item>
       <el-form-item label="">
-        <el-button type="primary" @click="queryFunc">查询 </el-button>
+        <el-button type="primary" @click="handleCurrentChange(1)">查询</el-button>
       </el-form-item>
     </el-form>
     <!-- 搜索表单end -->
 
     <!-- 按钮栏目 -->
     <div style="margin-bottom: 10px">
-      <el-button type="danger" @click="deleteIdsFunc(null, 1)">移除 </el-button>
+      <el-button type="danger" @click="onBatchDelete">移除</el-button>
       <el-button type="primary" @click="addSupplyDemand">添加供需 </el-button>
     </div>
     <!-- 供需列表start -->
@@ -78,58 +78,56 @@
       border
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55"> </el-table-column>
-      <el-table-column label="供需ID/名称" width="220">
+      <el-table-column type="selection" width="55" />
+      <el-table-column label="供需ID/名称" width="400">
         <template slot-scope="scope">
-          <div>{{ scope.row.id }}</div>
-          <div>{{ scope.row.title }}</div>
+          <div style="color:red;">{{ scope.row.id }}</div>
+          <div class="ellipsis">{{ scope.row.title }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="发布信息" width="180">
+      <el-table-column label="发布信息">
         <template slot-scope="scope">
           <div>{{ scope.row.publishName }}</div>
-          <div>{{ scope.row.publishTime | dateFormat }}</div>
+          <div>{{ +scope.row.publishTime | dateFormat }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="可见性" width="120">
+      <el-table-column label="可见性">
         <template slot-scope="scope">
           <div v-if="scope.row.platform === 1">全平台可见</div>
           <div v-else>部分商会可见</div>
         </template>
       </el-table-column>
-      <el-table-column label="供需状态" width="120">
-        <template slot-scope="scope">
-          <div v-if="scope.row.status === 1">生效中</div>
-          <div v-else-if="scope.row.status === 2">已关闭(过期关闭)</div>
-          <div v-else-if="scope.row.status === 3">已关闭(成功合作)</div>
-          <div v-else-if="scope.row.status === 4">已关闭(终止对接)</div>
+      <el-table-column label="供需状态">
+        <template slot-scope="{row:{status}}">
+          <div v-if="status === 1">生效中</div>
+          <div v-else-if="status === 2">已关闭(过期关闭)</div>
+          <div v-else-if="status === 3">已关闭(成功合作)</div>
+          <div v-else-if="status === 4">已关闭(终止对接)</div>
         </template>
       </el-table-column>
-      <el-table-column label="冻结状态" width="120">
-        <template slot-scope="scope">
-          <div v-if="scope.row.publishStatus === 1">正常</div>
-          <div v-else-if="scope.row.publishStatus === 2">平台冻结</div>
-          <div v-else-if="scope.row.status === 3">商会冻结</div>
+      <el-table-column label="冻结状态">
+        <template slot-scope="{row:{publishStatus}}">
+          <div v-if="+publishStatus === 1">正常</div>
+          <div v-else-if="+publishStatus === 2">平台冻结</div>
+          <div v-else-if="+publishStatus === 3">商会冻结</div>
         </template>
       </el-table-column>
-      <el-table-column label="创建信息" width="180">
-        <template slot-scope="scope">
-          <div>{{ scope.row.operatorName }}</div>
-          <div>{{ scope.row.createdTs | dateFormat }}</div>
+      <el-table-column label="创建信息">
+        <template slot-scope="{row}">
+          <div>{{ row.operatorName }}</div>
+          <div>{{ +row.createdTs | dateFormat }}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="weight" label="权重" width="120">
+      <el-table-column prop="weight" label="权重">
         <template slot-scope="scope">
-          <el-button type="text" @click="updateWeight(scope.row)">{{
-            scope.row.weight
-          }}</el-button>
+          <el-button type="text" @click="updateWeight(scope.row)">
+            {{ scope.row.weight }}
+          </el-button>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="80">
         <template slot-scope="scope">
-          <el-button type="text" @click="deleteIdsFunc(scope.row.id, 2)"
-            >移除</el-button
-          >
+          <el-button type="text" @click="handleDelete([scope.row.id])">移除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -137,31 +135,166 @@
     <!-- 分页start -->
     <div class="block">
       <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
         :current-page="currentPage"
         :page-sizes="pageSizes"
-        :page-size="pageSize"
+        :page-size="query.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-      >
-      </el-pagination>
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
     <!-- 分页end -->
     <!-- 添加供需对话框 -->
-    <addSupplyDemandDialog
-      :chamberOptions="chamberOptions"
-      :statusList="statusList"
-      :publishStatusList="publishStatusList"
-      ref="addSupplyDemandDialogRef"
-    ></addSupplyDemandDialog>
+    <addSupplyDemandDialog ref="addSupplyDemandDialogRef" :chamber-options="chamberOptions" @success="hotSupplyDemandListFunc" />
     <!-- 编辑权重对话框 -->
-    <weightKdDialog ref="weightKdDialog"></weightKdDialog>
+    <weightKdDialog ref="weightKdDialog" />
   </div>
 </template>
 
-<script src="./hotSupplyDemand.js"></script>
+<script>
+import {
+  hotSupplyDemandList,
+  deleteHotSupplyDemand,
+  weightSupplyDemand,
+} from '@/api/home/hotSupplyDemand'
+import { statusList, publishStatusList, publishTimeList } from './utils/utilsData'
+import addSupplyDemandDialog from './components/addSupplyDemandDialog'
+import { getChamberOptions } from '@/api/mall/channel'
+import weightKdDialog from '@/views/content/kingArea/components/weightKdDialog'
+export default {
+  components: { addSupplyDemandDialog, weightKdDialog },
+  data() {
+    return {
+      // 查询表单对象
+      query: {
+        title: null,
+        ckey: null,
+        // 0-全部 1-生效中 2-已关闭(过期关闭) 3-已关闭(成功合作) 4-已关闭(终止对接)
+        status: '0',
+        // 冻结状态  0-全部 1-正常 2-平台冻结 3-商会冻结,
+        publishStatus: '0',
+        id: null,
+        // 发布时间 1-24小时,2-3天,3-7天,4-本月,0-所有
+        publishTime: '0',
+        pageSize: 10,
+        pageNum: 1
+      },
+      // 表格数据
+      tableData: [],
+      statusList,
+      publishStatusList,
+      publishTimeList,
+      // 商会数据
+      chamberOptions: [],
 
-<style rel="stylesheet/scss" lang="scss" scoped>
-@import "src/styles/common.scss";
+      /** 分页相关 */
+      // 当前页
+      currentPage: 1,
+      // 当前size
+      pageSize: 10,
+      // 可选size数组
+      pageSizes: [10, 50, 100, 200],
+      // 总数
+      total: 0,
+
+      // 当前选中删除的ids
+      deleteIds: []
+    }
+  },
+  computed: {
+    ckey() {
+      return this.$store.getters.ckey
+    },
+    // 是否为总后台
+    isTopBackStage() {
+      return !this.ckey
+    }
+  },
+  created() {
+    if (this.ckey) this.query.ckey = this.ckey
+    this.hotSupplyDemandListFunc()
+    this.getChamberOptionsFunc()
+  },
+  methods: {
+    // 拉取商会
+    async getChamberOptionsFunc() {
+      const { data: { data = [] }} = await getChamberOptions()
+      this.chamberOptions = data
+      this.chamberOptions.unshift({ 'label': '全部商会', 'value': '' }, { 'label': '凯迪云商会', 'value': 'kaidiyun' })
+    },
+
+    // 拉取热门供需
+    async hotSupplyDemandListFunc() {
+      const { data: { list = [], totalRows = 0 }} = await hotSupplyDemandList(this.query)
+      this.tableData = list
+      this.total = totalRows
+    },
+    // 批量删除供需
+    async deleteHotSupplyDemandFunc(ids) {
+      const { state, msg } = await deleteHotSupplyDemand(ids)
+      if (state === 1) {
+        this.$message({ message: '已成功移除', type: 'success', })
+        this.hotSupplyDemandListFunc()
+        return
+      }
+      this.$message({ message: msg, type: 'error', })
+    },
+    /** 行为操作类 */
+    // 表格复选框改变
+    handleSelectionChange(val) {
+      this.selectedData = val
+    },
+    // 分页大小改变
+    handleSizeChange(val) {
+      this.query.pageSize = val
+      this.hotSupplyDemandListFunc()
+    },
+    // 当前页改变
+    handleCurrentChange(val) {
+      this.query.pageNum = val
+      this.hotSupplyDemandListFunc()
+    },
+    onBatchDelete() {
+      const { selectedData = [] } = this
+      if (!selectedData.length) return this.$message({ message: '请勾选移除供需', type: 'warning' })
+      this.handleDelete(selectedData.map(v => v.id))
+    },
+    // 点击移除按钮，type===1:批量操作 type===2单行删除
+    handleDelete(ids) {
+      this.$confirm('移除后，该供需将不再展示在热门供需板块，不影响在其他页面展示', '确认将供需从热门供需中移除？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteHotSupplyDemandFunc(ids)
+      }).catch(() => {
+        this.$message({ type: 'warning', message: '已取消移除' })
+      })
+    },
+
+    // 点击添加供需按钮
+    addSupplyDemand() {
+      this.$refs['addSupplyDemandDialogRef'].show()
+    },
+
+    // 点击权重编辑
+    updateWeight(row) {
+      this.$refs['weightKdDialog'].open(row.id, row.weight, weightSupplyDemand).then(() => {
+        this.hotSupplyDemandListFunc()
+      })
+    },
+
+    /** 工具类 */
+  }
+}
+
+</script>
+
+<style lang="scss" scoped>
+// @import "src/styles/common.scss";
+
+.ellipsis {
+  @include ellipsis(2)
+}
 </style>
