@@ -24,6 +24,12 @@ export const getUnFreezeAbleList = params => request({ url: '/ec/ysh-content/can
 // 总后台冻结供需
 export const freezeSupplyDemandByUpBackground = (id, data) => request({ url: `/ec/ysh-content/freeze/${id}`, method: 'put', data })
 
+// 商会后台冻结
+export const freezeSupplyDemandByChamber = id => request({ url: `/ec/ysh-content/chamberFreeze/${id}`, method: 'put' })
+
+// 商会后台解冻
+export const unFreezeSupplyDemandByChamber = id => request({ url: `/ec/ysh-content/chamberFreeze/${id}`, method: 'put' })
+
 // 总后台解冻
 export const unFreezeSupplyDemandByUpBackground = (id, data) => request({ url: `/ec/ysh-content/unFreeze/${id}`, method: 'put', data })
 

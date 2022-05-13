@@ -5,7 +5,7 @@
         <el-form-item :span="8" label="供需标题">
           <el-input v-model="query.title" clearable placeholder="关键词" maxlength="40" />
         </el-form-item>
-        <el-form-item :span="8" label="来源商/协会">
+        <el-form-item v-if="isTopBackStage" :span="8" label="来源商/协会">
           <el-select v-model="query.ckey" filterable no-match-text="暂无数据">
             <el-option
               v-for="cc in chamberOptions"
@@ -32,10 +32,18 @@
             <el-option label="商会冻结" :value="3" />
           </el-select>
         </el-form-item>
-
+        <el-form-item v-if="!isTopBackStage" :span="8" label="删除状态">
+          <el-select v-model="query.deleteStatus">
+            <el-option label="全部" :value="-1" />
+            <el-option label="正常" :value="1" />
+            <el-option label="用户删除" :value="2" />
+            <el-option label="商会后台删除" :value="3" />
+            <el-option label="总后台删除" :value="4" />
+          </el-select>
+        </el-form-item>
       </el-row>
       <el-row>
-        <el-form-item :span="8" label="删除状态">
+        <el-form-item v-if="isTopBackStage" :span="8" label="删除状态">
           <el-select v-model="query.deleteStatus">
             <el-option label="全部" :value="-1" />
             <el-option label="正常" :value="1" />
@@ -66,7 +74,7 @@
         <el-button :span="8" type="primary" @click="handleCurrentChange(1)">查询</el-button>
       </el-row>
       <el-row>
-        <el-button type="primary">批量认证身份信息</el-button>
+        <el-button v-if="!isTopBackStage" type="primary">批量认证身份信息</el-button>
       </el-row>
     </el-form>
 
@@ -80,7 +88,7 @@
       header-row-class-name="tableheader"
       empty-text="暂无数据"
     >
-      <!-- <el-table-column width="55" type="selection" /> -->
+      <el-table-column v-if="!isTopBackStage" width="55" type="selection" />
       <el-table-column label="供需ID" width="120" prop="id" />
       <el-table-column label="供需标题" width="240">
         <template slot-scope="{row}">
@@ -217,24 +225,39 @@
       </el-table-column>
       <el-table-column label="商/协会认证状态">
         <template slot-scope="{row:{authenticate}}">
-          <div v-if="authenticate">已认证</div>
-          <div v-else>未认证</div>
+          <div v-if="authenticate">
+            已认证
+            <div v-if="!isTopBackStage"><el-button type="text">去查看</el-button></div>
+          </div>
+          <div v-else>
+            未认证
+            <div v-if="!isTopBackStage"><el-button type="text" style="color:red;">去认证</el-button></div>
+          </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column label="操作" width="120" fixed="right">
         <template slot-scope="{row}">
-          <div>
-            <el-button type="text" size="small" @click="goToEdit(row)">编辑</el-button>
-            <el-button type="text" size="small" @click="showDetail(row)">详情</el-button>
-          </div>
-          <div>
-            <el-button type="text" size="small" @click="showFreezeDialog(row, true)">冻结</el-button>
-            <el-button :disabled="row.freezeStatus===1" type="text" size="small" @click="showFreezeDialog(row, false)">解冻</el-button>
-          </div>
-          <div>
-            <el-button :disabled="row.deleteStatus !== 1" type="text" size="small" @click="handleDelete(row)">删除</el-button>
-            <el-button :disabled="row.deleteStatus === 1" type="text" size="small" @click="handleUnDelete(row)">撤销删除</el-button>
-          </div>
+          <template v-if="isTopBackStage">
+            <div>
+              <el-button type="text" size="small" @click="goToEdit(row)">编辑</el-button>
+              <el-button type="text" size="small" @click="showDetail(row)">详情</el-button>
+            </div>
+            <div>
+              <el-button type="text" size="small" @click="showFreezeDialog(row, true)">冻结</el-button>
+              <el-button :disabled="row.freezeStatus===1" type="text" size="small" @click="showFreezeDialog(row, false)">解冻</el-button>
+            </div>
+            <div>
+              <el-button :disabled="row.deleteStatus !== 1" type="text" size="small" @click="handleDelete(row)">删除</el-button>
+              <el-button :disabled="row.deleteStatus === 1" type="text" size="small" @click="handleUnDelete(row)">撤销删除</el-button>
+            </div>
+          </template>
+          <template v-else slot-scope="{row}">
+            <el-button type="text" size="small" @click="goToEdit(row)">编辑</el-button> <br>
+            <div v-if="row.freezeStatus === 1"><el-button type="text" size="small" @click="handleChamberFreeze(row)">冻结</el-button></div>
+            <div v-else><el-button v-if="row.freezeStatus !== 1" type="text" size="small" @click="handleChamberUnFreeze(row)">解冻</el-button> </div>
+            <el-button type="text" size="small" @click="showDetail(row)">详情</el-button> <br>
+            <el-button :disabled="row.deleteStatus !== 1" type="text" size="small" @click="handleDelete(row)">删除</el-button> <br>
+          </template>
         </template>
       </el-table-column>
     </el-table>
@@ -294,11 +317,14 @@ import { supplyDemandList,
   unFreezeSupplyDemandByUpBackground,
   deleteSupplyDemand,
   unDeleteSupplyDemand,
-  getSupplyDemandDetail
+  getSupplyDemandDetail,
+  freezeSupplyDemandByChamber,
+  unFreezeSupplyDemandByChamber
 } from '@/api/home/supplyDemandManger'
 import { getChamberOptions } from '@/api/finance/finance'
 import { formatDateTime } from '@/utils/date'
 import videoComponent from '@/components/video/index'
+import { mapState } from 'vuex'
 
 export default {
   name: 'DemandManagement',
@@ -346,6 +372,12 @@ export default {
         loading: true
       },
 
+    }
+  },
+  computed: {
+    ...mapState('user', ['ckey']),
+    isTopBackStage() {
+      return !this.ckey
     }
   },
   created() {
@@ -421,9 +453,8 @@ export default {
     },
 
     async handleFreeze() {
+      const { data, checkList, isFreeze } = this.freezeAboutDialog
       try {
-        const { data, checkList, isFreeze } = this.freezeAboutDialog
-
         const { state } = await (
           isFreeze
             ? freezeSupplyDemandByUpBackground
@@ -431,14 +462,14 @@ export default {
         )(data.id, { freezeTargets: checkList })
 
         if (state === 1) {
-          this.$message({ message: '冻结成功', type: 'success' })
+          this.$message({ message: isFreeze ? '冻结成功' : '解冻成功', type: 'success' })
           this.freezeAboutDialog.visible = false
           this.querySupplyDemandList()
           return
         }
       } catch (error) { /*  */ }
 
-      this.$message({ message: '冻结失败', type: 'error' })
+      this.$message({ message: isFreeze ? '冻结失败' : '解冻失败', type: 'error' })
     },
 
     async handleDelete(row) {
@@ -486,7 +517,36 @@ export default {
           query: { isEdit: 1, id: row.id }
         })
       } catch (error) { /*  */ }
-    }
+    },
+
+    async handleChamberFreeze(row) {
+      try {
+        await this.$confirm(`<div>您确定要冻结供需吗？ <span style="color:red;">(冻结后，该供需不会展示在商/协会主页)</span></div>`, '冻结', { dangerouslyUseHTMLString: true })
+        const { state } = await freezeSupplyDemandByChamber(row.id)
+        if (state === 1) {
+          this.$message({ message: '冻结成功', type: 'success' })
+          this.freezeAboutDialog.visible = false
+          this.querySupplyDemandList()
+          return
+        }
+      } catch (error) { /*  */ }
+
+      this.$message({ message: '冻结失败', type: 'error' })
+    },
+    async handleChamberUnFreeze(row) {
+      try {
+        await this.$confirm(`<div>确认解冻该供需？ <span style="color:red;">(解冻后，该供需将恢复展示在用户端)</span></div>`, '冻结', { dangerouslyUseHTMLString: true })
+        const { state } = await unFreezeSupplyDemandByChamber(row.id)
+        if (state === 1) {
+          this.$message({ message: '解冻成功', type: 'success' })
+          this.freezeAboutDialog.visible = false
+          this.querySupplyDemandList()
+          return
+        }
+      } catch (error) { /*  */ }
+
+      this.$message({ message: '解冻失败', type: 'error' })
+    },
   },
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="dialog-desc">提示：最多可选5个，已选 {{ checkedNumber }} 个</div>
+    <div class="dialog-desc">提示：最多可选3个，已选 {{ checkedNumber }} 个</div>
     <el-tree
       ref="tree"
       v-loading="loading"
@@ -74,7 +74,7 @@ export default {
     },
 
     onCheckChange(currentNode, { checkedNodes }) {
-      this.checkedNumber = checkedNodes.filter(v => v.level === 2).length
+      this.checkedNumber = checkedNodes.length
     }
   }
 }
