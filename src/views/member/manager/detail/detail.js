@@ -98,7 +98,7 @@ export default {
         <p>确定给该用户${isAuth ? '取消' : '进行'}商会认证吗？      </p>
         <p>1、认证后，该用户发布的所有供需内容，均显示“商会认证”标识</p>
         <p>2、由于某种原因，可对已认证的用户取消认证，取消后，该用户将不会展示“商会认证”标识</p>
-        `, '取消认证', {
+        `, isAuth ? '取消认证' : '商会认证', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           dangerouslyUseHTMLString: true,

@@ -73,6 +73,7 @@
     <!-- 供需列表start -->
     <el-table
       ref="multipleTable"
+      v-loading="loading"
       :data="tableData"
       tooltip-effect="dark"
       border
@@ -182,24 +183,20 @@ export default {
       },
       // 表格数据
       tableData: [],
+
       statusList,
       publishStatusList,
       publishTimeList,
+
       // 商会数据
       chamberOptions: [],
 
       /** 分页相关 */
-      // 当前页
-      currentPage: 1,
-      // 当前size
-      pageSize: 10,
-      // 可选size数组
       pageSizes: [10, 50, 100, 200],
       // 总数
       total: 0,
 
-      // 当前选中删除的ids
-      deleteIds: []
+      loading: false
     }
   },
   computed: {
@@ -226,9 +223,13 @@ export default {
 
     // 拉取热门供需
     async hotSupplyDemandListFunc() {
-      const { data: { list = [], totalRows = 0 }} = await hotSupplyDemandList(this.query)
-      this.tableData = list
-      this.total = totalRows
+      this.loading = true
+      try {
+        const { data: { list = [], totalRows = 0 }} = await hotSupplyDemandList(this.query)
+        this.tableData = list
+        this.total = totalRows
+      } catch (error) { /*  */ }
+      this.loading = false
     },
     // 批量删除供需
     async deleteHotSupplyDemandFunc(ids) {

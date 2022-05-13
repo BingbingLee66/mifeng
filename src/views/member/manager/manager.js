@@ -306,7 +306,7 @@ export default {
     // 认证会员身份
     async authMember() {
       const { selectionWxUserIds = [] } = this
-      if (selectionWxUserIds.length === 0) return this.$message({ message: '请选择认证数据', type: 'warning' })
+      if (!selectionWxUserIds.length) return this.$message({ message: '请选择认证数据', type: 'warning' })
       try {
         await this.$confirm(`
         <p>确定给所选用户进行商会认证吗？  </p>
