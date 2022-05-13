@@ -74,7 +74,7 @@ export default {
     },
 
     onCheckChange(currentNode, { checkedNodes }) {
-      this.checkedNumber = checkedNodes.length
+      this.checkedNumber = checkedNodes.filter(v => v.parentId).length
     }
   }
 }
