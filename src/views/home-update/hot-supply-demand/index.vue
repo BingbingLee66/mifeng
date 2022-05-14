@@ -85,7 +85,7 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="供需ID/名称" width="400">
         <template slot-scope="scope">
-          <div style="color: red">{{ scope.row.id }}</div>
+          <div style="color: red">{{ scope.row.demandId }}</div>
           <div class="ellipsis">{{ scope.row.title }}</div>
         </template>
       </el-table-column>

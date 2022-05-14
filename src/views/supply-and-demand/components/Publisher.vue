@@ -132,6 +132,7 @@ export default {
         this.$emit('hideFooter')
       } else if (this.tableData.length) {
         this.selectedData = this.data
+        this.query = this.$options.data().query
       }
     },
     async getChamberList() {

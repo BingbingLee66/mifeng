@@ -181,6 +181,7 @@ export default {
       if (!newVal) {
         this.isEditWeight = false
         this.$refs.dialogForm.resetFields()
+        this.dialogFormData = { name: '', weight: '' }
       }
     }
   },

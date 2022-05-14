@@ -5,7 +5,7 @@
     :data="treeData"
     :props="props"
     show-checkbox
-    node-key="id"
+    node-key="code"
     :default-checked-keys="selectIds"
   />
 </template>
@@ -63,7 +63,7 @@ export default {
     },
     initData() {
       if (!this.treeData.length) return
-      this.$refs.tree.setCheckedKeys(this.data.map(v => v.id))
+      this.$refs.tree.setCheckedKeys(this.selectIds)
     },
     handleConfirm() {
       const selectedData = this.$refs.tree.getCheckedNodes(true)

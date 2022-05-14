@@ -45,6 +45,14 @@ export default {
       return this.data.map(v => v.id)
     }
   },
+  watch: {
+    data: {
+      handler(arr) {
+        this.checkedNumber = arr.length
+      },
+      immediate: true
+    }
+  },
   created() {
     this.getLableList()
   },
@@ -63,7 +71,6 @@ export default {
     initData() {
       if (!this.treeData.length) return
       this.$refs.tree.setCheckedKeys(this.data.map(v => v.id))
-      this.checkedNumber = this.data.length
     },
     handleConfirm() {
       const selectedData = this.$refs.tree.getCheckedNodes(true)

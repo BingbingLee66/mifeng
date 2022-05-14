@@ -59,7 +59,7 @@
         </LableList>
       </el-form-item>
       <el-form-item label="有效时间" required>
-        <el-radio v-model="formData.validType" :label="1">长期有效</el-radio>
+        <el-radio v-model="formData.validType" :label="1" @change="formData.date=''">长期有效</el-radio>
         <el-radio v-model="formData.validType" :label="2">自定义时间</el-radio>
         <el-date-picker v-show="formData.validType===2" v-model="formData.date" type="datetime" placeholder="选择日期时间" />
       </el-form-item>
@@ -229,7 +229,7 @@ export default {
         publisherList: [dynamicWxUserVO], // 发布人列表
         supplyLableList: labelVOList, // 供需标签
         industryLableList: tradeVOList.map(v => ({ ...v, typeName: v.name })), // 行业标签
-        publisherStationList: [{ ...city, fullName: `${city.name}-${province.name}`, fulleCode: `${city.code}-${province.code}` }], // 发布者常驻地
+        publisherStationList: [{ ...city, fullName: `${city.name}-${province.name}`, fullCode: `${city.code}-${province.code}` }], // 发布者常驻地
         date: validEndTs ? new Date(+validEndTs) : '',
         selectedChamberList: chamberVOList, // 已选择商协会
         unSelecteChamberList: [] // 未选择商协会
@@ -333,6 +333,7 @@ export default {
         if (!supplyLableList.length) return this.alert('请选择供需标签', reject)
         if (!industryLableList.length) return this.alert('请选择行业标签', reject)
         if (!publisherStationList.length) return this.alert('请选择发布者常驻地', reject)
+        if (validType === 2 && !date) return this.alert('请选择自定义时间')
         if (!title) return this.alert('请填写标题', reject)
         if (!content) return this.alert('请填写内容', reject)
         if (this.contentNumber > 2000) this.alert('内容超出2000字', reject)
@@ -358,7 +359,7 @@ export default {
 
     // 表单提交
     async onSubmit() {
-      this.normalizeFormData().then(params => this.$emit('submit', params))
+      this.normalizeFormData().then(params => this.$emit('submit', params)).catch(console.log)
     }
   }
 }

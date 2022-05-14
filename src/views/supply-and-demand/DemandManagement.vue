@@ -173,11 +173,11 @@
         <template slot-scope="{row}">
           <div v-if="+row.freezeStatus === 1">正常</div>
           <template v-if="isTopBackStage">
-            <div v-if="+row.freezeStatus === 2">
+            <div v-if="row.syncPlatformFreezeChamberVOList.length">
               <strong>【平台冻结】</strong>
               <div v-for="item in row.syncPlatformFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
             </div>
-            <div v-else-if="+row.freezeStatus === 3">
+            <div v-if="row.syncChamberFreezeChamberVOList.length">
               <strong>【商会冻结】</strong>
               <div v-for="item in row.syncChamberFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
             </div>
@@ -188,14 +188,14 @@
           </template>
         </template>
       </el-table-column>
-      <el-table-column label="删除状态">
+      <!-- <el-table-column label="删除状态">
         <template slot-scope="{row:{deleteStatus}}">
           <div v-if="+deleteStatus === 1">正常</div>
           <div v-else-if="+deleteStatus === 2">用户删除</div>
           <div v-else-if="+deleteStatus === 3">商会后台删除</div>
           <div v-else-if="+deleteStatus === 4">总后台删除</div>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="供需成功匹配人" width="180">
         <template slot-scope="{row:{matchInfo}}">
           <template v-if="matchInfo">
@@ -250,20 +250,20 @@
               <el-button type="text" size="small" @click="showDetail(row)">详情</el-button>
             </div>
             <div>
-              <el-button type="text" size="small" @click="showFreezeDialog(row, true)">冻结</el-button>
-              <el-button :disabled="row.freezeStatus===1" type="text" size="small" @click="showFreezeDialog(row, false)">解冻</el-button>
+              <el-button type="text" size="small" :disabled="row.canFreeze===2" @click="showFreezeDialog(row, true)">冻结</el-button>
+              <el-button :disabled="row.canUnFreeze===2" type="text" size="small" @click="showFreezeDialog(row, false)">解冻</el-button>
             </div>
-            <div>
+            <!-- <div>
               <el-button :disabled="row.deleteStatus !== 1" type="text" size="small" @click="handleDelete(row)">删除</el-button>
               <el-button :disabled="row.deleteStatus === 1" type="text" size="small" @click="handleUnDelete(row)">撤销删除</el-button>
-            </div>
+            </div> -->
           </template>
           <template v-else slot-scope="{row}">
             <el-button type="text" size="small" @click="goToEdit(row)">编辑</el-button> <br>
             <div v-if="row.freezeStatus === 1"><el-button type="text" size="small" @click="handleChamberFreeze(row)">冻结</el-button></div>
             <div v-else><el-button :disabled="row.freezeStatus===2" type="text" size="small" @click="handleChamberUnFreeze(row)">解冻</el-button> </div>
             <el-button type="text" size="small" @click="showDetail(row)">详情</el-button> <br>
-            <el-button :disabled="row.deleteStatus !== 1" type="text" size="small" @click="handleDelete(row)">删除</el-button> <br>
+            <!-- <el-button :disabled="row.deleteStatus !== 1" type="text" size="small" @click="handleDelete(row)">删除</el-button> <br> -->
           </template>
         </template>
       </el-table-column>
