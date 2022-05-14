@@ -160,6 +160,8 @@ export default {
       // 表格数据源
       tableData: [],
 
+      demandIds: [],
+
       loading: false
     }
   },
@@ -185,9 +187,8 @@ export default {
 
     // 点击表单确定按钮
     async submit() {
-      const { selectedData = [] } = this
-      if (!selectedData.length) return this.$message({ message: '请选择供需', type: 'warning' })
-      const { state } = await addHotSupplyDemand({ ids: selectedData.map(v => v.id) }, this.ckey || 'ysh')
+      if (!this.demandIds.length) return this.$message({ message: '请选择供需', type: 'warning' })
+      const { state } = await addHotSupplyDemand(this.demandIds, this.ckey || 'ysh')
       if (state === 1) {
         this.$message({ message: '添加成功', type: 'success' })
         this.hide()
@@ -199,7 +200,10 @@ export default {
 
     // 表单选框变化
     handleSelectionChange(val) {
-      this.selectedData = val
+      let datas = val
+      for (let data of datas) {
+        this.demandIds.push(data.id)
+      }
     },
 
     // 查询可添加的热门供需
