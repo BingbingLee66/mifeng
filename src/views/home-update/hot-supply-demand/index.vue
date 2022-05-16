@@ -95,7 +95,7 @@
           <div>{{ +scope.row.publishTime | dateFormat }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="可见性">
+      <el-table-column v-if="isTopBackStage" label="可见性">
         <template slot-scope="scope">
           <div v-if="scope.row.platform === 1">全平台可见</div>
           <div v-else>部分商会可见</div>
@@ -235,8 +235,8 @@ export default {
       } = await getChamberOptions()
       this.chamberOptions = data
       this.chamberOptions.unshift(
-        { label: '全部商会', value: '' },
-        { label: '凯迪云商会', value: 'kaidiyun' }
+        { label: '全部商会', value: '' }
+        // ,{ label: '凯迪云商会', value: 'kaidiyun' }
       )
     },
 

@@ -22,7 +22,7 @@ export const getFreezeAbleList = params => request({ url: '/ec/ysh-content/canFr
 export const getUnFreezeAbleList = params => request({ url: '/ec/ysh-content/canUnFreezes', method: 'get', params })
 
 // 总后台冻结供需
-export const freezeSupplyDemandByUpBackground = (id, data) => request({ url: `/ec/ysh-content/freeze/${id}`, method: 'put', data })
+export const freezeSupplyDemandByTopBackStage = (id, data) => request({ url: `/ec/ysh-content/freeze/${id}`, method: 'put', data })
 
 // 商会后台冻结
 export const freezeSupplyDemandByChamber = id => request({ url: `/ec/ysh-content/chamberFreeze/${id}`, method: 'put' })
@@ -31,7 +31,7 @@ export const freezeSupplyDemandByChamber = id => request({ url: `/ec/ysh-content
 export const unFreezeSupplyDemandByChamber = id => request({ url: `/ec/ysh-content/chamberUnFreeze/${id}`, method: 'put' })
 
 // 总后台解冻
-export const unFreezeSupplyDemandByUpBackground = (id, data) => request({ url: `/ec/ysh-content/unFreeze/${id}`, method: 'put', data })
+export const unFreezeSupplyDemandByTopBackStage = (id, data) => request({ url: `/ec/ysh-content/unFreeze/${id}`, method: 'put', data })
 
 // 删除供需
 export const deleteSupplyDemand = id => request({ url: `/ec/ysh-content/${id}`, method: 'delete' })

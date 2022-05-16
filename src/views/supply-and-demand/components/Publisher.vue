@@ -23,8 +23,8 @@
       <el-form-item label="手机号">
         <el-input v-model="query.phone" clearable maxlength="11" placeholder="请输入" />
       </el-form-item>
-      <el-form-item label="所属商会">
-        <el-select v-model="query.ckey" placeholder="请选择">
+      <el-form-item v-if="isTopBackStage" label="所属商会">
+        <el-select v-model="query.ckey" placeholder="请选择" filterable clearable>
           <el-option value="全部" label="全部" />
           <el-option v-for="item in chamberList" :key="item.id" :label="item.name" :value="item.ckey" />
         </el-select>
@@ -38,7 +38,7 @@
       ref="table"
       v-loading="loading"
       class="margin-bottom"
-      :data="filterTableData"
+      :data="tableData"
       style="width:100%;"
       stripe
       border
@@ -48,7 +48,10 @@
       <el-table-column width="55px" class-name="table-radio-cell">
         <el-radio slot-scope="{row}" :value="selectedData.wxUserId" :label="row.wxUserId" @change="onRadioChange(row)" />
       </el-table-column>
-      <el-table-column v-for="it in tableRows" :key="it.prop" :prop="it.prop" :label="it.lable" min-width="100px" />
+      <el-table-column label="用户ID" prop="wxUserId" />
+      <el-table-column label="用户名" prop="userName" />
+      <el-table-column label="手机号" prop="phone" />
+      <el-table-column v-if="isTopBackStage" label="所属商会" prop="chamberName" />
     </el-table>
     <el-pagination
       :current-page="query.pageNum"
@@ -89,23 +92,17 @@ export default {
       },
       chamberList: [], // 商会列表
       tableData: [],
-      tableRows: [ // 表格行的初始化
-        { prop: 'wxUserId', lable: '用户ID' },
-        { prop: 'userName', lable: '用户名' },
-        { prop: 'phone', lable: '手机号' },
-        { prop: 'chamberName', lable: '所属商会' }
-      ],
       selectedData: {},
       total: 0,
       loading: false
     }
   },
   computed: {
-    // 过滤掉已选发布者
-    filterTableData() {
-      const { data: [user], tableData } = this
-      if (!user) return tableData
-      return tableData.filter(v => user.wxUserId !== v.wxUserId)
+    ckey() {
+      return this.$store.getters.ckey
+    },
+    isTopBackStage() {
+      return !this.ckey
     }
   },
   created() {
@@ -128,12 +125,16 @@ export default {
       return params
     },
     initData() {
-      if (this.isUserEmpty) {
-        this.$emit('hideFooter')
-      } else if (this.tableData.length) {
-        this.selectedData = this.data
-        this.query = this.$options.data().query
+      if (this.isUserEmpty) return this.$emit('hideFooter')
+      const { query } = this.$options.data()
+
+      if (Object.entries(query).some(([key, value]) => this.query[key] !== value)) {
+        // 存在搜索条件 则 重置
+        this.query = query
+        this.getUserList() // 重拉数据
       }
+
+      this.selectedData = this.data[0] || {}
     },
     async getChamberList() {
       const { data: { data = [] }} = await getChamberAllList()

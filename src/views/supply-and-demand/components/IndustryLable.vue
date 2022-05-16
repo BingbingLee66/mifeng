@@ -74,7 +74,6 @@ export default {
     },
     handleConfirm() {
       const selectedData = this.$refs.tree.getCheckedNodes(true)
-      console.log(selectedData)
       if (!selectedData.length) return this.$message({ message: '请选择行业标签', type: 'warning' })
       if (selectedData.length > 3) return this.$message({ message: '最多可选3个行业标签', type: 'warning' })
       this.$emit('confirm', { type: 'IndustryLable', data: selectedData })

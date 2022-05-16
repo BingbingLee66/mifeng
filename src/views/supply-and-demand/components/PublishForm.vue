@@ -9,7 +9,10 @@
       </el-form-item>
       <!-- 发布者表格 -->
       <el-table class="margin-bottom" :data="formData.publisherList" style="width: 842px" stripe border header-row-class-name="tableheader" empty-text="请选择发布者">
-        <el-table-column v-for="it in tableRows" :key="it.prop" :prop="it.prop" :label="it.lable" :width="it.width" />
+        <el-table-column label="用户ID" prop="wxUserId" />
+        <el-table-column label="用户名" prop="userName" />
+        <el-table-column label="手机号" prop="phone" />
+        <el-table-column v-if="isTopBackStage" label="所属商会" prop="chamberName" />
         <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <template v-if="isEdit">--</template>
@@ -75,15 +78,16 @@
           :hidden-menu="true"
           :height="200"
           :content="formData.content"
+          placeholder="请勿发布违法违规、泄露隐私、恶意竞争等信息，详细描述需求，获得更多牛人的意向合作"
           @addParentHtml="addParentHtml"
           @textNumber="textNumber"
         />
-        <div class="textNumber"> {{ contentNumber }} / 2000</div>
+        <div class="textNumber" :class="{red:contentNumber>2000}"> {{ contentNumber }} / 2000</div>
       </el-form-item>
 
       <slot />
 
-      <el-form-item label="选择同步商/协会">
+      <el-form-item v-if="isTopBackStage" label="选择同步商/协会">
         <div class="association-sync">
           <div class="association-sync-title"> 在这些商/协会内同步供需 </div>
           <div class="association-selected" :class="{disable:isEdit}">
@@ -164,13 +168,6 @@ export default {
       showFooter: true,
       contentNumber: 0,
 
-      tableRows: [ // 表格行的初始化
-        { prop: 'wxUserId', lable: '用户ID' },
-        { prop: 'userName', lable: '用户名' },
-        { prop: 'phone', lable: '手机号' },
-        { prop: 'chamberName', lable: '所属商会' }
-      ],
-
       // 供需数据
       formData: {
         content: '', // 供需内容
@@ -188,6 +185,12 @@ export default {
     }
   },
   computed: {
+    ckey() {
+      return this.$store.getters.ckey
+    },
+    isTopBackStage() {
+      return !this.ckey
+    },
     isEdit() {
       return !!this.detail
     }
@@ -297,7 +300,11 @@ export default {
     // 获取商会列表
     async getChamberList(wxUserId) {
       const { data = [] } = await getChamberList(wxUserId)
-      this.formData.selectedChamberList = data
+      if (this.isTopBackStage) {
+        this.formData.selectedChamberList = data
+      } else {
+        this.formData.selectedChamberList = data.filter(v => v.ckey === this.ckey)
+      }
       this.formData.unSelecteChamberList = []
     },
     // 切换商会列表
@@ -328,15 +335,16 @@ export default {
           selectedChamberList,
         }} = this
 
-        if (!publisherList.length) this.alert('请选择发布者', reject)
+        if (!publisherList.length) return this.alert('请选择发布者', reject)
         if (!tarType) return this.alert('请选择类型', reject)
         if (!supplyLableList.length) return this.alert('请选择供需标签', reject)
         if (!industryLableList.length) return this.alert('请选择行业标签', reject)
         if (!publisherStationList.length) return this.alert('请选择发布者常驻地', reject)
-        if (validType === 2 && !date) return this.alert('请选择自定义时间')
+        if (validType === 2 && !date) return this.alert('请选择自定义时间', reject)
         if (!title) return this.alert('请填写标题', reject)
         if (!content) return this.alert('请填写内容', reject)
-        if (this.contentNumber > 2000) this.alert('内容超出2000字', reject)
+        if (this.contentNumber > 2000) return this.alert('内容超出2000字', reject)
+        if (!selectedChamberList.length) return this.alert('请至少选择一个商协会', reject)
 
         const [province, city] = publisherStationList[0].fullCode.split('-')
 
@@ -359,7 +367,8 @@ export default {
 
     // 表单提交
     async onSubmit() {
-      this.normalizeFormData().then(params => this.$emit('submit', params)).catch(console.log)
+      this.normalizeFormData().then(params => this.$emit('submit', params))
+      // .catch(console.log)
     }
   }
 }
@@ -421,6 +430,10 @@ export default {
     width: 1000px;
     text-align: right;
     margin-top: 4px;
+  }
+
+  .red {
+    color: red;
   }
 }
 </style>

@@ -169,7 +169,7 @@ export default {
         this.fetchData()
       }
     },
-    fetchData(e) {
+    async fetchData(e) {
       if (e !== undefined) {
         this.currentpage = 1
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -199,15 +199,14 @@ export default {
       if (this.query.sendStatus !== -1) {
         params['sendStatus'] = this.query.sendStatus
       }
-      list(params).then(response => {
-        if (Object.keys(response.data).length > 0) {
-          this.list = response.data.data.list
-          this.total = response.data.data.totalRows
-        } else {
-          this.list = []
-        }
-        this.listLoading = false
-      })
+
+      try {
+        const { data: { data = {}}} = await list(params)
+        console.log(data)
+        this.list = data.list || []
+        this.total = data.totalRows || 0
+      } catch (error) { /*  */ }
+      this.listLoading = false
     },
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -296,7 +295,8 @@ export default {
     },
     exportExcel(e) {
       if (this.selectionDatas.length === 0) {
-        this.$message.error({ message: '没有选择记录，操作失败'
+        this.$message.error({
+          message: '没有选择记录，操作失败'
         })
         return
       }
@@ -350,7 +350,7 @@ export default {
               message: res.msg
             })
           }
-        }).catch(() => {})
+        }).catch(() => { })
       })
     },
     // 导入excel表格打开弹窗

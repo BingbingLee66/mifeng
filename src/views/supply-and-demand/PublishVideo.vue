@@ -73,9 +73,9 @@ export default {
     }
   },
   watch: {
-    vid() {
-      clearInterval(this.time)
-      this.timer = setInterval(this.queryVideoFunc, 1000)
+    vid(newVid) {
+      clearInterval(this.timer)
+      if (newVid) this.timer = setInterval(this.queryVideoFunc, 1000)
     }
   },
 
@@ -115,17 +115,15 @@ export default {
       formData.append('file', content.file)
 
       try {
-        const { state } = await checkFile(formData)
+        const { state, msg } = await checkFile(formData)
         if (state !== 1) {
-          this.$message.error('上传图片不合规')
+          this.$message.error(msg)
           this.imgLoading = false
           return
         }
         const { data } = await uploadFile(formData, 'demand')
         this.vcover = data
-      } catch (error) {
-        //
-      }
+      } catch (error) { /*  */ }
       this.imgLoading = false
     },
 
@@ -145,16 +143,19 @@ export default {
       }
     },
     // 上传视频
-    uploadVideoFunc(content) {
+    async uploadVideoFunc(content) {
       this.videoLoading = true
       let formData = new FormData()
       formData.append('file', content.file)
-      uploadVideo(formData, 0).then(res => {
+      try {
+        const res = await uploadVideo(formData, 0)
         if (res.code === 200) {
           this.vid = res.data.videoId
-          // this.timer = setInterval(this.queryVideoFunc, 1000)
+          return
         }
-      })
+      } catch (error) { /*  */ }
+      this.videoLoading = false
+      this.$message({ message: '视频上传失败', type: 'error' })
     },
     // 查视频动态
     queryVideoFunc() {

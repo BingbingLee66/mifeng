@@ -245,8 +245,8 @@
           </template>
         </el-table-column>
         <el-table-column label="商会认证状态" width="200px">
-          <template slot-scope="{row:{authenticate}}">
-            <div v-if="authenticate">
+          <template slot-scope="{row}">
+            <div v-if="row.authenticate">
               已认证
               <div class="text-btn-style" :actionid="getId('', '详情')" @click="detail($event, row)">去查看</div>
             </div>

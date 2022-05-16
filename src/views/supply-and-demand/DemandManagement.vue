@@ -6,7 +6,7 @@
           <el-input v-model="query.title" clearable placeholder="关键词" maxlength="40" />
         </el-form-item>
         <el-form-item v-if="isTopBackStage" :span="8" label="来源商/协会">
-          <el-select v-model="query.ckey" filterable no-match-text="暂无数据">
+          <el-select v-model="query.ckey" filterable clearable no-match-text="暂无数据">
             <el-option
               v-for="cc in chamberOptions"
               :key="cc.value"
@@ -32,18 +32,9 @@
             <el-option label="商会冻结" :value="3" />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="!isTopBackStage" :span="8" label="删除状态">
-          <el-select v-model="query.deleteStatus">
-            <el-option label="全部" :value="-1" />
-            <el-option label="正常" :value="1" />
-            <el-option label="用户删除" :value="2" />
-            <el-option label="商会后台删除" :value="3" />
-            <el-option label="总后台删除" :value="4" />
-          </el-select>
-        </el-form-item>
       </el-row>
       <el-row>
-        <el-form-item v-if="isTopBackStage" :span="8" label="删除状态">
+        <!-- <el-form-item  :span="8" label="删除状态">
           <el-select v-model="query.deleteStatus">
             <el-option label="全部" :value="-1" />
             <el-option label="正常" :value="1" />
@@ -51,7 +42,7 @@
             <el-option label="商会后台删除" :value="3" />
             <el-option label="总后台删除" :value="4" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item :span="8" label="举报状态">
           <el-select v-model="query.reportStatus">
             <el-option label="全部" :value="-1" />
@@ -69,7 +60,7 @@
           </el-select>
         </el-form-item>
         <el-form-item :span="8" label="供需ID">
-          <el-input v-model="query.id" placeholder="关键词" clearable />
+          <el-input v-model="query.id" placeholder="关键词" :maxlength="19" clearable />
         </el-form-item>
         <el-button :span="8" type="primary" @click="handleCurrentChange(1)">查询</el-button>
       </el-row>
@@ -103,16 +94,19 @@
           {{ row.readPeopleNum || 0 }}
         </template>
         <template slot="header">
-          <el-button type="text" @click="handleSort('readSort')">浏览量<i class="el-icon-sort" /></el-button>
+          <el-button type="text" @click="handleSort('readSort')">
+            浏览量<i :class="getSortIconClass('readSort')" />
+          </el-button>
         </template>
-
       </el-table-column>
       <el-table-column>
         <template slot-scope="{row}">
           {{ row.collectNum || 0 }}
         </template>
         <template slot="header">
-          <el-button type="text" @click="handleSort('collectSort')">收藏量<i class="el-icon-sort" /></el-button>
+          <el-button type="text" @click="handleSort('collectSort')">
+            收藏量<i :class="getSortIconClass('collectSort')" />
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column>
@@ -120,7 +114,9 @@
           {{ row.chatPeopleNum || 0 }}
         </template>
         <template slot="header">
-          <el-button type="text" @click="handleSort('chatSort')">洽谈量<i class="el-icon-sort" /></el-button>
+          <el-button type="text" @click="handleSort('chatSort')">
+            洽谈量<i :class="getSortIconClass('chatSort')" />
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column label="发布信息" width="180">
@@ -129,12 +125,12 @@
           <div>{{ +row.createdTs | dateFormat }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="来源商/协会" width="180">
+      <el-table-column v-if="isTopBackStage" label="来源商/协会" width="180">
         <template slot-scope="{row}">
           <div v-for="item in row.sourceChamberVOList" :key="item.id">{{ item.name }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="可见性" width="120">
+      <el-table-column v-if="isTopBackStage" label="可见性" width="120">
         <template slot-scope="{row:{visibility}}">
           <div v-if="+visibility === -1">计算中</div>
           <div v-else-if="+visibility === 1">全平台可见</div>
@@ -153,7 +149,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="供需状态">
+      <el-table-column label="供需状态" width="150">
         <template slot-scope="{row:{status,closeReason}}">
           <div v-if="+status === 1">生效中</div>
           <div v-else-if="+status === 2">已关闭（过期关闭）</div>
@@ -164,15 +160,20 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="同步商/协会" width="180">
-        <template slot-scope="{row}">
-          <div v-for="item in row.syncChamberVOList" :key="item.id">{{ item.name }}</div>
+      <el-table-column v-if="isTopBackStage" label="同步商/协会" width="180">
+        <template slot-scope="{row:{syncChamberVOList}}">
+          <div v-for="item in syncChamberVOList" :key="item.id">{{ item.name }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column v-else label="是否同步本商/协会" width="180">
+        <template slot-scope="{row:{syncChamberVOList}}">
+          <div>{{ syncChamberVOList.some(v => v.ckey === ckey)?'是':'否' }}</div>
         </template>
       </el-table-column>
       <el-table-column label="冻结状态" width="180">
         <template slot-scope="{row}">
-          <div v-if="+row.freezeStatus === 1">正常</div>
           <template v-if="isTopBackStage">
+            <div v-if="!row.syncPlatformFreezeChamberVOList.length && !row.syncChamberFreezeChamberVOList.length">正常</div>
             <div v-if="row.syncPlatformFreezeChamberVOList.length">
               <strong>【平台冻结】</strong>
               <div v-for="item in row.syncPlatformFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
@@ -183,7 +184,8 @@
             </div>
           </template>
           <template v-else>
-            <div v-if="+row.freezeStatus === 2"> 平台冻结 </div>
+            <div v-if="+row.freezeStatus === 1">正常</div>
+            <div v-else-if="+row.freezeStatus === 2"> 平台冻结 </div>
             <div v-else-if="+row.freezeStatus === 3"> 商会冻结 </div>
           </template>
         </template>
@@ -316,12 +318,13 @@
 </template>
 
 <script>
-import { supplyDemandList,
+import {
+  supplyDemandList,
   getReportList,
   getFreezeAbleList,
   getUnFreezeAbleList,
-  freezeSupplyDemandByUpBackground,
-  unFreezeSupplyDemandByUpBackground,
+  freezeSupplyDemandByTopBackStage,
+  unFreezeSupplyDemandByTopBackStage,
   deleteSupplyDemand,
   unDeleteSupplyDemand,
   getSupplyDemandDetail,
@@ -333,7 +336,6 @@ import { authorizeMemberAuthBatch } from '@/api/member/manager'
 
 import { formatDateTime } from '@/utils/date'
 import videoComponent from '@/components/video/index'
-import { mapState } from 'vuex'
 
 export default {
   name: 'DemandManagement',
@@ -352,9 +354,9 @@ export default {
         status: -1,
         freezeStatus: -1,
         visibility: -1,
-        readSort: 0,
-        collectSort: 0,
-        chatSort: 0,
+        readSort: 0, // 0:不排序 1:正序 -1:逆序
+        collectSort: 0, // 0:不排序 1:正序 -1:逆序
+        chatSort: 0, // 0:不排序 1:正序 -1:逆序
         isHot: -1,
         publishTime: -1
       },
@@ -384,7 +386,9 @@ export default {
     }
   },
   computed: {
-    ...mapState('user', ['ckey']),
+    ckey() {
+      return this.$store.getters.ckey
+    },
     isTopBackStage() {
       return !this.ckey
     }
@@ -397,7 +401,9 @@ export default {
     async getChamberOptions() {
       const { data } = await getChamberOptions()
       this.chamberOptions = data.data
-      this.chamberOptions.unshift({ 'label': '全部商会', 'value': '' }, { 'label': '凯迪云商会', 'value': 'kaidiyun' })
+      this.chamberOptions.unshift({ 'label': '全部商会', 'value': '' }
+      // , { 'label': '凯迪云商会', 'value': 'kaidiyun' }
+      )
     },
 
     async querySupplyDemandList() {
@@ -430,6 +436,15 @@ export default {
       this.query.chatSort = 0
       this.query[sortType] = ({ '-1': 1, 0: 1, 1: -1 })[oldSort]
       this.querySupplyDemandList()
+    },
+
+    getSortIconClass(sortType) {
+      const { [sortType]: sort } = this.query
+      return {
+        'el-icon-sort': sort === 0,
+        'el-icon-sort-up': sort === 1,
+        'el-icon-sort-down': sort === -1
+      }
     },
 
     async showRepostInfo(row) {
@@ -466,8 +481,8 @@ export default {
       try {
         const { state } = await (
           isFreeze
-            ? freezeSupplyDemandByUpBackground
-            : unFreezeSupplyDemandByUpBackground
+            ? freezeSupplyDemandByTopBackStage
+            : unFreezeSupplyDemandByTopBackStage
         )(data.id, { freezeTargets: checkList })
 
         if (state === 1) {
@@ -585,10 +600,7 @@ export default {
         params: { memberDetail: { wxUserId: row.sourceInfo.userId, ckey: this.ckey }, 'querytype': '0' }
       })
     },
-    isChamberPower(row) {
-      if (row.freezeStatus === 1) return true
-      // if ()
-    }
+
   },
 }
 </script>

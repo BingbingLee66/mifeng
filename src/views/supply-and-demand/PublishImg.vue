@@ -84,7 +84,7 @@ export default {
     // 上传前校验
     beforeUpload(file, index) {
       if (!['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type)) {
-        this.$message.error('上传图片只能是 JPG 或 PNG 或 gif 格式!')
+        this.$message.error('上传图片只能是 JPG 或 PNG 或 GIF 格式!')
         return false
       }
       if (file.size > 1024 * 1024 * 2) {
@@ -100,9 +100,9 @@ export default {
       formData.append('file', content.file)
 
       try {
-        const { state } = await checkFile(formData)
+        const { state, msg } = await checkFile(formData)
         if (state !== 1) {
-          this.$message.error('上传图片不合规')
+          this.$message.error(msg)
           this.loading = false
           return
         }

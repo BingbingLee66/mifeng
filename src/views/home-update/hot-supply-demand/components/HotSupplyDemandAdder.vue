@@ -65,9 +65,9 @@
             </template>
           </el-table-column>
           <el-table-column label="发布信息">
-            <template slot-scope="scope">
-              <div>{{ scope.row.createInfo.userName }}</div>
-              <div>{{ scope.row.createdTs | dateFormat }}</div>
+            <template slot-scope="{row}">
+              <div>{{ row.sourceInfo ? row.sourceInfo.userName : '' }}</div>
+              <div>{{ +row.createdTs | dateFormat }}</div>
             </template>
           </el-table-column>
           <el-table-column label="可见性">
@@ -182,7 +182,9 @@ export default {
     hide() {
       this.$refs['kdDialog'].hide()
       this.$refs['formHotSupplyDemand'].resetFields()
-      this.selectedData = []
+      const { demandIds, query } = this.$options.data()
+      this.demandIds = demandIds
+      this.query = query
     },
 
     // 点击表单确定按钮
