@@ -127,7 +127,7 @@
       </el-table-column>
       <el-table-column v-if="isTopBackStage" label="来源商/协会" width="180">
         <template slot-scope="{row}">
-          <div v-for="item in row.sourceChamberVOList" :key="item.id">{{ item.name }}</div>
+          <div v-for="(item,i) in row.sourceChamberVOList" :key="`${item.id}-${i}`">{{ item.name }}</div>
         </template>
       </el-table-column>
       <el-table-column v-if="isTopBackStage" label="可见性" width="120">
@@ -162,7 +162,7 @@
       </el-table-column>
       <el-table-column v-if="isTopBackStage" label="同步商/协会" width="180">
         <template slot-scope="{row:{syncChamberVOList}}">
-          <div v-for="item in syncChamberVOList" :key="item.id">{{ item.name }}</div>
+          <div v-for="(item,i) in syncChamberVOList" :key="`${item.id}-${i}`">{{ item.name }}</div>
         </template>
       </el-table-column>
       <el-table-column v-else label="是否同步本商/协会" width="180">
@@ -176,11 +176,11 @@
             <div v-if="!row.syncPlatformFreezeChamberVOList.length && !row.syncChamberFreezeChamberVOList.length">正常</div>
             <div v-if="row.syncPlatformFreezeChamberVOList.length">
               <strong>【平台冻结】</strong>
-              <div v-for="item in row.syncPlatformFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
+              <div v-for="(item,i) in row.syncPlatformFreezeChamberVOList" :key="`${item.id}-${i}`">{{ item.name }}</div>
             </div>
             <div v-if="row.syncChamberFreezeChamberVOList.length">
               <strong>【商会冻结】</strong>
-              <div v-for="item in row.syncChamberFreezeChamberVOList" :key="item.id">{{ item.name }}</div>
+              <div v-for="(item,i) in row.syncChamberFreezeChamberVOList" :key="`${item.id}-${i}`">{{ item.name }}</div>
             </div>
           </template>
           <template v-else>
@@ -289,8 +289,8 @@
         </span>
       </div>
       <el-checkbox-group v-model="freezeAboutDialog.checkList" v-loading="freezeAboutDialog.loading">
-        <template v-for="item in freezeAboutDialog.list">
-          <el-checkbox v-if="item.value" :key="item.id" style="display:block;margin-bottom:10px;" :label="item.value">{{ item.label }}</el-checkbox>
+        <template v-for="(item,i) in freezeAboutDialog.list">
+          <el-checkbox v-if="item.value" :key="`${item.id}-${i}`" style="display:block;margin-bottom:10px;" :label="item.value">{{ item.label }}</el-checkbox>
         </template>
       </el-checkbox-group>
       <div slot="footer">
@@ -485,22 +485,20 @@ export default {
 
     async handleFreeze() {
       const { data, checkList, isFreeze } = this.freezeAboutDialog
-      try {
-        const { state } = await (
-          isFreeze
-            ? freezeSupplyDemandByTopBackStage
-            : unFreezeSupplyDemandByTopBackStage
-        )(data.id, { freezeTargets: checkList })
+      const { state, msg } = await (
+        isFreeze
+          ? freezeSupplyDemandByTopBackStage
+          : unFreezeSupplyDemandByTopBackStage
+      )(data.id, { freezeTargets: checkList })
 
-        if (state === 1) {
-          this.$message({ message: isFreeze ? '冻结成功' : '解冻成功', type: 'success' })
-          this.freezeAboutDialog.visible = false
-          this.querySupplyDemandList()
-          return
-        }
-      } catch (error) { /*  */ }
+      if (state === 1) {
+        this.$message({ message: isFreeze ? '冻结成功' : '解冻成功', type: 'success' })
+        this.freezeAboutDialog.visible = false
+        this.querySupplyDemandList()
+        return
+      }
 
-      this.$message({ message: isFreeze ? '冻结失败' : '解冻失败', type: 'error' })
+      this.$message({ message: msg, type: 'error' })
     },
 
     async handleDelete(row) {
@@ -543,31 +541,27 @@ export default {
 
     async handleChamberFreeze(row) {
       await this.$confirm(`<div>您确定要冻结供需吗？ <span style="color:red;">(冻结后，该供需不会展示在商/协会主页)</span></div>`, '冻结', { dangerouslyUseHTMLString: true })
-      try {
-        const { state } = await freezeSupplyDemandByChamber(row.id)
-        if (state === 1) {
-          this.$message({ message: '冻结成功', type: 'success' })
-          this.freezeAboutDialog.visible = false
-          this.querySupplyDemandList()
-          return
-        }
-      } catch (error) { /*  */ }
+      const { state, msg } = await freezeSupplyDemandByChamber(row.id)
+      if (state === 1) {
+        this.$message({ message: '冻结成功', type: 'success' })
+        this.freezeAboutDialog.visible = false
+        this.querySupplyDemandList()
+        return
+      }
 
-      this.$message({ message: '冻结失败', type: 'error' })
+      this.$message({ message: msg, type: 'error' })
     },
     async handleChamberUnFreeze(row) {
       await this.$confirm(`<div>确认解冻该供需？ <span style="color:red;">(解冻后，该供需将恢复展示在用户端)</span></div>`, '冻结', { dangerouslyUseHTMLString: true })
-      try {
-        const { state } = await unFreezeSupplyDemandByChamber(row.id)
-        if (state === 1) {
-          this.$message({ message: '解冻成功', type: 'success' })
-          this.freezeAboutDialog.visible = false
-          this.querySupplyDemandList()
-          return
-        }
-      } catch (error) { /*  */ }
+      const { state, msg } = await unFreezeSupplyDemandByChamber(row.id)
+      if (state === 1) {
+        this.$message({ message: '解冻成功', type: 'success' })
+        this.freezeAboutDialog.visible = false
+        this.querySupplyDemandList()
+        return
+      }
 
-      this.$message({ message: '解冻失败', type: 'error' })
+      this.$message({ message: msg, type: 'error' })
     },
 
     onSelectionChange(e) {

@@ -27,7 +27,8 @@
           <el-form-item label="供需标题">
             <el-input v-model="query.title" clearable placeholder="关键词" />
           </el-form-item>
-          <el-form-item label="供需状态">
+          <!--
+            <el-form-item label="供需状态">
             <el-select v-model="query.status" placeholder="请选择状态">
               <el-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
@@ -37,6 +38,7 @@
               <el-option v-for="item in freezeStatusList" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-form-item>
+          -->
           <el-form-item v-if="isTopBackStage" label="可见性">
             <el-select v-model="query.visibility" placeholder="请选择">
               <el-option v-for="item in platformList" :key="item.value" :label="item.label" :value="item.value" />
@@ -120,7 +122,7 @@ export default {
       query: {
         title: '', // 供需标题
         ckey: '', // 商会来源
-        status: -1, // 供需状态
+        status: 1, // 供需状态
         id: '', // 平台性
         visibility: -1, // 可见性
 
@@ -131,7 +133,7 @@ export default {
         reportStatus: -1,
         collectSort: 0,
         chatSort: 0,
-        freezeStatus: -1, // 冻结状态  0-全部 1-正常 2-平台冻结 3-商会冻结,
+        freezeStatus: 1, // 冻结状态  0-全部 1-正常 2-平台冻结 3-商会冻结,
         deleteStatus: -1,
         publishTime: -1,
         isHot: 2
