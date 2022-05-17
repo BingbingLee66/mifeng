@@ -93,9 +93,9 @@
         <template slot-scope="{row}">
           {{ row.readPeopleNum || 0 }}
         </template>
-        <template slot="header">
+        <template #header>
           <el-button type="text" @click="handleSort('readSort')">
-            浏览量<i :class="getSortIconClass('readSort')" />
+            浏览量<i :class="readSortClass" />
           </el-button>
         </template>
       </el-table-column>
@@ -103,9 +103,9 @@
         <template slot-scope="{row}">
           {{ row.collectNum || 0 }}
         </template>
-        <template slot="header">
+        <template #header>
           <el-button type="text" @click="handleSort('collectSort')">
-            收藏量<i :class="getSortIconClass('collectSort')" />
+            收藏量<i :class="collectSortClass" />
           </el-button>
         </template>
       </el-table-column>
@@ -113,9 +113,9 @@
         <template slot-scope="{row}">
           {{ row.chatPeopleNum || 0 }}
         </template>
-        <template slot="header">
+        <template #header>
           <el-button type="text" @click="handleSort('chatSort')">
-            洽谈量<i :class="getSortIconClass('chatSort')" />
+            洽谈量<i :class="chatSortClass" />
           </el-button>
         </template>
       </el-table-column>
@@ -391,6 +391,15 @@ export default {
     },
     isTopBackStage() {
       return !this.ckey
+    },
+    readSortClass() {
+      return this.getSortIconClass(this.query.readSort)
+    },
+    collectSortClass() {
+      return this.getSortIconClass(this.query.collectSort)
+    },
+    chatSortClass() {
+      return this.getSortIconClass(this.query.chatSort)
     }
   },
   created() {
@@ -438,13 +447,11 @@ export default {
       this.querySupplyDemandList()
     },
 
-    getSortIconClass(sortType) {
-      const { [sortType]: sort } = this.query
-      return {
-        'el-icon-sort': sort === 0,
-        'el-icon-sort-up': sort === 1,
-        'el-icon-sort-down': sort === -1
-      }
+    getSortIconClass(sort) {
+      let className = 'el-icon-sort'
+      if (sort === 1) return className + '-up'
+      if (sort === -1) return className + '-down'
+      return className
     },
 
     async showRepostInfo(row) {
