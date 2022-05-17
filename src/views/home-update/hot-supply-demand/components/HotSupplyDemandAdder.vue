@@ -70,7 +70,7 @@
               <div>{{ +row.createdTs | dateFormat }}</div>
             </template>
           </el-table-column>
-          <el-table-column label="可见性">
+          <el-table-column v-if="isTopBackStage" label="可见性">
             <template slot-scope="scope">
               <div v-if="scope.row.visibility === 1">全平台可见</div>
               <div v-else>部分商会可见</div>
@@ -202,10 +202,7 @@ export default {
 
     // 表单选框变化
     handleSelectionChange(val) {
-      let datas = val
-      for (let data of datas) {
-        this.demandIds.push(data.id)
-      }
+      this.demandIds = val.map(v => v.id)
     },
 
     // 查询可添加的热门供需

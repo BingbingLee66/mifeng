@@ -1,5 +1,5 @@
 <template>
-  <PublishForm :detail="detail" @submit="onSubmit">
+  <PublishForm :detail="detail">
     <el-form-item v-loading="videoLoading" label="供需视频" required>
       <el-upload
         v-if="!vid"
@@ -55,7 +55,6 @@
 
 <script>
 import { checkFile, uploadFile, uploadVideo, queryVideo } from '@/api/content/article'
-import { publishSupplyDemand } from '@/api/home/supplyDemandManger'
 import videoComponent from '@/components/video/index'
 
 export default {
@@ -63,38 +62,39 @@ export default {
     PublishForm: () => import(/* webpackChunkName: "PublishForm" */'./components/PublishForm'),
     videoComponent
   },
+  props: {
+    detail: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {
       vid: '',
       vcover: '',
       videoLoading: false,
-      imgLoading: false,
-      detail: null
+      imgLoading: false
     }
   },
   watch: {
+    detail: {
+      handler(newObj) {
+        if (newObj) {
+          this.vcover = newObj.yshContentEditVO.vcover
+          this.vid = newObj.yshContentEditVO.vid
+        }
+      },
+      immediate: true
+    },
     vid(newVid) {
       clearInterval(this.timer)
       if (newVid) this.timer = setInterval(this.queryVideoFunc, 1000)
     }
   },
-
-  created() {
-    this.getEditData()
-  },
   beforeDestroy() {
     clearInterval(this.timer)
   },
   methods: {
-
-    getEditData() {
-      const { isEdit, id } = this.$route.query
-      if (!isEdit) return
-      const detailMap = JSON.parse(localStorage.getItem('supply_demand_detail') || '{}')
-      this.detail = detailMap[id]
-      this.vcover = this.detail.yshContentEditVO.vcover
-      this.vid = this.detail.yshContentEditVO.vid
-    },
 
     // 上传前校验
     beforeUpload(file, index) {
@@ -169,24 +169,18 @@ export default {
         }
       })
     },
-    async onSubmit(params) {
-      if (!this.vid) return this.$message({ message: '请上传视频', type: 'warning' })
-      try {
-        const { state } = await publishSupplyDemand({
-          ...params,
-          contentType: 2,
-          coverType: 1,
-          vcover: this.vcover ? this.vcover : void 0,
-          vid: this.vid
-        })
-        if (state === 1) {
-          this.$message({ message: '发布成功', type: 'success' })
-          this.$router.push({ path: '/management' })
-          return
+    processParams(params) {
+      return new Promise((resolve, reject) => {
+        if (!this.vid) {
+          this.$message({ message: '请上传视频', type: 'warning' })
+          return reject('请上传视频')
         }
-      } catch (error) { //
-      }
-      this.$message({ message: '发布失败，请重试', type: 'error' })
+        params.contentType = 2
+        params.coverType = 1
+        params.vcover = this.vcover || undefined
+        params.vid = this.vid
+        resolve(params)
+      })
     }
   }
 }

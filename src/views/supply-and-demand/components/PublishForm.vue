@@ -64,7 +64,7 @@
       <el-form-item label="有效时间" required>
         <el-radio v-model="formData.validType" :label="1" @change="formData.date=''">长期有效</el-radio>
         <el-radio v-model="formData.validType" :label="2">自定义时间</el-radio>
-        <el-date-picker v-show="formData.validType===2" v-model="formData.date" type="datetime" placeholder="选择日期时间" />
+        <el-date-picker v-show="formData.validType===2" v-model="formData.date" :picker-options="{disabledDate}" type="datetime" placeholder="选择日期时间" />
       </el-form-item>
     </el-form>
 
@@ -136,6 +136,7 @@
 <script>
 import editorElem from '@/components/wangEditor/index'
 import { getChamberList } from '@/api/content/article'
+import { publishSupplyDemand, updateSupplyDemand } from '@/api/home/supplyDemandManger'
 
 const dialogTitleMap = {
   Publisher: '添加发布者',
@@ -277,6 +278,9 @@ export default {
         this.formData.publisherList.splice(index, 1)
       })
     },
+    disabledDate(e) {
+      return e < (Date.now() - 1000 * 60 * 60 * 24)
+    },
     // 移除标签
     handleLableDelete({ list, index }) {
       list.splice(index, 1)
@@ -367,8 +371,20 @@ export default {
 
     // 表单提交
     async onSubmit() {
-      this.normalizeFormData().then(params => this.$emit('submit', params))
-      // .catch(console.log)
+      const params = await this.normalizeFormData()
+
+      await this.$parent.processParams(params)
+
+      const { state, msg } = await (this.isEdit ? updateSupplyDemand : publishSupplyDemand)({
+        ...params,
+        id: this.isEdit ? this.detail.yshContentEditVO.id : undefined
+      })
+      if (state === 1) {
+        this.$message({ message: this.isEdit ? '编辑成功' : '发布成功', type: 'success' })
+        this.$router.push({ path: '/management' })
+        return
+      }
+      this.$message({ message: msg, type: 'error' })
     }
   }
 }

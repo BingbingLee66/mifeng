@@ -1,5 +1,5 @@
 <template>
-  <PublishForm :detail="detail" @submit="onSubmit">
+  <PublishForm :detail="detail">
     <el-form-item v-loading="loading">
       <div slot="label">
         <span>供需图片</span>
@@ -46,31 +46,35 @@
 
 <script>
 import { checkFile, uploadFile } from '@/api/content/article'
-import { publishSupplyDemand } from '@/api/home/supplyDemandManger'
 
 export default {
   components: {
     PublishForm: () => import(/* webpackChunkName: "PublishForm" */'./components/PublishForm'),
+  },
+  props: {
+    detail: {
+      type: Object,
+      default: null
+    }
   },
   data() {
     return {
       imgs: [],
       loading: false,
       currentImg: '',
-      detail: null
     }
   },
-  created() {
-    this.getEditData()
+  watch: {
+    detail: {
+      handler(newObj) {
+        if (newObj) {
+          this.imgs = newObj.yshContentEditVO.imgs || []
+        }
+      },
+      immediate: true
+    }
   },
   methods: {
-    getEditData() {
-      const { isEdit, id } = this.$route.query
-      if (!isEdit) return
-      const detailMap = JSON.parse(localStorage.getItem('supply_demand_detail') || '{}')
-      this.detail = detailMap[id]
-      this.imgs = this.detail.yshContentEditVO.imgs || []
-    },
     // 图片拖拽排序
     onDragStart(i) {
       this.dragIndex = i
@@ -124,23 +128,9 @@ export default {
       this.currentImg = val
     },
 
-    async onSubmit(params) {
+    async processParams(params) {
       params.imgs = this.imgs
       params.contentType = 1
-      try {
-        const { state } = await publishSupplyDemand({
-          ...params,
-          contentType: 1,
-          imgs: this.imgs
-        })
-        if (state === 1) {
-          this.$message({ message: '发布成功', type: 'success' })
-          this.$router.push({ path: '/management' })
-          return
-        }
-      } catch (error) { //
-      }
-      this.$message({ message: '发布失败，请重试', type: 'error' })
     }
   }
 }

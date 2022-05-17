@@ -328,18 +328,11 @@ export const constantRoutes = [
         meta: { title: '邀请有礼活动详情' }
       },
       {
-        path: '/supply-and-demand/edit/img',
-        name: '编辑图文供需',
-        component: () => import('@/views/supply-and-demand/PublishImg'),
+        path: '/supply-and-demand/edit-supply-demand',
+        name: '编辑供需',
+        component: () => import('@/views/supply-and-demand/EditSupplyDemand'),
         hidden: true,
-        meta: { title: '编辑图文供需' }
-      },
-      {
-        path: '/supply-and-demand/edit/video',
-        name: '编辑视频供需',
-        component: () => import('@/views/supply-and-demand/PublishVideo'),
-        hidden: true,
-        meta: { title: '编辑视频供需' }
+        meta: { title: '编辑供需' }
       },
     ]
   }

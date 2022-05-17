@@ -531,16 +531,7 @@ export default {
     },
 
     async goToEdit(row) {
-      try {
-        const { data } = await getSupplyDemandDetail(row.id)
-        const detailMap = JSON.parse(localStorage.getItem('supply_demand_detail') || '{}')
-        detailMap[row.id] = data
-        localStorage.setItem('supply_demand_detail', JSON.stringify(detailMap))
-        this.$router.push({
-          path: data.yshContentEditVO.contentType === 1 ? '/supply-and-demand/edit/img' : '/supply-and-demand/edit/video',
-          query: { isEdit: 1, id: row.id }
-        })
-      } catch (error) { /*  */ }
+      this.$router.push({ path: '/supply-and-demand/edit-supply-demand', query: { id: row.id }})
     },
 
     async handleChamberFreeze(row) {
