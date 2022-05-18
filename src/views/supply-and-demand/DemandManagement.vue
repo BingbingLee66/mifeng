@@ -184,7 +184,8 @@
             </div>
           </template>
           <template v-else>
-            <div v-if="+row.freezeStatus === 1">正常</div>
+            <div v-if="!row.syncChamberVOList.some(v => v.ckey === ckey)">--</div>
+            <div v-else-if="+row.freezeStatus === 1">正常</div>
             <div v-else-if="+row.freezeStatus === 2"> 平台冻结 </div>
             <div v-else-if="+row.freezeStatus === 3"> 商会冻结 </div>
           </template>
