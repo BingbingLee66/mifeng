@@ -73,8 +73,9 @@
             </template>
           </el-table-column>
           <el-table-column v-if="isTopBackStage" label="可见性">
-            <template slot-scope="scope">
-              <div v-if="scope.row.visibility === 1">全平台可见</div>
+            <template slot-scope="{row:{visibility}}">
+              <div v-if="visibility === -1">系统加载中</div>
+              <div v-else-if="visibility === 1">全平台可见</div>
               <div v-else>部分商会可见</div>
             </template>
           </el-table-column>
@@ -87,10 +88,23 @@
             </template>
           </el-table-column>
           <el-table-column label="冻结状态">
-            <template slot-scope="{row:{freezeStatus}}">
-              <div v-if="+freezeStatus === 1">正常</div>
-              <div v-else-if="+freezeStatus === 2"> 平台冻结 </div>
-              <div v-else-if="+freezeStatus === 3"> 商会冻结 </div>
+            <template slot-scope="{row}">
+              <template v-if="isTopBackStage">
+                <div v-if="!row.syncPlatformFreezeChamberVOList.length && !row.syncChamberFreezeChamberVOList.length">正常</div>
+                <div v-if="row.syncPlatformFreezeChamberVOList.length">
+                  <strong>【平台冻结】</strong>
+                  <div v-for="(item,i) in row.syncPlatformFreezeChamberVOList" :key="`${item.id}-${i}`">{{ item.name }}</div>
+                </div>
+                <div v-if="row.syncChamberFreezeChamberVOList.length">
+                  <strong>【商会冻结】</strong>
+                  <div v-for="(item,i) in row.syncChamberFreezeChamberVOList" :key="`${item.id}-${i}`">{{ item.name }}</div>
+                </div>
+              </template>
+              <template v-else>
+                <div v-if="+row.freezeStatus === 1">正常</div>
+                <div v-else-if="+row.freezeStatus === 2"> 平台冻结 </div>
+                <div v-else-if="+row.freezeStatus === 3"> 商会冻结 </div>
+              </template>
             </template>
           </el-table-column>
         </el-table>

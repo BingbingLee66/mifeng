@@ -132,7 +132,7 @@
       </el-table-column>
       <el-table-column v-if="isTopBackStage" label="可见性" width="120">
         <template slot-scope="{row:{visibility}}">
-          <div v-if="+visibility === -1">计算中</div>
+          <div v-if="+visibility === -1">系统加载中</div>
           <div v-else-if="+visibility === 1">全平台可见</div>
           <div v-else-if="+visibility === 2">部分商会可见</div>
         </template>
@@ -166,8 +166,8 @@
         </template>
       </el-table-column>
       <el-table-column v-else label="是否同步本商/协会" width="180">
-        <template slot-scope="{row:{syncChamberVOList}}">
-          <div>{{ syncChamberVOList.some(v => v.ckey === ckey)?'是':'否' }}</div>
+        <template slot-scope="{row}">
+          <div>{{ isSyncCurrentChamber(row)?'是':'否' }}</div>
         </template>
       </el-table-column>
       <el-table-column label="冻结状态" width="180">
@@ -261,9 +261,9 @@
             </div> -->
           </template>
           <template v-else slot-scope="{row}">
-            <el-button type="text" size="small" @click="goToEdit(row)">编辑</el-button> <br>
-            <div v-if="row.freezeStatus === 1"><el-button type="text" size="small" @click="handleChamberFreeze(row)">冻结</el-button></div>
-            <div v-else><el-button :disabled="row.freezeStatus===2" type="text" size="small" @click="handleChamberUnFreeze(row)">解冻</el-button> </div>
+            <el-button :disabled="!isSyncCurrentChamber(row)" type="text" size="small" @click="goToEdit(row)">编辑</el-button> <br>
+            <div v-if="row.freezeStatus === 1"><el-button :disabled="!isSyncCurrentChamber(row)" type="text" size="small" @click="handleChamberFreeze(row)">冻结</el-button></div>
+            <div v-else><el-button :disabled="!isSyncCurrentChamber(row)" type="text" size="small" @click="handleChamberUnFreeze(row)">解冻</el-button> </div>
             <el-button type="text" size="small" @click="showDetail(row)">详情</el-button> <br>
             <!-- <el-button :disabled="row.deleteStatus !== 1" type="text" size="small" @click="handleDelete(row)">删除</el-button> <br> -->
           </template>
@@ -485,6 +485,7 @@ export default {
 
     async handleFreeze() {
       const { data, checkList, isFreeze } = this.freezeAboutDialog
+      if (!checkList.length) return this.$message({ message: `请选择${isFreeze ? '冻结' : '解冻'}的商/协会`, type: 'error' })
       const { state, msg } = await (
         isFreeze
           ? freezeSupplyDemandByTopBackStage
@@ -592,6 +593,10 @@ export default {
         params: { memberDetail: { wxUserId: row.sourceInfo.userId, ckey: this.ckey }, 'querytype': '0' }
       })
     },
+
+    async isSyncCurrentChamber({ syncChamberVOList }) {
+      return syncChamberVOList.some(v => v.ckey === this.ckey)
+    }
 
   },
 }

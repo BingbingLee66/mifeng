@@ -97,7 +97,8 @@
       </el-table-column>
       <el-table-column v-if="isTopBackStage" label="可见性">
         <template slot-scope="scope">
-          <div v-if="scope.row.platform === 1">全平台可见</div>
+          <div v-if="scope.row.platform === -1">系统加载中</div>
+          <div v-else-if="scope.row.platform === 1">全平台可见</div>
           <div v-else>部分商会可见</div>
         </template>
       </el-table-column>
