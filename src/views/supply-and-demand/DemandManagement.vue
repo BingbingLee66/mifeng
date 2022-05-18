@@ -167,7 +167,7 @@
       </el-table-column>
       <el-table-column v-else label="是否同步本商/协会" width="180">
         <template slot-scope="{row}">
-          <div>{{ isSyncCurrentChamber(row)?'是':'否' }}</div>
+          <div>{{ row.syncChamberVOList.some(v => v.ckey === ckey)?'是':'否' }}</div>
         </template>
       </el-table-column>
       <el-table-column label="冻结状态" width="180">
@@ -261,9 +261,9 @@
             </div> -->
           </template>
           <template v-else slot-scope="{row}">
-            <el-button :disabled="!isSyncCurrentChamber(row)" type="text" size="small" @click="goToEdit(row)">编辑</el-button> <br>
-            <div v-if="row.freezeStatus === 1"><el-button :disabled="!isSyncCurrentChamber(row)" type="text" size="small" @click="handleChamberFreeze(row)">冻结</el-button></div>
-            <div v-else><el-button :disabled="!isSyncCurrentChamber(row)" type="text" size="small" @click="handleChamberUnFreeze(row)">解冻</el-button> </div>
+            <el-button :disabled="!row.syncChamberVOList.some(v => v.ckey === ckey)" type="text" size="small" @click="goToEdit(row)">编辑</el-button> <br>
+            <div v-if="row.freezeStatus === 1"><el-button :disabled="!row.syncChamberVOList.some(v => v.ckey === ckey)" type="text" size="small" @click="handleChamberFreeze(row)">冻结</el-button></div>
+            <div v-else><el-button :disabled="!row.syncChamberVOList.some(v => v.ckey === ckey)" type="text" size="small" @click="handleChamberUnFreeze(row)">解冻</el-button> </div>
             <el-button type="text" size="small" @click="showDetail(row)">详情</el-button> <br>
             <!-- <el-button :disabled="row.deleteStatus !== 1" type="text" size="small" @click="handleDelete(row)">删除</el-button> <br> -->
           </template>
@@ -345,6 +345,7 @@ export default {
   data() {
     return {
       query: {
+        id: '',
         title: '',
         pageSize: 10,
         pageNum: 1,
@@ -592,12 +593,7 @@ export default {
         name: '会员详情',
         params: { memberDetail: { wxUserId: row.sourceInfo.userId, ckey: this.ckey }, 'querytype': '0' }
       })
-    },
-
-    async isSyncCurrentChamber({ syncChamberVOList }) {
-      return syncChamberVOList.some(v => v.ckey === this.ckey)
     }
-
   },
 }
 </script>
