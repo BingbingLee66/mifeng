@@ -200,7 +200,7 @@
             </el-table-column>
             <el-table-column label="创建时间" width="160px">
               <template slot-scope="scope">
-                {{ scope.row.createdTs | dateFormat }}
+                {{ scope.row.createdTs }}
               </template>
             </el-table-column>
           </el-table>
