@@ -17,7 +17,7 @@ export default {
   },
   data() {
     return {
-      activeName: 'HotRank',
+      activeName: 'SupplyDemandStatistics',
       tabList: [
         { name: 'SupplyDemandStatistics', label: '供需数据统计' },
         { name: 'HotRank', label: '热词排行榜' }

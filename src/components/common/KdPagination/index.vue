@@ -1,8 +1,8 @@
 <template>
   <el-pagination
     background
-    layout="total, sizes, prev, pager, next, jumper"
-    :page-sizes="[ 10, 20, 50, 100, 500]"
+    :layout="layout"
+    :page-sizes="pageSizes"
     :page-size="pageSize"
     :style="{'padding-top': '15px'}"
     v-bind="$attrs"
@@ -21,6 +21,16 @@ export default {
     pageSize: {
       type: Number,
       default: 10
+    },
+    pageSizes: {
+      type: Array,
+      default() {
+        return [10, 20, 50, 100, 500]
+      }
+    },
+    layout: {
+      type: String,
+      default: 'total, sizes, prev, pager, next, jumper'
     }
   },
   data() {
@@ -28,7 +38,7 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      this.$emit('change', { pageSize: val })
+      this.$emit('change', { pageSize: val, pageNum: 1 })
     },
     handleCurrentChange(val) {
       this.$emit('change', { pageNum: val })

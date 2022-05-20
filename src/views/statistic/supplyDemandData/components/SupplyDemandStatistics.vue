@@ -2,21 +2,22 @@
   <div>
     <DataBoard :list="dataList" :define-list="defineList" />
 
-    <DataDimension @change="onQueryChange({ckey:$event})" />
+    <DataDimension v-if="isTopBackStage" @change="onChamberChange" />
 
     <div class="flex-x-between">
-      <TimeSizer @change="onQueryChange" />
-      <div class="block"><el-button type="primary" size="mini">导表</el-button></div>
+      <TimeSizer @change="onQueryChange({...$event,pageNum:1})" />
+      <div class="block"><el-button type="primary" size="mini" @click="exportExcel">导表</el-button></div>
     </div>
 
-    <KdTable :list="tableList" :data="tableData" @selection-change="onSelectionChange" />
+    <KdTable v-loading="loading" :list="tableList" :data="tableData" @selection-change="onSelectionChange" />
 
-    <KdPagination :page-size="query.pageSize" :total="total" @change="onQueryChange" />
+    <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
   </div>
 </template>
 
 <script>
+import { getSupplyDemandStatsList, getSupplyDemandTotalStats } from '@/api/statistics/supplyDemand'
 import { exportJson2Excel } from '@/utils/exportExcel'
 
 export default {
@@ -31,14 +32,18 @@ export default {
   data() {
     return {
       dataList: [
-        { name: '累计成交总数', value: '' },
-        { name: '累计发布供应数', value: '' },
-        { name: '累计发布需求数', value: '' },
-        { name: '累计访问人数', value: '' },
-        { name: '累计访问次数', value: '' },
-        { name: '累计发布总数', value: '' },
-        { name: '累计终止总数', value: '' },
-        { name: '累计过期总数', value: '' },
+        { name: '累计成交总数', key: 'cooperateNum', value: 0 },
+        { name: '累计发布供应数', key: 'provideNum', value: 0 },
+        { name: '累计发布需求数', key: 'needNum', value: 0 },
+        { name: '累计访问人数', key: 'uv', value: 0,
+          render(v) {
+            return `<span class="red-label">${v.value}</span>`
+          }
+        },
+        { name: '累计访问次数', key: 'pv', value: 0 },
+        { name: '累计发布总数', key: 'publishNum', value: 0 },
+        { name: '累计终止总数', key: 'stopNum', value: 0 },
+        { name: '累计过期总数', key: 'expireNum', value: 0 },
       ],
       defineList: [
         {
@@ -71,7 +76,7 @@ export default {
         ckey: '',
         days: 7,
         type: 1,
-        date: '',
+        date: [],
         pageSize: 10,
         pageNum: 1,
       },
@@ -80,46 +85,95 @@ export default {
 
       chamberOptions: [],
 
-      listLoading: false,
+      tableList: [
+        { type: 'selection', width: 55 },
+        { label: '日期', prop: 'date' },
+        { label: '发布需求数', prop: 'needNum' },
+        { label: '发布总数', prop: 'totalNum' },
+        { label: '成交总数', prop: 'cooperateNum' },
+        { label: '终止总数', prop: 'stopNum' },
+        { label: '过期总数', prop: 'expireNum' },
+      ],
 
       tableData: [],
+      loading: false,
 
       selectionDatas: []
     }
   },
   computed: {
-    tableList() {
-      return [
-        { type: 'selection', width: 55 },
-        { label: '日期' },
-        { label: '发布需求数' },
-        { label: '发布总数' },
-        { label: '成交总数' },
-        { label: '终止总数' },
-        { label: '过期总数' },
-      ]
+    ckey() {
+      return this.$store.getters.ckey
+    },
+    isTopBackStage() {
+      return !this.ckey
     }
+  },
+
+  created() {
+    this.getSupplyDemandTotalStats()
   },
 
   methods: {
 
-    fetchData() {
+    normalizeParams() {
+      const { date = [], pageNum, pageSize, type, ckey } = this.query
+      const params = {
+        beginTime: date[0],
+        endTime: date[1],
+        pageNum,
+        pageSize,
+        type
+      }
+      if (ckey) params.ckey = ckey
+      if (this.ckey) params.ckey = this.ckey
+      return params
+    },
+
+    async getSupplyDemandStatsList() {
+      this.loading = true
+      try {
+        const { data: { list = [], totalRows = 0 }} = await getSupplyDemandStatsList(this.normalizeParams())
+        this.tableData = list
+        this.total = totalRows
+      } catch (error) { /*  */ }
+      this.loading = false
+    },
+
+    async getSupplyDemandTotalStats() {
+      const ckey = this.ckey || this.query.ckey
+      const { data } = await getSupplyDemandTotalStats(ckey ? { ckey } : null)
+      this.dataList.forEach(v => {
+        v.value = data ? data[v.key] : 0
+      })
+    },
+
+    onChamberChange(e) {
+      this.query.ckey = e
+      this.getSupplyDemandStatsList()
+      this.getSupplyDemandTotalStats()
     },
 
     onQueryChange(e) {
       this.query = { ...this.query, ...e }
-      this.fetchData()
+      this.getSupplyDemandStatsList()
     },
 
-    exportExcel(e) {
-      if (!this.selectionDatas.length) return this.$message.error({ message: '没有选择记录，操作失败' })
+    exportExcel() {
+      if (!this.selectionDatas.length) return this.$message({ message: '请选择导出记录', type: 'wraning' })
 
-      exportJson2Excel('会员入驻数据', this.selectionDatas)
+      exportJson2Excel('供需统计数据', this.selectionDatas)
     },
 
     onSelectionChange(e) {
-      console.log(e)
-      this.selectionDatas = e
+      this.selectionDatas = e.map(v => ({
+        '日期': v.date,
+        '发布需求数': v.needNum,
+        '发布总数': v.totalNum,
+        '成交总数': v.cooperateNum,
+        '终止总数': v.stopNum,
+        '过期总数': v.expireNum
+      }))
     },
 
   },

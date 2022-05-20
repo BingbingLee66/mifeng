@@ -81,14 +81,16 @@ export default {
     }
   },
   methods: {
-    normalizeQuery(item) {
-      const params = {}
-      if (this.query.ckey) params.ckey = this.query.ckey
+    normalizeParams({ pageNum, pageSize }) {
+      const { ckey, date } = this.query
+      const params = {
+        page: pageNum,
+        pageSize,
+        startTime: date[0],
+        endTime: date[1]
+      }
+      if (ckey) params.ckey = ckey
       if (this.ckey) params.ckey = this.ckey
-      params.startTime = this.query.date[0]
-      params.endTime = this.query.date[1]
-      params.page = item.pageNum
-      params.pageSize = item.pageSize
       return params
     },
 
@@ -96,7 +98,7 @@ export default {
       const item = this.layoutList[index]
       item.loading = true
       try {
-        const { data: { list = [], totalRows = 0 }} = await (index === 0 ? getLabelHotList : getTradeHotList)(this.normalizeQuery(item))
+        const { data: { list = [], totalRows = 0 }} = await (index === 0 ? getLabelHotList : getTradeHotList)(this.normalizeParams(item))
         list.forEach((v, i) => {
           v.rank = i + 1 + (item.pageNum - 1) * item.pageSize
         })

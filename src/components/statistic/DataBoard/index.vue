@@ -7,7 +7,8 @@
     <div class="data-card">
       <template v-for="(v,i) of list">
         <div :key="`cell${i}`" class="card-cell">
-          <span class="card-value">{{ v.value }}</span>
+          <span v-if="v.render" class="card-value" v-html="v.render(v,i)" />
+          <span v-else class="card-value">{{ v.value }}</span>
           <span class="card-name">{{ v.name }}</span>
         </div>
         <div v-if="i < list.length - 1 && !v.hideBorder" :key="`line${i}`" class="line" />
