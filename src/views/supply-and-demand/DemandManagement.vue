@@ -248,7 +248,7 @@
         <template slot-scope="{row}">
           <template v-if="isTopBackStage">
             <div>
-              <el-button type="text" size="small" :disabled="row.status !== 1" @click="goToEdit(row)">编辑</el-button>
+              <el-button type="text" size="small" :disabled="row.status !== 1 || row.chatPeopleNum > 0" @click="goToEdit(row)">编辑</el-button>
               <el-button type="text" size="small" @click="showDetail(row)">详情</el-button>
             </div>
             <div>
@@ -261,7 +261,7 @@
             </div> -->
           </template>
           <template v-else slot-scope="{row}">
-            <el-button type="text" size="small" :disabled="row.status !== 1" @click="goToEdit(row)">编辑</el-button> <br>
+            <el-button type="text" size="small" :disabled="row.status !== 1 || row.chatPeopleNum > 0" @click="goToEdit(row)">编辑</el-button> <br>
             <div v-if="row.freezeStatus === 1"><el-button type="text" size="small" @click="handleChamberFreeze(row)">冻结</el-button></div>
             <div v-else><el-button type="text" :disabled="row.freezeStatus === 2" size="small" @click="handleChamberUnFreeze(row)">解冻</el-button> </div>
             <el-button type="text" size="small" @click="showDetail(row)">详情</el-button> <br>
