@@ -2,7 +2,7 @@
   <div>
     <DataBoard :list="dataList" :define-list="defineList" />
 
-    <DataDimension v-if="isTopBackStage" @change="onChamberChange" />
+    <DataDimension v-if="isTopBackStage" @change="onQueryChange({ckey:$event})" />
 
     <div class="flex-x-between">
       <TimeSizer @change="onQueryChange({...$event,pageNum:1})" />

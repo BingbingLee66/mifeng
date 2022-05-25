@@ -35,7 +35,7 @@ export default {
     async getChamberOptions() {
       const { data } = await getChamberOptions()
       this.chamberOptions = data.data
-      this.chamberOptions.unshift({ 'label': '全部商会', 'value': '' })
+      this.chamberOptions.unshift({ 'label': '平台', 'value': '' })
     },
   },
 }
