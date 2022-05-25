@@ -4,28 +4,28 @@
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="活动来源">
           <el-select v-model="query.ckey" placeholder="请选择" clearable filterable>
-            <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey"/>
+            <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey" />
           </el-select>
         </el-form-item>
         <el-form-item label="活动ID">
-          <el-input v-model="query.activityId" maxlength="9" @input="handleInput" placeholder="请输入"/>
+          <el-input v-model="query.activityId" maxlength="9" placeholder="请输入" @input="handleInput" />
         </el-form-item>
         <el-form-item label="活动名称">
-          <el-input v-model="query.activityName" placeholder="关键词"/>
+          <el-input v-model="query.activityName" placeholder="关键词" />
         </el-form-item>
         <el-form-item label="发布状态">
           <el-select v-model="query.isPublish" placeholder="请选择状态">
-            <el-option label="全部状态" :value="-1"/>
-            <el-option label="已发布" :value="1"/>
-            <el-option label="未发布" :value="0"/>
+            <el-option label="全部状态" :value="-1" />
+            <el-option label="已发布" :value="1" />
+            <el-option label="未发布" :value="0" />
           </el-select>
         </el-form-item>
         <el-form-item label="活动状态">
           <el-select v-model="query.activityStatus" placeholder="请选择状态">
-            <el-option label="全部状态" :value="-1"/>
-            <el-option label="未开始" :value="1"/>
-            <el-option label="进行中" :value="2"/>
-            <el-option label="已结束" :value="3"/>
+            <el-option label="全部状态" :value="-1" />
+            <el-option label="未开始" :value="1" />
+            <el-option label="进行中" :value="2" />
+            <el-option label="已结束" :value="3" />
           </el-select>
         </el-form-item>
         <el-form-item label="">
@@ -40,7 +40,7 @@
     </div>
     <div class="block-table">
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55px"/>
+        <el-table-column type="selection" width="55px" />
         <el-table-column label="活动列表图" width="115px">
           <template slot-scope="scope">
             <img class="goods-preview" :src="scope.row.listImage" @click="openPreviewModal(scope.row.listImage)">
@@ -77,7 +77,7 @@
         <el-table-column label="报名人数" width="100px">
           <template slot-scope="scope">
             <span v-if="scope.row.isLimit===0">不限</span>
-            <span v-if="scope.row.isLimit===1">限{{scope.row.applyCount}}人 </span>
+            <span v-if="scope.row.isLimit===1">限{{ scope.row.applyCount }}人 </span>
             <!-- {{ scope.row.applyCount === null ? '不限' : '限' + scope.row.applyCount + '人'}}  -->
           </template>
         </el-table-column>
@@ -102,7 +102,7 @@
         </el-table-column>
         <el-table-column label="创建时间" width="95px">
           <template slot-scope="scope">
-            {{ scope.row.createdTs | dateFormat }}
+            {{ scope.row.createdTs }}
           </template>
         </el-table-column>
         <el-table-column label="创建人" width="100px">
@@ -121,7 +121,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
+      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     </div>
 
     <div class="table-dialog">
@@ -129,20 +129,20 @@
         <el-form ref="query" label-position="right" :inline="true" size="mini" :model="actquery">
           <el-form-item label-width="100px" label="活动来源">
             <el-select v-model="actquery.ckey" placeholder="请选择商品来源" clearable filterable>
-              <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey"/>
+              <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey" />
             </el-select>
           </el-form-item>
           <el-form-item label-width="100px" label="活动ID">
-            <el-input v-model="actquery.activityId" maxlength="9" @input="handleInput2" placeholder="请输入"/>
+            <el-input v-model="actquery.activityId" maxlength="9" placeholder="请输入" @input="handleInput2" />
           </el-form-item>
           <el-form-item label-width="100px" label="活动名称">
-            <el-input v-model="actquery.activityName" placeholder="请输入"/>
+            <el-input v-model="actquery.activityName" placeholder="请输入" />
           </el-form-item>
           <el-form-item label-width="100px" label="活动状态">
             <el-select v-model="actquery.activityStatus" placeholder="请选择状态">
-              <el-option label="全部状态" :value="-1"/>
-              <el-option label="未开始" :value="1"/>
-              <el-option label="进行中" :value="2"/>
+              <el-option label="全部状态" :value="-1" />
+              <el-option label="未开始" :value="1" />
+              <el-option label="进行中" :value="2" />
             </el-select>
           </el-form-item>
           <el-form-item label=" ">
@@ -152,7 +152,7 @@
         </el-form>
         <div class="table-block">
           <el-table v-loading="actLoading" :data="actList" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleAllSelectionChange">
-            <el-table-column type="selection" width="55px"/>
+            <el-table-column type="selection" width="55px" />
             <el-table-column label="活动列表图" width="115px">
               <template slot-scope="scope">
                 <img class="goods-preview" :src="scope.row.listImage" @click="openPreviewModal(scope.row.listImage)">
@@ -166,7 +166,7 @@
             </el-table-column>
             <el-table-column label="活动时间" width="166px">
               <template slot-scope="scope">
-                {{ scope.row.activityStartTime | dateFormat }} - {{ scope.row.activityEndTime | dateFormat }}
+                {{ scope.row.activityStartTime }} - {{ scope.row.activityEndTime }}
               </template>
             </el-table-column>
             <el-table-column label="活动地点" width="250px">
@@ -200,7 +200,7 @@
             </el-table-column>
             <el-table-column label="创建时间" width="160px">
               <template slot-scope="scope">
-                {{ scope.row.createdTs | dateFormat }}
+                {{ scope.row.createdTs }}
               </template>
             </el-table-column>
           </el-table>
@@ -215,9 +215,9 @@
 
     <!-- 修改权重 -->
     <el-dialog title="权重" :visible.sync="showSortDialog" width="30%">
-      <el-form :model="sortForm" ref="sortForm" label-width="100px" :rules="sortFormRules">
+      <el-form ref="sortForm" :model="sortForm" label-width="100px" :rules="sortFormRules">
         <el-form-item label="权重" prop="sort">
-          <el-input v-model="sortForm.sort" placeholder="请输入"></el-input>
+          <el-input v-model="sortForm.sort" placeholder="请输入" />
           <div>权重请控制在0-999，权重为0不在前台展示</div>
         </el-form-item>
         <el-form-item>
