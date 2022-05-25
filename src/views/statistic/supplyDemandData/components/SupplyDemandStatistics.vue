@@ -88,6 +88,7 @@ export default {
       tableList: [
         { type: 'selection', width: 55 },
         { label: '日期', prop: 'date' },
+        { label: '发布供应数', prop: 'supplyNum' },
         { label: '发布需求数', prop: 'needNum' },
         { label: '发布总数', prop: 'totalNum' },
         { label: '成交总数', prop: 'cooperateNum' },
