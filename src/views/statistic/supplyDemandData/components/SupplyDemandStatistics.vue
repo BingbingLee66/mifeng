@@ -2,7 +2,7 @@
   <div>
     <DataBoard :list="dataList" :define-list="defineList" />
 
-    <DataDimension v-if="isTopBackStage" @change="onQueryChange({ckey:$event})" />
+    <DataDimension v-if="isTopBackStage" @change="onChamberChange" />
 
     <div class="flex-x-between">
       <TimeSizer @change="onQueryChange({...$event,pageNum:1})" />
@@ -169,6 +169,7 @@ export default {
     onSelectionChange(e) {
       this.selectionDatas = e.map(v => ({
         '日期': v.date,
+        '发布供应数': v.supplyNum,
         '发布需求数': v.needNum,
         '发布总数': v.totalNum,
         '成交总数': v.cooperateNum,
