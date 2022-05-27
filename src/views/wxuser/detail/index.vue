@@ -33,9 +33,24 @@
           </td>
           <td width="8%">用户名</td>
           <td width="30%">{{ userInfo.uname }}</td>
-          <td width="8%">手机号码</td>
+          <td width="8%">注册手机</td>
           <td width="30%">{{ userInfo.phone }}</td>
         </tr>
+
+        <tr align="center" height="45">
+          <td width="8%">联系电话</td>
+          <td width="30%" colspan="3">
+            <span v-for="(item,index) in telephones" :key="index">{{ item.phone }}{{index===telephones.length-1?'':','}}</span>
+          </td>
+        </tr>
+
+        <tr align="center" height="45" v-for="(item,index) in contactAddress" :key="index" >
+          <td width="8%">地址{{ index + 1 }}</td>
+          <td width="30%" colspan="3">
+            <div style="font-size: 18px;">{{ item.province }}{{ item.city }}{{ item.area }}{{ item.street }}{{ item.address }}</div>
+          </td>
+        </tr>
+
         <tr align="center" height="45">
           <td width="8%">性别</td>
           <td width="30%">
