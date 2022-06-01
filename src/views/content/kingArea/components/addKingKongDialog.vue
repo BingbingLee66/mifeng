@@ -20,7 +20,7 @@
           <el-form-item label="金刚区名称：" prop="name">
             <el-input
               v-model="formKingKongDialog.name"
-              placeholder="限5个字内"
+              placeholder="限6个字内"
             ></el-input>
           </el-form-item>
           <el-form-item label="金刚区图片：" prop="image" class="upload-style">
@@ -85,7 +85,7 @@ export default {
       //表单校验规则
       rules: {
         name: [
-          { min: 1, max: 5, message: "只限5个字以内哦", trigger: "blur" },
+          { min: 1, max: 6, message: "只限6个字以内哦", trigger: "blur" },
           { required: true, message: "请输入金刚区名称", trigger: "blur" },
         ],
         url: [{ required: true, message: "请输入跳转地址", trigger: "blur" }],
