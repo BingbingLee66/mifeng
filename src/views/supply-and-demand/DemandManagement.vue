@@ -62,6 +62,15 @@
         <el-form-item :span="8" label="供需ID">
           <el-input v-model="query.id" placeholder="关键词" :maxlength="19" clearable />
         </el-form-item>
+        <el-form-item :span="8" label="来源">
+          <el-select v-model="query.publishTime">
+            <el-option label="全部" :value="-1" />
+            <el-option label="平台" :value="1" />
+            <el-option label="商会后台" :value="2" />
+            <el-option label="小程序" :value="3" />
+            <el-option label="采集" :value="4" />
+          </el-select>
+        </el-form-item>
         <el-button :span="8" type="primary" @click="handleCurrentChange(1)">查询</el-button>
       </el-row>
       <el-row>
@@ -207,7 +216,7 @@
           <template v-else>--</template>
         </template>
       </el-table-column>
-      <el-table-column label="是否后台发布" width="120">
+      <el-table-column label="来源" width="120">
         <template slot-scope="{row:{source}}">
           <div v-if="+source === 1">是（平台）</div>
           <div v-else-if="+source === 2">是（商会）</div>

@@ -334,6 +334,13 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '编辑供需' }
       },
+      {
+        path: '/supply-and-demand/reptile/index',
+        name: '供需爬虫',
+        component: () => import('@/views/supply-and-demand/reptile/index'),
+        hidden: true,
+        meta: { title: '编辑供需' }
+      }
     ]
   }
 ]
