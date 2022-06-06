@@ -59,8 +59,10 @@
             @click.native="add($event)"
             >添加商会
           </el-button>
+          <span>当商协会权重为0时，将隐藏其在前台【推荐商协会】和【新入驻商协会】页面的展示</span>
         </el-col>
       </el-row>
+      
     </div>
     <el-table
       :data="list"
@@ -151,14 +153,14 @@
             @click="updateStatus($event, scope.row)"
             :actionid="getId('', '冻结')"
             v-if="has('', '冻结') && scope.row.status == 1"
-            >冻结
+            >冻结账号
           </el-button>
           <el-button
             type="text"
             @click="updateStatus($event, scope.row)"
             :actionid="getId('', '解冻')"
             v-if="has('', '解冻') && scope.row.status == 0"
-            >解冻
+            >解冻账号
           </el-button>
         </template>
       </el-table-column>
