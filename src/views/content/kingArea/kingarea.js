@@ -16,8 +16,13 @@ export default {
   },
   data() {
     return {
+      clientType: 0,
       //表单对象
       formKingKong: {
+        //客户端类型 0：小程序，1：App 
+        clientType: null,
+        //跳转协议
+        jsonContext: null,
         //金刚区名称
         name: null,
         //创建人
@@ -56,6 +61,10 @@ export default {
     this.fetchData()
   },
   methods: {
+    handleClick(tab) {
+      this.clientType = tab.name
+      this.fetchData()
+    },
     /** 
       请求类函数
     */
@@ -168,6 +177,7 @@ export default {
         params.createdTsEnd = this.formKingKong.createdTime[1] + 24 * 60 * 60 * 1000 - 1;
         params.createdTsBegin = this.formKingKong.createdTime[0];
       }
+      params.clientType = this.clientType;
       params.pageNum = this.currentPage;
       params.pageSize = this.pageSize;
       return params;

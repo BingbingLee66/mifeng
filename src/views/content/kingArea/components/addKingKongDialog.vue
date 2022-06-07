@@ -45,9 +45,15 @@
               建议尺寸 76px*76px(2倍图)，支持jpg、png、gif
             </div>
           </el-form-item>
-          <el-form-item label="跳转链接：" prop="url">
+          
+          <el-form-item label="跳转链接：" prop="url" v-if="clientType == 0">
             <el-input v-model="formKingKongDialog.url"></el-input>
           </el-form-item>
+
+          <el-form-item label="跳转协议：" prop="jsonContext" v-if="clientType == 1">
+            <el-input  type="textarea" :rows="6" placeholder="请输入内容" v-model="formKingKongDialog.jsonContext"></el-input>
+          </el-form-item>
+
           <el-form-item label="权重：" prop="weight">
             <el-input onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')" v-model="formKingKongDialog.weight"></el-input>
           </el-form-item>
@@ -81,6 +87,8 @@ export default {
         url: null,
         weight: null,
         id: null,
+        clientType: null,
+        jsonContext: null,
       },
       //表单校验规则
       rules: {
@@ -89,6 +97,7 @@ export default {
           { required: true, message: "请输入金刚区名称", trigger: "blur" },
         ],
         url: [{ required: true, message: "请输入跳转地址", trigger: "blur" }],
+        jsonContext: [{ required: true, message: "请输入跳转协议", trigger: "blur" }],
         weight: [{ required: true, message: "请输入权重", trigger: "blur" },{ 
           validator: validateWeight, trigger: 'blur'
         }],
@@ -99,7 +108,7 @@ export default {
       dialogTitle: "添加金刚区",
     };
   },
-  props: {},
+  props: ["clientType"],
   methods: {
     /**
      * 状态
@@ -176,6 +185,8 @@ export default {
     //保存或新增金刚区
     saveKingKongFunc() {
       let params = this.formKingKongDialog;
+      console.log(this.clientType);
+      params.clientType = this.clientType;
       saveKingKong(params).then((res) => {
         if (res.state === 1) {
           this.$message({
