@@ -1,5 +1,45 @@
 <template>
   <div class="app-container">
+    <!-- tab控制列表展示 -->
+    <el-tabs v-model="viewModel.tabModel" v-show="viewShow.tab">
+      <el-tab-pane label="小程序" name= 0></el-tab-pane>
+      <el-tab-pane label="APP" name= 1></el-tab-pane>
+    </el-tabs>
+
+        <!-- 表单搜索区域start -->
+    <el-form
+      :inline="true"
+      :model="queryParams"
+      ref="queryParams"
+      class="demo-form-inline"
+    >
+      <el-form-item label="标题" prop="title">
+        <el-input v-model="queryParams.title" placeholder="关键词"></el-input>
+      </el-form-item>
+      <el-form-item label="创建人" prop="createdId">
+        <el-input
+          v-model="queryParams.createdId"
+          placeholder="关键词"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="创建时间" prop="createdTime" >
+        <el-date-picker
+          v-model="createdTime"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          value-format="yyyy-MM-dd"
+          format="yyyy-MM-dd"
+        >
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="fetchData">查询</el-button>
+        <el-button type="primary" @click="reset">重置</el-button>
+      </el-form-item>
+    </el-form>
+
     <el-row>
       <el-button type="primary" size="small" @click="add($event,1)" :actionid="getId('', '添加轮播图')" v-if="has('', '添加轮播图')">
         添加轮播图
@@ -126,6 +166,21 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+     <!-- 分页start -->
+    <div class="block">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="page.currentPage"
+        :page-sizes="page.pageSizes"
+        :page-size="page.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="page.total"
+      >
+      </el-pagination>
+      <!-- 分页end -->
+    </div>
   </div>
 
 </template>
