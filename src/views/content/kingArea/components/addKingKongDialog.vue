@@ -185,7 +185,6 @@ export default {
     //保存或新增金刚区
     saveKingKongFunc() {
       let params = this.formKingKongDialog;
-      console.log(this.clientType);
       params.clientType = this.clientType;
       saveKingKong(params).then((res) => {
         if (res.state === 1) {
