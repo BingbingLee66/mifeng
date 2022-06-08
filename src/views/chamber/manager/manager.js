@@ -336,10 +336,10 @@ export default {
       let self = this
       if (row.status === 1) {
         this.$msgbox({
-          title: '冻结',
+          title: '冻结账号',
           message: h('p', null, [
-            h('div', null, '是否确定冻结该商会？'),
-            h('div', null, '冻结后，该商会无法登录商会后台，但是不会影响商会在小程序端的显示'),
+            h('div', null, '是否确定冻结该商会的账号？'),
+            h('div', null, '冻结后，该商会无法登录商会后台，但是不会影响商会在前台的显示'),
           ]),
           showCancelButton: true,
           confirmButtonText: '确定',
