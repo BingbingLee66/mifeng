@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-const baseUrl = process.env.VUE_APP_BASE_API_3
+const baseUrl = process.env.VUE_APP_BASE_API_4
 export function getCollectList(params) {
   return request({
     url: baseUrl + '/ec/crawlerArticle/collect-list',

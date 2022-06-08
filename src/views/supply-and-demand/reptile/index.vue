@@ -7,41 +7,35 @@
     </el-tabs>
     <div v-if="activeName == '1'">
       <div class="block">
-        <el-form ref="query" label-width="auto" label-position="right" :model="query">
-          <el-row>
-            <el-col :span="5">
-              <el-form-item label="采集网站：">
-                <el-select v-model="query.crawlerId">
-                  <el-option v-for="crawler in crawlerOptions" :label="crawler.label" :value="crawler.value" :key="crawler.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="1">
-              <el-form-item label=" ">
-                <el-button type="primary" @click="fetchData($event)" :actionid="getId('采集结果', '查询')" v-if="has('采集结果', '查询')">查询</el-button>
-              </el-form-item>
-            </el-col>
-            <el-col :span="1">
-              <el-form-item label=" ">
-                <el-button type="primary" @click="fetchData($event)" :actionid="getId('采集结果', '查询')" v-if="has('采集结果', '查询')">重置</el-button>
-              </el-form-item>
-            </el-col>
-          </el-row>
+        <el-form ref="query"  :inline="true"  label-position="right"  :model="query">
+          <el-form-item label="采集网站">
+            <el-select v-model="query.crawlerId">
+              <el-option v-for="crawler in crawlerOptions" :label="crawler.label" :value="crawler.value" :key="crawler.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="small" @click="openPublishBatch($event)" >查询</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="danger" size="small" @click="batchToRecycleBin($event)" >重置</el-button>
+          </el-form-item>
         </el-form>
       </div>
       <el-row>
-        <el-button type="danger" size="small" @click="batchToRecycleBin($event)" :actionid="getId('采集结果', '移入回收站')" v-if="has('采集结果', '移入回收站')">移入回收站</el-button>
-        <span>注：移入回收站的文章是不会发布出去的</span>
+        <el-button type="danger" size="small" @click="batchDelArticle($event)">移入回收站</el-button>
+        <span>移入回收站的供需不会发布到前台</span>
       </el-row>
+
       <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55px">
         </el-table-column>
         <el-table-column label="标题">
           <template slot-scope="scope">
-            {{scope.row.title}}
+            <div @click="detail($event, scope.row)" :actionid="getId('采集结果', '预览')" v-if="has('采集结果', '预览')"><span style="cursor: pointer;">{{scope.row.title}}</span></div>
+            <div v-if="!has('采集结果', '预览')">{{scope.row.title}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="采集网站名称" width="160px">
+        <el-table-column label="采集网站名称" >
           <template slot-scope="scope">
             {{scope.row.publishTs}}
           </template>
@@ -63,7 +57,9 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
+            <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('采集结果', '预览')" v-if="has('采集结果', '预览')">预览</el-button>
             <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('采集结果', '编辑')" v-if="has('采集结果', '编辑')">编辑</el-button>
+            <el-button type="text" @click="openPublish($event, scope.row)" :actionid="getId('采集结果', '发布')" v-if="has('采集结果', '发布')">发布</el-button>
             <el-button type="text" @click="toRecycleBin($event, scope.row)" :actionid="getId('采集结果', '移入回收站')" v-if="has('采集结果', '移入回收站')">移入回收站</el-button>
           </template>
         </el-table-column>
@@ -130,64 +126,63 @@
     </div>
     <div v-if="activeName == '2'">
       <div class="block">
-        <el-form ref="query" label-width="auto" label-position="right" :model="query">
-          <el-row>
-            <el-col :span="5">
-              <el-form-item label="采集网站：">
-                <el-select v-model="query.crawlerId">
-                  <el-option v-for="crawler in crawlerOptions" :label="crawler.label" :value="crawler.value" :key="crawler.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="1">
-              <el-form-item label=" ">
-                <el-button type="primary" @click="fetchData($event)" :actionid="getId('回收站', '查询')" v-if="has('回收站', '查询')">查询</el-button>
-                <el-button type="primary" @click="fetchData($event)" :actionid="getId('回收站', '查询')" v-if="has('回收站', '查询')">查询</el-button>
-              </el-form-item>
-            </el-col>
-          </el-row>
+        <el-form ref="query" :inline="true" label-position="right" :model="query">
+          <el-form-item label="采集网站：">
+            <el-select v-model="query.crawlerId">
+              <el-option v-for="crawler in crawlerOptions" :label="crawler.label" :value="crawler.value" :key="crawler.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="small" @click="batchDelArticle($event)">查询</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="danger" size="small" @click="batchDelArticle($event)">重置</el-button>
+          </el-form-item>
         </el-form>
       </div>
       <el-row>
-        <el-button type="danger" size="small" @click="batchDelArticle($event)" :actionid="getId('回收站', '删除')" v-if="has('回收站', '删除')">删除</el-button>
-        <span>注：回收站的文章“删除”后将从数据库彻底删除</span>
+        <el-button type="danger" size="small" @click="batchDelArticle($event)">删除</el-button>
+        <span>回收站的内容“删除”后将从数据库彻底删除，不可恢复，请慎重操作</span>
       </el-row>
       <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55px">
         </el-table-column>
         <el-table-column label="标题">
           <template slot-scope="scope">
-            {{scope.row.title}}
+            <div @click="detail($event, scope.row)" :actionid="getId('回收站', '预览')" v-if="has('回收站', '预览')"><span style="cursor: pointer;">{{scope.row.title}}</span></div>
+            <div v-if="!has('回收站', '预览')">{{scope.row.title}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="采集网站名称" width="160px">
+        <el-table-column label="采集网站名称">
           <template slot-scope="scope">
             {{scope.row.createdTs}}
           </template>
         </el-table-column>
-        <el-table-column label="采集频道" width="200px">
+        <el-table-column label="采集频道">
           <template slot-scope="scope">
             {{scope.row.websiteName}}
           </template>
         </el-table-column>
-        <el-table-column label="采集内容发布时间" width="130px">
+        <el-table-column label="采集内容发布时间">
           <template slot-scope="scope">
             {{scope.row.channel}}
           </template>
         </el-table-column>
-        <el-table-column label="采集时间" width="160px">
+        <el-table-column label="采集时间">
           <template slot-scope="scope">
             {{scope.row.recycledTs}}
           </template>
         </el-table-column>
-        <el-table-column label="操作信息" width="120px">
+        <el-table-column label="操作信息">
           <template slot-scope="scope">
             {{scope.row.operator}}
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="toCollectionResult($event, scope.row)" :actionid="getId('回收站', '移出')" v-if="has('回收站', '移出')">移出回收站</el-button>
+            <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('回收站', '预览')" v-if="has('回收站', '预览')">预览</el-button>
+            <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('回收站', '编辑')" v-if="has('回收站', '编辑')">编辑</el-button>
+            <el-button type="text" @click="toCollectionResult($event, scope.row)" :actionid="getId('回收站', '移出')" v-if="has('回收站', '移出')">移出</el-button>
             <el-button type="text" @click="delArticle($event, scope.row)" style="color: red;" :actionid="getId('回收站', '删除')" v-if="has('回收站', '删除')">删除</el-button>
           </template>
         </el-table-column>
@@ -205,43 +200,30 @@
     </div>
     <div v-if="activeName == '3'">
       <div class="block">
-        <el-form ref="query" label-width="auto" label-position="right" :model="query">
-          <el-row>
-            <el-col :span="5">
-              <el-form-item label="创建人">
-                <el-input v-model="query.title" placeholder="请输入文章标题" />
-              </el-form-item>
-            </el-col>
-            <el-col :offset="1" :span="5">
-              <el-form-item label="网站名称">
-                <el-input v-model="query.title" placeholder="请输入文章标题" />
-              </el-form-item>
-            </el-col>
-            <el-col :offset="1" :span="5">
-              <el-form-item label="频道名称">
-                <el-input v-model="query.title" placeholder="请输入文章标题" />
-              </el-form-item>
-            </el-col>
-            <el-col :offset="1" :span="5">
-<!--              <el-form-item label="采集状态">-->
-<!--                <el-select v-model="query.status">-->
-<!--                  <el-option label="全部" :value="1" />-->
-<!--                  <el-option label="已采集" :value="0" />-->
-<!--                  <el-option label="未采集" :value="3" />-->
-<!--                </el-select>-->
-<!--              </el-form-item>-->
-            </el-col>
-            <el-col :span="1">
-              <el-form-item label=" ">
-                <el-button type="primary" @click="fetchData($event)" :actionid="getId('回收站', '查询')" v-if="has('回收站', '查询')">查询</el-button>
-                <el-button type="primary" @click="fetchData($event)" :actionid="getId('回收站', '查询')" v-if="has('回收站', '查询')">查询</el-button>
-              </el-form-item>
-            </el-col>
-          </el-row>
+        <el-form ref="query" :inline="true" label-position="right" :model="query">
+          <el-form-item label="创建人：">
+            <el-select v-model="query.crawlerId">
+              <el-option v-for="crawler in crawlerOptions" :label="crawler.label" :value="crawler.value" :key="crawler.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="网站名称：">
+            <el-select v-model="query.channel">
+              <el-option v-for="channel in channelOptions" :label="channel.label" :value="channel.value" :key="channel.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="采集状态：">
+            <el-select v-model="query.channel">
+              <el-option v-for="channel in channelOptions" :label="channel.label" :value="channel.value" :key="channel.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item >
+            <el-button type="primary" @click="fetchData($event)">查询</el-button>
+            <el-button type="primary" @click="fetchData($event)">重置</el-button>
+          </el-form-item>
         </el-form>
       </div>
       <el-row>
-        <el-button type="danger" size="small" @click="batchDelArticle($event)" :actionid="getId('回收站', '删除')" v-if="has('回收站', '删除')">新增网站</el-button>
+        <el-button type="primary" size="small" @click="batchDelArticle($event)">新增网站</el-button>
         <span>抓取网站登记表，便于运营维护与技术查找</span>
       </el-row>
       <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
@@ -253,35 +235,37 @@
             <div v-if="!has('回收站', '预览')">{{scope.row.title}}</div>
           </template>
         </el-table-column>
-        <el-table-column label="采集频道" width="160px">
+        <el-table-column label="采集频道">
           <template slot-scope="scope">
             {{scope.row.createdTs}}
           </template>
         </el-table-column>
-        <el-table-column label="网站地址" width="200px">
+        <el-table-column label="网站地址">
           <template slot-scope="scope">
             {{scope.row.websiteName}}
           </template>
         </el-table-column>
-        <el-table-column label="创建信息" width="130px">
+        <el-table-column label="创建信息">
           <template slot-scope="scope">
             {{scope.row.channel}}
           </template>
         </el-table-column>
-        <el-table-column label="更新信息" width="160px">
+        <el-table-column label="更新信息">
           <template slot-scope="scope">
             {{scope.row.recycledTs}}
           </template>
         </el-table-column>
-        <el-table-column label="采集状态" width="120px">
+        <el-table-column label="采集状态">
           <template slot-scope="scope">
             {{scope.row.operator}}
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('回收站', '预览')" v-if="has('回收站', '预览')">编辑</el-button>
-            <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('回收站', '编辑')" v-if="has('回收站', '编辑')">删除</el-button>
+            <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('回收站', '预览')" v-if="has('回收站', '预览')">预览</el-button>
+            <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('回收站', '编辑')" v-if="has('回收站', '编辑')">编辑</el-button>
+            <el-button type="text" @click="toCollectionResult($event, scope.row)" :actionid="getId('回收站', '移出')" v-if="has('回收站', '移出')">移出</el-button>
+            <el-button type="text" @click="delArticle($event, scope.row)" style="color: red;" :actionid="getId('回收站', '删除')" v-if="has('回收站', '删除')">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -311,10 +295,10 @@
 
 </template>
 
-<script src="./index.js"></script>
+<script src="./reptile.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  @import "src/styles/common.scss";
+@import "src/styles/common.scss";
 </style>
 <style>
 .c-preview-wrap {

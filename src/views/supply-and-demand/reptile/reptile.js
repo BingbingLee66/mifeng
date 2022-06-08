@@ -58,6 +58,7 @@ export default {
   computed: {},
   created() {
     this.getWebNameType()
+    this.getChannelType()
     this.getContentColumnType()
   },
   methods: {
@@ -92,16 +93,17 @@ export default {
       this.currentpage = 1
       this.limit = 10
       this.fetchData()
-      // if (this.activeName === '1' && this.has('采集结果', '查询')) {
-      //   this.fetchData()
-      // } else if (this.activeName === '2' && this.has('回收站', '查询')) {
-      //   this.fetchData()
-      // }
     },
     getWebNameType() {
       getWebnameOptions().then(response => {
         this.crawlerOptions = response.data.data
         this.crawlerOptions.unshift({ 'label': '所有', 'value': -1 })
+      })
+    },
+    getChannelType() {
+      getChannelOptions().then(response => {
+        this.channelOptions = response.data.data
+        this.channelOptions.unshift({ 'label': '所有', 'value': '-1' })
       })
     },
     getContentColumnType() {
@@ -120,7 +122,6 @@ export default {
         'crawlerId': this.query.crawlerId,
         'channel': this.query.channel
       }
-      console.log(this.activeName+"feffefe")
       if (this.activeName === '1') {
         getCollectList(params).then(response => {
           this.list = response.data.data.list
@@ -128,6 +129,12 @@ export default {
           this.listLoading = false
         })
       } else if (this.activeName === '2') {
+        getRecycleList(params).then(response => {
+          this.list = response.data.data.list
+          this.total = response.data.data.totalRows
+          this.listLoading = false
+        })
+      } else {
         getRecycleList(params).then(response => {
           this.list = response.data.data.list
           this.total = response.data.data.totalRows
@@ -313,7 +320,6 @@ export default {
           message: '已取消删除'
         })
       })
-
     },
     edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
