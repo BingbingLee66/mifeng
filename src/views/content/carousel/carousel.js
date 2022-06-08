@@ -1,4 +1,4 @@
-import { getList, del, save, checkUpperLimit, upload, editlevel } from '@/api/content/bannerImg'
+import { getList, del, save, checkUpperLimit, upload, editlevel, getBannerImgList } from '@/api/content/bannerImg'
 
 export default {
   components: {},
@@ -64,7 +64,34 @@ export default {
       levelForm: {
         level: null,
         id: null
-      }
+      },
+      viewShow: {
+        tab: false,
+      },
+      userIdentity: {
+        isChamber: true,
+      },
+      viewModel: {
+        tabModel: 0
+      },
+      queryParams: {
+        title: null,
+        createdId: null,
+        startTs: null,
+        endTs: null,
+        ckey: null,
+        type: null,
+        clientType: 0,
+        pageSize: null,
+        pageNum: null,
+      },
+      page: {
+        currentPage: 1,
+        pageSize: 10,
+        pageSizes: [10, 50, 100, 200],
+        total: 0
+      },
+      createdTime: []
     }
   },
   mounted() {
@@ -72,6 +99,7 @@ export default {
   computed: {},
   created() {
     this.init()
+    this.reset()
   },
   methods: {
     has(tabName, actionName) {
@@ -82,6 +110,7 @@ export default {
     },
     init() {
       this.fetchData()
+      this.userIdentityEval()
     },
     beforeAvatarUpload(file) {
       if (file.type !== 'image/jpeg' &&
@@ -104,14 +133,37 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      let params = {
-        'ckey': this.ckey,
-        'type': 1 // 主页 banner类型
+      // let params = {
+      //   'ckey': this.ckey,
+      //   'type': 1 // 主页 banner类型
+      // }
+      this.formatRequestData()
+      if (this.userIdentity.isChamber) {
+        this.queryParams.ckey = this.ckey
       }
-      getList(params).then(response => {
-        this.list = response.data.data
+      this.queryParams.clientType = this.viewModel.tabModel
+
+      getBannerImgList(this.queryParams).then(response => {
+        this.list = response.data.data.list
+        this.page.total = response.data.totalRows
         this.listLoading = false
       })
+    },
+    reset() {
+      this.queryParams.title = null
+      this.queryParams.createdId = null
+      this.queryParams.startTs = null
+      this.queryParams.endTs = null
+    },
+    userIdentityEval() {
+      if (this.ckey === 'undefined') {
+        console.log('this is chamber')
+        this.userIdentity.isChamber = true
+        this.viewShow.tab = false
+      } else {
+        this.userIdentity.isChamber = false
+        this.viewShow.tab = true
+      }
     },
     openVisible(row) {
       this.formObj = row
@@ -290,6 +342,23 @@ export default {
           return false
         }
       })
+    },
+    handleSizeChange(val) {
+      this.page.pageSize = val
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+      this.page.currentPage = val
+      this.fetchData()
+    },
+    formatRequestData() {
+      if (this.createdTime) {
+        this.queryParams.startTs = this.createdTime[1]
+        this.queryParams.endTs = this.createdTime[0]
+      }
+      this.queryParams.pageNum = this.page.currentPage
+      this.queryParams.pageSize = this.page.pageSize
     }
   }
 }
+
