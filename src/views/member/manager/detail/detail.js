@@ -24,7 +24,9 @@ export default {
         id: [],
         remark: '资料乱填',
       },
-      userInfo: {}
+      userInfo: {},
+      telephones: [],
+      contactAddress: []
     }
   },
   filters: {
@@ -144,6 +146,10 @@ export default {
         if (!params.memberId) params = { wxUserId, ckey }
         getMemberDetail(params).then(response => {
           this.member = response.data.dtl[0]
+
+          this.telephones = response.data.telephones
+          this.contactAddress = response.data.contactAddress
+
           if (response.data.userInfo) {
             this.userInfo = response.data.userInfo
           }
