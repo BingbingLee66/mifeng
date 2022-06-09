@@ -17,7 +17,9 @@ export default {
       companyIntroduction: '',
       resumeVisible: false,
       resume: '',
-      userInfo: {}
+      userInfo: {},
+      telephones: [],
+      contactAddress: []
     }
   },
   computed: {
@@ -67,6 +69,9 @@ export default {
         this.count = this.memberList.length
         this.userInfo = response.data.userInfo
         console.log('userInfo', this.userInfo)
+
+        this.telephones = response.data.telephones
+        this.contactAddress = response.data.contactAddress
       })
     },
     idCardDetail(row) {
