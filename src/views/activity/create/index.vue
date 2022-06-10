@@ -84,6 +84,24 @@
               </el-form-item>
             </el-col>
           </el-row>
+          
+          <el-row>
+            <el-col style="width: 700px">
+              <el-form-item class="date-wrap" label="报名时间：" prop="applyDate">
+                <el-date-picker
+                  v-model="formObj.applyDate"
+                  format="yyyy-MM-dd HH:mm:ss"
+                  value-format="timestamp"
+                  type="datetimerange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  :disabled="status != 1"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
           <el-row>
             <el-col style="width: 700px">
               <el-form-item class="date-wrap" label="活动时间：" prop="date">
@@ -100,6 +118,7 @@
               </el-form-item>
             </el-col>
           </el-row>
+
           <el-row>
             <el-col style="width: 600px; height: 120px">
               <el-form-item
