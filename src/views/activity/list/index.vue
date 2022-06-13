@@ -47,8 +47,11 @@
         </el-table-column>
         <el-table-column label="报名时间" width="100px">
           <template slot-scope="scope">
-            <div>{{ scope.row.applyStartTime | dateFormat }} ~</div>
-            <div>{{ scope.row.applyEndTime | dateFormat }}</div>
+            <div v-if="scope.row.applyStartTime">
+              <div>{{ scope.row.applyStartTime | dateFormat }} ~</div>
+              <div>{{ scope.row.applyEndTime | dateFormat }}</div>
+            </div>
+            <div v-else>--</div>
           </template>
         </el-table-column>
         <el-table-column label="活动时间" width="100px">
