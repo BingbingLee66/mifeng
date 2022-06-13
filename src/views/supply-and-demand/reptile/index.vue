@@ -14,7 +14,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="openPublishBatch($event)" >查询</el-button>
+            <el-button type="primary" size="small" @click="demandQuery(1)" >查询</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="danger" size="small" @click="batchToRecycleBin($event)" >重置</el-button>
@@ -132,7 +132,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="batchDelArticle($event)">查询</el-button>
+            <el-button type="primary" size="small" @click="demandQuery(0)">查询</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="danger" size="small" @click="batchDelArticle($event)">重置</el-button>

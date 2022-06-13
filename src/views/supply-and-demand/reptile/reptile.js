@@ -152,6 +152,33 @@ export default {
         })
       }
     },
+    demandQuery(type) {
+      let params = {
+        'pageSize': this.limit,
+        'page': this.currentpage,
+        'websiteId': this.query.crawlerId,
+        'status': type
+      }
+      if (this.activeName === '1') {
+        getReptileDemands(params).then(response => {
+          this.list = response.data.list
+          this.total = response.data.totalRows
+          this.listLoading = false
+        })
+      } else if (this.activeName === '2') {
+        getRecycleList(params).then(response => {
+          this.list = response.data.data.list
+          this.total = response.data.data.totalRows
+          this.listLoading = false
+        })
+      } else {
+        getRecycleList(params).then(response => {
+          this.list = response.data.data.list
+          this.total = response.data.data.totalRows
+          this.listLoading = false
+        })
+      }
+    },
     openPublish(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.formObj = {
