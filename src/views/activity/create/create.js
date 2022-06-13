@@ -559,9 +559,11 @@ export default {
           this.formObj['activityEndTime'] = this.formObj['date'][1]
 
           // 报名时间
-          this.formObj['applyStartTime'] = this.formObj['applyDate'][0]
-          this.formObj['applyEndTime'] = this.formObj['applyDate'][1]
-
+          if(this.formObj['applyDate'] && this.formObj['applyDate'].length > 0){
+            this.formObj['applyStartTime'] = this.formObj['applyDate'][0]
+            this.formObj['applyEndTime'] = this.formObj['applyDate'][1]
+          }
+          
           if (this.areaData) {
             this.formObj.province = this.areaData.province.name
             this.formObj.provinceCode = this.areaData.province.code

@@ -96,7 +96,7 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 />
               </el-form-item>
             </el-col>
@@ -113,7 +113,7 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 />
               </el-form-item>
             </el-col>
