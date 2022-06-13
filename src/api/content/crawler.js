@@ -77,6 +77,8 @@ export function getChannelOptions() {
     method: 'get'
   })
 }
+
+/** 供需爬虫**/
 /**
  * 获取供需爬虫列表
  * @returns {*}
@@ -100,9 +102,9 @@ export function shiftOutFromRecycleStationBatch() {
     method: 'post'
   })
 }
-export function details() {
+export function details(params) {
   return request({
-    url: baseUrl + '/ec/reptile/ysh-demand-reptile/{id}',
+    url: baseUrl + `/ec/reptile/ysh-demand-reptile/${params}`,
     method: 'get'
   })
 }

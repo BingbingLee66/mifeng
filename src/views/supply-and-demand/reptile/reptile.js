@@ -338,13 +338,9 @@ export default {
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.selectId = row.id
-      let params = {
-        id: this.selectId
-      }
-      getDetail(params).then(response => {
-        this.detailObj.title = response.data.dtl.title
-        this.detailObj.contentHtml = response.data.dtl.webContent
+      details(row.id).then(response => {
+        this.detailObj.title = response.data.yshContentEditVO.title
+        this.detailObj.contentHtml = response.data.yshContentEditVO.content
       }).catch(error => {
         reject(error)
       })
