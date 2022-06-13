@@ -10,7 +10,7 @@
         <el-form ref="query"  :inline="true"  label-position="right"  :model="query">
           <el-form-item label="采集网站">
             <el-select v-model="query.crawlerId">
-              <el-option v-for="crawler in crawlerOptions" :label="crawler.label" :value="crawler.value" :key="crawler.value"></el-option>
+              <el-option v-for="crawler in crawlerOptions" :label="crawler.name" :value="crawler.id" :key="crawler.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -31,36 +31,35 @@
         </el-table-column>
         <el-table-column label="标题">
           <template slot-scope="scope">
-            <div @click="detail($event, scope.row)" :actionid="getId('采集结果', '预览')" v-if="has('采集结果', '预览')"><span style="cursor: pointer;">{{scope.row.title}}</span></div>
-            <div v-if="!has('采集结果', '预览')">{{scope.row.title}}</div>
+            {{scope.row.title}}
           </template>
         </el-table-column>
         <el-table-column label="采集网站名称" >
           <template slot-scope="scope">
-            {{scope.row.publishTs}}
+            {{scope.row.websiteName}}
           </template>
         </el-table-column>
         <el-table-column label="采集频道" width="160px">
           <template slot-scope="scope">
-            {{scope.row.createdTs}}
+            {{scope.row.channel}}
           </template>
         </el-table-column>
         <el-table-column label="采集内容发布时间" width="200px">
           <template slot-scope="scope">
-            {{scope.row.websiteName}}
+            {{scope.row.publishTs}}
           </template>
         </el-table-column>
         <el-table-column label="采集时间" width="130px">
           <template slot-scope="scope">
-            {{scope.row.channel}}
+            {{scope.row.reptileTs}}
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="detail($event, scope.row)" :actionid="getId('采集结果', '预览')" v-if="has('采集结果', '预览')">预览</el-button>
-            <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('采集结果', '编辑')" v-if="has('采集结果', '编辑')">编辑</el-button>
-            <el-button type="text" @click="openPublish($event, scope.row)" :actionid="getId('采集结果', '发布')" v-if="has('采集结果', '发布')">发布</el-button>
-            <el-button type="text" @click="toRecycleBin($event, scope.row)" :actionid="getId('采集结果', '移入回收站')" v-if="has('采集结果', '移入回收站')">移入回收站</el-button>
+            <el-button type="text" @click="detail($event, scope.row)">预览</el-button>
+            <el-button type="text" @click="edit($event, scope.row)">编辑</el-button>
+            <el-button type="text" @click="openPublish($event, scope.row)">发布</el-button>
+            <el-button type="text" @click="toRecycleBin($event, scope.row)">移入回收站</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -129,7 +128,7 @@
         <el-form ref="query" :inline="true" label-position="right" :model="query">
           <el-form-item label="采集网站：">
             <el-select v-model="query.crawlerId">
-              <el-option v-for="crawler in crawlerOptions" :label="crawler.label" :value="crawler.value" :key="crawler.value"></el-option>
+              <el-option v-for="crawler in crawlerOptions" :label="crawler.name" :value="crawler.id" :key="crawler.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -202,18 +201,18 @@
       <div class="block">
         <el-form ref="query" :inline="true" label-position="right" :model="query">
           <el-form-item label="创建人：">
-            <el-select v-model="query.crawlerId">
-              <el-option v-for="crawler in crawlerOptions" :label="crawler.label" :value="crawler.value" :key="crawler.value"></el-option>
-            </el-select>
+            <el-input v-model="query.operator"></el-input>
           </el-form-item>
           <el-form-item label="网站名称：">
-            <el-select v-model="query.channel">
-              <el-option v-for="channel in channelOptions" :label="channel.label" :value="channel.value" :key="channel.value"></el-option>
+            <el-select v-model="query.website">
+              <el-option v-for="channel in crawlerOptions" :label="channel.name" :value="channel.id" :key="channel.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="采集状态：">
-            <el-select v-model="query.channel">
-              <el-option v-for="channel in channelOptions" :label="channel.label" :value="channel.value" :key="channel.value"></el-option>
+            <el-select v-model="query.status">
+              <el-option label="全部" :value="-1"></el-option>
+              <el-option label="未采集" :value="0"></el-option>
+              <el-option label="采集" :value="1"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item >

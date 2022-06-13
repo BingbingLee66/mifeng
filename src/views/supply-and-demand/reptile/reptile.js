@@ -7,7 +7,16 @@ import {
   getDetail,
   publish,
   toRecycleBin,
-  toCollectionResult
+  toCollectionResult,
+  getReptileDemands,
+  moveToRecycleStationBatch,
+  shiftOutFromRecycleStationBatch,
+  details,
+  demandPublish,
+  getWebSites,
+  saveOrUpdate,
+  collect,
+  delBatch
 } from '@/api/content/crawler'
 import { getContentColumnOptions } from '@/api/content/columnsetup'
 
@@ -24,8 +33,9 @@ export default {
       limit: 10,
       listLoading: false,
       query: {
-        crawlerId: -1,
-        channel: '-1'
+        website: '',
+        operator: '',
+        status: -1
       },
       detailObj: {
         title: '',
@@ -95,9 +105,9 @@ export default {
       this.fetchData()
     },
     getWebNameType() {
-      getWebnameOptions().then(response => {
-        this.crawlerOptions = response.data.data
-        this.crawlerOptions.unshift({ 'label': '所有', 'value': -1 })
+      getWebSites().then(response => {
+        this.crawlerOptions = response.data.list
+        this.crawlerOptions.unshift({ 'label': '所有', 'value': '-1' })
       })
     },
     getChannelType() {
@@ -123,9 +133,9 @@ export default {
         'channel': this.query.channel
       }
       if (this.activeName === '1') {
-        getCollectList(params).then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.totalRows
+        getReptileDemands(params).then(response => {
+          this.list = response.data.list
+          this.total = response.data.totalRows
           this.listLoading = false
         })
       } else if (this.activeName === '2') {

@@ -77,3 +77,82 @@ export function getChannelOptions() {
     method: 'get'
   })
 }
+/**
+ * 获取供需爬虫列表
+ * @returns {*}
+ */
+export function getReptileDemands() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-demand-reptile/list',
+    method: 'get'
+  })
+}
+
+export function moveToRecycleStationBatch() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-demand-reptile/moveToRecycleStationBatch',
+    method: 'post'
+  })
+}
+export function shiftOutFromRecycleStationBatch() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-demand-reptile/shiftOutRecycleStationBatch',
+    method: 'post'
+  })
+}
+export function details() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-demand-reptile/{id}',
+    method: 'get'
+  })
+}
+export function demandPublish() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-demand-reptile/publish',
+    method: 'post'
+  })
+}
+
+/**
+ * 获取爬虫网站列表
+ * @returns {*}
+ */
+export function getWebSites() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-reptile-website/list',
+    method: 'get'
+  })
+}
+
+/**
+ * 保存或新增爬虫网站
+ * @returns {*}
+ */
+export function saveOrUpdate() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-reptile-website/insertOrUpdate',
+    method: 'post'
+  })
+}
+
+/**
+ * 采集爬虫网站
+ * @returns {*}
+ */
+export function collect() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-reptile-website/collect/{id}',
+    method: 'post'
+  })
+}
+
+/**
+ * 批量删除爬虫网站配置
+ * @returns {*}
+ */
+export function delBatch() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-reptile-website/delBatch',
+    method: 'delete'
+  })
+}
