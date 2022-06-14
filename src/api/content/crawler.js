@@ -83,23 +83,35 @@ export function getChannelOptions() {
  * 获取供需爬虫列表
  * @returns {*}
  */
-export function getReptileDemands() {
+export function getReptileDemands(params) {
   return request({
     url: baseUrl + '/ec/reptile/ysh-demand-reptile/list',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 
-export function moveToRecycleStationBatch() {
+/**
+ * 批量逻辑删除(移入回收站)
+ * @returns {*}
+ */
+export function moveToRecycleStationBatch(params) {
   return request({
     url: baseUrl + '/ec/reptile/ysh-demand-reptile/moveToRecycleStationBatch',
-    method: 'post'
+    method: 'post',
+    data: params
   })
 }
-export function shiftOutFromRecycleStationBatch() {
+
+/**
+ * 批量移出回收站
+ * @returns {*}
+ */
+export function shiftOutFromRecycleStationBatch(params) {
   return request({
     url: baseUrl + '/ec/reptile/ysh-demand-reptile/shiftOutRecycleStationBatch',
-    method: 'post'
+    method: 'post',
+    data: params
   })
 }
 export function details(params) {

@@ -34,9 +34,12 @@ export default {
       listLoading: false,
       query: {
         website: '',
+        websiteId: '',
         operator: '',
-        status: -1
-      },
+        status: 1,
+        articleIds: []
+      }
+      ,
       detailObj: {
         title: '',
         contentHtml: ''
@@ -95,10 +98,7 @@ export default {
     },
     init() {
       this.selectionDatas = []
-      this.query = {
-        crawlerId: -1,
-        channel: '-1'
-      }
+      this.query.status = this.activeName
       this.list = []
       this.currentpage = 1
       this.limit = 10
@@ -129,8 +129,8 @@ export default {
       let params = {
         'pageSize': this.limit,
         'page': this.currentpage,
-        'crawlerId': this.query.crawlerId,
-        'channel': this.query.channel
+        'websiteId': this.query.websiteId,
+        'status': this.query.status
       }
       if (this.activeName === '1') {
         getReptileDemands(params).then(response => {
@@ -153,31 +153,8 @@ export default {
       }
     },
     demandQuery(type) {
-      let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'websiteId': this.query.crawlerId,
-        'status': type
-      }
-      if (this.activeName === '1') {
-        getReptileDemands(params).then(response => {
-          this.list = response.data.list
-          this.total = response.data.totalRows
-          this.listLoading = false
-        })
-      } else if (this.activeName === '2') {
-        getRecycleList(params).then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.totalRows
-          this.listLoading = false
-        })
-      } else {
-        getRecycleList(params).then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.totalRows
-          this.listLoading = false
-        })
-      }
+      this.query.status = type
+      this.fetchData()
     },
     openPublish(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -245,10 +222,8 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let ids = []
       ids.push(row.id)
-      let params = {
-        'articleIds': ids
-      }
-      toRecycleBin(params).then(response => {
+      this.query.articleIds = ids
+      moveToRecycleStationBatch(this.query.articleIds).then(response => {
         this.$message({
           message: '移入回收站成功',
           type: 'success'
@@ -267,7 +242,7 @@ export default {
       let params = {
         'articleIds': this.selectionDatas
       }
-      toRecycleBin(params).then(response => {
+      shiftOutFromRecycleStationBatch(params).then(response => {
         this.$message({
           message: '移入回收站成功',
           type: 'success'
@@ -374,11 +349,12 @@ export default {
       this.detailVisible = true
     },
     handleSelectionChange(value) {
-      let datas = value
-      this.selectionDatas = []
-      for (let data of datas) {
-        this.selectionDatas.push(data.id)
-      }
+      this.selectionDatas = value.map(v => v.id)
+      // let datas = value
+      // this.selectionDatas = []
+      // for (let data of datas) {
+      //   this.selectionDatas.push(data.id)
+      // }
     }
   }
 }

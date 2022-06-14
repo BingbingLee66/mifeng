@@ -9,12 +9,12 @@
       <div class="block">
         <el-form ref="query"  :inline="true"  label-position="right"  :model="query">
           <el-form-item label="采集网站">
-            <el-select v-model="query.crawlerId">
+            <el-select v-model="query.websiteId">
               <el-option v-for="crawler in crawlerOptions" :label="crawler.name" :value="crawler.id" :key="crawler.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="demandQuery(1)" >查询</el-button>
+            <el-button type="primary" size="small" @click="fetchData()" >查询</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="danger" size="small" @click="batchToRecycleBin($event)" >重置</el-button>
@@ -127,12 +127,12 @@
       <div class="block">
         <el-form ref="query" :inline="true" label-position="right" :model="query">
           <el-form-item label="采集网站：">
-            <el-select v-model="query.crawlerId">
+            <el-select v-model="query.websiteId">
               <el-option v-for="crawler in crawlerOptions" :label="crawler.name" :value="crawler.id" :key="crawler.id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="small" @click="demandQuery(0)">查询</el-button>
+            <el-button type="primary" size="small" @click="demandQuery()">查询</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="danger" size="small" @click="batchDelArticle($event)">重置</el-button>
