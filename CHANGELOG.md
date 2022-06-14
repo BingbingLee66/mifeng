@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## [Rreleased]
+## [2.12.0] - 2022-06-08
+
+### Added
+-  用户管理界面新增电话列表、地址列表、邮箱信息[1302](https://gitlab.kd/yunshanghui/backend/api/-/issues/1302)
+### Fixed
+
 ## [Unreleased]
 ## [1.17.0] - 2021-09-23
 
