@@ -186,12 +186,6 @@
 </template>
 
 <script>
-/* import {
-  getFriendLinks,
-  delFriendLinks,
-  addFriendLinks,
-  editFriendLinksWeight,
-} from "@/api/home/friendLink"; */
 import Friend from "@/api/home/friendLink";
 export default {
   data() {
@@ -252,7 +246,6 @@ export default {
       const [res, err] = await Friend.getFriendLinks(data);
       if (err) return;
       if (res.state !== 1) return;
-      console.log("=== 友情单位 ===", res);
       this.formData = res.data.list;
       this.formPage.total = res.data.totalRows;
     },
@@ -268,7 +261,6 @@ export default {
       const [res, err] = await Friend.getChamberData(data);
       if (err) return;
       if (res.state !== 1) return;
-      console.log("=== 可选择商会 ===", res);
       this.chamberData = res.data.list;
       this.chamberPage.total = res.data.totalRows;
     },
@@ -325,7 +317,10 @@ export default {
       });
       const [res, err] = await Friend.addFriendLinks({ ckeyList });
       if (err) return;
-      if (res.state !== 1) return;
+      if (res.data.state !== 1) {
+        this.$message.error(res.data.msg);
+        return;
+      }
       this.$message.success("已添加");
       this.addVisible = false;
       this.fetchData(1);
@@ -340,7 +335,10 @@ export default {
         .then(async () => {
           const [res, err] = await Friend.delFriendLinks(id);
           if (err) return;
-          if (res.state !== 1) return;
+          if (res.data.state !== 1) {
+            this.$message.error(res.data.msg);
+            return;
+          }
           this.$message.success("已移除");
           this.fetchData(1);
         })
@@ -361,8 +359,10 @@ export default {
           };
           const [res, err] = await Friend.editFriendLinksWeight(data);
           if (err) return;
-          if (res.state !== 1) return;
-          if (res.state !== 1) return;
+          if (res.data.state !== 1) {
+            this.$message.error(res.data.msg);
+            return;
+          }
           this.$message.success(res.msg);
           this.weightVisible = false;
           this.fetchData(1);
