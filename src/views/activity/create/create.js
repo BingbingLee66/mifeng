@@ -562,6 +562,9 @@ export default {
           if(this.formObj['applyDate'] && this.formObj['applyDate'].length > 0){
             this.formObj['applyStartTime'] = this.formObj['applyDate'][0]
             this.formObj['applyEndTime'] = this.formObj['applyDate'][1]
+          }else{
+            this.formObj['applyStartTime'] = null
+            this.formObj['applyEndTime'] = null
           }
           
           if (this.areaData) {

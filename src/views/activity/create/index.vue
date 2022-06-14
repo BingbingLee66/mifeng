@@ -130,7 +130,7 @@
                   v-model="provinceValue"
                   placeholder="请选择省份"
                   @change="provinceChange"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 >
                   <el-option
                     v-for="item in provinceOptions"
@@ -144,7 +144,7 @@
                   v-model="cityValue"
                   placeholder="请选择市"
                   @change="cityChange"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 >
                   <el-option
                     v-for="item in cityOptions"
@@ -158,7 +158,7 @@
                   v-model="countryValue"
                   placeholder="请选择区"
                   @change="countryChange"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 >
                   <el-option
                     v-for="item in countryOptions"
@@ -177,7 +177,7 @@
                   show-word-limit
                   maxlength="50"
                   placeholder="详细地址，限50字内"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -188,13 +188,13 @@
                 <el-checkbox
                   v-model="applyObject.unlimit"
                   @change="handleCheckTarget($event, 0)"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                   >不限</el-checkbox
                 >
                 <el-checkbox
                   v-model="applyObject.limit"
                   @change="handleCheckTarget($event, 1)"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 >
                   {{ ckey ? "限本商会成员" : "限云商会成员" }}
                 </el-checkbox>
@@ -202,7 +202,7 @@
                   v-if="ckey"
                   v-model="applyObject.port"
                   @change="handleCheckTarget($event, 2)"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 >
                   限定本商会内指定职位
                 </el-checkbox>
@@ -210,7 +210,7 @@
                   v-if="ckey"
                   v-model="applyObject.department"
                   @change="handleCheckTarget($event, 3)"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 >
                   限本商会内指定部门
                 </el-checkbox>
@@ -225,7 +225,7 @@
                   v-model="portValue"
                   multiple
                   placeholder="请选择"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 >
                   <el-option
                     v-for="item in portSelect"
@@ -264,7 +264,7 @@
                     noResultsText="没找到部门"
                     id="treeselect"
                     :default-expand-level="3"
-                    :disabled="status != 1"
+                    :disabled="status == 2 || status == 3"
                   />
                   <!-- <treeselect-value :value="valueTree" /> -->
                 </div>
@@ -278,13 +278,13 @@
                 <el-checkbox
                   v-model="applyCount.unlimit"
                   @change="handleCheckNum($event, 0)"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                   >不限</el-checkbox
                 >
                 <el-checkbox
                   v-model="applyCount.limit"
                   @change="handleCheckNum($event, 1)"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                   >限</el-checkbox
                 >
                 <el-input
@@ -293,7 +293,7 @@
                   placeholder="大于0的整数"
                   maxlength="9"
                   v-model="formObj.applyCount"
-                  :disabled="status != 1"
+                  :disabled="status == 2 || status == 3"
                 >
                   <template slot="append">人</template>
                 </el-input>
@@ -431,7 +431,7 @@
               <el-button
                 type="primary"
                 @click="dialogFormVisible = true"
-                :disabled="arrayData.length >= 6 || status != 1"
+                :disabled="arrayData.length >= 6 ||(status == 2 || status == 3)"
                 >+自定义</el-button
               >
             </el-form-item>
