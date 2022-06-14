@@ -176,7 +176,7 @@
             <div v-if="!row.syncPlatformFreezeChamberVOList.length && !row.syncChamberFreezeChamberVOList.length">正常</div>
             <div v-if="row.syncPlatformFreezeChamberVOList.length">
               <strong>【平台冻结】</strong>
-              <div v-for="(item,i) in row.syncPlatformFreezeChamberVOList" :key="`${item.id}-${i}`">云商会(公域页面)</div>
+              <div v-for="(item,i) in row.syncPlatformFreezeChamberVOList" :key="`${item.id}-${i}`">{{ item.name }}</div>
             </div>
             <div v-if="row.syncChamberFreezeChamberVOList.length">
               <strong>【商会冻结】</strong>
@@ -290,7 +290,7 @@
       </div>
       <el-checkbox-group v-model="freezeAboutDialog.checkList" v-loading="freezeAboutDialog.loading">
         <template v-for="(item,i) in freezeAboutDialog.list">
-          <el-checkbox v-if="item.value" :key="`${item.id}-${i}`" style="display:block;margin-bottom:10px;" :label="item.value">{{ item.value == 'ysh' ? '云商会(公域页面)' :  item.label}}</el-checkbox>
+          <el-checkbox v-if="item.value" :key="`${item.id}-${i}`" style="display:block;margin-bottom:10px;" :label="item.value">{{ item.label }}</el-checkbox>
         </template>
       </el-checkbox-group>
       <div slot="footer">
