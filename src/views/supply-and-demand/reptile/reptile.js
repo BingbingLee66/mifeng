@@ -16,6 +16,7 @@ import {
   getWebSites,
   saveOrUpdate,
   collect,
+  reptileDelBatch,
   delBatch
 } from '@/api/content/crawler'
 import { getContentColumnOptions } from '@/api/content/columnsetup'
@@ -37,14 +38,14 @@ export default {
         websiteId: '',
         operator: '',
         status: 1,
+        collectStatus: '',
         articleIds: []
-      }
-      ,
+      },
       detailObj: {
         title: '',
         contentHtml: ''
       },
-      crawlerOptions: [],
+      websites: [],
       channelOptions: [],
       formObj: {
         contentColumnId: '',
@@ -70,9 +71,7 @@ export default {
   },
   computed: {},
   created() {
-    this.getWebNameType()
-    this.getChannelType()
-    this.getContentColumnType()
+    this.getWebSites()
   },
   methods: {
     has(tabName, actionName) {
@@ -104,21 +103,10 @@ export default {
       this.limit = 10
       this.fetchData()
     },
-    getWebNameType() {
+    getWebSites() {
       getWebSites().then(response => {
-        this.crawlerOptions = response.data.list
-        this.crawlerOptions.unshift({ 'label': '所有', 'value': '-1' })
-      })
-    },
-    getChannelType() {
-      getChannelOptions().then(response => {
-        this.channelOptions = response.data.data
-        this.channelOptions.unshift({ 'label': '所有', 'value': '-1' })
-      })
-    },
-    getContentColumnType() {
-      getContentColumnOptions().then(response => {
-        this.contentColumnOptions = response.data.data
+        this.websites = response.data.list
+        this.websites.unshift({ 'label': '所有', 'value': '-1' })
       })
     },
     fetchData(e) {
@@ -126,35 +114,33 @@ export default {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       this.listLoading = true
-      let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'websiteId': this.query.websiteId,
-        'status': this.query.status
-      }
-      if (this.activeName === '1') {
+      if (this.activeName === '0' || this.activeName === '1') {
+        let params = {
+          'pageSize': this.limit,
+          'pageNum': this.currentpage,
+          'websiteId': this.query.websiteId,
+          'status': this.query.status
+        }
         getReptileDemands(params).then(response => {
           this.list = response.data.list
           this.total = response.data.totalRows
           this.listLoading = false
         })
-      } else if (this.activeName === '2') {
-        getRecycleList(params).then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.totalRows
-          this.listLoading = false
-        })
       } else {
-        getRecycleList(params).then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.totalRows
+        let params = {
+          'pageSize': this.limit,
+          'pageNum': this.currentpage,
+          'name': this.query.websiteId,
+          'type': 2,
+          'collectStatus': this.query.collectStatus,
+          'creatorName': this.query.operator,
+        }
+        getWebSites(params).then(response => {
+          this.list = response.data.list
+          this.total = response.data.totalRows
           this.listLoading = false
         })
       }
-    },
-    demandQuery(type) {
-      this.query.status = type
-      this.fetchData()
     },
     openPublish(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -218,12 +204,11 @@ export default {
         }
       })
     },
-    toRecycleBin(e, row) {
+    inRecycle(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let ids = []
       ids.push(row.id)
-      this.query.articleIds = ids
-      moveToRecycleStationBatch(this.query.articleIds).then(response => {
+      moveToRecycleStationBatch(ids).then(response => {
         this.$message({
           message: '移入回收站成功',
           type: 'success'
@@ -231,7 +216,7 @@ export default {
         this.fetchData()
       })
     },
-    batchToRecycleBin(e) {
+    inRecycleBatch(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -239,10 +224,10 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'articleIds': this.selectionDatas
-      }
-      shiftOutFromRecycleStationBatch(params).then(response => {
+      // let params = {
+      //   'ids': this.selectionDatas
+      // }
+      moveToRecycleStationBatch(this.selectionDatas).then(response => {
         this.$message({
           message: '移入回收站成功',
           type: 'success'
@@ -252,10 +237,9 @@ export default {
     },
     toCollectionResult(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'id': row.id
-      }
-      toCollectionResult(params).then(response => {
+      let ids = []
+      ids.push(row.id)
+      shiftOutFromRecycleStationBatch(ids).then(response => {
         this.$message({
           message: '移出回收站成功',
           type: 'success'
@@ -279,10 +263,37 @@ export default {
         window.localStorage.setItem('actionId', actionid)
         let ids = []
         ids.push(row.id)
-        let params = {
-          'articleIds': ids
-        }
-        del(params).then(response => {
+        reptileDelBatch(ids).then(response => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.fetchData()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    delWebSite(e, row) {
+      let actionid = e.currentTarget.getAttribute('actionid')
+      const h = this.$createElement
+      this.$msgbox({
+        title: '确定删除文章？',
+        message: h('p', null, [
+          h('p', null, '此删除会把文章直接从数据库删除'),
+          h('p', null, '不可恢复，请谨慎操作')
+        ]),
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(() => {
+        window.localStorage.setItem('actionId', actionid)
+        let ids = []
+        ids.push(row.id)
+        delBatch(ids).then(response => {
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -319,7 +330,7 @@ export default {
         let params = {
           'articleIds': this.selectionDatas
         }
-        del(params).then(response => {
+        reptileDelBatch(this.selectionDatas).then(response => {
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -336,7 +347,11 @@ export default {
     edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('crawlermanager', this.$route.path)
-      this.$router.push({ name: '编辑采文', params: { 'articleId': row.id } })
+      if (this.activeName === '0' || this.activeName === '1') {
+        this.$router.push({ name: '编辑供需', params: { 'id': row.id,'source': 1 } })
+      } else {
+        this.$router.push({ name: '编辑采文', params: { 'articleId': row.id } })
+      }
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -349,12 +364,12 @@ export default {
       this.detailVisible = true
     },
     handleSelectionChange(value) {
-      this.selectionDatas = value.map(v => v.id)
-      // let datas = value
-      // this.selectionDatas = []
-      // for (let data of datas) {
-      //   this.selectionDatas.push(data.id)
-      // }
+      // this.selectionDatas = value.map(v => v.id)
+      let datas = value
+      this.selectionDatas = []
+      for (let data of datas) {
+        this.selectionDatas.push(data.id)
+      }
     }
   }
 }

@@ -114,6 +114,13 @@ export function shiftOutFromRecycleStationBatch(params) {
     data: params
   })
 }
+export function reptileDelBatch(params) {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-demand-reptile/delBatch',
+    method: 'delete',
+    data: params
+  })
+}
 export function details(params) {
   return request({
     url: baseUrl + `/ec/reptile/ysh-demand-reptile/${params}`,
@@ -131,10 +138,11 @@ export function demandPublish() {
  * 获取爬虫网站列表
  * @returns {*}
  */
-export function getWebSites() {
+export function getWebSites(params) {
   return request({
     url: baseUrl + '/ec/reptile/ysh-reptile-website/list',
-    method: 'get'
+    method: 'get',
+    params
   })
 }
 
@@ -164,9 +172,10 @@ export function collect() {
  * 批量删除爬虫网站配置
  * @returns {*}
  */
-export function delBatch() {
+export function delBatch(params) {
   return request({
     url: baseUrl + '/ec/reptile/ysh-reptile-website/delBatch',
-    method: 'delete'
+    method: 'delete',
+    data: params
   })
 }
