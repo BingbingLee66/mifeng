@@ -28,28 +28,50 @@
       </el-row>
       <table border="1" width="100%" align="center" cellspacing="0">
         <tr align="center" height="45">
-          <td width="24%" rowspan="6">
+          <td width="24%" rowspan="15">
             <div class="head-portrait"><img :src="userInfo.uavatar"></div>
           </td>
           <td width="8%">用户名</td>
           <td width="30%">{{ userInfo.uname }}</td>
-          <td width="8%">手机号码</td>
+          <td width="8%">注册手机</td>
           <td width="30%">{{ userInfo.phone }}</td>
         </tr>
+
+        <tr align="center" height="45">
+          <td width="8%">联系电话</td>
+          <td width="30%" colspan="3">
+            <span v-for="(item,index) in telephones" :key="index">{{ item.phone }}{{index===telephones.length-1?'':','}}</span>
+          </td>
+        </tr>
+
+        <tr align="center" height="45" v-for="(item,index) in contactAddress" :key="index" >
+          <td width="8%">地址{{ index + 1 }}</td>
+          <td width="30%" colspan="3">
+            <div style="font-size: 18px;">{{ item.province }}{{ item.city }}{{ item.area }}{{ item.street }}{{ item.address }}</div>
+          </td>
+        </tr>
+
         <tr align="center" height="45">
           <td width="8%">性别</td>
           <td width="30%">
             <div v-if="userInfo.ugender == 1">男</div>
             <div v-if="userInfo.ugender == 2">女</div>
           </td>
-          <td width="8%">生日</td>
-          <td width="30%">{{ userInfo.birthday | dateFormat }}</td>
+          <td width="8%">邮箱</td>
+          <td width="30%">{{ userInfo.email }}</td>
         </tr>
         <tr align="center" height="45">
           <td width="8%">籍贯</td>
           <td width="30%">{{ userInfo.nativePlace }}</td>
+          <td width="8%">生日</td>
+          <td width="30%">{{ userInfo.birthday | dateFormat }}</td>
+          <!--<td width="8%">简介</td>
+          <td align="center" height="50" colspan="10">
+            <el-button type="text" @click="resumeDetail(userInfo.introduction)">详情</el-button>
+          </td>-->
+        </tr>
+        <tr align="center" height="45">
           <td width="8%">简介</td>
-          <!-- {{ resumeCp(userInfo.introduction) }} -->
           <td align="center" height="50" colspan="10">
             <el-button type="text" @click="resumeDetail(userInfo.introduction)">详情</el-button>
           </td>
