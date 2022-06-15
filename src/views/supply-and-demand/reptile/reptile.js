@@ -348,7 +348,8 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('crawlermanager', this.$route.path)
       if (this.activeName === '0' || this.activeName === '1') {
-        this.$router.push({ name: '编辑供需', params: { 'id': row.id,'source': 1 } })
+        // this.$router.push({ name: '编辑供需', params: { 'id': row.id} })
+        this.$router.push({ path: '/supply-and-demand/edit-supply-demand', query: { id: row.id, type: 1 }})
       } else {
         this.$router.push({ name: '编辑采文', params: { 'articleId': row.id } })
       }
