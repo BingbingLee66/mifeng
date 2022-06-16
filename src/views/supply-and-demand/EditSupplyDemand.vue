@@ -31,9 +31,11 @@ export default {
       if (type === 1) {
         const { data } = await details(id)
         this.detail = data
+        console.log("detail"+JSON.stringify(this.detail))
       } else {
         const { data } = await getSupplyDemandDetail(id)
         this.detail = data
+        console.log("detail"+JSON.stringify(this.detail))
       }
     }
   },

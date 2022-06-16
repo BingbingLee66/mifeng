@@ -1,6 +1,6 @@
 <template>
   <span v-if="!disable" class="lables">
-    <span v-for="(item,index) in list" :key="item.id" class="lable-item" :style="itemStyle">
+    <span v-if="list" v-for="(item,index) in list" :key="item.id" class="lable-item" :style="itemStyle">
       {{ item[nameKey] }}
       <slot name="icon" :list="list" :item="item" :index="index">
         <i class="lable-icon el-icon-circle-close" @click.stop="$emit('delete',{list,item,index})" />

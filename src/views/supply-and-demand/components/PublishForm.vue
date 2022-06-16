@@ -217,40 +217,13 @@ export default {
   },
   methods: {
     initData() {
-      const chamberVOList = this.detail.chamberVOList ? this.detail.chamberVOList : []
-      const dynamicWxUserVO = this.detail.dynamicWxUserVO ? this.detail.dynamicWxUserVO : {}
-      // let yshContentEditVO = {
-      //   top: 'bottom',
-      //   bottom: 'top',
-      //   left: 'right',
-      //   right: 'left'
-      // };
-      let yshContentEditVO = {
-        tarType: this.detail.tarType ? this.detail.tarType : 1,
-        content: this.detail.content ? this.detail.content : '',
-        validType:  this.detail.validType ?  this.detail.validType : 1,
-        validEndTs:  this.detail.validEndTs ? this.detail.validEndTs : 0,
-        title:  this.detail.title ? this.detail.title : '',
-        labelVOList: this.detail.labelVOList ? this.detail.labelVOList : [],
-        tradeVOList:  this.detail.tradeVOList ? this.detail.tradeVOList : [],
-        city: this.detail.city ? this.detail.city : {},
-        province: this.detail.province ? this.detail.province : {}
-      }
-      // const {
-      //   chamberVOList = this.detail.chamberVOList ? this.detail.chamberVOList : [],
-      //   dynamicWxUserVO  = this.detail.dynamicWxUserVO ? this.detail.dynamicWxUserVO : {},
-      //   yshContentEditVO: {
-      //     tarType = this.detail.tarType ? this.detail.tarType : 1,
-      //     content = this.detail.content ? this.detail.content : '',
-      //     validType = this.detail.validType ?  this.detail.validType : 1,
-      //     validEndTs = this.detail.validEndTs ? this.detail.validEndTs : 0,
-      //     title = this.detail.title ? this.detail.title : '',
-      //     labelVOList = this.detail.labelVOList ? this.detail.labelVOList : [],
-      //     tradeVOList = this.detail.tradeVOList ? this.detail.tradeVOList : [],
-      //     city = this.detail.city ? this.detail.city : {},
-      //     province = this.detail.province ? this.detail.province : {}
-      //   }
-      // }
+      const {
+        chamberVOList = [],
+        dynamicWxUserVO = {},
+        yshContentEditVO: {
+          tarType, content, validType, validEndTs, title, labelVOList, tradeVOList, city, province
+        } = {}
+      } = this.detail
       this.formData = {
         content: '', // 供需内容
         tarType, // 供应: 1 or 需求: 2
@@ -258,13 +231,12 @@ export default {
         title, // 供需标题
         publisherList: [dynamicWxUserVO], // 发布人列表
         supplyLableList: labelVOList, // 供需标签
-        industryLableList: tradeVOList.map(v => ({ ...v, typeName: v.name })), // 行业标签
-        publisherStationList: [{ ...city, fullName: `${city.name}-${province.name}`, fullCode: `${city.code}-${province.code}` }], // 发布者常驻地
+        industryLableList: tradeVOList ? tradeVOList.map(v => ({ ...v, typeName: v.name })) : [], // 行业标签
+        publisherStationList: city ? [{ ...city, fullName: `${city.name}-${province.name}`, fullCode: `${city.code}-${province.code}` }] : {}, // 发布者常驻地
         date: validEndTs ? new Date(+validEndTs) : '',
         selectedChamberList: chamberVOList, // 已选择商协会
         unSelecteChamberList: [] // 未选择商协会
       }
-      console.log("formData"+JSON.stringify(this.formData))
       getChamberList(dynamicWxUserVO.wxUserId).then(({ data = [] }) => {
         const selectedChamberIds = chamberVOList.map(v => v.id)
         this.formData.unSelecteChamberList = data.filter(v => !selectedChamberIds.includes(v.id))
