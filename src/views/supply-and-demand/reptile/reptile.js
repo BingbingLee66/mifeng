@@ -364,6 +364,13 @@ export default {
       })
       this.detailVisible = true
     },
+    // 点击添加金刚区
+    showAddWebSite() {
+      this.$refs['addWebSite'].open()
+        .then(() => {
+          this.fetchData()
+        })
+    },
     handleSelectionChange(value) {
       // this.selectionDatas = value.map(v => v.id)
       let datas = value
