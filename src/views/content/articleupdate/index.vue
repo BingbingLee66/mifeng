@@ -520,6 +520,7 @@
           </div>
           <div class="u-preview-area">
             <div class="u-article-title">{{ detailObj.title }}</div>
+             <videoComponent ref="videoRef" v-if="detailObj.vid" :vid="detailObj.vid" height="530px"/>
             <div class="u-article-content" v-html="detailObj.contentHtml" />
           </div>
         </div>

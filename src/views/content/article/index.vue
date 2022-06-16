@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-        <preview ref="preview"></preview>
+    <preview ref="preview"></preview>
     <kdDialog ref="kdDialog" dialogTitle="导入微信文章" @savePopupData="savePopupData" >
       <div slot="content" class="content">
         <el-input v-model="articleUrl"  placeholder="请输入微信文章链接地址" ></el-input>
@@ -12,6 +12,7 @@
       </div>
     </kdDialog>
     <el-form   ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
+      <div class="hd">1、内容信息</div>
       <el-row>
         <el-col :span="24">
 <!-- 这里需要注意 注释掉会存在 文章原先就不存在标题 编辑就必须填写标题问题不然验证不通过 <el-form-item v-if="!(this.articleId && !this.formObj.title)" label="文章标题：" prop="title">-->
@@ -49,10 +50,73 @@
     
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="6">
-          <preview-ph :title="formObj.title" :html-obj="formObj.contentHtml" />
-        </el-col> -->
+         //<!-- <el-col :span="6">
+        //  <preview-ph :title="formObj.title" :html-obj="formObj.contentHtml" />
+       // </el-col> -->
       </el-row>
+      
+      <el-row>
+        <el-col :span="8">
+          <el-form-item v-loading="loading">
+            <div class="vdo">视频</div>
+            <el-upload
+              v-if="!formObj.vid"
+              action="/"
+              list-type="picture-card"
+              :before-upload="beforeAvatarUploadVideo"
+              :http-request="function (content) {return uploadVideoFunc(content);}"
+              :show-file-list="false"
+            >
+              <i class="el-icon-plus" />
+            </el-upload>
+
+            <div v-else class="goods-pre">
+              <videoComponent v-if="formObj.vid" ref="videoRef" :vid="formObj.vid" height="148px" />
+              <i
+                class="el-icon-error"
+                style="font-size:20px;color:red;"
+                @click="deleteCurrentVideo"
+              />
+            </div>
+
+            <div class="tips">建议视频大小不超过500M, 选填</div>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8">
+          <el-form-item>
+             <div class="vdo">视频封面</div>
+            <el-upload
+              v-if="!formObj.videoCoverURL"
+              action="/"
+              list-type="picture-card"
+              :before-upload="function (file) { return beforeAvatarUpload(file) }"
+              :http-request="function (content) {return upload(content, 'videoCoverURL')}"
+              :show-file-list="false"
+            >
+              <i class="el-icon-plus" />
+            </el-upload>
+            
+            <div v-else class="goods-pre">
+              <i
+                class="el-icon-error"
+                @click="deleteCurrentImg('videoCoverURL')"
+              />
+              <el-image
+                :src="formObj.videoCoverURL"
+                class="goods-avatar"
+              />
+              <div class="goods-pre-btn" @click="openPreviewModal(formObj.videoCoverURL)">
+                预览
+              </div>
+            </div>
+            <div class="tips">支持格式：jpeg、png、jpg</div>
+          </el-form-item>
+        </el-col>
+
+      </el-row>
+
+      <div class="hd">2、文章封面设置</div>
       <el-row>
         <el-col :span="18">
           <el-form-item label="封面管理：">
@@ -144,7 +208,81 @@
         </el-col>
        
       </el-row >
-        <div style="margin:0px 0px 10px 100px" v-if="formObj.coverType == 2" class="tips">建议尺寸：220 x 220;支持格式：jpeg、png、jpg</div>
+      <div style="margin:0px 0px 10px 100px" v-if="formObj.coverType == 2" class="tips">建议尺寸：220 x 220;支持格式：jpeg、png、jpg</div>
+
+      <div class="hd">3、文章分享设置</div>
+
+      <div style="margin-left:-84px">
+        <el-form-item>
+          <div class="vdo">分享标题</div>
+          <el-input placeholder="请输入分享标题" v-model="formObj.articleExtendDTO.shareTitle" maxlength="25" show-word-limit />
+        </el-form-item>
+      </div>
+      <div style="margin-left:-84px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item>
+              <div class="vdo">分享微信好友</div>
+              <el-upload
+                v-if="!formObj.articleExtendDTO.shareFriendPicture"
+                action="/"
+                list-type="picture-card"
+                :before-upload="function (file) { return beforeAvatarUpload(file) }"
+                :http-request="function (content) {return upload(content, 'shareFriendPicture')}"
+                :show-file-list="false"
+              >
+                <i class="el-icon-plus" />
+              </el-upload>
+              
+              <div v-else class="goods-pre">
+                <i
+                  class="el-icon-error"
+                  @click="deleteCurrentImg('shareFriendPicture')"
+                />
+                <el-image
+                  :src="formObj.articleExtendDTO.shareFriendPicture"
+                  class="goods-avatar"
+                />
+                <div class="goods-pre-btn" @click="openPreviewModal(formObj.articleExtendDTO.shareFriendPicture)">
+                  预览
+                </div>
+              </div>
+              <div class="tips">建议尺寸：750 x 600; 支持格式:png、jpg</div>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="8">
+            <el-form-item>
+              <div class="vdo">分享海报图</div>
+              <el-upload
+                v-if="!formObj.articleExtendDTO.sharePoster"
+                action="/"
+                list-type="picture-card"
+                :before-upload="function (file) { return beforeAvatarUpload(file) }"
+                :http-request="function (content) {return upload(content, 'sharePoster')}"
+                :show-file-list="false"
+              >
+                <i class="el-icon-plus" />
+              </el-upload>
+              
+              <div v-else class="goods-pre">
+                <i
+                  class="el-icon-error"
+                  @click="deleteCurrentImg('sharePoster')"
+                />
+                <el-image
+                  :src="formObj.articleExtendDTO.sharePoster"
+                  class="goods-avatar"
+                />
+                <div class="goods-pre-btn" @click="openPreviewModal(formObj.articleExtendDTO.sharePoster)">
+                  预览
+                </div>
+              </div>
+              <div class="tips">建议尺寸：600 x 446; 支持格式:png、jpg</div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </div>
       <el-row>
         <el-col :span="8">
           <el-form-item label="发布时间：">
@@ -183,6 +321,12 @@
         </el-col>
       </el-form-item>
     </el-form>
+    <kdDialog ref="look-kdDialog" :show-footer="false" dialog-title="" dialog-width="60%">
+      <div slot="content">
+        <img :src="currentImg" style="max-width:90%">
+      </div> 
+    </kdDialog>
+
   </div>
 
 </template>
@@ -239,5 +383,61 @@ font-family: '微软雅黑', sans-serif;
 .tips{
   color:#bdbdbd;
   font-size: 14px !important;
+}
+.hd{
+  padding: 12px 14px;
+  color: #333333;
+  background: #f2f2f2;
+  font-family: "Arial Negreta", "Arial Normal", "Arial", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+.vdo{
+  font-size: 14px;
+  color: #606266;
+  font-weight: 700;
+}
+.goods-pre {
+  border-radius: 6px;
+  position: relative;
+  width: 148px;
+  height: 148px;
+  overflow: hidden;
+}
+.goods-avatar {
+  width: 148px;
+  height: 148px;
+}
+.goods-pre:hover .goods-pre-btn {
+  display: block;
+}
+
+.goods-pre:hover .el-icon-error {
+  display: block;
+}
+
+.goods-pre .el-icon-error {
+  right: 3px;
+  top: 3px;
+  cursor: pointer;
+  position: absolute;
+  z-index: 12;
+  display: none;
+}
+
+.goods-pre-btn {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  margin-top: -45px;
+  color: #fff;
+  cursor: pointer;
+  position: absolute;
+  text-align: center;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: none;
 }
 </style>

@@ -268,19 +268,15 @@ export default {
         this.detailObj = response.data.dtl
         // 视频是否存在 渲染操作
         if (this.detailObj.contentType === 2 || this.detailObj.contentType === 3) {
-          console.log('进')
-        //  videoUtils('videoContent',this.detailObj.vid)
-          //  this.renderVideo()
-          // this.visible = true
-          // this.showVideo=true;
           this.$nextTick(() => {
-            console.log('this.$refs[videoRef]',this.$refs['videoRef'])
-         
             this.$refs['videoRef'].show(this.detailObj.vid)
           })
-         
-        
         }
+        // if (this.detailObj.contentType === 1 && (this.detailObj.contentType === 3)) {
+        //   this.$nextTick(() => {
+        //     this.$refs['videoRef'].show(this.detailObj.vid)
+        //   })
+        // }
       })
       // .catch(error => {
       //   reject(error)
