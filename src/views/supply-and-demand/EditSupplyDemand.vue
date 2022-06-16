@@ -1,7 +1,7 @@
 <template>
   <div v-loading="!detail" class="edit-wrap">
     <template v-if="detail">
-      <PublishImg v-if="detail.yshContentEditVO.contentType === 1" :detail="detail" />
+      <PublishImg v-if="detail.yshContentEditVO.contentType === 1 || !detail.dynamicWxUserVO" :detail="detail" />
       <PublishVideo v-else :detail="detail" />
     </template>
   </div>
@@ -31,11 +31,9 @@ export default {
       if (type === 1) {
         const { data } = await details(id)
         this.detail = data
-        console.log("detail"+JSON.stringify(this.detail))
       } else {
         const { data } = await getSupplyDemandDetail(id)
         this.detail = data
-        console.log("detail"+JSON.stringify(this.detail))
       }
     }
   },

@@ -335,7 +335,7 @@ export const constantRoutes = [
         meta: { title: '编辑供需' }
       },
       {
-        path: '/supply-and-demand/edit-supply-demand',
+        path: '/supply-and-demand/push-img',
         name: '爬虫发布供需',
         component: () => import('@/views/supply-and-demand/PublishImg'),
         hidden: true,
