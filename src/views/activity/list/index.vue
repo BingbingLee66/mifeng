@@ -20,9 +20,10 @@
         <el-form-item label="活动状态" v-if="type!=='0'">
           <el-select v-model="query.status" placeholder="请选择状态">
             <el-option label="全部状态" :value="0"/>
-            <el-option label="未开始" :value="1"/>
+            <el-option label="待开始" :value="1"/>
             <el-option label="进行中" :value="2"/>
             <el-option label="已结束" :value="3"/>
+            <el-option label="报名中" :value="4"/>
           </el-select>
         </el-form-item>
         <el-form-item label="">
@@ -42,6 +43,15 @@
           <template slot-scope="scope">
             <div class="red-label">{{ scope.row.id }}</div>
             <div> {{ scope.row.activityName }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="报名时间" width="100px">
+          <template slot-scope="scope">
+            <div v-if="scope.row.applyStartTime">
+              <div>{{ scope.row.applyStartTime | dateFormat }} ~</div>
+              <div>{{ scope.row.applyEndTime | dateFormat }}</div>
+            </div>
+            <div v-else>--</div>
           </template>
         </el-table-column>
         <el-table-column label="活动时间" width="100px">
@@ -89,9 +99,10 @@
           <template slot-scope="scope">
             <div v-if="scope.row.isPublish === 0">--</div>
             <div v-else>
-              <div v-if="scope.row.status === 1">未开始</div>
+              <div v-if="scope.row.status === 1">待开始</div>
               <div v-if="scope.row.status === 2">进行中</div>
               <div v-if="scope.row.status === 3">已结束</div>
+              <div v-if="scope.row.status === 4">报名中</div>
             </div>
           </template>
         </el-table-column>

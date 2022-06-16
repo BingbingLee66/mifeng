@@ -54,6 +54,7 @@ export default {
         headImage: '', // 活动头图
         listImage: '', // 活动列表图
         date: '', // 活动时间
+        applyDate: '', // 报名时间
         province: '', // 活动地点(省)
         city: '', // 活动地点(市)
         area: '', // 活动地点(区)
@@ -298,6 +299,15 @@ export default {
           activityTime.push(resData.endTime)
         }
         this.$set(this.formObj, 'date', activityTime)
+
+        // 报名时间回显
+        let applyTime = []
+        if (resData.applyStartTime && resData.applyEndTime) {
+          applyTime.push(resData.applyStartTime)
+          applyTime.push(resData.applyEndTime)
+        }
+        this.$set(this.formObj, 'applyDate', applyTime)
+
         // 活动地点回显
         this.provinceValue = resData.province
         this.cityValue = resData.city
@@ -547,6 +557,16 @@ export default {
           this.formObj.ckey = this.ckey
           this.formObj['activityStartTime'] = this.formObj['date'][0]
           this.formObj['activityEndTime'] = this.formObj['date'][1]
+
+          // 报名时间
+          if(this.formObj['applyDate'] && this.formObj['applyDate'].length > 0){
+            this.formObj['applyStartTime'] = this.formObj['applyDate'][0]
+            this.formObj['applyEndTime'] = this.formObj['applyDate'][1]
+          }else{
+            this.formObj['applyStartTime'] = null
+            this.formObj['applyEndTime'] = null
+          }
+          
           if (this.areaData) {
             this.formObj.province = this.areaData.province.name
             this.formObj.provinceCode = this.areaData.province.code
@@ -591,7 +611,7 @@ export default {
             }
            
           })
-        } else {
+        } else { 
           return false
         }
       })
