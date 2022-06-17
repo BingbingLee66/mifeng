@@ -214,6 +214,11 @@ export default {
             // this.formObj['publishTs'] = dataObj.publishTs
             this.$set(this.formObj, 'publishTs', dataObj.publishTs)
           }
+          if(dataObj.vid) {
+            this.$nextTick(() => {
+              this.$refs['videoRef'].show(dataObj.vid);
+            })
+          }
           this.getContentColumnType()
           // this.$refs.ckeditor1.init()
           // setTimeout(() => {

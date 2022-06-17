@@ -198,6 +198,11 @@ export default {
               'shareTitle':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.shareTitle : '',
             }
           }
+          if(dataObj.vid) {
+            this.$nextTick(() => {
+              this.$refs['videoRef'].show(dataObj.vid);
+            })
+          }
           // this.$refs.ueditor.setContent(htmlObj === null ? '' : htmlObj)
           // this.$refs.ckeditor1.init()
           // setTimeout(() => {
