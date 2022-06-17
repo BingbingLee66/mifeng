@@ -520,7 +520,10 @@
           </div>
           <div class="u-preview-area">
             <div class="u-article-title">{{ detailObj.title }}</div>
-             <videoComponent ref="videoRef" v-show="detailObj.vid" :vid="detailObj.vid" height="530px"/>
+            <div style="margin: 0 auto;width: 97%;">
+                <videoComponent ref="videoRef" v-show="detailObj.vid" :vid="detailObj.vid" height="530px"/>
+            </div>
+           
             <div class="u-article-content" v-html="detailObj.contentHtml" />
           </div>
         </div>
