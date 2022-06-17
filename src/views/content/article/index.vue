@@ -222,7 +222,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item>
-              <div class="vdo">分享微信好友</div>
+              <div class="vdo">分享微信好友圈</div>
               <el-upload
                 v-if="!formObj.articleExtendDTO.shareFriendPicture"
                 action="/"
