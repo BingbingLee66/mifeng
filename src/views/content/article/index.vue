@@ -56,7 +56,7 @@
       </el-row>
       
       <el-row>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item v-loading="loading">
             <div class="vdo">视频</div>
             <el-upload
@@ -83,7 +83,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item>
              <div class="vdo">视频封面</div>
             <el-upload
@@ -220,7 +220,7 @@
       </div>
       <div style="margin-left:-84px">
         <el-row>
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item>
               <div class="vdo">分享微信好友图</div>
               <el-upload
@@ -251,7 +251,7 @@
             </el-form-item>
           </el-col>
 
-          <el-col :span="8">
+          <el-col :span="6">
             <el-form-item>
               <div class="vdo">分享海报图</div>
               <el-upload
