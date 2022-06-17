@@ -5,6 +5,7 @@ import {
   details,
   getWebSites,
   reptileDelBatch,
+  getWebSiteSelect,
   delBatch
 } from '@/api/content/crawler'
 import kdDialog from '@/components/common/kdDialog'
@@ -81,6 +82,7 @@ export default {
     },
     handleClick() {
       window.localStorage.setItem('activenamec', this.activeName)
+      this.query.websiteId = ''
       this.init()
     },
     init() {
@@ -92,9 +94,9 @@ export default {
       this.fetchData()
     },
     getWebSites() {
-      getWebSites().then(response => {
-        this.websites = response.data.list
-        this.websites.unshift({ 'label': '所有', 'value': '-1' })
+      getWebSiteSelect().then(response => {
+        this.websites = response.data
+        this.websites.unshift({ 'value': '所有', 'key': '' })
       })
     },
     fetchData(e) {

@@ -134,6 +134,12 @@ export function demandPublish() {
   })
 }
 
+export function getWebSiteSelect() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-reptile-website/all',
+    method: 'get'
+  })
+}
 /**
  * 获取爬虫网站列表
  * @returns {*}

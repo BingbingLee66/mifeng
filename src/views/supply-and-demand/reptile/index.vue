@@ -10,7 +10,7 @@
         <el-form ref="query"  :inline="true"  label-position="right"  :model="query">
           <el-form-item label="采集网站">
             <el-select v-model="query.websiteId">
-              <el-option v-for="crawler in websites" :label="crawler.name" :value="crawler.id" :key="crawler.id"></el-option>
+              <el-option v-for="crawler in websites" :label="crawler.value" :value="crawler.key" :key="crawler.key"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -78,7 +78,7 @@
         <el-form ref="query" :inline="true" label-position="right" :model="query">
           <el-form-item label="采集网站：">
             <el-select v-model="query.websiteId">
-              <el-option v-for="crawler in websites" :label="crawler.name" :value="crawler.id" :key="crawler.id"></el-option>
+              <el-option v-for="crawler in websites" :label="crawler.value" :value="crawler.key" :key="crawler.key"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
