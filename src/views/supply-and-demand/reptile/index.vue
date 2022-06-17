@@ -259,7 +259,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="edit($event, scope.row)">编辑</el-button>
+            <el-button type="text" @click="editWebSite($event, scope.row)">编辑</el-button>
             <el-button type="text" @click="delWebSite($event, scope.row)" style="color: red;">删除</el-button>
           </template>
         </el-table-column>
@@ -275,7 +275,6 @@
         @current-change="handleCurrentChange">
       </el-pagination>
     </div>
-    <!-- 添加金刚区对话框start -->
     <addWebSite ref="addWebSite"></addWebSite>
   </div>
 

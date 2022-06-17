@@ -2,7 +2,7 @@
 <template>
   <div>
     <kdDialog
-      ref="kdDialog"
+      ref="addWebSite"
       :dialogTitle="dialogTitle"
       dialogWidth="50%"
       @savePopupData="submit"
@@ -10,7 +10,7 @@
     >
       <div slot="content">
         <el-form
-          ref="addWebSite"
+          ref="addWebSiteDialogRef"
           :rules="rules"
           label-width="120px"
           :model="website"
@@ -23,9 +23,9 @@
               placeholder="限40个字内"
             ></el-input>
           </el-form-item>
-          <el-form-item label="采集频道：" prop="channel">
+          <el-form-item label="采集频道：" prop="chanel">
             <el-input
-              v-model="website.channel"
+              v-model="website.chanel"
               placeholder="限40个字内"
             ></el-input>
           </el-form-item>
@@ -42,11 +42,11 @@
 </template>
 
 <script>
-import kdDialog from "@/components/common/kdDialog"
-import { saveKingKong } from "@/api/home/kingkong"
+import kdDialog from '@/components/common/kdDialog'
+import { saveOrUpdate } from '@/api/content/crawler'
 export default {
+  name: 'AddWebSite',
   components: { kdDialog },
-  name: "addWebSite",
   data() {
     return {
       // 状态
@@ -54,54 +54,59 @@ export default {
       reject: null,
       // 表单对象 字段注释参考父组件
       website: {
+        id: '',
         name: null,
-        channel: null,
-        url: null
+        chanel: null,
+        url: null,
+        type: 2
       },
       // 表单校验规则
       rules: {
         name: [
-          { min: 1, max: 40, message: "只限40个字以内哦", trigger: "blur" },
-          { required: true, message: "请输入采集网站名称", trigger: "blur" },
+          { min: 1, max: 40, message: '只限40个字以内哦', trigger: 'blur' },
+          { required: true, message: '请输入采集网站名称', trigger: 'blur' },
         ],
-        url: [{ required: true, message: "请输入采集网站地址", trigger: "blur" }],
-        channel: [{ required: true, message: "请输入采集网站频道", trigger: "blur" }],
+        url: [{ required: true, message: '请输入采集网站地址', trigger: 'blur' }],
+        chanel: [{ required: true, message: '请输入采集网站频道', trigger: 'blur' }],
       },
-      dialogTitle: "编辑网站"
+      dialogTitle: '编辑网站'
     }
   },
   props: {},
   methods: {
-    /**
-     * 状态
-     */
-    // 打开当前添加金刚区对话框
     open() {
       return new Promise((resolve, reject) => {
         this.resolve = resolve
         this.reject = reject
         this.show()
-        this.dialogTitle = "新增网站"
+        this.dialogTitle = '新增网站'
       })
     },
     // 显示对话框子组件
     show() {
-      this.$refs["kdDialog"].show()
+      this.$refs['addWebSite'].show()
     },
     edit(row) {
       return new Promise((resolve, reject) => {
         this.resolve = resolve
         this.reject = reject
         this.show()
-        // 为了解决form的mounted还没结束，导致关闭弹框置空时，表单的初始值为父组件传入对象
-        this.$nextTick(()=>{ this.formKingKongDialog = JSON.parse(JSON.stringify(row))})
-        this.dialogTitle = "编辑网站"
-      });
+        this.$nextTick(() => { this.website = JSON.parse(JSON.stringify(row)) })
+        this.dialogTitle = '编辑网站'
+      })
+    },
+    hide() {
+      this.$refs['addWebSite'].hide()
+      this.resolve = null
+      this.reject = null
+      this.$refs['addWebSiteDialogRef'].resetFields()
+      this.$refs['addWebSiteDialogRef'].clearValidate()
+      this.website.id = null
     },
     handleClose() {},
     // 点击表单确定按钮
     submit() {
-      this.$refs["addWebSite"].validate((valid) => {
+      this.$refs['addWebSiteDialogRef'].validate((valid) => {
         if (valid) {
           this.save()
         } else {
@@ -110,19 +115,19 @@ export default {
       })
     },
     save() {
-      let params = this.formKingKongDialog;
-      saveKingKong(params).then((res) => {
+      let params = this.website
+      saveOrUpdate(params).then((res) => {
         if (res.state === 1) {
           this.$message({
-            message: "保存成功",
-            type: "success"
+            message: '操作成功',
+            type: 'success'
           })
           this.resolve()
           this.hide()
         } else {
           this.$message({
             message: res.msg,
-            type: "error"
+            type: 'error'
           })
         }
       })

@@ -150,10 +150,11 @@ export function getWebSites(params) {
  * 保存或新增爬虫网站
  * @returns {*}
  */
-export function saveOrUpdate() {
+export function saveOrUpdate(params) {
   return request({
     url: baseUrl + '/ec/reptile/ysh-reptile-website/insertOrUpdate',
-    method: 'post'
+    method: 'post',
+    data: params
   })
 }
 
