@@ -39,7 +39,7 @@
             {{scope.row.websiteName}}
           </template>
         </el-table-column>
-        <el-table-column label="采集频道" width="160px">
+        <el-table-column label="采集频道" >
           <template slot-scope="scope">
             {{scope.row.channel}}
           </template>
@@ -49,7 +49,7 @@
             {{scope.row.publishTs | dateFormat}}
           </template>
         </el-table-column>
-        <el-table-column label="采集时间" width="130px">
+        <el-table-column label="采集时间" width="200px">
           <template slot-scope="scope">
             {{scope.row.reptileTs | dateFormat}}
           </template>
