@@ -1,28 +1,21 @@
 import {
-  getWebnameOptions,
-  getChannelOptions,
-  getCollectList,
-  getRecycleList,
-  del,
-  getDetail,
   publish,
-  toRecycleBin,
-  toCollectionResult,
   getReptileDemands,
   moveToRecycleStationBatch,
   shiftOutFromRecycleStationBatch,
   details,
-  demandPublish,
   getWebSites,
-  saveOrUpdate,
-  collect,
   reptileDelBatch,
   delBatch
 } from '@/api/content/crawler'
-import { getContentColumnOptions } from '@/api/content/columnsetup'
+import kdDialog from '@/components/common/kdDialog'
+import addWebSite from './components/addWebSite'
 
 export default {
-  components: {},
+  components: {
+    kdDialog,
+    addWebSite,
+  },
   data() {
     return {
       detailVisible: false,
@@ -354,6 +347,12 @@ export default {
         this.$router.push({ name: '编辑采文', params: { 'articleId': row.id } })
       }
     },
+    editWebSite(e, row) {
+      this.$refs['addWebSite'].edit(row)
+        .then(() => {
+          this.fetchData()
+        })
+    },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       details(row.id).then(response => {
@@ -363,6 +362,11 @@ export default {
         reject(error)
       })
       this.detailVisible = true
+    },
+    showAddWebSite() {
+      this.$refs['addWebSite'].open().then(() => {
+        this.fetchData()
+      })
     },
     handleSelectionChange(value) {
       // this.selectionDatas = value.map(v => v.id)

@@ -219,7 +219,7 @@
         </el-form>
       </div>
       <el-row>
-        <el-button type="primary" size="small" @click="batchDelArticle($event)">新增网站</el-button>
+        <el-button type="primary" size="small" @click="showAddWebSite">新增网站</el-button>
         <span>抓取网站登记表，便于运营维护与技术查找</span>
       </el-row>
       <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
@@ -259,7 +259,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button type="text" @click="edit($event, scope.row)">编辑</el-button>
+            <el-button type="text" @click="editWebSite($event, scope.row)">编辑</el-button>
             <el-button type="text" @click="delWebSite($event, scope.row)" style="color: red;">删除</el-button>
           </template>
         </el-table-column>
@@ -275,17 +275,7 @@
         @current-change="handleCurrentChange">
       </el-pagination>
     </div>
-    <el-dialog
-      title=""
-      :visible.sync="detailVisible"
-      width="80%">
-      <div class="c-preview-wrap">
-        <div class="c-preview-area">
-          <div class="c-article-title">{{detailObj.title}}</div>
-          <div class="c-article-content" v-html="detailObj.contentHtml"></div>
-        </div>
-      </div>
-    </el-dialog>
+    <addWebSite ref="addWebSite"></addWebSite>
   </div>
 
 </template>
