@@ -230,7 +230,10 @@ export default {
       })
     },
     saveFunc() {
-
+      // 如果 编辑的情况下 有视频 但是没视频封面 提示
+      if(this.articleId && this.formObj.vid && !this.formObj.videoCoverURL) return this.$message.error('请上传视频封面');
+      // 如果上传了视频封面没上传视频 提示
+      if(this.formObj.videoCoverURL && !this.formObj.vid) return this.$message.error('请上传视频');
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.formObj.coverType === 0) {
