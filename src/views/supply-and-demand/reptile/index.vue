@@ -58,7 +58,6 @@
           <template slot-scope="scope">
             <el-button type="text" @click="detail($event, scope.row)">预览</el-button>
             <el-button type="text" @click="edit($event, scope.row)">编辑</el-button>
-            <el-button type="text" @click="openPublish($event, scope.row)">发布</el-button>
             <el-button type="text" @click="inRecycle($event, scope.row)">移入回收站</el-button>
           </template>
         </el-table-column>
@@ -73,55 +72,6 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange">
       </el-pagination>
-      <el-dialog
-        title=""
-        :visible.sync="publishVisible"
-        width="50%">
-        <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
-          <el-row>
-            <el-col :offset="2" :span="20">
-              <el-form-item label="发布文章数：" prop="title">
-                <span style="color: red;">{{formObj.count}}</span>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :offset="2" :span="20">
-              <el-form-item label="对应栏目：" prop="contentColumnId">
-                <el-select v-model="formObj.contentColumnId" placeholder="请选择对应栏目">
-                  <el-option v-for="cc in contentColumnOptions" :label="cc.label" :value="cc.value" :key="cc.value"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :offset="2" :span="10">
-              <el-form-item label="发布时间：">
-                <el-radio-group v-model="formObj.status">
-                  <el-radio :label="1">立即发布</el-radio>
-                  <el-radio :label="4">定时发布</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8" v-if="formObj.status == 4">
-              <el-form-item label="" prop="publishTs" label-width="0">
-                <el-date-picker
-                  format="yyyy-MM-dd HH:mm:ss"
-                  value-format="yyyy-MM-dd HH:mm:ss"
-                  v-model="formObj.publishTs"
-                  type="datetime"
-                  placeholder="选择日期时间">
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-form-item>
-            <el-col :offset="9" :span="2">
-              <el-button type="primary" @click="publish">发布</el-button>
-            </el-col>
-          </el-form-item>
-        </el-form>
-      </el-dialog>
     </div>
     <div v-if="activeName == '0'">
       <div class="block">
@@ -140,7 +90,7 @@
         </el-form>
       </div>
       <el-row>
-        <el-button type="danger" size="small" @click="batchDelArticle($event)">删除</el-button>
+        <el-button type="danger" size="small" @click="batchDel($event)">删除</el-button>
         <span>回收站的内容“删除”后将从数据库彻底删除，不可恢复，请慎重操作</span>
       </el-row>
       <el-table id="out-table" :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
@@ -173,13 +123,14 @@
         </el-table-column>
         <el-table-column label="操作信息">
           <template slot-scope="scope">
-            {{scope.row.operator}}
+            <div>{{scope.row.operatorName}}</div>
+            <div>{{scope.row.updatedTs | dateFormat}}</div>
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="text" @click="toCollectionResult($event, scope.row)">移出回收站</el-button>
-            <el-button type="text" @click="delArticle($event, scope.row)" style="color: red;">删除</el-button>
+            <el-button type="text" @click="del($event, scope.row)" style="color: red;">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -198,7 +149,7 @@
       <div class="block">
         <el-form ref="query" :inline="true" label-position="right" :model="query">
           <el-form-item label="创建人：">
-            <el-input v-model="query.operator"></el-input>
+            <el-input v-model="query.operator" placeholder="关键词"></el-input>
           </el-form-item>
           <el-form-item label="网站名称：">
             <el-select v-model="query.websiteId">
@@ -276,8 +227,18 @@
       </el-pagination>
     </div>
     <addWebSite ref="addWebSite"></addWebSite>
+    <el-dialog
+      title=""
+      :visible.sync="detailVisible"
+      width="80%">
+      <div class="c-preview-wrap">
+        <div class="c-preview-area">
+          <div class="c-article-title">{{detailObj.title}}</div>
+          <div class="c-article-content" v-html="detailObj.contentHtml"></div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
-
 </template>
 
 <script src="./reptile.js"></script>

@@ -1,5 +1,4 @@
 import {
-  publish,
   getReptileDemands,
   moveToRecycleStationBatch,
   shiftOutFromRecycleStationBatch,
@@ -19,7 +18,6 @@ export default {
   data() {
     return {
       detailVisible: false,
-      publishVisible: false,
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
@@ -39,20 +37,8 @@ export default {
         contentHtml: ''
       },
       websites: [],
-      channelOptions: [],
-      formObj: {
-        contentColumnId: '',
-        status: 1,
-        publishTs: ''
-      },
       activeName: '1',
       selectionDatas: [],
-      contentColumnOptions: [],
-      rules: {
-        contentColumnId: [
-          { required: true, message: '对应栏目不能为空', trigger: 'blur' }
-        ]
-      }
     }
   },
   mounted() {
@@ -72,6 +58,15 @@ export default {
     },
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
+    },
+    reset() {
+      this.query.website = ''
+      this.query.websiteId = ''
+      this.query.operator = ''
+      this.query.status = 1
+      this.query.collectStatus = ''
+      this.query.articleIds = []
+      this.fetchData()
     },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`)
@@ -135,68 +130,6 @@ export default {
         })
       }
     },
-    openPublish(e, row) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.formObj = {
-        'id': row.id,
-        'count': 1,
-        'contentColumnId': '',
-        'status': 1,
-        'publishTs': ''
-      }
-      this.publishVisible = true
-    },
-    openPublishBatch(e) {
-      if (this.selectionDatas.length === 0) {
-        this.$message.error({
-          message: '没有选择记录，操作失败'
-        })
-        return
-      }
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.formObj = {
-        'count': this.selectionDatas.length,
-        'contentColumnId': '',
-        'status': 1,
-        'publishTs': ''
-      }
-      this.publishVisible = true
-    },
-    publish(e) {
-      this.$refs['form'].validate((valid) => {
-        if (valid) {
-          let ids = []
-          if (this.formObj.hasOwnProperty('id')) {
-            ids.push(this.formObj.id)
-          } else {
-            ids = this.selectionDatas
-          }
-          let params = {
-            'articleIds': ids,
-            'contentColumnId': this.formObj.contentColumnId,
-            'status': this.formObj.status,
-            'publishTs': this.formObj.publishTs
-          }
-          publish(params).then(response => {
-            if (response.state === 1) {
-              this.$message({
-                message: '发布成功',
-                type: 'success'
-              })
-            } else {
-              this.$message({
-                message: response.msg,
-                type: 'error'
-              })
-            }
-            this.fetchData()
-          })
-          this.publishVisible = false
-        } else {
-          return false
-        }
-      })
-    },
     inRecycle(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       let ids = []
@@ -240,7 +173,7 @@ export default {
         this.fetchData()
       })
     },
-    delArticle(e, row) {
+    del(e, row) {
       let actionid = e.currentTarget.getAttribute('actionid')
       const h = this.$createElement
       this.$msgbox({
@@ -300,7 +233,7 @@ export default {
         })
       })
     },
-    batchDelArticle(e) {
+    batchDel(e) {
       if (this.selectionDatas.length === 0) {
         this.$message.error({
           message: '没有选择记录，操作失败'
@@ -369,7 +302,6 @@ export default {
       })
     },
     handleSelectionChange(value) {
-      // this.selectionDatas = value.map(v => v.id)
       let datas = value
       this.selectionDatas = []
       for (let data of datas) {
