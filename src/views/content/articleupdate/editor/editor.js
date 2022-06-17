@@ -7,6 +7,7 @@ import addColumn from '../editor/component/addColumn'
 import editorElem from '@/components/wangEditor/index'
 import preview from './component/preview'
 import kdDialog from '@/components/common/kdDialog'
+import videoComponent from '@/components/video/index'
 export default {
   components: {
     Ckeditor,
@@ -15,7 +16,7 @@ export default {
     UEditor,
     editorElem,
     preview,
-    kdDialog
+    kdDialog,videoComponent
   },
   data() {
     return {
@@ -328,6 +329,7 @@ export default {
           this.$nextTick(() => {
             this.$refs['videoRef'].show(this.formObj.vid);
             this.loading = false;
+           
           })
         }
       })

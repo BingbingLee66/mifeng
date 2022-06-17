@@ -270,7 +270,7 @@ export default {
           if (this.detailObj.contentType === 2) {
             this.renderVideo()
           }
-          if(this.detailObj.contentType === 1 && (this.detailObj.publishType == 1 || this.detailObj.publishType == 3)){
+          if(this.detailObj.contentType === 1 && (this.detailObj.publishType == 1 || this.detailObj.publishType == 3) && this.detailObj.vid){
             this.renderVideo()
           }
         }).catch(error => {

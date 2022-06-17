@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <preview ref="preview"></preview>
     <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
       <div class="hd">1、内容信息</div>
       <el-row>
@@ -274,7 +275,7 @@
       </el-form-item>
     </el-form>
     <addColumn ref="addColumnRef"></addColumn>
-    <preview ref="preview"></preview>
+
     <kdDialog ref="kdDialog" dialogTitle="导入微信文章" @savePopupData="savePopupData">
       <div slot="content" class="content">
         <el-input v-model="articleUrl"  placeholder="请输入微信文章链接地址" ></el-input>
