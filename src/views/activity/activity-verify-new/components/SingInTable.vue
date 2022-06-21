@@ -286,7 +286,7 @@ export default {
       }
     },
     async cancelSingin(row) {
-      const { state, msg } = await handleSingin({ id: row.id, num: 0, status: 1 })
+      const { state, msg } = await handleSingin({ id: row.id, num: 0, status: 2 })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) this.getTableData()
     },
