@@ -15,10 +15,10 @@ import {
 } from '@/api/content/columnsetup'
 import router from '../../../router'
 import addColumn from './editor/component/addColumn'
-
+import videoComponent from '@/components/video/index'
 export default {
   components: {
-    addColumn
+    addColumn,videoComponent
   },
   data() {
     var checkNumber = (rule, value, callback) => {
@@ -334,6 +334,7 @@ export default {
       }
       getDetail(params).then(response => {
         this.detailObj = response.data.dtl
+        if(this.detailObj.vid) this.$refs['videoRef'].show(this.detailObj.vid);
       }).catch(() => {})
       this.detailVisible = true
     },
