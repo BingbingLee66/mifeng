@@ -166,7 +166,7 @@
       </el-row>
       <div style="margin:0px 0px 10px 100px" v-if="formObj.coverType == 2" class="tips">建议尺寸：220 x 220;支持格式：jpeg、png、jpg</div>
 
-      <div class="hd">3、文章分享设置</div>
+      <div class="hd">3、文章分享设置 (选填)</div>
 
       <div style="margin-left:-84px">
         <el-form-item>
