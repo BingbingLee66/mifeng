@@ -41,7 +41,31 @@ export const saveRemark = (id, params) => request({
 })
 
 // 签到
-export const handleSingin = ({ num, status, id }) => request({
+export const handleSignin = ({ num, status, id }) => request({
   url: `/api/ec/singin/signin/${num}/${status}/${id}`,
   method: 'put'
+})
+
+// 查询替补人员信息
+export const querySubInfo = phone => request({
+  url: `/api/ec/singin/detail/${phone}`,
+  method: 'get',
+})
+
+// 设置替补人员
+export const setSubUser = ({ id, phone }) => request({
+  url: `/api/ec/singin/user-alert/${id}/${phone}`,
+  method: 'get'
+})
+
+// 签退
+export const handleSignOut = ({ id, status }) => request({
+  url: `/api/ec/singin/signout/${status}/${id}`,
+  method: 'put'
+})
+
+// 获取各个状态审核总数量
+export const getSigninStatusCount = id => request({
+  url: '/api/ec/singin/status-count',
+  method: 'get'
 })

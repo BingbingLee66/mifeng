@@ -1,14 +1,24 @@
 <template>
-  <div :style="{zIndex:`${show?'':'-'}999`,opacity:show?1:0}" class="mask" @click="$emit('change',false)">
-    <div class="code-dialog" @click.stop>
+  <div style="position:relative;">
+    <div v-show="show" class="mask" @click="$emit('change',false)">
+      <div class="code-dialog" @click.stop>
+        <div class="code">
+          <div class="code-title">{{ title }}</div>
+          <div class="code-body">
+            <img :src="url" class="code-img">
+          </div>
+        </div>
+        <div class="code-footer" :loading="isLoading" @click="saveImage">保存图片</div>
+        <i class="code-close el-icon el-icon-close" @click="$emit('change',false)" />
+      </div>
+    </div>
+    <div class="print">
       <div id="code-qrcode" class="code">
         <div class="code-title">{{ title }}</div>
         <div class="code-body">
           <img :src="url" class="code-img">
         </div>
       </div>
-      <div class="code-footer" :loading="isLoading" @click="saveImage">保存图片</div>
-      <i class="code-close el-icon el-icon-close" @click="$emit('change',false)" />
     </div>
   </div>
 </template>
@@ -75,34 +85,6 @@ export default {
   top: 50%;
   transform: translate(-50%, -50%);
 
-  .code {
-    width: 306px;
-    height: 340px;
-    padding-top: 34px;
-    background-color: #fff;
-    border-radius: 6px;
-
-    .code-title {
-      text-align: center;
-      font-size: 18px;
-      font-weight: 700;
-      color: #222;
-      line-height: 25px;
-      margin-bottom: 16px;
-    }
-
-    .code-body {
-      width: 166px;
-      height: 166px;
-      margin: 0 auto;
-
-      .code-img {
-        width: 100%;
-        height: 100%;
-      }
-    }
-  }
-
   .code-footer {
     position: absolute;
     left: 50%;
@@ -127,5 +109,37 @@ export default {
     font-size: 16px;
     cursor: pointer;
   }
+}
+
+.code {
+  width: 306px;
+  height: 340px;
+  padding-top: 34px;
+  background-color: #fff;
+  border-radius: 6px;
+  .code-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #222;
+    line-height: 25px;
+    margin-bottom: 16px;
+  }
+  .code-body {
+    width: 166px;
+    height: 166px;
+    margin: 0 auto;
+    .code-img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+.print {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -999;
+  opacity: 0;
 }
 </style>

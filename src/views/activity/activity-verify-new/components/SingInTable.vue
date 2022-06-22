@@ -1,9 +1,9 @@
 <template>
   <el-card shadow="never">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="待审核（2）" name="ApprovePerson" />
-      <el-tab-pane label="参与人员（300）" name="JoinPerson" />
-      <el-tab-pane label="已驳回（1）" name="RejectPerson" />
+      <el-tab-pane :label="`待审核(${statusCount[0]})`" name="ApprovePerson" />
+      <el-tab-pane :label="`参与人员(${statusCount[1]})`" name="JoinPerson" />
+      <el-tab-pane :label="`已驳回(${statusCount[2]})`" name="RejectPerson" />
     </el-tabs>
     <el-form inline>
       <el-form-item>
@@ -58,19 +58,56 @@
       </div>
     </el-dialog>
 
-    <KdTable class="mt5" :list="tableList" :data="tableData" @selection-change="onSelectionChange" />
+    <KdTable v-loading="tableLoading" class="mt5" :list="tableList" :data="tableData" @selection-change="onSelectionChange" />
 
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
+    <!-- 替补人员弹窗 -->
     <el-dialog :visible.sync="subDialog.show" :title="subDialog.title" width="500px">
       <el-row :gutter="10">
         <el-col :span="20"><el-input v-model="subDialog.phone" prefix-icon="el-icon-search" placeholder="手机号" clearable /> </el-col>
-        <el-col :span="4"><el-button type="primary">识别</el-button></el-col>
+        <el-col :span="4"><el-button type="primary" @click="querySubDetail">识别</el-button></el-col>
       </el-row>
-      <div>{{ subDialog.name }}</div>
+      <template v-if="subInfo">
+        <div v-if="subInfo.uavatar"><img width="50" height="50" :src="subInfo.uavatar"></div>
+        <div v-if="subInfo.userName">{{ subInfo.userName }}</div>
+        <div v-if="subInfo.chamberName">{{ subInfo.chamberName }}</div>
+      </template>
+      <div v-else style="color:red;">不存在该用户信息</div>
       <div slot="footer" class="flex-x-center-center"><el-button type="primary">确定</el-button></div>
     </el-dialog>
 
+    <!-- 设置座位弹窗 -->
+    <el-dialog :visible.sync="seatDialog.show" title="设置座位号" width="500px">
+      <el-row
+        v-for="(v,i) of seatDialog.seats"
+        :key="i"
+        type="flex"
+        align="middle"
+      >
+
+        <el-col :span="3">座位{{ i+1 }}</el-col>
+        <template v-if="v.status === 1">
+          <el-col :span="4">{{ v.num }}</el-col>
+          <el-col :span="3" style="color:#999;">已就坐</el-col>
+        </template>
+        <template v-else-if="v.status === 2">
+          <el-col :span="4">{{ v.num }}</el-col>
+          <el-col :span="3" style="color:red;">空座</el-col>
+          <el-col :span="10" style="color:#999;">已安排其他会员上坐，设置为</el-col>
+          <el-col :span="4" style="color:#999;"><el-button type="text">已就坐</el-button></el-col>
+        </template>
+        <template v-else>
+          <el-col :span="16"><el-input v-model="v.num" placeholder="限10字内" maxlength="10" clearable /></el-col>
+          <el-col :span="4"><el-button type="text" style="color:red;margin-left:10px;" @click="seatDialog.seats.splice(i,1)">删除</el-button></el-col>
+        </template>
+
+      </el-row>
+      <el-button v-if="!seatDialog.seats[0] || (![1,2].includes(seatDialog.seats[0].status) && seatDialog.seats.length<seatDialog.maxNum)" type="text" @click="seatDialog.seats.push({num:''})">+新增</el-button>
+      <div class="flex-x-end-center"><el-button type="primary" @click="saveSeatsSettings">确定</el-button></div>
+    </el-dialog>
+
+    <!-- 备注弹窗 -->
     <el-dialog :visible.sync="remarkDialog.show" title="备注" width="500px">
       <el-input
         v-model.trim="remarkDialog.value"
@@ -83,6 +120,7 @@
       <el-button slot="footer" type="primary" @click="saveRemark">确定</el-button>
     </el-dialog>
 
+    <!-- 签到弹窗 -->
     <el-dialog :visible.sync="singinDialog.show" title="到场人数" center width="500px">
       <div class="flex-x-center-center" style="padding-bottom: 20px;color:#999;">报名 {{ singinDialog.maxNum }} 人</div>
       <div class="flex-x-center-center">
@@ -92,7 +130,7 @@
         人
         <el-button :disabled="singinDialog.num>=singinDialog.maxNum" type="text" style="font-size: 24px;padding: 0 20px;" @click="singinDialog.num++">+</el-button>
       </div>
-      <el-button slot="footer" type="primary" @click="onSingin">确定</el-button>
+      <el-button slot="footer" type="primary" @click="onSignin({id:singinDialog.singinId,num:singinDialog.num,status:1})">确定</el-button>
     </el-dialog>
 
   </el-card>
@@ -100,7 +138,18 @@
 
 <script>
 import { formatDate, downloadFile } from '../util'
-import { getActivitySinginList, uploadSinginData, modifySinginStatus, saveRemark, handleSingin } from '@/api/activity/activity-verify-new'
+
+import {
+  getActivitySinginList,
+  uploadSinginData,
+  modifySinginStatus,
+  saveRemark,
+  handleSignin,
+  querySubInfo,
+  setSubUser,
+  handleSignOut,
+  getSigninStatusCount
+} from '@/api/activity/activity-verify-new'
 
 export default {
   components: {
@@ -116,7 +165,11 @@ export default {
   data() {
     return {
       activeName: 'JoinPerson',
+      statusCount: {
+        0: 0, 1: 0, 2: 0
+      },
       tableData: [],
+      tableLoading: false,
 
       importVisible: false,
 
@@ -130,13 +183,22 @@ export default {
         seatStatus: -1,
         signStatus: -1
       },
+
       total: 0,
 
       subDialog: {
         show: false,
         title: '',
         phone: '',
-        name: '',
+        singinId: ''
+      },
+
+      subInfo: { },
+
+      seatDialog: {
+        show: false,
+        seats: [],
+        maxNum: 0,
         singinId: ''
       },
 
@@ -197,22 +259,33 @@ export default {
       if (!newVal && this.fileList.length) this.fileList = []
     }
   },
+  created() {
+    this.getStatusCount()
+  },
   methods: {
+    async getStatusCount() {
+      const { data } = await getSigninStatusCount()
+      console.log(data)
+    },
+
     onQueryChange(e) {
       this.query = { ...this.query, ...e }
       this.getTableData()
     },
 
     async getTableData() {
-      const { query: { pageNum: page, ...query }, activityId, status } = this
-      const { data } = await getActivitySinginList(activityId, {
-        page,
-        status,
-        ...query,
-      })
-      this.total = data.totalRows
-      // data.list.push({ userName: '李天明' })
-      this.tableData = data.list
+      this.tableLoading = true
+      try {
+        const { query: { pageNum: page, ...query }, activityId, status } = this
+        const { data } = await getActivitySinginList(activityId, {
+          page,
+          status,
+          ...query,
+        })
+        this.total = data.totalRows
+        this.tableData = data.list
+      } catch (error) { /* console.log(error) */ }
+      this.tableLoading = false
     },
 
     onSelectionChange(e) {
@@ -248,9 +321,55 @@ export default {
       console.log(data)
     },
 
+    initSubDialog(row) {
+      this.subDialog = {
+        show: true,
+        title: row.subUserPhone ? '修改替补人员' : '设置替补人员',
+        phone: '',
+        singinId: row.id
+      }
+      this.subInfo = {}
+    },
+
+    async querySubDetail() {
+      const { data } = await querySubInfo(this.subDialog.phone)
+      this.subInfo = data
+    },
+
+    async setSubUser() {
+      const { phone, singinId } = this.subDialog
+      const { state, msg } = setSubUser({ phone, id: singinId })
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      if (state === 1) {
+        this.getTableData()
+        this.subDialog.show = true
+      }
+    },
+
+    initSeatDialog(row) {
+      this.seatDialog = {
+        show: true,
+        seats: JSON.parse(JSON.stringify(row.seats || [])),
+        maxNum: row.subscribeTotal,
+        singinId: row.id
+      }
+    },
+
+    async saveSeatsSettings() {
+      const { seats } = this.seatDialog
+      if (!seats.length || seats.some(v => !v.num)) return this.$message({ message: '座位号不能为空', type: 'warning' })
+      if ([1, 2].includes(seats[0].status)) {
+        this.seatDialog.show = false
+        return
+      }
+    },
+
     async modifySinginStatus(data) {
       const { state, msg } = await modifySinginStatus(data)
-      if (state === 1) this.getTableData()
+      if (state === 1) {
+        this.getStatusCount()
+        this.getTableData()
+      }
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
     },
 
@@ -266,7 +385,6 @@ export default {
 
     async saveRemark() {
       const { value, singinId } = this.remarkDialog
-      if (!value) return this.$message({ message: '请输入内容', type: 'warning' })
       const { state, msg } = await saveRemark(singinId, { remark: value })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
@@ -276,19 +394,21 @@ export default {
       }
     },
 
-    async onSingin() {
-      const { singinId, num } = this.singinDialog
-      const { state, msg } = await handleSingin({ id: singinId, num, status: 1 })
+    async onSignin({ id, num, status }) {
+      const { state, msg } = await handleSignin({ id, num, status })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getTableData()
         this.singinDialog.show = false
       }
     },
-    async cancelSingin(row) {
-      const { state, msg } = await handleSingin({ id: row.id, num: 0, status: 2 })
+
+    async onSignOut({ id, status }) {
+      const { state, msg } = await handleSignOut({ id, status })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
-      if (state === 1) this.getTableData()
+      if (state === 1) {
+        this.getTableData()
+      }
     },
 
     generateSinginTime() {
@@ -338,16 +458,7 @@ export default {
           render: ({ row }) => (<div>
             <div>{row.subUserName}</div>
             <div>{row.subUserPhone}</div>
-            <el-button
-              type='text'
-              onClick={() => (this.subDialog = {
-                show: true,
-                title: row.subUserPhone ? '修改替补人员' : '设置替补人员',
-                phone: row.subUserPhone,
-                name: row.subUserName,
-                singinId: row.id
-              })}
-            >
+            <el-button type='text' onClick={() => this.initSubDialog(row)} >
               {row.subUserPhone ? '修改替补人员' : '设置替补人员'}
             </el-button>
           </div>)
@@ -408,17 +519,23 @@ export default {
           fixed: 'right',
           minWidth: 100,
           render: ({ row }) => (<div>
-            <div><el-button type='text'>设置座位号</el-button></div>
+            <div><el-button type='text' onClick={() => this.initSeatDialog(row)}>设置座位号</el-button></div>
             <div>
               {
-                row.singinStatus === 1
-                  ? <el-button
+                row.signStatus === 1
+                  ? <el-button type='text' onClick={() => this.onSignin({ id: row.id, num: 0, status: 2 })}>取消签到</el-button>
+                  : <el-button
                     type='text'
                     onClick={() => (this.singinDialog = { show: true, maxNum: row.subscribeTotal, num: row.subscribeTotal, singinId: row.id })}>签到</el-button>
-                  : <el-button type='text' onClick={() => this.cancelSingin(row)}>取消签到</el-button>
               }
             </div>
-            <div><el-button type='text'>签退</el-button></div>
+            <div>
+              {
+                row.signOutStatus === 1
+                  ? <el-button type='text' onClick={() => this.onSignOut({ id: row.id, status: 2 })}>取消签退</el-button>
+                  : <el-button type='text' onClick={() => this.onSignOut({ id: row.id, status: 1 })}>签退</el-button>
+              }
+            </div>
             <div><el-button type='text' onClick={() => this.onDelSingin(row)}><div style='color:red;'>移除</div></el-button></div>
           </div>)
         },
