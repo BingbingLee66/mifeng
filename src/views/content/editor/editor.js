@@ -395,7 +395,7 @@ export default {
       })
     },
     detail(e, row) {
-      console.log('row',row)
+      console.log('row',e,row)
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'));
       let articleId= row.id
       if(this.actionName==='1'){

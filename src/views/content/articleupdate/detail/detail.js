@@ -1,7 +1,8 @@
 import { getDetail} from '@/api/content/article'
-
+import videoComponent from '@/components/video/index'
 export default {
   components: {
+    videoComponent
   },
   data() {
     return {
@@ -42,7 +43,9 @@ export default {
       }
       getDetail(params).then(response => {
         this.detailObj = response.data.dtl
+        if(response.data.dtl.vid)this.$refs['videoRef'].show(response.data.dtl.vid)
       }).catch(error => {
+        console.log('error',error)
         reject(error)
       })
     }

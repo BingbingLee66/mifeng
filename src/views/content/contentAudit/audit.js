@@ -286,11 +286,15 @@ export default {
       const params = {
         id: this.selectId
       }
+      console.log('this.activeName',this.activeName)
       if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
         getDetail(params).then(response => {
           this.detailObj = response.data.dtl
           // 视频是否存在 渲染操作
           if (this.detailObj.contentType === 2) {
+            this.renderVideo()
+          }
+          if(this.detailObj.contentType === 1 && (this.detailObj.publishType == 1 || this.detailObj.publishType == 3) && this.detailObj.vid){
             this.renderVideo()
           }
         }).catch(error => {
