@@ -3,6 +3,9 @@
     <div v-if="detailObj.auditStatus === 2 || detailObj.auditStatus === 3" class="article-remark">不通过理由：{{detailObj.auditRemark}}</div>
     <div class="preview-area">
       <div class="article-title">{{detailObj.title}}</div>
+      <div style="margin-bottom:15px; width: 96%;margin: 0 auto;">
+        <videoComponent ref="videoRef" v-show="detailObj.vid" :vid="detailObj.vid" height="430px"/>
+      </div>
       <div class="article-content" v-html="detailObj.contentHtml"></div>
     </div>
   </div>
