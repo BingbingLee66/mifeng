@@ -128,7 +128,10 @@
             <div v-if="scope.row.registerType == 0">后台</div>
             <div v-if="scope.row.registerType == 1">小程序</div>
             <div v-if="scope.row.registerType == 2">商会邀请</div>
-            <div v-if="scope.row.registerType >= 3">会员邀请</div>
+            <div v-if="scope.row.registerType == 3">会员邀请</div>
+            <div v-if="scope.row.registerType == 4">会员邀请</div>
+            <div v-if="scope.row.registerType == 10">app</div>
+
           </template>
         </el-table-column>
         <el-table-column label="状态" width="100px">

@@ -1,5 +1,5 @@
-import { getList, del, save, checkUpperLimit, upload, editlevel } from '@/api/content/bannerImg'
-
+import { getList, del, save, checkUpperLimit, upload, editlevel, getBannerImgList } from '@/api/content/bannerImg'
+import { getAdminUserList } from '@/api/user'
 export default {
   components: {},
   data() {
@@ -33,8 +33,10 @@ export default {
         title: '',
         articleId: '',
         level: '',
-        img: ''
+        img: '',
+        jsonContext: '',
       },
+      tabName: 'wxapp',
       visible: false,
       addDialogTitle: '',
       rules: {
@@ -52,6 +54,9 @@ export default {
         ],
         img: [
           { required: true, message: '图片必须上传', trigger: 'blur' }
+        ],
+        jsonContext: [
+          { required: true, message: '跳转协议不能为空', trigger: 'blur' }
         ]
       },
       rules2: {
@@ -64,16 +69,59 @@ export default {
       levelForm: {
         level: null,
         id: null
-      }
+      },
+      viewShow: {
+        tab: false,
+      },
+      queryParams: {
+        title: null,
+        createdId: null,
+        startTs: null,
+        endTs: null,
+        ckey: null,
+        type: null,
+      },
+      page: {
+        currentPage: 1,
+        pageSize: 10,
+        pageSizes: [10, 50, 100, 200],
+        total: 0
+      },
+      createdTime: [],
+      adminUserList: [],
+      adminUserLoading: false
     }
   },
   mounted() {
+
   },
-  computed: {},
+  computed: {
+    isWxApp: function () {
+      return this.tabName === 'wxapp'
+    }
+  },
   created() {
     this.init()
+    this.reset()
   },
   methods: {
+    // 切换tab
+    tabSwitch(tab, event) {
+      this.reset()
+      this.fetchData()
+    },
+    // 查询创建人
+    getAdminUserList(query) {
+      if (query !== '') {
+        this.adminUserLoading = true
+        getAdminUserList({ remark: query }).then(res => {
+          this.adminUserList = res.data.data
+          this.adminUserLoading = false
+        })
+      } else {
+        this.adminUserList = [];
+      }
+    },
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
@@ -104,14 +152,42 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      let params = {
-        'ckey': this.ckey,
-        'type': 1 // 主页 banner类型
+      // let params = {
+      //   'ckey': this.ckey,
+      //   'type': 1 // 主页 banner类型
+      // }
+      this.formatRequestData()
+      this.queryParams.ckey = this.ckey
+      if (this.isWxApp) {
+        this.queryParams.type = 1
+      } else {
+        this.queryParams.type = null
       }
-      getList(params).then(response => {
-        this.list = response.data.data
+      this.queryParams.clientType = this.isWxApp ? 0 : 1
+      this.queryParams.pageNum = this.page.currentPage
+      this.queryParams.pageSize = this.page.pageSize
+      getBannerImgList(this.queryParams).then(response => {
+        this.list = response.data.data.list
+        this.page.total = response.data.data.totalRows
         this.listLoading = false
       })
+    },
+    reset() {
+      this.createdTime = null
+      this.queryParams = {
+        title: null,
+        createdId: null,
+        startTs: null,
+        endTs: null,
+        ckey: null,
+        type: null,
+      }
+      this.page = {
+        currentPage: 1,
+        pageSize: 10,
+        pageSizes: [10, 50, 100, 200],
+        total: 0
+      }
     },
     openVisible(row) {
       this.formObj = row
@@ -124,7 +200,7 @@ export default {
       }
       checkUpperLimit(params).then(response => {
         const count = response.data.count
-        if (count >= 10) {
+        if (this.isWxApp && count >= 10) {
           this.$alert('轮播图数量已达上限10张', {
             confirmButtonText: '确定'
           })
@@ -135,7 +211,7 @@ export default {
             articleId: '',
             level: '',
             img: '',
-            type: null
+            type: null,
           }
           this.visible = true
         }
@@ -150,7 +226,8 @@ export default {
         articleId: row.articleId,
         level: row.level,
         type: row.type === 0 ? null : row.type,
-        img: row.img
+        img: row.img,
+        jsonContext: row.jsonContext
       }
       if (!this.formObj.articleId) {
         this.formObj.articleId = ''
@@ -168,6 +245,8 @@ export default {
           } else if (that.formObj.type === 3) {
             if (that.formObj.title.trim().length > 30) return this.$message.error('轮播图标题请控制在60字内')
           }
+          // tab处理
+          this.formObj.clientType = this.isWxApp ? 0 : 1
           // 编辑
           if (this.formObj.id) {
             this.formObj['ckey'] = this.ckey
@@ -198,7 +277,7 @@ export default {
             }
             checkUpperLimit(params).then(response => {
               const count = response.data.count
-              if (count >= 10) {
+              if (this.isWxApp && count >= 10) {
                 this.$alert('轮播图数量已达上限10张', {
                   confirmButtonText: '确定'
                 })
@@ -290,6 +369,23 @@ export default {
           return false
         }
       })
-    }
+    },
+    handleSizeChange(val) {
+      this.page.pageSize = val
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+      this.page.currentPage = val
+      this.fetchData()
+    },
+    formatRequestData() {
+      if (this.createdTime) {
+        this.queryParams.startTs = this.createdTime[0]
+        this.queryParams.endTs = this.createdTime[1]
+      }
+      this.queryParams.pageNum = this.page.currentPage
+      this.queryParams.pageSize = this.page.pageSize
+    },
   }
 }
+

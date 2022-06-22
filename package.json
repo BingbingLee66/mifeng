@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
+    "local": "vue-cli-service serve --open --mode local",
     "dev": "vue-cli-service serve --open --mode development",
     "dev2": "vue-cli-service serve --open --mode development2",
     "test": "vue-cli-service serve --open --mode test",
