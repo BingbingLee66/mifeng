@@ -229,7 +229,7 @@ export default {
         userName,
         startTime: date ? date[0] : '',
         endTime: date ? date[1] : '',
-        province: area.map(v => v[0]).join(','),
+        // province: area.map(v => v[0]).join(','),
         city: area.map(v => v[1]).join(','),
       }
       console.log('query', this.query)
