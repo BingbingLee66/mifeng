@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## [Rreleased]
+## [2.14.1] - 2022-06-21
+### Added
+-  广东省社会组织总会新增直播链接[23](https://gitlab.kd/yunshanghui/engineering/requirements/-/issues/23)
+
+## [Rreleased]
+## [2.14.0] - 2022-06-21
+### Added
+- 合作商协会-操作指引列表页 [1875](yunshanghui/engineering/frontend/wechat-app#1875)
+- 文章列表样式调整 [1876](yunshanghui/engineering/frontend/wechat-app#1876)
+- 文章详情插入视频 [1877](yunshanghui/engineering/frontend/wechat-app#1877)
+- 文章分享 [1878](yunshanghui/engineering/frontend/wechat-app#1878)
+- 【云商会】 去凯迪化 [1886] yunshanghui/engineering/frontend/wechat-app#1886
+- 登录注册兼容APP和小程序 [1892] yunshanghui/engineering/frontend/wechat-app#1892
+
+## [Rreleased]
+## [2.12.0] - 2022-06-08
+
+### Added
+-  用户管理界面新增电话列表、地址列表、邮箱信息[1302](https://gitlab.kd/yunshanghui/backend/api/-/issues/1302)
+### Fixed
+
 ## [Unreleased]
 ## [1.17.0] - 2021-09-23
 

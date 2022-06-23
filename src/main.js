@@ -14,7 +14,7 @@ import router from './router'
 import i18n from './lang' // Internationalization
 import '@/icons' // icon
 import '@/permission' // permission control
-
+import { decrypt } from '@/utils/cryptoUtils'
 import Print from '@/utils/print' // 打印
 import VueClipboard from 'vue-clipboard2' // 复制内容
 import DbClick from '@/utils/dbClick' // 防止重复点击
@@ -70,6 +70,10 @@ Vue.mixin({
   methods: {
     // 创建视频
     $createPlayer(id, accessKeyId, accessKeySecret, securityToken, region, vid, height = '300px') {
+      accessKeyId = decrypt(accessKeyId)
+      accessKeySecret = decrypt(accessKeySecret)
+      securityToken = decrypt(securityToken)
+      region = decrypt(region)
       return new Aliplayer({
         id,
         autoplay: false,
