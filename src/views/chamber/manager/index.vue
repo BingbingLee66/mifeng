@@ -10,16 +10,26 @@
         size="small"
       >
         <el-form-item label="商/协会名称">
-          <el-input clearable v-model.trim="query.name" maxlength="16" />
+          <el-input v-model.trim="query.name" clearable maxlength="16" />
+        </el-form-item>
+        <el-form-item label="地区">
+          <el-cascader
+            v-model="query.area"
+            :options="areaOptions"
+            separator="-"
+            collapse-tags
+            :props="{ expandTrigger: 'hover', value: 'code', label: 'name', multiple: true }"
+          />
         </el-form-item>
         <el-form-item label="商/协会账号">
           <el-input
-            clearable
             v-model="query.userName"
+            clearable
             oninput="value=value.replace(/[^\d]/g,'')"
             maxlength="11"
           />
         </el-form-item>
+
         <el-form-item label="状态">
           <el-select v-model="query.status" placeholder="请选择">
             <el-option label="全部" :value="0" />
@@ -43,7 +53,7 @@
             type="primary"
             size="small"
             @click.native="selectData($event)"
-            >查询
+          >查询
           </el-button>
         </el-form-item>
       </el-form>
@@ -52,28 +62,27 @@
       <el-row>
         <el-col :span="24">
           <el-button
+            v-if="has('', '添加商会')"
             type="primary"
             size="small"
             :actionid="getId('', '添加商会')"
-            v-if="has('', '添加商会')"
             @click.native="add($event)"
-            >添加商会
+          >添加商会
           </el-button>
           <span>当商协会权重为0时，将隐藏其在前台【推荐商协会】和【新入驻商协会】页面的展示</span>
         </el-col>
       </el-row>
-      
+
     </div>
     <el-table
-      :data="list"
       v-loading="listLoading"
+      :data="list"
       element-loading-text="Loading"
       border
       fit
       highlight-current-row
     >
-      <el-table-column type="index" label="序号" width="60px">
-      </el-table-column>
+      <el-table-column type="index" label="序号" width="60px" />
       <!-- <el-table-column label="ID">
         <template slot-scope="scope">
           {{scope.row.id}}
@@ -99,7 +108,7 @@
                 : 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/default_avatar.png'
             "
             alt=""
-          />
+          >
         </template>
       </el-table-column>
       <el-table-column label="商/协会名称">
@@ -134,33 +143,33 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
-            type="text"
-            @click="detail($event, scope.row)"
-            :actionid="getId('', '详情')"
             v-if="has('', '详情')"
+            type="text"
+            :actionid="getId('', '详情')"
+            @click="detail($event, scope.row)"
           >
             详情
           </el-button>
           <el-button
-            type="text"
-            @click="edit($event, scope.row)"
-            :actionid="getId('', '编辑')"
             v-if="has('', '编辑')"
-            >编辑
+            type="text"
+            :actionid="getId('', '编辑')"
+            @click="edit($event, scope.row)"
+          >编辑
           </el-button>
           <el-button
-            type="text"
-            @click="updateStatus($event, scope.row)"
-            :actionid="getId('', '冻结')"
             v-if="has('', '冻结') && scope.row.status == 1"
-            >冻结账号
+            type="text"
+            :actionid="getId('', '冻结')"
+            @click="updateStatus($event, scope.row)"
+          >冻结账号
           </el-button>
           <el-button
-            type="text"
-            @click="updateStatus($event, scope.row)"
-            :actionid="getId('', '解冻')"
             v-if="has('', '解冻') && scope.row.status == 0"
-            >解冻账号
+            type="text"
+            :actionid="getId('', '解冻')"
+            @click="updateStatus($event, scope.row)"
+          >解冻账号
           </el-button>
         </template>
       </el-table-column>
@@ -174,8 +183,7 @@
       :current-page.sync="currentpage"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-    >
-    </el-pagination>
+    />
     <el-dialog title="添加/编辑商会" :visible.sync="editorVisible" width="50%">
       <el-form
         ref="form"
@@ -187,7 +195,7 @@
         <el-row>
           <el-col :offset="2" :span="20">
             <el-form-item label="商/协会名称：" prop="name">
-              <el-input v-model.trim="formObj.name" maxLength="100"></el-input>
+              <el-input v-model.trim="formObj.name" max-length="100" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -205,8 +213,8 @@
                   v-if="formObj.systemLogo"
                   :src="formObj.systemLogo"
                   class="system_logo"
-                />
-                <i v-else class="el-icon-plus systemLogo_uploader_icon"></i>
+                >
+                <i v-else class="el-icon-plus systemLogo_uploader_icon" />
               </el-upload>
               <p style="margin: 0; padding: 0">
                 建议尺寸:88*88px; 格式:png/jpeg/jpg
@@ -219,8 +227,8 @@
             <el-form-item label="联系人姓名：" prop="president">
               <el-input
                 v-model.trim="formObj.president"
-                maxLength="20"
-              ></el-input>
+                max-length="20"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -232,8 +240,20 @@
                 minlength="1"
                 placeholder="手机号码即商会后台登录账号"
                 :readonly="type === 'add' ? false : true"
-              >
-              </el-input>
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :offset="2" :span="20">
+            <el-form-item label="地区" prop="area">
+              <el-cascader
+                v-model="formObj.area"
+                clearable
+                separator="-"
+                :options="areaOptions"
+                :props="{ expandTrigger: 'hover', value: 'code', label: 'name'}"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -242,8 +262,8 @@
             <el-form-item label="办公地址" prop="address">
               <el-input
                 v-model.trim="formObj.address"
-                maxLength="200"
-              ></el-input>
+                max-length="200"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -261,8 +281,8 @@
                   v-if="formObj.license"
                   :src="formObj.license"
                   class="avatar"
-                />
-                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                >
+                <i v-else class="el-icon-plus avatar-uploader-icon" />
               </el-upload>
             </el-form-item>
           </el-col>
@@ -271,10 +291,10 @@
           <el-col :offset="2" :span="20">
             <el-form-item label="推荐人">
               <el-input
-                v-model.trim="formObj.referrer"
                 v-if="editorVisible"
-                maxLength="20"
-              ></el-input>
+                v-model.trim="formObj.referrer"
+                max-length="20"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -283,17 +303,17 @@
           <el-col :offset="2" :span="20">
             <el-form-item v-if="type == 'add'" label="密码" prop="password">
               <el-input
-                type="password"
                 v-model="formObj.password"
+                type="password"
                 minlength="1"
-              ></el-input>
+              />
             </el-form-item>
             <el-form-item v-else label="密码">
               <el-input
-                type="password"
                 v-model="formObj.password"
+                type="password"
                 minlength="1"
-              ></el-input>
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -301,10 +321,10 @@
           <el-col :offset="2" :span="20">
             <el-form-item label="确认密码" prop="confirmPassword">
               <el-input
-                type="password"
                 v-model="formObj.confirmPassword"
+                type="password"
                 minlength="1"
-              ></el-input>
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -317,7 +337,7 @@
         </el-row> -->
         <el-form-item>
           <el-col :offset="6" :span="8">
-            <el-button type="primary" v-dbClick @click="save">保存</el-button>
+            <el-button v-dbClick type="primary" @click="save">保存</el-button>
             <el-button @click.native="editorVisible = false">取消</el-button>
           </el-col>
         </el-form-item>
@@ -331,16 +351,17 @@
       </el-row>
       <el-row>
         <el-col :offset="2" :span="6">商/协会logo：</el-col>
-        <el-col :span="10"
-          ><img
-            :src="
-              detailObj.systemLogo
-                ? detailObj.systemLogo
-                : 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/default_avatar.png'
-            "
-            alt=""
-            style="width: 88px; height: 88px; border-radius: 50%"
-        /></el-col>
+        <el-col
+          :span="10"
+        ><img
+          :src="
+            detailObj.systemLogo
+              ? detailObj.systemLogo
+              : 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/default_avatar.png'
+          "
+          alt=""
+          style="width: 88px; height: 88px; border-radius: 50%"
+        ></el-col>
       </el-row>
       <el-row>
         <el-col :offset="2" :span="6">联系人姓名：</el-col>
@@ -351,6 +372,10 @@
         <el-col :span="10">{{ detailObj.phone }}</el-col>
       </el-row>
       <el-row>
+        <el-col :offset="2" :span="6">地区：</el-col>
+        <el-col :span="10">{{ detailObj.province + detailObj.city }}</el-col>
+      </el-row>
+      <el-row>
         <el-col :offset="2" :span="6">办公地址：</el-col>
         <el-col :span="10">{{ detailObj.address }}</el-col>
       </el-row>
@@ -358,16 +383,16 @@
         <el-col :offset="2" :span="6">社会团体法人登记证：</el-col>
         <el-col :span="10">
           <div class="license-box">
-            <img :src="detailObj.license" @click="enlarge(detailObj.license)" />
+            <img :src="detailObj.license" @click="enlarge(detailObj.license)">
           </div>
         </el-col>
       </el-row>
       <el-row>
         <el-col :offset="2" :span="6">推荐人：</el-col>
-        <el-col :span="10" v-if="detailObj.referrer">{{
+        <el-col v-if="detailObj.referrer" :span="10">{{
           detailObj.referrer
         }}</el-col>
-        <el-col :span="10" v-if="!detailObj.referrer">无</el-col>
+        <el-col v-if="!detailObj.referrer" :span="10">无</el-col>
       </el-row>
       <!--       <el-row>
         <el-col :offset="2" :span="8">账号密码</el-col>
@@ -378,7 +403,7 @@
         <el-col :span="10">{{ detailObj.level }}</el-col>
       </el-row> -->
       <el-row>
-        <hr />
+        <hr>
       </el-row>
       <el-row>
         <el-col :offset="2" :span="6">创建时间：</el-col>
@@ -391,15 +416,14 @@
       <el-row>
         <el-col :offset="20" :span="2">
           <el-button
-            type="primary"
             v-dbClick
+            type="primary"
             @click.native="detailVisible = false"
-            >确定</el-button
-          >
+          >确定</el-button>
         </el-col>
       </el-row>
     </el-dialog>
-        <levelDialog title="权重" ref="levelDialog" width="30%"></levelDialog>
+    <levelDialog ref="levelDialog" title="权重" width="30%" />
   </div>
 </template>
 
