@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- tab控制列表展示 -->
-    <el-tabs v-model="tabName" @tab-click="tabSwitch" v-show="!ckey">
+    <el-tabs v-model="tabName" @tab-click="tabSwitch" v-show="false">
       <el-tab-pane label="小程序" name="wxapp"></el-tab-pane>
       <el-tab-pane label="APP" name="app"></el-tab-pane>
     </el-tabs>
