@@ -20,6 +20,19 @@ const actions = {
     return new Promise((resolve, reject) => {
       listForRouter().then(response => {
         let menus = response.data.menu
+        menus.forEach(v => {
+          if (v.id === 17) {
+            v.children.push({
+              children: [],
+              component: 'views/statistic/activateData',
+              hidden: false,
+              icon: 'operation',
+              menuName: '激活与活跃',
+              menuUrl: '/statistic/activate-data',
+              parentId: 17,
+            })
+          }
+        })
         let remoteroutes = traverseRoutes(menus)
         commit('SET_ROUTES', remoteroutes)
         resolve(remoteroutes)

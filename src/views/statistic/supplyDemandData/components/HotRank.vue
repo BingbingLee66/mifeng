@@ -1,8 +1,8 @@
 <template>
   <div>
-    <DataDimension v-if="isTopBackStage" @change="onQueryChange({ckey:$event})" />
+    <ChamberSelector v-if="isTopBackStage" @change="onQueryChange({ckey:$event})" />
 
-    <TimeSizer layout="days, date" @change="onQueryChange" />
+    <TimeSizer :query="query" layout="days, date" @change="onQueryChange({pageNum:1})" />
 
     <el-row :gutter="20">
       <el-col v-for="(item,i) in layoutList" :key="i" :span="24 / layoutList.length ">
@@ -19,7 +19,7 @@ import { getLabelHotList, getTradeHotList } from '@/api/statistics/supplyDemand'
 
 export default {
   components: {
-    DataDimension: () => import('@/components/statistic/DataDimension'),
+    ChamberSelector: () => import('@/components/statistic/ChamberSelector'),
     TimeSizer: () => import('@/components/statistic/TimeSizer'),
     KdTable: () => import('@/components/KdTable'),
     KdPagination: () => import('@/components/common/KdPagination'),
@@ -72,6 +72,7 @@ export default {
       ],
     }
   },
+
   computed: {
     ckey() {
       return this.$store.getters.ckey
@@ -108,7 +109,7 @@ export default {
       item.loading = false
     },
 
-    onQueryChange(e) {
+    onQueryChange(e = {}) {
       this.query = { ...this.query, ...e }
       this.layoutList.forEach((v, i) => this.onPageChange({ pageNum: 1 }, v, i))
     },
