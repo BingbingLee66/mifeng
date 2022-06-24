@@ -1,16 +1,16 @@
 <template>
  <div class="app-container">
     <div class="block">
-        <el-form ref="query" :inline="true" label-position="right" :model="query">
+        <el-form ref="query" :inline="true"  label-position="right" :model="query">
             <el-row>
                 <el-form-item label="标题：">
-                    <el-input v-model="query.title" placeholder="请输入标题" />
+                    <el-input  v-model="query.title" placeholder="关键词" maxlength="60" />
                 </el-form-item>
                 <el-form-item label="ID：">
-                    <el-input v-model="query.id" placeholder="请输入ID" />
+                    <el-input v-model="query.id" placeholder="关键词" maxlength="15" />
                 </el-form-item>
                 <el-form-item :span="12" label="一级菜单：" >
-                    <el-select v-model="query.menu1Id" placeholder="请选择">
+                    <el-select   @change="onselectMenu" v-model="query.menu1Id" placeholder="请选择">
                         <el-option
                         v-for="(item, index) in menu1List"
                         :key="index"
@@ -45,18 +45,19 @@
                     end-placeholder="结束日期"
                     />
                 </el-form-item>
-                <el-button type="primary" @click="queryData($event)">查询</el-button>
-                <el-button type="info">重置</el-button>
+                <el-button type="primary" @click="queryData()">查询</el-button>
+                <el-button type="info" @click="reset">重置</el-button>
             </el-row>        
             <el-row>
-                <el-button   type="danger" >创建操作指引</el-button>
-                <el-button   type="primary">导出浏览记录</el-button>
+                <el-button  @click="add" type="danger" >创建操作指引</el-button>
+                <el-button @click="exportExcel()"  type="primary">导出浏览记录</el-button>
             </el-row>  
         </el-form>
         <!-- 表格 -->
         <div>
             <el-table
              id="out-table"
+            ref="multipleTable"
              v-loading="listLoading"
              :data="list"
              element-loading-text="Loading"
@@ -65,18 +66,18 @@
              highlight-current-row
              @selection-change="handleSelectionChange"
             >
-                <el-table-column align="center" type="selection" width="55px" />
-                <el-table-column align="center" prop="id" width="80px" label="ID"  />
+                <el-table-column  align="center"  type="selection" width="55px" />
+                <el-table-column align="center" prop="id" width="60px" label="ID"  />
                 <el-table-column align="center" label="标题">
-                    <template slot-scope="scope" width="180px">
-                        <div>   
+                    <template slot-scope="scope" width="200px">
+                        <div class="tabl-tit">   
                             {{ !scope.row.title ? "--" : scope.row.title }}
                         </div>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" prop="menu1Name" width="120px" label="一级菜单"  />
                 <el-table-column align="center" prop="menu2Name" width="120px" label="二级菜单"  />
-                <el-table-column align="center" label="权重" width="80px">
+                <el-table-column align="center" label="权重" width="70px">
                     <template slot-scope="scope">
                         <div @click="onweight(scope.row)" style="color: #409EFF;cursor: pointer;">
                             {{ scope.row.sort }}
@@ -106,11 +107,11 @@
                 <el-table-column align="center" label="状态" width="180px">
                     <template slot-scope="scope">
                         <!-- 状态,0冻结,1发布,2删除,3平台冻结,4定时发布 -->
-                        <div v-if="scope.row.state == 0">冻结</div>
-                        <div v-if="scope.row.state == 1">发布</div>
-                        <div v-if="scope.row.state == 2">删除</div>
-                        <div v-if="scope.row.state == 3">平台冻结</div>
-                        <div v-if="scope.row.state == 4">
+                        <div v-if="scope.row.status == 0">冻结</div>
+                        <div v-if="scope.row.status == 1">发布</div>
+                        <div v-if="scope.row.status == 2">删除</div>
+                        <div v-if="scope.row.status == 3">平台冻结</div>
+                        <div v-if="scope.row.status == 4">
                             <div>定时发布</div>
                             <div>{{ scope.row.publishTs }}</div>
                         </div>
@@ -133,27 +134,28 @@
                         </div>
                     </template>
                 </el-table-column>  
-                <el-table-column  label="操作" width="120px" fixed="right">          
-                    <div style="display: inline-block">
-                        <el-button type="text">
-                            详情
-                        </el-button>
-                        <el-button type="text">
-                            编辑
-                        </el-button>
-                    </div>
-                    <div style="display: inline-block">
-                        <el-button type="text" @click="onFreeze">
-                            冻结
-                        </el-button>
-                        <el-button type="text" @click="onUnfreeze">
-                            解冻
-                        </el-button>
-                         <el-button type="text" @click="onDelete">
-                            删除
-                        </el-button>
-                    </div>
-                       
+                <el-table-column align="center"   label="操作" width="120px" fixed="right">          
+                    <template slot-scope="scope">
+                        <div style="display: inline-block">
+                            <el-button type="text" @click="detail(scope.row)">
+                                详情
+                            </el-button>
+                            <el-button type="text" @click="edit(scope.row)">
+                                编辑
+                            </el-button>
+                        </div>
+                        <div style="display: inline-block">
+                            <el-button v-if="scope.row.status == 1 || scope.row.status == 3" type="text" @click="onFreeze(scope.row,0)">
+                                冻结
+                            </el-button>
+                            <el-button v-if="scope.row.status == 0" type="text" @click="onUnfreeze(scope.row,3)">
+                                解冻
+                            </el-button>
+                                <el-button type="text" @click="onDelete(scope.row,2)">
+                                删除
+                            </el-button>
+                        </div>
+                    </template>
                 </el-table-column>  
             </el-table>
             <el-pagination
@@ -170,18 +172,18 @@
         </div>
 
         <!-- 权重弹框 -->
-        <el-dialog title="权重"  width="30%" :close-on-click-modal="false" :visible.sync="isweight">
+        <el-dialog title="权重"  width="30%" :close-on-click-modal="false" :visible.sync="issort">
             <el-form  label-width="70px">
                 <el-form-item label="权重 :"  :rules="[ { required: true }]" >
                     <el-col :span="8">
-                        <el-input oninput="value=value.replace(/^\.+|[^\d.]/g,'')"  maxlength="3"  width="30%"  v-model="eightNum" ></el-input>
+                        <el-input oninput="value=value.replace(/^\.+|[^\d.]/g,'')"  maxlength="3"  width="30%"  v-model="sortNum" ></el-input>
                     </el-col>
                 </el-form-item>
                 <div class="dialog-weight">权重请控制在0-999，权重为0不在商会后台显示,权重越大，在商会后台列表排序就越靠前</div>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="isweight = false">取 消</el-button>
-                <el-button :disabled="eightNum == ''" type="primary">确 定</el-button>
+                <el-button @click="onCancel">取 消</el-button>
+                <el-button :disabled="sortNum == ''" type="primary" @click="ongetguideUpdate" >确 定</el-button>
             </div>
         </el-dialog>
         <!-- 浏览记录 -->
@@ -217,6 +219,22 @@
         </el-dialog>
 
         <!-- 详情 -->
+        <div class="art-preview-wrap">
+            <el-dialog title="" :visible.sync="visible" width="60%">
+                <div class="m-preview-wrap">
+                    <div class="m-preview-area">
+                    <div class="m-article-title">{{ detailObj.title }}</div>
+                    <videoComponent
+                        ref="videoRef"
+                        v-if="detailObj.vid"
+                        :vid="detailObj.vid"
+                        height="530px"
+                        ></videoComponent>
+                    <div class="m-article-content" v-html="detailObj.content" />
+                    </div>
+                </div>
+            </el-dialog>
+      </div>
 
     </div>
  </div>
@@ -235,4 +253,41 @@
     width: 56%;
     margin-top: -13px;
 }
+.tabl-tit{
+    word-break: break-all;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* 这里是超出几行省略 */
+    overflow: hidden;
+}
+.m-preview-wrap {
+  width: 100%;
+  height: 80vh;
+}
+.m-preview-area img {
+  width: 100% !important;
+  height: auto !important;
+}
+.m-article-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 20px 40px 20px 40px;
+}
+.m-article-content {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.8;
+}
+</style>
+<style lang="scss">
+.art-preview-wrap {
+  .el-dialog {
+    margin-top: 5vh !important;
+    height: 90vh;
+    overflow: hidden;
+  }
+}
+
 </style>
