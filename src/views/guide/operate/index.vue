@@ -2,7 +2,7 @@
   <div class="app-container">
     <kdDialog ref="kdDialog" dialogTitle="导入微信文章" @savePopupData="savePopupData" >
       <div slot="content" class="content">
-        <el-input v-model="articleUrl"  placeholder="请输入微信文章链接地址" ></el-input>
+        <el-input clearable v-model="articleUrl"  placeholder="请输入微信文章链接地址" ></el-input>
         <div class="case">支持导入微信公众号文章</div>
         <div >注意：1.如需获得正式使用权，请自行联系版权所有者
           <br/> <span v-for="item in 10" :key="item">&nbsp;</span>2.多次导入内容会进行覆盖
@@ -13,7 +13,7 @@
         <el-row>
             <el-col :span="16">
                 <el-form-item  label="标题：" prop="title">
-                    <el-input show-word-limit   v-model="formObj.title" maxlength="60" placeholder="请输入标题" />
+                    <el-input clearable show-word-limit   v-model="formObj.title" maxlength="60" placeholder="请输入标题" />
                 </el-form-item>
             </el-col>
         </el-row>

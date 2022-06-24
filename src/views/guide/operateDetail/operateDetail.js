@@ -6,7 +6,6 @@ import {
     getguideUpdate,
     getexportLog
 } from '@/api/guide/guide' 
-import axios from 'axios'
 import videoComponent from '@/components/video/index'
 export default {
     components:{
@@ -42,9 +41,9 @@ export default {
         issort:false, // 开启权重弹框
         isweightid:'', // 选中表格id
         sortNum:null, 
-        pageSizes: [2, 20, 50, 100, 500],
+        pageSizes: [10, 20, 50, 100, 500],
         total: 0,
-        limit: 2,
+        limit: 10,
         currentpage: 1,
         visible:false, // 详情
         detailObj:{}, // 详情数据
@@ -82,7 +81,7 @@ export default {
           this.$router.push({
             name: '添加和编辑操作指引',
             params: {
-              'articleId': row.id
+              'detailsId': row.id
             }
           })
         },
@@ -112,7 +111,6 @@ export default {
                 this.isweightid = ''
                 this.total = res.data.totalRows
                 this.listLoading = false;
-                this.ogidList = []
             })
         },
         // 获取一级菜单 
@@ -160,13 +158,11 @@ export default {
           this.isweightid = ''
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`)
             this.limit = val
             this.currentpage = 1
             this.fetchData()
           },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`)
             this.currentpage = val
             this.fetchData()
         },
@@ -247,7 +243,6 @@ export default {
             params.sort = this.sortNum
             this.issort = false
           }
-          console.log('params',params,id,status)
           getguideUpdate(params).then(res=>{
             this.$message({
               message: res.msg,
@@ -278,6 +273,7 @@ export default {
             console.log('浏览人数',row)
             this.visitorID = row.id
             this.visitList = []
+            this.ongetlistLog()
             this.isVisit = true
         },
         ongetlistLog(){
@@ -286,8 +282,8 @@ export default {
             ogid: this.visitorID,
             pageSize: this.visitlimit,
             pageNum: this.visitcurrentpage,
-        }
-          getlistLog({ogid: this.visitorID}).then(response => {
+          }
+          getlistLog(params).then(response => {
             this.visitList = response.data.list || []
             this.visittotal = response.data.totalRows
             this.visitLoading = false
@@ -307,7 +303,6 @@ export default {
         },
         // 导出表格
         exportExcel(){
-          console.log('this.ogidList',this.ogidList)
           if(this.ogidList.length <= 0) return this.$message.error('请选择数据')
           let ogid = []
           this.ogidList.forEach((v)=>{

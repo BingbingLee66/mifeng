@@ -341,6 +341,13 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '添加和编辑操作指引' }
       },
+      {
+        path: '/guide/chamber-guide',
+        name: '操作指引详情',
+        component: () => import('@/views/guide/playGuide'),
+        hidden: true,
+        meta: { title: '操作指引详情' }
+      },
     ]
   }
 ]

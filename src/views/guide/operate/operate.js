@@ -25,7 +25,7 @@ export default {
             status:1, // 状态,0冻结,1发布,2删除,3平台冻结,4定时发布
         },
         articleUrl:'', // 微信文章链接地址
-        articleId: '', // 编辑id
+        detailsId: '', // 编辑id
         rules: {
             title: [
               { required: true, message: '标题不能为空', trigger: 'blur' },
@@ -59,9 +59,8 @@ export default {
     },
     mounted() {
         this.ongetListByRank()
-        console.log('this.$route.params.articleId',this.$route.params.articleId)
-        if (this.$route.params.articleId) {
-            this.articleId = this.$route.params.articleId
+        if (this.$route.params.detailsId) {
+            this.detailsId = this.$route.params.detailsId
             this.init()
         }
     },
@@ -75,7 +74,10 @@ export default {
         },
         // 选择二级级菜单
         onselectMenu(e){
-            this.formObj.menu2Id = ''
+            this.formObj.menu2Id = ''  
+            this.ongetListByTwin(e)
+        },
+        ongetListByTwin(e){
             getListByRank({rank: 2,menuId:e}).then(response => {
                 this.menu2List = response.data || []
             })
@@ -207,7 +209,7 @@ export default {
         },
         // 获取编辑内容
         init(){
-            getguideDetail({id:this.articleId}).then(res =>{
+            getguideDetail({id:this.detailsId}).then(res =>{
                 let data = res.data
                 this.formObj = {
                     title: data.title,
@@ -220,7 +222,7 @@ export default {
                     content: data.content,
                     status: data.status, 
                 } 
-                if( data.menu1Id )  this.onselectMenu(data.menu1Id)
+                if( data.menu1Id )  this.ongetListByTwin(data.menu1Id)
                 if (this.formObj.vid) {
                   this.$nextTick(() => {
                    this.$refs['videoRef'].show(this.formObj.vid)
@@ -235,7 +237,7 @@ export default {
             if(!formObj.vid) return this.$message.error('请上传视频封面');
             if(formObj.status == 4 && !formObj.publishTs) return this.$message.error('请选择定时发布时间');
             // 如果是编辑需要传多个id
-            if(this.articleId) formObj.id = this.articleId
+            if(this.detailsId) formObj.id = this.detailsId
             if(formObj.status == 1) formObj.publishTs = ''
             this.$refs['form'].validate((valid) => {
                 if (valid) {

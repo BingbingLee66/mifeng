@@ -3,11 +3,11 @@
     <div class="block">
         <el-form ref="query" :inline="true"  label-position="right" :model="query">
             <el-row>
-                <el-form-item label="标题：">
-                    <el-input  v-model="query.title" placeholder="关键词" maxlength="60" />
+                <el-form-item  label="标题：">
+                    <el-input clearable  v-model="query.title" placeholder="关键词" maxlength="60" />
                 </el-form-item>
                 <el-form-item label="ID：">
-                    <el-input v-model="query.id" placeholder="关键词" maxlength="15" />
+                    <el-input clearable v-model="query.id" placeholder="关键词" maxlength="15" />
                 </el-form-item>
                 <el-form-item :span="12" label="一级菜单：" >
                     <el-select   @change="onselectMenu" v-model="query.menu1Id" placeholder="请选择">
@@ -32,7 +32,7 @@
             </el-row>
             <el-row>
                 <el-form-item label="创建人：">
-                    <el-input v-model="query.creator" placeholder="请输入创建人" />
+                    <el-input clearable v-model="query.creator" placeholder="请输入创建人" />
                 </el-form-item>
                 <el-form-item label="发布时间：" label-width="120px">
                     <el-date-picker
@@ -45,7 +45,7 @@
                     end-placeholder="结束日期"
                     />
                 </el-form-item>
-                <el-button type="primary" @click="queryData()">查询</el-button>
+                <el-button type="primary" @click="queryData">查询</el-button>
                 <el-button type="info" @click="reset">重置</el-button>
             </el-row>        
             <el-row>
@@ -86,15 +86,16 @@
                 </el-table-column>
                 <el-table-column align="center" label="浏览人数" width="80px">
                     <template slot-scope="scope">
-                        <div @click="onvisit(scope.row)" style="color: #409EFF;cursor: pointer;">
+                        <div v-if="scope.row.visitorNum"  @click="onvisit(scope.row)" style="color: #409EFF;cursor: pointer;">
                             {{ scope.row.visitorNum }}
                         </div>
+                        <div v-else>--</div>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="浏览次数" width="80px">
                     <template slot-scope="scope">
                         <div>
-                            {{ scope.row.visitCount }}
+                            {{ scope.row.visitCount ? scope.row.visitCount : '--'}}
                         </div>
                     </template>
                 </el-table-column>
@@ -120,18 +121,20 @@
                 </el-table-column>
                 <el-table-column align="center" label="创建信息" width="180px">
                     <template slot-scope="scope">
-                        <div>
+                        <div v-if=" scope.row.creator ||  scope.row.createdTs">
                             <div> {{ scope.row.creator }} </div>
                             <div> {{ scope.row.createdTs }} </div>
                         </div>
+                        <div v-else>--</div>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="更新信息" width="180px">
                     <template slot-scope="scope">
-                        <div>
+                        <div v-if=" scope.row.modifier ||  scope.row.updatedTs">
                             <div> {{ scope.row.modifier }} </div>
                             <div> {{ scope.row.updatedTs }} </div>
                         </div>
+                         <div v-else>--</div>
                     </template>
                 </el-table-column>  
                 <el-table-column align="center"   label="操作" width="120px" fixed="right">          
@@ -145,10 +148,10 @@
                             </el-button>
                         </div>
                         <div style="display: inline-block">
-                            <el-button v-if="scope.row.status == 1 || scope.row.status == 3" type="text" @click="onFreeze(scope.row,0)">
+                            <el-button v-if="scope.row.status == 1" type="text" @click="onFreeze(scope.row,0)">
                                 冻结
                             </el-button>
-                            <el-button v-if="scope.row.status == 0" type="text" @click="onUnfreeze(scope.row,3)">
+                            <el-button v-if="scope.row.status == 0" type="text" @click="onUnfreeze(scope.row,1)">
                                 解冻
                             </el-button>
                                 <el-button type="text" @click="onDelete(scope.row,2)">
@@ -280,8 +283,9 @@
   font-weight: 500;
   line-height: 1.8;
 }
-</style>
-<style lang="scss">
+.el-input {
+  width: 270px;
+}
 .art-preview-wrap {
   .el-dialog {
     margin-top: 5vh !important;
@@ -289,5 +293,8 @@
     overflow: hidden;
   }
 }
+</style>
+<style lang="scss">
+
 
 </style>
