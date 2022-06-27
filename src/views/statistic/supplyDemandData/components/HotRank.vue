@@ -6,7 +6,7 @@
 
     <el-row :gutter="20">
       <el-col v-for="(item,i) in layoutList" :key="i" :span="24 / layoutList.length ">
-        <KdTable v-loading="item.loading" :data="item.data" :list="item.tableList" />
+        <KdTable v-loading="item.loading" :rows="item.data" :columns="item.columns" />
         <KdPagination :page-size="item.pageSize" :current-page="item.pageNum" :total="item.total" @change="onPageChange($event,item,i)" />
       </el-col>
     </el-row>
@@ -21,7 +21,7 @@ export default {
   components: {
     ChamberSelector: () => import('@/components/statistic/ChamberSelector'),
     TimeSizer: () => import('@/components/statistic/TimeSizer'),
-    KdTable: () => import('@/components/KdTable'),
+    KdTable: () => import('@/components/common/KdTable'),
     KdPagination: () => import('@/components/common/KdPagination'),
   },
 
@@ -36,7 +36,7 @@ export default {
 
       layoutList: [
         {
-          tableList: [{
+          columns: [{
             label: '标签榜', headerAlign: 'center',
             children: [
               { label: '排名', prop: 'rank' },
@@ -53,7 +53,7 @@ export default {
           loading: false
         },
         {
-          tableList: [{
+          columns: [{
             label: '行业榜', headerAlign: 'center',
             children: [
               { label: '排名', prop: 'rank' },

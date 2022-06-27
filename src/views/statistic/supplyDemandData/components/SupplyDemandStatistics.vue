@@ -9,7 +9,7 @@
       <div class="block"><ExportTable :data="selectionDatas" title="供需统计数据" /></div>
     </div>
 
-    <KdTable v-loading="loading" :list="tableList" :data="tableData" @selection-change="onSelectionChange" />
+    <KdTable v-loading="loading" :columns="tableColumns" :rows="tableData" @selection-change="onSelectionChange" />
 
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
@@ -26,7 +26,7 @@ export default {
     TimeSizer: () => import('@/components/statistic/TimeSizer'),
     ExportTable: () => import('@/components/statistic/ExportTable'),
     KdPagination: () => import('@/components/common/KdPagination'),
-    KdTable: () => import('@/components/KdTable')
+    KdTable: () => import('@/components/common/KdTable')
   },
   props: {},
   data() {
@@ -72,7 +72,7 @@ export default {
 
       chamberOptions: [],
 
-      tableList: [
+      tableColumns: [
         { type: 'selection', width: 55 },
         { label: '日期', prop: 'date' },
         { label: '发布供应数', prop: 'supplyNum' },

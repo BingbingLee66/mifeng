@@ -54,7 +54,7 @@
       <div class="block"><ExportTable :data="genetateWorkbook" title="激活与活跃" /></div>
     </div>
 
-    <KdTable v-loading="loading" :list="tableList" :data="tableData" @selection-change="onSelectionChange" />
+    <KdTable v-loading="loading" :columns="tableColumns" :rows="tableData" @selection-change="onSelectionChange" />
 
     <KdPagination style="padding-bottom:20px;" :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
   </div>
@@ -72,7 +72,7 @@ export default {
     ChamberSelector: () => import('@/components/statistic/ChamberSelector'),
     TimeSizer: () => import('@/components/statistic/TimeSizer'),
     ExportTable: () => import('@/components/statistic/ExportTable'),
-    KdTable: () => import('@/components/KdTable'),
+    KdTable: () => import('@/components/common/KdTable'),
     KdPagination: () => import('@/components/common/KdPagination'),
   },
   props: {},
@@ -192,7 +192,7 @@ export default {
     },
 
     // 表格列表
-    tableList() {
+    tableColumns() {
       const { activeName } = this
       switch (activeName) {
         case 'Platform':
