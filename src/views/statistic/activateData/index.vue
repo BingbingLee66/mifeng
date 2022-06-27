@@ -48,8 +48,10 @@
     <DataBoard :list="boardDataList" />
 
     <div class="flex-x-between">
+      <!-- 时间 -->
       <TimeSizer ref="timeSizer" :query="query" @change="onQueryChange({pageNum:1})" />
-      <div class="block"><ExportTable :data="selectionDatas" title="激活与活跃" /></div>
+      <!-- 导表 -->
+      <div class="block"><ExportTable :data="genetateWorkbook" title="激活与活跃" /></div>
     </div>
 
     <KdTable v-loading="loading" :list="tableList" :data="tableData" @selection-change="onSelectionChange" />
@@ -411,24 +413,78 @@ export default {
       }
       this.loading = false
     },
-    // 报表数据选择
-    onSelectionChange(e) {
-      const { activeName } = this
+    genetateWorkbook(XLSX) {
+      const { selectionDatas, activeName } = this
+      if (!selectionDatas.length) {
+        this.$message({ message: '请选择导出记录', type: 'warning' })
+        return null
+      }
+      let worksheet, workbook
       switch (activeName) {
         case 'Platform':
         case 'FunctionModule':
         case 'Page':
-          console.log(e)
-          this.selectionDatas = e.map(v => ({
-            '时间': v.date,
-            '访问人数': v.visitorsNum || 0,
-            '累计用户': [{ '用户': 0 }, { '会员': 0 }, { '非会员': 0 }],
-            '新注册用户': [{ '新增': 0 }, { '会员': 0 }, { '非会员': 0 }]
-          }))
-          break
+          worksheet = XLSX.utils.aoa_to_sheet([
+            ['时间', '访问人数', '累计用户', null, null, '新注册用户', null, null, '后台导入会员', null, null, '活跃用户', null, null, '活跃率', null, null],
+            [null, null, '用户', '会员', '非会员', '新增', '会员', '非会员', '新增', '已激活', '未激活', '新增', '会员', '非会员', '新增', '会员', '非会员'],
+            ...selectionDatas.map(v => ([
+              // 时间,访问人数
+              v.date, v.visitorsNum,
+              // 累计用户:用户,会员,非会员
+              v.registerUsersTotal, v.registerMembersTotal, v.registerNotMembersTotal,
+              // 新注册用户:新增,会员,非会员
+              v.registerUsersNum, v.registerMembersNum, v.registerNotMembersNum,
+              // 后台导入会员：新增,已激活,未激活
+              v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
+              // 活跃用户：新增，会员，非会员
+              v.activeUsersNum, v.activeMembersNum, v.notActiveMembersNum,
+              // 活跃率：新增，会员，非会员
+              v.activeRate, v.activeMembersRate, v.notActiveMembersRate
+            ]))
+          ])
+          worksheet['!merges'] = [
+            { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
+            { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
+            { s: { c: 2, r: 0 }, e: { c: 4, r: 0 }},
+            { s: { c: 5, r: 0 }, e: { c: 7, r: 0 }},
+            { s: { c: 8, r: 0 }, e: { c: 10, r: 0 }},
+            { s: { c: 11, r: 0 }, e: { c: 13, r: 0 }},
+            { s: { c: 14, r: 0 }, e: { c: 16, r: 0 }},
+          ]
+          workbook = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
+          return workbook
+
         default: // Chamber || Area
-          break
+          worksheet = XLSX.utils.aoa_to_sheet([
+            ['时间', '访问人数', '累计注册会员', '后台导入会员', null, null, '会员激活率', '活跃会员', '会员活跃率'],
+            [null, null, '新增', '已激活', '未激活', null, null, null],
+            ...selectionDatas.map(v => ([
+              // 时间,访问人数,累计注册会员
+              v.date, v.visitorsNum, v.registerMembersTotal,
+              // 后台导入会员：新增,已激活,未激活
+              v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
+              // 会员激活率,活跃会员,会员活跃率
+              v.memberActivationRate, v.activeMembersNum, v.activeMembersRate
+            ]))
+          ])
+          worksheet['!merges'] = [
+            { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
+            { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
+            { s: { c: 2, r: 0 }, e: { c: 2, r: 1 }},
+            { s: { c: 3, r: 0 }, e: { c: 5, r: 0 }},
+            { s: { c: 6, r: 0 }, e: { c: 6, r: 1 }},
+            { s: { c: 7, r: 0 }, e: { c: 7, r: 1 }},
+            { s: { c: 8, r: 0 }, e: { c: 8, r: 1 }},
+          ]
+          workbook = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
+          return workbook
       }
+    },
+    // 报表数据选择
+    onSelectionChange(e) {
+      this.selectionDatas = e
     },
 
   },
