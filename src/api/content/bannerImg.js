@@ -48,3 +48,11 @@ export function checkUpperLimit(params) {
     params
   })
 }
+
+export function getBannerImgList(params) {
+  return request({
+    url: '/ec/bannerImg/getBannerImgList',
+    method: 'get',
+    params
+  })
+}
