@@ -17,7 +17,7 @@
               </el-select>
             </el-form-item>
             <el-form-item  label="二级菜单：">
-              <el-select  v-model="query.menu2Id" placeholder="请选择">
+              <el-select clearable v-model="query.menu2Id" placeholder="请选择">
                   <el-option
                   v-for="(item, index) in menu2List"
                   :key="index"

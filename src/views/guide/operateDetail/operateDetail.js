@@ -103,8 +103,8 @@ export default {
                 pageNum: this.currentpage,
             }
             if (this.query.date) {
-              params.publishTsEnd = query.date[0]
-              params.publishTsStart = query.date[1]
+              params.publishTsStart = query.date[0]
+              params.publishTsEnd = query.date[1]
             }
             getguideList(params).then(res => {
                 this.list = res.data.list || []
@@ -130,8 +130,8 @@ export default {
         },
         // 查询
         queryData(){
-            this.currentpage = 1
-            this.fetchData()
+          this.currentpage = 1
+          this.fetchData()
         },
         // 重置
         reset(){

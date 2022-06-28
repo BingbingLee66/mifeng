@@ -20,7 +20,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item :span="12" label="二级菜单：">
-                    <el-select v-model="query.menu2Id" placeholder="请选择">
+                    <el-select clearable  v-model="query.menu2Id" placeholder="请选择">
                         <el-option
                         v-for="(item, index) in menu2List"
                         :key="index"
@@ -47,7 +47,7 @@
                 </el-form-item>
                 <el-button type="primary" @click="queryData">查询</el-button>
                 <el-button type="info" @click="reset">重置</el-button>
-            </el-row>        
+            </el-row> 
             <el-row style="margin-bottom:20px;">
                 <el-button  @click="add" type="danger" >创建操作指引</el-button>
                 <el-button @click="exportExcel"  type="primary">导出浏览记录</el-button>
@@ -116,7 +116,6 @@
                             <div>定时发布</div>
                             <div>{{ scope.row.publishTs }}</div>
                         </div>
-
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="创建信息" width="180px">
