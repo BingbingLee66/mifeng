@@ -212,6 +212,12 @@
             <div v-if="scope.row.auditStatus == 2">审核不通过</div>
           </template>
         </el-table-column>
+        
+        <el-table-column label="举报信息" width="80px" v-if="activeName == '1'" key="5">
+            <template slot-scope="{row}">
+              <el-button  l-button :disabled="!+row.repostNum" type="text" size="small" @click="showRepostInfo(row)">{{ row.repostNum }}</el-button>
+            </template>
+        </el-table-column>
         <el-table-column label="操作" width="200px">
           <template slot-scope="scope">
             <div>
@@ -267,6 +273,7 @@
           </div>
           <!--    视频渲染      -->
           <div v-if="(activeName == '1' || activeName == '2'  || activeName == '3') && detailObj.contentType === 2" class="detail-dialog-video" id="videoContent"></div>
+          <div v-if="detailObj.vid && activeName == '1'&& (detailObj.publishType == 1 || detailObj.publishType == 3) " class="detail-dialog-video" id="videoContent"></div>
           <div v-if="activeName == '1' || activeName == '2'  || activeName == '3'  || activeName == '5'" class="d-article-content" v-html="detailObj.contentHtml" />
           <div v-else class="d-article-content" v-html="detailObj.content" />
         </div>

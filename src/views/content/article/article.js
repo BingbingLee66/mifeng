@@ -1,4 +1,4 @@
-import { getUpdateDetail, save, uploadCoverImg ,getWechatContent} from '@/api/content/article'
+import { getUpdateDetail, save, uploadCoverImg ,getWechatContent,uploadVideo,queryVideo} from '@/api/content/article'
 import { getContentColumnOptions, getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import { getOptions } from '@/api/content/articleSource'
 import Ckeditor from '@/components/CKEditor'
@@ -7,13 +7,15 @@ import preview from '../articleupdate/editor/component/preview'
 import kdDialog from '@/components/common/kdDialog'
 import { Loading } from 'element-ui';
 import editorElem from '@/components/wangEditor/index'
+import videoComponent from '@/components/video/index'
 export default {
   components: {
     Ckeditor,
     PreviewPh,
     preview,
     kdDialog,
-    editorElem
+    editorElem,
+    videoComponent
   },
   data() {
     return {
@@ -28,7 +30,15 @@ export default {
         coverImgs: [],
         status: 1,
         istop: false,
-        sourceId: null
+        sourceId: null,
+        articleExtendDTO:{
+          id:null,
+          shareTitle:'', // 分享标题
+          shareFriendPicture:'', // 分享微信好友圈图片
+          sharePoster:'' , // 分享海报图片
+        },
+        vid:'', // 上传视频Id
+        videoCoverURL: '',  //视频封面
       },
       articleId: '',
       uploadIndex: 0,
@@ -37,6 +47,12 @@ export default {
         '商会必参',
         '标签聚合页/商会必参'
       ],
+      loading: false,
+
+      //当前预览的图片
+      currentImg: '',
+      //轮询定时器
+      timer:null,
       rules: {
         title: [
           { required: true, message: '文章标题不能为空', trigger: 'blur' },
@@ -114,11 +130,21 @@ export default {
         return false
       }
     },
-    upload(content) {
+    upload(content,type) {
       let formData = new FormData()
       formData.append('file', content.file)
       uploadCoverImg(formData).then(response => {
-        this.formObj.coverImgs.splice(this.uploadIndex, 1, response.data.filePath)
+        if(type) {
+          //  视频封面
+          if (type == 'videoCoverURL') this.formObj.videoCoverURL = response.data.filePath
+          // 分享微信好友
+          if (type == 'shareFriendPicture') this.formObj.articleExtendDTO.shareFriendPicture = response.data.filePath
+          // 分享海报图
+          if (type == 'sharePoster') this.formObj.articleExtendDTO.sharePoster = response.data.filePath
+        } else {
+          this.formObj.coverImgs.splice(this.uploadIndex, 1, response.data.filePath)
+        }
+
       })
     },
     resetCoverImgs(type) {
@@ -160,7 +186,6 @@ export default {
           id: this.articleId
         }
         getUpdateDetail(params).then(response => {
-          console.log('文章详情：', response)
           const dataObj = response.data.dtl
           const htmlObj = dataObj.contentHtml
           this.formObj = {
@@ -173,11 +198,26 @@ export default {
             'coverImgs': dataObj.coverImgUrl,
             'status': dataObj.status,
             'istop': dataObj.istop,
-            'sourceId': dataObj.sourceId
+            'sourceId': dataObj.sourceId,
+            'vid':dataObj.vid,
+            'videoCoverURL':dataObj.videoCoverURL,
+            articleExtendDTO:{
+              'id':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.id : null,
+              'shareFriendPicture':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.shareFriendPicture : '',
+              'sharePoster':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.sharePoster : '',
+              'shareTitle':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.shareTitle : '',
+            }
+
           }
+
           if (dataObj.status === 4) {
             // this.formObj['publishTs'] = dataObj.publishTs
             this.$set(this.formObj, 'publishTs', dataObj.publishTs)
+          }
+          if(dataObj.vid) {
+            this.$nextTick(() => {
+              this.$refs['videoRef'].show(dataObj.vid);
+            })
           }
           this.getContentColumnType()
           // this.$refs.ckeditor1.init()
@@ -190,6 +230,10 @@ export default {
       })
     },
     saveFunc() {
+      // 如果 编辑的情况下 有视频 但是没视频封面 提示
+      if(this.articleId && this.formObj.vid && !this.formObj.videoCoverURL) return this.$message.error('请上传视频封面');
+      // 如果上传了视频封面没上传视频 提示
+      if(this.formObj.videoCoverURL && !this.formObj.vid) return this.$message.error('请上传视频');
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.formObj.coverType === 0) {
@@ -218,7 +262,7 @@ export default {
       this.formObj.contentHtml = htmlStr
     },
     showPreview(){
-      this.$refs['preview'].open(this.formObj.title,this.formObj.contentHtml)
+      this.$refs['preview'].open(this.formObj.id,this.formObj.title,this.formObj.contentHtml,this.formObj.vid,this.formObj.videoCoverURL)
     },
     //导入微信文章按钮行为
     importArticle(){
@@ -243,7 +287,7 @@ export default {
         background: 'rgba(255, 255, 255,.5)'
       });
       getWechatContent(this.articleUrl).then(res=>{
-        console.log('res',res)
+
         if(res.state===1){
           // this.$refs.ckeditor1.init()
           setTimeout(() => {
@@ -252,7 +296,7 @@ export default {
             this.articleUrl=null
           }, 500)
           this.$refs['kdDialog'].hide();
-          
+
         }else{
           this.$message.error(res.msg);
           // 请输入微信公众号文章链接
@@ -265,6 +309,63 @@ export default {
     addParentHtml(html){
       this.formObj.contentHtml = html
     },
+    // 判断是否上传视频
+    beforeAvatarUploadVideo(file){
+      if (file.type.indexOf('video/') !== -1) { // 视频
+        if (file.type !== 'video/mp4') {
+          this.$message.error('上传视频只能是 MP4 格式!')
+          return false
+        }
+        // if (file.size > 1024 * 1024 * 30) {
+        //   this.$message.error('上传视频大小不能超过 30MB!')
+        //   return false
+        // }
+      } else {
+        this.$message.error('不支持的文件格式!');
+        return false
+      }
+    },
+    //上传视频
+    uploadVideoFunc(content) {
+      this.loading = true
+      let formData = new FormData()
+      formData.append('file', content.file)
+      formData.append('type', 1)
+      // this.articleId === '' ? 0 : this.articleId
+      uploadVideo(formData, 0).then(res => {
+        if (res.code === 200) {
+          this.formObj.vid = res.data.videoId;
+          this.timer = setInterval(this.queryVideoFunc, 1000);
+        }
+      })
+    },
+    //删除当前视频
+    deleteCurrentVideo() {
+      this.formObj.vid = ''
+    },
+    //查视频动态
+    queryVideoFunc(){
+      queryVideo(this.formObj.vid).then(res=>{
+        if(res.state===1){
+          clearInterval(this.timer);
+          this.$nextTick(() => {
+            this.$refs['videoRef'].show(this.formObj.vid);
+            this.loading = false;
+          })
+        }
+      })
+    },
+    //删除当前上传图片
+    deleteCurrentImg( folder) {
+      if(folder === 'shareFriendPicture') this.formObj.articleExtendDTO.shareFriendPicture = ''
+      if(folder==='sharePoster')  this.formObj.articleExtendDTO.sharePoster = ''
+      if(folder==='videoCoverURL') this.formObj.videoCoverURL=''
 
+    },
+    //预览
+     openPreviewModal(val) {
+      this.$refs['look-kdDialog'].show();
+      this.currentImg = val;
+    },
   }
 }

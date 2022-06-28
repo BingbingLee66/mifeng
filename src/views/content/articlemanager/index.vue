@@ -355,6 +355,12 @@
             </div>
             <div class="m-preview-area">
               <div class="m-article-title">{{ detailObj.title }}</div>
+               <videoComponent
+                  ref="videoRef"
+                  v-if="detailObj.vid"
+                  :vid="detailObj.vid"
+                  height="530px"
+                ></videoComponent>
               <div class="m-article-content" v-html="detailObj.contentHtml" />
             </div>
           </div>

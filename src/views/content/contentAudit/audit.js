@@ -8,6 +8,9 @@ import {
   getArticleCommentList,
   updateCommentStatus
 } from '@/api/content/article'
+import {
+  getReportList,
+} from '@/api/home/supplyDemandManger'
 import moment from 'moment'
 import {
   getChamberOptions
@@ -15,6 +18,7 @@ import {
 import {
   getSts
 } from '@/api/vod/vod'
+import { formatDateTime } from '@/utils/date'
 
 export default {
   data() {
@@ -109,6 +113,26 @@ export default {
       return this.$store.getters.getId({
         tabName,
         actionName
+      })
+    },
+
+    async showRepostInfo(row) {
+      const { data: { list = [] }} = await getReportList({ tarId: row.id,type: 1, page: 1, pageSize: 100 })
+
+      this.$confirm(`
+        <div style="margin:-10px -15px;border-top:1px solid #eee;">
+          ${list.map(v => `<div style="padding:20px;border-bottom:1px solid #eee;">
+            <div>举报人信息：${v.uname}</div>
+            <div>举报人手机号：${v.phone}</div>
+            <div>举报内容：${v.reason}</div>
+            <div>举报时间：${formatDateTime(new Date(+v.createdTs), 'yyyy-MM-dd hh:mm:ss')}</div>
+          </div>`).join('')}
+        </div>
+      `,
+      '举报信息', {
+        showCancelButton: false,
+        confirmButtonText: '我知道了',
+        dangerouslyUseHTMLString: true
       })
     },
 
@@ -262,11 +286,15 @@ export default {
       const params = {
         id: this.selectId
       }
+      console.log('this.activeName',this.activeName)
       if (this.activeName === '1' || this.activeName === '2' || this.activeName === '3') {
         getDetail(params).then(response => {
           this.detailObj = response.data.dtl
           // 视频是否存在 渲染操作
           if (this.detailObj.contentType === 2) {
+            this.renderVideo()
+          }
+          if(this.detailObj.contentType === 1 && (this.detailObj.publishType == 1 || this.detailObj.publishType == 3) && this.detailObj.vid){
             this.renderVideo()
           }
         }).catch(error => {

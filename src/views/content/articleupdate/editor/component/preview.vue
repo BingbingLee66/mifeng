@@ -12,7 +12,8 @@
       />
     </div>
     <div class="right">
-        <img src="@/assets/img/close.png" class="my-close" @click="hide"/>
+      <div class="right-out"></div>
+      <img src="@/assets/img/close.png" class="my-close" @click="hide"/>
       <img class="right-bg" src="@/assets/img/phone.png" />
       <div class="right-content ">
           <div class="content">
@@ -21,8 +22,12 @@
         </div>
         <div class="date flex-x-between-center">
             <span>文章出处</span>
-             <span>2022年12月12日</span>
+             <span>{{ systemTime }}</span>
         </div>
+        <div style="margin-top:15px;">
+          <videoComponent ref="videoRef" v-if="vid" :vid="vid" height="330px"/>
+        </div>
+        
         <div class="phone-article-content" id="my-phone-article-content" v-html="htmlObj"> 
         </div>
           </div>
@@ -34,7 +39,9 @@
 
 <script>
 import {previewArticle} from '@/api/content/article.js'
+import videoComponent from '@/components/video/index'
 export default {
+  components: {videoComponent},
   data() {
     return {
       // 状态
@@ -47,17 +54,38 @@ export default {
       //文章预览id
       articlePreviewId:null,
       //小程序码
-      url:null
+      url:null,
+      // 当前  年月日
+      systemTime:'',
+      vid:'', // 视频id
+      videoCoverURL:'', // 视频封面
     };
   },
   methods: {
-      open(title,htmlObj){
+      async open(id,title,htmlObj,vid,videoCoverURL){
+          this.articlePreviewId = id
           this.title=title;
           this.htmlObj=htmlObj;
+          this.vid = vid || '';
+          this.videoCoverURL = videoCoverURL || '';
           this.previewArticleFunc()
-
+          this.getDate()
           this.show()
-
+          await this.$nextTick()
+          if(this.vid) this.$refs['videoRef'].show(this.vid);
+          
+      }, 
+      getDate(){
+        let nowDate = new Date()
+				let date = {
+				  year: nowDate.getFullYear(),
+				  month: nowDate.getMonth() + 1,
+				  date: nowDate.getDate()
+				}
+				if (parseInt(date.date) < 10) {
+				  date.date = '0' + date.date
+				}
+				this.systemTime = date.year + '年' + date.month + '月' + date.date + '日'
       },
       show(){
           this.detailVisible=true;
@@ -67,7 +95,14 @@ export default {
       },
       /**请求 */
       previewArticleFunc(){
-          let params={articlePreviewId:this.articlePreviewId,content:this.htmlObj,title:this.title}
+          let params={
+            articlePreviewId:this.articlePreviewId,
+            content:this.htmlObj,
+            title:this.title,
+            videoCoverURL:this.videoCoverURL,
+            vid:this.vid
+          }
+
           previewArticle(params).then(res=>{
               if(res.state===1){
                   let data=res.data;
@@ -128,6 +163,15 @@ export default {
         right: -26px;
           z-index: 102;
     }
+  }
+  .right-out{
+    position: absolute;
+    top: 8%;
+    right: 8%;
+    width: 90px;
+    height: 42px;
+    background: #fff;
+    z-index: 1000;
   }
   .right-bg {
     z-index: 101;
