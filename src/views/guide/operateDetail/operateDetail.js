@@ -70,14 +70,15 @@ export default {
     methods: {
         // 添加操作指引
         add() {
-          window.localStorage.setItem('articleeditor', this.$route.path)
+          window.localStorage.setItem('operateDetail', this.$route.path)
           this.$router.push({
             name: '添加和编辑操作指引'
           })
         },
         // 编辑操作指引
         edit(row) {
-          window.localStorage.setItem('articleeditor', this.$route.path)
+          //  articleeditor
+          window.localStorage.setItem('operateDetail', this.$route.path)
           this.$router.push({
             name: '添加和编辑操作指引',
             params: {
@@ -142,6 +143,7 @@ export default {
             creator:'', //创建人
             date: [], // 发布时间
           }
+          this.menu2List = []
         },
         handleSelectionChange(value) {
             this.ogidList = value
@@ -270,7 +272,6 @@ export default {
 
         // 点击浏览人数 ----------------------
         onvisit(row){
-            console.log('浏览人数',row)
             this.visitorID = row.id
             this.visitList = []
             this.ongetlistLog()
@@ -291,27 +292,33 @@ export default {
           })
         },
         handleSizeChangevisit(val) {
-            console.log(`每页 ${val} 条`)
             this.visitlimit = val
             this.visitcurrentpage = 1
             this.ongetlistLog()
           },
           handleCurrentChangevisit(val) {
-            console.log(`当前页: ${val}`)
             this.visitcurrentpage = val
             this.ongetlistLog()
         },
         // 导出表格
         exportExcel(){
           if(this.ogidList.length <= 0) return this.$message.error('请选择数据')
-          let ogid = []
+          let form = {
+            ogids : []
+          }
           this.ogidList.forEach((v)=>{
-            ogid.push(v.id)
+            form.ogids.push(v.id)
           })
-          getexportLog(ogid).then(res=>{
-            window.location.href = res.data
-            this.$refs.multipleTable.clearSelection();
-            this.ogidList = []
+
+          getexportLog(form).then(res=>{
+            if(res.state == 1){
+              window.location.href = res.data
+              this.$refs.multipleTable.clearSelection();
+              this.ogidList = []
+            } else {
+              return this.$message.error(res.msg)
+            }
+           
           })
 
         }

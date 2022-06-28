@@ -106,9 +106,9 @@ export default {
                 if( res.state===1 ) {
                     // this.$refs.ckeditor1.init()
                     setTimeout(() => {
-                    // this.$refs.ckeditor1.initHtml(res.data.text === null ? '' : res.data.text);
-                    this.formObj.content = res.data.text;
-                    this.articleUrl = null
+                        // this.$refs.ckeditor1.initHtml(res.data.text === null ? '' : res.data.text);
+                        this.formObj.content = res.data.text;
+                        this.articleUrl = null
                     }, 500)
                     this.$refs['kdDialog'].hide();
                 } else {
@@ -195,7 +195,7 @@ export default {
         // 取消
         closeTab(){
             // 退出当前tab, 打开指定tab
-            let openPath = window.localStorage.getItem('articleeditor')
+            let openPath = window.localStorage.getItem('operateDetail')
             let tagsViews = this.$store.state.tagsView.visitedViews
             // let selectView = null
             for (let view of tagsViews) {

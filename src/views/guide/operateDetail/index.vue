@@ -48,9 +48,9 @@
                 <el-button type="primary" @click="queryData">查询</el-button>
                 <el-button type="info" @click="reset">重置</el-button>
             </el-row>        
-            <el-row>
+            <el-row style="margin-bottom:20px;">
                 <el-button  @click="add" type="danger" >创建操作指引</el-button>
-                <el-button @click="exportExcel()"  type="primary">导出浏览记录</el-button>
+                <el-button @click="exportExcel"  type="primary">导出浏览记录</el-button>
             </el-row>  
         </el-form>
         <!-- 表格 -->
@@ -154,7 +154,7 @@
                             <el-button v-if="scope.row.status == 0" type="text" @click="onUnfreeze(scope.row,1)">
                                 解冻
                             </el-button>
-                                <el-button type="text" @click="onDelete(scope.row,2)">
+                            <el-button type="text" @click="onDelete(scope.row,2)">
                                 删除
                             </el-button>
                         </div>
@@ -202,7 +202,7 @@
                 <el-table-column align="center" prop="userName" label="姓名"  />
                 <el-table-column align="center" prop="roleName" label="角色"  />
                 <el-table-column align="center" prop="chamberName" label="所属商会"  />
-                <el-table-column align="center" prop="visitCount" label="浏览次数"  />
+                <el-table-column align="center" prop="viewCount" label="浏览次数"  />
                 <el-table-column align="center" prop="accessTs" label="最近浏览时间"  />
             </el-table>
             <el-pagination
@@ -286,6 +286,51 @@
 .el-input {
   width: 270px;
 }
+
+.m-preview-wrap {
+  width: 100%;
+  height: 80vh;
+}
+
+.m-preview-area {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  margin: 0 auto;
+  border: 1px solid #d9dde2;
+  overflow-y: auto;
+}
+
+.m-article-remark {
+  font-size: 19px;
+  font-weight: 500;
+  margin: 0px 20px;
+}
+
+.m-article-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 20px 40px 20px 40px;
+}
+
+.m-article-content {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.8;
+  //margin: 20px;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+.m-preview-area img {
+  width: 100% !important;
+  height: auto !important;
+}
+</style>
+<style lang="scss">
 .art-preview-wrap {
   .el-dialog {
     margin-top: 5vh !important;
@@ -294,7 +339,4 @@
   }
 }
 </style>
-<style lang="scss">
 
-
-</style>

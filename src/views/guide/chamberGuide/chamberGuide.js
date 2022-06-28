@@ -17,7 +17,7 @@ export default {
         menu1List:[],
         menu2List:[],
         list:[],
-        pageSizes: [8, 18, 24, 32],
+        pageSizes: [8, 16, 24, 32],
         total: 0,
         limit: 8,
         currentpage: 1,
@@ -30,6 +30,16 @@ export default {
     created() {},
     mounted() {
       this.ongetListByRank()
+      if(this.$route.query.menu1Id) {
+        this.query.menu1Id = this.$route.query.menu1Id
+        this.query.menu2Id = this.$route.query.menu2Id
+        setTimeout(()=> {
+          this.ongetListByTwin(this.query.menu1Id)
+        }, 50);
+        //  清除页面缓存路由参数
+        delete this.$route.query.menu1Id;
+        delete this.$route.query.menu2Id;
+      }
       this.fetchData()
     },
     methods: {
@@ -42,13 +52,14 @@ export default {
       },
       // 选择二级级菜单
       onselectMenu(e){
-        this.formObj.menu2Id = ''  
+        this.query.menu2Id = ''  
         this.ongetListByTwin(e)
       },
       ongetListByTwin(e){
         getListByRank({rank: 2,menuId:e}).then(response => {
-          this.menu2List = response.data || []
+          this.menu2List = response.data
         })
+     
       },
       // 获取数据
       fetchData(){
@@ -65,7 +76,6 @@ export default {
             this.list = res.data.list || []
             this.total = res.data.totalRows
             this.listLoading = false;
-            console.log('this.list',this.list)
         })
       },
       // 查询
@@ -80,6 +90,7 @@ export default {
           menu1Id:'', // 一级菜单
           menu2Id:'', // 二级菜单
         }
+        this.menu2List = []
       },
       // 点击视频
       ondetail(id){

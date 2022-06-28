@@ -8,6 +8,7 @@ export default {
     return {
       detailObj: {},
       detailsId: '',
+      autoplay: true , //是否自动播放视频
     }
   },
   mounted () {
@@ -26,7 +27,7 @@ export default {
         ogid: this.detailsId
       }
       getsaveLog(params).then(response => {
-        console.log(response)
+
       })
     },
     init () {
@@ -38,7 +39,7 @@ export default {
       }
       getguideDetail(params).then(response => {
         this.detailObj = response.data || []
-        if(response.data.vid)this.$refs['videoRef'].show(response.data.vid)
+        if(response.data.vid)this.$refs['videoRef'].show(response.data.vid,this.autoplay)
       })
     }
   }

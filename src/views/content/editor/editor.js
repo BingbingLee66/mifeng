@@ -70,11 +70,13 @@ export default {
     }
 
   },
-  mounted() {},
-  computed: {},
-  created() {
+  mounted() {
     this.getContentColumnType()
     this.init()
+  },
+  computed: {},
+  created() {
+
   },
   methods: {
 
@@ -171,9 +173,10 @@ export default {
       })
     },
     init() {
-      if (this.has('', '查询')) {
-        this.fetchData()
-      }
+      // if (this.has('', '查询')) {
+      //   this.fetchData()
+      // }
+      this.fetchData()
       this.getAllChamberList()
     },
     getContentColumnType() {
@@ -260,6 +263,7 @@ export default {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
         this.listLoading = false
+
       })
     },
     fetchData(e,sort=false) {

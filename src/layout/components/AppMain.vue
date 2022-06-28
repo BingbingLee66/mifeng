@@ -40,7 +40,6 @@
         handler:function (newVal, oldVal) {
           this.router = this.$route
           this.traversal()
-          console.log('333333333', this.router)
         },
         deep:true
       },
@@ -55,8 +54,7 @@
         this.hadGuide = false;
         this.data.forEach((v)=>{
           v.children.forEach((j)=>{
-              if(j.path == this.router.fullPath && j.hadGuide == true){
-                this.$message.error('请选择数据')
+              if(j.path == this.router.path && j.hadGuide == true){
                 this.menu1Id = v.id,
                 this.menu2Id = j.id,
                 this.hadGuide = true
@@ -68,10 +66,13 @@
       },
       // 点击操作指引
       onSkip(){
-        console.log(this.menu1Id,this.menu2Id)
         if( this.guideId == null) {
           this.$router.push({
-            path: this.router.path,
+            path: '/guide/chamberGuide',
+            query: {
+              'menu1Id':this.menu1Id,
+              'menu2Id':this.menu2Id,
+            }
           })
         } else {
           this.$router.push({
@@ -117,7 +118,6 @@
     height: 100%;
     padding: 20px 0;
     text-align: center;
-  
     line-height: 22px;
     cursor: pointer;
   }

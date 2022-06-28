@@ -20,7 +20,7 @@
         <el-row>
             <el-col :span="8">
                 <el-form-item  label="一级菜单："  prop="menu1Id">
-                    <el-select   @change="onselectMenu" v-model="formObj.menu1Id" placeholder="请选择">
+                    <el-select    @change="onselectMenu" v-model="formObj.menu1Id" placeholder="请选择">
                         <el-option
                         v-for="(item, index) in menu1List"
                         :key="index"
