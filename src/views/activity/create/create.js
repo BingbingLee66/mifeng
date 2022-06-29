@@ -65,6 +65,7 @@ export default {
         introduce: '', // 活动介绍
         competence:'0',//观看权限 0 不限 1 限本商会会员
         link:'',//直播链接
+        roleIds:[],  //多选框 扩展功能
       },
       // 是否限制报名对象
       applyObject: {
@@ -101,6 +102,9 @@ export default {
         // ],
         date: [
           { required: true, message: '活动时间不能为空', trigger: 'blur' }
+        ],
+        apply: [
+          { required: true, message: '报名时间不能为空', trigger: 'blur' }
         ],
         // addressInfo: [
         //   { required: true, message: '活动地点不能为空', trigger: 'blur' },

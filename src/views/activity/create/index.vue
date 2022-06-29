@@ -1,15 +1,24 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="activeName">
+    <!-- <el-tabs v-model="activeName">
       <el-tab-pane
         v-bind:label="activityId ? '编辑活动' : '创建活动'"
         name="1"
       ></el-tab-pane>
       <el-tab-pane label="活动介绍" name="2"></el-tab-pane>
       <el-tab-pane label="活动报名表" name="3"></el-tab-pane>
-    </el-tabs>
+    </el-tabs> -->
 
     <div v-show="activeName == '1'">
+      <div class="active-top">
+        <div class="active-title">{{activityId ? '编辑活动 (1/2)' : '创建活动 (1/2)'}}</div>
+        <div class="active-con">
+          <span class="active-bule">活动信息</span>
+          一一 
+          <span>报名信息</span>  
+        </div>
+      </div>
+      <!-- 内容 -->
       <div class="create-container mydiv">
         <el-form
           ref="form"
@@ -30,64 +39,10 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
-            <el-col style="width: 600px; height: 160px">
-              <el-form-item
-                label="活动头图："
-                prop="headImage"
-                class="upload-style"
-              >
-                <el-upload
-                  class="uploader-pic-wrap"
-                  action="/"
-                  :show-file-list="false"
-                  :before-upload="beforeUpload"
-                  :http-request="uploadHeadImage"
-                >
-                  <img
-                    v-if="formObj.headImage"
-                    :src="formObj.headImage"
-                    class="pic"
-                  />
-                  <i v-else class="el-icon-plus uploader-pic-icon"></i>
-                </el-upload>
-                <div style="color: #999; line-height: 1.3; margin-top: 8px">
-                  建议尺寸 744*300，支持jpg、png
-                </div>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col style="width: 600px; height: 120px">
-              <el-form-item
-                label="活动分享图："
-                prop="listImage"
-                class="upload-style"
-              >
-                <el-upload
-                  class="uploader-lpic-wrap"
-                  action="/"
-                  :show-file-list="false"
-                  :before-upload="beforeUpload"
-                  :http-request="uploadListImage"
-                >
-                  <img
-                    v-if="formObj.listImage"
-                    :src="formObj.listImage"
-                    class="lpic"
-                  />
-                  <i v-else class="el-icon-plus uploader-lpic-icon"></i>
-                </el-upload>
-                <div style="color: #999; line-height: 1.3; margin-top: 8px">
-                  建议尺寸 678*540，支持jpg、png
-                </div>
-              </el-form-item>
-            </el-col>
-          </el-row>
           
           <el-row>
             <el-col style="width: 700px">
-              <el-form-item class="date-wrap" label="报名时间：" prop="applyDate">
+              <el-form-item class="date-wrap" label="报名时间：" prop="apply">
                 <el-date-picker
                   v-model="formObj.applyDate"
                   format="yyyy-MM-dd HH:mm:ss"
@@ -182,8 +137,9 @@
               </el-form-item>
             </el-col>
           </el-row>
+
           <el-row>
-            <el-col style="width: 700px; height: 40px">
+            <el-col style="width: 700px; height: 20px">
               <el-form-item label="报名对象：" required>
                 <el-checkbox
                   v-model="applyObject.unlimit"
@@ -218,6 +174,7 @@
               </el-form-item>
             </el-col>
           </el-row>
+
           <el-row v-if="applyObject.port">
             <el-col style="width: 600px; height: 40px">
               <el-form-item label="会内职位：" required>
@@ -238,6 +195,7 @@
               </el-form-item>
             </el-col>
           </el-row>
+
           <el-row v-if="applyObject.department">
             <el-col style="width: 600px">
               <el-form-item label="会内部门：" required>
@@ -273,7 +231,7 @@
           </el-row>
 
           <el-row>
-            <el-col style="width: 700px">
+            <el-col style="width: 900px">
               <el-form-item label="参加人数：" required>
                 <el-checkbox
                   v-model="applyCount.unlimit"
@@ -303,6 +261,75 @@
               </el-form-item>
             </el-col>
           </el-row>
+
+          <!-- 扩展功能 -->
+          <el-row>
+            <el-col style="width: 700px; height: 40px">
+              <el-form-item label="扩展功能：" >
+                 <el-checkbox-group v-model="formObj.roleIds">
+                  <el-checkbox :label="1">签到</el-checkbox>
+                  <el-checkbox :label="2">签退</el-checkbox>
+                  <el-checkbox :label="3">座位表</el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col style="width: 600px; height: 160px">
+              <el-form-item
+                label="活动头图："
+                prop="headImage"
+                class="upload-style"
+              >
+                <el-upload
+                  class="uploader-pic-wrap"
+                  action="/"
+                  :show-file-list="false"
+                  :before-upload="beforeUpload"
+                  :http-request="uploadHeadImage"
+                >
+                  <img
+                    v-if="formObj.headImage"
+                    :src="formObj.headImage"
+                    class="pic"
+                  />
+                  <i v-else class="el-icon-plus uploader-pic-icon"></i>
+                </el-upload>
+                <div style="color: #999; line-height: 1.3; margin-top: 8px">
+                  建议尺寸 744*300，支持jpg、png
+                </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col style="width: 600px; height: 120px">
+              <el-form-item
+                label="活动分享图："
+                prop="listImage"
+                class="upload-style"
+              >
+                <el-upload
+                  class="uploader-lpic-wrap"
+                  action="/"
+                  :show-file-list="false"
+                  :before-upload="beforeUpload"
+                  :http-request="uploadListImage"
+                >
+                  <img
+                    v-if="formObj.listImage"
+                    :src="formObj.listImage"
+                    class="lpic"
+                  />
+                  <i v-else class="el-icon-plus uploader-lpic-icon"></i>
+                </el-upload>
+                <div style="color: #999; line-height: 1.3; margin-top: 8px">
+                  建议尺寸 678*540，支持jpg、png
+                </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+
           <div v-if="ruleCkeys.includes(ckey) || (!ckey)">
             <el-row>
               <el-col style="width: 600px; height: 50px">
@@ -534,7 +561,7 @@
 
 <style lang="scss">
 .el-scrollbar {
-  display: block !important;
+  // display: block !important;
 }
 
 #treeselect {
@@ -544,10 +571,10 @@
 }
 
 .mydiv {
-  width: 700px;
-  border: 1px solid rgba(0, 0, 0, 0.17);
-  margin-left: 30px;
-  margin-top: 30px;
+  width: 80%;
+  // border: 1px solid rgba(0, 0, 0, 0.17);
+  // margin-left: 30px;
+  // margin-top: 30px;
   padding-top: 30px;
   height: auto;
   min-height: 500px;
@@ -657,6 +684,21 @@
   font-style: normal;
   color: #666666;
   font-size: 14px;
+}
+.active-top{
+  margin-top: 10px;
+  margin-left:30px;
+  .active-title{
+    font-size: 23px;
+    font-weight: 700;
+  }
+  .active-con{
+    margin-top: 20px;
+    font-weight: 700;
+    .active-bule{
+      color: #02a8f0;
+    }
+  }
 }
 </style>
 
