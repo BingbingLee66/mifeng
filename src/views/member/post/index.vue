@@ -54,8 +54,8 @@
       <el-table-column label="操作" >
         <template slot-scope="scope">
           <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('', '编辑')" v-if="has('', '编辑')">编辑</el-button>
-          <!-- <el-button type="text" @click="del(scope.row)">删除</el-button>
-          <el-button type="text" @click="updateStatus(scope.row)" v-if="scope.row.status == 1">冻结</el-button>
+          <el-button type="text" @click="del(scope.row,list.length)">删除</el-button>
+          <!-- <el-button type="text" @click="updateStatus(scope.row)" v-if="scope.row.status == 1">冻结</el-button>
           <el-button type="text" @click="updateStatus(scope.row)" v-if="scope.row.status == 0">解冻</el-button> -->
         </template>
       </el-table-column>

@@ -32,3 +32,8 @@ export function intInput(val) {
     return val
   }
 }
+
+export function errorCaptured(promise) {
+  return promise.then((res) => [res, null])
+  .catch((err) => [null, err])
+}
