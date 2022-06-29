@@ -23,12 +23,12 @@ export default {
     /**
      * 渲染视频
      */
-    renderVideo(vid) {
+    renderVideo(vid,autoplay) {
       getSts().then((response) => {
         this.videoKey = response.data
         // 存在视频必须看完视频后才能点击审核
         // this.vabled = true;
-        console.log('vid', vid)
+        console.log('vid', vid,autoplay)
         console.log('height', this.height)
         this.videoPlayer = this.$createPlayer(
           'videoContent',
@@ -37,19 +37,22 @@ export default {
           this.videoKey.securityToken,
           this.videoKey.region,
           vid,
-          this.height
+          this.height,
+          autoplay
         )
         this.videoPlayer.on('ended', (e) => {
           // this.vabled = false;
         })
+        
       })
     },
     closeDia() {
       console.log('销毁')
       this.videoPlayer.dispose()
     },
-    show(vid) {
-      this.renderVideo(vid)
+    show(vid,autoplay = false) {
+      // autoplay == true  自动播放
+      this.renderVideo(vid,autoplay)
     },
   },
 }
