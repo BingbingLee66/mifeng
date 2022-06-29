@@ -1,5 +1,10 @@
 <template>
   <div class="container">
+    <el-tabs v-model="type" @tab-click="handleClick">
+      <el-tab-pane label="小程序" name= 0></el-tab-pane>
+      <el-tab-pane label="APP" name= 1></el-tab-pane>
+    </el-tabs>
+
     <!-- 表单搜索区域start -->
     <el-form
       :inline="true"
@@ -46,7 +51,8 @@
           <el-image :src="scope.row.image" class="king-img" :preview-src-list="srcList(scope.row.image)"/>
         </template>
       </el-table-column>
-      <el-table-column prop="url" label="跳转链接" width="180">
+
+      <el-table-column prop="url" label="跳转链接" width="180" v-if="this.clientType == 0">
       </el-table-column>
 
       <el-table-column label="创建信息" width="180">
@@ -96,7 +102,7 @@
     </div>
 
     <!-- 添加金刚区对话框start -->
-    <addKingKongDialog ref="addDialog"></addKingKongDialog>
+    <addKingKongDialog ref="addDialog" :clientType = "clientType"></addKingKongDialog>
     <!-- 添加金刚区对话框end -->
     <!-- 权重对话框 -->
     <weightKdDialog ref="weightKdDialog"></weightKdDialog>
