@@ -124,7 +124,8 @@ export default {
           lng: 121.39 // 经度
         },
         appkey: 'GFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
-        searchService: null // 关键字搜索时，搜索周边/相关地域/地址（地图））
+        searchService: null, // 关键字搜索时，搜索周边/相关地域/地址（地图））
+        searchValue:'',
       }
     }
   },
@@ -660,36 +661,40 @@ export default {
     // 初始化地图
     initMap(){
       console.log('maps',maps)
-      maps.init(this.defaultParams.appkey, () =>{
-         // createZuoBiao方法是 初始化坐标位置，括号两个参数是经纬度
-         const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
-         this.defaultParams.map = new maps.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map
-           center: myLatLng, // 目前的位置
-           zoom: 13,
-           draggable: true, // 是否可移动
-           scrollwheel: true, // 是否可滚动
-           disableDoubleClickZoom: false
-         })
-         
-        // 初始化marker标识
-        this.defaultParams.marker = new maps.Marker({
-          position: this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng), // 坐标位置
-          map: this.defaultParams.map // 实例化的地图
+      this.$nextTick(() => {
+        maps.init(this.defaultParams.appkey, () =>{
+          console.log(maps)
+          // createZuoBiao方法是 初始化坐标位置，括号两个参数是经纬度
+          const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
+          this.defaultParams.map = new maps.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map
+            center: myLatLng, // 目前的位置
+            zoom: 13,
+            draggable: true, // 是否可移动
+            scrollwheel: true, // 是否可滚动
+            disableDoubleClickZoom: false
+          })
+       
+          // 初始化marker标识
+          // this.defaultParams.marker = new maps.Marker({
+          //   position: this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng), // 坐标位置
+          //   map: this.defaultParams.map // 实例化的地图
+          // })
+          // const _this = this // 修正在事件中的this指向
+          // 初始化点击事件，绑定单击事件添加参数，参数一：地图实例，参数二：点击事件，可以通过第三个函数的参数event来拿到每次点击的经纬度。
+          // maps.event.addListener(_this.defaultParams.map, 'click', function(event) {
+          //   _this.createdMarker(event) // 提取经纬度的方法
+          // })
+          console.log('this.defaultParams',this.defaultParams)
         })
-        const _this = this // 修正在事件中的this指向
-        // 初始化点击事件，绑定单击事件添加参数，参数一：地图实例，参数二：点击事件，可以通过第三个函数的参数event来拿到每次点击的经纬度。
-        maps.event.addListener(_this.defaultParams.map, 'click', function(event) {
-          _this.createdMarker(event) // 提取经纬度的方法
-        })
-
       })
+     
     },
     // 创建经纬度
     createZuoBiao(myLatitude, myLongitude) {
       return new maps.LatLng(myLatitude, myLongitude)
     },
      // 创建marker标识，里边的判断是每次创建判断之前是否有marker，有话先删除，因为只能标识一个门店
-     createdMarker(event) {
+    createdMarker(event) {
       if (this.defaultParams.marker) {
         this.deleteOverlays() // 删除marker的方法
       }
@@ -703,6 +708,20 @@ export default {
       // 根据经纬度调用获取位置方法，这个方法就是根据经纬度解析成地址
       this.geocoder().getAddress(this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng))
     },
-  
+     // 删除marker 标识
+    deleteOverlays() {
+      this.defaultParams.marker.setMap(null)
+    },
+    // 经纬度解析地址
+    geocoder() {
+      const _this = this // 修正下边this指向的问题
+      return new maps.Geocoder({
+        complete: function(result) {
+            // 通过result参数 可以拿到当前点击的位置的详细地址，展开运算符，获取里边的参数 
+          const { city, district, province, street, streetNumber, town, village } = { ...result['detail']['addressComponents'] }
+          _this.defaultParams.searchValue = `${province}${city}${district}${street}${town}${village}${streetNumber}` // 参数拼接赋值给搜索框
+          }
+      })
+    },
   }
 }

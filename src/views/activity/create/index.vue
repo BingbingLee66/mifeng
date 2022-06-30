@@ -77,7 +77,7 @@
           </el-row>
 
           <el-row>
-            <el-col style="width: 600px; height: 120px">
+            <el-col style="width: 600px;">
               <el-form-item
                 class="address-wrap"
                 label="活动地点："
@@ -137,7 +137,7 @@
                   :disabled="status == 2 || status == 3"
                 ></el-input>
                 <!-- 腾讯地图 -->
-                 <div ref="mapBox" style="width:800px; height:300px;"></div>
+                <div ref="mapBox" style="width:800px; height:300px;"></div>
               </el-form-item>
             </el-col>
           </el-row>
@@ -569,7 +569,6 @@
     </div>
   </div>
 </template>
-
 <script src="./create.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
