@@ -7,10 +7,14 @@ import area from '@/utils/area'
 import Treeselect from '@riophae/vue-treeselect'
 // import the styles
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import preview from './component/preview'
+import maps from 'qqmap' // 引入腾讯地图
+
 export default {
   components: {
     Ckeditor,
    Treeselect,
+   preview
   },
   data() {
     var checkSpace = (rule, value, callback) => {
@@ -103,13 +107,24 @@ export default {
         date: [
           { required: true, message: '活动时间不能为空', trigger: 'blur' }
         ],
-        apply: [
+        applyDate: [
           { required: true, message: '报名时间不能为空', trigger: 'blur' }
         ],
         // addressInfo: [
         //   { required: true, message: '活动地点不能为空', trigger: 'blur' },
         //   { validator: checkSpace, trigger: 'blur' }
         // ]
+      },
+      // 腾讯地图实例
+      defaultParams :{
+        map: null, // 地图实例 （地图）
+        marker: '', // 地图的标识（标注的点）（地图）
+        increaseZB:{ // 这个参数是地图的经纬度（地图）
+          lat: 37.52, // 纬度
+          lng: 121.39 // 经度
+        },
+        appkey: 'GFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
+        searchService: null // 关键字搜索时，搜索周边/相关地域/地址（地图））
       }
     }
   },
@@ -119,6 +134,7 @@ export default {
     this.type = this.$route.query.type
   },
   mounted() {
+    this.initMap()  // 初始化地图
     this.handleArea()
     this.$refs.ckeditor1.init()
     if (!this.activityId) {
@@ -529,6 +545,13 @@ export default {
     getHtml(htmlStr) {
       this.formObj.introduce = htmlStr
     },
+    onnext(){
+      this.$refs['form'].validate((valid) => {
+        if (valid) {
+          this.activeName = 2
+        }
+      }) 
+    },
     save() {
       console.log(this.arrayData);
       this.$refs['form'].validate((valid) => {
@@ -627,6 +650,59 @@ export default {
           type: this.activityId ? this.type : 1
         }
       })
-    }
+    },
+
+    // 预览
+    onpreview(){
+      this.$refs['preview'].open(this.formObj)
+    },
+
+    // 初始化地图
+    initMap(){
+      console.log('maps',maps)
+      maps.init(this.defaultParams.appkey, () =>{
+         // createZuoBiao方法是 初始化坐标位置，括号两个参数是经纬度
+         const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
+         this.defaultParams.map = new maps.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map
+           center: myLatLng, // 目前的位置
+           zoom: 13,
+           draggable: true, // 是否可移动
+           scrollwheel: true, // 是否可滚动
+           disableDoubleClickZoom: false
+         })
+         
+        // 初始化marker标识
+        this.defaultParams.marker = new maps.Marker({
+          position: this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng), // 坐标位置
+          map: this.defaultParams.map // 实例化的地图
+        })
+        const _this = this // 修正在事件中的this指向
+        // 初始化点击事件，绑定单击事件添加参数，参数一：地图实例，参数二：点击事件，可以通过第三个函数的参数event来拿到每次点击的经纬度。
+        maps.event.addListener(_this.defaultParams.map, 'click', function(event) {
+          _this.createdMarker(event) // 提取经纬度的方法
+        })
+
+      })
+    },
+    // 创建经纬度
+    createZuoBiao(myLatitude, myLongitude) {
+      return new maps.LatLng(myLatitude, myLongitude)
+    },
+     // 创建marker标识，里边的判断是每次创建判断之前是否有marker，有话先删除，因为只能标识一个门店
+     createdMarker(event) {
+      if (this.defaultParams.marker) {
+        this.deleteOverlays() // 删除marker的方法
+      }
+      this.defaultParams.increaseZB.lat = event.latLng['lat']
+      this.defaultParams.increaseZB.lng = event.latLng['lng']
+      // 创建标识
+      this.defaultParams.marker = new maps.Marker({
+        position: this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng),
+        map: this.defaultParams.map
+      })
+      // 根据经纬度调用获取位置方法，这个方法就是根据经纬度解析成地址
+      this.geocoder().getAddress(this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng))
+    },
+  
   }
 }

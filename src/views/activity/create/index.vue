@@ -1,13 +1,14 @@
 <template>
   <div class="app-container">
-    <!-- <el-tabs v-model="activeName">
+    <preview ref="preview"></preview>
+    <el-tabs v-model="activeName">
       <el-tab-pane
         v-bind:label="activityId ? '编辑活动' : '创建活动'"
         name="1"
       ></el-tab-pane>
-      <el-tab-pane label="活动介绍" name="2"></el-tab-pane>
-      <el-tab-pane label="活动报名表" name="3"></el-tab-pane>
-    </el-tabs> -->
+      <el-tab-pane label="活动介绍" name="3"></el-tab-pane>
+      <el-tab-pane label="活动报名表" name="2"></el-tab-pane>
+    </el-tabs>
 
     <div v-show="activeName == '1'">
       <div class="active-top">
@@ -42,12 +43,13 @@
           
           <el-row>
             <el-col style="width: 700px">
-              <el-form-item class="date-wrap" label="报名时间：" prop="apply">
+              <el-form-item class="date-wrap" label="报名时间：" prop="applyDate">
+                <!--   value-format="timestamp" -->
                 <el-date-picker
                   v-model="formObj.applyDate"
                   format="yyyy-MM-dd HH:mm:ss"
-                  value-format="timestamp"
                   type="datetimerange"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
@@ -63,7 +65,7 @@
                 <el-date-picker
                   v-model="formObj.date"
                   format="yyyy-MM-dd HH:mm:ss"
-                  value-format="timestamp"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   type="datetimerange"
                   range-separator="至"
                   start-placeholder="开始日期"
@@ -134,6 +136,8 @@
                   placeholder="详细地址，限50字内"
                   :disabled="status == 2 || status == 3"
                 ></el-input>
+                <!-- 腾讯地图 -->
+                 <div ref="mapBox" style="width:800px; height:300px;"></div>
               </el-form-item>
             </el-col>
           </el-row>
@@ -329,6 +333,14 @@
             </el-col>
           </el-row>
 
+          <el-row>
+            <el-col style="width: 900px">
+              <el-form-item label="活动介绍：" class="upload-style">
+                <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
 
           <div v-if="ruleCkeys.includes(ckey) || (!ckey)">
             <el-row>
@@ -362,14 +374,18 @@
 
           <el-row>
             <el-col style="width: 600px; padding-left: 120px">
-              <el-button type="primary" v-dbClick @click="save">保存</el-button>
-              <el-button @click="cancel">取消</el-button>
+              <!-- <el-button type="primary" v-dbClick @click="save">保存</el-button>
+              <el-button @click="cancel">取消</el-button> -->
+                <el-button @click="onpreview">预览</el-button> 
+               <el-button type="primary"  @click="onnext">下一步</el-button>
+           
             </el-col>
           </el-row>
         </el-form>
       </div>
     </div>
-    <div v-show="activeName == '2'">
+
+    <div v-show="activeName == '3'">
       <div class="create-container mydiv">
         <el-form
           ref="form2"
@@ -394,7 +410,8 @@
         </el-form>
       </div>
     </div>
-    <div v-show="activeName == '3'">
+
+    <div v-show="activeName == '2'">
       <div class="create-container mydiv">
         <el-form
           ref="form1"
