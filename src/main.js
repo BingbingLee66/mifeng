@@ -20,14 +20,13 @@ import VueClipboard from 'vue-clipboard2' // 复制内容
 import DbClick from '@/utils/dbClick' // 防止重复点击
 import { formatDateTime, formatDate } from '@/utils/date' // 格式化时间戳
 import VueUeditorWrap from 'vue-ueditor-wrap'
-//引入腾讯地图
-import maps from 'qqmap'  // npm install qqmap --save
+
 
 
 require('../src/plugins/aliplayercomponents-1.0.5.min')
 Vue.use(Print)
 Vue.use(DbClick)
-Vue.use(maps) 
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

@@ -8,7 +8,6 @@ import Treeselect from '@riophae/vue-treeselect'
 // import the styles
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import preview from './component/preview'
-import maps from 'qqmap' // 引入腾讯地图
 
 export default {
   components: {
@@ -46,7 +45,13 @@ export default {
         title: '',
         msgAlert: '',
         lengthLimit: '',
-        check: 1
+        check: 1,
+        sginWay:0,
+        present:0,
+      },
+      // 信息类型
+      infoDate:{
+        info:'',
       },
       dialogFormVisible: false,
       editCol: false, // 是否编辑
@@ -83,6 +88,8 @@ export default {
         unlimit: true,
         limit: false
       },
+      isPresent:false, 
+      iscustom:false, // 自定义信息弹窗
       // 活动地点选择
       provinceValue: '',
       cityValue: '',
@@ -152,6 +159,15 @@ export default {
 
   },
   methods: {
+    loadScript(src){
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script')
+            script.src = src
+            script.onload = resolve
+            script.onerror = reject
+            document.head.appendChild(script)
+        })
+    },
     postSelectInit() {
       const params = {
         'ckey': this.$store.getters.ckey,
@@ -542,6 +558,8 @@ export default {
         this.formObj.isLimit = 1
       }
     },
+
+
     // 编辑活动介绍
     getHtml(htmlStr) {
       this.formObj.introduce = htmlStr
@@ -652,6 +670,17 @@ export default {
         }
       })
     },
+    onCancelDate(){
+      this.infoDate.info = ''
+      this.iscustom = false
+    },
+    onInfoDate(){
+      console.log('infoDate.info',this.infoDate.info) 
+      if (this.infoDate.info == '') return this.$message.error('请选择类型') 
+      if(this.infoDate.info == 1) this.dialogFormVisible = true
+     
+      this.onCancelDate() 
+    },
 
     // 预览
     onpreview(){
@@ -659,39 +688,36 @@ export default {
     },
 
     // 初始化地图
-    initMap(){
-      console.log('maps',maps)
-      this.$nextTick(() => {
-        maps.init(this.defaultParams.appkey, () =>{
-          console.log(maps)
-          // createZuoBiao方法是 初始化坐标位置，括号两个参数是经纬度
-          const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
-          this.defaultParams.map = new maps.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map
-            center: myLatLng, // 目前的位置
-            zoom: 13,
-            draggable: true, // 是否可移动
-            scrollwheel: true, // 是否可滚动
-            disableDoubleClickZoom: false
-          })
-       
-          // 初始化marker标识
-          // this.defaultParams.marker = new maps.Marker({
-          //   position: this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng), // 坐标位置
-          //   map: this.defaultParams.map // 实例化的地图
-          // })
-          // const _this = this // 修正在事件中的this指向
-          // 初始化点击事件，绑定单击事件添加参数，参数一：地图实例，参数二：点击事件，可以通过第三个函数的参数event来拿到每次点击的经纬度。
-          // maps.event.addListener(_this.defaultParams.map, 'click', function(event) {
-          //   _this.createdMarker(event) // 提取经纬度的方法
-          // })
-          console.log('this.defaultParams',this.defaultParams)
-        })
+   async initMap(){
+      // await this.loadScript(`https://map.qq.com/api/js?v=2.exp&key=${this.defaultParams.appkey}`)
+      await this.loadScript(`https://map.qq.com/api/gljs?v=1.exp&key=${this.defaultParams.appkey}`)
+      // console.log('qq.maps',qq);
+      // createZuoBiao方法是 初始化坐标位置，括号两个参数是经纬度
+      const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
+
+      this.defaultParams.map = new TMap.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map
+        center: myLatLng, // 目前的位置
+        zoom: 13,
+        draggable: true, // 是否可移动
+        scrollwheel: true, // 是否可滚动
+        disableDoubleClickZoom: false
       })
-     
+      console.log('this.defaultParams',this.defaultParams);
+      // // 初始化marker标识
+      // this.defaultParams.marker = new maps.Marker({
+      //   position: this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng), // 坐标位置
+      //   map: this.defaultParams.map // 实例化的地图
+      // })
+      // // const _this = this // 修正在事件中的this指向
+      // // 初始化点击事件，绑定单击事件添加参数，参数一：地图实例，参数二：点击事件，可以通过第三个函数的参数event来拿到每次点击的经纬度。
+      // // maps.event.addListener(_this.defaultParams.map, 'click', function(event) {
+      // //   _this.createdMarker(event) // 提取经纬度的方法
+      // // })
+      // console.log('this.defaultParams',this.defaultParams)
     },
     // 创建经纬度
     createZuoBiao(myLatitude, myLongitude) {
-      return new maps.LatLng(myLatitude, myLongitude)
+      return new TMap.LatLng(myLatitude, myLongitude)
     },
      // 创建marker标识，里边的判断是每次创建判断之前是否有marker，有话先删除，因为只能标识一个门店
     createdMarker(event) {

@@ -412,6 +412,33 @@
     </div>
 
     <div v-show="activeName == '2'">
+      <div class="active-top">
+        <div class="active-title">{{activityId ? '编辑活动 (2/2)' : '创建活动 (2/2)'}}</div>
+        <div class="active-con">
+          <span >活动信息</span>
+          一一 
+          <span class="active-bule">报名信息</span>  
+        </div>
+      </div>
+      <div class="sgin-up">
+        <div class="sgin-way">
+          <div class="sgin-left">报名方式：</div>
+          <el-radio-group v-model="colData.sginWay">
+            <el-radio :label="0">自定义报名表</el-radio>
+            <el-radio :label="1">一键报名</el-radio>
+          </el-radio-group>
+        </div>
+        <div class="sgin-surface">报名表</div>
+        <div class="sgin-way">
+          <div class="sgin-left">到场人数
+            <span><i @click="isPresent = true" class="el-icon-question"></i></span>
+          </div>
+          <el-radio-group v-model="colData.present">
+            <el-radio :label="0">需填写</el-radio>
+            <el-radio :label="1">无需填写</el-radio>
+          </el-radio-group>
+        </div>
+      </div>
       <div class="create-container mydiv">
         <el-form
           ref="form1"
@@ -419,12 +446,12 @@
           label-position="right"
           label-width="120px"
         >
-          <el-row style="margin-top: 8px">
+          <!-- <el-row style="margin-top: 8px">
             <span style="color: #f5222d; margin-left: 60px"
               >提示：报名信息请限制在 10 个以内</span
             >
-          </el-row>
-          <el-row>
+          </el-row> -->
+          <!-- <el-row>
             <el-col :span="12">
               <el-form-item
                 label="姓名："
@@ -439,8 +466,8 @@
                 ></el-input>
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
+          </el-row> -->
+          <!-- <el-row>
             <el-col style="width: 600px; height: 50px">
               <el-form-item
                 label="手机："
@@ -455,7 +482,9 @@
                 ></el-input>
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row> -->
+
+
           <!-- <el-row>
             <el-col style="width: 600px;height: 50px">
               <el-form-item label="邮箱：" prop="email">
@@ -470,13 +499,13 @@
               </el-form-item>
             </el-col>
           </el-row> -->
-          <el-row style="width: 600px; height: 50px">
+          <el-row style="margin-left: -90px;">
             <el-form-item>
               <el-button
                 type="primary"
-                @click="dialogFormVisible = true"
+                @click="iscustom = true"
                 :disabled="arrayData.length >= 6 ||(status == 2 || status == 3)"
-                >+自定义</el-button
+                >+自定义报名信息</el-button
               >
             </el-form-item>
           </el-row>
@@ -566,11 +595,47 @@
           <el-button @click="cancel">取消</el-button>
         </el-col>
       </el-row>
+      <!-- 新增自定义信息 -->
+      <el-dialog
+        title="新增自定义信息"
+        :visible.sync="iscustom"
+        width="25%"
+        center
+        :close-on-click-modal="false"
+         :before-close="onCancelDate"
+        >
+        <el-form :model="infoDate" label-width="100px" >
+          <el-form-item label="信息类型:" :rules="[{ required: true }]"  >
+            <el-select v-model="infoDate.info" placeholder="请选择" >
+              <el-option label="输入框" value="1"></el-option>
+              <el-option label="下拉框" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="onCancelDate">取 消</el-button>
+          <el-button type="primary" @click="onInfoDate">保存</el-button>
+        </span>
+      </el-dialog>
+       <!-- 到场人数提示 -->
+       <el-dialog
+        title="到场人数设置后，小程序显示"
+        :visible.sync="isPresent"
+        width="30%"
+        center
+        >
+        <div class="Present-img">
+          <img src="https://ysh-cdn.kaidicloud.com/prod/png/info.png" class="pic"  />
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="isPresent = false">知道了</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
 <script src="./create.js"></script>
-
+ 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import "src/styles/common.scss";
 </style>
@@ -714,6 +779,34 @@
     .active-bule{
       color: #02a8f0;
     }
+  }
+}
+.sgin-up{
+  margin-top: 20px;
+  margin-left: 30px;
+  .sgin-way{
+    display: flex;
+    align-items: center;
+    .sgin-left{
+      margin-right: 20px;
+      .el-icon-question{
+        color: #c8b6ae;
+      }
+    }
+  }
+  .sgin-surface{
+    font-weight: 700;
+    font-size: 23px;
+    margin: 20px 0;
+  }
+}
+.Present-img{
+  width: 326px;
+  height: 79px;
+  margin: 0 auto;
+  .pic{
+    width: 100%;
+    height: 100%;
   }
 }
 </style>
