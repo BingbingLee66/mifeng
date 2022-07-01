@@ -8,7 +8,6 @@ import Treeselect from '@riophae/vue-treeselect'
 // import the styles
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import preview from './component/preview'
-
 export default {
   components: {
     Ckeditor,
@@ -42,17 +41,25 @@ export default {
       arrayData: [
       ],
       colData: {
-        title: '',
-        msgAlert: '',
-        lengthLimit: '',
-        check: 1,
-        sginWay:0,
-        present:0,
+        title: '', // 标题
+        msgAlert: '',  //输入框提示
+        lengthLimit: '', //输入字数限制
+        check: 1,  // 是否 必填 选填
+        // 下拉框
+        pulldown:[
+          {
+            option:'', //选项1
+          },{
+            option:'', //选项2
+          }
+        ],
+        elsect:'' // 1: 输入框  2：下拉框
       },
       // 信息类型
       infoDate:{
         info:'',
       },
+
       dialogFormVisible: false,
       editCol: false, // 是否编辑
       editIndex: 0, // 编辑索引
@@ -68,6 +75,7 @@ export default {
         city: '', // 活动地点(市)
         area: '', // 活动地点(区)
         addressInfo: '', // 活动地点（详细地址）
+        addresscon:'', // 搜索内容
         applyObject: 0, // 报名对象
         isLimit: 0, // 是否限制参加人数
         applyCount: '', // 参加人数
@@ -75,7 +83,10 @@ export default {
         competence:'0',//观看权限 0 不限 1 限本商会会员
         link:'',//直播链接
         roleIds:[],  //多选框 扩展功能
+        sginWay:0,
+        present:0,
       },
+      addressList:[] , //搜索数组
       // 是否限制报名对象
       applyObject: {
         unlimit: true,
@@ -127,13 +138,14 @@ export default {
         map: null, // 地图实例 （地图）
         marker: '', // 地图的标识（标注的点）（地图）
         increaseZB:{ // 这个参数是地图的经纬度（地图）
-          lat: 37.52, // 纬度
-          lng: 121.39 // 经度
+          lat: 23.125821, // 纬度
+          lng: 113.326548 // 经度
         },
-        appkey: 'GFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
-        searchService: null, // 关键字搜索时，搜索周边/相关地域/地址（地图））
-        searchValue:'',
-      }
+        appkey: 'CGFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
+        // appkey: 'URZBZ-WQXL3-W3O3O-YVYMA-5ZFPJ-AUBFY', // appkey是开发者key（地图
+        suggest: null, //  新建一个关键字输入提示类
+      },
+      sing:'五千多',
     }
   },
   created() {
@@ -206,9 +218,17 @@ export default {
         title: '',
         msgAlert: '',
         lengthLimit: '',
-        check: 1
+        check: 1,
+        pulldown:[
+          {
+            option:'', //选项1
+          },{
+            option:'', //选项2
+          }
+        ],
       }
       this.editCol = false
+      this.infoDate.info = ''
       this.$refs['f2'].resetFields()
     },
     test() {
@@ -216,7 +236,17 @@ export default {
     },
     // 新增
     add() {
-      console.log(this.arrayData)
+      console.log('this.editCol',this.editCol)
+      console.log('this.arrayData',this.arrayData)
+      console.log('this.colData',this.colData)
+      let completely = false
+      if(this.infoDate.info == 2){
+        this.colData.pulldown.forEach((v)=>{
+          if(v.option == '') completely = true
+        })
+      }
+      if(completely) return this.$message.error('请输入选项')
+      console.log(11111111111)
       if (this.arrayData.length >= 6) {
         this.$message({
           message: '报名信息请限制在 10 个以内',
@@ -225,14 +255,14 @@ export default {
         // alert('报名信息请限制在 10 个以内')
         return
       }
-      if(this.colData.lengthLimit != ''){
+      if(this.colData.lengthLimit != '' && this.infoDate.info == 1){
         if(this.colData.lengthLimit < 0){
           this.$message({
             message: '字数限制必须大于0',
             type: 'warning'
           });
           return
-        }else if(this.colData.lengthLimit > 200){
+        }else if(this.colData.lengthLimit > 200 && this.infoDate.info == 1){
           this.$message({
             message: '字数限制必须小于200',
             type: 'warning'
@@ -243,6 +273,7 @@ export default {
 
       this.$refs['f2'].validate((valid) => {
         if (valid) {
+          this.colData.elsect =  this.infoDate.info
           if (this.editCol) {
             // 编辑
             this.arrayData[this.editIndex] = {...this.colData}
@@ -266,8 +297,9 @@ export default {
       this.arrayData.splice(index, 1)
     },
     // 修改
-    edit(index) {
+    edit(index,elsect) {
       console.log(index)
+      this.infoDate.info = elsect
       this.dialogFormVisible = true
       this.colData = {...this.arrayData[index]}
       this.editCol = true
@@ -572,7 +604,7 @@ export default {
       }) 
     },
     save() {
-      console.log(this.arrayData);
+      console.log('this.arrayData',this.arrayData);
       this.$refs['form'].validate((valid) => {
         if (valid) {
           // if (!this.areaData) {
@@ -643,20 +675,22 @@ export default {
           if(this.formObj.competence){
             this.formObj['competence'] = Number(this.formObj['competence'])
           }
-          createActivity(this.formObj).then(res => {
-            if(res.state===1){
-              this.$message.success(res.msg)
-              this.$router.push({
-                name: '活动列表',
-                params: {
-                  type: this.activityId ? this.type : 0
-                }
-              })
-            }else{
-              this.$message.error(res.msg)
-            }
 
-          })
+          console.log('this.formObj',this.formObj)
+          // createActivity(this.formObj).then(res => {
+          //   if(res.state===1){
+          //     this.$message.success(res.msg)
+          //     this.$router.push({
+          //       name: '活动列表',
+          //       params: {
+          //         type: this.activityId ? this.type : 0
+          //       }
+          //     })
+          //   }else{
+          //     this.$message.error(res.msg)
+          //   }
+
+          // })
         } else {
           return false
         }
@@ -674,80 +708,113 @@ export default {
       this.infoDate.info = ''
       this.iscustom = false
     },
+    // 下拉框添加选项
+    onOptions(){
+      let obj = {
+        option : ''
+      }
+      if(this.colData.pulldown.length >= 10) return this.$message.error('最多只能添加10个')
+      this.colData.pulldown.push(obj)
+      console.log('colData',this.colData)
+    },
     onInfoDate(){
-      console.log('infoDate.info',this.infoDate.info) 
+      console.log('infoDate.info',this.colData) 
       if (this.infoDate.info == '') return this.$message.error('请选择类型') 
-      if(this.infoDate.info == 1) this.dialogFormVisible = true
-     
-      this.onCancelDate() 
+      if(this.infoDate.info == 1 || this.infoDate.info == 2) this.dialogFormVisible = true
+      this.iscustom = false
     },
 
     // 预览
     onpreview(){
       this.$refs['preview'].open(this.formObj)
     },
+    // 搜索地址
+    addressChange(e){
+      this.ongetSuggestions(e)
+    },
+
+    // 选择地址
+    onselect(e){
+      this.defaultParams.increaseZB.lat = e.location.lat
+      this.defaultParams.increaseZB.lng = e.location.lng
+      const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
+
+      //更新地图中心位置
+      this.defaultParams.map.setCenter(
+        new TMap.LatLng(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
+      );
+      //初始化marker
+      if (this.defaultParams.marker) {
+        this.defaultParams.marker.setMap(null);
+        this.defaultParams.marker = null;
+      }
+      this.defaultParams.marker = new TMap.MultiMarker({
+        map: this.defaultParams.map,  //指定地图容器
+        styles: {
+          //创建一个styleId为"myStyle"的样式（styles的子属性名即为styleId）
+          myStyle: new TMap.MarkerStyle({ 
+              width: 25,  // 点标记样式宽度（像素）
+              height: 35, // 点标记样式高度（像素）
+              anchor: { x: 16, y: 32 },
+              src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png',  //图片路径
+          }) 
+        },
+        geometries: [{
+          id: "1",   //点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
+          styleId: 'myStyle',  //指定样式id
+          position: myLatLng,  //点标记坐标位置
+          properties: {//自定义属性
+          title: "marker"
+          }
+        }]
+      })
+      this.addressList = []
+      //创建InfoWindow实例，并进行初始化
+      var infowindow =new TMap.InfoWindow({
+        position:myLatLng,//显示信息窗口的坐标
+        map:this.defaultParams.map,
+        content:`<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址：${e.city} ${e.province}${e.district}${e.address}</p>`, //信息窗口内容
+        offset: { x: 0, y: -50 },
+      });
+
+    },
 
     // 初始化地图
    async initMap(){
-      // await this.loadScript(`https://map.qq.com/api/js?v=2.exp&key=${this.defaultParams.appkey}`)
-      await this.loadScript(`https://map.qq.com/api/gljs?v=1.exp&key=${this.defaultParams.appkey}`)
-      // console.log('qq.maps',qq);
-      // createZuoBiao方法是 初始化坐标位置，括号两个参数是经纬度
+      
+      await this.loadScript(`https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=${this.defaultParams.appkey}`)
+      console.log('new TMap',TMap)
       const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
 
       this.defaultParams.map = new TMap.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map
         center: myLatLng, // 目前的位置
-        zoom: 13,
-        draggable: true, // 是否可移动
-        scrollwheel: true, // 是否可滚动
-        disableDoubleClickZoom: false
+        zoom: 17.2,//设置地图缩放级别
+        rotation: 20,//设置地图旋转角度
+        pitch:30, //设置俯仰角度（0~45）
       })
-      console.log('this.defaultParams',this.defaultParams);
-      // // 初始化marker标识
-      // this.defaultParams.marker = new maps.Marker({
-      //   position: this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng), // 坐标位置
-      //   map: this.defaultParams.map // 实例化的地图
-      // })
-      // // const _this = this // 修正在事件中的this指向
-      // // 初始化点击事件，绑定单击事件添加参数，参数一：地图实例，参数二：点击事件，可以通过第三个函数的参数event来拿到每次点击的经纬度。
-      // // maps.event.addListener(_this.defaultParams.map, 'click', function(event) {
-      // //   _this.createdMarker(event) // 提取经纬度的方法
-      // // })
-      // console.log('this.defaultParams',this.defaultParams)
+
+      // 新建一个关键字输入提示类
+      this.defaultParams.suggest = new TMap.service.Suggestion({
+        pageSize: 20, // 返回结果每页条目数
+      });
+
     },
+    // 调用腾讯接口获取地址信息
+    ongetSuggestions(value){
+      this.addressList = []
+      this.defaultParams.suggest.getSuggestions({ 
+        keyword: value, 
+        location: this.defaultParams.map.getCenter() 
+      })
+      .then((result) => {
+        this.addressList = result.data || []
+      })
+    },
+
     // 创建经纬度
     createZuoBiao(myLatitude, myLongitude) {
       return new TMap.LatLng(myLatitude, myLongitude)
     },
-     // 创建marker标识，里边的判断是每次创建判断之前是否有marker，有话先删除，因为只能标识一个门店
-    createdMarker(event) {
-      if (this.defaultParams.marker) {
-        this.deleteOverlays() // 删除marker的方法
-      }
-      this.defaultParams.increaseZB.lat = event.latLng['lat']
-      this.defaultParams.increaseZB.lng = event.latLng['lng']
-      // 创建标识
-      this.defaultParams.marker = new maps.Marker({
-        position: this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng),
-        map: this.defaultParams.map
-      })
-      // 根据经纬度调用获取位置方法，这个方法就是根据经纬度解析成地址
-      this.geocoder().getAddress(this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng))
-    },
-     // 删除marker 标识
-    deleteOverlays() {
-      this.defaultParams.marker.setMap(null)
-    },
-    // 经纬度解析地址
-    geocoder() {
-      const _this = this // 修正下边this指向的问题
-      return new maps.Geocoder({
-        complete: function(result) {
-            // 通过result参数 可以拿到当前点击的位置的详细地址，展开运算符，获取里边的参数 
-          const { city, district, province, street, streetNumber, town, village } = { ...result['detail']['addressComponents'] }
-          _this.defaultParams.searchValue = `${province}${city}${district}${street}${town}${village}${streetNumber}` // 参数拼接赋值给搜索框
-          }
-      })
-    },
+
   }
 }

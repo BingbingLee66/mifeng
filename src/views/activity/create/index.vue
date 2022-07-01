@@ -77,27 +77,44 @@
           </el-row>
 
           <el-row>
-            <el-col style="width: 600px;">
+            <el-col >
               <el-form-item
                 class="address-wrap"
                 label="活动地点："
                 prop="addressInfo"
               >
-                <el-select
-                  v-model="provinceValue"
-                  placeholder="请选择省份"
-                  @change="provinceChange"
-                  :disabled="status == 2 || status == 3"
-                >
-                  <el-option
-                    v-for="item in provinceOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                <div class="address-may">
+                   <!-- <el-select
+                    v-model="provinceValue"
+                    placeholder="请选择省份"
+                    @change="provinceChange"
+                    :disabled="status == 2 || status == 3"
                   >
-                  </el-option>
-                </el-select>
-                <el-select
+                    <el-option
+                      v-for="item in provinceOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select> -->
+                  <div class="address-Obscuration">
+                    <el-input  style="width:450px;" @input="addressChange"  clearable v-model="formObj.addressInfo" placeholder="请输入地址">
+                       <i
+                        class="el-icon-location-information"
+                        slot="suffix">
+                      </i>
+                    </el-input>
+                    <div class="Obscuration-tier" v-if="addressList">
+                      <div class="Obscuration-map" @click="onselect(item)"  v-for="(item,index) in addressList" :key="index">
+                        {{ item.title }}
+                        <span class="address">{{ item.address }}</span>
+                      </div>
+                    </div>
+                  </div> 
+                </div>
+               
+                <!-- <el-select
                   v-model="cityValue"
                   placeholder="请选择市"
                   @change="cityChange"
@@ -110,8 +127,9 @@
                     :value="item.value"
                   >
                   </el-option>
-                </el-select>
-                <el-select
+                </el-select> -->
+              
+                <!-- <el-select
                   v-model="countryValue"
                   placeholder="请选择区"
                   @change="countryChange"
@@ -124,8 +142,8 @@
                     :value="item.value"
                   >
                   </el-option>
-                </el-select>
-                <el-input
+                </el-select> -->
+                <!-- <el-input
                   class="address-inp"
                   type="textarea"
                   resize="none"
@@ -135,9 +153,10 @@
                   maxlength="50"
                   placeholder="详细地址，限50字内"
                   :disabled="status == 2 || status == 3"
-                ></el-input>
+                ></el-input> -->
+             
                 <!-- 腾讯地图 -->
-                <div ref="mapBox" style="width:800px; height:300px;"></div>
+                <div ref="mapBox" style="width:800px; height:390px;z-index:0"></div>
               </el-form-item>
             </el-col>
           </el-row>
@@ -385,66 +404,44 @@
       </div>
     </div>
 
-    <div v-show="activeName == '3'">
-      <div class="create-container mydiv">
-        <el-form
-          ref="form2"
-          :model="formObj"
-          :rules="rules"
-          label-position="right"
-          label-width="120px"
-        >
-          <el-row>
-            <el-col style="width: 700px">
-              <el-form-item label="活动介绍：" class="upload-style">
-                <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col style="width: 600px; padding-left: 120px">
-              <el-button type="primary" v-dbClick @click="save">保存</el-button>
-              <el-button @click="cancel">取消</el-button>
-            </el-col>
-          </el-row>
-        </el-form>
-      </div>
-    </div>
 
     <div v-show="activeName == '2'">
-      <div class="active-top">
-        <div class="active-title">{{activityId ? '编辑活动 (2/2)' : '创建活动 (2/2)'}}</div>
-        <div class="active-con">
-          <span >活动信息</span>
-          一一 
-          <span class="active-bule">报名信息</span>  
-        </div>
-      </div>
-      <div class="sgin-up">
-        <div class="sgin-way">
-          <div class="sgin-left">报名方式：</div>
-          <el-radio-group v-model="colData.sginWay">
-            <el-radio :label="0">自定义报名表</el-radio>
-            <el-radio :label="1">一键报名</el-radio>
-          </el-radio-group>
-        </div>
-        <div class="sgin-surface">报名表</div>
-        <div class="sgin-way">
-          <div class="sgin-left">到场人数
-            <span><i @click="isPresent = true" class="el-icon-question"></i></span>
+      <div style="margin-left:120px">
+        <div class="active-top">
+          <div class="active-title">{{activityId ? '编辑活动 (2/2)' : '创建活动 (2/2)'}}</div>
+          <div class="active-con">
+            <span >活动信息</span>
+            一一 
+            <span class="active-bule">报名信息</span>  
           </div>
-          <el-radio-group v-model="colData.present">
-            <el-radio :label="0">需填写</el-radio>
-            <el-radio :label="1">无需填写</el-radio>
-          </el-radio-group>
+        </div>
+        <div class="sgin-up">
+          <div class="sgin-way">
+            <div class="sgin-left">报名方式：</div>
+            <el-radio-group v-model="formObj.sginWay">
+              <el-radio :label="0">自定义报名表</el-radio>
+              <el-radio :label="1">一键报名</el-radio>
+            </el-radio-group>
+          </div>
+          <div class="sgin-surface">报名表</div>
+          <div class="sgin-way">
+            <div class="sgin-left">到场人数
+              <span><i @click="isPresent = true" class="el-icon-question"></i></span>
+            </div>
+            <el-radio-group v-model="formObj.present">
+              <el-radio :label="0">需填写</el-radio>
+              <el-radio :label="1">无需填写</el-radio>
+            </el-radio-group>
+          </div>
         </div>
       </div>
+   
       <div class="create-container mydiv">
         <el-form
           ref="form1"
           :rules="rules"
           label-position="right"
-          label-width="120px"
+          label-width="200px"
         >
           <!-- <el-row style="margin-top: 8px">
             <span style="color: #f5222d; margin-left: 60px"
@@ -499,9 +496,10 @@
               </el-form-item>
             </el-col>
           </el-row> -->
-          <el-row style="margin-left: -90px;">
+          <el-row >
             <el-form-item>
               <el-button
+              style="margin-left:-50px"
                 type="primary"
                 @click="iscustom = true"
                 :disabled="arrayData.length >= 6 ||(status == 2 || status == 3)"
@@ -510,24 +508,33 @@
             </el-form-item>
           </el-row>
 
-          <div v-for="(item, index) in arrayData" :key="item.id">
+          <div  v-for="(item, index) in arrayData" :key="item.id">
             <el-row>
-              <el-col :span="12">
+              <el-col :span="9">
                 <el-form-item
                   :label="item.title"
                   :prop="'col' + index"
                   :required="item.check === 1"
                 >
                   <el-input
+                    v-if="item.elsect == 1"
                     show-word-limit
                     :maxlength="item.lengthLimit"
                     :placeholder="item.msgAlert"
                     :disabled="true"
                   ></el-input>
+                  <el-input
+                    v-if="item.elsect == 2"
+                    show-word-limit
+                    :placeholder="item.pulldown[0].option"
+                    :disabled="true"
+                  > 
+                  <i slot="suffix" class="el-icon-arrow-down"></i>
+                  </el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8" style="margin-top: 10px; margin-left: 10px">
-                <el-link type="primary" @click="edit(index)">编辑</el-link>
+                <el-link type="primary" @click="edit(index,item.elsect)">编辑</el-link>
                 <el-link type="primary" @click="up(index)">上移</el-link>
                 <el-link type="primary" @click="down(index)">下移</el-link>
                 <el-link type="primary" @click="del(index)">删除</el-link>
@@ -536,46 +543,89 @@
           </div>
         </el-form>
       </div>
+      <!-- 自定义信息 -->
       <el-dialog
         :title="(this.editCol ? '编辑' : '新增') + '自定义信息'"
         :visible.sync="dialogFormVisible"
         width="500px"
-        @close="cancel1()"
+        :close-on-click-modal="false"
+        @close="cancel1"
       >
         <el-form :model="colData" label-width="120px" ref="f2">
-          <el-form-item
-            label="标题"
-            prop="title"
-            :rules="[{ required: true, message: '不能为空' }]"
-          >
-            <el-input
-              v-model="colData.title"
-              autocomplete="off"
-              placeholder="标题，15字内"
-              :maxlength="15"
-            ></el-input>
+           <el-form-item label="信息类型:" :rules="[{ required: true }]"  >
+            <el-select disabled v-model="infoDate.info" placeholder="请选择" >
+              <el-option label="输入框" value="1"></el-option>
+              <el-option label="下拉框" value="2"></el-option>
+            </el-select>
           </el-form-item>
-          <el-form-item
-            label="输入框提示"
-            prop="msgAlert"
-            :rules="[{ required: true, message: '不能为空' }]"
-          >
-            <el-input
-              v-model="colData.msgAlert"
-              autocomplete="off"
-              placeholder="输入框提示文字，15字内"
-              :maxlength="15"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="输入字数限制" prop="lengthLimit">
-            <el-input
-              v-model="colData.lengthLimit"
-              autocomplete="off"
-              placeholder="不限制"
-              type="number"
-            ></el-input>
-            <br />不填写，则默认不限制
-          </el-form-item>
+          <!-- 输入框 -->
+          <div v-if="infoDate.info == 1">
+            <el-form-item
+              label="标题"
+              prop="title"
+              :rules="[{ required: true, message: '不能为空' }]"
+            >
+              <el-input
+                v-model="colData.title"
+                autocomplete="off"
+                placeholder="标题，15字内"
+                :maxlength="15"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="输入框提示"
+              prop="msgAlert"
+              :rules="[{ required: true, message: '不能为空' }]"
+            >
+              <el-input
+                v-model="colData.msgAlert"
+                autocomplete="off"
+                placeholder="输入框提示文字，15字内"
+                :maxlength="15"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="输入字数限制" prop="lengthLimit">
+              <el-input
+                v-model="colData.lengthLimit"
+                autocomplete="off"
+                placeholder="不限制"
+                type="number"
+              ></el-input>
+              <br />不填写，则默认不限制
+            </el-form-item>
+          </div>
+          <!-- 下拉框 -->
+          <div v-else>
+            <el-form-item
+              label="标题"
+              prop="title"
+              :rules="[{ required: true, message: '不能为空' }]"
+            >
+              <el-input
+                v-model="colData.title"
+                autocomplete="off"
+                placeholder="标题，15字内"
+                :maxlength="15"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              v-for="(item,index) in colData.pulldown"
+              :key="index"
+              :label="`选项${index + 1}`"
+              :rules="[{ required: true }]"
+            >
+              <el-input
+              
+                v-model="item.option"
+                autocomplete="off"
+                placeholder="选项，10字内"
+                :maxlength="10"
+              ></el-input>
+            </el-form-item>
+            <div class="add-option" @click="onOptions">+添加选项</div>
+          </div>
+
+
           <el-form-item label="是否必填" prop="check">
             <el-radio-group v-model="colData.check">
               <el-radio :label="1">必填</el-radio>
@@ -588,11 +638,14 @@
           <el-button type="primary" @click="add">确 定</el-button>
         </div>
       </el-dialog>
-
+      
       <el-row>
-        <el-col style="width: 600px; padding-left: 120px">
-          <el-button type="primary" v-dbClick @click="save">保存</el-button>
-          <el-button @click="cancel">取消</el-button>
+        <el-col style="width: 600px; padding-left: 160px">
+          <!-- <el-button type="primary" v-dbClick @click="save">保存</el-button>
+          <el-button @click="cancel">取消</el-button> -->
+        
+          <el-button @click="cancel">保存，暂不发布</el-button>
+          <el-button type="primary"  @click="save">保存并发布</el-button>
         </el-col>
       </el-row>
       <!-- 新增自定义信息 -->
@@ -606,7 +659,7 @@
         >
         <el-form :model="infoDate" label-width="100px" >
           <el-form-item label="信息类型:" :rules="[{ required: true }]"  >
-            <el-select v-model="infoDate.info" placeholder="请选择" >
+            <el-select v-model="infoDate.info"   placeholder="请选择" >
               <el-option label="输入框" value="1"></el-option>
               <el-option label="下拉框" value="2"></el-option>
             </el-select>
@@ -615,6 +668,7 @@
         <span slot="footer" class="dialog-footer">
           <el-button @click="onCancelDate">取 消</el-button>
           <el-button type="primary" @click="onInfoDate">保存</el-button>
+        
         </span>
       </el-dialog>
        <!-- 到场人数提示 -->
@@ -634,9 +688,15 @@
     </div>
   </div>
 </template>
+
+
+
 <script src="./create.js"></script>
- 
+
+
+
 <style rel="stylesheet/scss" lang="scss" scoped>
+
 @import "src/styles/common.scss";
 </style>
 
@@ -658,7 +718,7 @@
   // margin-top: 30px;
   padding-top: 30px;
   height: auto;
-  min-height: 500px;
+  min-height: 350px;
   min-width: 700px;
 }
 .create-container {
@@ -759,6 +819,7 @@
   .date-wrap .el-date-editor .el-range-input {
     width: 45%;
   }
+
 }
 .tips {
   font-weight: 400;
@@ -808,6 +869,54 @@
     width: 100%;
     height: 100%;
   }
+}
+.address-may{
+  display: flex;
+  margin-bottom: 20px;
+}
+.address-Obscuration{
+  width: 450px;
+  position: relative;
+  margin-right:20px;
+  z-index: 1000;
+  .Obscuration-tier{
+    width: 100%;
+    position: absolute;
+    background: rgba(252, 250, 250, 0.918);
+    // border: 1px solid #f1f1f1;
+    border-top: none;
+    font-size: 13px;
+    color: #5a5a5a;
+    max-height: 350px;
+    overflow-y: auto;
+    top: 111%;
+    left: 0;
+    .Obscuration-map{
+        display: inline-block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        width: 100%;
+        border-bottom: 1px solid #f1f1f1;
+        padding: 5px 10px;
+        margin: 0;
+        cursor: pointer;
+        &:hover {
+          background: #eff6fd;
+        }
+        .address {
+          font-size: 12px;
+          color: #b9b9b9;
+          margin-left: 20px;
+        }
+    }
+  }
+}
+.add-option{
+  color: #409eff;
+  margin-left: 120px;
+  font-weight: 700;
+  cursor: pointer;
 }
 </style>
 
