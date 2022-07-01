@@ -97,7 +97,7 @@
     </div>
 
     <div class="add-dialog">
-      <el-dialog title="选择商协会" :visible.sync="addVisible" width="650px">
+      <el-dialog title="选择商协会" :visible.sync="addVisible" width="60%">
         <el-form :inline="true" :model="chamberForm" ref="formObj">
           <el-form-item label="商协会名称" prop="name">
             <el-input
@@ -118,7 +118,7 @@
         <el-table
           :data="chamberData"
           @selection-change="handleSelectionChange"
-          height="40vh"
+          height="65vh"
           border
         >
           <el-table-column type="selection" width="55" />
