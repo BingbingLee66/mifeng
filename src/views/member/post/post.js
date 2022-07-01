@@ -145,7 +145,7 @@ export default {
                 type: 'error'
               })
             }
-           
+
             this.visible = false
           })
         } else {
@@ -172,7 +172,7 @@ export default {
         }
         del(params).then(res => {
           if(res.state == 0){
-            this.$confirm( res.msg,'删除职位', {
+            this.$confirm( res.msg,'温馨提示', {
               confirmButtonText: '去替换',
               cancelButtonText: '取消删除'
             }).then(() => {
