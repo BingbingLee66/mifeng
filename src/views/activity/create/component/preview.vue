@@ -30,7 +30,7 @@
                 <div class="apply-dian">·</div>
                 报名时间:
                 </div>
-              <div v-show="applyDate">
+              <div v-show="applyDate.length">
                 <span>{{applyDate[0]}}</span>
                 <span>~</span>
                 <span>{{applyDate[1]}}</span>
@@ -41,7 +41,7 @@
                  <div class="apply-dian" style="color:#bc822c">·</div>
                 活动时间:
               </div>
-              <div v-show="date">
+              <div v-show="date.length">
                 <span>{{date[0]}}</span>
                 <span>~</span>
                 <span>{{date[1]}}</span>
@@ -85,13 +85,13 @@ export default {
         this.applyDate = []
         this.date = []
         this.formObj = formObj
-
+   
         if(formObj.applyDate.length > 0){
           this.applyDate.push(this.getYMDHMS(formObj.applyDate[0]))
           this.applyDate.push(this.getYMDHMS(formObj.applyDate[1]))
         }
          
-        if(formObj.applyDate.length > 0){
+        if(formObj.date.length > 0){
           this.date.push(this.getYMDHMS(formObj.date[0]))
           this.date.push(this.getYMDHMS(formObj.date[1]))
         }

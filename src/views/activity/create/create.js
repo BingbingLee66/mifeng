@@ -45,6 +45,7 @@ export default {
         msgAlert: '',  //输入框提示
         lengthLimit: '', //输入字数限制
         check: 1,  // 是否 必填 选填
+        key:'', // 下拉框需要把数据拼接成字符串
         // 下拉框
         pulldown:[
           {
@@ -166,8 +167,8 @@ export default {
     this.activityId = this.$route.query.activityId
     this.type = this.$route.query.type
   },
-  mounted() {
- 
+  async mounted() {
+    await this.initMap()  // 初始化地图
     this.handleArea()
     this.$refs.ckeditor1.init()
     if (!this.activityId) {
@@ -181,7 +182,7 @@ export default {
     if(this.$store.getters.ckey){
       this.treeSelectInit()
     }
-    this.initMap()  // 初始化地图
+
   },
   methods: {
     loadScript(src){
@@ -407,6 +408,7 @@ export default {
         this.formObj.city = resData.city
         this.formObj.area = resData.area
         this.formObj.addressInfo = resData.addressInfo
+        this.formObj.title = resData.addressInfo
         this.formObj.longitude = resData.longitude
         this.formObj.latitude = resData.latitude
         this.defaultParams.increaseZB.lat = resData.latitude
@@ -479,6 +481,36 @@ export default {
         this.formObj.introduce = resData.introduce
         // 动态字段回显
         this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
+        // this.arrayData = resData.dtos.map((v)=>{
+        //   //  0 : 输入框  1：下拉框
+        // console.log('v',v,)
+        //   let pulldown= [
+        //     {
+        //       option:'', //选项1
+        //     },{
+        //       option:'', //选项2
+        //     }
+        //   ]
+        //   if(v.type == 1) {
+        //     v.msgAlert = ''
+        //     v.key = v.selects[0].value
+        //     let arr = v.selects[0].value
+        //     let arrlist = arr.split(',')
+            
+        //     pulldown.forEach((j,index)=>{
+        //       j.option = arrlist[index]
+        //     })
+        //     console.log('arr',arrlist,pulldown)
+        //   }
+        //   return {
+        //     check:v.check,
+        //     lengthLimit:v.lengthLimit,
+        //     msgAlert:v.msgAlert,
+        //     title:v.title,
+        //     type:v.type,
+        //     key:v.key
+        //   }
+        // })
         console.log('this.arrayData',this.arrayData)
       })
     },
@@ -807,7 +839,7 @@ export default {
     },  
     // 选择地址
     onselect(e){
-      console.log('e',e)
+      console.log('e',e,this.defaultParams.increaseZB)
       const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
 
       //更新地图中心位置
