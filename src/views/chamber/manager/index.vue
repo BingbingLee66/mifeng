@@ -116,9 +116,9 @@
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="商/协会名称">
+      <el-table-column label="地区">
         <template slot-scope="scope">
-          {{ scope.row.province + scope.row.city }}
+          {{ scope.row.province }}{{ scope.row.city }}
         </template>
       </el-table-column>
       <el-table-column label="账号">
