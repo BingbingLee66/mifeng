@@ -102,7 +102,7 @@ export default {
         { name: '累计成交总数', value: totalStats.cooperateNum },
         { name: '累计发布供应数', value: totalStats.provideNum },
         { name: '累计发布需求数', value: totalStats.needNum },
-        { name: '累计访问人数', value: `<span class="red-label">${totalStats.uv}</span>` },
+        { name: '累计访问人数', value: `<span class="red-label">${totalStats.uv || 0}</span>` },
         { name: '累计访问次数', value: totalStats.pv },
         { name: '累计发布总数', value: totalStats.publishNum },
         { name: '累计终止总数', value: totalStats.stopNum },
@@ -144,7 +144,7 @@ export default {
     async getSupplyDemandTotalStats() {
       const ckey = this.ckey || this.query.ckey
       const { data } = await getSupplyDemandTotalStats(ckey ? { ckey } : null)
-      this.totalStats = data
+      this.totalStats = data || {}
     },
 
     onChamberChange(e) {

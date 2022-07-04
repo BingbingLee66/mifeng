@@ -297,13 +297,13 @@ export default {
     // 获取平台看板数据
     async getPlatformActivate() {
       const { data } = await getPlatformActiveData()
-      this.activateData = data
+      this.activateData = data || {}
     },
     // 获取商协会看板数据
     async getChamberActivate() {
       const { ckey } = this.query
       const { data } = await getChamberActivateData(ckey ? { ckey } : undefined)
-      this.activateData = data
+      this.activateData = data || {}
     },
     // 获取地区选项
     async getAreaOptions() {
@@ -320,7 +320,7 @@ export default {
     async getAreaActivate() {
       const { area } = this.query
       const { data } = await getAreaActivateData(area.length ? { areaCode: area[1] } : undefined)
-      this.activateData = data
+      this.activateData = data || {}
     },
     // 获取功能模块选项
     async getFunctionModuleOptions() {
@@ -335,13 +335,13 @@ export default {
     async getFunctionModuleActivate() {
       const { functionModuleId } = this.query
       const { data } = await getFunctionModuleActivateData(functionModuleId ? { functionModuleId } : undefined)
-      this.activateData = data
+      this.activateData = data || {}
     },
     // 获取页面看板数据
     async getPageActivate() {
       const { functionModuleId } = this.query
       const { data } = await getPageActivateData(functionModuleId ? { functionModuleId } : undefined)
-      this.activateData = data
+      this.activateData = data || {}
     },
     // 商协会切换
     onChamberChange(e) {
