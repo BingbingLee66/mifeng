@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <preview ref="preview"></preview>
-    <el-tabs v-model="activeName">
+    <!-- <el-tabs v-model="activeName">
       <el-tab-pane
         v-bind:label="activityId ? '编辑活动' : '创建活动'"
         name="1"
       ></el-tab-pane>
       <el-tab-pane label="活动介绍" name="3"></el-tab-pane>
       <el-tab-pane label="活动报名表" name="2"></el-tab-pane>
-    </el-tabs>
+    </el-tabs> -->
 
     <div v-show="activeName == '1'">
       <div class="active-top">

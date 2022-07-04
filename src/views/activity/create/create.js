@@ -8,7 +8,6 @@ import Treeselect from '@riophae/vue-treeselect'
 // import the styles
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import preview from './component/preview'
-// import draggable from 'vuedraggable'
 export default {
   components: {
     Ckeditor,
@@ -250,8 +249,7 @@ export default {
     },
     // 新增
     add() {
-      console.log('this.editCol',this.editCol)
-      console.log('this.arrayData',this.arrayData)
+    
       
       let completely = false
       if(this.infoDate.info == 1){
@@ -293,7 +291,7 @@ export default {
       this.$refs['f2'].validate((valid) => {
         if (valid) {
           this.colData.type =  this.infoDate.info
-          console.log('this.colData',this.colData)
+         
           if (this.editCol) {
             // 编辑
             this.arrayData[this.editIndex] = {...this.colData}
@@ -318,8 +316,8 @@ export default {
     },
     // 修改
     edit(index,type) {
-      console.log(index)
-      this.infoDate.info = type
+     
+      this.infoDate.info = type + ''
       this.dialogFormVisible = true
       this.colData = {...this.arrayData[index]}
       this.editCol = true
@@ -327,7 +325,7 @@ export default {
     },
     // 上移
     up(index) {
-      console.log(index)
+    
       if (index === 0) {
         return
       } else {
@@ -335,12 +333,12 @@ export default {
         this.arrayData[index] = this.arrayData[index - 1]
         this.arrayData[index - 1] = data
         this.$forceUpdate()
-        console.log(this.arrayData)
+     
       }
     },
     // 下移
     down(index) {
-      console.log(index)
+    
       if (index === this.arrayData.length - 1) {
         return
       } else {
@@ -375,7 +373,6 @@ export default {
     // 获取活动详情
     fetchData() {
       getActivity({ id: this.activityId }).then(res => {
-
         let resData = res.data
         this.status = resData.status
         this.formObj.activityName = resData.activityName
@@ -397,9 +394,10 @@ export default {
         }
         this.$set(this.formObj, 'applyDate', applyTime)
         //  扩展功能
-        if(resData.extraSignin == 1) this.roleIds.push(resData.extraSignin)
-        if(resData.extraSignout == 1) this.roleIds.push(resData.extraSignout)
-        if(resData.extraSeat == 1) this.roleIds.push(resData.extraSeat)
+        if(resData.extraSignin == 1) this.roleIds.push(1)
+        if(resData.extraSignout == 1) this.roleIds.push(2)
+        if(resData.extraSeat == 1) this.roleIds.push(3)
+        console.log('this.roleIds',this.roleIds)
         // 活动地点回显
         this.provinceValue = resData.province
         this.cityValue = resData.city
@@ -414,6 +412,7 @@ export default {
         this.defaultParams.increaseZB.lat = resData.latitude
         this.defaultParams.increaseZB.lng = resData.longitude
         this.formObj.district = resData.area
+     
         // this.areaData = {
         //   province: {
         //     name: resData.province,
@@ -464,13 +463,15 @@ export default {
 
         // 报名审核
         if (resData.auditStatus === 1) {
-          this.applyCount.unlimit = false
-          this.applyCount.limit = true
+          this.auditStatus.unlimit = false
+          this.auditStatus.limit = true
         } 
         this.formObj.auditStatus = resData.auditStatus
         this.formObj.link=resData.link;
         this.formObj.competence=resData.competence+''
-        console.log('this.formObj11111',this.formObj)
+
+      
+        console.log('this.formObj11111',this.formObj,this.auditStatus)
         this.onselect(this.formObj)
       
         // 活动介绍回显
@@ -479,41 +480,29 @@ export default {
           this.$refs.ckeditor1.initHtml(resData.introduce ? resData.introduce : '')
         }, 500)
         this.formObj.introduce = resData.introduce
+     
+      
         // 动态字段回显
-        this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
-        // this.arrayData = resData.dtos.map((v)=>{
-        //   //  0 : 输入框  1：下拉框
-        // console.log('v',v,)
-        //   let pulldown= [
-        //     {
-        //       option:'', //选项1
-        //     },{
-        //       option:'', //选项2
-        //     }
-        //   ]
-        //   if(v.type == 1) {
-        //     v.msgAlert = ''
-        //     v.key = v.selects[0].value
-        //     let arr = v.selects[0].value
-        //     let arrlist = arr.split(',')
-            
-        //     pulldown.forEach((j,index)=>{
-        //       j.option = arrlist[index]
-        //     })
-        //     console.log('arr',arrlist,pulldown)
-        //   }
-        //   return {
-        //     check:v.check,
-        //     lengthLimit:v.lengthLimit,
-        //     msgAlert:v.msgAlert,
-        //     title:v.title,
-        //     type:v.type,
-        //     key:v.key
-        //   }
-        // })
+        // this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
+      
+        this.arrayData  = resData.dtos.map(({title, msgAlert, lengthLimit, check,type,selects,key}) => ({title, msgAlert, lengthLimit, check,type,selects,key,pulldown:[]}));
+        let arr = []
+        this.arrayData.forEach((v)=>{
+           //  0 : 输入框  1：下拉框
+          if(v.type == 1){
+            v.msgAlert = ''
+            v.key = v.selects[0].value
+            let arrlist = v.selects[0].value.split(',')
+            arr = arrlist.map((e) => ({ option:e }))
+            v.pulldown= arr
+          } 
+        })
+      
+        
         console.log('this.arrayData',this.arrayData)
       })
     },
+  
     // 上传图片校验
     beforeUpload(file) {
       if (file.type !== 'image/jpeg' &&
@@ -695,7 +684,7 @@ export default {
       }) 
     },
     save(e) {
-      console.log('this.arrayData',this.arrayData);
+     
       this.formObj.isPublish = e
       this.$refs['form'].validate((valid) => {
         if (valid) {
@@ -768,7 +757,7 @@ export default {
             this.formObj['competence'] = Number(this.formObj['competence'])
           }
 
-          console.log('this.formObj',this.formObj)
+      
           createActivity(this.formObj).then(res => {
             if(res.state===1){
               this.$message.success(res.msg)
@@ -807,10 +796,10 @@ export default {
       }
       if(this.colData.pulldown.length >= 10) return this.$message.error('最多只能添加10个')
       this.colData.pulldown.push(obj)
-      console.log('colData',this.colData)
+     
     },
     onInfoDate(){
-      console.log('infoDate.info',this.colData) 
+    
       if (this.infoDate.info == '') return this.$message.error('请选择类型') 
       if(this.infoDate.info == 0 || this.infoDate.info == 1) this.dialogFormVisible = true
       this.iscustom = false
@@ -839,7 +828,7 @@ export default {
     },  
     // 选择地址
     onselect(e){
-      console.log('e',e,this.defaultParams.increaseZB)
+     
       const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
 
       //更新地图中心位置
@@ -885,7 +874,7 @@ export default {
     // 初始化地图
    async initMap(){
       await this.loadScript(`https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=${this.defaultParams.appkey}`)
-      console.log('new TMap',TMap)
+     
       const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
 
       this.defaultParams.map = new TMap.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map
