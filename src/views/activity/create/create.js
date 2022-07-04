@@ -412,7 +412,10 @@ export default {
         this.defaultParams.increaseZB.lat = resData.latitude
         this.defaultParams.increaseZB.lng = resData.longitude
         this.formObj.district = resData.area
-     
+        
+        this.formObj.signType = resData.signType
+        this.formObj.arriveType = resData.arriveType
+       
         // this.areaData = {
         //   province: {
         //     name: resData.province,
