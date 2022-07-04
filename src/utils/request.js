@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import router from '@/router'
@@ -12,7 +12,7 @@ const service = axios.create({
   withCredentials: false, // send cookies when cross-domain requests
   timeout: 30000 // request timeout
 })
-console.log('process',process.env)
+console.log('process', process.env)
 // request interceptor
 service.interceptors.request.use(
   config => {
@@ -54,7 +54,7 @@ service.interceptors.response.use(
       store.dispatch('user/updateToken', { token: response.headers.token })
     }
     // if the custom code is not 1, it is judged as an error.
-    if (res.state !== 1 && res.state !== -1 && res.state !== 0 && res.code!==200&& res.state!==200) {
+    if (res.state !== 1 && res.state !== -1 && res.state !== 0 && res.code !== 200 && res.state !== 200) {
       Message({
         message: res.msg === undefined ? '系统错误，请重试' : res.msg,
         type: 'error',
