@@ -1,15 +1,15 @@
 <template>
   <el-card shadow="never">
-    <el-tabs v-model="activeName">
-      <el-tab-pane :label="`待审核(${statusCount[0]})`" name="ApprovePerson" />
-      <el-tab-pane :label="`参与人员(${statusCount[1]})`" name="JoinPerson" />
-      <el-tab-pane :label="`已驳回(${statusCount[2]})`" name="RejectPerson" />
+    <el-tabs v-model="status">
+      <el-tab-pane :label="`待审核(${statusCount[0]})`" name="0" />
+      <el-tab-pane :label="`参与人员(${statusCount[1]})`" name="1" />
+      <el-tab-pane :label="`已驳回(${statusCount[2]})`" name="2" />
     </el-tabs>
     <el-form inline>
       <el-form-item>
         <el-input v-model="query.namephone" placeholder="用户名、手机号" clearable />
       </el-form-item>
-      <template v-if="activeName === 'JoinPerson'">
+      <template v-if="status === '1'">
         <el-form-item label="签到状态">
           <el-select v-model="query.signStatus" placeholder="请选择">
             <el-option label="全部" :value="-1" />
@@ -32,7 +32,7 @@
       </el-form-item>
     </el-form>
     <div class="flex-x-between-center">
-      <el-button v-if="activeName === 'JoinPerson'" type="text" @click="importVisible=true">导入</el-button>
+      <el-button v-if="status === '1'" type="text" @click="importVisible=true">导入</el-button>
       <i v-else />
       <el-button type="primary">导表</el-button>
     </div>
@@ -160,11 +160,15 @@ export default {
     activityId: {
       type: Number,
       default: undefined
+    },
+    initStatus: {
+      type: String,
+      default: undefined
     }
   },
   data() {
     return {
-      activeName: 'JoinPerson',
+      status: '0',
       statusCount: {
         0: 0, 1: 0, 2: 0
       },
@@ -237,23 +241,19 @@ export default {
         },
       ]
       try {
-        return this[`get${this.activeName}TableList`](commonList) || commonList
+        const tableNames = ['ApprovePerson', 'JoinPerson', 'RejectPerson']
+        return this[`get${tableNames[this.status]}TableList`](commonList) || commonList
       } catch (error) {
         return commonList
       }
     },
-    status() {
-      const statusMap = { ApprovePerson: 0, JoinPerson: 1, RejectPerson: 2 }
-      return statusMap[this.activeName]
-    }
   },
   watch: {
-    activeName: {
+    status: {
       handler() {
         this.query = { pageSize: 10, pageNum: 1, namephone: '', seatStatus: -1, signStatus: -1 }
         this.getTableData()
-      },
-      immediate: true
+      }
     },
     importVisible(newVal) {
       if (!newVal && this.fileList.length) this.fileList = []
@@ -261,11 +261,13 @@ export default {
   },
   created() {
     this.getStatusCount()
+    if (this.initStatus) this.status = this.initStatus
+    this.getTableData()
   },
   methods: {
     async getStatusCount() {
       const { data } = await getSigninStatusCount()
-      console.log(data)
+      this.statusCount = data
     },
 
     onQueryChange(e) {
@@ -277,13 +279,14 @@ export default {
       this.tableLoading = true
       try {
         const { query: { pageNum: page, ...query }, activityId, status } = this
-        const { data } = await getActivitySinginList(activityId, {
+        const { data: { totalRows, list }} = await getActivitySinginList(activityId, {
           page,
           status,
           ...query,
         })
-        this.total = data.totalRows
-        this.tableData = data.list
+        this.total = totalRows
+        list.push({})
+        this.tableData = list
       } catch (error) { /* console.log(error) */ }
       this.tableLoading = false
     },
@@ -308,7 +311,7 @@ export default {
     onDownLoadSingin() {
       downloadFile({
         title: '报名信息模板表.xlsx',
-        url: 'https://ysh-cdn.kaidicloud.com/prod/static/%E6%8A%A5%E5%90%8D%E4%BF%A1%E6%81%AF%E6%A8%A1%E6%9D%BF%E8%A1%A8.xlsx'
+        url: 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/static/%E6%8A%A5%E5%90%8D%E4%BF%A1%E6%81%AF%E8%A1%A8-%E6%8E%92%E4%BD%8D%E7%AD%BE%E5%88%B0.xlsx'
       })
     },
 
@@ -560,7 +563,7 @@ export default {
           label: '操作',
           fixed: 'right',
           minWidth: 130,
-          render: () => <el-button type='text'>重新审核并通过</el-button>
+          render: ({ row }) => <el-button type='text' onClick={() => this.modifySinginStatus({ id: row.id, status: 1 })}>重新审核并通过</el-button>
         }
       ]
     },

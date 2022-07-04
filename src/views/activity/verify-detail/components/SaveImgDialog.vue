@@ -1,26 +1,21 @@
 <template>
   <div style="position:relative;">
     <div v-show="show" class="mask" @click="$emit('change',false)">
-      <div class="code-dialog" @click.stop>
-        <div class="code">
-          <div class="code-title">{{ title }}</div>
-          <div class="code-body">
-            <img :src="url" class="code-img">
-          </div>
-        </div>
-        <div class="code-footer" :loading="isLoading" @click="saveImage">保存图片</div>
-        <i class="code-close el-icon el-icon-close" @click="$emit('change',false)" />
+      <div class="save-dialog" @click.stop>
+        <slot>
+          <div class="save-default" />
+        </slot>
+        <div class="save-footer" :loading="isLoading" @click="saveImage">保存图片</div>
+        <i class="save-close el-icon el-icon-close" @click="$emit('change',false)" />
       </div>
     </div>
     <div class="print">
-      <div id="code-qrcode" class="code">
-        <div class="code-title">{{ title }}</div>
-        <div class="code-body">
-          <img :src="url" class="code-img">
-        </div>
-      </div>
+      <slot :id="sid">
+        <div class="save-default" />
+      </slot>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -36,18 +31,11 @@ export default {
     show: {
       type: Boolean,
       default: false
-    },
-    title: {
-      type: String,
-      default: ''
-    },
-    url: {
-      type: String,
-      default: ''
     }
   },
   data() {
     return {
+      sid: `save${this._uid}`,
       isLoading: false
     }
   },
@@ -56,9 +44,9 @@ export default {
       this.isLoading = true
       try {
         await this.$nextTick()
-        const imgUrl = await generatePictureByDomId('code-qrcode')
+        const imgUrl = await generatePictureByDomId(this.sid)
         console.log(imgUrl)
-        downloadFile({ title: this.title, url: imgUrl })
+        downloadFile({ title: '活动二维码', url: imgUrl })
       } catch (error) {
         console.log(error)
       }
@@ -79,17 +67,23 @@ export default {
   z-index: 999;
 }
 
-.code-dialog {
+.save-dialog {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%,-50%);
 
-  .code-footer {
+  .save-default {
+    width: 526px;
+    height: 496px;
+    background-color: #fff;
+    border-radius: 6px;
+  }
+
+  .save-footer {
     position: absolute;
-    left: 50%;
-    bottom: 24px;
-    transform: translateX(-50%);
+    right: 16px;
+    bottom: 16px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -102,7 +96,7 @@ export default {
     cursor: pointer;
   }
 
-  .code-close {
+  .save-close {
     position: absolute;
     top: 16px;
     right: 16px;
@@ -111,30 +105,6 @@ export default {
   }
 }
 
-.code {
-  width: 306px;
-  height: 340px;
-  padding-top: 34px;
-  background-color: #fff;
-  border-radius: 6px;
-  .code-title {
-    text-align: center;
-    font-size: 18px;
-    font-weight: 700;
-    color: #222;
-    line-height: 25px;
-    margin-bottom: 16px;
-  }
-  .code-body {
-    width: 166px;
-    height: 166px;
-    margin: 0 auto;
-    .code-img {
-      width: 100%;
-      height: 100%;
-    }
-  }
-}
 .print {
   position: absolute;
   left: 0;

@@ -14,7 +14,9 @@
             <div class="board-right flex-y-center-center">
               <img class="qr-code" :src="activity.qrCode" @click="activityQrCodeShow=true">
               <div> 活动二维码 <el-button type="text" @click="$refs.activityDialog.saveImage()">下载</el-button> </div>
-              <ActivityDialog ref="activityDialog" v-model="activityQrCodeShow" :activity="activity" />
+              <SaveImgDialog ref="activityDialog" v-model="activityQrCodeShow">
+                <ActivityCode :id="id" slot-scope="{id}" :activity="activity" />
+              </SaveImgDialog>
             </div>
           </div>
         </el-card>
@@ -30,7 +32,9 @@
                   <el-button type="text" @click="onQrCodeDownload({url:activity[item.codeKey],title:item.title})">下载{{ item.title }}</el-button>
                 </div>
               </div>
-              <CodeDialog ref="codeDialog" v-model="qrCodeDialog.show" :title="qrCodeDialog.title" :url="qrCodeDialog.url" />
+              <SaveImgDialog ref="codeDialog" v-model="qrCodeDialog.show">
+                <SignInCode :id="id" slot-scope="{id}" :title="qrCodeDialog.title" :url="qrCodeDialog.url" />
+              </SaveImgDialog>
             </div>
             <div class="board-right flex-y-center-center">
               <div class="desc">
@@ -83,21 +87,23 @@
       </el-col>
     </el-row>
 
-    <SingInTable :activity-id="activityId" />
+    <SingInTable :activity-id="activityId" :init-status="$route.status" />
 
   </div>
 </template>
 
 <script>
-import ActivityDialog from './components/ActivityDialog'
-import CodeDialog from './components/CodeDialog'
+import SaveImgDialog from './components/SaveImgDialog'
+import ActivityCode from './components/ActivityCode'
+import SignInCode from './components/SignInCode'
 import { formatDate } from './util'
 import { getChamberActivityInfoById, uploadSeating } from '@/api/activity/activity-verify-new'
 
 export default {
   components: {
-    ActivityDialog,
-    CodeDialog,
+    SaveImgDialog,
+    ActivityCode,
+    SignInCode,
     SingInTable: () => import('./components/SingInTable'),
   },
   props: {},
@@ -123,7 +129,7 @@ export default {
   },
   computed: {
     activityId() {
-      return +this.$route.path.split('/').pop()
+      return +this.$route.query.activityId
     }
   },
   created() {
