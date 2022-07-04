@@ -87,7 +87,7 @@
       </el-col>
     </el-row>
 
-    <SingInTable :activity-id="activityId" :init-status="$route.status" />
+    <SingInTable :activity-id="activityId" :init-status="$route.query.status" />
 
   </div>
 </template>

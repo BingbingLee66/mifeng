@@ -62,6 +62,11 @@
 
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
+    <el-dialog :visible.sync="rejectDialog.show" title="驳回理由" width="500px">
+      <el-input v-model="rejectDialog.value" placeholder="请输入驳回理由" />
+      <el-button slot="footer" type="primary" @click="onRejectApply">确定</el-button>
+    </el-dialog>
+
     <!-- 替补人员弹窗 -->
     <el-dialog :visible.sync="subDialog.show" :title="subDialog.title" width="500px">
       <el-row :gutter="10">
@@ -74,7 +79,7 @@
         <div v-if="subInfo.chamberName">{{ subInfo.chamberName }}</div>
       </template>
       <div v-else style="color:red;">不存在该用户信息</div>
-      <div slot="footer" class="flex-x-center-center"><el-button type="primary">确定</el-button></div>
+      <div slot="footer" class="flex-x-center-center"><el-button type="primary" @click.stop="setSubUser">确定</el-button></div>
     </el-dialog>
 
     <!-- 设置座位弹窗 -->
@@ -88,22 +93,22 @@
 
         <el-col :span="3">座位{{ i+1 }}</el-col>
         <template v-if="v.status === 1">
-          <el-col :span="4">{{ v.num }}</el-col>
+          <el-col :span="4">{{ v.seatName }}</el-col>
           <el-col :span="3" style="color:#999;">已就坐</el-col>
         </template>
         <template v-else-if="v.status === 2">
-          <el-col :span="4">{{ v.num }}</el-col>
+          <el-col :span="4">{{ v.seatName }}</el-col>
           <el-col :span="3" style="color:red;">空座</el-col>
           <el-col :span="10" style="color:#999;">已安排其他会员上坐，设置为</el-col>
           <el-col :span="4" style="color:#999;"><el-button type="text">已就坐</el-button></el-col>
         </template>
         <template v-else>
-          <el-col :span="16"><el-input v-model="v.num" placeholder="限10字内" maxlength="10" clearable /></el-col>
+          <el-col :span="16"><el-input v-model="v.seatName" placeholder="限10字内" maxlength="10" clearable /></el-col>
           <el-col :span="4"><el-button type="text" style="color:red;margin-left:10px;" @click="seatDialog.seats.splice(i,1)">删除</el-button></el-col>
         </template>
 
       </el-row>
-      <el-button v-if="!seatDialog.seats[0] || (![1,2].includes(seatDialog.seats[0].status) && seatDialog.seats.length<seatDialog.maxNum)" type="text" @click="seatDialog.seats.push({num:''})">+新增</el-button>
+      <el-button v-if="!seatDialog.seats[0] || (![1,2].includes(seatDialog.seats[0].status) && seatDialog.seats.length<seatDialog.maxNum)" type="text" @click="seatDialog.seats.push({seatName:''})">+新增</el-button>
       <div class="flex-x-end-center"><el-button type="primary" @click="saveSeatsSettings">确定</el-button></div>
     </el-dialog>
 
@@ -130,7 +135,7 @@
         人
         <el-button :disabled="singinDialog.num>=singinDialog.maxNum" type="text" style="font-size: 24px;padding: 0 20px;" @click="singinDialog.num++">+</el-button>
       </div>
-      <el-button slot="footer" type="primary" @click="onSignin({id:singinDialog.singinId,num:singinDialog.num,status:1})">确定</el-button>
+      <el-button slot="footer" type="primary" @click="onSignin({id:singinDialog.signinId,num:singinDialog.num,status:1})">确定</el-button>
     </el-dialog>
 
   </el-card>
@@ -148,7 +153,8 @@ import {
   querySubInfo,
   setSubUser,
   handleSignOut,
-  getSigninStatusCount
+  getSigninStatusCount,
+  resetSigninSeat,
 } from '@/api/activity/activity-verify-new'
 
 export default {
@@ -190,11 +196,17 @@ export default {
 
       total: 0,
 
+      rejectDialog: {
+        show: false,
+        value: '',
+        signinId: ''
+      },
+
       subDialog: {
         show: false,
         title: '',
         phone: '',
-        singinId: ''
+        signinId: ''
       },
 
       subInfo: { },
@@ -203,18 +215,18 @@ export default {
         show: false,
         seats: [],
         maxNum: 0,
-        singinId: ''
+        signinId: ''
       },
 
       remarkDialog: {
         show: false,
-        singinId: '',
+        signinId: '',
         value: ''
       },
 
       singinDialog: {
         show: false,
-        singinId: '',
+        signinId: '',
         maxNum: 0,
         num: 0
       }
@@ -228,7 +240,7 @@ export default {
           label: '用户信息',
           minWidth: 180,
           render: ({ row }) => (<div>
-            <img style='width:50px;height:50px' src={row.uavatar} />
+            {row.uavatar ? <img style='width:50px;height:50px' src={row.uavatar} /> : ''}
             <div>{row.userName}</div>
             <div>{row.phone}</div>
           </div>)
@@ -261,6 +273,7 @@ export default {
   },
   created() {
     this.getStatusCount()
+    console.log(this.initStatus)
     if (this.initStatus) this.status = this.initStatus
     this.getTableData()
   },
@@ -285,10 +298,16 @@ export default {
           ...query,
         })
         this.total = totalRows
-        list.push({})
         this.tableData = list
       } catch (error) { /* console.log(error) */ }
       this.tableLoading = false
+    },
+
+    async onRejectApply() {
+      const { value, signinId } = this.rejectDialog
+      if (!value) return this.$message({ message: '请输入驳回理由', type: 'warning' })
+      const { state } = await this.modifySinginStatus({ id: signinId, status: 2, reason: value })
+      if (state === 1) this.rejectDialog.show = false
     },
 
     onSelectionChange(e) {
@@ -311,7 +330,7 @@ export default {
     onDownLoadSingin() {
       downloadFile({
         title: '报名信息模板表.xlsx',
-        url: 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/static/%E6%8A%A5%E5%90%8D%E4%BF%A1%E6%81%AF%E8%A1%A8-%E6%8E%92%E4%BD%8D%E7%AD%BE%E5%88%B0.xlsx'
+        url: `${process.env.VUE_APP_BASE_API}/api/ec/singin/download/dynamicTemplate/${this.activityId}`
       })
     },
 
@@ -320,16 +339,20 @@ export default {
       const formData = new FormData()
       formData.append('activityId', this.activityId)
       formData.append('file', this.fileList[0])
-      const { data } = await uploadSinginData(formData)
-      console.log(data)
+      const { state, msg } = await uploadSinginData(formData)
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      if (state === 1) {
+        this.importVisible = false
+        this.getTableData()
+      }
     },
 
     initSubDialog(row) {
       this.subDialog = {
         show: true,
         title: row.subUserPhone ? '修改替补人员' : '设置替补人员',
-        phone: '',
-        singinId: row.id
+        phone: row.subUserPhone,
+        signinId: row.id
       }
       this.subInfo = {}
     },
@@ -340,8 +363,9 @@ export default {
     },
 
     async setSubUser() {
-      const { phone, singinId } = this.subDialog
-      const { state, msg } = setSubUser({ phone, id: singinId })
+      const { phone, signinId } = this.subDialog
+      if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(phone)) return this.$message({ message: '手机号格式错误', type: 'warning' })
+      const { state, msg } = await setSubUser({ phone, id: signinId })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getTableData()
@@ -354,26 +378,32 @@ export default {
         show: true,
         seats: JSON.parse(JSON.stringify(row.seats || [])),
         maxNum: row.subscribeTotal,
-        singinId: row.id
+        signinId: row.id
       }
     },
 
     async saveSeatsSettings() {
-      const { seats } = this.seatDialog
-      if (!seats.length || seats.some(v => !v.num)) return this.$message({ message: '座位号不能为空', type: 'warning' })
+      const { seats, signinId } = this.seatDialog
+      if (!seats.length || seats.some(v => !v.seatName)) return this.$message({ message: '座位号不能为空', type: 'warning' })
       if ([1, 2].includes(seats[0].status)) {
         this.seatDialog.show = false
         return
       }
+      const { state, msg } = await resetSigninSeat(signinId, seats.map(({ status, ...v }) => v))
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      if (state === 1) {
+        this.getTableData()
+      }
     },
 
-    async modifySinginStatus(data) {
-      const { state, msg } = await modifySinginStatus(data)
+    async modifySinginStatus({ id, status, ...data }) {
+      const { state, msg } = await modifySinginStatus({ id, status, activityId: this.activityId }, data)
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getStatusCount()
         this.getTableData()
       }
-      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      return { state }
     },
 
     async onDelSingin(row) {
@@ -387,11 +417,11 @@ export default {
     },
 
     async saveRemark() {
-      const { value, singinId } = this.remarkDialog
-      const { state, msg } = await saveRemark(singinId, { remark: value })
+      const { value, signinId } = this.remarkDialog
+      const { state, msg } = await saveRemark(signinId, { remark: value })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
-        const item = this.tableData.find(v => v.id === singinId)
+        const item = this.tableData.find(v => v.id === signinId)
         item.remark = value
         this.remarkDialog.show = false
       }
@@ -445,7 +475,7 @@ export default {
           render: ({ row }) => (<div>
             <el-button type='text' onClick={() => this.modifySinginStatus({ id: row.id, status: 1 })}>通过</el-button>
             <br />
-            <el-button type='text' onClick={() => this.modifySinginStatus({ id: row.id, status: 2 })}><div style='color:red;'>驳回</div></el-button>
+            <el-button type='text' onClick={() => (this.rejectDialog = { show: true, value: '', signinId: row.id })}><div style='color:red;'>驳回</div></el-button>
           </div>)
         }
       ]
@@ -483,9 +513,9 @@ export default {
           minWidth: 120,
           render: ({ row }) => (<div>
             {row.seats ? row.seats.map(v => {
-              if (v.status === 0) return <div>{v.num}</div>
-              if (v.status === 1) return <div style='color:#409eff;'>{v.num}</div>
-              if (v.status === 2) return <div style='color:red;'>{v.num} 空座</div>
+              if (v.status === 0) return <div>{v.seatName}</div>
+              if (v.status === 1) return <div style='color:#409eff;'>{v.seatName}</div>
+              if (v.status === 2) return <div style='color:red;'>{v.seatName} 空座</div>
             }) : '-'}
           </div>)
         },
@@ -513,7 +543,7 @@ export default {
             <div>{row.remark}</div>
             <el-button
               type='text'
-              onClick={() => (this.remarkDialog = { show: true, singinId: row.id, value: row.remark || '' })}
+              onClick={() => (this.remarkDialog = { show: true, signinId: row.id, value: row.remark || '' })}
             >备注</el-button>
           </div>)
         },
@@ -529,7 +559,7 @@ export default {
                   ? <el-button type='text' onClick={() => this.onSignin({ id: row.id, num: 0, status: 2 })}>取消签到</el-button>
                   : <el-button
                     type='text'
-                    onClick={() => (this.singinDialog = { show: true, maxNum: row.subscribeTotal, num: row.subscribeTotal, singinId: row.id })}>签到</el-button>
+                    onClick={() => (this.singinDialog = { show: true, maxNum: row.subscribeTotal, num: row.subscribeTotal, signinId: row.id })}>签到</el-button>
               }
             </div>
             <div>

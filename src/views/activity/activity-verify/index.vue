@@ -2,15 +2,15 @@
   <div class="app-container">
     <div v-if="!chamberCkey">
       <el-tabs v-model="type" @tab-click="handleClick">
-        <el-tab-pane label="凯迪云商会" name="1"></el-tab-pane>
-        <el-tab-pane label="其他商协会" name="2"></el-tab-pane>
+        <el-tab-pane label="凯迪云商会" name="1" />
+        <el-tab-pane label="其他商协会" name="2" />
       </el-tabs>
     </div>
     <div style="margin:20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
-        <el-form-item style="margin-right: 30px;" label="活动来源" v-if="!chamberCkey">
+        <el-form-item v-if="!chamberCkey" style="margin-right: 30px;" label="活动来源">
           <el-select v-if="type==1" v-model="yunCkey" disabled placeholder="请选择" clearable>
-            <el-option label="凯迪云商会" value='' />
+            <el-option label="凯迪云商会" value="" />
           </el-select>
           <el-select v-if="type==2" v-model="query.ckey" placeholder="请选择" clearable filterable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey" />
@@ -76,7 +76,7 @@
             <!-- <span v-if="scope.row.applyCount === null ">不限</span>
             <span v-if="scope.row.applyCount !== null ">限{{ scope.row.applyCount }}人</span> -->
             <span v-if="scope.row.isLimit===0">不限</span>
-            <span v-if="scope.row.isLimit===1">限{{scope.row.applyCount}}人 </span>
+            <span v-if="scope.row.isLimit===1">限{{ scope.row.applyCount }}人 </span>
           </template>
         </el-table-column>
         <el-table-column label="已报名人数" width="100px">
@@ -87,7 +87,7 @@
         <el-table-column label="待审核" width="100px">
           <template slot-scope="scope">
             {{ scope.row.auditNum === null ? 0 : scope.row.auditNum }}
-            <div class="blue-label" v-if="type==1" @click="goVerifyDetail(scope.row,'auditStatus',0)">去审核</div>
+            <div v-if="type==1" class="blue-label" @click="goVerifyDetail(scope.row,'auditStatus',0)">去审核</div>
           </template>
         </el-table-column>
         <el-table-column label="已审核" width="100px">
@@ -98,7 +98,7 @@
         <el-table-column label="审核通过" width="100px">
           <template slot-scope="scope">
             {{ scope.row.approvedNum === null ? 0 : scope.row.approvedNum }}
-            <div class="blue-label" v-if="type==1" @click="goVerifyDetail(scope.row,'auditStatus',1)">下载签到表</div>
+            <div v-if="type==1" class="blue-label" @click="goVerifyDetail(scope.row,'auditStatus',1)">下载签到表</div>
           </template>
         </el-table-column>
         <el-table-column label="审核驳回" width="100px">
@@ -108,8 +108,8 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
-            <div class="blue-label" @click="goVerifyDetail(scope.row,'auditStatus',1)" v-if="type==1">录入签到情况</div>
-            <div class="blue-label" @click="goVerifyDetail(scope.row,'auditStatus',-1)">查看审核详情</div>
+            <div v-if="type==1" class="blue-label" @click="goVerifyDetail(scope.row,'auditStatus',1)">录入签到情况</div>
+            <div class="blue-label" @click="goVerifyDetail(scope.row,'auditStatus',0)">查看审核详情</div>
           </template>
         </el-table-column>
       </el-table>

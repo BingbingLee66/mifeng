@@ -106,7 +106,7 @@ export default {
         name: '审核详情',
         query: {
           activityId: e.activityId,
-          type: type,
+          // type: type,
           status: status,
           // chamberName
         }
