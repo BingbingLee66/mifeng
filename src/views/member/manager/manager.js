@@ -172,7 +172,7 @@ export default {
     init() {
       // if (this.has('', '查询')) {
       //   console.info('111111111111111111')
-        this.fetchData()
+      this.fetchData()
       // }
     },
     async fetchData(e) {
