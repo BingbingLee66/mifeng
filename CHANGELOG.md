@@ -1,5 +1,12 @@
 # CHANGELOG
 
+
+## [Rreleased]
+## [2.16.0] - 2022-07-04
+### Added
+-  【商会主页】新增友情单位[879](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/879)
+-  后台操作指引[891](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/891)
+
 ## [Rreleased]
 ## [2.14.1] - 2022-06-21
 ### Added
