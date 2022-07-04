@@ -8,11 +8,12 @@ import Treeselect from '@riophae/vue-treeselect'
 // import the styles
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import preview from './component/preview'
+// import draggable from 'vuedraggable'
 export default {
   components: {
     Ckeditor,
    Treeselect,
-   preview
+   preview,
   },
   data() {
     var checkSpace = (rule, value, callback) => {
@@ -38,8 +39,7 @@ export default {
       portValue: '',
       // 下拉选择 begin
       // 活动报名表参数 begin
-      arrayData: [
-      ],
+      arrayData: [],
       colData: {
         title: '', // 标题
         msgAlert: '',  //输入框提示
@@ -53,7 +53,8 @@ export default {
             option:'', //选项2
           }
         ],
-        elsect:'' // 1: 输入框  2：下拉框
+        key:'' , // 参数名称，下拉框情况下多个参数请;拼接
+        type:'' // 0: 输入框  1：下拉框
       },
       // 信息类型
       infoDate:{
@@ -81,11 +82,18 @@ export default {
         applyCount: '', // 参加人数
         introduce: '', // 活动介绍
         competence:'0',//观看权限 0 不限 1 限本商会会员
-        link:'',//直播链接
-        roleIds:[],  //多选框 扩展功能
-        sginWay:0,
-        present:0,
+        link:'',//直播链接   
+        signType:0,  // 报名方式是否必填 0否 1是
+        arriveType:0,  // 到场人数是否必填 0否 1是
+        longitude:'', // 经度
+        latitude:'', // 纬度
+        auditStatus:0, // 报名审核
+        extraSignin: 0 ,  // 拓展功能签到 0否 1是
+        extraSignout:0 , // 拓展功能签退 0否 1是
+        extraSeat: 0 , // 拓展功能座位 0否 1是
+        isPublish:0 , //是否发布 0否 1是
       },
+      roleIds:[],  //多选框 扩展功能
       addressList:[] , //搜索数组
       // 是否限制报名对象
       applyObject: {
@@ -96,6 +104,11 @@ export default {
       },
       // 是否限制报名人数
       applyCount: {
+        unlimit: true,
+        limit: false
+      },
+      // 是否报名审核
+      auditStatus: {
         unlimit: true,
         limit: false
       },
@@ -141,8 +154,8 @@ export default {
           lat: 23.125821, // 纬度
           lng: 113.326548 // 经度
         },
-        appkey: 'CGFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
-        // appkey: 'URZBZ-WQXL3-W3O3O-YVYMA-5ZFPJ-AUBFY', // appkey是开发者key（地图
+        // appkey: 'CGFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
+        appkey: 'URZBZ-WQXL3-W3O3O-YVYMA-5ZFPJ-AUBFY', // appkey是开发者key（地图
         suggest: null, //  新建一个关键字输入提示类
       },
       sing:'五千多',
@@ -154,7 +167,7 @@ export default {
     this.type = this.$route.query.type
   },
   mounted() {
-    this.initMap()  // 初始化地图
+ 
     this.handleArea()
     this.$refs.ckeditor1.init()
     if (!this.activityId) {
@@ -168,7 +181,7 @@ export default {
     if(this.$store.getters.ckey){
       this.treeSelectInit()
     }
-
+    this.initMap()  // 初始化地图
   },
   methods: {
     loadScript(src){
@@ -238,31 +251,30 @@ export default {
     add() {
       console.log('this.editCol',this.editCol)
       console.log('this.arrayData',this.arrayData)
-      console.log('this.colData',this.colData)
+      
       let completely = false
-      if(this.infoDate.info == 2){
+      if(this.infoDate.info == 1){
         this.colData.pulldown.forEach((v)=>{
           if(v.option == '') completely = true
         })
       }
-      if(completely) return this.$message.error('请输入选项')
-      console.log(11111111111)
-      if (this.arrayData.length >= 6) {
-        this.$message({
-          message: '报名信息请限制在 10 个以内',
-          type: 'warning'
-        });
-        // alert('报名信息请限制在 10 个以内')
-        return
-      }
-      if(this.colData.lengthLimit != '' && this.infoDate.info == 1){
+      if(completely) return this.$message.error('请填写选项标题')
+
+      // if (this.arrayData.length >= 6) {
+      //   this.$message({
+      //     message: '报名信息请限制在 10 个以内',
+      //     type: 'warning'
+      //   });
+      //   return
+      // }
+      if(this.colData.lengthLimit != '' && this.infoDate.info == 0){
         if(this.colData.lengthLimit < 0){
           this.$message({
             message: '字数限制必须大于0',
             type: 'warning'
           });
           return
-        }else if(this.colData.lengthLimit > 200 && this.infoDate.info == 1){
+        }else if(this.colData.lengthLimit > 200 && this.infoDate.info == 0){
           this.$message({
             message: '字数限制必须小于200',
             type: 'warning'
@@ -270,10 +282,17 @@ export default {
           return
         }
       }
-
+      let key = []
+      this.colData.pulldown.forEach((v)=>{
+        key.push(v.option)
+      })
+      this.colData.key = key.join()
+    
+     
       this.$refs['f2'].validate((valid) => {
         if (valid) {
-          this.colData.elsect =  this.infoDate.info
+          this.colData.type =  this.infoDate.info
+          console.log('this.colData',this.colData)
           if (this.editCol) {
             // 编辑
             this.arrayData[this.editIndex] = {...this.colData}
@@ -297,9 +316,9 @@ export default {
       this.arrayData.splice(index, 1)
     },
     // 修改
-    edit(index,elsect) {
+    edit(index,type) {
       console.log(index)
-      this.infoDate.info = elsect
+      this.infoDate.info = type
       this.dialogFormVisible = true
       this.colData = {...this.arrayData[index]}
       this.editCol = true
@@ -376,26 +395,37 @@ export default {
           applyTime.push(resData.applyEndTime)
         }
         this.$set(this.formObj, 'applyDate', applyTime)
-
+        //  扩展功能
+        if(resData.extraSignin == 1) this.roleIds.push(resData.extraSignin)
+        if(resData.extraSignout == 1) this.roleIds.push(resData.extraSignout)
+        if(resData.extraSeat == 1) this.roleIds.push(resData.extraSeat)
         // 活动地点回显
         this.provinceValue = resData.province
         this.cityValue = resData.city
         this.countryValue = resData.area
+        this.formObj.province = resData.province
+        this.formObj.city = resData.city
+        this.formObj.area = resData.area
         this.formObj.addressInfo = resData.addressInfo
-        this.areaData = {
-          province: {
-            name: resData.province,
-            code: resData.provinceCode,
-          },
-          city: {
-            name: resData.city,
-            code: resData.cityCode,
-          },
-          country: {
-            name: resData.area,
-            code: resData.areaCode,
-          }
-        }
+        this.formObj.longitude = resData.longitude
+        this.formObj.latitude = resData.latitude
+        this.defaultParams.increaseZB.lat = resData.latitude
+        this.defaultParams.increaseZB.lng = resData.longitude
+        this.formObj.district = resData.area
+        // this.areaData = {
+        //   province: {
+        //     name: resData.province,
+        //     // code: resData.provinceCode,
+        //   },
+        //   city: {
+        //     name: resData.city,
+        //     // code: resData.cityCode,
+        //   },
+        //   country: {
+        //     name: resData.area,
+        //     // code: resData.areaCode,
+        //   }
+        // }
         // 报名对象回显
         this.applyObject.limit = false
         this.applyObject.unlimit = false
@@ -429,9 +459,18 @@ export default {
           this.formObj.isLimit = 1
           this.formObj.applyCount = resData.applyCount
         }
+
+        // 报名审核
+        if (resData.auditStatus === 1) {
+          this.applyCount.unlimit = false
+          this.applyCount.limit = true
+        } 
+        this.formObj.auditStatus = resData.auditStatus
         this.formObj.link=resData.link;
         this.formObj.competence=resData.competence+''
-
+        console.log('this.formObj11111',this.formObj)
+        this.onselect(this.formObj)
+      
         // 活动介绍回显
         // this.$refs.ckeditor1.init()
         setTimeout(() => {
@@ -440,6 +479,7 @@ export default {
         this.formObj.introduce = resData.introduce
         // 动态字段回显
         this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
+        console.log('this.arrayData',this.arrayData)
       })
     },
     // 上传图片校验
@@ -591,20 +631,40 @@ export default {
       }
     },
 
+    // 报名审核
+    handleAuditStatus(val) {
+      if (val === 0) {
+        this.auditStatus.unlimit = true
+        this.auditStatus.limit = false
+        this.formObj.auditStatus = 0
+      } else {
+        this.auditStatus.unlimit = false
+        this.auditStatus.limit = true
+        this.formObj.auditStatus = 1
+      }
+    },
+
 
     // 编辑活动介绍
     getHtml(htmlStr) {
       this.formObj.introduce = htmlStr
     },
     onnext(){
+      // 扩展功能
+      this.roleIds.forEach((v)=>{
+        if(v == 1) this.formObj.extraSignin = 1
+        if(v == 2) this.formObj.extraSignout = 1
+        if(v == 3) this.formObj.extraSeat = 1
+      })
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          this.activeName = 2
+          this.activeName = '2'
         }
       }) 
     },
-    save() {
+    save(e) {
       console.log('this.arrayData',this.arrayData);
+      this.formObj.isPublish = e
       this.$refs['form'].validate((valid) => {
         if (valid) {
           // if (!this.areaData) {
@@ -645,18 +705,18 @@ export default {
             this.formObj['applyEndTime'] = null
           }
 
-          if (this.areaData) {
-            this.formObj.province = this.areaData.province.name
-            this.formObj.provinceCode = this.areaData.province.code
-            if (this.areaData.hasOwnProperty('city')) {
-              this.formObj.city = this.areaData.city.name
-              this.formObj.cityCode = this.areaData.city.code
-            }
-            if (this.areaData.hasOwnProperty('country')) {
-              this.formObj.area = this.areaData.country.name
-              this.formObj.areaCode = this.areaData.country.code
-            }
-          }
+          // if (this.areaData) {
+          //   this.formObj.province = this.areaData.province.name
+          //   this.formObj.provinceCode = this.areaData.province.code
+          //   if (this.areaData.hasOwnProperty('city')) {
+          //     this.formObj.city = this.areaData.city.name
+          //     this.formObj.cityCode = this.areaData.city.code
+          //   }
+          //   if (this.areaData.hasOwnProperty('country')) {
+          //     this.formObj.area = this.areaData.country.name
+          //     this.formObj.areaCode = this.areaData.country.code
+          //   }
+          // }
 
           if (this.activityId) {
             this.formObj['id'] = this.activityId
@@ -677,20 +737,20 @@ export default {
           }
 
           console.log('this.formObj',this.formObj)
-          // createActivity(this.formObj).then(res => {
-          //   if(res.state===1){
-          //     this.$message.success(res.msg)
-          //     this.$router.push({
-          //       name: '活动列表',
-          //       params: {
-          //         type: this.activityId ? this.type : 0
-          //       }
-          //     })
-          //   }else{
-          //     this.$message.error(res.msg)
-          //   }
+          createActivity(this.formObj).then(res => {
+            if(res.state===1){
+              this.$message.success(res.msg)
+              this.$router.push({
+                name: '活动列表',
+                params: {
+                  type: this.activityId ? this.type : 0
+                }
+              })
+            }else{
+              this.$message.error(res.msg)
+            }
 
-          // })
+          })
         } else {
           return false
         }
@@ -720,7 +780,7 @@ export default {
     onInfoDate(){
       console.log('infoDate.info',this.colData) 
       if (this.infoDate.info == '') return this.$message.error('请选择类型') 
-      if(this.infoDate.info == 1 || this.infoDate.info == 2) this.dialogFormVisible = true
+      if(this.infoDate.info == 0 || this.infoDate.info == 1) this.dialogFormVisible = true
       this.iscustom = false
     },
 
@@ -733,10 +793,21 @@ export default {
       this.ongetSuggestions(e)
     },
 
-    // 选择地址
-    onselect(e){
+    onaddress(e){
       this.defaultParams.increaseZB.lat = e.location.lat
       this.defaultParams.increaseZB.lng = e.location.lng
+      this.formObj.province = e.province // 活动地点(省)
+      this.formObj.city = e.city // 活动地点(市)
+      this.formObj.area = e.district // 活动地点(区)
+      this.formObj.addressInfo = e.title // 活动地点（详细地址）
+      this.formObj.longitude = e.location.lng // 经度
+      this.formObj.latitude = e.location.lat // 纬度
+      this.onselect(e)
+    
+    },  
+    // 选择地址
+    onselect(e){
+      console.log('e',e)
       const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
 
       //更新地图中心位置
@@ -768,20 +839,19 @@ export default {
           }
         }]
       })
+   
       this.addressList = []
       //创建InfoWindow实例，并进行初始化
       var infowindow =new TMap.InfoWindow({
         position:myLatLng,//显示信息窗口的坐标
         map:this.defaultParams.map,
-        content:`<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址：${e.city} ${e.province}${e.district}${e.address}</p>`, //信息窗口内容
+        content:`<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址${e.province}${e.city}${e.district}</p>`, //信息窗口内容
         offset: { x: 0, y: -50 },
       });
-
     },
 
     // 初始化地图
    async initMap(){
-      
       await this.loadScript(`https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=${this.defaultParams.appkey}`)
       console.log('new TMap',TMap)
       const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)

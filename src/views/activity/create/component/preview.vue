@@ -17,7 +17,7 @@
         
           <!-- 标题 -->
           <div class="active-title"> 
-            <div class="title-left">{{formObj.activityName}}</div>
+            <div class="title-left" >{{formObj.activityName}}</div>
             <div class="title-right">
               <div><i class="el-icon-share"></i></div>
               <div style=" color: #c62134;font-size:12px;">分享</div>
@@ -30,10 +30,10 @@
                 <div class="apply-dian">·</div>
                 报名时间:
                 </div>
-              <div v-show="formObj.applyDate">
-                <span>{{formObj.applyDate[0]}}</span>
+              <div v-show="applyDate">
+                <span>{{applyDate[0]}}</span>
                 <span>~</span>
-                <span>{{formObj.applyDate[1]}}</span>
+                <span>{{applyDate[1]}}</span>
               </div>
             </div>
             <div class="Date-info">
@@ -41,10 +41,10 @@
                  <div class="apply-dian" style="color:#bc822c">·</div>
                 活动时间:
               </div>
-              <div v-show="formObj.date">
-                <span>{{formObj.date[0]}}</span>
+              <div v-show="date">
+                <span>{{date[0]}}</span>
                 <span>~</span>
-                <span>{{formObj.date[1]}}</span>
+                <span>{{date[1]}}</span>
               </div>
             </div>
             <div class="Date-info">
@@ -52,7 +52,7 @@
                  <div class="apply-dian" style="color:#dc5015">·</div>
                 活动地点:
               </div>
-              <div class="info-site">水水水水水</div>
+              <div class="info-site">{{formObj.province + formObj.city +formObj.area + formObj.addressInfo}}</div>
             </div>
           </div>
           <div class="active-middle">
@@ -76,15 +76,48 @@ export default {
       detailVisible: false,
       formObj:{},
       activeName:'1',
+      applyDate:[], //报名时间：
+      date:[], //活动时间：
     };
   },
   methods: {
       async open(formObj){
+        this.applyDate = []
+        this.date = []
         this.formObj = formObj
+
+        if(formObj.applyDate.length > 0){
+          this.applyDate.push(this.getYMDHMS(formObj.applyDate[0]))
+          this.applyDate.push(this.getYMDHMS(formObj.applyDate[1]))
+        }
+         
+        if(formObj.applyDate.length > 0){
+          this.date.push(this.getYMDHMS(formObj.date[0]))
+          this.date.push(this.getYMDHMS(formObj.date[1]))
+        }
         this.show()
         console.log('this.formObj',this.formObj)
+        console.log('this.applyDate',this.applyDate,this.date)
       }, 
 
+      //时间戳转年月日时分秒
+      getYMDHMS (timestamp) {
+         timestamp = Number(timestamp)
+          let time = new Date(timestamp)
+          let year = time.getFullYear()
+          let month = time.getMonth() + 1
+          let date = time.getDate()
+          let hours = time.getHours()
+          let minute = time.getMinutes()
+          let second = time.getSeconds()
+
+          if (month < 10) { month = '0' + month }
+          if (date < 10) { date = '0' + date }
+          if (hours < 10) { hours = '0' + hours }
+          if (minute < 10) { minute = '0' + minute }
+          if (second < 10) { second = '0' + second }
+          return year + '-' + month + '-' + date + ' ' + hours + ':' + minute + ':' + second
+      },
       show(){
           this.detailVisible=true;
       },
@@ -104,7 +137,7 @@ export default {
   right: 0;
   top: 0;
   bottom: 0;
-  z-index: 100;
+  z-index: 1001;
 
 
   .right-bg,
