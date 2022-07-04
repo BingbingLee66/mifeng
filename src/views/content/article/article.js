@@ -144,7 +144,7 @@ export default {
         } else {
           this.formObj.coverImgs.splice(this.uploadIndex, 1, response.data.filePath)
         }
-        
+
       })
     },
     resetCoverImgs(type) {
@@ -207,9 +207,9 @@ export default {
               'sharePoster':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.sharePoster : '',
               'shareTitle':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.shareTitle : '',
             }
-            
+
           }
-      
+
           if (dataObj.status === 4) {
             // this.formObj['publishTs'] = dataObj.publishTs
             this.$set(this.formObj, 'publishTs', dataObj.publishTs)
@@ -287,7 +287,7 @@ export default {
         background: 'rgba(255, 255, 255,.5)'
       });
       getWechatContent(this.articleUrl).then(res=>{
-      
+
         if(res.state===1){
           // this.$refs.ckeditor1.init()
           setTimeout(() => {
@@ -296,7 +296,7 @@ export default {
             this.articleUrl=null
           }, 500)
           this.$refs['kdDialog'].hide();
-          
+
         }else{
           this.$message.error(res.msg);
           // 请输入微信公众号文章链接
@@ -322,18 +322,19 @@ export default {
         // }
       } else {
         this.$message.error('不支持的文件格式!');
-        return false   
+        return false
       }
     },
     //上传视频
     uploadVideoFunc(content) {
-      this.loading = true;
-      let formData = new FormData();
-      formData.append('file', content.file);
+      this.loading = true
+      let formData = new FormData()
+      formData.append('file', content.file)
+      formData.append('type', 1)
       // this.articleId === '' ? 0 : this.articleId
       uploadVideo(formData, 0).then(res => {
         if (res.code === 200) {
-          this.formObj.vid = res.data.videoId;        
+          this.formObj.vid = res.data.videoId;
           this.timer = setInterval(this.queryVideoFunc, 1000);
         }
       })
@@ -359,7 +360,7 @@ export default {
       if(folder === 'shareFriendPicture') this.formObj.articleExtendDTO.shareFriendPicture = ''
       if(folder==='sharePoster')  this.formObj.articleExtendDTO.sharePoster = ''
       if(folder==='videoCoverURL') this.formObj.videoCoverURL=''
-      
+
     },
     //预览
      openPreviewModal(val) {

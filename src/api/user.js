@@ -63,3 +63,12 @@ export function getPromulgator(params) {
     params
   })
 }
+
+// 查询后台管理员信息
+export function getAdminUserList(params) {
+  return request({
+    url: '/ec/public/getAdminUserList',
+    method: 'get',
+    params
+  })
+}

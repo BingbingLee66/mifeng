@@ -244,7 +244,7 @@ export default {
                 type: 'error'
               })
             }
-            
+
           })
         } else {
           return false
@@ -286,7 +286,7 @@ export default {
             this.articleUrl=null
           }, 500)
           this.$refs['kdDialog'].hide();
-          
+
         }else{
           this.$message.error(res.msg);
           // 请输入微信公众号文章链接
@@ -308,24 +308,25 @@ export default {
         //   return false
         // }
       } else {
-        this.$message.error('不支持的文件格式!');
-        return false   
+        this.$message.error('不支持的文件格式!')
+        return false
       }
     },
-    //上传视频
+    // 上传视频
     uploadVideoFunc(content) {
-      this.loading = true;
-      let formData = new FormData();
-      formData.append('file', content.file);
+      this.loading = true
+      let formData = new FormData()
+      formData.append('file', content.file)
+      formData.append('type', 1)
       // this.articleId === '' ? 0 : this.articleId
       uploadVideo(formData, 0).then(res => {
         if (res.code === 200) {
-          this.formObj.vid = res.data.videoId;        
-          this.timer = setInterval(this.queryVideoFunc, 1000);
+          this.formObj.vid = res.data.videoId
+          this.timer = setInterval(this.queryVideoFunc, 1000)
         }
       })
     },
-    //删除当前视频
+    // 删除当前视频
     deleteCurrentVideo() {
       this.formObj.vid = ''
     },
@@ -337,7 +338,7 @@ export default {
           this.$nextTick(() => {
             this.$refs['videoRef'].show(this.formObj.vid);
             this.loading = false;
-           
+
           })
         }
       })
@@ -347,7 +348,7 @@ export default {
       if(folder === 'shareFriendPicture') this.formObj.articleExtendDTO.shareFriendPicture = ''
       if(folder==='sharePoster')  this.formObj.articleExtendDTO.sharePoster = ''
       if(folder==='videoCoverURL') this.formObj.videoCoverURL=''
-      
+
     },
     //预览
       openPreviewModal(val) {
