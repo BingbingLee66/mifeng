@@ -100,7 +100,7 @@ export default {
     }
   },
   created() {
-    
+
     this.getMemberType() // 获取商会职位数据
     this.getTradeType() // 获取行业数据
     this.getdepartmentType() // 获取部门数据
@@ -108,7 +108,7 @@ export default {
     this.init()
     this.importUrl = baseUrl + '/ec/member/import-excel'
     this.importQuery.ckey = this.$store.getters.ckey
-    this.uploadHeaders['access-token'] = getToken() 
+    this.uploadHeaders['access-token'] = getToken()
   },
   mouted(){
 
@@ -170,9 +170,10 @@ export default {
     },
 
     init() {
-      if (this.has('', '查询')) {
+      // if (this.has('', '查询')) {
+      //   console.info('111111111111111111')
         this.fetchData()
-      }
+      // }
     },
     async fetchData(e) {
       if (e !== undefined) {
