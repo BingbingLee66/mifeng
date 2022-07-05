@@ -56,6 +56,16 @@
             </div>
           </div>
           <div class="active-middle">
+            <!-- 账户详情 -->
+            <div class="active-data">
+              <div class="active-left">
+                  <img class="active-avatar" :src="systemLogo ? systemLogo : imgUrl">
+              </div>
+              <div class="active-right">
+                <div class="right-cham">{{ chamberName ? chamberName : '凯迪云商会总后台管理系统' }}</div>
+                <div class="right-member">已入驻200名会员</div>
+              </div>
+            </div>
              <img src="https://ysh-cdn.kaidicloud.com/prod/png/active.png" class="pic"  />
           </div>
           <div class="active-introduce">活动介绍</div>
@@ -69,6 +79,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import imgUrl from '@/assets/img/avatar.gif'
 export default {
   components: {},
   data() {
@@ -78,14 +90,17 @@ export default {
       activeName:'1',
       applyDate:[], //报名时间：
       date:[], //活动时间：
+      imgUrl:imgUrl,
     };
+  },
+  computed: {
+    ...mapGetters(['chamberName', 'systemLogo'])
   },
   methods: {
       async open(formObj){
         this.applyDate = []
         this.date = []
         this.formObj = formObj
-   
         if(formObj.applyDate.length > 0){
           this.applyDate.push(this.getYMDHMS(formObj.applyDate[0]))
           this.applyDate.push(this.getYMDHMS(formObj.applyDate[1]))
@@ -119,6 +134,7 @@ export default {
       },
       show(){
           this.detailVisible=true;
+          console.log('chamberName',this.chamberName,this.systemLogo)
       },
       hide(){
            this.detailVisible=false;
@@ -300,6 +316,43 @@ export default {
   .active-middle{
     width: 100%;
     height: 135px;
+    position: relative;
+    .active-data{
+      position: absolute;
+      top: 58%;
+      left: 8px;
+      width: 225px;
+      height: 50px;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      .active-left{
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        .active-avatar{
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .active-right{
+        font-size: 12px;
+        margin-left: 5px;
+        .right-cham{
+          font-weight: 700;
+          margin-bottom: 5px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          width: 175px;
+        }
+        .right-member{
+          color: #c5c2c6;
+          transform: scale(0.8);
+          margin-left: -20px;
+        }
+      }
+    }
   }
   .active-introduce{
     color: #c62134;
