@@ -386,7 +386,7 @@ export default {
           this.timer = setTimeout(() => {
             this.timer = null
             this.getActivateResultByPolling(key, resolve)
-          }, 500)
+          }, 1000)
         } else {
           resolve(data)
         }
@@ -394,7 +394,7 @@ export default {
         this.timer = setTimeout(() => {
           this.timer = null
           this.getActivateResultByPolling(key, resolve)
-        }, 500)
+        }, 1000)
       }
     },
     // 获取报表数据
