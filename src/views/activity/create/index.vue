@@ -548,7 +548,7 @@
                     <el-input
                       v-if="item.type == 1"
                       show-word-limit
-                      :placeholder="item.pulldown[0].option"
+                      :placeholder="item.selects[0].value"
                       :disabled="true"
                     > 
                     <i slot="suffix" class="el-icon-arrow-down"></i>
@@ -634,14 +634,13 @@
               ></el-input>
             </el-form-item>
             <el-form-item
-              v-for="(item,index) in colData.pulldown"
+              v-for="(item,index) in colData.selects"
               :key="index"
               :label="`选项${index + 1}`"
               :rules="[{ required: true }]"
             >
               <el-input
-              
-                v-model="item.option"
+                v-model="item.value"
                 autocomplete="off"
                 placeholder="选项，10字内"
                 :maxlength="10"
