@@ -279,9 +279,9 @@ export default {
       this.colData.pulldown.forEach((v)=>{
         key.push(v.option)
       })
-      this.colData.key = key.join()
+      this.colData.key = key.join(';')
     
-     
+ 
       this.$refs['f2'].validate((valid) => {
         if (valid) {
           this.colData.type =  this.infoDate.info
@@ -487,14 +487,17 @@ export default {
            //  0 : 输入框  1：下拉框
           if(v.type == 1){
             v.msgAlert = ''
-            v.key = v.selects[0].value
-            let arrlist = v.selects[0].value.split(',')
-            arr = arrlist.map((e) => ({ option:e }))
+            arr = v.selects.map((e) => ({ option:e.value }))
+            let key = []
+            v.selects.forEach((j)=>{
+              key.push(j.value)
+            })
             v.pulldown= arr
+            v.key = key.join(';')
           } 
         })
       
-        
+       
      
       })
     },
@@ -667,12 +670,16 @@ export default {
       this.formObj.introduce = htmlStr
     },
     onnext(){
-     
+     if(this.status == 2 || this.status == 3){
+        this.activeName = '2'
+     }else{
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.activeName = '2'
         }
       }) 
+     }
+     
     },
     save(e) {
       this.formObj.isPublish = e
