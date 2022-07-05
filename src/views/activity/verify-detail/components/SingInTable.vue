@@ -31,10 +31,10 @@
         <el-button type="primary" size="small" @click="onQueryChange({pageNum:1})">查询</el-button>
       </el-form-item>
     </el-form>
-    <div class="flex-x-between-center">
-      <el-button v-if="status === '1'" type="text" @click="importVisible=true">导入</el-button>
-      <i v-else />
-      <el-button type="primary">导表</el-button>
+    <div v-if="status === '1'" class="flex-x-between-center">
+      <el-button type="text" @click="importVisible=true">导入</el-button>
+      <!-- 导表 -->
+      <ExportTable :data="genetateWorkbook" :title="`【参与人员】${activity.activityName}`" />
     </div>
 
     <el-dialog :visible.sync="importVisible" title="导入" width="400px">
@@ -53,8 +53,8 @@
         </div>
       </el-upload>
       <div slot="footer" class="flex-x-between-center">
-        <el-button type="text" @click="onDownLoadSingin"> 下载导入表 </el-button>
-        <el-button type="primary" @click="onUploadSingin"> 确认导入 </el-button>
+        <el-button type="text" @click="onDownLoadSignin"> 下载导入表 </el-button>
+        <el-button type="primary" @click="onUploadSignin"> 确认导入 </el-button>
       </div>
     </el-dialog>
 
@@ -145,9 +145,9 @@
 import { formatDate, downloadFile } from '../util'
 
 import {
-  getActivitySinginList,
-  uploadSinginData,
-  modifySinginStatus,
+  getActivitySigninList,
+  uploadSigninData,
+  modifySigninStatus,
   saveRemark,
   handleSignin,
   querySubInfo,
@@ -161,11 +161,12 @@ export default {
   components: {
     KdTable: () => import('@/components/KdTable/index'),
     KdPagination: () => import('@/components/common/KdPagination'),
+    ExportTable: () => import('@/components/statistic/ExportTable')
   },
   props: {
-    activityId: {
-      type: Number,
-      default: undefined
+    activity: {
+      type: Object,
+      required: true
     },
     initStatus: {
       type: String,
@@ -233,9 +234,18 @@ export default {
     }
   },
   computed: {
+    activityId() {
+      return this.activity.id
+    },
+    start() {
+      return +this.activity.activityStartTime
+    },
+    end() {
+      return +this.activity.activityEndTime
+    },
     tableList() {
       const commonList = [
-        { type: 'selection', width: 55 },
+        { type: 'selection', width: 55, hide: this.status !== '1' },
         {
           label: '用户信息',
           minWidth: 180,
@@ -262,8 +272,9 @@ export default {
   },
   watch: {
     status: {
-      handler() {
+      handler(newVal) {
         this.query = { pageSize: 10, pageNum: 1, namephone: '', seatStatus: -1, signStatus: -1 }
+        if (newVal === '1') this.selectionDatas = []
         this.getTableData()
       }
     },
@@ -273,9 +284,11 @@ export default {
   },
   created() {
     this.getStatusCount()
-    console.log(this.initStatus)
-    if (this.initStatus) this.status = this.initStatus
-    this.getTableData()
+    if (this.initStatus !== this.status) {
+      this.status = this.initStatus
+    } else {
+      this.getTableData()
+    }
   },
   methods: {
     async getStatusCount() {
@@ -292,7 +305,7 @@ export default {
       this.tableLoading = true
       try {
         const { query: { pageNum: page, ...query }, activityId, status } = this
-        const { data: { totalRows, list }} = await getActivitySinginList(activityId, {
+        const { data: { totalRows, list }} = await getActivitySigninList(activityId, {
           page,
           status,
           ...query,
@@ -306,14 +319,12 @@ export default {
     async onRejectApply() {
       const { value, signinId } = this.rejectDialog
       if (!value) return this.$message({ message: '请输入驳回理由', type: 'warning' })
-      const { state } = await this.modifySinginStatus({ id: signinId, status: 2, reason: value })
+      const { state } = await this.modifySigninStatus({ id: signinId, status: 2, reason: value })
       if (state === 1) this.rejectDialog.show = false
     },
 
     onSelectionChange(e) {
-      this.selectionDatas = e.map(v => ({
-
-      }))
+      this.selectionDatas = e
     },
 
     beforeUploadFile(file) {
@@ -327,19 +338,19 @@ export default {
       this.fileList = [e.file]
     },
 
-    onDownLoadSingin() {
+    onDownLoadSignin() {
       downloadFile({
         title: '报名信息模板表.xlsx',
         url: `${process.env.VUE_APP_BASE_API}/api/ec/singin/download/dynamicTemplate/${this.activityId}`
       })
     },
 
-    async onUploadSingin() {
+    async onUploadSignin() {
       if (!this.fileList.length) return this.$message({ message: '请选择上传文件', type: 'warning' })
       const formData = new FormData()
       formData.append('activityId', this.activityId)
       formData.append('file', this.fileList[0])
-      const { state, msg } = await uploadSinginData(formData)
+      const { state, msg } = await uploadSigninData(formData)
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.importVisible = false
@@ -364,6 +375,7 @@ export default {
 
     async setSubUser() {
       const { phone, signinId } = this.subDialog
+      if (!phone) return this.$message({ message: '请输入替补人员手机号', type: 'warning' })
       if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(phone)) return this.$message({ message: '手机号格式错误', type: 'warning' })
       const { state, msg } = await setSubUser({ phone, id: signinId })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
@@ -396,8 +408,8 @@ export default {
       }
     },
 
-    async modifySinginStatus({ id, status, ...data }) {
-      const { state, msg } = await modifySinginStatus({ id, status, activityId: this.activityId }, data)
+    async modifySigninStatus({ id, status, ...data }) {
+      const { state, msg } = await modifySigninStatus({ id, status, activityId: this.activityId }, data)
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getStatusCount()
@@ -412,7 +424,7 @@ export default {
           confirmButtonText: '确认移除',
           cancelButtonText: '取消',
         })
-        this.modifySinginStatus({ id: row.id, status: 3 })
+        this.modifySigninStatus({ id: row.id, status: 3 })
       } catch (error) { /* console.log(error) */ }
     },
 
@@ -444,7 +456,7 @@ export default {
       }
     },
 
-    generateSinginTime() {
+    generateSigninTime() {
       return {
         label: '报名时间',
         minWidth: 150,
@@ -452,7 +464,7 @@ export default {
       }
     },
 
-    generateSinginInfo() {
+    generateSigninInfo() {
       return {
         label: '报名信息',
         minWidth: 200,
@@ -466,14 +478,14 @@ export default {
     getApprovePersonTableList(list = []) {
       return [
         ...list,
-        this.generateSinginTime(),
-        this.generateSinginInfo(),
+        this.generateSigninTime(),
+        this.generateSigninInfo(),
         {
           label: '操作',
           fixed: 'right',
           minWidth: 80,
           render: ({ row }) => (<div>
-            <el-button type='text' onClick={() => this.modifySinginStatus({ id: row.id, status: 1 })}>通过</el-button>
+            <el-button type='text' onClick={() => this.modifySigninStatus({ id: row.id, status: 1 })}>通过</el-button>
             <br />
             <el-button type='text' onClick={() => (this.rejectDialog = { show: true, value: '', signinId: row.id })}><div style='color:red;'>驳回</div></el-button>
           </div>)
@@ -484,7 +496,7 @@ export default {
     getJoinPersonTableList(list = []) {
       return [
         ...list,
-        this.generateSinginInfo(),
+        this.generateSigninInfo(),
         {
           label: '替补',
           minWidth: 120,
@@ -527,7 +539,7 @@ export default {
           label: '签退',
           render: ({ row }) => row.signOutStatus === 1 ? '是' : '-'
         },
-        this.generateSinginTime(),
+        this.generateSigninTime(),
         {
           label: '来源',
           render: ({ row }) => {
@@ -551,34 +563,50 @@ export default {
           label: '操作',
           fixed: 'right',
           minWidth: 100,
-          render: ({ row }) => (<div>
-            <div><el-button type='text' onClick={() => this.initSeatDialog(row)}>设置座位号</el-button></div>
-            <div>
-              {
-                row.signStatus === 1
-                  ? <el-button type='text' onClick={() => this.onSignin({ id: row.id, num: 0, status: 2 })}>取消签到</el-button>
-                  : <el-button
-                    type='text'
-                    onClick={() => (this.singinDialog = { show: true, maxNum: row.subscribeTotal, num: row.subscribeTotal, signinId: row.id })}>签到</el-button>
-              }
-            </div>
-            <div>
-              {
-                row.signOutStatus === 1
-                  ? <el-button type='text' onClick={() => this.onSignOut({ id: row.id, status: 2 })}>取消签退</el-button>
-                  : <el-button type='text' onClick={() => this.onSignOut({ id: row.id, status: 1 })}>签退</el-button>
-              }
-            </div>
-            <div><el-button type='text' onClick={() => this.onDelSingin(row)}><div style='color:red;'>移除</div></el-button></div>
-          </div>)
+          render: ({ row }) => {
+            return (<div>
+              <div><el-button type='text' onClick={() => this.initSeatDialog(row)}>设置座位号</el-button></div>
+              <div> { this.generateSigninButton(row) } </div>
+              <div> { this.generateSignOutButton(row) } </div>
+              <div><el-button type='text' onClick={() => this.onDelSingin(row)}><div style='color:red;'>移除</div></el-button></div>
+            </div>)
+          }
         },
       ]
+    },
+    generateSigninButton(row) {
+      const { start, end } = this
+      const now = Date.now()
+      // 活动开始前1小时，才可以【签到】，直到已结束，其他时段不显示。
+      if (now - start >= -1000 * 60 * 60 && now - end <= 0) {
+        if (row.signStatus === 1) {
+          return <el-button type='text' onClick={() => this.onSignin({ id: row.id, num: 0, status: 2 })}>取消签到</el-button>
+        } else {
+          return <el-button
+            type='text'
+            onClick={
+              () => (this.singinDialog = { show: true, maxNum: row.subscribeTotal, num: row.subscribeTotal, signinId: row.id })
+            }>
+          签到
+          </el-button>
+        }
+      }
+    },
+    generateSignOutButton(row) {
+      const { start, end } = this
+      const now = Date.now()
+      // 活动开始后和结束后一小时，才可以【签退】，其他时间不显示；
+      if (now - start >= 0 && now - end <= 1000 * 60 * 60) {
+        return row.signOutStatus === 1
+          ? <el-button type='text' onClick={() => this.onSignOut({ id: row.id, status: 2 })}>取消签退</el-button>
+          : <el-button type='text' onClick={() => this.onSignOut({ id: row.id, status: 1 })}>签退</el-button>
+      }
     },
     // 已驳回
     getRejectPersonTableList(list = []) {
       return [
         ...list,
-        this.generateSinginTime(),
+        this.generateSigninTime(),
         {
           label: '驳回时间',
           minWidth: 150,
@@ -588,14 +616,60 @@ export default {
           label: '驳回理由',
           prop: 'rejectReason',
         },
-        this.generateSinginInfo(),
+        this.generateSigninInfo(),
         {
           label: '操作',
           fixed: 'right',
           minWidth: 130,
-          render: ({ row }) => <el-button type='text' onClick={() => this.modifySinginStatus({ id: row.id, status: 1 })}>重新审核并通过</el-button>
+          render: ({ row }) => <el-button type='text' onClick={() => this.modifySigninStatus({ id: row.id, status: 1 })}>重新审核并通过</el-button>
         }
       ]
+    },
+    // 导表
+    genetateWorkbook(XLSX) {
+      const { selectionDatas } = this
+      if (!selectionDatas.length) {
+        this.$message({ message: '请选择导出记录', type: 'warning' })
+        return null
+      }
+      const { signs } = selectionDatas[0]
+      let worksheet, workbook
+      worksheet = XLSX.utils.aoa_to_sheet([
+        ['排序', '用户信息', null, null, ...signs.map((v, i) => i === 0 ? '报名信息' : null), '替代人员手机号', '预计到场', '到场人数', '座位号（若多个座位号，则用“、”隔开，如：座号1、座位2）', '报名时间', '签到', '签退', '来源', '备注'],
+        [null, '用户名', '所在商协会', '手机号', ...signs.map((v, i) => v.key)],
+        ...selectionDatas.map((v, i) => ([
+          // 排序,'用户名', '所在商协会', '手机号'
+          i + 1, v.userName, v.chamberName, v.phone,
+          // 报名信息
+          ...v.signs.map(v => v.value),
+          // '替代人员手机号', '预计到场', '到场人数'
+          v.subUserPhone, v.subscribeTotal, v.realTotal,
+          // '座位号（若多个座位号，则用“、”隔开，如：座号1、座位2）', '报名时间'
+          v.seats.map(v => v.seatName).join('、'), formatDate(v.createdTs),
+          // '签到', '签退', '来源', '备注'
+          v.signStatus === 1 ? '是' : '-', v.signOutStatus === 1 ? '是' : '-',
+          // '来源', '备注'
+          { 1: '导入', 2: '小程序报名', 3: '临时签到' }[v.sourceType], v.remark
+        ]))
+      ])
+      const len = signs.length
+      worksheet['!merges'] = [
+        { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
+        { s: { c: 1, r: 0 }, e: { c: 3, r: 0 }},
+        { s: { c: 4, r: 0 }, e: { c: len + 3, r: 0 }},
+        { s: { c: len + 4, r: 0 }, e: { c: len + 4, r: 1 }},
+        { s: { c: len + 5, r: 0 }, e: { c: len + 5, r: 1 }},
+        { s: { c: len + 6, r: 0 }, e: { c: len + 6, r: 1 }},
+        { s: { c: len + 7, r: 0 }, e: { c: len + 7, r: 1 }},
+        { s: { c: len + 8, r: 0 }, e: { c: len + 8, r: 1 }},
+        { s: { c: len + 9, r: 0 }, e: { c: len + 9, r: 1 }},
+        { s: { c: len + 10, r: 0 }, e: { c: len + 10, r: 1 }},
+        { s: { c: len + 11, r: 0 }, e: { c: len + 11, r: 1 }},
+        { s: { c: len + 12, r: 0 }, e: { c: len + 12, r: 1 }},
+      ]
+      workbook = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
+      return workbook
     },
   },
 }

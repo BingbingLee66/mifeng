@@ -14,21 +14,21 @@ export const uploadSeating = data => request({
 })
 
 // 获取活动报名列表
-export const getActivitySinginList = (id, params) => request({
+export const getActivitySigninList = (id, params) => request({
   url: `/api/ec/singin/activity/${id}`,
   method: 'get',
   params
 })
 
 // 导入活动报名数据
-export const uploadSinginData = data => request({
+export const uploadSigninData = data => request({
   url: '/api/ec/singin',
   method: 'post',
   data
 })
 
 // 修改报名状态
-export const modifySinginStatus = ({ status, id, activityId }, params) => request({
+export const modifySigninStatus = ({ status, id, activityId }, params) => request({
   url: `/api/ec/singin/apply/${status}/${id}/${activityId}`,
   method: 'put',
   params
