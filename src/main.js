@@ -11,7 +11,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-import { reportHashUrlData, reportClickData } from './api/statistics/tracker'
+import { reportSlsData } from './api/statistics/tracker'
 import i18n from './lang' // Internationalization
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -53,8 +53,19 @@ Vue.component('kdDialog', kdDialog)
 */
 router.afterEach((to, from) => {
   const { ckey } = store.getters
-  if (ckey && to.path !== from.path) { // 商会后台上报
-    reportHashUrlData({ url: to.path, ckey })
+  if (to.path !== from.path) { // 商会后台上报
+    const user_only = store.getters.profile.userName
+    var ckeyStr = ''
+    if (ckey) {
+      ckeyStr = store.getters.ckey
+    } else {
+      return
+    }
+    try {
+      reportSlsData({ url: to.path, ckey: ckeyStr, user_only: user_only, method: 'PAGE_CLICK', status: 200, params: '', extend: '' })
+    } catch (e) {
+      console.log('sls日志收集失败', e)
+    }
   }
 })
 
@@ -65,7 +76,8 @@ router.afterEach((to, from) => {
 Vue.prototype.$trackClick = function(buttonId) {
   const { ckey } = this.$store.getters
   if (!ckey) return
-  reportClickData({ buttonId, ckey })
+  // 暂时不上传，后端接口未发布
+  // reportClickData({ buttonId, ckey })
 }
 
 new Vue({
