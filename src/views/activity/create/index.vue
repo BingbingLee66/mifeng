@@ -665,10 +665,10 @@
       </el-dialog>
       
       <el-row>
-        <el-col style="width: 600px; padding-left: 160px;margin-top:20px;">
+        <el-col style="width: 600px; padding-left: 30px;margin-top:20px;">
           <!-- <el-button type="primary" v-dbClick @click="save">保存</el-button>
           <el-button @click="cancel">取消</el-button> -->
-        
+           <el-button @click="activeName = '1'">上一步</el-button>
           <el-button @click="save(0)">保存，暂不发布</el-button>
           <el-button type="primary"  @click="save(1)">保存并发布</el-button>
         </el-col>

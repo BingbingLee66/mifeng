@@ -151,7 +151,6 @@ export default {
         map: null, // 地图实例 （地图）
         marker: '', // 地图的标识（标注的点）（地图）
         appkey: 'CGFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
-        // appkey: 'URZBZ-WQXL3-W3O3O-YVYMA-5ZFPJ-AUBFY', // appkey是开发者key（地图
         suggest: null, //  新建一个关键字输入提示类
         infowindow:null, //地图信息
       },
@@ -246,8 +245,6 @@ export default {
     },
     // 新增
     add() {
-    
-      
       let completely = false
       if(this.infoDate.info == 1){
         this.colData.pulldown.forEach((v)=>{
@@ -670,12 +667,7 @@ export default {
       this.formObj.introduce = htmlStr
     },
     onnext(){
-      // 扩展功能
-      this.roleIds.forEach((v)=>{
-        if(v == 1) this.formObj.extraSignin = 1
-        if(v == 2) this.formObj.extraSignout = 1
-        if(v == 3) this.formObj.extraSeat = 1
-      })
+     
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.activeName = '2'
@@ -683,10 +675,15 @@ export default {
       }) 
     },
     save(e) {
-     
       this.formObj.isPublish = e
       this.$refs['form'].validate((valid) => {
         if (valid) {
+           // 扩展功能
+          this.roleIds.forEach((v)=>{
+            if(v == 1) this.formObj.extraSignin = 1
+            if(v == 2) this.formObj.extraSignout = 1
+            if(v == 3) this.formObj.extraSeat = 1
+          })
           // if (!this.areaData) {
           //   return this.$message.error('请选择省份')
           // } else if (!this.areaData.hasOwnProperty('city')) {
