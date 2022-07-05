@@ -305,7 +305,7 @@ export default {
     },
     // 删除
     del(index) {
-      console.log(index)
+   
       this.arrayData.splice(index, 1)
     },
     // 修改
@@ -391,7 +391,7 @@ export default {
         if(resData.extraSignin == 1) this.roleIds.push(1)
         if(resData.extraSignout == 1) this.roleIds.push(2)
         if(resData.extraSeat == 1) this.roleIds.push(3)
-        console.log('this.roleIds',this.roleIds)
+    
         // 活动地点回显
         this.provinceValue = resData.province
         this.cityValue = resData.city
@@ -467,7 +467,7 @@ export default {
         this.formObj.competence=resData.competence+''
 
       
-        console.log('this.formObj11111',this.formObj,this.auditStatus)
+      
         this.onselect(this.formObj)
       
         // 活动介绍回显
@@ -495,7 +495,7 @@ export default {
         })
       
         
-        console.log('this.arrayData',this.arrayData)
+     
       })
     },
   

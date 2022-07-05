@@ -134,7 +134,6 @@ export default {
       },
       show(){
           this.detailVisible=true;
-          console.log('chamberName',this.chamberName,this.systemLogo)
       },
       hide(){
            this.detailVisible=false;
