@@ -99,7 +99,7 @@
                     </el-option>
                   </el-select> -->
                   <div class="address-Obscuration">
-                    <el-input  style="width:450px;" @input="addressChange"  clearable v-model="formObj.addressInfo" placeholder="请输入地址">
+                    <el-input  style="width:450px;" :disabled="status == 2 || status == 3" @input="addressChange"  clearable v-model="formObj.addressInfo" placeholder="请输入地址">
                        <i
                         class="el-icon-location-information"
                         slot="suffix">
@@ -309,9 +309,9 @@
             <el-col style="width: 700px; height: 40px;margin-top: -38px;">
               <el-form-item label="扩展功能：" >
                  <el-checkbox-group  v-model="roleIds">
-                  <el-checkbox  :label="1">签到</el-checkbox>
-                  <el-checkbox  :label="2">签退</el-checkbox>
-                  <el-checkbox  :label="3">座位表</el-checkbox>
+                  <el-checkbox :disabled="status == 2 || status == 3"  :label="1">签到</el-checkbox>
+                  <el-checkbox :disabled="status == 2 || status == 3"  :label="2">签退</el-checkbox>
+                  <el-checkbox :disabled="status == 2 || status == 3"  :label="3">座位表</el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
             </el-col>
@@ -438,8 +438,8 @@
           <div class="sgin-way">
             <div class="sgin-left">报名方式：</div>
             <el-radio-group v-model="formObj.signType">
-              <el-radio :label="0">自定义报名表</el-radio>
-              <el-radio :label="1">一键报名</el-radio>
+              <el-radio :disabled="status == 2 || status == 3" :label="0">自定义报名表</el-radio>
+              <el-radio :disabled="status == 2 || status == 3" :label="1">一键报名</el-radio>
             </el-radio-group>
           </div>
           <div class="sgin-surface">报名表</div>
@@ -448,8 +448,8 @@
               <span><i @click="isPresent = true" class="el-icon-question"></i></span>
             </div>
             <el-radio-group v-model="formObj.arriveType">
-              <el-radio :label="0">需填写</el-radio>
-              <el-radio :label="1">无需填写</el-radio>
+              <el-radio :disabled="status == 2 || status == 3" :label="0">需填写</el-radio>
+              <el-radio :disabled="status == 2 || status == 3" :label="1">无需填写</el-radio>
             </el-radio-group>
           </div>
         </div>
