@@ -87,7 +87,10 @@
       </el-col>
     </el-row>
 
-    <SingInTable :activity-id="activityId" :init-status="$route.query.status" />
+    <SingInTable
+      :activity="activity"
+      :init-status="$route.query.status"
+    />
 
   </div>
 </template>
@@ -110,7 +113,8 @@ export default {
   data() {
     return {
       activity: {
-        seating: ''
+        seating: '',
+        id: +this.$route.query.activityId
       },
       activityQrCodeShow: false,
       codeList: [
@@ -138,6 +142,7 @@ export default {
   methods: {
     async getActivityInfo() {
       const { data } = await getChamberActivityInfoById(this.activityId)
+      data.id = this.activityId
       this.activity = data
     },
     formatDate,
