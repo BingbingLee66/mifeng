@@ -46,11 +46,11 @@ export default {
         check: 1,  // 是否 必填 选填
         key:'', // 下拉框需要把数据拼接成字符串
         // 下拉框
-        pulldown:[
+        selects:[
           {
-            option:'', //选项1
+            value:'', //选项1
           },{
-            option:'', //选项2
+            value:'', //选项2
           }
         ],
         key:'' , // 参数名称，下拉框情况下多个参数请;拼接
@@ -228,11 +228,11 @@ export default {
         msgAlert: '',
         lengthLimit: '',
         check: 1,
-        pulldown:[
+        selects:[
           {
-            option:'', //选项1
+            value:'', //选项1
           },{
-            option:'', //选项2
+            value:'', //选项2
           }
         ],
       }
@@ -247,8 +247,8 @@ export default {
     add() {
       let completely = false
       if(this.infoDate.info == 1){
-        this.colData.pulldown.forEach((v)=>{
-          if(v.option == '') completely = true
+        this.colData.selects.forEach((v)=>{
+          if(v.value == '') completely = true
         })
       }
       if(completely) return this.$message.error('请填写选项标题')
@@ -276,8 +276,8 @@ export default {
         }
       }
       let key = []
-      this.colData.pulldown.forEach((v)=>{
-        key.push(v.option)
+      this.colData.selects.forEach((v)=>{
+        key.push(v.value)
       })
       this.colData.key = key.join(';')
     
@@ -481,24 +481,20 @@ export default {
         // 动态字段回显
         // this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
       
-        this.arrayData  = resData.dtos.map(({title, msgAlert, lengthLimit, check,type,selects,key}) => ({title, msgAlert, lengthLimit, check,type,selects,key,pulldown:[]}));
+        this.arrayData  = resData.dtos.map(({title, msgAlert, lengthLimit, check,type,selects,key}) => ({title, msgAlert, lengthLimit, check,type,selects,key}));
         let arr = []
         this.arrayData.forEach((v)=>{
            //  0 : 输入框  1：下拉框
           if(v.type == 1){
             v.msgAlert = ''
-            arr = v.selects.map((e) => ({ option:e.value }))
             let key = []
             v.selects.forEach((j)=>{
               key.push(j.value)
             })
-            v.pulldown= arr
+         
             v.key = key.join(';')
           } 
         })
-      
-       
-     
       })
     },
   
@@ -803,10 +799,10 @@ export default {
     // 下拉框添加选项
     onOptions(){
       let obj = {
-        option : ''
+        value : ''
       }
-      if(this.colData.pulldown.length >= 10) return this.$message.error('最多只能添加10个')
-      this.colData.pulldown.push(obj)
+      if(this.colData.selects.length >= 10) return this.$message.error('最多只能添加10个')
+      this.colData.selects.push(obj)
      
     },
     onInfoDate(){
