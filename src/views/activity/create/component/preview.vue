@@ -96,8 +96,7 @@ export default {
           this.date.push(this.getYMDHMS(formObj.date[1]))
         }
         this.show()
-        console.log('this.formObj',this.formObj)
-        console.log('this.applyDate',this.applyDate,this.date)
+        
       }, 
 
       //时间戳转年月日时分秒

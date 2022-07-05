@@ -85,8 +85,8 @@ export default {
         link:'',//直播链接   
         signType:0,  // 报名方式是否必填 0否 1是
         arriveType:0,  // 到场人数是否必填 0否 1是
-        longitude:'', // 经度
-        latitude:'', // 纬度
+        longitude:113.326548, // 经度
+        latitude:23.125821, // 纬度 
         auditStatus:0, // 报名审核
         extraSignin: 0 ,  // 拓展功能签到 0否 1是
         extraSignout:0 , // 拓展功能签退 0否 1是
@@ -150,15 +150,12 @@ export default {
       defaultParams :{
         map: null, // 地图实例 （地图）
         marker: '', // 地图的标识（标注的点）（地图）
-        increaseZB:{ // 这个参数是地图的经纬度（地图）
-          lat: 23.125821, // 纬度
-          lng: 113.326548 // 经度
-        },
-        // appkey: 'CGFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
-        appkey: 'URZBZ-WQXL3-W3O3O-YVYMA-5ZFPJ-AUBFY', // appkey是开发者key（地图
+        appkey: 'CGFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
+        // appkey: 'URZBZ-WQXL3-W3O3O-YVYMA-5ZFPJ-AUBFY', // appkey是开发者key（地图
         suggest: null, //  新建一个关键字输入提示类
+        infowindow:null, //地图信息
       },
-      sing:'五千多',
+     
     }
   },
   created() {
@@ -409,8 +406,7 @@ export default {
         this.formObj.title = resData.addressInfo
         this.formObj.longitude = resData.longitude
         this.formObj.latitude = resData.latitude
-        this.defaultParams.increaseZB.lat = resData.latitude
-        this.defaultParams.increaseZB.lng = resData.longitude
+    
         this.formObj.district = resData.area
         
         this.formObj.signType = resData.signType
@@ -818,8 +814,6 @@ export default {
     },
 
     onaddress(e){
-      this.defaultParams.increaseZB.lat = e.location.lat
-      this.defaultParams.increaseZB.lng = e.location.lng
       this.formObj.province = e.province // 活动地点(省)
       this.formObj.city = e.city // 活动地点(市)
       this.formObj.area = e.district // 活动地点(区)
@@ -832,16 +826,17 @@ export default {
     // 选择地址
     onselect(e){
      
-      const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
+      const myLatLng = this.createZuoBiao(this.formObj.latitude, this.formObj.longitude)
 
       //更新地图中心位置
       this.defaultParams.map.setCenter(
-        new TMap.LatLng(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
+        new TMap.LatLng(this.formObj.latitude, this.formObj.longitude)
       );
-      //初始化marker
+      //初始化marker 清除数据
       if (this.defaultParams.marker) {
         this.defaultParams.marker.setMap(null);
         this.defaultParams.marker = null;
+        this.defaultParams.infowindow.close()
       }
       this.defaultParams.marker = new TMap.MultiMarker({
         map: this.defaultParams.map,  //指定地图容器
@@ -866,19 +861,20 @@ export default {
    
       this.addressList = []
       //创建InfoWindow实例，并进行初始化
-      var infowindow =new TMap.InfoWindow({
+      this.defaultParams.infowindow =new TMap.InfoWindow({
         position:myLatLng,//显示信息窗口的坐标
         map:this.defaultParams.map,
         content:`<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址${e.province}${e.city}${e.district}</p>`, //信息窗口内容
         offset: { x: 0, y: -50 },
       });
+     
     },
 
     // 初始化地图
    async initMap(){
       await this.loadScript(`https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=${this.defaultParams.appkey}`)
      
-      const myLatLng = this.createZuoBiao(this.defaultParams.increaseZB.lat, this.defaultParams.increaseZB.lng)
+      const myLatLng = this.createZuoBiao(this.formObj.latitude, this.formObj.longitude)
 
       this.defaultParams.map = new TMap.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map
         center: myLatLng, // 目前的位置
