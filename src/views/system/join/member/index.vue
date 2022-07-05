@@ -4,14 +4,14 @@
       <div class="title">邀请入会专属二维码:</div>
       <div class="post">
         <div id="postdiv" ref="postRefs" class="post-wrap">
-          <p class="tit-1">{{property.name}}</p>
+          <p class="tit-1">{{ property.name }}</p>
           <p class="tit-2">邀请您加入</p>
           <div class="erweima">
-            <img :src="property.systemJoinQrcode" />
+            <img :src="property.systemJoinQrcode">
           </div>
         </div>
         <el-button style="margin-top: 20px;" type="primary" @click="refresh">刷新二维码</el-button>
-        <el-button style="margin-top: 20px;" type="primary" @click="domtoimage" :loading="isLoading">保存图片</el-button>
+        <el-button style="margin-top: 20px;" type="primary" :loading="isLoading" @click="clickGeneratePicture">保存图片</el-button>
       </div>
     </div>
   </div>

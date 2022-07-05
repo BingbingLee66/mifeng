@@ -167,9 +167,10 @@ export default {
       this.list = []
       this.currentpage = 1
       this.limit = 10
-      if (this.has('商会资讯', '查询')) {
-        this.fetchData()
-      }
+      // if (this.has('商会资讯', '查询')) {
+      //   this.fetchData()
+      // }
+      this.fetchData()
     },
     getContentColumnType() {
       let contentModuleId = 8
