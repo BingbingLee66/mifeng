@@ -401,13 +401,13 @@ export default {
         this.formObj.area = resData.area
         this.formObj.addressInfo = resData.addressInfo
         this.formObj.title = resData.addressInfo
-        this.formObj.longitude = resData.longitude
-        this.formObj.latitude = resData.latitude
-    
+       
         this.formObj.district = resData.area
         
         this.formObj.signType = resData.signType
         this.formObj.arriveType = resData.arriveType
+        if(resData.longitude != null)    this.formObj.longitude = resData.longitude
+        if(resData.latitude != null)    this.formObj.latitude = resData.latitude
        
         // this.areaData = {
         //   province: {
@@ -468,7 +468,7 @@ export default {
 
       
       
-        this.onselect(this.formObj)
+        if(resData.longitude != null || resData.latitude != null)   this.onselect(this.formObj)
       
         // 活动介绍回显
         // this.$refs.ckeditor1.init()
@@ -752,6 +752,14 @@ export default {
           if(this.formObj.competence){
             this.formObj['competence'] = Number(this.formObj['competence'])
           }
+          // 如果地址没选则去除地址信息
+          if(this.formObj.addressInfo == ''){
+            this.formObj.province == ''
+            this.formObj.city == ''
+            this.formObj.area == ''
+            this.formObj.longitude == ''
+            this.formObj.latitude == ''
+          }
 
       
           createActivity(this.formObj).then(res => {
@@ -822,9 +830,7 @@ export default {
     },  
     // 选择地址
     onselect(e){
-     
       const myLatLng = this.createZuoBiao(this.formObj.latitude, this.formObj.longitude)
-
       //更新地图中心位置
       this.defaultParams.map.setCenter(
         new TMap.LatLng(this.formObj.latitude, this.formObj.longitude)
