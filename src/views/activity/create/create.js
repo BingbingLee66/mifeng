@@ -468,7 +468,7 @@ export default {
 
       
       
-        if(resData.longitude != null || resData.latitude != null)   this.onselect(this.formObj)
+        if(resData.longitude || resData.latitude)   this.onselect(this.formObj)
       
         // 活动介绍回显
         // this.$refs.ckeditor1.init()
@@ -754,14 +754,14 @@ export default {
           }
           // 如果地址没选则去除地址信息
           if(this.formObj.addressInfo == ''){
-            this.formObj.province == ''
-            this.formObj.city == ''
-            this.formObj.area == ''
-            this.formObj.longitude == ''
-            this.formObj.latitude == ''
+            this.formObj.province = ''
+            this.formObj.city = ''
+            this.formObj.area = ''
+            this.formObj.longitude = ''
+            this.formObj.latitude = ''
           }
 
-      
+          
           createActivity(this.formObj).then(res => {
             if(res.state===1){
               this.$message.success(res.msg)
