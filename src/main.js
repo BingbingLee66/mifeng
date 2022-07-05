@@ -69,14 +69,15 @@ Vue.filter('dateFormat2', (dataStr) => {
 Vue.mixin({
   methods: {
     // 创建视频
-    $createPlayer(id, accessKeyId, accessKeySecret, securityToken, region, vid, height = '300px') {
+    $createPlayer(id, accessKeyId, accessKeySecret, securityToken, region, vid, height = '300px',autoplay) {
       accessKeyId = decrypt(accessKeyId)
       accessKeySecret = decrypt(accessKeySecret)
       securityToken = decrypt(securityToken)
       region = decrypt(region)
       return new Aliplayer({
         id,
-        autoplay: false,
+        // autoplay: false,  //是否自动播放
+        autoplay,  //是否自动播放
         width: '100%',
         height,
         // 支持播放地址播放,此播放优先级最高

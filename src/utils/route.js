@@ -19,7 +19,9 @@ export function traverseRoutes(menus) {
       num: index + 1,
       parentId: menu.parentId,
       path: menu.menuUrl,
-      children: menu.children
+      children: menu.children,
+      guideId: menu.guideId,
+      hadGuide: menu.hadGuide,
     }
     if (routeMenu.component) {
       let name = routeMenu.component

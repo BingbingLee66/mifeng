@@ -145,7 +145,7 @@ export default {
                 type: 'error'
               })
             }
-           
+
             this.visible = false
           })
         } else {
@@ -153,25 +153,41 @@ export default {
         }
       })
     },
-    del(row) {
-      this.$confirm('', '确定删除？', {
+    del(row,len) {
+      console.log("数据："+row+"。。。长度："+len);
+      // return
+      if(len <= 1){
+        this.$alert('无法删除，请至少保留一个职位', '温馨提示', {
+          confirmButtonText: '我知道了'
+        });
+        return;
+      }
+
+      this.$confirm( '确定删除'+row.postName+'职位吗？','删除职位', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(() => {
         let params = {
           'id': row.id
         }
-        del(params).then(response => {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-          this.init()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消删除'
+        del(params).then(res => {
+          if(res.state == 0){
+            this.$confirm( res.msg,'温馨提示', {
+              confirmButtonText: '去替换',
+              cancelButtonText: '取消删除'
+            }).then(() => {
+              this.$router.push({
+                name:'商/协会成员',
+                query:{memberPostType: row.id}
+              })
+            })
+          }else if(res.state == 1){
+            this.$message({
+              message: '删除成功',
+              type: 'success'
+            })
+            this.init()
+          }
         })
       })
     },
