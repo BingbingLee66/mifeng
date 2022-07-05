@@ -406,8 +406,8 @@ export default {
         
         this.formObj.signType = resData.signType
         this.formObj.arriveType = resData.arriveType
-        if(resData.longitude != null)    this.formObj.longitude = resData.longitude
-        if(resData.latitude != null)    this.formObj.latitude = resData.latitude
+        if(resData.longitude)    this.formObj.longitude = resData.longitude
+        if(resData.latitude)    this.formObj.latitude = resData.latitude
        
         // this.areaData = {
         //   province: {
