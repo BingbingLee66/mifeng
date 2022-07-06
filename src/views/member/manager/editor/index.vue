@@ -315,23 +315,23 @@
               </el-form-item>
             </el-col>
           </el-row> -->
-              <div class="title_block">身份信息</div>
-              <div v-if="formObj.identityVOList.length>0">
-              <el-row  v-for="(item,index) in formObj.identityVOList" :key="index">
-                <el-col :span="15">
-                  <el-form-item :label="item.type===1 ? '企业：': '机构：'"  class="adress_style">
-                <el-input :value="item.unit" max-length="200" disabled/>
-              </el-form-item>
-                </el-col>
+          <div class="title_block">身份信息</div>
+          <div v-if="formObj.identityVOList.length>0">
+            <el-row v-for="(item,index) in formObj.identityVOList" :key="index">
               <el-col :span="15">
-                  <el-form-item label="职务：" class="adress_style">
-                <el-input :value="item.post" disabled />
-              </el-form-item>
+                <el-form-item :label="item.type===1 ? '企业：': '机构：'" class="adress_style">
+                  <el-input :value="item.unit" max-length="200" disabled />
+                </el-form-item>
               </el-col>
-              </el-row>
+              <el-col :span="15">
+                <el-form-item label="职务：" class="adress_style">
+                  <el-input :value="item.post" disabled />
+                </el-form-item>
+              </el-col>
+            </el-row>
             <!-- </el-col> -->
-            </div>
-            <!-- <el-col :span="15" v-if="formObj.IdentityVO.type==1">
+          </div>
+          <!-- <el-col :span="15" v-if="formObj.IdentityVO.type==1">
               <el-form-item label="企业："  class="adress_style">
                 <el-input :value=" formObj.IdentityVO.unit" max-length="200" />
               </el-form-item>

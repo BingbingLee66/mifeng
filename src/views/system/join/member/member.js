@@ -89,6 +89,7 @@ export default {
         a.download = '商会二维码'
         a.href = imgUrl
         a.click()
+        this.$trackClick(251)
       } catch (error) {
         // console.log(error)
       }

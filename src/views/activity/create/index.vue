@@ -378,9 +378,19 @@
               </el-form-item>
             </el-col>
           </el-row>
-
+         
 
           <div v-if="ruleCkeys.includes(ckey) || (!ckey)">
+            <el-row>
+              <el-col>
+                <el-form-item label="直播链接类型："  >
+                  <el-radio-group v-model="formObj.linkType">
+                    <el-radio  :label="1">云会播小程序</el-radio>
+                    <el-radio  :label="2">H5链接</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <el-row>
               <el-col style="width: 600px; height: 50px">
                 <el-form-item label="直播间链接：" prop="link">
