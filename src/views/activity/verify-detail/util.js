@@ -32,6 +32,7 @@ export function formatDate(str) {
 
 export function downloadFile({ url, title }) {
   let a = document.createElement('a')
+  console.log(url)
   a.href = url
   a.download = title
   a.click()

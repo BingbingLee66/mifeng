@@ -34,7 +34,7 @@
     <div v-if="status === '1'" class="flex-x-between-center">
       <el-button type="text" @click="importVisible=true">导入</el-button>
       <!-- 导表 -->
-      <ExportTable :data="genetateWorkbook" :title="`【参与人员】${activity.activityName}`" />
+      <el-button type="primary" @click="onExportExcel">导表</el-button>
     </div>
 
     <el-dialog :visible.sync="importVisible" title="导入" width="400px">
@@ -58,7 +58,7 @@
       </div>
     </el-dialog>
 
-    <KdTable v-loading="tableLoading" class="mt5" :list="tableList" :data="tableData" @selection-change="onSelectionChange" />
+    <KdTable v-loading="tableLoading" class="mt5" :columns="tableList" :rows="tableData" @selection-change="onSelectionChange" />
 
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
@@ -155,14 +155,14 @@ import {
   handleSignOut,
   getSigninStatusCount,
   resetSigninSeat,
-  modifySeatStatus
+  modifySeatStatus,
+  getActivityExcel
 } from '@/api/activity/activity-verify-new'
 
 export default {
   components: {
-    KdTable: () => import('@/components/KdTable/index'),
+    KdTable: () => import('@/components/common/KdTable'),
     KdPagination: () => import('@/components/common/KdPagination'),
-    ExportTable: () => import('@/components/statistic/ExportTable')
   },
   props: {
     activity: {
@@ -246,7 +246,7 @@ export default {
     },
     tableList() {
       const commonList = [
-        { type: 'selection', width: 55, hide: this.status !== '1' },
+        { type: 'selection', width: 55, hidden: this.status !== '1' },
         {
           label: '用户信息',
           minWidth: 180,
@@ -293,7 +293,7 @@ export default {
   },
   methods: {
     async getStatusCount() {
-      const { data } = await getSigninStatusCount()
+      const { data } = await getSigninStatusCount(this.activityId)
       this.statusCount = data
     },
 
@@ -636,52 +636,18 @@ export default {
         }
       ]
     },
-    // 导表
-    genetateWorkbook(XLSX) {
-      const { selectionDatas } = this
-      if (!selectionDatas.length) {
-        this.$message({ message: '请选择导出记录', type: 'warning' })
-        return null
+    async onExportExcel() {
+      try {
+        const { query: { namephone, seatStatus, signStatus }, status, activityId, activity } = this
+        const res = await getActivityExcel(activityId, { namephone, seatStatus, signStatus, status, page: 1, pageSize: 1 })
+        downloadFile({
+          title: `【参与人员】${activity.activityName}`,
+          url: res
+        })
+      } catch (error) {
+        console.log(error)
       }
-      const { signs } = selectionDatas[0]
-      let worksheet, workbook
-      worksheet = XLSX.utils.aoa_to_sheet([
-        ['排序', '用户信息', null, null, ...signs.map((v, i) => i === 0 ? '报名信息' : null), '替代人员手机号', '预计到场', '到场人数', '座位号（若多个座位号，则用“、”隔开，如：座号1、座位2）', '报名时间', '签到', '签退', '来源', '备注'],
-        [null, '用户名', '所在商协会', '手机号', ...signs.map((v, i) => v.key)],
-        ...selectionDatas.map((v, i) => ([
-          // 排序,'用户名', '所在商协会', '手机号'
-          i + 1, v.userName, v.chamberName, v.phone,
-          // 报名信息
-          ...v.signs.map(v => v.value),
-          // '替代人员手机号', '预计到场', '到场人数'
-          v.subUserPhone, v.subscribeTotal, v.realTotal,
-          // '座位号（若多个座位号，则用“、”隔开，如：座号1、座位2）', '报名时间'
-          v.seats.map(v => v.seatName).join('、'), formatDate(v.createdTs),
-          // '签到', '签退', '来源', '备注'
-          v.signStatus === 1 ? '是' : '-', v.signOutStatus === 1 ? '是' : '-',
-          // '来源', '备注'
-          { 1: '导入', 2: '小程序报名', 3: '临时签到' }[v.sourceType], v.remark
-        ]))
-      ])
-      const len = signs.length
-      worksheet['!merges'] = [
-        { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
-        { s: { c: 1, r: 0 }, e: { c: 3, r: 0 }},
-        { s: { c: 4, r: 0 }, e: { c: len + 3, r: 0 }},
-        { s: { c: len + 4, r: 0 }, e: { c: len + 4, r: 1 }},
-        { s: { c: len + 5, r: 0 }, e: { c: len + 5, r: 1 }},
-        { s: { c: len + 6, r: 0 }, e: { c: len + 6, r: 1 }},
-        { s: { c: len + 7, r: 0 }, e: { c: len + 7, r: 1 }},
-        { s: { c: len + 8, r: 0 }, e: { c: len + 8, r: 1 }},
-        { s: { c: len + 9, r: 0 }, e: { c: len + 9, r: 1 }},
-        { s: { c: len + 10, r: 0 }, e: { c: len + 10, r: 1 }},
-        { s: { c: len + 11, r: 0 }, e: { c: len + 11, r: 1 }},
-        { s: { c: len + 12, r: 0 }, e: { c: len + 12, r: 1 }},
-      ]
-      workbook = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
-      return workbook
-    },
+    }
   },
 }
 </script>

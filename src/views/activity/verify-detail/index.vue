@@ -1,19 +1,19 @@
 <template>
   <div class="page">
     <el-row :gutter="20">
-      <el-col :span="8">
-        <el-card shadow="never">
-          <div class="board flex-x-between-center">
+      <el-col :span="15" style="max-width:530px">
+        <el-card class="activity-card" shadow="never">
+          <div class="board flex-x-between-center ">
             <div class="board-left">
               <div class="board-title">{{ activity.activityName }}</div>
-              <div class="board-item mt20"><span class="mr10">报名时间</span> {{ formatDate(activity.activitySignUpStartTime) }} ～ {{ formatDate(activity.activitySignUpEndTime) }}</div>
+              <div v-if="activity.activitySignUpStartTime" class="board-item"><span class="mr10">报名时间</span> {{ formatDate(activity.activitySignUpStartTime) }} ～ {{ formatDate(activity.activitySignUpEndTime) }}</div>
               <div class="board-item"><span class="mr10">活动时间</span> {{ formatDate(activity.activityStartTime) }} ～ {{ formatDate(activity.activityEndTime) }}</div>
               <div class="board-item"><span class="mr10">举办地点</span> {{ activity.hostPlace }} </div>
               <div v-if="activity.limit" class="board-item"><span class="mr10">参加限制</span> {{ activity.numberOfApplicants }}/{{ activity.participants }}</div>
             </div>
             <div class="board-right flex-y-center-center">
               <img class="qr-code" :src="activity.qrCode" @click="activityQrCodeShow=true">
-              <div> 活动二维码 <el-button type="text" @click="$refs.activityDialog.saveImage()">下载</el-button> </div>
+              <div class="qr-code-desc"> 活动二维码 <el-button type="text" @click="$refs.activityDialog.saveImage()">下载</el-button> </div>
               <SaveImgDialog ref="activityDialog" v-model="activityQrCodeShow">
                 <ActivityCode :id="id" slot-scope="{id}" :activity="activity" />
               </SaveImgDialog>
@@ -21,8 +21,48 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="10">
-        <el-card shadow="never">
+      <el-col :span="9" style="max-width:390px">
+        <el-card class="activity-card" shadow="never">
+          <div class="board flex-x-between-center">
+            <div class="board-left">
+              <div class="board-title">座位表</div>
+              <div class="flex-x-center-center">
+                <el-upload
+                  action="#"
+                  class="image-upload"
+                  list-type="picture-card"
+                  :http-request="upload"
+                  :show-file-list="false"
+                  :before-upload="beforeUpload"
+                >
+                  <div
+                    v-if="activity.seating"
+                    class="image-item"
+                    :style="{backgroundImage: `url(${activity.seating})`}"
+                  >
+                    <!-- <i class="el-icon-circle-close" @click.stop="activity.seating=''" /> -->
+                    <div class="image-preview" @click.stop="previewSeatDialogShow=true">预览</div>
+                  </div>
+                  <div v-else v-loading="imgLoading" class="upload-description">
+                    <i class="el-icon-plus" />
+                    <span>上传座位表</span>
+                    <span>（0 / 1）</span>
+                  </div>
+                </el-upload>
+                <div>会员可在小程序看到座位排序情况</div>
+              </div>
+            </div>
+            <el-dialog :visible.sync="previewSeatDialogShow" width="40%">
+              <img :src="activity.seating" style="width:100%">
+            </el-dialog>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :span="24" style="max-width:900px">
+        <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center">
             <div class="board-left">
               <div class="board-title">签到/签退码</div>
@@ -46,50 +86,11 @@
             </div>
           </div>
         </el-card>
-      </el-col>
-    </el-row>
-
-    <el-row>
-      <el-col :span="5">
-        <el-card shadow="never">
-          <div class="board flex-x-between-center">
-            <div class="board-left">
-              <div class="board-title">座位表</div>
-              <el-upload
-                action="#"
-                class="image-upload"
-                list-type="picture-card"
-                :http-request="upload"
-                :show-file-list="false"
-                :before-upload="beforeUpload"
-              >
-                <div
-                  v-if="activity.seating"
-                  class="image-item"
-                  :style="{backgroundImage: `url(${activity.seating})`}"
-                >
-                  <!-- <i class="el-icon-circle-close" @click.stop="activity.seating=''" /> -->
-                  <div class="image-preview" @click.stop="previewSeatDialogShow=true">预览</div>
-                </div>
-                <div v-else v-loading="imgLoading" class="upload-description">
-                  <i class="el-icon-plus" />
-                  <span>上传座位表</span>
-                  <span>（0 / 1）</span>
-                </div>
-              </el-upload>
-              <div class="mt5">会员可在小程序看到座位排序情况</div>
-              <el-dialog :visible.sync="previewSeatDialogShow" width="40%">
-                <img :src="activity.seating" style="width:100%">
-              </el-dialog>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+      </el-col></el-row>
 
     <SingInTable
       :activity="activity"
-      :init-status="$route.query.status"
+      :init-status="$route.query.status+''"
     />
 
   </div>
@@ -201,11 +202,12 @@ export default {
   .board-title {
     font-size: 24px;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 25px;
+    @include ellipsis(2);
   }
 
   .board-item {
-    margin-bottom: 4px;
+    margin-bottom: 10px;
   }
 
   .qr-code {
@@ -231,6 +233,7 @@ export default {
   .desc-item {
     position: relative;
     padding-left: 15px;
+    margin-bottom: 5px;
     &::before{
       content: '';
       position: absolute;
@@ -244,6 +247,22 @@ export default {
     }
   }
 
+}
+
+.activity-card {
+  height: 200px;
+}
+
+.image-upload {
+  margin-right: 10px;
+  /deep/ .el-upload--picture-card{
+    width: 100px;
+    height: 100px;
+  }
+}
+
+.qr-code-desc {
+  width: 110px;
 }
 
 .upload-description {
