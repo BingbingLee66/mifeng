@@ -92,6 +92,7 @@ export default {
         extraSignout:0 , // 拓展功能签退 0否 1是
         extraSeat: 0 , // 拓展功能座位 0否 1是
         isPublish:0 , //是否发布 0否 1是
+        linkType:1 , //直播链接类型 1 云会播小程序 2 H5链接
       },
       roleIds:[],  //多选框 扩展功能
       addressList:[] , //搜索数组
@@ -406,6 +407,7 @@ export default {
         
         this.formObj.signType = resData.signType
         this.formObj.arriveType = resData.arriveType
+        this.formObj.linkType = resData.linkType || 1
         if(resData.longitude)    this.formObj.longitude = resData.longitude
         if(resData.latitude)    this.formObj.latitude = resData.latitude
        
