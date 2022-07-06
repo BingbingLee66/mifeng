@@ -639,10 +639,10 @@ export default {
     async onExportExcel() {
       try {
         const { query: { namephone, seatStatus, signStatus }, status, activityId, activity } = this
-        const res = await getActivityExcel(activityId, { namephone, seatStatus, signStatus, status, page: 1, pageSize: 1 })
+        const blob = await getActivityExcel(activityId, { namephone, seatStatus, signStatus, status, page: 1, pageSize: 1 })
         downloadFile({
-          title: `【参与人员】${activity.activityName}`,
-          url: res
+          title: `【参与人员】${activity.activityName}.xlsx`,
+          url: window.URL.createObjectURL(blob)
         })
       } catch (error) {
         console.log(error)
