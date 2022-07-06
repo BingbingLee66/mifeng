@@ -823,8 +823,8 @@ export default {
 
     onaddress(e){
       this.formObj.province = e.province // 活动地点(省)
-      this.formObj.city = e.city // 活动地点(市)
-      this.formObj.area = e.district // 活动地点(区)
+      this.formObj.city = e.city || '' // 活动地点(市)
+      this.formObj.area = e.district || '' // 活动地点(区)
       this.formObj.addressInfo = e.title // 活动地点（详细地址）
       this.formObj.longitude = e.location.lng // 经度
       this.formObj.latitude = e.location.lat // 纬度
