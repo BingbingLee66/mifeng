@@ -5,41 +5,11 @@ import {
   updateStatus,
   upload
 } from '@/api/chamber/manager'
+import { getAreaTree } from '@/api/area'
 // import { mapGetters } from 'vuex'
 import levelDialog from './component/levelDialog.vue'
 export default {
   data() {
-    var checkPhone = (rule, value, callback) => {
-      if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(value)) {
-        return callback(new Error('号码格式不正确'))
-      } else {
-        return callback()
-      }
-    }
-    var checkPass = (rule, value, callback) => {
-      if (!/^\w*$/.test(value)) {
-        return callback(new Error('密码只能由字母、数字和下划线"_"组成！'))
-      } else {
-        callback() // 必须加上这个，不然一直塞在验证状态
-      }
-    }
-    var confirmPass = (rule, value, callback) => {
-      if (!/^\w*$/.test(value)) {
-        return callback(new Error('密码只能由字母、数字和下划线"_"组成！'))
-      }
-      if (value !== this.formObj.password) {
-        return callback(new Error('两次输入密码不一致!'))
-      } else {
-        callback() // 必须加上这个，不然一直塞在验证状态
-      }
-    }
-    // var checkNumber = (rule, value, callback) => {
-    //   if (!/(^[1-9]\d*$)/.test(value)) {
-    //     return callback(new Error('必须是大于0的整数'))
-    //   } else {
-    //     callback() // 必须加上这个，不然一直塞在验证状态
-    //   }
-    // }
     return {
       editorVisible: false,
       detailVisible: false,
@@ -56,7 +26,8 @@ export default {
         createdTs: '',
         operator: '',
         systemLogo: '',
-        ckey: ''
+        ckey: '',
+        area: []
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -66,80 +37,74 @@ export default {
       listLoading: false,
       detailObj: {},
       type: 'add',
+      areaOptions: [], // 地址选项
       // 搜索表单
       query: {
         name: null,
         userName: null,
+        area: [],
         status: null,
         date: null
       },
       rules: {
-        name: [{
-          required: true,
-          message: '商/协会名称不能为空',
-          trigger: 'blur'
-        },
-        {
-          min: 1,
-          max: 50,
-          message: '商/协会名称1-50个字',
-          trigger: 'change'
-        }
+        name: [
+          { required: true, message: '商/协会名称不能为空', trigger: 'blur' },
+          { min: 1, max: 50, message: '商/协会名称1-50个字', trigger: 'change' }
         ],
-        systemLogo: [{
-          required: true,
-          message: '请上传商/协会logo',
-          trigger: 'change'
-        }],
-        president: [{
-          required: true,
-          message: '联系人姓名不能为空',
-          trigger: 'blur'
-        }],
-        address: [{
-          required: true,
-          message: '办公地址不能为空',
-          trigger: 'blur'
-        }],
-        phone: [{
-          required: true,
-          message: '联系人手机号不能为空',
-          trigger: 'blur'
-        },
-        {
-          validator: checkPhone,
-          trigger: 'change'
-        }
+        systemLogo: [{ required: true, message: '请上传商/协会logo', trigger: 'change' }],
+        president: [{ required: true, message: '联系人姓名不能为空', trigger: 'blur' }],
+        address: [{ required: true, message: '办公地址不能为空', trigger: 'change' }],
+        phone: [
+          { required: true, message: '联系人手机号不能为空', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(value)) {
+                return callback(new Error('号码格式不正确'))
+              }
+              callback()
+            },
+            trigger: 'change'
+          }
         ],
-        license: [{
-          required: true,
-          message: '营业执照必须上传',
-          trigger: 'change'
+        area: [{
+          required: true, message: '地区不能为空', trigger: 'change',
+          validator: (rule, value, callback) => {
+            if (!value[0]) return callback(new Error(rule.message))
+            callback()
+          }
         }],
-        password: [{
-          required: true,
-          message: '账号密码不能为空',
-          trigger: 'blur'
-        },
-        {
-          validator: checkPass,
-          trigger: 'change'
-        }
+        license: [{ required: true, message: '营业执照必须上传', trigger: 'change' }],
+        password: [
+          { required: true, message: '账号密码不能为空', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              if (!/^\w*$/.test(value)) return callback(new Error('密码只能由字母、数字和下划线"_"组成！'))
+              callback() // 必须加上这个，不然一直塞在验证状态
+            },
+            trigger: 'change'
+          }
         ],
-        confirmPassword: [{
-          required: true,
-          message: '确认密码不能为空',
-          trigger: 'blur'
-        },
-        {
-          validator: confirmPass,
-          trigger: 'blur'
-        }
-        ]
-        /* level: [
-          {required: true, message: '排序不能为空', trigger: 'blur'},
-          {validator: checkNumber, trigger: 'change'}
-        ]*/
+        confirmPassword: [
+          { required: true, message: '确认密码不能为空', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              if (!/^\w*$/.test(value)) return callback(new Error('密码只能由字母、数字和下划线"_"组成！'))
+              if (value !== this.formObj.password) return callback(new Error('两次输入密码不一致!'))
+              callback() // 必须加上这个，不然一直塞在验证状态
+            },
+            trigger: 'blur'
+          }
+        ],
+        // level: [
+        //   { required: true, message: '排序不能为空', trigger: 'blur' },
+        //   { validator(rule, value, callback) {
+        //     if (!/(^[1-9]\d*$)/.test(value)) {
+        //       return callback(new Error('必须是大于0的整数'))
+        //     } else {
+        //       callback() // 必须加上这个，不然一直塞在验证状态
+        //     }
+        //   }, trigger: 'change' }
+        // ]
       }
     }
   },
@@ -151,10 +116,17 @@ export default {
   },
   created() {
     this.init()
+    this.getAreaList()
   },
   methods: {
-    a() {
-      console.log('aa')
+    async getAreaList() {
+      const { data } = await getAreaTree({ level: 2 })
+      if (data) {
+        data.forEach(p => {
+          p.children.forEach(c => (c.children = undefined))
+        })
+        this.areaOptions = data
+      }
     },
     has(tabName, actionName) {
       return this.$store.getters.has({
@@ -246,7 +218,8 @@ export default {
         name,
         status,
         userName,
-        date
+        date,
+        area
       } = this.query
       let params = {
         'pageSize': this.limit,
@@ -255,7 +228,9 @@ export default {
         status,
         userName,
         startTime: date ? date[0] : '',
-        endTime: date ? date[1] : ''
+        endTime: date ? date[1] : '',
+        // province: area.map(v => v[0]).join(','),
+        city: area.map(v => v[1]).join(','),
       }
       console.log('query', this.query)
       getList(params).then(response => {
@@ -290,9 +265,13 @@ export default {
       }
       const ckey = row.ckey
       getDetail(params).then(response => {
-        this.formObj = response.data.dtl
-        this.formObj.password = ''
-        this.formObj.ckey = ckey
+        const { dtl = {}} = response.data
+        this.formObj = {
+          ...dtl,
+          password: '',
+          ckey,
+          area: [dtl.provinceCode, dtl.cityCode]
+        }
         this.editorVisible = true
       })
     },
@@ -306,11 +285,11 @@ export default {
         this.detailVisible = true
       })
     },
-    save() {
-      this.$refs['form'].validate((valid) => {
+    async save() {
+      this.$refs['form'].validate(valid => {
         if (valid) {
-          console.log('this.formObj', this.formObj)
-          save(this.formObj).then(response => {
+          const { area: [province, city], ...formObj } = this.formObj
+          save({ ...formObj, province, city }).then(response => {
             if (response.state === 1) {
               this.$message({
                 message: '操作成功',

@@ -1,6 +1,6 @@
 <template>
-  <el-form style="margin-top:10px;" inline>
-    <el-form-item label="数据维度：">
+  <el-form inline>
+    <el-form-item :label="`${label}：`">
       <el-select
         v-model="ckey"
         placeholder="搜索/选择"
@@ -22,6 +22,12 @@ import { getChamberOptions } from '@/api/finance/finance'
 export default {
   components: {},
   inheritAttrs: false,
+  props: {
+    label: {
+      type: String,
+      default: '数据维度'
+    }
+  },
   data() {
     return {
       ckey: '',
@@ -35,7 +41,7 @@ export default {
     async getChamberOptions() {
       const { data } = await getChamberOptions()
       this.chamberOptions = data.data
-      this.chamberOptions.unshift({ 'label': '平台', 'value': '' })
+      this.chamberOptions.unshift({ 'label': '全部', 'value': '' })
     },
   },
 }
