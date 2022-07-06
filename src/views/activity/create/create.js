@@ -484,7 +484,6 @@ export default {
         // this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
       
         this.arrayData  = resData.dtos.map(({title, msgAlert, lengthLimit, check,type,selects,key}) => ({title, msgAlert, lengthLimit, check,type,selects,key}));
-        let arr = []
         this.arrayData.forEach((v)=>{
            //  0 : 输入框  1：下拉框
           if(v.type == 1){
@@ -493,7 +492,6 @@ export default {
             v.selects.forEach((j)=>{
               key.push(j.value)
             })
-         
             v.key = key.join(';')
           } 
         })
@@ -872,7 +870,7 @@ export default {
       this.defaultParams.infowindow =new TMap.InfoWindow({
         position:myLatLng,//显示信息窗口的坐标
         map:this.defaultParams.map,
-        content:`<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址:${e.province}${e.city}${e.district}</p>`, //信息窗口内容
+        content:`<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址:${e.province}${e.city}${e.district || ''}</p>`, //信息窗口内容
         offset: { x: 0, y: -50 },
       });
      
