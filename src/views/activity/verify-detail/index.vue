@@ -21,7 +21,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="9" style="max-width:390px">
+      <el-col v-if="activity.seatFunction" :span="9" style="max-width:390px">
         <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center">
             <div class="board-left">
@@ -60,7 +60,7 @@
       </el-col>
     </el-row>
 
-    <el-row>
+    <el-row v-if="activity.signFunction || activity.signOutFunction">
       <el-col :span="24" style="max-width:900px">
         <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center">

@@ -34,7 +34,7 @@
     <div v-if="status === '1'" class="flex-x-between-center">
       <el-button type="text" @click="importVisible=true">导入</el-button>
       <!-- 导表 -->
-      <el-button type="primary" @click="onExportExcel">导表</el-button>
+      <el-button :loading="exportLoaing" type="primary" @click="onExportExcel">导表</el-button>
     </div>
 
     <el-dialog :visible.sync="importVisible" title="导入" width="400px">
@@ -231,7 +231,9 @@ export default {
         signinId: '',
         maxNum: 0,
         num: 0
-      }
+      },
+
+      exportLoaing: false
     }
   },
   computed: {
@@ -246,7 +248,6 @@ export default {
     },
     tableList() {
       const commonList = [
-        { type: 'selection', width: 55, hidden: this.status !== '1' },
         {
           label: '用户信息',
           minWidth: 180,
@@ -632,11 +633,12 @@ export default {
           label: '操作',
           fixed: 'right',
           minWidth: 130,
-          render: ({ row }) => <el-button type='text' onClick={() => this.modifySigninStatus({ id: row.id, status: 1 })}>重新审核并通过</el-button>
+          render: ({ row }) => <el-button type='text' onClick={() => this.modifySigninStatus({ id: row.id, status: 4 })}>重新审核并通过</el-button>
         }
       ]
     },
     async onExportExcel() {
+      this.exportLoaing = true
       try {
         const { query: { namephone, seatStatus, signStatus }, status, activityId, activity } = this
         const blob = await getActivityExcel(activityId, { namephone, seatStatus, signStatus, status, page: 1, pageSize: 1 })
@@ -645,8 +647,9 @@ export default {
           url: window.URL.createObjectURL(blob)
         })
       } catch (error) {
-        console.log(error)
+        // console.log(error)
       }
+      this.exportLoaing = false
     }
   },
 }
