@@ -1,4 +1,8 @@
 # CHANGELOG
+## [Rreleased]
+## [2.17.1] - 2022-07-06
+### Fixed
+-  【后台管理】总后台操作指引上传视频，一直显示加载中（视频80M）[925](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/925)
 
 
 ## [Rreleased]
