@@ -100,7 +100,7 @@
           <el-col :span="4">{{ v.seatName }}</el-col>
           <el-col :span="3" style="color:red;">空座</el-col>
           <el-col :span="10" style="color:#999;">已安排其他会员上坐，设置为</el-col>
-          <el-col :span="4" style="color:#999;"><el-button type="text">已就坐</el-button></el-col>
+          <el-col :span="4" style="color:#999;"><el-button type="text" @click="setSitted(item)">已坐</el-button></el-col>
         </template>
         <template v-else>
           <el-col :span="16"><el-input v-model="v.seatName" placeholder="限10字内" maxlength="10" clearable /></el-col>
@@ -155,6 +155,7 @@ import {
   handleSignOut,
   getSigninStatusCount,
   resetSigninSeat,
+  modifySeatStatus
 } from '@/api/activity/activity-verify-new'
 
 export default {
@@ -404,6 +405,16 @@ export default {
       const { state, msg } = await resetSigninSeat(signinId, seats.map(({ status, ...v }) => v))
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
+        this.getTableData()
+        this.seatDialog.show = false
+      }
+    },
+
+    async setSitted(item) {
+      const { state, msg } = await modifySeatStatus(this.seatDialog.signinId, [item.seatId])
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      if (state === 1) {
+        item.status = 1
         this.getTableData()
       }
     },

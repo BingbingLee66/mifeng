@@ -89,17 +89,16 @@ export default {
           trigger: 'change'
         }],
 
-
       },
       departmentOptions: [],
       departmentCas: []
     }
   },
   activated() {
-    console.log("-----activated------");
+    console.log('-----activated------')
   },
   deactivated() {
-    console.log("-----deactivated------");
+    console.log('-----deactivated------')
   },
   created() {
     if (this.$route.query.sign) {
@@ -115,7 +114,7 @@ export default {
         this.formObj.departmentId = did
       }
     }
-    this.getdepartmentType();
+    this.getdepartmentType()
     this.getMemberType()
   },
 
@@ -294,6 +293,8 @@ export default {
             // console.log("this.formObj['memberPostId']", this.formObj['memberPostId'])
             this.formObj['ckey'] = this.$store.getters.ckey
             add(this.formObj).then(response => {
+              this.$trackClick(233)
+
               this.$message({
                 message: '操作成功',
                 type: 'success'

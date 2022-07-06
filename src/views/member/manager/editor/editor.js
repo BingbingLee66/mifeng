@@ -65,7 +65,7 @@ export default {
         license: '',
         companyIntroduction: '',
         departmentId: '',
-        identityVOList:[]
+        identityVOList: []
       },
       memberPostOptions: [], // 会内职位选择列表
       bindTradeIds: [], // 已选择行业
@@ -564,23 +564,25 @@ export default {
     },
 
     save() {
-      console.log('identityVOList',this.formObj)
+      console.log('identityVOList', this.formObj)
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.type === 'add') {
             this.formObj['ckey'] = this.$store.getters.ckey
             add(this.formObj).then(response => {
-              if(response.state===1){
+              if (response.state === 1) {
+                this.$trackClick(216)
+
                 this.$message({
                   message: '操作成功',
                   type: 'success'
                 })
-              }else{
+              } else {
                 this.$message({
                   message: response.msg,
                   type: 'error'
                 })
-              }      
+              }
               this.closeTab()
             })
           } else if (this.type === 'edit') {

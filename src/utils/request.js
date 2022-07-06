@@ -3,6 +3,7 @@ import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import router from '@/router'
+import { reportSlsData } from '@/api/statistics/tracker'
 
 const AppCode = 'echamber'
 
@@ -48,6 +49,8 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    // 上传阿里日志
+    reportRequestData(response)
     const res = response.data
     if (response.headers.token) {
       // 如果后台通过header返回token，说明token已经更新，则更新客户端本地token
@@ -91,5 +94,40 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+function reportRequestData(response) {
+  try {
+    const baseURL = response.config.baseURL
+    const url = response.config.url.replace(baseURL, '')
+    const method = response.config.method.toUpperCase()
+    const status = response.request.status
+    const { ckey } = store.getters
+    var params = ''
+    var user_only = ''
+    var ckeyStr = ''
+
+    if (ckey) {
+      ckeyStr = store.getters.ckey
+    } else if (!url.includes('/user/login') && !ckey) {
+      return
+    }
+    if (!response.config.hasOwnProperty('params') && response.config.hasOwnProperty('data')) {
+      params = response.config.data
+    } else {
+      params = response.config.params
+    }
+    if (params === 'undefined') {
+      params = ''
+    }
+    if (url.includes('/user/login')) {
+      user_only = params.username
+    } else {
+      user_only = store.getters.profile.userName
+    }
+    reportSlsData({ url: url, ckey: ckeyStr, user_only: user_only, method: method, status: status, params: params, extend: '' })
+  } catch (e) {
+    console.log('sls日志收集失败', e)
+  }
+}
 
 export default service
