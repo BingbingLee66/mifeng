@@ -465,8 +465,9 @@
         </div>
       </div>
    
-      <div class="create-container mydiv">
+      <div class="create-container mydiv" >
         <el-form
+          v-show="formObj.signType == 0"
           ref="form1"
           :rules="rules"
           label-position="right"
