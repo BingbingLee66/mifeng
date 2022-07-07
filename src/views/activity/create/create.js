@@ -84,7 +84,7 @@ export default {
         competence:'0',//观看权限 0 不限 1 限本商会会员
         link:'',//直播链接   
         signType:0,  // 报名方式是否必填 0否 1是
-        arriveType:0,  // 到场人数是否必填 0否 1是
+        arriveType:1,  // 到场人数是否必填 0否 1是
         longitude:113.326548, // 经度
         latitude:23.125821, // 纬度 
         auditStatus:0, // 报名审核

@@ -458,8 +458,8 @@
               <span><i @click="isPresent = true" class="el-icon-question"></i></span>
             </div>
             <el-radio-group v-model="formObj.arriveType">
-              <el-radio :disabled="status == 2 || status == 3" :label="0">需填写</el-radio>
-              <el-radio :disabled="status == 2 || status == 3" :label="1">无需填写</el-radio>
+              <el-radio :disabled="status == 2 || status == 3" :label="1">需填写</el-radio>
+              <el-radio :disabled="status == 2 || status == 3" :label="0">无需填写</el-radio>
             </el-radio-group>
           </div>
         </div>
