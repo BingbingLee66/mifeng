@@ -748,6 +748,8 @@ export default {
           if (this.portValue.length > 0) {
             this.formObj['applyIds'] = this.portValue.join(',')
           }
+          // 如果选择了自定义报名 但是没有选择自定义报名信息 就返回提示
+          if(this.formObj.signType == 0 && !this.arrayData.length) return this.$message.error('自定义报名表需添加报名信息才可以发布活动，若无需自定义报名表，请选择【一键报名】')
 
           if (this.arrayData.length > 0) {
             this.formObj['dtos'] = this.arrayData
