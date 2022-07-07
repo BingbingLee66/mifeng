@@ -31,6 +31,10 @@ export default {
     show: {
       type: Boolean,
       default: false
+    },
+    title: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -46,7 +50,7 @@ export default {
         await this.$nextTick()
         const imgUrl = await generatePictureByDomId(this.sid)
         console.log(imgUrl)
-        downloadFile({ title: '活动二维码', url: imgUrl })
+        downloadFile({ title: this.title, url: imgUrl })
       } catch (error) {
         console.log(error)
       }

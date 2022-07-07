@@ -383,7 +383,7 @@ export default {
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getTableData()
-        this.subDialog.show = true
+        this.subDialog.show = false
       }
     },
 

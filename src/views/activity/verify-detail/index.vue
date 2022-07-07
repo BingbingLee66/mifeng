@@ -14,7 +14,7 @@
             <div class="board-right flex-y-center-center">
               <img class="qr-code" :src="activity.qrCode" @click="activityQrCodeShow=true">
               <div class="qr-code-desc"> 活动二维码 <el-button type="text" @click="$refs.activityDialog.saveImage()">下载</el-button> </div>
-              <SaveImgDialog ref="activityDialog" v-model="activityQrCodeShow">
+              <SaveImgDialog ref="activityDialog" v-model="activityQrCodeShow" title="活动二维码">
                 <ActivityCode :id="id" slot-scope="{id}" :activity="activity" />
               </SaveImgDialog>
             </div>
@@ -72,7 +72,7 @@
                   <el-button type="text" @click="onQrCodeDownload({url:activity[item.codeKey],title:item.title})">下载{{ item.title }}</el-button>
                 </div>
               </div>
-              <SaveImgDialog ref="codeDialog" v-model="qrCodeDialog.show">
+              <SaveImgDialog ref="codeDialog" v-model="qrCodeDialog.show" :title="qrCodeDialog.title">
                 <SignInCode :id="id" slot-scope="{id}" :title="qrCodeDialog.title" :url="qrCodeDialog.url" />
               </SaveImgDialog>
             </div>
