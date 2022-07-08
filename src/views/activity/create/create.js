@@ -771,7 +771,7 @@ export default {
               this.$router.push({
                 name: '活动列表',
                 params: {
-                  type: this.activityId ? this.type : 0
+                  type: this.activityId ? this.type : e
                 }
               })
             }else{
