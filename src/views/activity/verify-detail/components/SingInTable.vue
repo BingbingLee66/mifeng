@@ -100,7 +100,7 @@
           <el-col :span="4">{{ v.seatName }}</el-col>
           <el-col :span="3" style="color:red;">空座</el-col>
           <el-col :span="10" style="color:#999;">已安排其他会员上坐，设置为</el-col>
-          <el-col :span="4" style="color:#999;"><el-button type="text" @click="setSitted(item)">已坐</el-button></el-col>
+          <el-col :span="4" style="color:#999;"><div class="el-button--text" type="text" @click="setSitted(v)">已坐</div></el-col>
         </template>
         <template v-else>
           <el-col :span="16"><el-input v-model="v.seatName" placeholder="限10字内" maxlength="10" clearable /></el-col>
@@ -548,8 +548,16 @@ export default {
           render: ({ row }) => row.signStatus === 1 ? '是' : '-'
         },
         {
+          label: '签到时间',
+          render: ({ row }) => row.signTs ? formatDate(row.signTs) : '-'
+        },
+        {
           label: '签退',
           render: ({ row }) => row.signOutStatus === 1 ? '是' : '-'
+        },
+        {
+          label: '签退时间',
+          render: ({ row }) => row.signoutTs ? formatDate(row.signoutTs) : '-'
         },
         this.generateSigninTime(),
         {
@@ -678,5 +686,9 @@ export default {
     font-size: 20px;
     color: 999;
   }
+}
+
+.el-button--text {
+  cursor: pointer;
 }
 </style>
