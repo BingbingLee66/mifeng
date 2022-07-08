@@ -277,9 +277,12 @@ export default {
         }
       }
       let key = []
-      this.colData.selects.forEach((v)=>{
-        key.push(v.value)
-      })
+      if(this.colData.selects){
+        this.colData.selects.forEach((v)=>{
+          key.push(v.value)
+        })
+      }
+    
       this.colData.key = key.join(';')
     
  
