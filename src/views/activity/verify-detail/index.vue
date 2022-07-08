@@ -40,7 +40,7 @@
                     class="image-item"
                     :style="{backgroundImage: `url(${activity.seating})`}"
                   >
-                    <!-- <i class="el-icon-circle-close" @click.stop="activity.seating=''" /> -->
+                    <i class="el-icon-circle-close" @click.stop="delSeating" />
                     <div class="image-preview" @click.stop="previewSeatDialogShow=true">预览</div>
                   </div>
                   <div v-else v-loading="imgLoading" class="upload-description">
@@ -101,7 +101,7 @@ import SaveImgDialog from './components/SaveImgDialog'
 import ActivityCode from './components/ActivityCode'
 import SignInCode from './components/SignInCode'
 import { formatDate } from './util'
-import { getChamberActivityInfoById, uploadSeating } from '@/api/activity/activity-verify-new'
+import { getChamberActivityInfoById, uploadSeating, deleteSeating } from '@/api/activity/activity-verify-new'
 
 export default {
   components: {
@@ -171,6 +171,11 @@ export default {
         this.activity.seating = data
       } catch (error) { /*  */ }
       this.imgLoading = false
+    },
+    async delSeating() {
+      const { state, msg } = await deleteSeating(this.activityId)
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      if (state === 1) this.activity.seating = ''
     },
     onQrCodePreview(e) {
       this.qrCodeDialog = { show: true, ...e }
@@ -289,16 +294,18 @@ export default {
       position: absolute;
       right: 5px;
       top: 5px;
-      font-size: 20px;
-      color: #fd5d5d;
+      font-size: 16px;
+      font-weight: 700;
+      color: red;
       z-index: 10;
+      border-radius: 50%;
     }
 
     .image-preview {
       display: none;
       position: absolute;
-      height: 30px;
-      line-height: 30px;
+      height: 24px;
+      line-height: 24px;
       left: 0;
       bottom: 0;
       width: 100%;
