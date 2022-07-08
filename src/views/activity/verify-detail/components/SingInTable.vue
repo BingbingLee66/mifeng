@@ -412,11 +412,13 @@ export default {
     },
 
     async setSitted(item) {
-      const { state, msg } = await modifySeatStatus(this.seatDialog.signinId, [item.seatId])
+      const { signinId } = this.seatDialog
+      const { state, msg } = await modifySeatStatus(signinId, [item.seatId])
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         item.status = 1
-        this.getTableData()
+        const row = this.tableData.find(v => v.id === signinId)
+        row.seats.find(v => v.seatId === item.seatId).status = 1
       }
     },
 
