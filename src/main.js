@@ -11,7 +11,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-import { reportSlsData } from './api/statistics/tracker'
+import { reportSlsData, reportHashUrlData, reportClickData } from './api/statistics/tracker'
 import i18n from './lang' // Internationalization
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -63,6 +63,7 @@ router.afterEach((to, from) => {
     }
     try {
       reportSlsData({ url: to.path, ckey: ckeyStr, user_only: user_only, method: 'PAGE_CLICK', status: 200, params: '', extend: '' })
+      reportHashUrlData({ url: to.path, ckey })
     } catch (e) {
       console.log('sls日志收集失败', e)
     }
@@ -76,8 +77,7 @@ router.afterEach((to, from) => {
 Vue.prototype.$trackClick = function(buttonId) {
   const { ckey } = this.$store.getters
   if (!ckey) return
-  // 暂时不上传，后端接口未发布
-  // reportClickData({ buttonId, ckey })
+  reportClickData({ buttonId, ckey })
 }
 
 new Vue({
