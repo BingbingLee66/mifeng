@@ -24,3 +24,27 @@ export function getPlatformChamberData(params) {
     params
   })
 }
+// 商会统计数据列表查询
+export function getAllChamberStatsDataByCkeyList(params) {
+  return request({
+    url: baseUrl + '/ec/chamberStats/getAllChamberStatsDataByCkeyList',
+    method: 'get',
+    params
+  })
+}
+// 获取商会登录记录
+export function getChamberLoginDataList(params) {
+  return request({
+    url: baseUrl + '/ec/chamberStats/getChamberLoginDataList',
+    method: 'get',
+    params
+  })
+}
+// 商会详情统计数据列表查询
+export function getChamberTypeStatsDataByCkeyList(params) {
+  return request({
+    url: baseUrl + '/ec/chamberStats/getChamberTypeStatsDataByCkeyList',
+    method: 'get',
+    params
+  })
+}
