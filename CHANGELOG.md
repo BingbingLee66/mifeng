@@ -1,5 +1,11 @@
 # CHANGELOG
 ## [Rreleased]
+## [2.18.1] - 2022-07-11
+### Added
+-  【活动】删除后该提示语 优化预览[932](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/932)
+
+
+## [Rreleased]
 ## [2.18.0] - 2022-07-08
 ### Added
 - 【商会使用统计】-  阿里日志埋点采集 [920](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/920)
