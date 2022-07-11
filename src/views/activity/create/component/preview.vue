@@ -1,5 +1,5 @@
 <template>
-  <div class="preview-container flex-x-center-center" v-if="detailVisible">
+  <div @click.stop="hide" class="preview-container flex-x-center-center" v-if="detailVisible">
     <div class="right">
       <!-- 头部图片 -->
       <div class="right-out">活动详情</div>
