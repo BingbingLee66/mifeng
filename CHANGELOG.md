@@ -1,11 +1,11 @@
 # CHANGELOG
-## [Rreleased]
+## [Released]
 ## [2.18.1] - 2022-07-11
 ### Added
 -  【活动】删除后该提示语 优化预览[932](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/932)
 
 
-## [Rreleased]
+## [Released]
 ## [2.18.0] - 2022-07-08
 ### Added
 - 【商会使用统计】-  阿里日志埋点采集 [920](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/920)
@@ -22,24 +22,24 @@
 - 会内职位字数开放 [927](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#927)
 
 
-## [Rreleased]
+## [Released]
 ## [2.17.1] - 2022-07-06
 ### Fixed
 -  【后台管理】总后台操作指引上传视频，一直显示加载中（视频80M）[925](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/925)
 
 
-## [Rreleased]
+## [Released]
 ## [2.16.0] - 2022-07-04
 ### Added
 -  【商会主页】新增友情单位[879](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/879)
 -  后台操作指引[891](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/891)
 
-## [Rreleased]
+## [Released]
 ## [2.14.1] - 2022-06-21
 ### Added
 -  广东省社会组织总会新增直播链接[23](https://gitlab.kd/yunshanghui/engineering/requirements/-/issues/23)
 
-## [Rreleased]
+## [Released]
 ## [2.14.0] - 2022-06-21
 ### Added
 - 合作商协会-操作指引列表页 [1875](yunshanghui/engineering/frontend/wechat-app#1875)
@@ -49,7 +49,7 @@
 - 【云商会】 去凯迪化 [1886] yunshanghui/engineering/frontend/wechat-app#1886
 - 登录注册兼容APP和小程序 [1892] yunshanghui/engineering/frontend/wechat-app#1892
 
-## [Rreleased]
+## [Released]
 ## [2.12.0] - 2022-06-08
 
 ### Added
@@ -64,7 +64,7 @@
 ### Fixed
 - 【正式环境】编辑台无法搜索已冻结的数据[377](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/377)
 
-## [Rreleased]
+## [Released]
 ## [1.16.2] - 2021-09-16
 
 ### Added
@@ -72,7 +72,7 @@
 
 ### Fixed
 
-## [Rreleased]
+## [Released]
 ## [1.16.1] - 2021-09-09
 
 ### Added
@@ -81,7 +81,7 @@
 
 ### Fixed
 
-## [Rreleased]
+## [Released]
 ## [1.16.0] - 2021-09-07
 
 ### Added
@@ -118,7 +118,7 @@
 - 部分动态没有显示来源[261](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/261)
 - 总后台-商城管理、用户管理的图标需要放大一点点[260](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/260)
 
-## [Rreleased]
+## [Released]
 ## [1.13.0] - 2021-08-10
 
 ### Added
@@ -127,7 +127,7 @@
 ### Fixed
 - 总后台-用户管理按所属商会查询优化[#246](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/246)
 
-## [Rreleased]
+## [Released]
 ## [1.12.1-hotfix] - 2021-08-05
 
 ### Added
@@ -137,7 +137,7 @@
 - 商品标题需要显示40个字[244](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/244)
 - 总后台-用户详情刷新后，按下图操作会提示系统故障[241](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/241)
 
-## [Rreleased]
+## [Released]
 ## [1.12.0] - 2021-08-03
 
 ### Added
@@ -150,20 +150,20 @@
 - 商会后台-会员详情，企业入会的用户输入项按下图修改 [221](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/221)
 - 会员详情，个人入会的会员详情页，输入项的位置需要按下图修改 [220](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/220)
 
-## [Rreleased]
+## [Released]
 ## [1.11.1] - 2021-07-29
 
 ### Fixed
 - 总后台-编辑台文章不能跨页搜索(文章管理页面存在相同问题)[213](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/213)
 
-## [Rreleased]
+## [Released]
 ## [1.11.0] - 2021-07-27
 
 ### Added
 - 商会后台统一用户名和头像 [207](yunshanghui/frontend/shanghui-admin#207)
 - 总后台统一用户名和头像[208](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/208)
 
-## [Rreleased]
+## [Released]
 ## [1.10.0] - 2021-07-20
 
 ### Added
@@ -177,7 +177,7 @@
 - 商会后台-商协会成员的导表内容未更新[198](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/198)
 - 商会后台-栏目设置，商会资讯、关于商会的新增栏目都可以增加空格[200](https://gitlab.kd/yunshanghui/frontend/shanghui-admin/-/issues/200)
 
-## [Rreleased]
+## [Released]
 ## [1.9.0] - 2021-07-13
 
 ### Added
@@ -195,7 +195,7 @@
 - 总后台，编辑台发布三图的封面，样式有误
 - 文本管理，编辑框、文本内容会显示不出
 
-## [Rreleased]
+## [Released]
 ## [1.8.1] - 2021-06-29
 
 ### Fixed
@@ -205,7 +205,7 @@
 * 商会后台ui修改部分 [#164](https://gitlab.kd/yunshanghui/backend/api/-/issues/164)
 * 切换登录账号，右上角的头像和名称没有变 [#163](https://gitlab.kd/yunshanghui/backend/api/-/issues/163)
 
-## [Rreleased]
+## [Released]
 ## [1.6.0] - 2021-06-08
 
 ### Added
@@ -226,7 +226,7 @@
 * 总后台-商会管理-编辑，联系人手机号，暂时不能让支持修改 [#117](https://gitlab.kd/yunshanghui/backend/api/-/issues/117)
 * 商会后台-成员管理，调整部门时，需支持选择【商会】这一层 [#118](https://gitlab.kd/yunshanghui/backend/api/-/issues/118)
 
-## [Rreleased]
+## [Released]
 ## [1.5.0] - 2021-05-31
 
 ### Added
@@ -249,7 +249,7 @@
 * 成员管理调整部门后，会记录上次操作的部门，且无法手动清掉  [#86](https://gitlab.kd/yunshanghui/backend/api/-/issues/86)
 * 商/协会成员，导出excel表缺少部门字段信息 [#87](https://gitlab.kd/yunshanghui/backend/api/-/issues/87)
 
-## [Rreleased]
+## [Released]
 ## [1.4.0] - 2021-05-25
 
 ### Added
@@ -270,7 +270,7 @@
 - 编辑资料，手机号不允许修改[#58]
   (https://gitlab.kd/yunshanghui/backend/api/-/issues/58)
 
-## [Rreleased]
+## [Released]
 ## [1.3.0] - 2021-05-18
 
 ### Added
