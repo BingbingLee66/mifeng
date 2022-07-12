@@ -3,9 +3,11 @@ import {
   } from '@/api/statistics/chamberJoinData'
   import { exportJson2Excel } from '@/utils/exportExcel'
   import {chamberSearchList} from '@/api/chamber/manager'
+  import tabulation from './component/tabulation'
   export default {
     data() {
       return {
+        showMeaning: false, //数据定义
         query: {
           date: '',
           ckey:"",
@@ -19,16 +21,15 @@ import {
         limit: 10,
         list: [],
         chamberList:[], // 商协会数据
-        
         listLoading: false,
         selectionDatas: [],  // 表格选中数据
       }
     },
-    computed: {
-
+    components: {
+      tabulation
     },
     created() {
-      this.query.ckey = this.$store.getters.ckey
+      // this.query.ckey = this.$store.getters.ckey
       this.init()
     },
     methods: {
@@ -58,21 +59,25 @@ import {
             this.fetchData()
         },
         fetchData(){
-            this.listLoading = true
-            let params = {
-              'startTime': this.query.date[0],
-              'endTime': this.query.date[1],
-              'pageNum': this.limit,
-              'pageSize': this.currentpage,
-              'ckey':this.query.ckey,
-              'moduleId':this.query.moduleId
+          this.listLoading = true
+          let params = {
+            'startTime': this.query.date[0],
+            'endTime': this.query.date[1],
+            'pageNum': this.currentpage,
+            'pageSize': this.limit, 
+            'ckey':this.query.ckey,
+            'moduleId':this.query.moduleId
+          }
+          getAllChamberStatsDataByCkeyList(params).then(response => {
+            if(response.state == 1) {
+              this.list = response.data.list || []
+              this.total = response.data.totalRows
+            }else{
+              this.list = []
+              this.total = 0
             }
-            console.log('params',params)
-            getAllChamberStatsDataByCkeyList(params).then(response => {
-                this.list = response.data.list || []
-                this.total = response.data.totalRows
-                this.listLoading = false
-            })
+            this.listLoading = false
+          })
         },
         // 导表
         exportExcel(){
@@ -89,35 +94,55 @@ import {
             this.initDatePicker()
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`)
-            this.limit = val
-            this.currentpage = 1
-            this.fetchData()
+          this.limit = val
+          this.currentpage = 1
+          this.fetchData()
         },
         handleCurrentChange(val) {
-        console.log(`当前页: ${val}`)
         this.currentpage = val
         this.fetchData()
         },
         handleSelectionChange(value) {
-            let datas = value
-            this.selectionDatas = []
-            for (let data of datas) {
-              let new_data = {
-                '商协会名称': data.chamberName,
-                '登录次数': data.loginSum > 0 ? data.loginSum  : '--',
-                '首页更新': data.homePageUpdateSum  > 0 ? data.homePageUpdateSum  : '--',
-                '供需管理': data.demandSum  > 0 ? data.demandSum  : '--',
-                '会员管理': data.memberSum  > 0 ? data.memberSum  : '--',
-                '组织架构': data.organizationSum  > 0 ? data.organizationSum  : '--',
-                '内容管理': data.contentSum > 0 ? data.contentSum : '--',
-                '活动管理': data.activitySum  > 0 ? data.activitySum  : '--',
-                '数据统计': data.dataSum  > 0 ? data.dataSum  : '--',
-                '系统设置': data.systemSum > 0 ? data.systemSum : '--'
-              }
-              this.selectionDatas.push(new_data)
+          let datas = value
+          this.selectionDatas = []
+          for (let data of datas) {
+            let new_data = {
+              '商协会名称': data.chamberName,
+              '登录次数': data.loginSum > 0 ? data.loginSum  : '--',
+              '首页更新': data.homePageUpdateSum  > 0 ? data.homePageUpdateSum  : '--',
+              '供需管理': data.demandSum  > 0 ? data.demandSum  : '--',
+              '会员管理': data.memberSum  > 0 ? data.memberSum  : '--',
+              '组织架构': data.organizationSum  > 0 ? data.organizationSum  : '--',
+              '内容管理': data.contentSum > 0 ? data.contentSum : '--',
+              '活动管理': data.activitySum  > 0 ? data.activitySum  : '--',
+              '数据统计': data.dataSum  > 0 ? data.dataSum  : '--',
+              '系统设置': data.systemSum > 0 ? data.systemSum : '--'
             }
+            this.selectionDatas.push(new_data)
+          }
         },
+        // 查看登录记录
+        onRecord(row){
+          this.$router.push({
+            name:'登录记录',
+            query: {
+              ckey: row.ckey
+            }
+          })
+        },
+        // 查看详情
+        onDetails(row){
+          this.$router.push({
+            name:'商会数据详情',
+            query: {
+              ckey: row.ckey
+            }
+          })
+        },
+        // 点击表格头部
+        onPopup(e){
+          this.$refs.tabulation.show(this.query,e)
+        }
     }
   }
   

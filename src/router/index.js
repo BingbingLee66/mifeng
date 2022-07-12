@@ -351,14 +351,14 @@ export const constantRoutes = [
       {
         path: '/statistic/chamber-record',
         name: '登录记录',
-        component: () => import('@/views/statistic/chamberStats'),
+        component: () => import('@/views/statistic/chamberRecord/index'),
         hidden: true,
         meta: { title: '登录记录' }
       },
       {
         path: '/statistic/chamber-details',
         name: '商会数据详情',
-        component: () => import('@/views/statistic/chamberStats'),
+        component: () => import('@/views/statistic/chamberDetails/index'),
         hidden: true,
         meta: { title: '商会数据详情' }
       },

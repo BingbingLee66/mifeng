@@ -1,11 +1,12 @@
 import {
-    getAllChamberStatsDataByCkeyList
-  } from '@/api/statistics/chamberJoinData'
+  getChamberLoginDataList
+} from '@/api/statistics/chamberJoinData'
   import { exportJson2Excel } from '@/utils/exportExcel'
   import {chamberSearchList} from '@/api/chamber/manager'
   export default {
     data() {
       return {
+        showMeaning: false, //数据定义
         query: {
           date: '',
           ckey:"",
@@ -25,7 +26,7 @@ import {
 
     },
     created() {
-      this.query.ckey = this.$store.getters.ckey
+      this.query.ckey = this.$route.query.ckey || ''
       this.init()
     },
     methods: {
@@ -41,6 +42,7 @@ import {
             chamberSearchList(param).then(res=>{
               if(res.state === 1 ){
                 this.chamberList = res.data
+                this.chamberList.shift()
               }
             })
         },
@@ -59,14 +61,18 @@ import {
             let params = {
               'startTime': this.query.date[0],
               'endTime': this.query.date[1],
-              'pageNum': this.limit,
-              'pageSize': this.currentpage,
+              'pageNum': this.currentpage,
+              'pageSize': this.limit, 
               'ckey':this.query.ckey,
             }
-            console.log('params',params)
             getChamberLoginDataList(params).then(response => {
+              if(response.state == 1) {
                 this.list = response.data.list || []
                 this.total = response.data.totalRows
+              }else{
+                this.list = []
+                this.total = 0
+              }
                 this.listLoading = false
             })
         },
@@ -85,13 +91,11 @@ import {
             this.initDatePicker()
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`)
             this.limit = val
             this.currentpage = 1
             this.fetchData()
         },
         handleCurrentChange(val) {
-        console.log(`当前页: ${val}`)
         this.currentpage = val
         this.fetchData()
         },
