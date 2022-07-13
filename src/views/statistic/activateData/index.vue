@@ -174,7 +174,7 @@ export default {
           return [
             { name: '访问人数', value: visitorsNum || 0 },
             { name: `会员 ${registerMembersNum || 0} 非会员 ${registerNotMembersNum || 0}`, value: `注册用户 ${registerUsersNum || 0}` },
-            { name: `已激活 ${membersActiveNum || 0}${activeName === 'Platform' ? '' : `（${membersActiveTotal}）`} 未激活 ${membersNotActiveNum || 0}`, value: `后台导入会员 ${adminAddMembersNum || 0}` },
+            { name: `已激活 ${membersActiveNum || 0}${activeName === 'Platform' ? '' : `（${membersActiveTotal || 0}）`} 未激活 ${membersNotActiveNum || 0}`, value: `后台导入会员 ${adminAddMembersNum || 0}` },
             { name: '会员激活率', value: `${memberActivationRate || '0%'}` },
             { name: `会员 ${activeMembersNum || 0} 非会员 ${notActiveMembersNum || 0}`, value: `活跃用户 ${activeUsersNum || 0}` },
             { name: `会员 ${activeMembersRate || '0%'} 非会员 ${notActiveMembersRate || '0%'}`, value: `活跃率 ${activeRate || '0%'}` },
@@ -339,8 +339,8 @@ export default {
     },
     // 获取页面看板数据
     async getPageActivate() {
-      const { functionModuleId } = this.query
-      const { data } = await getPageActivateData(functionModuleId ? { functionModuleId } : undefined)
+      const { pageUrl } = this.query
+      const { data } = await getPageActivateData(pageUrl ? { pageUrl } : undefined)
       this.activateData = data || {}
     },
     // 商协会切换
