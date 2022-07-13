@@ -34,7 +34,7 @@
     <div v-if="status === '1'" class="flex-x-between-center">
       <el-button type="text" @click="importVisible=true">导入</el-button>
       <!-- 导表 -->
-      <ExportTable :data="genetateWorkbook" :title="`【参与人员】${activity.activityName}`" />
+      <el-button :loading="exportLoaing" type="primary" @click="onExportExcel">导表</el-button>
     </div>
 
     <el-dialog :visible.sync="importVisible" title="导入" width="400px">
@@ -58,7 +58,7 @@
       </div>
     </el-dialog>
 
-    <KdTable v-loading="tableLoading" class="mt5" :list="tableList" :data="tableData" @selection-change="onSelectionChange" />
+    <KdTable v-loading="tableLoading" class="mt5" :columns="tableList" :rows="tableData" @selection-change="onSelectionChange" />
 
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
@@ -100,7 +100,7 @@
           <el-col :span="4">{{ v.seatName }}</el-col>
           <el-col :span="3" style="color:red;">空座</el-col>
           <el-col :span="10" style="color:#999;">已安排其他会员上坐，设置为</el-col>
-          <el-col :span="4" style="color:#999;"><el-button type="text" @click="setSitted(item)">已坐</el-button></el-col>
+          <el-col :span="4" style="color:#999;"><div class="el-button--text" type="text" @click="setSitted(v)">已坐</div></el-col>
         </template>
         <template v-else>
           <el-col :span="16"><el-input v-model="v.seatName" placeholder="限10字内" maxlength="10" clearable /></el-col>
@@ -155,14 +155,14 @@ import {
   handleSignOut,
   getSigninStatusCount,
   resetSigninSeat,
-  modifySeatStatus
+  modifySeatStatus,
+  getActivityExcel
 } from '@/api/activity/activity-verify-new'
 
 export default {
   components: {
-    KdTable: () => import('@/components/KdTable/index'),
+    KdTable: () => import('@/components/common/KdTable'),
     KdPagination: () => import('@/components/common/KdPagination'),
-    ExportTable: () => import('@/components/statistic/ExportTable')
   },
   props: {
     activity: {
@@ -231,7 +231,9 @@ export default {
         signinId: '',
         maxNum: 0,
         num: 0
-      }
+      },
+
+      exportLoaing: false
     }
   },
   computed: {
@@ -246,7 +248,6 @@ export default {
     },
     tableList() {
       const commonList = [
-        { type: 'selection', width: 55, hide: this.status !== '1' },
         {
           label: '用户信息',
           minWidth: 180,
@@ -293,7 +294,7 @@ export default {
   },
   methods: {
     async getStatusCount() {
-      const { data } = await getSigninStatusCount()
+      const { data } = await getSigninStatusCount(this.activityId)
       this.statusCount = data
     },
 
@@ -382,7 +383,7 @@ export default {
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getTableData()
-        this.subDialog.show = true
+        this.subDialog.show = false
       }
     },
 
@@ -411,11 +412,13 @@ export default {
     },
 
     async setSitted(item) {
-      const { state, msg } = await modifySeatStatus(this.seatDialog.signinId, [item.seatId])
+      const { signinId } = this.seatDialog
+      const { state, msg } = await modifySeatStatus(signinId, [item.seatId])
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         item.status = 1
-        this.getTableData()
+        const row = this.tableData.find(v => v.id === signinId)
+        row.seats.find(v => v.seatId === item.seatId).status = 1
       }
     },
 
@@ -547,8 +550,16 @@ export default {
           render: ({ row }) => row.signStatus === 1 ? '是' : '-'
         },
         {
+          label: '签到时间',
+          render: ({ row }) => row.signTs ? formatDate(row.signTs) : '-'
+        },
+        {
           label: '签退',
           render: ({ row }) => row.signOutStatus === 1 ? '是' : '-'
+        },
+        {
+          label: '签退时间',
+          render: ({ row }) => row.signoutTs ? formatDate(row.signoutTs) : '-'
         },
         this.generateSigninTime(),
         {
@@ -632,56 +643,24 @@ export default {
           label: '操作',
           fixed: 'right',
           minWidth: 130,
-          render: ({ row }) => <el-button type='text' onClick={() => this.modifySigninStatus({ id: row.id, status: 1 })}>重新审核并通过</el-button>
+          render: ({ row }) => <el-button type='text' onClick={() => this.modifySigninStatus({ id: row.id, status: 4 })}>重新审核并通过</el-button>
         }
       ]
     },
-    // 导表
-    genetateWorkbook(XLSX) {
-      const { selectionDatas } = this
-      if (!selectionDatas.length) {
-        this.$message({ message: '请选择导出记录', type: 'warning' })
-        return null
+    async onExportExcel() {
+      this.exportLoaing = true
+      try {
+        const { query: { namephone, seatStatus, signStatus }, status, activityId, activity } = this
+        const blob = await getActivityExcel(activityId, { namephone, seatStatus, signStatus, status, page: 1, pageSize: 1 })
+        downloadFile({
+          title: `【参与人员】${activity.activityName}.xlsx`,
+          url: window.URL.createObjectURL(blob)
+        })
+      } catch (error) {
+        // console.log(error)
       }
-      const { signs } = selectionDatas[0]
-      let worksheet, workbook
-      worksheet = XLSX.utils.aoa_to_sheet([
-        ['排序', '用户信息', null, null, ...signs.map((v, i) => i === 0 ? '报名信息' : null), '替代人员手机号', '预计到场', '到场人数', '座位号（若多个座位号，则用“、”隔开，如：座号1、座位2）', '报名时间', '签到', '签退', '来源', '备注'],
-        [null, '用户名', '所在商协会', '手机号', ...signs.map((v, i) => v.key)],
-        ...selectionDatas.map((v, i) => ([
-          // 排序,'用户名', '所在商协会', '手机号'
-          i + 1, v.userName, v.chamberName, v.phone,
-          // 报名信息
-          ...v.signs.map(v => v.value),
-          // '替代人员手机号', '预计到场', '到场人数'
-          v.subUserPhone, v.subscribeTotal, v.realTotal,
-          // '座位号（若多个座位号，则用“、”隔开，如：座号1、座位2）', '报名时间'
-          v.seats.map(v => v.seatName).join('、'), formatDate(v.createdTs),
-          // '签到', '签退', '来源', '备注'
-          v.signStatus === 1 ? '是' : '-', v.signOutStatus === 1 ? '是' : '-',
-          // '来源', '备注'
-          { 1: '导入', 2: '小程序报名', 3: '临时签到' }[v.sourceType], v.remark
-        ]))
-      ])
-      const len = signs.length
-      worksheet['!merges'] = [
-        { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
-        { s: { c: 1, r: 0 }, e: { c: 3, r: 0 }},
-        { s: { c: 4, r: 0 }, e: { c: len + 3, r: 0 }},
-        { s: { c: len + 4, r: 0 }, e: { c: len + 4, r: 1 }},
-        { s: { c: len + 5, r: 0 }, e: { c: len + 5, r: 1 }},
-        { s: { c: len + 6, r: 0 }, e: { c: len + 6, r: 1 }},
-        { s: { c: len + 7, r: 0 }, e: { c: len + 7, r: 1 }},
-        { s: { c: len + 8, r: 0 }, e: { c: len + 8, r: 1 }},
-        { s: { c: len + 9, r: 0 }, e: { c: len + 9, r: 1 }},
-        { s: { c: len + 10, r: 0 }, e: { c: len + 10, r: 1 }},
-        { s: { c: len + 11, r: 0 }, e: { c: len + 11, r: 1 }},
-        { s: { c: len + 12, r: 0 }, e: { c: len + 12, r: 1 }},
-      ]
-      workbook = XLSX.utils.book_new()
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
-      return workbook
-    },
+      this.exportLoaing = false
+    }
   },
 }
 </script>
@@ -709,5 +688,9 @@ export default {
     font-size: 20px;
     color: 999;
   }
+}
+
+.el-button--text {
+  cursor: pointer;
 }
 </style>

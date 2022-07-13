@@ -3,7 +3,7 @@
     <div class="activity-title">{{ activity.activityName }}</div>
     <div class="activity-body">
       <div class="activity-list">
-        <div class="activity-item">
+        <div v-if="activity.activitySignUpStartTime" class="activity-item">
           <div class="activity-label">报名时间</div>
           <div class="activity-text">{{ formatDate(activity.activitySignUpStartTime) }} ～ {{ formatDate(activity.activitySignUpEndTime) }}</div>
         </div>
@@ -21,7 +21,7 @@
           <img :src="activity.qrCode" class="activity-qrcode">
           <div>扫码查看活动</div>
         </div>
-        <div v-if="ckey" class="activity-content-right">
+        <div v-if="activity.ckey" class="activity-content-right">
           <img :src="activity.chamberLogo" class="chamber-logo">
           <div class="chamber-name">{{ activity.chamberName }}</div>
           <div class="chamber-desc">已入驻 <span style="color: #d01a33;">{{ activity.chamberNum }}</span> 名会员</div>
@@ -50,11 +50,6 @@ export default {
     }
   },
   data() { return {} },
-  computed: {
-    ckey() {
-      return this.$store.getters.ckey
-    }
-  },
   methods: {
     formatDate,
   },

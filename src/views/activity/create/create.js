@@ -84,7 +84,7 @@ export default {
         competence:'0',//观看权限 0 不限 1 限本商会会员
         link:'',//直播链接   
         signType:0,  // 报名方式是否必填 0否 1是
-        arriveType:0,  // 到场人数是否必填 0否 1是
+        arriveType:1,  // 到场人数是否必填 0否 1是
         longitude:113.326548, // 经度
         latitude:23.125821, // 纬度 
         auditStatus:0, // 报名审核
@@ -92,6 +92,7 @@ export default {
         extraSignout:0 , // 拓展功能签退 0否 1是
         extraSeat: 0 , // 拓展功能座位 0否 1是
         isPublish:0 , //是否发布 0否 1是
+        linkType:1 , //直播链接类型 1 云会播小程序 2 H5链接
       },
       roleIds:[],  //多选框 扩展功能
       addressList:[] , //搜索数组
@@ -276,9 +277,12 @@ export default {
         }
       }
       let key = []
-      this.colData.selects.forEach((v)=>{
-        key.push(v.value)
-      })
+      if(this.colData.selects){
+        this.colData.selects.forEach((v)=>{
+          key.push(v.value)
+        })
+      }
+    
       this.colData.key = key.join(';')
     
  
@@ -406,6 +410,7 @@ export default {
         
         this.formObj.signType = resData.signType
         this.formObj.arriveType = resData.arriveType
+        this.formObj.linkType = resData.linkType || 1
         if(resData.longitude)    this.formObj.longitude = resData.longitude
         if(resData.latitude)    this.formObj.latitude = resData.latitude
        
@@ -482,7 +487,6 @@ export default {
         // this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
       
         this.arrayData  = resData.dtos.map(({title, msgAlert, lengthLimit, check,type,selects,key}) => ({title, msgAlert, lengthLimit, check,type,selects,key}));
-        let arr = []
         this.arrayData.forEach((v)=>{
            //  0 : 输入框  1：下拉框
           if(v.type == 1){
@@ -491,7 +495,6 @@ export default {
             v.selects.forEach((j)=>{
               key.push(j.value)
             })
-         
             v.key = key.join(';')
           } 
         })
@@ -748,6 +751,8 @@ export default {
           if (this.portValue.length > 0) {
             this.formObj['applyIds'] = this.portValue.join(',')
           }
+          // 如果选择了自定义报名 但是没有选择自定义报名信息 就返回提示
+          if(this.formObj.signType == 0 && !this.arrayData.length) return this.$message.error('自定义报名表需添加报名信息才可以发布活动，若无需自定义报名表，请选择【一键报名】')
 
           if (this.arrayData.length > 0) {
             this.formObj['dtos'] = this.arrayData
@@ -771,7 +776,7 @@ export default {
               this.$router.push({
                 name: '活动列表',
                 params: {
-                  type: this.activityId ? this.type : 0
+                  type: this.activityId ? this.type : e
                 }
               })
             }else{
@@ -823,8 +828,8 @@ export default {
 
     onaddress(e){
       this.formObj.province = e.province // 活动地点(省)
-      this.formObj.city = e.city // 活动地点(市)
-      this.formObj.area = e.district // 活动地点(区)
+      this.formObj.city = e.city || '' // 活动地点(市)
+      this.formObj.area = e.district || '' // 活动地点(区)
       this.formObj.addressInfo = e.title // 活动地点（详细地址）
       this.formObj.longitude = e.location.lng // 经度
       this.formObj.latitude = e.location.lat // 纬度
@@ -870,7 +875,7 @@ export default {
       this.defaultParams.infowindow =new TMap.InfoWindow({
         position:myLatLng,//显示信息窗口的坐标
         map:this.defaultParams.map,
-        content:`<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址:${e.province}${e.city}${e.district}</p>`, //信息窗口内容
+        content:`<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址:${e.province}${e.city}${e.district || ''}</p>`, //信息窗口内容
         offset: { x: 0, y: -50 },
       });
      

@@ -2,7 +2,7 @@
   <div class="block">
     <span class="time">时间</span>
     <template v-for="item in layoutList">
-      <el-radio-group v-if="item === 'days'" :key="item" v-model="query.days" size="mini">
+      <el-radio-group v-if="item === 'days'" :key="item" v-model="query.days" size="mini" @change="onDaysChange">
         <el-radio-button :label="7">7天</el-radio-button>
         <el-radio-button :label="14">14天</el-radio-button>
         <el-radio-button :label="30">30天</el-radio-button>
@@ -19,9 +19,9 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         size="mini"
-        @change="onTimeChange"
+        @change="onDateChange"
       />
-      <el-radio-group v-if="item === 'type'" :key="item" v-model="query.type" size="mini" @change="onChangeQueryType">
+      <el-radio-group v-if="item === 'type'" :key="item" v-model="query.type" size="mini" @change="onTypeChange">
         <el-radio-button :label="1">日</el-radio-button>
         <el-radio-button :label="2">周</el-radio-button>
         <el-radio-button :label="3">月</el-radio-button>
@@ -36,18 +36,13 @@ import { formatDate } from '@/utils/date'
 export default {
   components: {},
   props: {
+    query: {
+      type: Object,
+      required: true
+    },
     layout: {
       type: String,
       default: 'days, date, type'
-    }
-  },
-  data() {
-    return {
-      query: {
-        days: 7,
-        type: 1,
-        date: [],
-      }
     }
   },
   computed: {
@@ -55,33 +50,40 @@ export default {
       return this.layout.split(',').map(v => v.trim())
     }
   },
-  watch: {
-    'query.days': {
-      handler() {
-        this.initDatePicker()
-      },
-      immediate: true
-    }
+  created() {
+    this.reset()
+    this.onChange()
   },
   methods: {
-    initDatePicker() {
-      const endDate = new Date()
-      const startDate = new Date(endDate.getTime() - 3600 * 1000 * 24 * this.query.days)
-      this.query.date = [formatDate(startDate, 'yyyy-MM-dd'), formatDate(endDate, 'yyyy-MM-dd')]
-      this.onTimeChange()
-    },
 
-    onChangeQueryType(val) {
-      this.query.type = val
-      this.onTimeChange()
-    },
-
-    onTimeChange() {
-      const query = {}
-      this.layoutList.forEach(v => {
-        query[v] = this.query[v]
+    reset() {
+      const defaultQuery = { days: 7, type: 1, date: this.initDatePicker(7), }
+      this.layoutList.forEach(key => {
+        this.query[key] = defaultQuery[key]
       })
-      this.$emit('change', query)
+    },
+
+    initDatePicker(days) {
+      const endDate = new Date()
+      const startDate = new Date(endDate.getTime() - 3600 * 1000 * 24 * days)
+      return [formatDate(startDate, 'yyyy-MM-dd'), formatDate(endDate, 'yyyy-MM-dd')]
+    },
+
+    onChange() {
+      this.$emit('change', this.query)
+    },
+
+    onDaysChange(val) {
+      if (this.layoutList.includes('date')) this.query.date = this.initDatePicker(val)
+      this.onChange()
+    },
+
+    onTypeChange(val) {
+      this.onChange()
+    },
+
+    onDateChange(val) {
+      this.onChange()
     }
   },
 }

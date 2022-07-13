@@ -13,6 +13,12 @@ export const uploadSeating = data => request({
   data
 })
 
+// 删除座位表
+export const deleteSeating = activityId => request({
+  url: `/api/ec/singin/Seat/clean/${activityId}`,
+  method: 'get'
+})
+
 // 获取活动报名列表
 export const getActivitySigninList = (id, params) => request({
   url: `/api/ec/singin/activity/${id}`,
@@ -67,7 +73,7 @@ export const handleSignOut = ({ id, status }) => request({
 
 // 获取各个状态审核总数量
 export const getSigninStatusCount = id => request({
-  url: '/api/ec/singin/status-count',
+  url: `/api/ec/singin/status-count/${id}`,
   method: 'get'
 })
 
@@ -83,4 +89,11 @@ export const modifySeatStatus = (activityApplyId, data) => request({
   url: `/api/ec/singin/seat/status/${activityApplyId}`,
   method: 'post',
   data
+})
+// 获取活动excel
+export const getActivityExcel = (id, params) => request({
+  url: `/api/ec/singin/activity/${id}/excel`,
+  method: 'get',
+  params,
+  responseType: 'blob'
 })

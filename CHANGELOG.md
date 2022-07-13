@@ -1,4 +1,25 @@
 # CHANGELOG
+## [Rreleased]
+## [2.18.0] - 2022-07-08
+### Added
+- 【商会使用统计】-  阿里日志埋点采集 [920](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/920)
+- 活动签到-报名审核页面布局 [888](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#888)
+- 活动签到-报名审核 [889](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#889)
+- 活动签到-参与人员 [904](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#904)
+- 活动签到-已驳回 [905](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#905)
+- 活动扫码签到 - 创建活动 - 活动信息 [906](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#906)
+- 活动扫码签到 - 创建活动 - 活动信息(预览小程序活动详情页) [907](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#907)
+- 活动扫码签到 - 创建活动 - 活动信息(腾讯地图引入) [908](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#908)
+- 活动扫码签到 - 创建活动 - 创建活动 [909](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#909)
+- 活动扫码签到 - 商会后台 - 创建活动 [910](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#910)
+- 活动扫码签到 - 创建活动 - 嵌入h5跳转 [922](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#922)
+- 会内职位字数开放 [927](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin#927)
+
+
+## [Rreleased]
+## [2.17.1] - 2022-07-06
+### Fixed
+-  【后台管理】总后台操作指引上传视频，一直显示加载中（视频80M）[925](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/925)
 
 
 ## [Rreleased]
