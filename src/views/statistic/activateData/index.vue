@@ -157,7 +157,7 @@ export default {
     },
     // 看板列表
     boardDataList() {
-      const { activeName } = this
+      const { activeName, ckey } = this
       const {
         visitorsNum,
         registerMembersNum, registerNotMembersNum, registerUsersNum,
@@ -180,14 +180,15 @@ export default {
             { name: `会员 ${activeMembersRate || '0%'} 非会员 ${notActiveMembersRate || '0%'}`, value: `活跃率 ${activeRate || '0%'}` },
           ]
         default: // Chamber || Area
-          return [
-            { name: '访问人数', value: visitorsNum || 0 },
+          var boardDataList = [
             { name: '累计注册会员', value: registerMembersTotal || 0 },
             { name: `已激活 ${membersActiveNum || 0} 未激活 ${membersNotActiveNum || 0}`, value: `后台导入会员 ${adminAddMembersNum || 0}` },
             { name: '会员激活率', value: `${memberActivationRate || '0%'}` },
             { name: '活跃会员', value: activeMembersNum || 0 },
             { name: '会员活跃率', value: activeMembersRate || '0%' }
           ]
+          if (!ckey) boardDataList.unshift({ name: '访问人数', value: visitorsNum || 0 })
+          return boardDataList
       }
     },
 
