@@ -144,6 +144,7 @@ export default {
             this.loading = true;
             let formData = new FormData();
             formData.append('file', content.file);
+            formData.append('type', 1)
             uploadVideo(formData, 0).then(res => {
             if (res.code === 200) {
                 this.formObj.vid = res.data.videoId;        

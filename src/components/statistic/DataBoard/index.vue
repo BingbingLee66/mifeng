@@ -1,38 +1,27 @@
 <template>
   <div class="data-board">
-    <div class="data-title">
+    <div v-if="title || defineList.length" class="data-title">
       <span class="title">{{ title }}</span>
-      <span class="text-btn-style" @click="showMeaning=true">数据定义</span>
+      <DataDefinition :define-list="defineList" />
     </div>
     <div class="data-card">
       <template v-for="(v,i) of list">
         <div :key="`cell${i}`" class="card-cell">
-          <span v-if="v.render" class="card-value" v-html="v.render(v,i)" />
-          <span v-else class="card-value">{{ v.value }}</span>
-          <span class="card-name">{{ v.name }}</span>
+          <span class="card-value" v-html="v.value||0" />
+          <span class="card-name" v-html="v.name||''" />
         </div>
         <div v-if="i < list.length - 1 && !v.hideBorder" :key="`line${i}`" class="line" />
       </template>
     </div>
-
-    <el-dialog title="数据定义" :visible.sync="showMeaning" width="600px">
-      <div class="meaning-wrap">
-        <div v-for="(v,i) of defineList" :key="`meaning${i}`" class="meaning-item">
-          <div class="tit">{{ v.title }}</div>
-          <div class="sub" v-html="v.text" />
-        </div>
-      </div>
-      <div class="footer">
-        <el-button type="primary" @click="showMeaning=false">我知道了</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 
 export default {
-  components: {},
+  components: {
+    DataDefinition: () => import('@/components/statistic/DataDefinition')
+  },
   props: {
     title: {
       type: String,
@@ -52,9 +41,7 @@ export default {
     }
   },
   data() {
-    return {
-      showMeaning: false,
-    }
+    return { }
   },
 }
 </script>
@@ -103,10 +90,6 @@ export default {
     height: 100%;
     border-right: 1px solid #ccc;
   }
-}
-
-.footer {
-  text-align: center;
 }
 
 </style>

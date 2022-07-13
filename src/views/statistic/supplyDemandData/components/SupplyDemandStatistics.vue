@@ -2,14 +2,14 @@
   <div>
     <DataBoard :list="dataList" :define-list="defineList" />
 
-    <DataDimension v-if="isTopBackStage" @change="onChamberChange" />
+    <ChamberSelector v-if="isTopBackStage" style="margin-top:10px;" @change="onChamberChange" />
 
     <div class="flex-x-between">
-      <TimeSizer @change="onQueryChange({...$event,pageNum:1})" />
-      <div class="block"><el-button type="primary" size="mini" @click="exportExcel">导表</el-button></div>
+      <TimeSizer :query="query" @change="onQueryChange({pageNum:1})" />
+      <div class="block"><ExportTable :data="selectionDatas" title="供需统计数据" /></div>
     </div>
 
-    <KdTable v-loading="loading" :list="tableList" :data="tableData" @selection-change="onSelectionChange" />
+    <KdTable v-loading="loading" :columns="tableColumns" :rows="tableData" @selection-change="onSelectionChange" />
 
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
@@ -18,33 +18,20 @@
 
 <script>
 import { getSupplyDemandStatsList, getSupplyDemandTotalStats } from '@/api/statistics/supplyDemand'
-import { exportJson2Excel } from '@/utils/exportExcel'
 
 export default {
   components: {
     DataBoard: () => import('@/components/statistic/DataBoard'),
-    DataDimension: () => import('@/components/statistic/DataDimension'),
+    ChamberSelector: () => import('@/components/statistic/ChamberSelector'),
     TimeSizer: () => import('@/components/statistic/TimeSizer'),
+    ExportTable: () => import('@/components/statistic/ExportTable'),
     KdPagination: () => import('@/components/common/KdPagination'),
-    KdTable: () => import('@/components/KdTable')
+    KdTable: () => import('@/components/common/KdTable')
   },
   props: {},
   data() {
     return {
-      dataList: [
-        { name: '累计成交总数', key: 'cooperateNum', value: 0 },
-        { name: '累计发布供应数', key: 'provideNum', value: 0 },
-        { name: '累计发布需求数', key: 'needNum', value: 0 },
-        { name: '累计访问人数', key: 'uv', value: 0,
-          render(v) {
-            return `<span class="red-label">${v.value}</span>`
-          }
-        },
-        { name: '累计访问次数', key: 'pv', value: 0 },
-        { name: '累计发布总数', key: 'publishNum', value: 0 },
-        { name: '累计终止总数', key: 'stopNum', value: 0 },
-        { name: '累计过期总数', key: 'expireNum', value: 0 },
-      ],
+      totalStats: {},
       defineList: [
         {
           title: '累计发布供需总数',
@@ -85,7 +72,7 @@ export default {
 
       chamberOptions: [],
 
-      tableList: [
+      tableColumns: [
         { type: 'selection', width: 55 },
         { label: '日期', prop: 'date' },
         { label: '发布供应数', prop: 'supplyNum' },
@@ -108,6 +95,19 @@ export default {
     },
     isTopBackStage() {
       return !this.ckey
+    },
+    dataList() {
+      const { totalStats } = this
+      return [
+        { name: '累计成交总数', value: totalStats.cooperateNum },
+        { name: '累计发布供应数', value: totalStats.provideNum },
+        { name: '累计发布需求数', value: totalStats.needNum },
+        { name: '累计访问人数', value: `<span class="red-label">${totalStats.uv || 0}</span>` },
+        { name: '累计访问次数', value: totalStats.pv },
+        { name: '累计发布总数', value: totalStats.publishNum },
+        { name: '累计终止总数', value: totalStats.stopNum },
+        { name: '累计过期总数', value: totalStats.expireNum },
+      ]
     }
   },
 
@@ -144,9 +144,7 @@ export default {
     async getSupplyDemandTotalStats() {
       const ckey = this.ckey || this.query.ckey
       const { data } = await getSupplyDemandTotalStats(ckey ? { ckey } : null)
-      this.dataList.forEach(v => {
-        v.value = data ? data[v.key] : 0
-      })
+      this.totalStats = data || {}
     },
 
     onChamberChange(e) {
@@ -155,15 +153,9 @@ export default {
       this.getSupplyDemandTotalStats()
     },
 
-    onQueryChange(e) {
+    onQueryChange(e = {}) {
       this.query = { ...this.query, ...e }
       this.getSupplyDemandStatsList()
-    },
-
-    exportExcel() {
-      if (!this.selectionDatas.length) return this.$message({ message: '请选择导出记录', type: 'wraning' })
-
-      exportJson2Excel('供需统计数据', this.selectionDatas)
     },
 
     onSelectionChange(e) {
