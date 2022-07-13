@@ -67,6 +67,17 @@ export default {
             { name:'会内职务_添加商会职位', vale:'chamberPostAddSum', },{ name:'部门管理_导航点击', vale:'departmentMenuSum', },
             { name:'部门管理_添加部门', vale:'departmentAddSum', }, { name:'成员管理_导航点击', vale:'memberMenuSum', },
             { name:'成员管理_添加成员', vale:'memberAddSum', },{ name:'成员管理_调整部门', vale:'memberUpdateDepartmentSum', }],
+        moduleList13:[{ name:'总点击数', vale:'total', },{ name:'栏目设置_导航点击', vale:'columnSetMenuSum', },
+            { name:'栏目设置_添加栏目', vale:'columnSetAddSum', },{ name:'文章更新_导航点击', vale:'articleUpdateMenuSum', },
+            { name:' 文章更新_创建文章', vale:'articleUpdateAddSum', },],
+        moduleList14:[{ name:'总点击数', vale:'total', },{ name:'创建活动_导航点击', vale:'activityCreatedMenuSum', },
+            { name:'创建活动_发布次数', vale:'activityCreatedAddSum', },{ name:'活动列表_导航点击', vale:'activityListMenuSum', },
+            { name:' 活动列表_发布次数', vale:'activityListAddSum', },{ name:' 报名审核_导航点击', vale:'activitySignInMenuSum', },
+            { name:' 报名审核_通过次数', vale:'activitySignInPassSum', },{ name:' 报名审核_驳回次数', vale:'activitySignInRejectSum', },],
+        moduleList15:[{ name:'总点击数', vale:'total', },{ name:'会员数据_导航点击', vale:'userDataMenuSum', },
+            { name:'会员画像_导航点击', vale:'userPersonaMenuSum', },{ name:'供需数据统计_导航点击', vale:'demandDataStatsMenuSum', },],
+        moduleList16:[{ name:'总点击数', vale:'total', },{ name:'入会专属二维码_导航点击', vale:'unionizeQrCodeMenuSum', },
+            { name:'入会专属二维码_保存图片', vale:'unionizeQrCodeAddSum', },],           
     }
   },
   methods: {
@@ -79,18 +90,13 @@ export default {
             this.query = JSON.parse(JSON.stringify(query))
             this.query.moduleId = moduleId
             this.choose(moduleId)  // 判断功能类型
-            if(this.type == 1){
-                this.fetchData()
-            }else{
-                this.fetDetails()
-            }
-
+            this.fetchData()
         }else{
             this.detailVisible = true
         }
     },
     // 商会统计数据列表查询
-    fetchData(){
+    async fetchData(){
         this.listLoading = true
         let params = {
         'startTime': this.query.date[0],
@@ -98,44 +104,26 @@ export default {
         'pageNum': this.currentpage,
         'pageSize': this.limit, 
         'ckey':this.query.ckey,
-        'moduleId':this.query.moduleId
+        'moduleId':this.query.moduleId,
+        'type': this.query.type || '',
         }
-        getAllChamberStatsDataByCkeyList(params).then(response => {
-            if(response.state == 1) {
-                this.list = response.data.list || []
-                this.total = response.data.totalRows
-            }else{
-                this.list = []
-                this.total = 0
-            }
-            this.listLoading = false
-            this.detailVisible = true
-        })
-    },
-     // 商会详情统计数据列表查询
-    fetDetails(){
-        this.listLoading = true
-        let params = {
-          'startTime': this.query.date[0],
-          'endTime': this.query.date[1],
-          'pageNum': this.currentpage,
-          'pageSize': this.limit, 
-          'ckey':this.query.ckey,
-          'moduleId':this.query.moduleId,
-          'type': this.query.type,
+       
+       let response = {}
+        if(this.type == 1) response = await getAllChamberStatsDataByCkeyList(params)
+        else response = await getChamberTypeStatsDataByCkeyList(params)
+        
+        if(response.state == 1) {
+            this.list = response.data.list || []
+            this.total = response.data.totalRows
+        }else{
+            this.list = []
+            this.total = 0
         }
-        getChamberTypeStatsDataByCkeyList(params).then(response => {
-            if(response.state == 1) {
-                this.list = response.data.list || []
-                this.total = response.data.totalRows
-            }else{
-                this.list = []
-                this.total = 0
-            }
-            this.listLoading = false
-            this.detailVisible = true
-        })
+        this.listLoading = false
+        this.detailVisible = true
+      
     },
+
     choose(moduleId){
         let stats = {name:'商协会名称', vale:'chamberName'}
         let detail = {name:'日期', vale:'date'}
@@ -143,7 +131,7 @@ export default {
         this.tableData = JSON.parse(JSON.stringify(this.chamberStats(moduleId)))
         if (this.type == 1)  this.tableData.unshift(stats)
         if (this.type == 2)  this.tableData.unshift(detail)
-        console.log('moduleId',moduleId,this.tableData)
+       
     },
     // 获取对应的标头
     chamberStats(moduleId){
@@ -162,19 +150,13 @@ export default {
     handleSizeChange(val) {
         this.limit = val
         this.currentpage = 1
-        if(this.type == 1){
-            this.fetchData()
-        }else{
-            this.fetDetails()
-        }
+        this.fetchData()
+        
     },
     handleCurrentChange(val) {
         this.currentpage = val
-        if(this.type == 1){
-            this.fetchData()
-        }else{
-            this.fetDetails()
-        }
+        this.fetchData()
+      
     },
   },
 }
