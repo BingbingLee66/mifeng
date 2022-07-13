@@ -251,9 +251,9 @@ export const constantRoutes = [
       },
       // 活动报名审核详情
       {
-        path: '/activity/applyDetail',
+        path: '/activity/verifyDetail',
         name: '审核详情',
-        component: () => import('@/views/activity/activity-verify/activity-verify-detail/index'),
+        component: () => import('@/views/activity/verify-detail/index'),
         hidden: true,
         meta: { title: '审核详情' }
       },
@@ -333,6 +333,20 @@ export const constantRoutes = [
         component: () => import('@/views/supply-and-demand/EditSupplyDemand'),
         hidden: true,
         meta: { title: '编辑供需' }
+      },
+      {
+        path: '/guide/operate-detail',
+        name: '添加和编辑操作指引',
+        component: () => import('@/views/guide/operate'),
+        hidden: true,
+        meta: { title: '添加和编辑操作指引' }
+      },
+      {
+        path: '/guide/chamber-guide',
+        name: '操作指引详情',
+        component: () => import('@/views/guide/playGuide'),
+        hidden: true,
+        meta: { title: '操作指引详情' }
       },
       {
         path: '/supply-and-demand/push-img',

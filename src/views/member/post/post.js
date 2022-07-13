@@ -1,4 +1,4 @@
-import { getList, save, updateStatus, del,postNameExistValid } from '@/api/member/post'
+import { getList, save, updateStatus, del, postNameExistValid } from '@/api/member/post'
 // import { mapGetters } from 'vuex'
 
 export default {
@@ -130,50 +130,36 @@ export default {
       this.visible = true
     },
     save() {
-      this.$refs['form'].validate((valid) => {
-        if (valid) {
-          save(this.formObj).then(response => {
-            if(response.state===1){
-              this.$message({
-                message: '操作成功',
-                type: 'success'
-              })
-              this.fetchData()
-            }else{
-              this.$message({
-                message: response.msg,
-                type: 'error'
-              })
-            }
-           
-            this.visible = false
-          })
-        } else {
-          return false
+      this.$refs.form.validate(async(valid) => {
+        if (!valid) return
+        const { state, msg } = await save(this.formObj)
+        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+        if (state === 1) {
+          this.fetchData()
+          this.visible = false
         }
       })
     },
-    del(row) {
-      this.$confirm('', '确定删除？', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }).then(() => {
-        let params = {
-          'id': row.id
-        }
-        del(params).then(response => {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
+    async del(row, len) {
+      if (len <= 1) return this.$alert('无法删除，请至少保留一个职位', '温馨提示', { confirmButtonText: '我知道了' })
+
+      try {
+        await this.$confirm(
+          `确定删除${row.postName}职位吗？`,
+          '删除职位',
+          { confirmButtonText: '确定', cancelButtonText: '取消' }
+        )
+        const { state, msg } = await del({ id: row.id })
+        if (state === 0) {
+          await this.$confirm(msg, '温馨提示', { confirmButtonText: '去替换', cancelButtonText: '取消删除' })
+          this.$router.push({ name: '商/协会成员', query: { memberPostType: row.id }})
+        } else if (state === 1) {
+          this.$message({ message: '删除成功', type: 'success' })
           this.init()
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消删除'
-        })
-      })
+        }
+      } catch (error) {
+        // console.log(error)
+      }
     },
     updateStatus(row) {
       let params = {

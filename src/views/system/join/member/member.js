@@ -1,6 +1,6 @@
 import { refreshGetInfo, getInfo, getPostUrl } from '@/api/system/property'
 import html2canvas from 'html2canvas'
-import domtoimage from 'dom-to-image'
+// import domtoimage from 'dom-to-image'
 
 export default {
   data() {
@@ -61,9 +61,10 @@ export default {
         }
       })
     },
-    clickGeneratePicture() {
+    async clickGeneratePicture() {
       this.isLoading = true
-      this.$nextTick(() => {
+      try {
+        await this.$nextTick()
         const canvas = document.createElement('canvas')
         const shareContent = document.getElementById('postdiv')
         const width = shareContent.offsetWidth // 获取dom 宽度
@@ -78,40 +79,38 @@ export default {
         const rect = shareContent.getBoundingClientRect() // 获取元素相对于视口的
         context.translate(-rect.left, -rect.top)
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop // 获取滚动轴滚动的长度
-        html2canvas(shareContent, { // 转换为图片
+        const _canvas = await html2canvas(shareContent, { // 转换为图片
           scrollY: -scrollTop,
           scrollX: 0,
           useCORS: true // 开启跨域
-        }).then(canvas => {
-          const imgUrl = canvas.toDataURL('image/png')
-          this.dataURL = imgUrl
-          setTimeout(() => {
-            var a = document.createElement('a')
-            a.download = '商会二维码'
-            a.href = this.dataURL
-            a.click()
-            this.isLoading = false
-          }, 2000)
-          // this.getPost(imgUrl)
         })
-      })
+        const imgUrl = _canvas.toDataURL('image/png')
+        const a = document.createElement('a')
+        a.download = '商会二维码'
+        a.href = imgUrl
+        a.click()
+        this.$trackClick(251)
+      } catch (error) {
+        // console.log(error)
+      }
+      this.isLoading = false
     },
-    domtoimage() {
-      const _this = this
-      this.isLoading = true
-      const node = document.getElementById('postdiv')
-      domtoimage.toPng(node)
-        .then((dataUrl) => {
-          var a = document.createElement('a')
-          a.download = '入会二维码'
-          a.href = dataUrl
-          a.click()
-          _this.isLoading = false
-        })
-        .catch(function(error) {
-          console.error('oops, something went wrong!', error)
-          _this.isLoading = false
-        })
-    }
+    // domtoimage() {
+    //   const _this = this
+    //   this.isLoading = true
+    //   const node = document.getElementById('postdiv')
+    //   domtoimage.toPng(node)
+    //     .then((dataUrl) => {
+    //       var a = document.createElement('a')
+    //       a.download = '入会二维码'
+    //       a.href = dataUrl
+    //       a.click()
+    //       _this.isLoading = false
+    //     })
+    //     .catch(function(error) {
+    //       console.error('oops, something went wrong!', error)
+    //       _this.isLoading = false
+    //     })
+    // }
   }
 }

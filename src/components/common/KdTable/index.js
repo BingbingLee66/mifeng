@@ -1,8 +1,8 @@
 /*
 
-  组件属性除list外 可穿透作用于 el-table
+  组件属性除columns外 可穿透作用于 el-table
 
-  list 用于布局 元素除 children | render | component | hide 外 其他属性均可穿透作用于 el-table-column
+  columns 用于布局 元素除 children | render | component | hidden 外 其他属性均可穿透作用于 el-table-column
   -- children 可用于递归生成嵌套的 el-table-column
 
   -- render (function | object) 用于插槽渲染
@@ -17,19 +17,25 @@
       -- component:Component 实际上转化为 component:{default:Component}
     -- object 可用于配置表头组件 ep: import 表头组件 from '路劲' { componet:{default: 表行组件, header: 表头组件} }
 
-  -- hide 隐藏当前配置项 内部进行过滤
+  -- hidden 隐藏当前配置项 内部进行过滤
 
   穿透事件 select | select-all | selection-change
 
 */
 export default {
   props: {
-    list: {
+    columns: {
       type: Array,
       default() {
         return []
       }
-    }
+    },
+    rows: {
+      type: Array,
+      default() {
+        return []
+      }
+    },
   },
   methods: {
     // 生成 el-table-column
@@ -63,12 +69,13 @@ export default {
     }
   },
   render(h) {
-    const { $listeners, $attrs, list } = this
+    const { $listeners, $attrs, columns, rows } = this
     // console.log($attrs)
     return (
       <el-table
         ref='table'
         style='width:100%;'
+        data={rows}
         border
         header-row-class-name='tableheader'
         highlight-current-row
@@ -79,7 +86,7 @@ export default {
         {...{ attrs: $attrs }} // 属性穿透
       >
         {
-          list.filter(({ hide }) => !hide).map((v, i) => this.generateTableColumn(v, i))
+          columns.filter(({ hidden }) => !hidden).map((v, i) => this.generateTableColumn(v, i))
         }
       </el-table>
     )
