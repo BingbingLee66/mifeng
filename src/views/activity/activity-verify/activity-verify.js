@@ -98,17 +98,17 @@ export default {
     },
     // 查看审核详情
     goVerifyDetail(e, type, status) {
-      let chamberName = null
-      if (this.type === '1' && !this.ckey) {
-        chamberName = 'yun'
-      }
+      // let chamberName = null
+      // if (this.type === '1' && !this.ckey) {
+      //   chamberName = 'yun'
+      // }
       this.$router.push({
         name: '审核详情',
         query: {
           activityId: e.activityId,
-          type: type,
+          // type: type,
           status: status,
-          chamberName
+          // chamberName
         }
       })
     }

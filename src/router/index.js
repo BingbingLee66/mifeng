@@ -251,9 +251,9 @@ export const constantRoutes = [
       },
       // 活动报名审核详情
       {
-        path: '/activity/applyDetail',
+        path: '/activity/verifyDetail',
         name: '审核详情',
-        component: () => import('@/views/activity/activity-verify/activity-verify-detail/index'),
+        component: () => import('@/views/activity/verify-detail/index'),
         hidden: true,
         meta: { title: '审核详情' }
       },

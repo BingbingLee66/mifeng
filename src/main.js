@@ -11,6 +11,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
+import { reportSlsData } from './api/statistics/tracker'
 import i18n from './lang' // Internationalization
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -21,9 +22,12 @@ import DbClick from '@/utils/dbClick' // 防止重复点击
 import { formatDateTime, formatDate } from '@/utils/date' // 格式化时间戳
 import VueUeditorWrap from 'vue-ueditor-wrap'
 
+
+
 require('../src/plugins/aliplayercomponents-1.0.5.min')
 Vue.use(Print)
 Vue.use(DbClick)
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -43,6 +47,39 @@ Vue.use(VueClipboard)
 import kdDialog from './components/common/kdDialog'
 
 Vue.component('kdDialog', kdDialog)
+
+/*
+*  页面hash路由上报
+*/
+router.afterEach((to, from) => {
+  const { ckey } = store.getters
+  if (to.path !== from.path) { // 商会后台上报
+    const user_only = store.getters.profile.userName
+    var ckeyStr = ''
+    if (ckey) {
+      ckeyStr = store.getters.ckey
+    } else {
+      return
+    }
+    try {
+      reportSlsData({ url: to.path, ckey: ckeyStr, user_only: user_only, method: 'PAGE_CLICK', status: 200, params: '', extend: '' })
+    } catch (e) {
+      console.log('sls日志收集失败', e)
+    }
+  }
+})
+
+/*
+* 点击上报方法封装
+*/
+
+Vue.prototype.$trackClick = function(buttonId) {
+  const { ckey } = this.$store.getters
+  if (!ckey) return
+  // 暂时不上传，后端接口未发布
+  // reportClickData({ buttonId, ckey })
+}
+
 new Vue({
   el: '#app',
   router,
@@ -211,9 +248,9 @@ Vue.mixin({
     },
     // 精准除法
     $accDivision(arg1, arg2) {
-      let t1 = 0,
-        t2 = 0,
-        r1, r2
+      let t1 = 0
+      let t2 = 0
+      let r1; let r2
       try {
         t1 = arg1.toString().split('.')[1].length
       } catch (e) {}
