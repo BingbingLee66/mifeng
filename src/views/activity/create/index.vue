@@ -278,9 +278,6 @@
                 >
                   <template slot="append">人</template>
                 </el-input>
-                <span style="margin-left: 20px; color: #ff0000"
-                  >若这里限定了参加人数，在后台审核通过的，才能参加活动</span
-                >
               </el-form-item>
             </el-col>
           </el-row>
