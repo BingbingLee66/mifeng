@@ -454,7 +454,7 @@ export default {
     },
     // 查询报表的参数格式化
     normalizeParams() {
-      const { date = [], pageNum, pageSize, type, ckey } = this.query
+      const { date = [], pageNum, pageSize, type, ckey, area, functionModuleId, pageUrl } = this.query
       if (!this.tabMap) this.tabMap = { Platform: 1, Chamber: 2, Area: 3, FunctionModule: 4, Page: 5 }
       const params = {
         startTime: date[0],
@@ -466,6 +466,9 @@ export default {
       }
       if (ckey) params.ckey = ckey
       if (this.ckey) params.ckey = this.ckey
+      if (area[0]) params.areaCode = area[0]
+      if (functionModuleId) params.functionModuleId = functionModuleId
+      if (pageUrl) params.pageUrl = pageUrl
       return params
     },
     // 报表轮询
