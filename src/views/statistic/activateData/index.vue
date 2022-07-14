@@ -49,7 +49,7 @@
 
     <div class="flex-x-between">
       <!-- 时间 -->
-      <TimeSizer ref="timeSizer" :query="query" @change="onQueryChange({pageNum:1})" />
+      <TimeSizer ref="timeSizer" :query="query" :end-ts="Date.now()-1000*60*60*24" @change="onQueryChange({pageNum:1})" />
       <!-- 导表 -->
       <div class="block"><ExportTable :data="genetateWorkbook" title="激活与活跃" /></div>
     </div>
