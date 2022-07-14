@@ -193,7 +193,7 @@ export default {
       return !this.ckey
     },
     isEdit() {
-      return !!this.detail
+      return !!this.detail && !!this.detail.dynamicWxUserVO
     }
   },
   watch: {
@@ -217,36 +217,41 @@ export default {
   },
   methods: {
     initData() {
-      const {
-        chamberVOList = [],
-        dynamicWxUserVO = {},
-        yshContentEditVO: {
-          tarType, content, validType, validEndTs, title, labelVOList, tradeVOList, city, province
-        } = {}
-      } = this.detail
+      if (!!this.detail.dynamicWxUserVO) {
+        const {
+          chamberVOList = [],
+          dynamicWxUserVO = {},
+          yshContentEditVO: {
+            tarType, content, validType, validEndTs, title, labelVOList, tradeVOList, city, province
+          } = {}
+        } = this.detail
 
-      this.formData = {
-        content: '', // 供需内容
-        tarType, // 供应: 1 or 需求: 2
-        validType, // 长期有效: 1  自定义时间: 2
-        title, // 供需标题
-        publisherList: [dynamicWxUserVO], // 发布人列表
-        supplyLableList: labelVOList, // 供需标签
-        industryLableList: tradeVOList.map(v => ({ ...v, typeName: v.name })), // 行业标签
-        publisherStationList: [{ ...city, fullName: `${city.name}-${province.name}`, fullCode: `${city.code}-${province.code}` }], // 发布者常驻地
-        date: validEndTs ? new Date(+validEndTs) : '',
-        selectedChamberList: chamberVOList, // 已选择商协会
-        unSelecteChamberList: [] // 未选择商协会
+        this.formData = {
+          content: '', // 供需内容
+          tarType, // 供应: 1 or 需求: 2
+          validType, // 长期有效: 1  自定义时间: 2
+          title, // 供需标题
+          publisherList: [dynamicWxUserVO], // 发布人列表
+          supplyLableList: labelVOList, // 供需标签
+          industryLableList: tradeVOList, // 行业标签
+          publisherStationList: [{ ...city, fullName: `${city.name}-${province.name}`, fullCode: `${city.code}-${province.code}` }], // 发布者常驻地
+          date: validEndTs ? new Date(+validEndTs) : '',
+          selectedChamberList: chamberVOList, // 已选择商协会
+          unSelecteChamberList: [] // 未选择商协会
+        }
+        getChamberList(dynamicWxUserVO.wxUserId).then(({ data = [] }) => {
+          const selectedChamberIds = chamberVOList.map(v => v.id)
+          this.formData.unSelecteChamberList = data.filter(v => !selectedChamberIds.includes(v.id))
+        })
+        this.$nextTick(() => {
+          this.formData.content = content
+        })
+      } else {
+        this.formData.title = this.detail.yshContentEditVO.title
+        this.$nextTick(() => {
+          this.formData.content = this.detail.yshContentEditVO.content
+        })
       }
-
-      getChamberList(dynamicWxUserVO.wxUserId).then(({ data = [] }) => {
-        const selectedChamberIds = chamberVOList.map(v => v.id)
-        this.formData.unSelecteChamberList = data.filter(v => !selectedChamberIds.includes(v.id))
-      })
-
-      this.$nextTick(() => {
-        this.formData.content = content
-      })
     },
     // 序列化字段
     normalizeField(type) {

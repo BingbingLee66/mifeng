@@ -362,6 +362,13 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '商会数据详情' }
       },
+      {
+        path: '/supply-and-demand/push-img',
+        name: '爬虫发布供需',
+        component: () => import('@/views/supply-and-demand/PublishImg'),
+        hidden: true,
+        meta: { title: '爬虫发布供需' }
+      }
     ]
   }
 ]
