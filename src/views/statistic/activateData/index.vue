@@ -148,7 +148,99 @@ export default {
       loading: false,
 
       // 选中的数据-用于导出
-      selectionDatas: []
+      selectionDatas: [],
+      genetateWorkbook: XLSX => {
+        const { selectionDatas, activeName } = this
+        if (!selectionDatas.length) {
+          this.$message({ message: '请选择导出记录', type: 'warning' })
+          return null
+        }
+        let worksheet
+
+        if (this.ckey) { // 商会后台
+          worksheet = XLSX.utils.aoa_to_sheet([
+            ['时间', '累计注册会员', '后台导入会员', null, null, '会员激活率', '活跃会员', '会员活跃率'],
+            [null, null, '新增', '已激活', '未激活', null, null, null],
+            ...selectionDatas.map(v => ([
+            // 时间,累计注册会员
+              v.date, v.registerMembersTotal,
+              // 后台导入会员：新增,已激活,未激活
+              v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
+              // 会员激活率,活跃会员,会员活跃率
+              v.memberActivationRate, v.activeMembersNum, v.activeMembersRate
+            ]))
+          ])
+          worksheet['!merges'] = [
+            { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
+            { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
+            { s: { c: 2, r: 0 }, e: { c: 4, r: 0 }},
+            { s: { c: 5, r: 0 }, e: { c: 5, r: 1 }},
+            { s: { c: 6, r: 0 }, e: { c: 6, r: 1 }},
+            { s: { c: 7, r: 0 }, e: { c: 7, r: 1 }},
+          ]
+        } else {
+          switch (activeName) {
+            case 'Platform':
+            case 'FunctionModule':
+            case 'Page':
+              worksheet = XLSX.utils.aoa_to_sheet([
+                ['时间', '访问人数', '累计用户', null, null, '新注册用户', null, null, '后台导入会员', null, null, '活跃用户', null, null, '活跃率', null, null],
+                [null, null, '用户', '会员', '非会员', '新增', '会员', '非会员', '新增', '已激活', '未激活', '新增', '会员', '非会员', '新增', '会员', '非会员'],
+                ...selectionDatas.map(v => ([
+                  // 时间,访问人数
+                  v.date, v.visitorsNum,
+                  // 累计用户:用户,会员,非会员
+                  v.registerUsersTotal, v.registerMembersTotal, v.registerNotMembersTotal,
+                  // 新注册用户:新增,会员,非会员
+                  v.registerUsersNum, v.registerMembersNum, v.registerNotMembersNum,
+                  // 后台导入会员：新增,已激活,未激活
+                  v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
+                  // 活跃用户：新增，会员，非会员
+                  v.activeUsersNum, v.activeMembersNum, v.notActiveMembersNum,
+                  // 活跃率：新增，会员，非会员
+                  v.activeRate, v.activeMembersRate, v.notActiveMembersRate
+                ]))
+              ])
+              worksheet['!merges'] = [
+                { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
+                { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
+                { s: { c: 2, r: 0 }, e: { c: 4, r: 0 }},
+                { s: { c: 5, r: 0 }, e: { c: 7, r: 0 }},
+                { s: { c: 8, r: 0 }, e: { c: 10, r: 0 }},
+                { s: { c: 11, r: 0 }, e: { c: 13, r: 0 }},
+                { s: { c: 14, r: 0 }, e: { c: 16, r: 0 }},
+              ]
+              break
+
+            default: // Chamber || Area
+              worksheet = XLSX.utils.aoa_to_sheet([
+                ['时间', '访问人数', '累计注册会员', '后台导入会员', null, null, '会员激活率', '活跃会员', '会员活跃率'],
+                [null, null, null, '新增', '已激活', '未激活', null, null, null],
+                ...selectionDatas.map(v => ([
+                  // 时间,访问人数,累计注册会员
+                  v.date, v.visitorsNum, v.registerMembersTotal,
+                  // 后台导入会员：新增,已激活,未激活
+                  v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
+                  // 会员激活率,活跃会员,会员活跃率
+                  v.memberActivationRate, v.activeMembersNum, v.activeMembersRate
+                ]))
+              ])
+              worksheet['!merges'] = [
+                { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
+                { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
+                { s: { c: 2, r: 0 }, e: { c: 2, r: 1 }},
+                { s: { c: 3, r: 0 }, e: { c: 5, r: 0 }},
+                { s: { c: 6, r: 0 }, e: { c: 6, r: 1 }},
+                { s: { c: 7, r: 0 }, e: { c: 7, r: 1 }},
+                { s: { c: 8, r: 0 }, e: { c: 8, r: 1 }},
+              ]
+              break
+          }
+        }
+        const workbook = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
+        return workbook
+      }
     }
   },
   computed: {
@@ -252,7 +344,7 @@ export default {
           return [
             { type: 'selection', width: 55 },
             { label: '时间', prop: 'date', minWidth: 120, },
-            { label: '访问人数', render: ({ row }) => row.visitorsNum || 0 },
+            { label: '访问人数', hidden: !!this.ckey, render: ({ row }) => row.visitorsNum || 0 },
             { label: '累计注册会员', prop: 'registerMembersTotal' },
             {
               label: '后台导入会员', minWidth: 120,
@@ -413,75 +505,6 @@ export default {
         // console.log(error)
       }
       this.loading = false
-    },
-    genetateWorkbook(XLSX) {
-      const { selectionDatas, activeName } = this
-      if (!selectionDatas.length) {
-        this.$message({ message: '请选择导出记录', type: 'warning' })
-        return null
-      }
-      let worksheet, workbook
-      switch (activeName) {
-        case 'Platform':
-        case 'FunctionModule':
-        case 'Page':
-          worksheet = XLSX.utils.aoa_to_sheet([
-            ['时间', '访问人数', '累计用户', null, null, '新注册用户', null, null, '后台导入会员', null, null, '活跃用户', null, null, '活跃率', null, null],
-            [null, null, '用户', '会员', '非会员', '新增', '会员', '非会员', '新增', '已激活', '未激活', '新增', '会员', '非会员', '新增', '会员', '非会员'],
-            ...selectionDatas.map(v => ([
-              // 时间,访问人数
-              v.date, v.visitorsNum,
-              // 累计用户:用户,会员,非会员
-              v.registerUsersTotal, v.registerMembersTotal, v.registerNotMembersTotal,
-              // 新注册用户:新增,会员,非会员
-              v.registerUsersNum, v.registerMembersNum, v.registerNotMembersNum,
-              // 后台导入会员：新增,已激活,未激活
-              v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
-              // 活跃用户：新增，会员，非会员
-              v.activeUsersNum, v.activeMembersNum, v.notActiveMembersNum,
-              // 活跃率：新增，会员，非会员
-              v.activeRate, v.activeMembersRate, v.notActiveMembersRate
-            ]))
-          ])
-          worksheet['!merges'] = [
-            { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
-            { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
-            { s: { c: 2, r: 0 }, e: { c: 4, r: 0 }},
-            { s: { c: 5, r: 0 }, e: { c: 7, r: 0 }},
-            { s: { c: 8, r: 0 }, e: { c: 10, r: 0 }},
-            { s: { c: 11, r: 0 }, e: { c: 13, r: 0 }},
-            { s: { c: 14, r: 0 }, e: { c: 16, r: 0 }},
-          ]
-          workbook = XLSX.utils.book_new()
-          XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
-          return workbook
-
-        default: // Chamber || Area
-          worksheet = XLSX.utils.aoa_to_sheet([
-            ['时间', '访问人数', '累计注册会员', '后台导入会员', null, null, '会员激活率', '活跃会员', '会员活跃率'],
-            [null, null, '新增', '已激活', '未激活', null, null, null],
-            ...selectionDatas.map(v => ([
-              // 时间,访问人数,累计注册会员
-              v.date, v.visitorsNum, v.registerMembersTotal,
-              // 后台导入会员：新增,已激活,未激活
-              v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
-              // 会员激活率,活跃会员,会员活跃率
-              v.memberActivationRate, v.activeMembersNum, v.activeMembersRate
-            ]))
-          ])
-          worksheet['!merges'] = [
-            { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
-            { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
-            { s: { c: 2, r: 0 }, e: { c: 2, r: 1 }},
-            { s: { c: 3, r: 0 }, e: { c: 5, r: 0 }},
-            { s: { c: 6, r: 0 }, e: { c: 6, r: 1 }},
-            { s: { c: 7, r: 0 }, e: { c: 7, r: 1 }},
-            { s: { c: 8, r: 0 }, e: { c: 8, r: 1 }},
-          ]
-          workbook = XLSX.utils.book_new()
-          XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
-          return workbook
-      }
     },
     // 报表数据选择
     onSelectionChange(e) {
