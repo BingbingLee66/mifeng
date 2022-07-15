@@ -5,11 +5,14 @@ import { getWechatContent,uploadVideo,queryVideo,uploadCoverImg } from '@/api/co
 import kdDialog from '@/components/common/kdDialog'
 import editorElem from '@/components/wangEditor/index'
 import videoComponent from '@/components/video/index'
+import videoUpLoad from '@/components/video/upLoad'
+
 export default {
     components: {
         kdDialog,
         editorElem,
         videoComponent,
+        videoUpLoad
     },
     data() {
       return {
@@ -141,16 +144,26 @@ export default {
         },
             //上传视频
         uploadVideoFunc(content) {
-            this.loading = true;
-            let formData = new FormData();
-            formData.append('file', content.file);
-            formData.append('type', 1)
-            uploadVideo(formData, 0).then(res => {
-            if (res.code === 200) {
-                this.formObj.vid = res.data.videoId;        
-                this.timer = setInterval(this.queryVideoFunc, 1000);
-            }
-            })
+            console.log('content',content)
+            // 前端上传视频阿里云组件  
+             // this.loading = true;
+            this.$refs.VideoUpLoad.setUploadInfo(content.file)
+
+
+            // 旧版 通过后端接口上传视频
+            // let formData = new FormData();
+            // formData.append('file', content.file);
+            // formData.append('type', 1)
+            // uploadVideo(formData, 0).then(res => {
+            // if (res.code === 200) {
+            //     this.formObj.vid = res.data.videoId;        
+            //     this.timer = setInterval(this.queryVideoFunc, 1000);
+            // }
+            // })
+        },
+        // 上传成功 回调
+        onSucceed(){
+            console.log(1111111111)
         },
         //删除当前视频  图片
         deleteCurrentVideo(index) {
