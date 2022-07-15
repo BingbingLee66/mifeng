@@ -49,7 +49,7 @@
 
     <div class="flex-x-between">
       <!-- 时间 -->
-      <TimeSizer ref="timeSizer" :query="query" @change="onQueryChange({pageNum:1})" />
+      <TimeSizer ref="timeSizer" :query="query" :end-ts="Date.now()-1000*60*60*24" @change="onQueryChange({pageNum:1})" />
       <!-- 导表 -->
       <div class="block"><ExportTable :data="genetateWorkbook" title="激活与活跃" /></div>
     </div>
@@ -86,23 +86,23 @@ export default {
         },
         {
           title: '后台导入会员',
-          text: '商协会 批量导入/单个添加 的会员数量；'
+          text: '商协会批量导入的会员数量；'
         },
         {
           title: '激活',
-          text: '秘书处在商协会后台 批量导入/单个添加的会员，在前台完成了注册，算激活；'
+          text: '秘书处在商协会后台批量导入的会员，在前台完成了注册，算激活；'
         },
         {
           title: '会员激活率',
-          text: '记 在商会后台 批量导入/单个添加的会员 为A，其中 在前台完成了注册的为B， 则 激活率＝B/A*100%；'
+          text: '记 在商会后台批量导入的会员为A，其中 在前台完成了注册的为B， 则 激活率＝B/A*100%；'
         },
         {
           title: '活跃',
-          text: '用户完成注册后，在次日有访问过小程序，算活跃；'
+          text: '用户完成注册后，从次日开始有访问过小程序，算活跃；'
         },
         {
           title: '活跃率',
-          text: '记 全平台的注册用户数为C，其中 从次日开始有回访行为的用户数为D，则 活跃率＝D/C*100%；'
+          text: '记 全平台的注册用户数为C，其中 从次日开始有访问行为的用户数为D，则 活跃率＝D/C*100%；'
         },
       ],
 
@@ -148,7 +148,99 @@ export default {
       loading: false,
 
       // 选中的数据-用于导出
-      selectionDatas: []
+      selectionDatas: [],
+      genetateWorkbook: XLSX => {
+        const { selectionDatas, activeName } = this
+        if (!selectionDatas.length) {
+          this.$message({ message: '请选择导出记录', type: 'warning' })
+          return null
+        }
+        let worksheet
+
+        if (this.ckey) { // 商会后台
+          worksheet = XLSX.utils.aoa_to_sheet([
+            ['时间', '累计注册会员', '后台导入会员', null, null, '会员激活率', '活跃会员', '会员活跃率'],
+            [null, null, '新增', '已激活', '未激活', null, null, null],
+            ...selectionDatas.map(v => ([
+            // 时间,累计注册会员
+              v.date, v.registerMembersTotal,
+              // 后台导入会员：新增,已激活,未激活
+              v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
+              // 会员激活率,活跃会员,会员活跃率
+              v.memberActivationRate, v.activeMembersNum, v.activeMembersRate
+            ]))
+          ])
+          worksheet['!merges'] = [
+            { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
+            { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
+            { s: { c: 2, r: 0 }, e: { c: 4, r: 0 }},
+            { s: { c: 5, r: 0 }, e: { c: 5, r: 1 }},
+            { s: { c: 6, r: 0 }, e: { c: 6, r: 1 }},
+            { s: { c: 7, r: 0 }, e: { c: 7, r: 1 }},
+          ]
+        } else {
+          switch (activeName) {
+            case 'Platform':
+            case 'FunctionModule':
+            case 'Page':
+              worksheet = XLSX.utils.aoa_to_sheet([
+                ['时间', '访问人数', '累计用户', null, null, '新注册用户', null, null, '后台导入会员', null, null, '活跃用户', null, null, '活跃率', null, null],
+                [null, null, '用户', '会员', '非会员', '新增', '会员', '非会员', '新增', '已激活', '未激活', '新增', '会员', '非会员', '新增', '会员', '非会员'],
+                ...selectionDatas.map(v => ([
+                  // 时间,访问人数
+                  v.date, v.visitorsNum,
+                  // 累计用户:用户,会员,非会员
+                  v.registerUsersTotal, v.registerMembersTotal, v.registerNotMembersTotal,
+                  // 新注册用户:新增,会员,非会员
+                  v.registerUsersNum, v.registerMembersNum, v.registerNotMembersNum,
+                  // 后台导入会员：新增,已激活,未激活
+                  v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
+                  // 活跃用户：新增，会员，非会员
+                  v.activeUsersNum, v.activeMembersNum, v.notActiveMembersNum,
+                  // 活跃率：新增，会员，非会员
+                  v.activeRate, v.activeMembersRate, v.notActiveMembersRate
+                ]))
+              ])
+              worksheet['!merges'] = [
+                { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
+                { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
+                { s: { c: 2, r: 0 }, e: { c: 4, r: 0 }},
+                { s: { c: 5, r: 0 }, e: { c: 7, r: 0 }},
+                { s: { c: 8, r: 0 }, e: { c: 10, r: 0 }},
+                { s: { c: 11, r: 0 }, e: { c: 13, r: 0 }},
+                { s: { c: 14, r: 0 }, e: { c: 16, r: 0 }},
+              ]
+              break
+
+            default: // Chamber || Area
+              worksheet = XLSX.utils.aoa_to_sheet([
+                ['时间', '访问人数', '累计注册会员', '后台导入会员', null, null, '会员激活率', '活跃会员', '会员活跃率'],
+                [null, null, null, '新增', '已激活', '未激活', null, null, null],
+                ...selectionDatas.map(v => ([
+                  // 时间,访问人数,累计注册会员
+                  v.date, v.visitorsNum, v.registerMembersTotal,
+                  // 后台导入会员：新增,已激活,未激活
+                  v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
+                  // 会员激活率,活跃会员,会员活跃率
+                  v.memberActivationRate, v.activeMembersNum, v.activeMembersRate
+                ]))
+              ])
+              worksheet['!merges'] = [
+                { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
+                { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
+                { s: { c: 2, r: 0 }, e: { c: 2, r: 1 }},
+                { s: { c: 3, r: 0 }, e: { c: 5, r: 0 }},
+                { s: { c: 6, r: 0 }, e: { c: 6, r: 1 }},
+                { s: { c: 7, r: 0 }, e: { c: 7, r: 1 }},
+                { s: { c: 8, r: 0 }, e: { c: 8, r: 1 }},
+              ]
+              break
+          }
+        }
+        const workbook = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
+        return workbook
+      }
     }
   },
   computed: {
@@ -157,7 +249,7 @@ export default {
     },
     // 看板列表
     boardDataList() {
-      const { activeName } = this
+      const { activeName, ckey } = this
       const {
         visitorsNum,
         registerMembersNum, registerNotMembersNum, registerUsersNum,
@@ -174,20 +266,21 @@ export default {
           return [
             { name: '访问人数', value: visitorsNum || 0 },
             { name: `会员 ${registerMembersNum || 0} 非会员 ${registerNotMembersNum || 0}`, value: `注册用户 ${registerUsersNum || 0}` },
-            { name: `已激活 ${membersActiveNum || 0}${activeName === 'Platform' ? '' : `（${membersActiveTotal}）`} 未激活 ${membersNotActiveNum || 0}`, value: `后台导入会员 ${adminAddMembersNum || 0}` },
+            { name: `已激活 ${membersActiveNum || 0}${activeName === 'Platform' ? '' : `（${membersActiveTotal || 0}）`} 未激活 ${membersNotActiveNum || 0}`, value: `后台导入会员 ${adminAddMembersNum || 0}` },
             { name: '会员激活率', value: `${memberActivationRate || '0%'}` },
             { name: `会员 ${activeMembersNum || 0} 非会员 ${notActiveMembersNum || 0}`, value: `活跃用户 ${activeUsersNum || 0}` },
             { name: `会员 ${activeMembersRate || '0%'} 非会员 ${notActiveMembersRate || '0%'}`, value: `活跃率 ${activeRate || '0%'}` },
           ]
         default: // Chamber || Area
-          return [
-            { name: '访问人数', value: visitorsNum || 0 },
+          var boardDataList = [
             { name: '累计注册会员', value: registerMembersTotal || 0 },
             { name: `已激活 ${membersActiveNum || 0} 未激活 ${membersNotActiveNum || 0}`, value: `后台导入会员 ${adminAddMembersNum || 0}` },
             { name: '会员激活率', value: `${memberActivationRate || '0%'}` },
             { name: '活跃会员', value: activeMembersNum || 0 },
             { name: '会员活跃率', value: activeMembersRate || '0%' }
           ]
+          if (!ckey) boardDataList.unshift({ name: '访问人数', value: visitorsNum || 0 })
+          return boardDataList
       }
     },
 
@@ -251,7 +344,7 @@ export default {
           return [
             { type: 'selection', width: 55 },
             { label: '时间', prop: 'date', minWidth: 120, },
-            { label: '访问人数', render: ({ row }) => row.visitorsNum || 0 },
+            { label: '访问人数', hidden: !!this.ckey, render: ({ row }) => row.visitorsNum || 0 },
             { label: '累计注册会员', prop: 'registerMembersTotal' },
             {
               label: '后台导入会员', minWidth: 120,
@@ -339,8 +432,8 @@ export default {
     },
     // 获取页面看板数据
     async getPageActivate() {
-      const { functionModuleId } = this.query
-      const { data } = await getPageActivateData(functionModuleId ? { functionModuleId } : undefined)
+      const { pageUrl } = this.query
+      const { data } = await getPageActivateData(pageUrl ? { pageUrl } : undefined)
       this.activateData = data || {}
     },
     // 商协会切换
@@ -361,7 +454,7 @@ export default {
     },
     // 查询报表的参数格式化
     normalizeParams() {
-      const { date = [], pageNum, pageSize, type, ckey } = this.query
+      const { date = [], pageNum, pageSize, type, ckey, area, functionModuleId, pageUrl } = this.query
       if (!this.tabMap) this.tabMap = { Platform: 1, Chamber: 2, Area: 3, FunctionModule: 4, Page: 5 }
       const params = {
         startTime: date[0],
@@ -373,6 +466,9 @@ export default {
       }
       if (ckey) params.ckey = ckey
       if (this.ckey) params.ckey = this.ckey
+      if (area[0]) params.areaCode = area[0]
+      if (functionModuleId) params.functionModuleId = functionModuleId
+      if (pageUrl) params.pageUrl = pageUrl
       return params
     },
     // 报表轮询
@@ -412,75 +508,6 @@ export default {
         // console.log(error)
       }
       this.loading = false
-    },
-    genetateWorkbook(XLSX) {
-      const { selectionDatas, activeName } = this
-      if (!selectionDatas.length) {
-        this.$message({ message: '请选择导出记录', type: 'warning' })
-        return null
-      }
-      let worksheet, workbook
-      switch (activeName) {
-        case 'Platform':
-        case 'FunctionModule':
-        case 'Page':
-          worksheet = XLSX.utils.aoa_to_sheet([
-            ['时间', '访问人数', '累计用户', null, null, '新注册用户', null, null, '后台导入会员', null, null, '活跃用户', null, null, '活跃率', null, null],
-            [null, null, '用户', '会员', '非会员', '新增', '会员', '非会员', '新增', '已激活', '未激活', '新增', '会员', '非会员', '新增', '会员', '非会员'],
-            ...selectionDatas.map(v => ([
-              // 时间,访问人数
-              v.date, v.visitorsNum,
-              // 累计用户:用户,会员,非会员
-              v.registerUsersTotal, v.registerMembersTotal, v.registerNotMembersTotal,
-              // 新注册用户:新增,会员,非会员
-              v.registerUsersNum, v.registerMembersNum, v.registerNotMembersNum,
-              // 后台导入会员：新增,已激活,未激活
-              v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
-              // 活跃用户：新增，会员，非会员
-              v.activeUsersNum, v.activeMembersNum, v.notActiveMembersNum,
-              // 活跃率：新增，会员，非会员
-              v.activeRate, v.activeMembersRate, v.notActiveMembersRate
-            ]))
-          ])
-          worksheet['!merges'] = [
-            { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
-            { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
-            { s: { c: 2, r: 0 }, e: { c: 4, r: 0 }},
-            { s: { c: 5, r: 0 }, e: { c: 7, r: 0 }},
-            { s: { c: 8, r: 0 }, e: { c: 10, r: 0 }},
-            { s: { c: 11, r: 0 }, e: { c: 13, r: 0 }},
-            { s: { c: 14, r: 0 }, e: { c: 16, r: 0 }},
-          ]
-          workbook = XLSX.utils.book_new()
-          XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
-          return workbook
-
-        default: // Chamber || Area
-          worksheet = XLSX.utils.aoa_to_sheet([
-            ['时间', '访问人数', '累计注册会员', '后台导入会员', null, null, '会员激活率', '活跃会员', '会员活跃率'],
-            [null, null, '新增', '已激活', '未激活', null, null, null],
-            ...selectionDatas.map(v => ([
-              // 时间,访问人数,累计注册会员
-              v.date, v.visitorsNum, v.registerMembersTotal,
-              // 后台导入会员：新增,已激活,未激活
-              v.adminAddMembersNum, v.membersActiveNum, v.membersNotActiveNum,
-              // 会员激活率,活跃会员,会员活跃率
-              v.memberActivationRate, v.activeMembersNum, v.activeMembersRate
-            ]))
-          ])
-          worksheet['!merges'] = [
-            { s: { c: 0, r: 0 }, e: { c: 0, r: 1 }},
-            { s: { c: 1, r: 0 }, e: { c: 1, r: 1 }},
-            { s: { c: 2, r: 0 }, e: { c: 2, r: 1 }},
-            { s: { c: 3, r: 0 }, e: { c: 5, r: 0 }},
-            { s: { c: 6, r: 0 }, e: { c: 6, r: 1 }},
-            { s: { c: 7, r: 0 }, e: { c: 7, r: 1 }},
-            { s: { c: 8, r: 0 }, e: { c: 8, r: 1 }},
-          ]
-          workbook = XLSX.utils.book_new()
-          XLSX.utils.book_append_sheet(workbook, worksheet, 'sheet1')
-          return workbook
-      }
     },
     // 报表数据选择
     onSelectionChange(e) {
