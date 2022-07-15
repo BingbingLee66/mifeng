@@ -19,6 +19,7 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         size="mini"
+        :picker-options="pickerOptions"
         @change="onDateChange"
       />
       <el-radio-group v-if="item === 'type'" :key="item" v-model="query.type" size="mini" @change="onTypeChange">
@@ -43,11 +44,28 @@ export default {
     layout: {
       type: String,
       default: 'days, date, type'
+    },
+    startTs: { // 起始时间戳
+      type: Number,
+      default: 0
+    },
+    endTs: { // 截止时间戳
+      type: Number,
+      default: Infinity
     }
   },
   computed: {
     layoutList() {
       return this.layout.split(',').map(v => v.trim())
+    },
+    pickerOptions() {
+      const { startTs, endTs } = this
+      return {
+        disabledDate(curDate) {
+          const curTs = curDate.getTime()
+          return curTs < startTs || curTs > endTs
+        }
+      }
     }
   },
   created() {
@@ -64,8 +82,14 @@ export default {
     },
 
     initDatePicker(days) {
-      const endDate = new Date()
-      const startDate = new Date(endDate.getTime() - 3600 * 1000 * 24 * days)
+      let endDate = new Date()
+      if (endDate.getTime() > this.endTs) { // 结束时间要小于规定的截止时间
+        endDate = new Date(this.endTs)
+      }
+      let startDate = new Date(endDate.getTime() - 3600 * 1000 * 24 * days)
+      if (startDate.getTime() < this.startTs) { // 开始时间要大于规定的开始时间
+        startDate = new Date(this.startTs)
+      }
       return [formatDate(startDate, 'yyyy-MM-dd'), formatDate(endDate, 'yyyy-MM-dd')]
     },
 
