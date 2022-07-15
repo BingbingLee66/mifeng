@@ -144,11 +144,9 @@ export default {
         },
             //上传视频
         uploadVideoFunc(content) {
-            console.log('content',content)
             // 前端上传视频阿里云组件  
-             // this.loading = true;
+            this.loading = true;
             this.$refs.VideoUpLoad.setUploadInfo(content.file)
-
 
             // 旧版 通过后端接口上传视频
             // let formData = new FormData();
@@ -162,8 +160,10 @@ export default {
             // })
         },
         // 上传成功 回调
-        onSucceed(){
-            console.log(1111111111)
+        onSucceed(vid){
+            this.formObj.vid = vid
+            // 上传成功轮询接口 查看是否转码成功
+            this.timer = setInterval(this.queryVideoFunc, 1000);
         },
         //删除当前视频  图片
         deleteCurrentVideo(index) {
@@ -176,8 +176,8 @@ export default {
             if(res.state===1){
                 clearInterval(this.timer);
                 this.$nextTick(() => {
-                this.$refs['videoRef'].show(this.formObj.vid);
-                this.loading = false;
+                    this.$refs['videoRef'].show(this.formObj.vid);
+                    this.loading = false;
                 })
             }
             })

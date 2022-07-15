@@ -1,5 +1,7 @@
 <template>
   <PublishForm :detail="detail">
+    <!-- 上传视频阿里云组件 -->
+    <videoUpLoad  ref="VideoUpLoad" @Succeed="onSucceed" @error="videoLoading = false"  />
     <el-form-item v-loading="videoLoading" label="供需视频" required>
       <el-upload
         v-if="!vid"
@@ -54,13 +56,14 @@
 </template>
 
 <script>
+import videoUpLoad from '@/components/video/upLoad'
 import { checkFile, uploadFile, uploadVideo, queryVideo } from '@/api/content/article'
 import videoComponent from '@/components/video/index'
 
 export default {
   components: {
     PublishForm: () => import(/* webpackChunkName: "PublishForm" */'./components/PublishForm'),
-    videoComponent
+    videoComponent,videoUpLoad
   },
   props: {
     detail: {
@@ -144,18 +147,26 @@ export default {
     },
     // 上传视频
     async uploadVideoFunc(content) {
-      this.videoLoading = true
-      let formData = new FormData()
-      formData.append('file', content.file)
-      try {
-        const res = await uploadVideo(formData, 0)
-        if (res.code === 200) {
-          this.vid = res.data.videoId
-          return
-        }
-      } catch (error) { /*  */ }
-      this.videoLoading = false
-      this.$message({ message: '视频上传失败', type: 'error' })
+      this.videoLoading = true;
+      this.$refs.VideoUpLoad.setUploadInfo(content.file)
+
+
+      // 旧版 通过后端接口上传视频
+      // let formData = new FormData()
+      // formData.append('file', content.file)
+      // try {
+      //   const res = await uploadVideo(formData, 0)
+      //   if (res.code === 200) {
+      //     this.vid = res.data.videoId
+      //     return
+      //   }
+      // } catch (error) { /*  */ }
+      // this.videoLoading = false
+      // this.$message({ message: '视频上传失败', type: 'error' })
+    },
+    // 上传成功 回调
+    onSucceed(vid){
+        this.vid = vid
     },
     // 查视频动态
     queryVideoFunc() {

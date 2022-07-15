@@ -6,7 +6,6 @@
 </template>
 <script>
 import { getSts } from '@/api/vod/vod'
-const baseUrl = process.env.VUE_APP_BASE_API_3
 import { decrypt } from '@/utils/cryptoUtils'
 export default {
   name: 'videoUpLoad',
@@ -14,7 +13,16 @@ export default {
     return {
         file:{}, // 存放视频对象
         videoUploader:null, // 实例化视频上传对象
-        sts:{}, //配置信息
+        sts:{
+            accessKeyId:'', //
+            accessKeySecret:'',
+            region:'', // 上传到视频点播的地域
+            secretToken:'',
+            cateId:'', // 分类id
+            templateGroupId:'', // 指定转码模板组
+            userId:'', // 账号ID
+            callbackUrl:'', // 回调信息
+        }, //配置信息
     }
   }, // 接收父组件的内容
 
@@ -29,21 +37,24 @@ export default {
         this.file = {}
         this.file = file
         this.onGetSts()
+        
     },
     // 获取配置信息
     onGetSts(){
         getSts().then((response) => {
-            console.log('response',response)
             let data = response.data
             // 解密
             this.sts = {
                 accessKeyId: decrypt(data.accessKeyId),
                 accessKeySecret: decrypt(data.accessKeySecret),
                 secretToken: decrypt(data.securityToken),
-                region:decrypt(data.region)
+                region:decrypt(data.region),
+                callbackUrl: decrypt(data.callbackUrl),
+                cateId: decrypt(data.cateId),
+                templateGroupId: decrypt(data.templateGroupId),
+                userId:decrypt(data.userId),
             }
             this.createUplader()
-            console.log('this.sts',this.sts)
         })
     },
     createUplader(){
@@ -53,12 +64,12 @@ export default {
         var paramsData = {
             Vod: {
                 Title: this.file.name, // 视频名字
-                CateId: '1000355099', // 分类id
-                TemplateGroupId: '9abd5738ef575e01042e6e33440bdca4', // 指定转码模板组
+                CateId: this.sts.cateId, // 分类id
+                TemplateGroupId: this.sts.templateGroupId, // 指定转码模板组
                 UserData: {
                     MessageCallback: {
                         // 回调接口设置
-                        CallbackURL: baseUrl + 'vod/image/callback'
+                        CallbackURL: this.sts.callbackUrl
                     },
                 },
             },
@@ -72,7 +83,7 @@ export default {
     initAliyunUpload(){
         var self = this
         this.videoUploader = new AliyunUpload.Vod({
-            userId:"253555738350009004", // 账号ID
+            userId:self.sts.userId, // 账号ID
             region:self.sts.region, //上传到视频点播的地域
             partSize: 1048576, //分片大小默认1 MB，不能小于100 KB（100*1024）
             parallel: 5, //并行上传分片个数，默认5
@@ -81,18 +92,17 @@ export default {
             enableUploadProgress: true, //是否上报上传日志到点播，默认为true
             //开始上传
             'onUploadstarted': function (uploadInfo) {
-                console.log('uploadInfo111111111',uploadInfo)
                 // 上传凭证  STS方式
                 self.videoUploader.setSTSToken(uploadInfo, self.sts.accessKeyId, self.sts.accessKeySecret, self.sts.secretToken)
-                
             },
             //文件上传成功
             'onUploadSucceed': function (uploadInfo) {
-                self.$emit('Succeed')
-                console.log('上传成功',uploadInfo)
+                self.$emit('Succeed',uploadInfo.videoId)
+                // console.log('上传成功',uploadInfo)
             },
             //文件上传失败
             'onUploadFailed': function (uploadInfo, code, message) {
+                self.$emit('error')
                 self.$message.error('上传失败请重试');
                 console.log('上传失败',uploadInfo,code,message)
             },
@@ -101,17 +111,9 @@ export default {
             },
             //上传凭证或STS token超时
             'onUploadTokenExpired': function (uploadInfo) {
-                console.log('上传凭证或STS token超时',uploadInfo)
-                 getSts().then((response) => {
-                    // 解密
-                    var sts = {
-                        accessKeyId: decrypt(response.data.accessKeyId),
-                        accessKeySecret: decrypt(response.data.accessKeySecret),
-                        secretToken: decrypt(response.data.securityToken),
-                    }
-                    // 重新获取STS token，恢复上传  STS方式
-                    self.videoUploader.resumeUploadWithSTSToken(sts.accessKeyId, sts.accessKeySecret, sts.secretToken)
-                })
+                console.log('上传凭证或STS token超时',uploadInfo)           
+                // 重新获取STS token，恢复上传  STS方式
+                self.videoUploader.resumeUploadWithSTSToken(self.sts.accessKeyId, self.sts.accessKeySecret, self.sts.secretToken)
             },
             //全部文件上传结束
             'onUploadEnd':function(uploadInfo){
@@ -120,10 +122,6 @@ export default {
         })
     },
 
-    // 清理上传文件列表
-    onCancel(){
-       this.videoUploader.cancelFile(0);
-    }
   },
 }
 </script>
