@@ -48,11 +48,11 @@ export default {
                 accessKeyId: decrypt(data.accessKeyId),
                 accessKeySecret: decrypt(data.accessKeySecret),
                 secretToken: decrypt(data.securityToken),
-                region:decrypt(data.region),
-                callbackUrl: decrypt(data.callbackUrl),
-                cateId: decrypt(data.cateId),
-                templateGroupId: decrypt(data.templateGroupId),
-                userId:decrypt(data.userId),
+                region:decrypt(data.region), // 上传到视频点播的地域
+                callbackUrl: decrypt(data.callbackUrl), // 回调接口设置
+                cateId: decrypt(data.cateId),  //分类id
+                templateGroupId: decrypt(data.templateGroupId), // 指定转码模板组
+                userId:decrypt(data.userId), //  账号ID
             }
             this.createUplader()
         })
