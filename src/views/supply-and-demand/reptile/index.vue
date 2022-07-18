@@ -3,7 +3,7 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="采集结果" name="1"></el-tab-pane>
       <el-tab-pane label="回收站" name="0"></el-tab-pane>
-      <el-tab-pane label="网站等级" name="2"></el-tab-pane>
+      <el-tab-pane label="网站登记" name="2"></el-tab-pane>
     </el-tabs>
     <div v-if="activeName == '1'">
       <div class="block">
@@ -160,7 +160,7 @@
             <el-select v-model="query.collectStatus">
               <el-option label="全部" value=""></el-option>
               <el-option label="未采集" value="0"></el-option>
-              <el-option label="采集" value="1"></el-option>
+              <el-option label="已采集" value="1"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item >
