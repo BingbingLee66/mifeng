@@ -152,9 +152,7 @@
             <el-input v-model="query.operator" placeholder="关键词"></el-input>
           </el-form-item>
           <el-form-item label="网站名称：">
-            <el-select v-model="query.websiteId">
-              <el-option v-for="channel in websites" :label="channel.name" :value="channel.id" :key="channel.id"></el-option>
-            </el-select>
+              <el-input v-model="query.websiteId" placeholder="关键词"></el-input>
           </el-form-item>
           <el-form-item label="采集状态：">
             <el-select v-model="query.collectStatus">
