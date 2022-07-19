@@ -1,5 +1,22 @@
 # CHANGELOG
 ## [Released]
+## [2.20.0] - 2022-07-19
+### Added
+- 【商会后台统计】 [928](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/928)
+- 【商会后台统计】- 查看登录记录 [929](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/929)
+- 【商会后台统计】- 商会详情 [930](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/930)
+- 【商会后台统计】- 商会后台使用统计/商会详情 - 动态数据类型表格 [931](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/931)
+- 【爬虫】-总后台按钮权限 [886](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/886)
+- 爬虫模块抽取页面接口替换 [873](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/873)
+- 【爬虫】- 总后台供需管理 [860](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/860)
+- 【爬虫】- 总后台-供需爬虫-采集结果 [861](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/861)
+- 【爬虫】- 总后台-供需爬虫-回收站 [862](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/862)
+- 【爬虫】- 总后台-供需爬虫-网站登记 [863](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/863)
+- 【爬虫】- 总后台-供需爬虫-供需编辑 [864](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/864)
+- 后台埋点实现 [912](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/912)
+
+
+## [Released]
 ## [2.18.1] - 2022-07-11
 ### Added
 -  【活动】删除后该提示语 优化预览[932](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/932)
