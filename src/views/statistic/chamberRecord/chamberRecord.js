@@ -130,7 +130,7 @@ export default {
           '登录手机号': data.loginPhone,
           '用户名': data.userName,
           '登录次数': data.loginSum > 0 ? data.loginSum : '--',
-          '供需管理': data.lastLogonTs,
+          '供需管理': data.date,
         }
         this.selectionDatas.push(new_data)
       }
