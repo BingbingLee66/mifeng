@@ -27,6 +27,7 @@ export default {
   methods: {
     async getDetail() {
       const id = this.$route.query.id
+      // type = 0供需编辑 1爬虫供需编辑
       const type = this.$route.query.type ? 1 : 0
       if (type === 1) {
         const { data } = await details(id)

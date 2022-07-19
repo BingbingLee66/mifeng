@@ -127,12 +127,13 @@ export function details(params) {
     method: 'get'
   })
 }
-export function demandPublish() {
-  return request({
-    url: baseUrl + '/ec/reptile/ysh-demand-reptile/publish',
-    method: 'post'
-  })
-}
+export const demandPublish = data => request({ url: baseUrl + '/ec/reptile/ysh-demand-reptile/publish', method: 'post', data })
+// export function demandPublish() {
+//   return request({
+//     url: baseUrl + '/ec/reptile/ysh-demand-reptile/publish',
+//     method: 'post'
+//   })
+// }
 
 export function getWebSiteSelect() {
   return request({

@@ -221,7 +221,7 @@
           <div v-if="+source === 1">平台</div>
           <div v-else-if="+source === 2">商会后台</div>
           <div v-else-if="+source === 3">小程序</div>
-          <div v-else>小程序</div>
+          <div v-else>采集</div>
         </template>
       </el-table-column>
       <el-table-column label="创建信息 (后台发布)" width="180">

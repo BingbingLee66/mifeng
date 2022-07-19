@@ -137,6 +137,7 @@
 import editorElem from '@/components/wangEditor/index'
 import { getChamberList } from '@/api/content/article'
 import { publishSupplyDemand, updateSupplyDemand } from '@/api/home/supplyDemandManger'
+import { demandPublish } from '@/api/content/crawler'
 
 const dialogTitleMap = {
   Publisher: '添加发布者',
@@ -175,6 +176,8 @@ export default {
         tarType: 0, // 供应: 1 or 需求: 2
         validType: 1, // 长期有效: 1  自定义时间: 2
         title: '', // 供需标题
+        source: 1,
+        reptileId: 0,
         publisherList: [], // 发布人列表
         supplyLableList: [], // 供需标签
         industryLableList: [], // 行业标签
@@ -248,6 +251,8 @@ export default {
         })
       } else {
         this.formData.title = this.detail.yshContentEditVO.title
+        this.formData.source = this.detail.yshContentEditVO.source
+        this.formData.reptileId = this.detail.yshContentEditVO.id
         this.$nextTick(() => {
           this.formData.content = this.detail.yshContentEditVO.content
         })
@@ -380,8 +385,9 @@ export default {
 
       await this.$parent.processParams(params)
 
-      const { state, msg } = await (this.isEdit ? updateSupplyDemand : publishSupplyDemand)({
+      const { state, msg } = await (this.isEdit ? updateSupplyDemand : parseInt(this.formData.source) === 4 ? demandPublish : publishSupplyDemand)({
         ...params,
+        reptileId: parseInt(this.formData.source) === 4 ? this.formData.reptileId : undefined,
         id: this.isEdit ? this.detail.yshContentEditVO.id : undefined
       })
       if (state === 1) {
