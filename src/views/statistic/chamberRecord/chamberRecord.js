@@ -70,13 +70,14 @@ export default {
           this.list = response.data.list || []
           this.total = response.data.totalRows
           this.list.forEach(v => {
-            v.data = this.getYMDHMS(v.lastLogonTs)
+            v.date = this.getYMDHMS(v.lastLogonTs)
           });
 
         } else {
           this.list = []
           this.total = 0
         }
+        console.log(' this.list', this.list)
         this.listLoading = false
       })
     },
