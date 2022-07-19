@@ -77,3 +77,113 @@ export function getChannelOptions() {
     method: 'get'
   })
 }
+
+/** 供需爬虫**/
+/**
+ * 获取供需爬虫列表
+ * @returns {*}
+ */
+export function getReptileDemands(params) {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-demand-reptile/list',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 批量逻辑删除(移入回收站)
+ * @returns {*}
+ */
+export function moveToRecycleStationBatch(params) {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-demand-reptile/moveToRecycleStationBatch',
+    method: 'post',
+    data: params
+  })
+}
+
+/**
+ * 批量移出回收站
+ * @returns {*}
+ */
+export function shiftOutFromRecycleStationBatch(params) {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-demand-reptile/shiftOutRecycleStationBatch',
+    method: 'post',
+    data: params
+  })
+}
+export function reptileDelBatch(params) {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-demand-reptile/delBatch',
+    method: 'delete',
+    data: params
+  })
+}
+export function details(params) {
+  return request({
+    url: baseUrl + `/ec/reptile/ysh-demand-reptile/${params}`,
+    method: 'get'
+  })
+}
+export const demandPublish = data => request({ url: baseUrl + '/ec/reptile/ysh-demand-reptile/publish', method: 'post', data })
+// export function demandPublish() {
+//   return request({
+//     url: baseUrl + '/ec/reptile/ysh-demand-reptile/publish',
+//     method: 'post'
+//   })
+// }
+
+export function getWebSiteSelect() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-reptile-website/all',
+    method: 'get'
+  })
+}
+/**
+ * 获取爬虫网站列表
+ * @returns {*}
+ */
+export function getWebSites(params) {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-reptile-website/list',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 保存或新增爬虫网站
+ * @returns {*}
+ */
+export function saveOrUpdate(params) {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-reptile-website/insertOrUpdate',
+    method: 'post',
+    data: params
+  })
+}
+
+/**
+ * 采集爬虫网站
+ * @returns {*}
+ */
+export function collect() {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-reptile-website/collect/{id}',
+    method: 'post'
+  })
+}
+
+/**
+ * 批量删除爬虫网站配置
+ * @returns {*}
+ */
+export function delBatch(params) {
+  return request({
+    url: baseUrl + '/ec/reptile/ysh-reptile-website/delBatch',
+    method: 'delete',
+    data: params
+  })
+}

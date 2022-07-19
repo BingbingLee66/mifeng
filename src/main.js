@@ -11,7 +11,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-import { reportSlsData } from './api/statistics/tracker'
+import { reportSlsData, reportHashUrlData, reportClickData } from './api/statistics/tracker'
 import i18n from './lang' // Internationalization
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -21,8 +21,6 @@ import VueClipboard from 'vue-clipboard2' // 复制内容
 import DbClick from '@/utils/dbClick' // 防止重复点击
 import { formatDateTime, formatDate } from '@/utils/date' // 格式化时间戳
 import VueUeditorWrap from 'vue-ueditor-wrap'
-
-
 
 require('../src/plugins/aliplayercomponents-1.0.5.min')
 Vue.use(Print)
@@ -53,19 +51,15 @@ Vue.component('kdDialog', kdDialog)
 */
 router.afterEach((to, from) => {
   const { ckey } = store.getters
+  if (!ckey) return
   if (to.path !== from.path) { // 商会后台上报
-    const user_only = store.getters.profile.userName
-    var ckeyStr = ''
-    if (ckey) {
-      ckeyStr = store.getters.ckey
-    } else {
-      return
-    }
     try {
-      reportSlsData({ url: to.path, ckey: ckeyStr, user_only: user_only, method: 'PAGE_CLICK', status: 200, params: '', extend: '' })
+      const user_only = store.getters.profile.userName
+      reportSlsData({ url: to.path, ckey, user_only, method: 'PAGE_CLICK', status: 200, params: '', extend: '' })
     } catch (e) {
       console.log('sls日志收集失败', e)
     }
+    reportHashUrlData({ url: to.path, ckey })
   }
 })
 
@@ -76,8 +70,7 @@ router.afterEach((to, from) => {
 Vue.prototype.$trackClick = function(buttonId) {
   const { ckey } = this.$store.getters
   if (!ckey) return
-  // 暂时不上传，后端接口未发布
-  // reportClickData({ buttonId, ckey })
+  reportClickData({ buttonId, ckey })
 }
 
 new Vue({
@@ -106,7 +99,7 @@ Vue.filter('dateFormat2', (dataStr) => {
 Vue.mixin({
   methods: {
     // 创建视频
-    $createPlayer(id, accessKeyId, accessKeySecret, securityToken, region, vid, height = '300px',autoplay) {
+    $createPlayer(id, accessKeyId, accessKeySecret, securityToken, region, vid, height = '300px', autoplay) {
       accessKeyId = decrypt(accessKeyId)
       accessKeySecret = decrypt(accessKeySecret)
       securityToken = decrypt(securityToken)
@@ -114,7 +107,7 @@ Vue.mixin({
       return new Aliplayer({
         id,
         // autoplay: false,  //是否自动播放
-        autoplay,  //是否自动播放
+        autoplay, // 是否自动播放
         width: '100%',
         height,
         // 支持播放地址播放,此播放优先级最高

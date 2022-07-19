@@ -1,5 +1,40 @@
 # CHANGELOG
 ## [Released]
+## [2.20.0] - 2022-07-19
+### Added
+- 【爬虫】- FoodTalks网站爬虫处理 [1394](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1394)
+- 【爬虫】- 供需管理列表筛选 [1396](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1396)
+- 【【爬虫】- 采集列表筛选 [1397](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1397)
+- 【爬虫】- 编辑发布供需 [1398](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1398)
+- 【爬虫】- 供需移入/移出回收站 [1399](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1399)
+- 【爬虫】- 供需采集删除 [1400](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1400)
+- 【爬虫】- 回收站列表筛选 [1401](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1401)
+- 【爬虫】- 网站登记筛选 [1402](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1402)
+- 【爬虫】- 网站增加/删除/编辑 [1403](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1403)
+- 【爬虫】- 爬虫数据清洗 [1421](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1421)
+- 【爬虫】- 网站与采集列表增加冗余字段 [1530](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1530)
+- 【供需】-冻结总后台文案修改 [1570](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1570)
+- 【供需】-供需冻结，总后台/商会后台冻结逻辑更改 [1596](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1596)
+- 【供需】- 冻结 平台公域，商会私域热门供需逻辑更改 [1600](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1600)
+- 【供需】- 冻结 平台公域，商会私域信息流供需逻辑更改 [1601](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1601)
+- 【供需】- 冻结 供需tab、供需搜索逻辑更改 [1602](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1602)
+- 【供需】- 用户私域 我的供需，个人主页供需逻辑更改 [1603](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1603)
+- 【供需】- 供需列表，详情 冻结提示权重更改 [1604](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1604)
+- 【供需】- 平台公域-关注tab供需逻辑更改 [1605](https://gitlab.kd/yunshanghui/engineering/backend/api/-/issues/1605)
+- 【商会后台统计】 [928](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/928)
+- 【商会后台统计】- 查看登录记录 [929](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/929)
+- 【商会后台统计】- 商会详情 [930](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/930)
+- 【商会后台统计】- 商会后台使用统计/商会详情 - 动态数据类型表格 [931](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/931)
+- 【爬虫】-总后台按钮权限 [886](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/886)
+- 爬虫模块抽取页面接口替换 [873](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/873)
+- 【爬虫】- 总后台供需管理 [860](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/860)
+- 【爬虫】- 总后台-供需爬虫-采集结果 [861](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/861)
+- 【爬虫】- 总后台-供需爬虫-回收站[862](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/862)
+- 【爬虫】- 总后台-供需爬虫-网站登记[863](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/863)
+- 【爬虫】- 总后台-供需爬虫-供需编辑[864](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/864)
+- 后台埋点实现[912](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/912)
+
+## [Released]
 ## [2.18.1] - 2022-07-11
 ### Added
 -  【活动】删除后该提示语 优化预览[932](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/932)

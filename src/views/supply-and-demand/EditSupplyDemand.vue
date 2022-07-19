@@ -1,7 +1,7 @@
 <template>
   <div v-loading="!detail" class="edit-wrap">
     <template v-if="detail">
-      <PublishImg v-if="detail.yshContentEditVO.contentType === 1" :detail="detail" />
+      <PublishImg v-if="detail.yshContentEditVO.contentType === 1 || !detail.dynamicWxUserVO" :detail="detail" />
       <PublishVideo v-else :detail="detail" />
     </template>
   </div>
@@ -9,6 +9,7 @@
 
 <script>
 import { getSupplyDemandDetail } from '@/api/home/supplyDemandManger'
+import { details } from '@/api/content/crawler'
 
 export default {
   components: {
@@ -25,8 +26,16 @@ export default {
   },
   methods: {
     async getDetail() {
-      const { data } = await getSupplyDemandDetail(this.$route.query.id)
-      this.detail = data
+      const id = this.$route.query.id
+      // type = 0供需编辑 1爬虫供需编辑
+      const type = this.$route.query.type ? 1 : 0
+      if (type === 1) {
+        const { data } = await details(id)
+        this.detail = data
+      } else {
+        const { data } = await getSupplyDemandDetail(id)
+        this.detail = data
+      }
     }
   },
 }

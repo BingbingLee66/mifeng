@@ -348,6 +348,27 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '操作指引详情' }
       },
+      {
+        path: '/statistic/chamber-record',
+        name: '登录记录',
+        component: () => import('@/views/statistic/chamberRecord/index'),
+        hidden: true,
+        meta: { title: '登录记录' }
+      },
+      {
+        path: '/statistic/chamber-details',
+        name: '商会数据详情',
+        component: () => import('@/views/statistic/chamberDetails/index'),
+        hidden: true,
+        meta: { title: '商会数据详情' }
+      },
+      {
+        path: '/supply-and-demand/push-img',
+        name: '爬虫发布供需',
+        component: () => import('@/views/supply-and-demand/PublishImg'),
+        hidden: true,
+        meta: { title: '爬虫发布供需' }
+      }
     ]
   }
 ]
