@@ -116,9 +116,9 @@ export default {
       })
     },
     init() {
-      if (this.has('', '查询')) {
+      // if (this.has('', '查询')) {
         this.fetchData()
-      }
+      // }
     },
     initDateTimePicker() {
       // 初始化1年
@@ -150,9 +150,11 @@ export default {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
         this.listLoading = false
+        console.log('list',this.list)
       })
     },
     openVisible(e) {
+      this.currentpage1 = 1
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.visible = true
       this.getMember()
@@ -171,6 +173,7 @@ export default {
         this.list1 = response.data.data.list
         this.total1 = response.data.data.totalRows
         this.listLoading1 = false
+        console.log('list1',this.list1)
       })
     },
     handleSelectionChange(value) {
