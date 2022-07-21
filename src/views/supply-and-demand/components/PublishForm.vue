@@ -228,7 +228,9 @@ export default {
             tarType, content, validType, validEndTs, title, labelVOList, tradeVOList, city, province
           } = {}
         } = this.detail
-
+        tradeVOList.forEach((v)=>{
+          v.typeName = v.name
+        })
         this.formData = {
           content: '', // 供需内容
           tarType, // 供应: 1 or 需求: 2
