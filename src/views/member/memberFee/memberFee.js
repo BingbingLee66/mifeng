@@ -238,7 +238,7 @@ export default {
     closeVisible() {
       //   memberPostType: { id: 0 },
       this.memberQuery = {
-        memberPostType: { id: this.memberPostOptions[0].id },
+        memberPostType: { id: this.memberPostOptions[0].id || 0 },
         memberName: '',
         phone: ''
       }
