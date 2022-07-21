@@ -89,10 +89,14 @@ export default {
       },
       immediate: true
     },
-    vid(newVid) {
-      clearInterval(this.timer)
-      if (newVid) this.timer = setInterval(this.queryVideoFunc, 1000)
-    }
+    vid: {
+      handler(newVid) {
+        clearInterval(this.timer)
+        if (newVid) this.timer = setInterval(this.queryVideoFunc, 1000)
+      },
+      deep:true,
+      immediate: true
+    },
   },
   beforeDestroy() {
     clearInterval(this.timer)
