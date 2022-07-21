@@ -7,7 +7,12 @@
           <p class="tit-1">{{ property.name }}</p>
           <p class="tit-2">邀请您加入</p>
           <div class="erweima">
-            <img :src="property.systemJoinQrcode">
+            <div class="erweima-content">
+              <img class="erweima-img" :src="property.systemJoinQrcode">
+              <img class="erweima-logo"  :src="property.systemLogo">
+            </div>
+            
+            
           </div>
         </div>
         <el-button style="margin-top: 20px;" type="primary" @click="refresh">刷新二维码</el-button>
@@ -83,12 +88,29 @@
               no-repeat;
             background-size: 100% 100%;
             text-align: center;
-
-            img {
+            .erweima-content{
+              position: relative;   
               width: 183px;
               height: 183px;
-              object-fit: cover;
+              margin: 0 auto;  
+              .erweima-logo{
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-49%, -49%);
+                width: 87px;
+                height: 87px;
+                border-radius: 50%;
+                z-index: 200;
+                object-fit: cover;
+              }     
+              .erweima-img {
+                width: 183px;
+                height: 183px;
+                object-fit: cover;
+              }
             }
+              
           }
         }
       }
