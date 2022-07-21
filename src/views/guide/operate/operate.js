@@ -5,11 +5,14 @@ import { getWechatContent,uploadVideo,queryVideo,uploadCoverImg } from '@/api/co
 import kdDialog from '@/components/common/kdDialog'
 import editorElem from '@/components/wangEditor/index'
 import videoComponent from '@/components/video/index'
+import videoUpLoad from '@/components/video/upLoad'
+
 export default {
     components: {
         kdDialog,
         editorElem,
         videoComponent,
+        videoUpLoad
     },
     data() {
       return {
@@ -141,16 +144,26 @@ export default {
         },
             //上传视频
         uploadVideoFunc(content) {
+            // 前端上传视频阿里云组件  
             this.loading = true;
-            let formData = new FormData();
-            formData.append('file', content.file);
-            formData.append('type', 1)
-            uploadVideo(formData, 0).then(res => {
-            if (res.code === 200) {
-                this.formObj.vid = res.data.videoId;        
-                this.timer = setInterval(this.queryVideoFunc, 1000);
-            }
-            })
+            this.$refs.VideoUpLoad.setUploadInfo(content.file)
+
+            // 旧版 通过后端接口上传视频
+            // let formData = new FormData();
+            // formData.append('file', content.file);
+            // formData.append('type', 1)
+            // uploadVideo(formData, 0).then(res => {
+            // if (res.code === 200) {
+            //     this.formObj.vid = res.data.videoId;        
+            //     this.timer = setInterval(this.queryVideoFunc, 1000);
+            // }
+            // })
+        },
+        // 上传成功 回调
+        onSucceed(vid){
+            this.formObj.vid = vid
+            // 上传成功轮询接口 查看是否转码成功
+            this.timer = setInterval(this.queryVideoFunc, 1000);
         },
         //删除当前视频  图片
         deleteCurrentVideo(index) {
@@ -163,8 +176,8 @@ export default {
             if(res.state===1){
                 clearInterval(this.timer);
                 this.$nextTick(() => {
-                this.$refs['videoRef'].show(this.formObj.vid);
-                this.loading = false;
+                    this.$refs['videoRef'].show(this.formObj.vid);
+                    this.loading = false;
                 })
             }
             })

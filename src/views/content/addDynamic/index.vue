@@ -1,5 +1,7 @@
 <template>
   <div class="app-container">
+     <!-- 上传视频阿里云组件 -->
+    <videoUpLoad  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false" />
     <div class="hd">动态信息</div>
     <div class="promulgator">
       <div>
