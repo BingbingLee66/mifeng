@@ -71,8 +71,11 @@ export default {
                         // 回调接口设置
                         CallbackURL: this.sts.callbackUrl,
                     },
-                    id: 0,
-                    source: 1,
+                    Extend :{
+                        id: 0,
+                        source: 1,
+                    },
+                 
                 },
             },
         }
