@@ -97,9 +97,9 @@
                 position: absolute;
                 left: 50%;
                 top: 50%;
-                transform: translate(-49%, -49%);
-                width: 87px;
-                height: 87px;
+                transform: translate(-50%, -50%);
+                width: 84px;
+                height: 84px;
                 border-radius: 50%;
                 z-index: 200;
                 object-fit: cover;
