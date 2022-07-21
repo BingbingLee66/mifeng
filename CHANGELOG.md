@@ -1,4 +1,11 @@
 # CHANGELOG
+
+## [Released]
+## [2.21.0] - 2022-07-21
+### Added
+-  【商协会后台】入会专属二维码，取商协会logo + web端上传视频[950](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/950)
+
+
 ## [Released]
 ## [2.20.0] - 2022-07-19
 ### Added
