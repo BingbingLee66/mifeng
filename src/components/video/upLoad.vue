@@ -69,8 +69,10 @@ export default {
                 UserData: {
                     MessageCallback: {
                         // 回调接口设置
-                        CallbackURL: this.sts.callbackUrl
+                        CallbackURL: this.sts.callbackUrl,
                     },
+                    id: 0,
+                    source: 1,
                 },
             },
         }
