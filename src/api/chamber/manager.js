@@ -56,7 +56,7 @@ export function updateAudit(params) {
     params
   })
 }
-//修改商会权重
+// 修改商会权重
 export function updateChamberLevel(params) {
   return request({
     url: '/ec/chamber/updateChamberLevel',
@@ -64,7 +64,7 @@ export function updateChamberLevel(params) {
     params
   })
 }
-//数据维度（商会列表）
+// 数据维度（商会列表）
 export function chamberSearchList(params) {
   return request({
     url: '/ec/chamber/chamberSearchList',
@@ -72,3 +72,9 @@ export function chamberSearchList(params) {
     params
   })
 }
+
+// 获取线索列表
+export const getClueList = params => request({
+  url: '/chamber/ysh-clue/getList',
+  params
+})
