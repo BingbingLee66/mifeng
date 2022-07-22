@@ -112,11 +112,16 @@ export function param2Obj(url) {
 /** 下载文件
  * @param {object} config {url:资源路径 title:资源名称(注意携带文件拓展名) 如: 活动报名模板.xlsx}
  */
-export function downloadFile({ url, title }) {
+export async function downloadFile({ url, title }) {
   let a = document.createElement('a')
-  a.href = url
   a.download = title
-  console.log({ url, title })
+  a.href = url
+  // 做跨域处理
+  if (/^http/.test(url)) {
+    const res = await fetch(url)
+    const blob = await res.blob()
+    a.href = URL.createObjectURL(blob)
+  }
   a.click()
   a = null
 }
