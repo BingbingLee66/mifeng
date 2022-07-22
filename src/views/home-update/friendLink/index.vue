@@ -61,7 +61,7 @@
         </el-table-column>
         <el-table-column label="添加信息" width="300" align="center">
           <template slot-scope="scope">
-            <div>{{ scope.row.creatorName }}</div>
+            <div>{{ name }}</div>
             <div>
               {{ scope.row.createdTs | dateFormat(scope.row.createdTs) }}
             </div>
@@ -187,6 +187,7 @@
 
 <script>
 import Friend from "@/api/home/friendLink";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -194,6 +195,7 @@ export default {
       formObj: {
         name: "",
       },
+
       formData: [],
       formPage: {
         page: 1,
@@ -232,6 +234,11 @@ export default {
   },
   created() {
     this.fetchData();
+  },
+  computed: {
+    ...mapGetters([
+      "name"
+    ]),
   },
   methods: {
     async fetchData(page) {
