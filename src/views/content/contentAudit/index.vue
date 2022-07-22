@@ -155,7 +155,7 @@
               {{
                 scope.row.contentType === 1 ? '企业简介' : scope.row.contentType === 2 ? '发展历程' : scope.row.contentType === 3 ? '荣誉资质' : '联系我们'
               }}
-            </span>
+            </span> 
           </template>
         </el-table-column>
         <el-table-column label="内容"  v-if="activeName == '2' ">
