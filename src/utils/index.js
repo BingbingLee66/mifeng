@@ -108,3 +108,14 @@ export function param2Obj(url) {
       '"}'
   )
 }
+
+/** 下载文件
+ * @param {object} config {url:资源路径 title:资源名称(注意携带文件拓展名) 如: 活动报名模板.xlsx}
+ */
+export function downloadFile({ url, title }) {
+  let a = document.createElement('a')
+  a.href = url
+  a.download = title
+  a.click()
+  a = null
+}

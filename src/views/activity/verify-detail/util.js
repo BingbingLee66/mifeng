@@ -29,11 +29,3 @@ export function formatDate(str) {
   if (!str) return ''
   return formatDateTime(new Date(+str), 'yyyy-MM-dd hh:mm')
 }
-
-export function downloadFile({ url, title }) {
-  let a = document.createElement('a')
-  a.href = url
-  a.download = title
-  a.click()
-  a = null
-}
