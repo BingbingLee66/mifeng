@@ -5,7 +5,7 @@
       @savePopupData="savePopupData"
       :dialogTitle="title"
       ref="kdDialog"
-      dialogWidth="60%"
+      dialogWidth="75%"
     >
       <div slot="content">
         <div class="form">

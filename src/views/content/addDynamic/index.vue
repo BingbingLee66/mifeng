@@ -297,7 +297,7 @@
       title="添加发布者"
     />
 
-    <kdDialog ref="kdDialog" :show-footer="false" dialog-title="" dialog-width="60%">
+    <kdDialog ref="kdDialog" :show-footer="false" dialog-title="" dialog-width="75%">
       <div slot="content">
         <img :src="currentImg" style="max-width:90%">
       </div> </kdDialog>
