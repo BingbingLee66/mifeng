@@ -19,12 +19,13 @@ import officialComponent from '../../wxuser/officialManager/components/index'
 import editorElem from '@/components/wangEditor/index'
 import kdDialog from '@/components/common/kdDialog'
 import videoComponent from '@/components/video/index'
+import videoUpLoad from '@/components/video/upLoad'
 export default {
   components: {
     officialComponent,
     editorElem,
     kdDialog,
-    videoComponent
+    videoComponent,videoUpLoad
   },
   data() {
     return {
@@ -246,26 +247,37 @@ export default {
     },
     //上传视频
     uploadVideoFunc(content) {
+      // 前端上传视频阿里云组件  
       this.loading = true;
-      console.log('content', content)
-      let formData = new FormData();
-      formData.append('file', content.file);
-      const self = this;
-      uploadVideo(formData, this.mode === 'add' ? 0 : this.articleId).then(res => {
-        if (res.code === 200) {
+      this.$refs.VideoUpLoad.setUploadInfo(content.file)
 
-          // this.vid='4fa4d6d08c0a41a6b6168428326cae8e'
-          this.vid = res.data.videoId;        
-          this.timer = setInterval(this.queryVideoFunc, 1000);
-          // setTimeout(() => {
-          //   this.$nextTick(() => {
+      // 旧版 通过后端接口上传视频
+      // this.loading = true;
+      // console.log('content', content)
+      // let formData = new FormData();
+      // formData.append('file', content.file);
+      // const self = this;
+      // uploadVideo(formData, this.mode === 'add' ? 0 : this.articleId).then(res => {
+      //   if (res.code === 200) {
 
-          //     this.$refs['videoRef'].show(this.vid);
-          //     this.loading = false;
-          //   })
-          // }, 6000);
-        }
-      })
+      //     // this.vid='4fa4d6d08c0a41a6b6168428326cae8e'
+      //     this.vid = res.data.videoId;        
+      //     this.timer = setInterval(this.queryVideoFunc, 1000);
+      //     // setTimeout(() => {
+      //     //   this.$nextTick(() => {
+
+      //     //     this.$refs['videoRef'].show(this.vid);
+      //     //     this.loading = false;
+      //     //   })
+      //     // }, 6000);
+      //   }
+      // })
+    },
+    // 上传成功 回调
+    onSucceed(vid){
+      this.vid = vid
+      // 上传成功轮询接口 查看是否转码成功
+      this.timer = setInterval(this.queryVideoFunc, 1000);
     },
     uploadFileFunc(formData, folder, index, type = 1) {
       // console.log('formData',formData)

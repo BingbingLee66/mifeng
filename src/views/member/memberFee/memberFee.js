@@ -108,6 +108,7 @@ export default {
         ckey: this.$store.getters.ckey
       }
       getList(params).then(response => {
+       
         this.memberPostOptions = response.data.data
         if (this.memberPostOptions.length > 0) {
           this.memberQuery.memberPostType = this.memberPostOptions[0]
@@ -116,9 +117,9 @@ export default {
       })
     },
     init() {
-      if (this.has('', '查询')) {
+      // if (this.has('', '查询')) {
         this.fetchData()
-      }
+      // }
     },
     initDateTimePicker() {
       // 初始化1年
@@ -145,7 +146,7 @@ export default {
         params['startTime'] = this.query.date[0]
         params['endTime'] = this.query.date[1]
       }
-      console.log('params', params)
+    
       getMemberFeeList(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
@@ -235,8 +236,9 @@ export default {
       })
     },
     closeVisible() {
+      //   memberPostType: { id: 0 },
       this.memberQuery = {
-        memberPostType: { id: 0 },
+        memberPostType: { id: this.memberPostOptions[0].id || 0 },
         memberName: '',
         phone: ''
       }

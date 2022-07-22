@@ -8,6 +8,7 @@ import editorElem from '@/components/wangEditor/index'
 import preview from './component/preview'
 import kdDialog from '@/components/common/kdDialog'
 import videoComponent from '@/components/video/index'
+import videoUpLoad from '@/components/video/upLoad'
 export default {
   components: {
     Ckeditor,
@@ -16,7 +17,8 @@ export default {
     UEditor,
     editorElem,
     preview,
-    kdDialog,videoComponent
+    kdDialog,videoComponent,
+    videoUpLoad
   },
   data() {
     return {
@@ -314,17 +316,27 @@ export default {
     },
     // 上传视频
     uploadVideoFunc(content) {
-      this.loading = true
-      let formData = new FormData()
-      formData.append('file', content.file)
-      formData.append('type', 1)
-      // this.articleId === '' ? 0 : this.articleId
-      uploadVideo(formData, 0).then(res => {
-        if (res.code === 200) {
-          this.formObj.vid = res.data.videoId
-          this.timer = setInterval(this.queryVideoFunc, 1000)
-        }
-      })
+      // 前端上传视频阿里云组件  
+      this.loading = true;
+      this.$refs.VideoUpLoad.setUploadInfo(content.file)
+
+      // 旧版 通过后端接口上传视频
+      // let formData = new FormData()
+      // formData.append('file', content.file)
+      // formData.append('type', 1)
+      // // this.articleId === '' ? 0 : this.articleId
+      // uploadVideo(formData, 0).then(res => {
+      //   if (res.code === 200) {
+      //     this.formObj.vid = res.data.videoId
+      //     this.timer = setInterval(this.queryVideoFunc, 1000)
+      //   }
+      // })
+    },
+    // 上传成功 回调
+    onSucceed(vid){
+      this.formObj.vid = vid
+      // 上传成功轮询接口 查看是否转码成功
+      this.timer = setInterval(this.queryVideoFunc, 1000);
     },
     // 删除当前视频
     deleteCurrentVideo() {
