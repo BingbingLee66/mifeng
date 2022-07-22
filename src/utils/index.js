@@ -116,6 +116,7 @@ export function downloadFile({ url, title }) {
   let a = document.createElement('a')
   a.href = url
   a.download = title
+  console.log({ url, title })
   a.click()
   a = null
 }
