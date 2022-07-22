@@ -148,7 +148,8 @@
         <el-table-column label="标题"  v-if="activeName == '1'  || activeName == '3'  || activeName == '4'">
           <template slot-scope="scope">
             <span v-if="activeName == '1' || activeName == '2' || activeName == '3'">
-              {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
+              <div v-if="scope.row.title || scope.row.contentColumn">{{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}</div>
+              <div v-else> [ 无标题 ] </div>
             </span>
             <span v-else>
               {{
