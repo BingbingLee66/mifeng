@@ -324,7 +324,7 @@
       </el-form-item>
     </el-form>
     <kdDialog ref="look-kdDialog" :show-footer="false" dialog-title="" dialog-width="60%">
-      <div slot="content">
+      <div slot="content" style="text-align:center">
         <img :src="currentImg" style="max-width:90%">
       </div> 
     </kdDialog>

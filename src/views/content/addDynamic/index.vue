@@ -298,7 +298,7 @@
     />
 
     <kdDialog ref="kdDialog" :show-footer="false" dialog-title="" dialog-width="75%">
-      <div slot="content">
+      <div slot="content" style="text-align: center;">
         <img :src="currentImg" style="max-width:90%">
       </div> </kdDialog>
 
