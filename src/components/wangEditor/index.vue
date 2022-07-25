@@ -22,6 +22,10 @@ export default {
       type: Number,
       default: 0
     },
+    contentNumber: {
+      type: Number,
+      default: 0
+    },
     placeholder: {
       type: String,
       default: ''
@@ -72,6 +76,7 @@ export default {
     editor.config.placeholder = this.placeholder
     // editor.config.menuTooltipPosition = "down";
     editor.config.uploadImgMaxLength = 1 // 一次最多上传 1 个图片
+  
     // 创建富文本实例
     editor.create()
     this.editor = editor
@@ -100,8 +105,15 @@ export default {
     addEditorChange(editor) {
       editor.config.onchange = (html) => {
         this.isChange = true
-        this.$emit('addParentHtml', html)
-        this.$emit('textNumber', this.editor.txt.text())
+        // contentNumber 设置限制了次数  如果超过次数走进判断内
+        if(this.hiddenMenu && this.editor.txt.text().length > this.contentNumber){
+          this.editor.txt.html(this.editor.txt.text().substring(0,this.contentNumber))
+          this.$emit('textNumber', this.editor.txt.text())
+        } else {
+          this.$emit('addParentHtml', html)
+          this.$emit('textNumber', this.editor.txt.text())
+        }
+       
         // this.getText()
         // console.log("html", html);
         // this.editorContent = html

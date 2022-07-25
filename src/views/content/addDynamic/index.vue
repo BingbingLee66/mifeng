@@ -49,6 +49,7 @@
           :hidden-menu="true"
           :height="200"
           :content="contentHtml"
+          :contentNumber="contentNumber"
           @addParentHtml="addParentHtml"
           @textNumber="textNumber"
         />
