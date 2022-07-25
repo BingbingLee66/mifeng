@@ -200,7 +200,7 @@ export default {
         });
       }
     },
-    addOfficialFunc() {
+    addOfficialFunc(length) {
       let arr = [];
       this.selectList.forEach((item) => {
         arr.push(item.wxUserId);
@@ -209,7 +209,7 @@ export default {
         if (res.state === 1) {
           this.$message({
             type: "success",
-            message: "添加成功!",
+            message: '您已成功添加了' + length + '个官方号',
           });
           this.resolve();
           this.close();
@@ -270,7 +270,7 @@ export default {
           }
         ).then(() => {
           console.log("then");
-          self.addOfficialFunc();
+          self.addOfficialFunc(this.selectList.length);
         });
         //type为2时，需要把数组传递给父组件
       } else if (this.type === 2) {

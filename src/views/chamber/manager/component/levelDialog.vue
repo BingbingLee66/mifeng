@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="详情" :visible.sync="detailVisible" :width="width">
+    <el-dialog title="详情" :visible.sync="detailVisible" @close="close" :width="width">
       <div slot="title" class="header-title">
                     <span class="title-name">{{ title }} </span>
       </div>
@@ -57,8 +57,9 @@ export default {
   },
   methods: {
     // 打开
-    open(id) {
+    open(id,level) {
       return new Promise((reslove, reject) => {
+        this.form.level = level || null
         this.reslove = reslove;
         this.reject = reject;
         this.chamberId = id;
@@ -71,9 +72,11 @@ export default {
     },
     // 关闭
     close() {
+      this.$refs.formName.clearValidate()
       this.detailVisible = false;
       this.reject = null;
       this.reslove = null;
+      this.form.level = null
     },
     //修改权重
     updateChamberLevelFunc() {

@@ -71,6 +71,7 @@ export default {
     // placeholder
     editor.config.placeholder = this.placeholder
     // editor.config.menuTooltipPosition = "down";
+    editor.config.uploadImgMaxLength = 1 // 一次最多上传 1 个图片
     // 创建富文本实例
     editor.create()
     this.editor = editor
