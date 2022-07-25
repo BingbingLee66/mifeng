@@ -129,7 +129,7 @@
 
 
     
-    <el-dialog title="数据定义" :visible.sync="showMeaning" width="496px">
+    <el-dialog title="数据定义" :visible.sync="showMeaning" width="516px">
       <div class="meaning-wrap">
         <div class="meaning-item">
           <div class="tit">名片分享数</div>
@@ -139,7 +139,7 @@
           <div class="tit">名片访客数</div>
           <div class="sub">
             访问名片模版<span style="color: #ff0000">（第三人称）</span>的用户人数
-            <span style="color: #ff0000">（UV）</span>
+            <span style="color: #ff0000">（UV），30分钟内多次访问算一次。</span>
             </div>
         </div>
         <div class="meaning-item">
