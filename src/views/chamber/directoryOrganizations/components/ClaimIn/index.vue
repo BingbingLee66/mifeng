@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-loading="loading" title="认领入驻" :visible.sync="visible" width="55%" close="close">
+  <el-dialog title="认领入驻" :visible.sync="visible" width="55%" close="close">
     <main v-loading="loading">
       <el-form ref="form" :model="form" label-width="150px" :rules="rules">
         <el-form-item label="社会组织名称" prop="name">
@@ -7,7 +7,7 @@
         </el-form-item>
         <el-form-item label="社会组织logo" prop="systemLogo">
           <el-upload
-            class="systemLogo_uploader"
+            class="logo_uploader"
             action="/"
             :show-file-list="false"
             :before-upload="beforeUpload"
@@ -16,16 +16,16 @@
             <img
               v-if="form.systemLogo"
               :src="form.systemLogo"
-              class="system_logo"
+              class="logo_img"
             >
-            <i v-else class="el-icon-plus systemLogo_uploader_icon" />
+            <i v-else class="el-icon-plus logo_uploader_icon" />
           </el-upload>
           <p style="margin: 0; padding: 0">
             建议尺寸:88*88px; 格式:png/jpeg/jpg
           </p>
         </el-form-item>
-        <el-form-item label="联系人姓名" prop="president">
-          <el-input v-model="form.president" placeholder="请输入联系人姓名" />
+        <el-form-item label="会长姓名" prop="president">
+          <el-input v-model="form.president" placeholder="请输入会长姓名" />
         </el-form-item>
         <el-form-item label="联系人电话" prop="phone">
           <el-input v-model="form.phone" placeholder="请输入联系人电话" />
@@ -44,7 +44,7 @@
         </el-form-item>
         <el-form-item label="社会团体法人登记证" prop="license">
           <el-upload
-            class="avatar-uploader"
+            class="license-uploader"
             action="/"
             :show-file-list="false"
             :before-upload="beforeUpload"
@@ -53,9 +53,9 @@
             <img
               v-if="form.license"
               :src="form.license"
-              class="avatar"
+              class="license"
             >
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
+            <i v-else class="el-icon-plus license-uploader-icon" />
           </el-upload>
         </el-form-item>
         <el-form-item label="入驻来源：" prop="settledSource">
@@ -80,6 +80,7 @@
             v-model="form.confirmPassword"
             type="password"
             minlength="1"
+            placeholder="请输入确认密码"
           />
         </el-form-item>
       </el-form>
@@ -120,7 +121,7 @@ export default {
           { required: true, message: '社会组织名称不能为空', trigger: 'blur' }
         ],
         president: [
-          { required: true, message: '联系人姓名不能为空', trigger: 'blur' }
+          { required: true, message: '会长姓名不能为空', trigger: 'blur' }
         ],
         phone: [
           { required: true, message: '联系人电话不能为空', trigger: 'blur' },
@@ -206,13 +207,13 @@ export default {
       if (file.type !== 'image/jpeg' &&
         file.type !== 'image/jpg' &&
         file.type !== 'image/png') {
-        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+        this.$message.error('上传图片只能是 JPEG、JPG 或 PNG 格式!')
         return false
       }
-      if (file.size > 1024 * 1024 * 2) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-        return false
-      }
+      // if (file.size > 1024 * 1024 * 2) {
+      //   this.$message.error('上传头像图片大小不能超过 2MB!')
+      //   return false
+      // }
     },
     uploadSystemLogo(data) {
       this.uploadFile(data, 'systemLogo')
@@ -268,7 +269,7 @@ export default {
 @import "src/styles/common.scss";
 </style>
 <style lang="scss" scoped>
-.avatar-uploader, .systemLogo_uploader{
+.license-uploader, .logo_uploader{
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -277,32 +278,32 @@ export default {
       border-color: #409eff;
     }
   }
-  .avatar-uploader-icon,  .systemLogo_uploader_icon{
+  .license-uploader-icon,  .logo_uploader_icon{
     font-size: 28px;
     color: #8c939d;
     text-align: center;
     border: 1px dashed #d9d9d9;
   }
-  .avatar-uploader-icon{
+  .license-uploader-icon{
     width: 180px;
     height: 100px;
     line-height: 100px;
     border-radius: 6px;
   }
-  .systemLogo_uploader_icon {
+  .logo_uploader_icon {
     width: 88px;
     height: 88px;
     line-height: 88px;
     border-radius: 50%;
   }
-  .avatar {
+  .license {
     width: 180px;
     height: 100px;
     display: block;
     border-radius: 6px;
   }
 
-  .system_logo {
+  .logo_img {
     width: 88px;
     height: 88px;
     display: block;

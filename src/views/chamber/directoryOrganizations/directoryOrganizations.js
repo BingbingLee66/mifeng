@@ -1,6 +1,7 @@
 import { downloadFile } from '@/utils/index'
 import { getListInfo, delOrganization } from '@/api/chamber/directoryOrganizations'
 import { getAreaTree } from '@/api/area'
+import { inSource, inSourceObj, inState,inStateObj,dataSource, dataSourceObj,organizationState } from './state.js'
 import Weight from './components/Weight/index'
 import UploadList from './components/UploadList'
 import AddInfo from './components/AddInfo.vue'
@@ -22,30 +23,16 @@ export default {
       total: 0,
       list: [],
       // 入驻来源
-      inSource: [
-        { label: '小程序', value: 1 },
-        { label: '后台录入', value: 2 },
-        { label: '小程序名录', value: 3 },
-        { label: 'app', value: 4 },
-        { label: 'APP名录', value: 5 },
-      ],
+      inSource,
+      inSourceObj,
       // 入驻状态
-      inState: [
-        { label: '已认证', value: 1 },
-        { label: '待入驻', value: 0 },
-      ],
+      inState,
+      inStateObj,
       // 数据来源
-      dataSource: [
-        { label: '页面录入', value: 1 },
-        { label: '导入', value: 2 },
-        { label: '抓取', value: 3 },
-      ],
+      dataSource,
+      dataSourceObj,
       // 组织状态
-      organizationState: [
-        { label: '正常', value: 1 },
-        { label: '注销', value: 4 },
-        { label: '撤销', value: 5 },
-      ],
+      organizationState,
       regionData: [], // 地区选项
       query: {
         name: '',

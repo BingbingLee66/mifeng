@@ -18,7 +18,7 @@ export function updateOrganizationsSort(data) {
  */
 export function uploadOrganizationsData(data) {
   return request({
-    url: '/api/ec/singin',
+    url: '/ec/socialOrg/importSocialOrg',
     method: 'post',
     data
   })
