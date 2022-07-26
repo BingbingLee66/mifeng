@@ -56,12 +56,21 @@ export function deleteOfficial(id) {
   })
 }
 //分页查询发布者信息
+let requestFlag = true
+let result;
 export function getPromulgator(params) {
-  return request({
-    url: '/ec/dynamic-record/getPromulgator',
-    method: 'get',
-    params
-  })
+  if (requestFlag) {
+    requestFlag = false
+    setTimeout(() => {
+      requestFlag = true
+    }, 100);
+    result = request({
+      url: '/ec/dynamic-record/getPromulgator',
+      method: 'get',
+      params
+    })
+  }
+  return result
 }
 
 // 查询后台管理员信息
