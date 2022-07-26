@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
-    <!-- 上传视频阿里云组件 -->
-    <videoUpLoad  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false"  />
+    <!-- 上传视频阿里云组件   -->
+    <videoUpLoad  :sourceType="1" :id="articleId === '' ? 0 : articleId"  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false"  />
     <preview ref="preview"></preview>
     <kdDialog ref="kdDialog" dialogTitle="导入微信文章" @savePopupData="savePopupData" >
       <div slot="content" class="content">

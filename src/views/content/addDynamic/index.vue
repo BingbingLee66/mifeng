@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
      <!-- 上传视频阿里云组件 -->
-    <videoUpLoad  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false" />
+    <videoUpLoad :sourceType="1" :id="articleId === '' ? 0 : articleId"  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false" />
     <div class="hd">动态信息</div>
     <div class="promulgator">
       <div>
@@ -193,7 +193,7 @@
             <span style="color: #1890ff">已选:</span>
             <el-tag
               v-for="(tag, index) in selectChamberList"
-              :key="tag"
+              :key="index"
               :closable="mode==='add' ?true :false"
               :disable-transitions="false"
               @keydown="tag.id"
@@ -206,7 +206,7 @@
           <div
             class="noChamber"
           >
-            <div v-for="(tag, index) in noChamberList" :key="tag" class="noChamber-list" @close="noChamberList(tag, index)">
+            <div v-for="(tag, index) in noChamberList" :key="index" class="noChamber-list" @close="noChamberList(tag, index)">
               <span class="noChamberList-item-text"> {{ tag.name }}</span>
               <i v-if="mode==='add'" class="el-icon-circle-plus add" @click="addSelectChamber(tag, index)" />
               <!-- <div class="add">+</div> -->

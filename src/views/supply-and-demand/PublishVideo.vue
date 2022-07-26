@@ -1,7 +1,7 @@
 <template>
   <PublishForm :detail="detail">
     <!-- 上传视频阿里云组件 -->
-    <videoUpLoad  ref="VideoUpLoad" @Succeed="onSucceed" @error="videoLoading = false"  />
+    <videoUpLoad :sourceType="2" :id="id"  ref="VideoUpLoad" @Succeed="onSucceed" @error="videoLoading = false"  />
     <el-form-item v-loading="videoLoading" label="供需视频" required>
       <el-upload
         v-if="!vid"
@@ -69,6 +69,10 @@ export default {
     detail: {
       type: Object,
       default: null
+    },
+    id: {
+      type: Number,
+      default: 0
     }
   },
   data() {
