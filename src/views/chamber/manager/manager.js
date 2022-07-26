@@ -44,7 +44,8 @@ export default {
         userName: null,
         area: [],
         status: null,
-        date: null
+        date: null,
+        settledSource: ''
       },
       rules: {
         name: [
@@ -219,7 +220,8 @@ export default {
         status,
         userName,
         date,
-        area
+        area,
+        settledSource
       } = this.query
       let params = {
         'pageSize': this.limit,
@@ -231,6 +233,7 @@ export default {
         endTime: date ? date[1] : '',
         // province: area.map(v => v[0]).join(','),
         city: area.map(v => v[1]).join(','),
+        settledSource
       }
       console.log('query', this.query)
       getList(params).then(response => {

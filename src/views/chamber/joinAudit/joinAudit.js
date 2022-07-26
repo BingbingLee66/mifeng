@@ -28,17 +28,11 @@ export default {
     return {
       passDia: false,
       rejectDia: false,
-      rejectRemark:'',
+      rejectRemark: '',
       detailVisible: false,
-      // 审核状态 0待审核 1通过 2驳回
-      statusOptions: [
-        { 'label': '待审核', 'value': 0 },
-        { 'label': '通过', 'value': 1 },
-        { 'label': '驳回', 'value': 2 },
-        { 'label': '所有', 'value': -1 }
-      ],
       query: {
-        status: 0
+        auditStatus: 0,
+        settledSource: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -74,10 +68,10 @@ export default {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleSizeChange(val) {
@@ -96,11 +90,12 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      let auditStatus = this.query.status === -1 ? '' : this.query.status
+      const { auditStatus, settledSource } = this.query
       let params = {
-        'auditStatus': auditStatus,
-        'pageSize': this.limit,
-        'page': this.currentpage
+        auditStatus,
+        pageSize: this.limit,
+        page: this.currentpage,
+        settledSource
       }
       getJoinList(params).then(response => {
         this.list = response.data.data.list
@@ -112,21 +107,21 @@ export default {
       this.detailObj = row
       this.detailVisible = true
     },
-    enlarge (path) {
+    enlarge(path) {
       var newwin = window.open()
       newwin.document.write('<img src="' + path + '"/>')
     },
     // 点击通过或驳回
-    handlePassOrReject(row,num){
+    handlePassOrReject(row, num) {
       this.detailObj = row
-      if(num === 1){
+      if (num === 1) {
         this.passDia = true
-      }else {
+      } else {
         this.rejectRemark = ''
         this.rejectDia = true
       }
     },
-    audit (e, row, type) {
+    audit(e, row, type) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       if (type === 1) {
         this.$refs['detail'].validate((valid) => {
@@ -143,7 +138,7 @@ export default {
         this.reject(row)
       }
     },
-    passThrough (row) {
+    passThrough(row) {
       let params = {
         'chamberId': row.id,
         'password': this.detailObj.temporaryPass,
@@ -160,7 +155,7 @@ export default {
         this.fetchData()
       })
     },
-    reject (row) {
+    reject(row) {
       this.$confirm('驳回后该商会将不予入驻平台', '确定驳回？', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
