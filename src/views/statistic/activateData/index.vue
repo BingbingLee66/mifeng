@@ -361,11 +361,11 @@ export default {
       }
     }
   },
-
   created() {
     if (this.ckey) { // 商会后台 切换为商协会tab 查询参数固定为当前商会后台的ckey
       this.activeName = 'Chamber'
       this.query.ckey = this.ckey
+      this.defineList.shift()
     }
     this[`get${this.activeName}Activate`]()
   },

@@ -2,7 +2,7 @@
   <div v-loading="!detail" class="edit-wrap">
     <template v-if="detail">
       <PublishImg v-if="detail.yshContentEditVO.contentType === 1 || !detail.dynamicWxUserVO" :detail="detail" />
-      <PublishVideo v-else :detail="detail" />
+      <PublishVideo v-else :detail="detail" :id="id == '' ? 0 : id " />
     </template>
   </div>
 </template>
@@ -18,7 +18,8 @@ export default {
   },
   data() {
     return {
-      detail: null
+      detail: null,
+      id:'',
     }
   },
   created() {
@@ -27,6 +28,7 @@ export default {
   methods: {
     async getDetail() {
       const id = this.$route.query.id
+      if(this.$route.query.id) this.id = Number(id)
       // type = 0供需编辑 1爬虫供需编辑
       const type = this.$route.query.type ? 1 : 0
       if (type === 1) {

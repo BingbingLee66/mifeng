@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 上传视频阿里云组件 -->
-    <videoUpLoad  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false" />
+    <videoUpLoad :sourceType="3" :id="detailsId === '' ? 0 : detailsId"   ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false" />
     <kdDialog ref="kdDialog" dialogTitle="导入微信文章" @savePopupData="savePopupData" >
       <div slot="content" class="content">
         <el-input clearable v-model="articleUrl"  placeholder="请输入微信文章链接地址" ></el-input>

@@ -367,7 +367,10 @@ export default {
     //点击取消表单按钮
     resetForm() {
       router.push({
-        name: '编辑台'
+        name: '编辑台',
+        params: {
+          activeName:'2',
+        }
       })
     },
     /**工具类 */

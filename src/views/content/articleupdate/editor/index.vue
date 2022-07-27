@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <!-- 上传视频阿里云组件 -->
-    <videoUpLoad  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false" />
+    <videoUpLoad  :sourceType="1" :id="articleId === '' ? 0 : articleId"  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false" />
     <preview ref="preview"></preview>
     <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
       <div class="hd">1、内容信息</div>
@@ -289,7 +289,7 @@
     </kdDialog>
 
     <kdDialog ref="look-kdDialog" :show-footer="false" dialog-title="" dialog-width="60%">
-      <div slot="content">
+      <div slot="content" style="text-align:center">
         <img :src="currentImg" style="max-width:90%">
       </div> 
     </kdDialog>
