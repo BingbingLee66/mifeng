@@ -1,6 +1,12 @@
 # CHANGELOG
 
 ## [Released]
+## [2.21.1] - 2022-07-27
+### Added
+-  多模块-自增ID冲突问题处理 [954](yunshanghui/engineering/frontend/shanghui-admin#954)
+
+
+## [Released]
 ## [2.21.0] - 2022-07-21
 ### Added
 -  【商协会后台】入会专属二维码，取商协会logo + web端上传视频[950](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/950)
