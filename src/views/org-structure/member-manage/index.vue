@@ -232,7 +232,7 @@
   }
 
   .content_wrap {
-    width: 70%;
+    width: 80%;
     padding: 20px;
 
     .name {

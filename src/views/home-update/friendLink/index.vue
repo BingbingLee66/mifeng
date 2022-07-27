@@ -61,7 +61,7 @@
         </el-table-column>
         <el-table-column label="添加信息" width="300" align="center">
           <template slot-scope="scope">
-            <div>{{ scope.row.creatorName }}</div>
+            <div>{{ name }}</div>
             <div>
               {{ scope.row.createdTs | dateFormat(scope.row.createdTs) }}
             </div>
@@ -118,7 +118,7 @@
         <el-table
           :data="chamberData"
           @selection-change="handleSelectionChange"
-          height="65vh"
+          height="61vh"
           border
         >
           <el-table-column type="selection" width="55" />
@@ -187,6 +187,7 @@
 
 <script>
 import Friend from "@/api/home/friendLink";
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -232,6 +233,11 @@ export default {
   },
   created() {
     this.fetchData();
+  },
+  computed: {
+    ...mapGetters([
+      "name"
+    ]),
   },
   methods: {
     async fetchData(page) {
@@ -398,5 +404,8 @@ export default {
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
+}
+::v-deep .el-dialog{
+  margin-top: 4vh !important;
 }
 </style>
