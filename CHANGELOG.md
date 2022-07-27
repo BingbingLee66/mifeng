@@ -4,7 +4,8 @@
 ## [2.21.1] - 2022-07-27
 ### Added
 -  多模块-自增ID冲突问题处理 [954](yunshanghui/engineering/frontend/shanghui-admin#954)
-
+### Fixed
+-  修复历史遗留bug [54]（https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/milestones/54）
 
 ## [Released]
 ## [2.21.0] - 2022-07-21
