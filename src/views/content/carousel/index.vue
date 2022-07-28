@@ -262,7 +262,7 @@
                   ? '文章ID：'
                   : formObj.type == 2
                   ? '商品ID：'
-                  : '文章ID: '
+                  : '活动ID：'
               "
               prop="articleId"
             >

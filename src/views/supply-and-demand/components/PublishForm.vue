@@ -78,6 +78,7 @@
           :hidden-menu="true"
           :height="200"
           :content="formData.content"
+          :contentNumber="2000"
           placeholder="请勿发布违法违规、泄露隐私、恶意竞争等信息，详细描述需求，获得更多牛人的意向合作"
           @addParentHtml="addParentHtml"
           @textNumber="textNumber"

@@ -9,6 +9,16 @@ import { getSts } from '@/api/vod/vod'
 import { decrypt } from '@/utils/cryptoUtils'
 export default {
   name: 'videoUpLoad',
+  props: {
+    id: {
+      default: 0,
+      type: Number
+    }, // 视频关联对象id 新增情况下id=0 修改情况下id=对象id,示例值(0)
+    sourceType: {
+      default: 1,
+      type: Number
+    }  //（1：文章/动态 ，2：供需，3：操作指引）
+  },
   data() {
     return {
         file:{}, // 存放视频对象
@@ -72,13 +82,15 @@ export default {
                         CallbackURL: this.sts.callbackUrl,
                     },
                     Extend :{
-                        id: 0,
-                        source: 1,
+                        id: this.id, // 视频关联对象id 新增情况下id=0 修改情况下id=对象id,示例值(0)
+                        source: 2, // 视频发布来源 视频来源 1-系统 2-商会后台 3-小程序 4-app
+                        sourceType: this.sourceType, // 来源类型：（1：文章/动态 ，2：供需，3：操作指引）
                     },
                  
                 },
             },
         }
+        console.log('id',this.id,'sourceType',this.sourceType)
         // 添加文件和配置
         this.videoUploader.addFile(this.file, '', '', '', JSON.stringify(paramsData))
         // 开始上传

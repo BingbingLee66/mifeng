@@ -76,7 +76,7 @@ export default {
   },
   computed: {},
   created() {
-
+     if(this.$route.params && this.$route.params.activeName) this.activeName = this.$route.params.activeName
   },
   methods: {
 

@@ -148,13 +148,14 @@
         <el-table-column label="标题"  v-if="activeName == '1'  || activeName == '3'  || activeName == '4'">
           <template slot-scope="scope">
             <span v-if="activeName == '1' || activeName == '2' || activeName == '3'">
-              {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
+              <div v-if="scope.row.title || scope.row.contentColumn">{{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}</div>
+              <div v-else> [ 无标题 ] </div>
             </span>
             <span v-else>
               {{
                 scope.row.contentType === 1 ? '企业简介' : scope.row.contentType === 2 ? '发展历程' : scope.row.contentType === 3 ? '荣誉资质' : '联系我们'
               }}
-            </span>
+            </span> 
           </template>
         </el-table-column>
         <el-table-column label="内容"  v-if="activeName == '2' ">

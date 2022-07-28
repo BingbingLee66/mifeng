@@ -1,7 +1,7 @@
-import { getInfoColumnList, save, updateStatus ,updateColumnLevel} from '@/api/content/columnsetup'
+import { getInfoColumnList, save, updateStatus, updateColumnLevel } from '@/api/content/columnsetup'
 import
 kdDialog
-from '@/components/common/kdDialog'
+  from '@/components/common/kdDialog'
 export default {
   data() {
     var checkNumber = (rule, value, callback) => {
@@ -21,16 +21,16 @@ export default {
       }
     }
     return {
-      checkList:[],
+      checkList: [],
       //展示路径
-      typeUrl:[],
+      typeUrl: [],
       visible: false,
       list: [],
       listLoading: false,
       formObj: {
-        typeUrl:['1']
+        typeUrl: ['1']
       },
-      
+
       rules: {
         columnName: [
           { required: true, message: '栏目名称不能为空', trigger: 'blur' }
@@ -40,27 +40,27 @@ export default {
           { validator: checkNumber, trigger: 'blur' }
         ]
       },
-       //权重rule
-       levelRules: {
+      //权重rule
+      levelRules: {
         level: [{
-            required: true,
-            message: '权重不能为空',
-            trigger: 'blur'
-          },
-          {
-            validator: checkLevel,
-            trigger: 'blur'
-          }
+          required: true,
+          message: '权重不能为空',
+          trigger: 'blur'
+        },
+        {
+          validator: checkLevel,
+          trigger: 'blur'
+        }
         ],
       },
       //权重对象
-      levelForm:{
-        level:""
+      levelForm: {
+        level: ""
       },
-      currentpage:1,
-      limit:10,
-      total:0,
-      pageSize:10,
+      currentpage: 1,
+      limit: 10,
+      total: 0,
+      pageSize: 10,
       pageSizes: [10, 20, 50, 100, 500],
     }
   },
@@ -84,14 +84,14 @@ export default {
     },
     fetchData() {
       this.listLoading = true;
-      let params={
-        page:this.currentpage,
-        pageSize:this.pageSize
+      let params = {
+        page: this.currentpage,
+        pageSize: this.pageSize
       }
       getInfoColumnList(params).then(response => {
         this.list = response.data.data.list
         this.listLoading = false;
-        this.total=response.data.data.totalRows
+        this.total = response.data.data.totalRows
       })
     },
     openVisible(e, row) {
@@ -99,8 +99,10 @@ export default {
       this.formObj = {
         'id': row.id,
         'columnName': row.columnName,
-        'level': row.level
+        'level': row.level,
+        'typeUrl': row.typeUrl
       }
+      row.typeUrl == '3' ? this.typeUrl = ['1', '2'] : (this.formObj.typeUrl == '2' ? this.typeUrl = ['2'] : this.typeUrl = ['1'])
       this.visible = true
     },
     updateStatus(e, row) {
@@ -127,23 +129,25 @@ export default {
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.formObj = {}
+      this.typeUrl = []
       this.visible = true
     },
     save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           console.log('formObj', this.formObj);
-          if(this.typeUrl.length<1){
+          if (this.typeUrl.length < 1) {
             this.$message({
               message: '请填写展示路径',
               type: 'error'
             })
             return;
           }
-          let obj={
+          let obj = {
             ...this.formObj,
-            typeUrl:this.typeUrl.length>1 ? 3 :this.typeUrl[0]
+            typeUrl: this.typeUrl.length > 1 ? 3 : this.typeUrl[0]
           }
+          console.log(obj)
           save(obj).then(response => {
             this.$message({
               message: '操作成功',
@@ -163,7 +167,7 @@ export default {
       this.$refs['levelDialog'].show()
     },
     //保存权重数据
-    savePopupData(){
+    savePopupData() {
       this.$refs['levelForm'].validate((valid) => {
         if (valid) {
           //发请求
@@ -192,7 +196,7 @@ export default {
       console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1;
-      this.pageSize=val
+      this.pageSize = val
       this.fetchData()
     },
     handleCurrentChange(val) {

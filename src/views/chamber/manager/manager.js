@@ -369,7 +369,7 @@ export default {
     // 修改权重
     updateLevel(row) {
       console.log('row', row)
-      this.$refs['levelDialog'].open(row.id).then(data => {
+      this.$refs['levelDialog'].open(row.id,row.level).then(data => {
         this.fetchData()
       })
     }
