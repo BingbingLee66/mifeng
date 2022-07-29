@@ -1,4 +1,4 @@
-import { getUpdateDetail, save, uploadCoverImg ,getWechatContent,uploadVideo,queryVideo} from '@/api/content/article'
+import { getUpdateDetail, save, uploadCoverImg, getWechatContent, uploadVideo, queryVideo } from '@/api/content/article'
 import { getContentColumnOptions, getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import { getOptions } from '@/api/content/articleSource'
 import Ckeditor from '@/components/CKEditor'
@@ -16,7 +16,7 @@ export default {
     preview,
     kdDialog,
     editorElem,
-    videoComponent,videoUpLoad
+    videoComponent, videoUpLoad
   },
   data() {
     return {
@@ -32,13 +32,13 @@ export default {
         status: 1,
         istop: false,
         sourceId: null,
-        articleExtendDTO:{
-          id:null,
-          shareTitle:'', // 分享标题
-          shareFriendPicture:'', // 分享微信好友圈图片
-          sharePoster:'' , // 分享海报图片
+        articleExtendDTO: {
+          id: null,
+          shareTitle: '', // 分享标题
+          shareFriendPicture: '', // 分享微信好友圈图片
+          sharePoster: '', // 分享海报图片
         },
-        vid:'', // 上传视频Id
+        vid: '', // 上传视频Id
         videoCoverURL: '',  //视频封面
       },
       articleId: '',
@@ -53,7 +53,7 @@ export default {
       //当前预览的图片
       currentImg: '',
       //轮询定时器
-      timer:null,
+      timer: null,
       rules: {
         title: [
           { required: true, message: '文章标题不能为空', trigger: 'blur' },
@@ -75,7 +75,8 @@ export default {
           { required: true, message: '封面图片必须上传', trigger: 'blur' }
         ]
       },
-      articleUrl:'',
+      articleUrl: '',
+      requesting: false
     }
   },
   mounted() {
@@ -131,11 +132,11 @@ export default {
         return false
       }
     },
-    upload(content,type) {
+    upload(content, type) {
       let formData = new FormData()
       formData.append('file', content.file)
       uploadCoverImg(formData).then(response => {
-        if(type) {
+        if (type) {
           //  视频封面
           if (type == 'videoCoverURL') this.formObj.videoCoverURL = response.data.filePath
           // 分享微信好友
@@ -200,13 +201,13 @@ export default {
             'status': dataObj.status,
             'istop': dataObj.istop,
             'sourceId': dataObj.sourceId,
-            'vid':dataObj.vid,
-            'videoCoverURL':dataObj.videoCoverURL,
-            articleExtendDTO:{
-              'id':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.id : null,
-              'shareFriendPicture':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.shareFriendPicture : '',
-              'sharePoster':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.sharePoster : '',
-              'shareTitle':dataObj.articleExtendDTO ? dataObj.articleExtendDTO.shareTitle : '',
+            'vid': dataObj.vid,
+            'videoCoverURL': dataObj.videoCoverURL,
+            articleExtendDTO: {
+              'id': dataObj.articleExtendDTO ? dataObj.articleExtendDTO.id : null,
+              'shareFriendPicture': dataObj.articleExtendDTO ? dataObj.articleExtendDTO.shareFriendPicture : '',
+              'sharePoster': dataObj.articleExtendDTO ? dataObj.articleExtendDTO.sharePoster : '',
+              'shareTitle': dataObj.articleExtendDTO ? dataObj.articleExtendDTO.shareTitle : '',
             }
 
           }
@@ -215,7 +216,7 @@ export default {
             // this.formObj['publishTs'] = dataObj.publishTs
             this.$set(this.formObj, 'publishTs', dataObj.publishTs)
           }
-          if(dataObj.vid) {
+          if (dataObj.vid) {
             this.$nextTick(() => {
               this.$refs['videoRef'].show(dataObj.vid);
             })
@@ -232,27 +233,29 @@ export default {
     },
     saveFunc() {
       // 如果 编辑的情况下 有视频 但是没视频封面 提示
-      if(this.articleId && this.formObj.vid && !this.formObj.videoCoverURL) return this.$message.error('请上传视频封面');
+      if (this.articleId && this.formObj.vid && !this.formObj.videoCoverURL) return this.$message.error('请上传视频封面');
       // 如果上传了视频封面没上传视频 提示
-      if(this.formObj.videoCoverURL && !this.formObj.vid) return this.$message.error('请上传视频');
+      if (this.formObj.videoCoverURL && !this.formObj.vid) return this.$message.error('请上传视频');
       this.$refs['form'].validate((valid) => {
         if (valid) {
           if (this.formObj.coverType === 0) {
             this.formObj.coverImgs = []
           }
+          this.requesting = true
           save(this.formObj).then(response => {
-            if(response.state===1){
+            if (response.state === 1) {
               this.$message({
                 message: '操作成功',
                 type: 'success'
               })
               this.closeTab()
-            }else{
+            } else {
               this.$message({
                 message: response.msg,
                 type: 'error'
               })
             }
+            this.requesting = false
           })
         } else {
           return false
@@ -262,43 +265,43 @@ export default {
     getHtml(htmlStr) {
       this.formObj.contentHtml = htmlStr
     },
-    showPreview(){
-      this.$refs['preview'].open(this.formObj.id,this.formObj.title,this.formObj.contentHtml,this.formObj.vid,this.formObj.videoCoverURL)
+    showPreview() {
+      this.$refs['preview'].open(this.formObj.id, this.formObj.title, this.formObj.contentHtml, this.formObj.vid, this.formObj.videoCoverURL)
     },
     //导入微信文章按钮行为
-    importArticle(){
+    importArticle() {
       this.$refs['kdDialog'].show()
     },
     //点击保存导入微信文章行为
-    savePopupData(){
-      if(this.articleUrl){
+    savePopupData() {
+      if (this.articleUrl) {
         this.getWechatContentFunc()
-      }else{
+      } else {
         this.$message.error('请填写导入微信文章路径');
 
       }
 
     },
     //抓取微信文章
-    getWechatContentFunc(){
+    getWechatContentFunc() {
       const loading = this.$loading({
         lock: true,
         text: 'Loading',
         spinner: 'el-icon-loading',
         background: 'rgba(255, 255, 255,.5)'
       });
-      getWechatContent(this.articleUrl).then(res=>{
+      getWechatContent(this.articleUrl).then(res => {
 
-        if(res.state===1){
+        if (res.state === 1) {
           // this.$refs.ckeditor1.init()
           setTimeout(() => {
             // this.$refs.ckeditor1.initHtml(res.data.text === null ? '' : res.data.text);
             this.formObj.contentHtml = res.data.text;
-            this.articleUrl=null
+            this.articleUrl = null
           }, 500)
           this.$refs['kdDialog'].hide();
 
-        }else{
+        } else {
           this.$message.error(res.msg);
           // 请输入微信公众号文章链接
         }
@@ -307,11 +310,11 @@ export default {
         });
       })
     },
-    addParentHtml(html){
+    addParentHtml(html) {
       this.formObj.contentHtml = html
     },
     // 判断是否上传视频
-    beforeAvatarUploadVideo(file){
+    beforeAvatarUploadVideo(file) {
       if (file.type.indexOf('video/') !== -1) { // 视频
         if (file.type !== 'video/mp4') {
           this.$message.error('上传视频只能是 MP4 格式!')
@@ -345,7 +348,7 @@ export default {
       // })
     },
     // 上传成功 回调
-    onSucceed(vid){
+    onSucceed(vid) {
       this.formObj.vid = vid
       // 上传成功轮询接口 查看是否转码成功
       this.timer = setInterval(this.queryVideoFunc, 1000);
@@ -355,9 +358,9 @@ export default {
       this.formObj.vid = ''
     },
     //查视频动态
-    queryVideoFunc(){
-      queryVideo(this.formObj.vid).then(res=>{
-        if(res.state===1){
+    queryVideoFunc() {
+      queryVideo(this.formObj.vid).then(res => {
+        if (res.state === 1) {
           clearInterval(this.timer);
           this.$nextTick(() => {
             this.$refs['videoRef'].show(this.formObj.vid);
@@ -367,14 +370,14 @@ export default {
       })
     },
     //删除当前上传图片
-    deleteCurrentImg( folder) {
-      if(folder === 'shareFriendPicture') this.formObj.articleExtendDTO.shareFriendPicture = ''
-      if(folder==='sharePoster')  this.formObj.articleExtendDTO.sharePoster = ''
-      if(folder==='videoCoverURL') this.formObj.videoCoverURL=''
+    deleteCurrentImg(folder) {
+      if (folder === 'shareFriendPicture') this.formObj.articleExtendDTO.shareFriendPicture = ''
+      if (folder === 'sharePoster') this.formObj.articleExtendDTO.sharePoster = ''
+      if (folder === 'videoCoverURL') this.formObj.videoCoverURL = ''
 
     },
     //预览
-     openPreviewModal(val) {
+    openPreviewModal(val) {
       this.$refs['look-kdDialog'].show();
       this.currentImg = val;
     },

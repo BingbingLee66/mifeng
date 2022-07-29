@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
-    <!-- 上传视频阿里云组件 -->
-    <videoUpLoad  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false"  />
+    <!-- 上传视频阿里云组件   -->
+    <videoUpLoad  :sourceType="1" :id="articleId === '' ? 0 : articleId"  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false"  />
     <preview ref="preview"></preview>
     <kdDialog ref="kdDialog" dialogTitle="导入微信文章" @savePopupData="savePopupData" >
       <div slot="content" class="content">
@@ -318,13 +318,13 @@
       </el-row> -->
       <el-form-item>
         <el-col :span="8">
-          <el-button v-dbClick type="primary" @click="saveFunc">确定</el-button>
+          <el-button v-dbClick type="primary" :loading="requesting" @click="saveFunc">确定</el-button>
           <el-button  @click="closeTab">取消</el-button>
         </el-col>
       </el-form-item>
     </el-form>
     <kdDialog ref="look-kdDialog" :show-footer="false" dialog-title="" dialog-width="60%">
-      <div slot="content">
+      <div slot="content" style="text-align:center">
         <img :src="currentImg" style="max-width:90%">
       </div> 
     </kdDialog>

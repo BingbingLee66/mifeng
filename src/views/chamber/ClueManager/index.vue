@@ -85,8 +85,8 @@ export default {
       const { data: { list, totalRows }} = await getClueList({
         page,
         ...query,
-        startTime: timeRanges[0] ? timeRanges[0].getTime() : '',
-        endTime: timeRanges[1] ? timeRanges[0].getTime() : '',
+        startTime: timeRanges && timeRanges[0] ? timeRanges[0].getTime() : '',
+        endTime: timeRanges && timeRanges[1] ? timeRanges[1].getTime() : '',
       })
       this.tableData = list || []
       this.total = totalRows || 0

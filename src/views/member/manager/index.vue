@@ -348,6 +348,7 @@
       title="数据导入"
       :visible.sync="visible"
       width="500px"
+      @close="closeVisible"
     >
       <div style="margin-left: 50px;margin-top: -25px;">
         <span class="excelSpan" style="font-size: 20px;margin-left: 100px">导入说明</span>

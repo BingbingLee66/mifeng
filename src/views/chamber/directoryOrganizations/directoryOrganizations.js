@@ -1,7 +1,7 @@
 import { downloadFile } from '@/utils/index'
 import { getListInfo, delOrganization } from '@/api/chamber/directoryOrganizations'
 import { getAreaTree } from '@/api/area'
-import { inSource, inSourceObj, inState,inStateObj,dataSource, dataSourceObj,organizationState } from './state.js'
+import { inSource, inSourceObj, inState, inStateObj, dataSource, dataSourceObj, organizationState } from './state.js'
 import Weight from './components/Weight/index'
 import UploadList from './components/UploadList'
 import AddInfo from './components/AddInfo.vue'
@@ -125,7 +125,7 @@ export default {
     // 下载模板
     downloadExcel() {
       downloadFile({
-        url: 'https://ysh-cdn.kaidicloud.com/ysh-prod/user/81b23a7afd8b478c965a5e45492ab7d0.xlsx',
+        url: 'https://ysh-cdn.kaidicloud.com/ysh-prod/user/f672877aaf30452aba69fd168f6654ff.xlsx',
         title: '社会组织名录导入模板.xlsx'
       })
     },
