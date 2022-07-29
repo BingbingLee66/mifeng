@@ -1,7 +1,7 @@
 <template>
   <el-dialog title="社会组织详情" :visible.sync="visible" width="70%" @close="close">
     <main v-loading="loading">
-      <el-form ref="form" :model="form" label-width="150px">
+      <el-form ref="form" :model="form" label-width="180px">
         <el-row :gutter="10">
           <el-col :span="12">
             <el-form-item label="社会组织名称：" prop="name">
@@ -134,12 +134,12 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="社会组织logo：" prop="systemLogo" class="">
-              <el-image :src="form.systemLogo" class="system_logo" :preview-src-list="[form.systemLogo]" />
+              <el-image v-show="form.systemLogo" :src="form.systemLogo" class="system_logo" :preview-src-list="[form.systemLogo]" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="社会团体法人登记证：" prop="license">
-              <el-image :src="form.license" class="avatar" :preview-src-list="[form.license]" />
+              <el-image v-show="form.license" :src="form.license" class="avatar" :preview-src-list="[form.license]" />
             </el-form-item>
           </el-col>
         </el-row>
