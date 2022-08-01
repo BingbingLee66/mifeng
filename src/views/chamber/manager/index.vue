@@ -37,6 +37,16 @@
             <el-option label="已冻结" :value="2" />
           </el-select>
         </el-form-item>
+        <el-form-item label="申请来源">
+          <el-select v-model="query.settledSource" placeholder="请选择">
+            <el-option label="全部" value="" />
+            <el-option label="小程序" :value="1" />
+            <el-option label="后台录入" :value="2" />
+            <el-option label="小程序名录" :value="3" />
+            <el-option label="APP" :value="4" />
+            <el-option label="APP名录" :value="5" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="query.date"
@@ -119,6 +129,15 @@
       <el-table-column label="地区">
         <template slot-scope="scope">
           {{ scope.row.province }}{{ scope.row.city }}
+        </template>
+      </el-table-column>
+      <el-table-column label="入驻来源">
+        <template slot-scope="{row}">
+          <template v-if="row.settledSource === 1">小程序</template>
+          <template v-if="row.settledSource === 2">后台录入</template>
+          <template v-if="row.settledSource === 3">小程序名录</template>
+          <template v-if="row.settledSource === 4">APP</template>
+          <template v-if="row.settledSource === 5">APP名录</template>
         </template>
       </el-table-column>
       <el-table-column label="账号">

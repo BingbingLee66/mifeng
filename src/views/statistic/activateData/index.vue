@@ -124,6 +124,7 @@ export default {
         { name: '供需tab页', url: 'pages/supply/index' },
         { name: '活动tab页', url: 'pages/hot_activity/index' },
         { name: '我的tab页', url: 'pages/profile/index' },
+        { name: '社会组织名录页', url: 'subpackage_organization/pages/directories/index' }
       ],
       // 激活活跃看板数据源
       activateData: {},

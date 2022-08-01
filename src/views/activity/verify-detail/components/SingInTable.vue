@@ -142,7 +142,8 @@
 </template>
 
 <script>
-import { formatDate, downloadFile } from '../util'
+import { downloadFile } from '@/utils/index'
+import { formatDate } from '../util'
 
 import {
   getActivitySigninList,

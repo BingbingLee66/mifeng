@@ -19,7 +19,8 @@
 </template>
 
 <script>
-import { generatePictureByDomId, downloadFile } from '../util'
+import { generatePictureByDomId } from '../util'
+import { downloadFile } from '@/utils/index'
 
 export default {
   components: {},
