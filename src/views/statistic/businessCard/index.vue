@@ -166,7 +166,7 @@
   </div>
 </template>
 <script>
-import {  downloadFile } from '../../activity/verify-detail/util'
+import {  downloadFile } from '@/utils/index'
 import { getCardStatsDataList,getCardTotalData,listChamberTypeStatsDataByCkeyDownload } from '@/api/statistics/businessCard'
 export default {
     components: {},
