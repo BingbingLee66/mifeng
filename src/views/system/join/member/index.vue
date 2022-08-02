@@ -2,18 +2,14 @@
   <div class="app-container">
     <div class="app-wrap">
       <div class="title">邀请入会专属二维码:</div>
-      <div class="post">
-        <div id="postdiv" ref="postRefs" class="post-wrap">
-          <p class="tit-1">{{ property.name }}</p>
-          <p class="tit-2">邀请您加入</p>
-          <div class="erweima">
-            <div class="erweima-content">
-              <img class="erweima-img" :src="property.systemJoinQrcode">
-              <img class="erweima-logo"  :src="property.systemLogo">
-            </div>
-            
-            
+      <div class="poster-wrap">
+        <div id="postdiv" class="poster">
+          <div class="poster-header">
+            <div class="poster-slogan">邀您加入</div>
+            <div class="poster-chamber">“{{ property.name }}”</div>
           </div>
+          <img class="poster-qrcode" :src="property.systemJoinQrcode">
+          <img class="poster-logo" :src="property.systemLogo">
         </div>
         <el-button style="margin-top: 20px;" type="primary" @click="refresh">刷新二维码</el-button>
         <el-button style="margin-top: 20px;" type="primary" :loading="isLoading" @click="clickGeneratePicture">保存图片</el-button>
@@ -43,76 +39,66 @@
         box-sizing: border-box;
         margin-right: 50px;
       }
+    }
 
-      .post {
-        .post-wrap {
-          width: 375px;
-          height: 667px;
-          background-image: url("../../../../../public/img/admin-entyr-poster-bg-1.png");
-          background-size: 100% 100%;
-          padding: 40px 16px 16px 16px;
-          text-align: center;
+    .poster {
+      position: relative;
+      width: 375px;
+      height: 667px;
+      background: url('/img/member-join-bg.png') no-repeat left / cover;
 
-          .tit-1 {
-            margin: 0;
-            padding: 0;
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 42px;
-            font-style: italic;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            -webkit-line-clamp: 2;
-            overflow: hidden;
-          }
+      .poster-header {
+        height: 194px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 21px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #4E3420;
+      }
+      .poster-slogan {
+        height: 30px;
+        line-height: 30px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 11px;
 
-          .tit-2 {
-            margin: 0;
-            padding: 0;
-            color: #ffffff;
-            font-weight: bold;
-            font-size: 35px;
-            margin-top: 12px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-          }
-
-          .erweima {
-            width: 342px;
-            height: 313px;
-            margin: 0 auto;
-            margin-top: 20px;
-            padding-top: 80px;
-            background: url("../../../../../public/img/admin-entyr-poster-bg-2.png")
-              no-repeat;
-            background-size: 100% 100%;
-            text-align: center;
-            .erweima-content{
-              position: relative;   
-              width: 183px;
-              height: 183px;
-              margin: 0 auto;  
-              .erweima-logo{
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%, -50%);
-                width: 84px;
-                height: 84px;
-                border-radius: 50%;
-                z-index: 200;
-                object-fit: cover;
-              }     
-              .erweima-img {
-                width: 183px;
-                height: 183px;
-                object-fit: cover;
-              }
-            }
-              
-          }
+        &::after,
+        &::before {
+          content: '';
+          display: block;
+          width: 64px;
+          height: 1px;
+          background: #4E3420;
+          margin: 0 5px;
         }
+      }
+      .poster-chamber {
+        max-width: 242px;
+        line-height: 32px;
+      }
+
+      .poster-qrcode {
+        position: absolute;
+        width: 88px;
+        height: 88px;
+        bottom: 82px;
+        left: 50%;
+        transform: translate(-50%);
+        border-radius: 9px;
+      }
+
+      .poster-logo {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        bottom: 106px;
+        left: 50%;
+        transform: translate(-50%);
+        border-radius: 50%;
+        background-color: #fff;
       }
     }
   }
