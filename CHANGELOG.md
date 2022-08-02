@@ -1,6 +1,14 @@
 # CHANGELOG
 
 ## [Released]
+## [2.22.0] - 2022-08-02
+### Added
+- 【ip 名片】 名片数据 [949](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/949)
+- 【社会组织名录】社会组织名录管理页面 [945](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/945)
+- 【社会组织名录】线索管理页面 [946](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/946)
+- 【管理后台】邀请好友入会时，突出商协会 [961](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/961)
+
+## [Released]
 ## [2.21.1] - 2022-07-27
 ### Added
 -  多模块-自增ID冲突问题处理 [954](yunshanghui/engineering/frontend/shanghui-admin#954)
