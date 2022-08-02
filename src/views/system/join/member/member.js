@@ -1,6 +1,5 @@
 import { refreshGetInfo, getInfo, getPostUrl } from '@/api/system/property'
 import html2canvas from 'html2canvas'
-// import domtoimage from 'dom-to-image'
 
 export default {
   data() {
@@ -94,23 +93,6 @@ export default {
         // console.log(error)
       }
       this.isLoading = false
-    },
-    // domtoimage() {
-    //   const _this = this
-    //   this.isLoading = true
-    //   const node = document.getElementById('postdiv')
-    //   domtoimage.toPng(node)
-    //     .then((dataUrl) => {
-    //       var a = document.createElement('a')
-    //       a.download = '入会二维码'
-    //       a.href = dataUrl
-    //       a.click()
-    //       _this.isLoading = false
-    //     })
-    //     .catch(function(error) {
-    //       console.error('oops, something went wrong!', error)
-    //       _this.isLoading = false
-    //     })
-    // }
+    }
   }
 }
