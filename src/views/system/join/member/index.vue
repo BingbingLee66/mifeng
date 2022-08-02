@@ -45,7 +45,7 @@
       position: relative;
       width: 375px;
       height: 667px;
-      background: url('/img/member-join-bg.png') no-repeat left / cover;
+      background: url('../../../../assets/img/member-join-bg.png') no-repeat left / cover;
 
       .poster-header {
         height: 194px;
