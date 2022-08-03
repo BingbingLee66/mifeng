@@ -1,7 +1,8 @@
 import {
-    getAllChamberStatsDataByCkeyList
+    getAllChamberStatsDataByCkeyList,exportChamberTypeStatsDataByCkeyList
   } from '@/api/statistics/chamberJoinData'
   import { exportJson2Excel } from '@/utils/exportExcel'
+  import {  downloadFile } from '@/utils/index'
   import {chamberSearchList} from '@/api/chamber/manager'
   import tabulation from './component/tabulation'
   export default {
@@ -23,6 +24,7 @@ import {
         chamberList:[], // 商协会数据
         listLoading: false,
         selectionDatas: [],  // 表格选中数据
+        exportLoaing: false, //导表加载
       }
     },
     components: {
@@ -142,7 +144,33 @@ import {
         // 点击表格头部
         onPopup(e){
           this.$refs.tabulation.show(this.query,e)
-        }
+        },
+        async exportExcelAll(){
+          this.exportLoaing = true
+          let params = {
+            'startTime': this.query.date[0],
+            'endTime': this.query.date[1],
+            'pageNum': this.currentpage,
+            'pageSize': 5000, 
+            'ckey':this.query.ckey,
+            'moduleId':this.query.moduleId
+          }
+          try {
+              const blob = await exportChamberTypeStatsDataByCkeyList(params)
+              downloadFile({
+                  title: `商会后台使用统计.xlsx`,
+                  url: window.URL.createObjectURL(blob)
+              })
+          } catch (error) {
+              // console.log(error)
+          }
+          this.$message({
+            message: '导出成功',
+            type: 'success'
+          })
+          this.exportLoaing = false
+        },
+
     }
   }
   

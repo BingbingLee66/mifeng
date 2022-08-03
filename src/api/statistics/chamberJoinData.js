@@ -48,3 +48,12 @@ export function getChamberTypeStatsDataByCkeyList(params) {
     params
   })
 }
+// 商会统计数据列表导出 (总导出)
+export function exportChamberTypeStatsDataByCkeyList(params) {
+  return request({
+    url: baseUrl2 + '/ec/chamberStats/exportChamberTypeStatsDataByCkeyList',
+    method: 'get',
+    params,
+    responseType: 'blob'
+  })
+}

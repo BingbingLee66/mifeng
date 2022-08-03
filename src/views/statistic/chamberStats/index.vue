@@ -28,8 +28,10 @@
                >
             </el-date-picker>
         </div>
+           
         <div>
-            <el-button type="primary"   @click="exportExcel">导表</el-button>
+          <el-button type="primary" :loading="exportLoaing"   @click="exportExcelAll">全部导出</el-button>
+          <el-button type="primary"   @click="exportExcel">导表</el-button>
         </div>
     </div>
     <el-table :data="list"  v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
