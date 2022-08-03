@@ -81,7 +81,9 @@ export default {
         const _canvas = await html2canvas(shareContent, { // 转换为图片
           scrollY: -scrollTop,
           scrollX: 0,
-          useCORS: true // 开启跨域
+          useCORS: true, // 开启跨域
+          scale: 4,
+          dpi: window.devicePixelRatio * 4
         })
         const imgUrl = _canvas.toDataURL('image/png')
         const a = document.createElement('a')

@@ -4,6 +4,7 @@
       <div class="title">邀请入会专属二维码:</div>
       <div class="poster-wrap">
         <div id="postdiv" class="poster">
+          <img class="poster-bg" src="@/assets/img/member-join-bg.png">
           <div class="poster-header">
             <div class="poster-slogan">邀您加入</div>
             <div class="poster-chamber">“{{ property.name }}”</div>
@@ -45,7 +46,15 @@
       position: relative;
       width: 375px;
       height: 667px;
-      background: url('../../../../assets/img/member-join-bg.png') no-repeat left / cover;
+
+      .poster-bg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
 
       .poster-header {
         height: 194px;
