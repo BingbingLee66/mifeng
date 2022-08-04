@@ -7,5 +7,5 @@ COPY . ./
 ARG PROJECT_ENV
 RUN yarn run build:${PROJECT_ENV}
 
-FROM ysh-registry.cn-shanghai.cr.aliyuncs.com/ops/nginx:1.20
+FROM kaidicloud-registry.cn-shanghai.cr.aliyuncs.com/ops/nginx:1.20
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html/ecadmin
