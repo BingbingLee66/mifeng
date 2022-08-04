@@ -1,6 +1,13 @@
 # CHANGELOG
 
 ## [Released]
+## [2.22.1] - 2022-08-04
+### Added
+- 【数据统计】商会使用统计 全部导出 [962](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/962)
+
+
+
+## [Released]
 ## [2.22.0] - 2022-08-02
 ### Added
 - 【ip 名片】 名片数据 [949](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/949)
