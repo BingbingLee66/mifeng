@@ -15,7 +15,7 @@ export function traverseRoutes(menus) {
       hidden: menu.hidden,
       id: menu.id,
       meta: { title: menu.menuName, icon: menu.icon, id: menu.id },
-      name: menu.menuName,
+      name: menu.menuName, // TODO 具名路由不应该用中文且必须保证唯一，待优化
       num: index + 1,
       parentId: menu.parentId,
       path: menu.menuUrl,

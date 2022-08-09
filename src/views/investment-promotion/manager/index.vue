@@ -47,7 +47,7 @@
           />
         </el-form-item>
         <el-form-item label="">
-          <el-button type="primary" size="small" @click.native="selectData($event)">查询</el-button>
+          <el-button type="primary" size="small" @click.native="fetchData(true)">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -68,8 +68,8 @@
     </div>
 
     <el-table
-      v-loading="listLoading"
-      :data="list"
+      v-loading="loading"
+      :data="tableData"
       element-loading-text="Loading"
       border
       fit
@@ -94,11 +94,7 @@
           >
         </template>
       </el-table-column>
-      <el-table-column label="招商办名称">
-        <template slot-scope="scope">
-          {{ scope.row.name }}
-        </template>
-      </el-table-column>
+      <el-table-column prop="name" label="招商办名称" />
       <el-table-column label="地区">
         <template slot-scope="scope">
           {{ scope.row.province }}{{ scope.row.city }}
@@ -106,12 +102,10 @@
       </el-table-column>
       <el-table-column label="状态" width="150px">
         <template slot-scope="scope">
-          <div v-if="scope.row.status === 1">正常</div>
-          <div v-if="scope.row.status === 0">已冻结</div>
-          <div v-if="scope.row.status === 3">待邀请</div>
+          {{ statusMap.get(scope.row.status) }}
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button
             v-if="has('', '详情')"
@@ -168,6 +162,7 @@
 </template>
 
 <script >
+import TableMixins from '@/mixins/table'
 import FormDialog from '@/views/investment-promotion/manager/components/form-dialog'
 import DetailDialog from '@/views/member/manager/reaudit/component/detailDialog'
 import { getAreaTree } from '@/api/area'
@@ -175,6 +170,7 @@ import { getList, updateStatus } from '@/api/chamber/manager'
 
 export default {
   components: { FormDialog, DetailDialog },
+  mixins: [TableMixins],
   data() {
     return {
       formDialogVisible: false,
@@ -182,6 +178,11 @@ export default {
       editId: '',
       detailId: '',
 
+      statusMap: new Map([
+        [0, '已冻结'],
+        [1, '正常'],
+        [3, '待邀请'],
+      ]),
       areaOptions: [], // 地址选项
       // 搜索表单
       query: {
@@ -192,12 +193,7 @@ export default {
         date: null,
       },
 
-      list: [],
-      listLoading: false,
-      currentPage: 1,
-      pageSizes: [10, 20, 50, 100, 500],
-      limit: 10,
-      total: 0,
+      tableData: [],
     }
   },
   mounted() {
@@ -214,8 +210,9 @@ export default {
       }
     },
 
-    fetchData() {
-      this.listLoading = true
+    fetchData(reset) {
+      if (reset) this.currentPage = 1
+      this.loading = true
       // TODO 获取招商办列表
       // let {
       //   name,
@@ -237,9 +234,9 @@ export default {
       // }
       // console.log('query', this.query)
       // getList(params).then(response => {
-      //   this.list = response.data.data.list
+      //   this.tableData = response.data.data.list
       //   this.total = response.data.data.totalRows
-      //   this.listLoading = false
+      //   this.loading = false
       // })
     },
 
@@ -306,27 +303,9 @@ export default {
       // })
     },
 
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
-      this.limit = val
-      this.currentPage = 1
-      this.fetchData()
-    },
-
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-      this.currentPage = val
-      this.fetchData()
-    },
-
     add() {
       this.editId = ''
       this.formDialogVisible = true
-    },
-
-    selectData() {
-      this.currentPage = 1
-      this.fetchData()
     },
 
     has(tabName, actionName) {
