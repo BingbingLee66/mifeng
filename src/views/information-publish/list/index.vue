@@ -95,8 +95,8 @@
       <el-table-column fixed="right" label="操作" width="140">
         <template slot-scope="scope">
           <el-button type="text" @click="onOffline($event, scope.row)">下线</el-button>
-          <el-button type="text" @click="goTo('card')">收到的名片</el-button>
-          <el-button type="text" @click="goTo('statistics')">数据统计</el-button>
+          <el-button type="text" @click="goTo('card', scope.row)">收到的名片</el-button>
+          <el-button type="text" @click="goTo('statistics', scope.row)">数据统计</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -149,7 +149,7 @@ export default {
         name: '',
         status: null,
       },
-      tableData: []
+      tableData: [{ id: 1 }]
     }
   },
   methods: {
@@ -165,13 +165,17 @@ export default {
       console.log('下线')
     },
 
-    goTo(name) {
+    goTo(name, item) {
       switch (name) {
         case 'statistics':
-          this.$router.push({ path: '/information-publish/list/statistics' })
+          this.$router.push({
+            path: `/information-publish/list/${item.id}/statistics`,
+          })
           break
         case 'card':
-          this.$router.push({ path: '/information-publish/list/card-list' })
+          this.$router.push({
+            path: `/information-publish/list/${item.id}/card-list`,
+          })
           break
       }
     },

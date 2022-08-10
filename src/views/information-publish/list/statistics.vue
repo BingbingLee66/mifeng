@@ -73,6 +73,14 @@ export default {
       }
     }
   },
+  computed: {
+    chamberId() {
+      return this.$route.params.chamberId || ''
+    }
+  },
+  mounted() {
+    console.log('chamberId', this.chamberId)
+  },
   methods: {
     fetchData() {
       // TODO 待完善
