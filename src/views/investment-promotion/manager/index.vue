@@ -54,13 +54,7 @@
     <div class="block">
       <el-row>
         <el-col :span="24">
-          <el-button
-            v-if="has('', '新增招商办')"
-            type="primary"
-            size="small"
-            :actionid="getId('', '新增招商办')"
-            @click.native="add($event)"
-          >
+          <el-button type="primary" size="small" @click.native="add($event)">
             新增招商办
           </el-button>
         </el-col>
@@ -107,35 +101,10 @@
       </el-table-column>
       <el-table-column fixed="right" label="操作">
         <template slot-scope="scope">
-          <el-button
-            v-if="has('', '详情')"
-            type="text"
-            :actionid="getId('', '详情')"
-            @click="detail($event, scope.row)"
-          >
-            详情
-          </el-button>
-          <el-button
-            v-if="has('', '编辑')"
-            type="text"
-            :actionid="getId('', '编辑')"
-            @click="edit($event, scope.row)"
-          >编辑
-          </el-button>
-          <el-button
-            v-if="has('', '冻结') && scope.row.status === 1"
-            type="text"
-            :actionid="getId('', '冻结')"
-            @click="updateStatus($event, scope.row)"
-          >冻结账号
-          </el-button>
-          <el-button
-            v-if="has('', '解冻') && scope.row.status === 0"
-            type="text"
-            :actionid="getId('', '解冻')"
-            @click="updateStatus($event, scope.row)"
-          >解冻账号
-          </el-button>
+          <el-button type="text" @click="detail($event, scope.row)">详情</el-button>
+          <el-button type="text" @click="edit($event, scope.row)">编辑</el-button>
+          <el-button type="text" @click="updateStatus($event, scope.row)">冻结账号</el-button>
+          <el-button type="text" @click="updateStatus($event, scope.row)">解冻账号</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -298,19 +267,6 @@ export default {
       this.formDialogVisible = true
     },
 
-    has(tabName, actionName) {
-      return this.$store.getters.has({
-        tabName,
-        actionName
-      })
-    },
-
-    getId(tabName, actionName) {
-      return this.$store.getters.getId({
-        tabName,
-        actionName
-      })
-    },
   }
 }
 </script>

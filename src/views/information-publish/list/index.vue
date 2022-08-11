@@ -31,7 +31,7 @@
         <el-form-item label="活动状态">
           <el-select v-model="query.status" placeholder="请选择">
             <el-option
-              v-for="item in getMapDict(statusMap)"
+              v-for="item in getMapDict(publishStatusMap)"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -89,7 +89,7 @@
       <el-table-column prop="releaseTime" label="发布时间" />
       <el-table-column label="状态" width="150px">
         <template slot-scope="scope">
-          {{ statusMap.get(scope.row.status) }}
+          {{ publishStatusMap.get(scope.row.status) }}
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="操作" width="140">
@@ -116,6 +116,7 @@
 
 <script>
 import TableMixins from '@/mixins/table'
+import { stageMap, getMapDict, publishStatusMap } from '@/consts'
 
 export default {
   name: 'InformationList',
@@ -132,17 +133,9 @@ export default {
         value: 'foshan',
         label: '佛山招商办'
       }],
-      statusMap: new Map([
-        [0, '待上线'],
-        [1, '已上线'],
-        [2, '已下线'],
-        [3, '已结束'],
-      ]),
-      stageMap: new Map([
-        [0, '筹备阶段'],
-        [1, '拟策阶段'],
-        [2, '招商阶段'],
-      ]),
+      publishStatusMap,
+      stageMap,
+      getMapDict,
       query: {
         origin: '',
         id: '',
@@ -169,20 +162,17 @@ export default {
       switch (name) {
         case 'statistics':
           this.$router.push({
-            path: `/information-publish/list/${item.id}/statistics`,
+            path: `/information-publish/${item.id}/statistics`,
           })
           break
         case 'card':
           this.$router.push({
-            path: `/information-publish/list/${item.id}/card-list`,
+            path: `/information-publish/${item.id}/card-list`,
           })
           break
       }
     },
 
-    getMapDict(mapArray) {
-      return [...mapArray].map(([value, label]) => ({ label, value }))
-    },
   }
 }
 </script>

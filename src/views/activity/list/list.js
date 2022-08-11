@@ -5,6 +5,7 @@ import {
   updateActivitySort,
   delActivity
 } from '@/api/activity/activity'
+import { activeModeMap, stageMap, activeStatusMap, ACTIVE_STATUS, getMapDict } from '@/consts'
 
 export default {
   data() {
@@ -16,6 +17,11 @@ export default {
       }
     }
     return {
+      activeModeMap,
+      stageMap,
+      activeStatusMap,
+      ACTIVE_STATUS,
+      getMapDict,
       ckey: '',
       type: '1',
       previewImgVisible: false,
@@ -48,6 +54,14 @@ export default {
           { validator: checkNumber, trigger: 'blur' }
         ]
       },
+    }
+  },
+  computed: {
+    activeStatusOps() {
+      return [
+        { label: '全部状态', value: 'all' },
+        ...getMapDict(activeStatusMap)
+      ]
     }
   },
   created() {
@@ -107,7 +121,7 @@ export default {
       }
       this.listLoading = true
       let params = {
-        'isPublish': this.type,
+        // 'isPublish': this.type,
         'ckey': this.ckey ? this.ckey : this.query.ckey,
         'id': this.query.id,
         'activityName': this.query.activityName,
@@ -127,6 +141,7 @@ export default {
       this.isPublish = isPublish
       this.showUpdateDialog = true
     },
+    // TODO 改了状态，这块逻辑待定
     upadteActivity() {
       let params = {
         id: this.rowId,
@@ -156,6 +171,18 @@ export default {
           type: this.type
         }
       })
+    },
+    goTo(type, row) {
+      let path = ''
+      switch (type) {
+        case 'card':
+          path = `/activity/${row.id}/card-list`
+          break
+        case 'detail':
+          path = `/activity/${row.id}/detail`
+          break
+      }
+      this.$router.push({ path })
     },
     // 删除活动
     showDel(row) {

@@ -4,6 +4,7 @@ import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
 import MakeTagDialog from '@/views/activity/create/component/make-tag-dialog'
 import TagFormDialog from '@/views/activity/create/component/tag-form-dialog'
+import { ACTIVE_MODE, activeModeMap, stageMap, getMapDict } from '@/consts'
 import area from '@/utils/area'
 // import the component
 import Treeselect from '@riophae/vue-treeselect'
@@ -26,11 +27,6 @@ export default {
       } else {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
-    }
-    const ACTIVE_MODE = {
-      online: 0,
-      offline: 1,
-      onlineAndOffline: 2,
     }
     return {
       // 编辑字段限制标识
@@ -178,17 +174,10 @@ export default {
           { required: true, message: '活动模式不能为空', trigger: 'blur' }
         ],
       },
-      stageMap: new Map([
-        [0, '筹备阶段'],
-        [1, '拟策阶段'],
-        [2, '招商阶段'],
-      ]),
+      stageMap,
       ACTIVE_MODE,
-      activeModeMap: new Map([
-        [ACTIVE_MODE.online, '线上活动'],
-        [ACTIVE_MODE.offline, '线下活动'],
-        [ACTIVE_MODE.onlineAndOffline, '线上线下活动'],
-      ]),
+      activeModeMap,
+      getMapDict,
       // 腾讯地图实例
       defaultParams: {
         map: null, // 地图实例 （地图）
@@ -957,10 +946,6 @@ export default {
     // 创建经纬度
     createZuoBiao(myLatitude, myLongitude) {
       return new TMap.LatLng(myLatitude, myLongitude)
-    },
-
-    getMapDict(mapArray) {
-      return [...mapArray].map(([value, label]) => ({ label, value }))
     },
   }
 }

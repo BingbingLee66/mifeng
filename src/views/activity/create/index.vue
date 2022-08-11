@@ -119,7 +119,6 @@
             </el-col>
           </el-row>
 
-          <!--     待确认     -->
           <el-row>
             <el-col style="width: 600px;">
               <el-form-item label="类型摘要" prop="summary">
