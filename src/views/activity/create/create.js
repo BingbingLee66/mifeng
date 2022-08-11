@@ -1,18 +1,23 @@
-import { createActivity, uploadPortrait, getActivity,setLinkAndCompetence } from '@/api/activity/activity'
+import { createActivity, uploadPortrait, getActivity, setLinkAndCompetence } from '@/api/activity/activity'
 import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
 import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
+import MakeTagDialog from '@/views/activity/create/component/make-tag-dialog'
+import TagFormDialog from '@/views/activity/create/component/tag-form-dialog'
 import area from '@/utils/area'
 // import the component
 import Treeselect from '@riophae/vue-treeselect'
 // import the styles
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import preview from './component/preview'
+import getAreaList from '@/utils/get-area-list'
 export default {
   components: {
     Ckeditor,
-   Treeselect,
-   preview,
+    MakeTagDialog,
+    TagFormDialog,
+    Treeselect,
+    preview,
   },
   data() {
     var checkSpace = (rule, value, callback) => {
@@ -22,9 +27,14 @@ export default {
         callback() // 必须加上这个，不然一直塞在验证状态
       }
     }
+    const ACTIVE_MODE = {
+      online: 0,
+      offline: 1,
+      onlineAndOffline: 2,
+    }
     return {
       // 编辑字段限制标识
-      status:1,
+      status: 1,
       // 树形下拉框 begin
       valueTree: [],
       options: [],
@@ -41,30 +51,32 @@ export default {
       arrayData: [],
       colData: {
         title: '', // 标题
-        msgAlert: '',  //输入框提示
-        lengthLimit: '', //输入字数限制
-        check: 1,  // 是否 必填 选填
-        key:'', // 下拉框需要把数据拼接成字符串
+        msgAlert: '', // 输入框提示
+        lengthLimit: '', // 输入字数限制
+        check: 1, // 是否 必填 选填
         // 下拉框
-        selects:[
+        selects: [
           {
-            value:'', //选项1
-          },{
-            value:'', //选项2
+            value: '', // 选项1
+          }, {
+            value: '', // 选项2
           }
         ],
-        key:'' , // 参数名称，下拉框情况下多个参数请;拼接
-        type:'' // 0: 输入框  1：下拉框
+        key: '', // 参数名称，下拉框情况下多个参数请;拼接
+        type: '' // 0: 输入框  1：下拉框
       },
       // 信息类型
-      infoDate:{
-        info:'',
+      infoDate: {
+        info: '',
       },
 
+      makeTagDialogVisible: false,
+      tagFormDialogVisible: false,
       dialogFormVisible: false,
       editCol: false, // 是否编辑
       editIndex: 0, // 编辑索引
       // 活动报名表参数 end
+      customTagGroup: {},
       formObj: {
         id: '',
         activityName: '', // 活动名称
@@ -76,26 +88,33 @@ export default {
         city: '', // 活动地点(市)
         area: '', // 活动地点(区)
         addressInfo: '', // 活动地点（详细地址）
-        addresscon:'', // 搜索内容
+        addresscon: '', // 搜索内容
         applyObject: 0, // 报名对象
         isLimit: 0, // 是否限制参加人数
         applyCount: '', // 参加人数
         introduce: '', // 活动介绍
-        competence:'0',//观看权限 0 不限 1 限本商会会员
-        link:'',//直播链接   
-        signType:0,  // 报名方式是否必填 0否 1是
-        arriveType:1,  // 到场人数是否必填 0否 1是
-        longitude:113.326548, // 经度
-        latitude:23.125821, // 纬度 
-        auditStatus:0, // 报名审核
-        extraSignin: 0 ,  // 拓展功能签到 0否 1是
-        extraSignout:0 , // 拓展功能签退 0否 1是
-        extraSeat: 0 , // 拓展功能座位 0否 1是
-        isPublish:0 , //是否发布 0否 1是
-        linkType:1 , //直播链接类型 1 云会播小程序 2 H5链接
+        competence: '0', // 观看权限 0 不限 1 限本商会会员
+        link: '', // 直播链接
+        signType: 0, // 报名方式是否必填 0否 1是
+        arriveType: 1, // 到场人数是否必填 0否 1是
+        longitude: 113.326548, // 经度
+        latitude: 23.125821, // 纬度
+        auditStatus: 0, // 报名审核
+        extraSignin: 0, // 拓展功能签到 0否 1是
+        extraSignout: 0, // 拓展功能签退 0否 1是
+        extraSeat: 0, // 拓展功能座位 0否 1是
+        isPublish: 0, // 是否发布 0否 1是
+        linkType: 1, // 直播链接类型 1 云会播小程序 2 H5链接
+        chamber: '',
+        stage: null,
+        chamberAddress: '',
+        weight: 0,
+        summary: ['a', 'b'],
+        activeMode: '',
+        chamberTable: [],
       },
-      roleIds:[],  //多选框 扩展功能
-      addressList:[] , //搜索数组
+      roleIds: [], // 多选框 扩展功能
+      addressList: [], // 搜索数组
       // 是否限制报名对象
       applyObject: {
         unlimit: true,
@@ -113,8 +132,8 @@ export default {
         unlimit: true,
         limit: false
       },
-      isPresent:false, 
-      iscustom:false, // 自定义信息弹窗
+      isPresent: false,
+      iscustom: false, // 自定义信息弹窗
       // 活动地点选择
       provinceValue: '',
       cityValue: '',
@@ -124,7 +143,7 @@ export default {
       countryOptions: [],
       areaData: null,
       // 直播活动ckey
-      ruleCkeys:['nJ3VNk','Jtn1w3','3cWTv8','fIk3Ay','EbOpOz','q7fiqR','bSQk8X','Ip2cCA'],
+      ruleCkeys: ['nJ3VNk', 'Jtn1w3', '3cWTv8', 'fIk3Ay', 'EbOpOz', 'q7fiqR', 'bSQk8X', 'Ip2cCA'],
       rules: {
         activityName: [
           { required: true, message: '活动名称不能为空', trigger: 'blur' },
@@ -146,16 +165,40 @@ export default {
         //   { required: true, message: '活动地点不能为空', trigger: 'blur' },
         //   { validator: checkSpace, trigger: 'blur' }
         // ]
+        chamber: [
+          { required: true, message: '招商办不能为空', trigger: 'blur' }
+        ],
+        chamberAddress: [
+          { required: true, message: '招商地区不能为空', trigger: 'blur' }
+        ],
+        summary: [
+          { required: true, message: '类型摘要不能为空', trigger: 'blur' }
+        ],
+        activeMode: [
+          { required: true, message: '活动模式不能为空', trigger: 'blur' }
+        ],
       },
+      stageMap: new Map([
+        [0, '筹备阶段'],
+        [1, '拟策阶段'],
+        [2, '招商阶段'],
+      ]),
+      ACTIVE_MODE,
+      activeModeMap: new Map([
+        [ACTIVE_MODE.online, '线上活动'],
+        [ACTIVE_MODE.offline, '线下活动'],
+        [ACTIVE_MODE.onlineAndOffline, '线上线下活动'],
+      ]),
       // 腾讯地图实例
-      defaultParams :{
+      defaultParams: {
         map: null, // 地图实例 （地图）
         marker: '', // 地图的标识（标注的点）（地图）
         appkey: 'CGFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
         suggest: null, //  新建一个关键字输入提示类
-        infowindow:null, //地图信息
+        infowindow: null, // 地图信息
       },
-     
+      areaOptions: [],
+
     }
   },
   created() {
@@ -164,8 +207,9 @@ export default {
     this.type = this.$route.query.type
   },
   async mounted() {
-    await this.initMap()  // 初始化地图
+    await this.initMap() // 初始化地图
     this.handleArea()
+    this.areaOptions = await getAreaList(3)
     this.$refs.ckeditor1.init()
     if (!this.activityId) {
       setTimeout(() => {
@@ -174,21 +218,20 @@ export default {
     } else {
       this.fetchData()
     }
-    this.postSelectInit();
-    if(this.$store.getters.ckey){
+    this.postSelectInit()
+    if (this.$store.getters.ckey) {
       this.treeSelectInit()
     }
-
   },
   methods: {
-    loadScript(src){
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script')
-            script.src = src
-            script.onload = resolve
-            script.onerror = reject
-            document.head.appendChild(script)
-        })
+    loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = src
+        script.onload = resolve
+        script.onerror = reject
+        document.head.appendChild(script)
+      })
     },
     postSelectInit() {
       const params = {
@@ -229,11 +272,11 @@ export default {
         msgAlert: '',
         lengthLimit: '',
         check: 1,
-        selects:[
+        selects: [
           {
-            value:'', //选项1
-          },{
-            value:'', //选项2
+            value: '', // 选项1
+          }, {
+            value: '', // 选项2
           }
         ],
       }
@@ -247,12 +290,12 @@ export default {
     // 新增
     add() {
       let completely = false
-      if(this.infoDate.info == 1){
-        this.colData.selects.forEach((v)=>{
-          if(v.value == '') completely = true
+      if (this.infoDate.info == 1) {
+        this.colData.selects.forEach((v) => {
+          if (v.value == '') completely = true
         })
       }
-      if(completely) return this.$message.error('请填写选项标题')
+      if (completely) return this.$message.error('请填写选项标题')
 
       // if (this.arrayData.length >= 6) {
       //   this.$message({
@@ -261,42 +304,41 @@ export default {
       //   });
       //   return
       // }
-      if(this.colData.lengthLimit != '' && this.infoDate.info == 0){
-        if(this.colData.lengthLimit < 0){
+      if (this.colData.lengthLimit != '' && this.infoDate.info == 0) {
+        if (this.colData.lengthLimit < 0) {
           this.$message({
             message: '字数限制必须大于0',
             type: 'warning'
-          });
+          })
           return
-        }else if(this.colData.lengthLimit > 200 && this.infoDate.info == 0){
+        } else if (this.colData.lengthLimit > 200 && this.infoDate.info == 0) {
           this.$message({
             message: '字数限制必须小于200',
             type: 'warning'
-          });
+          })
           return
         }
       }
       let key = []
-      if(this.colData.selects){
-        this.colData.selects.forEach((v)=>{
+      if (this.colData.selects) {
+        this.colData.selects.forEach((v) => {
           key.push(v.value)
         })
       }
-    
+
       this.colData.key = key.join(';')
-    
- 
+
       this.$refs['f2'].validate((valid) => {
         if (valid) {
-          this.colData.type =  this.infoDate.info
-         
+          this.colData.type = this.infoDate.info
+
           if (this.editCol) {
             // 编辑
-            this.arrayData[this.editIndex] = {...this.colData}
+            this.arrayData[this.editIndex] = { ...this.colData }
           } else {
             // 新增
             this.arrayData.push(
-              {...this.colData}
+              { ...this.colData }
             )
           }
           this.cancel1()
@@ -309,21 +351,18 @@ export default {
     },
     // 删除
     del(index) {
-   
       this.arrayData.splice(index, 1)
     },
     // 修改
-    edit(index,type) {
-     
+    edit(index, type) {
       this.infoDate.info = type + ''
       this.dialogFormVisible = true
-      this.colData = {...this.arrayData[index]}
+      this.colData = { ...this.arrayData[index] }
       this.editCol = true
       this.editIndex = index
     },
     // 上移
     up(index) {
-    
       if (index === 0) {
         return
       } else {
@@ -331,12 +370,10 @@ export default {
         this.arrayData[index] = this.arrayData[index - 1]
         this.arrayData[index - 1] = data
         this.$forceUpdate()
-     
       }
     },
     // 下移
     down(index) {
-    
       if (index === this.arrayData.length - 1) {
         return
       } else {
@@ -392,10 +429,10 @@ export default {
         }
         this.$set(this.formObj, 'applyDate', applyTime)
         //  扩展功能
-        if(resData.extraSignin == 1) this.roleIds.push(1)
-        if(resData.extraSignout == 1) this.roleIds.push(2)
-        if(resData.extraSeat == 1) this.roleIds.push(3)
-    
+        if (resData.extraSignin == 1) this.roleIds.push(1)
+        if (resData.extraSignout == 1) this.roleIds.push(2)
+        if (resData.extraSeat == 1) this.roleIds.push(3)
+
         // 活动地点回显
         this.provinceValue = resData.province
         this.cityValue = resData.city
@@ -405,15 +442,15 @@ export default {
         this.formObj.area = resData.area
         this.formObj.addressInfo = resData.addressInfo
         this.formObj.title = resData.addressInfo
-       
+
         this.formObj.district = resData.area
-        
+
         this.formObj.signType = resData.signType
         this.formObj.arriveType = resData.arriveType
         this.formObj.linkType = resData.linkType || 1
-        if(resData.longitude)    this.formObj.longitude = resData.longitude
-        if(resData.latitude)    this.formObj.latitude = resData.latitude
-       
+        if (resData.longitude) this.formObj.longitude = resData.longitude
+        if (resData.latitude) this.formObj.latitude = resData.latitude
+
         // this.areaData = {
         //   province: {
         //     name: resData.province,
@@ -466,41 +503,55 @@ export default {
         if (resData.auditStatus === 1) {
           this.auditStatus.unlimit = false
           this.auditStatus.limit = true
-        } 
+        }
         this.formObj.auditStatus = resData.auditStatus
-        this.formObj.link=resData.link;
-        this.formObj.competence=resData.competence+''
+        this.formObj.link = resData.link
+        this.formObj.competence = resData.competence + ''
 
-      
-      
-        if(resData.longitude || resData.latitude)   this.onselect(this.formObj)
-      
+        if (resData.longitude || resData.latitude) this.onselect(this.formObj)
+
         // 活动介绍回显
         // this.$refs.ckeditor1.init()
         setTimeout(() => {
           this.$refs.ckeditor1.initHtml(resData.introduce ? resData.introduce : '')
         }, 500)
         this.formObj.introduce = resData.introduce
-     
-      
+
         // 动态字段回显
         // this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
-      
-        this.arrayData  = resData.dtos.map(({title, msgAlert, lengthLimit, check,type,selects,key}) => ({title, msgAlert, lengthLimit, check,type,selects,key}));
-        this.arrayData.forEach((v)=>{
-           //  0 : 输入框  1：下拉框
-          if(v.type == 1){
+
+        this.arrayData = resData.dtos.map(({ title, msgAlert, lengthLimit, check, type, selects, key }) => ({ title, msgAlert, lengthLimit, check, type, selects, key }))
+        this.arrayData.forEach((v) => {
+          //  0 : 输入框  1：下拉框
+          if (v.type == 1) {
             v.msgAlert = ''
             let key = []
-            v.selects.forEach((j)=>{
+            v.selects.forEach((j) => {
               key.push(j.value)
             })
             v.key = key.join(';')
-          } 
+          }
         })
       })
     },
-  
+
+    // 上传文件校验
+    beforeUploadFile(file) {
+      if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt'].includes(file.name.split('.')[1])) {
+        this.$message.error('上传文件只能是 word、excel、pdf、ppt 格式!')
+        return false
+      }
+    },
+    // 上传文件
+    uploadFile(content) {
+      // TODO 待确定上传文件接口
+      // let formData = new FormData()
+      // formData.append('file', content.file)
+      // uploadPortrait(formData).then(response => {
+      //   this.formObj.chamberTable = response.data.filePath
+      // })
+    },
+
     // 上传图片校验
     beforeUpload(file) {
       if (file.type !== 'image/jpeg' &&
@@ -663,32 +714,30 @@ export default {
       }
     },
 
-
     // 编辑活动介绍
     getHtml(htmlStr) {
       this.formObj.introduce = htmlStr
     },
-    onnext(){
-     if(this.status == 2 || this.status == 3){
+    onnext() {
+      if (this.status == 2 || this.status == 3) {
         this.activeName = '2'
-     }else{
-      this.$refs['form'].validate((valid) => {
-        if (valid) {
-          this.activeName = '2'
-        }
-      }) 
-     }
-     
+      } else {
+        this.$refs['form'].validate((valid) => {
+          if (valid) {
+            this.activeName = '2'
+          }
+        })
+      }
     },
     save(e) {
       this.formObj.isPublish = e
       this.$refs['form'].validate((valid) => {
         if (valid) {
-           // 扩展功能
-          this.roleIds.forEach((v)=>{
-            if(v == 1) this.formObj.extraSignin = 1
-            if(v == 2) this.formObj.extraSignout = 1
-            if(v == 3) this.formObj.extraSeat = 1
+          // 扩展功能
+          this.roleIds.forEach((v) => {
+            if (v == 1) this.formObj.extraSignin = 1
+            if (v == 2) this.formObj.extraSignout = 1
+            if (v == 3) this.formObj.extraSeat = 1
           })
           // if (!this.areaData) {
           //   return this.$message.error('请选择省份')
@@ -720,10 +769,10 @@ export default {
           this.formObj['activityEndTime'] = this.formObj['date'][1]
 
           // 报名时间
-          if(this.formObj['applyDate'] && this.formObj['applyDate'].length > 0){
+          if (this.formObj['applyDate'] && this.formObj['applyDate'].length > 0) {
             this.formObj['applyStartTime'] = this.formObj['applyDate'][0]
             this.formObj['applyEndTime'] = this.formObj['applyDate'][1]
-          }else{
+          } else {
             this.formObj['applyStartTime'] = null
             this.formObj['applyEndTime'] = null
           }
@@ -752,16 +801,16 @@ export default {
             this.formObj['applyIds'] = this.portValue.join(',')
           }
           // 如果选择了自定义报名 但是没有选择自定义报名信息 就返回提示
-          if(this.formObj.signType == 0 && !this.arrayData.length) return this.$message.error('自定义报名表需添加报名信息才可以发布活动，若无需自定义报名表，请选择【一键报名】')
+          if (this.formObj.signType == 0 && !this.arrayData.length) return this.$message.error('自定义报名表需添加报名信息才可以发布活动，若无需自定义报名表，请选择【一键报名】')
 
           if (this.arrayData.length > 0) {
             this.formObj['dtos'] = this.arrayData
           }
-          if(this.formObj.competence){
+          if (this.formObj.competence) {
             this.formObj['competence'] = Number(this.formObj['competence'])
           }
           // 如果地址没选则去除地址信息
-          if(this.formObj.addressInfo == ''){
+          if (this.formObj.addressInfo == '') {
             this.formObj.province = ''
             this.formObj.city = ''
             this.formObj.area = ''
@@ -769,9 +818,8 @@ export default {
             this.formObj.latitude = ''
           }
 
-          
           createActivity(this.formObj).then(res => {
-            if(res.state===1){
+            if (res.state === 1) {
               this.$message.success(res.msg)
               this.$router.push({
                 name: '活动列表',
@@ -779,10 +827,9 @@ export default {
                   type: this.activityId ? this.type : e
                 }
               })
-            }else{
+            } else {
               this.$message.error(res.msg)
             }
-
           })
         } else {
           return false
@@ -797,36 +844,34 @@ export default {
         }
       })
     },
-    onCancelDate(){
+    onCancelDate() {
       this.infoDate.info = ''
       this.iscustom = false
     },
     // 下拉框添加选项
-    onOptions(){
+    onOptions() {
       let obj = {
-        value : ''
+        value: ''
       }
-      if(this.colData.selects.length >= 10) return this.$message.error('最多只能添加10个')
+      if (this.colData.selects.length >= 10) return this.$message.error('最多只能添加10个')
       this.colData.selects.push(obj)
-     
     },
-    onInfoDate(){
-    
-      if (this.infoDate.info == '') return this.$message.error('请选择类型') 
-      if(this.infoDate.info == 0 || this.infoDate.info == 1) this.dialogFormVisible = true
+    onInfoDate() {
+      if (this.infoDate.info == '') return this.$message.error('请选择类型')
+      if (this.infoDate.info == 0 || this.infoDate.info == 1) this.dialogFormVisible = true
       this.iscustom = false
     },
 
     // 预览
-    onpreview(){
+    onpreview() {
       this.$refs['preview'].open(this.formObj)
     },
     // 搜索地址
-    addressChange(e){
+    addressChange(e) {
       this.ongetSuggestions(e)
     },
 
-    onaddress(e){
+    onaddress(e) {
       this.formObj.province = e.province // 活动地点(省)
       this.formObj.city = e.city || '' // 活动地点(市)
       this.formObj.area = e.district || '' // 活动地点(区)
@@ -834,82 +879,79 @@ export default {
       this.formObj.longitude = e.location.lng // 经度
       this.formObj.latitude = e.location.lat // 纬度
       this.onselect(e)
-    
-    },  
+    },
     // 选择地址
-    onselect(e){
+    onselect(e) {
       const myLatLng = this.createZuoBiao(this.formObj.latitude, this.formObj.longitude)
-      //更新地图中心位置
+      // 更新地图中心位置
       this.defaultParams.map.setCenter(
         new TMap.LatLng(this.formObj.latitude, this.formObj.longitude)
-      );
-      //初始化marker 清除数据
+      )
+      // 初始化marker 清除数据
       if (this.defaultParams.marker) {
-        this.defaultParams.marker.setMap(null);
-        this.defaultParams.marker = null;
+        this.defaultParams.marker.setMap(null)
+        this.defaultParams.marker = null
         this.defaultParams.infowindow.close()
       }
       this.defaultParams.marker = new TMap.MultiMarker({
-        map: this.defaultParams.map,  //指定地图容器
+        map: this.defaultParams.map, // 指定地图容器
         styles: {
-          //创建一个styleId为"myStyle"的样式（styles的子属性名即为styleId）
-          myStyle: new TMap.MarkerStyle({ 
-              width: 25,  // 点标记样式宽度（像素）
-              height: 35, // 点标记样式高度（像素）
-              anchor: { x: 16, y: 32 },
-              src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png',  //图片路径
-          }) 
+          // 创建一个styleId为"myStyle"的样式（styles的子属性名即为styleId）
+          myStyle: new TMap.MarkerStyle({
+            width: 25, // 点标记样式宽度（像素）
+            height: 35, // 点标记样式高度（像素）
+            anchor: { x: 16, y: 32 },
+            src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png', // 图片路径
+          })
         },
         geometries: [{
-          id: "1",   //点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
-          styleId: 'myStyle',  //指定样式id
-          position: myLatLng,  //点标记坐标位置
-          properties: {//自定义属性
-          title: "marker"
+          id: '1', // 点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
+          styleId: 'myStyle', // 指定样式id
+          position: myLatLng, // 点标记坐标位置
+          properties: {// 自定义属性
+            title: 'marker'
           }
         }]
       })
-   
+
       this.addressList = []
-      //创建InfoWindow实例，并进行初始化
-      this.defaultParams.infowindow =new TMap.InfoWindow({
-        position:myLatLng,//显示信息窗口的坐标
-        map:this.defaultParams.map,
-        content:`<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址:${e.province}${e.city}${e.district || ''}</p>`, //信息窗口内容
+      // 创建InfoWindow实例，并进行初始化
+      this.defaultParams.infowindow = new TMap.InfoWindow({
+        position: myLatLng, // 显示信息窗口的坐标
+        map: this.defaultParams.map,
+        content: `<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址:${e.province}${e.city}${e.district || ''}</p>`, // 信息窗口内容
         offset: { x: 0, y: -50 },
-      });
-     
+      })
     },
 
     // 初始化地图
-   async initMap(){
+    async initMap() {
       await this.loadScript(`https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=${this.defaultParams.appkey}`)
-     
+
       const myLatLng = this.createZuoBiao(this.formObj.latitude, this.formObj.longitude)
 
       this.defaultParams.map = new TMap.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map
         center: myLatLng, // 目前的位置
-        zoom: 17.2,//设置地图缩放级别
-        rotation: 20,//设置地图旋转角度
-        pitch:30, //设置俯仰角度（0~45）
+        zoom: 17.2, // 设置地图缩放级别
+        rotation: 20, // 设置地图旋转角度
+        pitch: 30, // 设置俯仰角度（0~45）
       })
 
       // 新建一个关键字输入提示类
       this.defaultParams.suggest = new TMap.service.Suggestion({
         pageSize: 20, // 返回结果每页条目数
-      });
-
+      })
     },
     // 调用腾讯接口获取地址信息
-    ongetSuggestions(value){
+    ongetSuggestions(value) {
       this.addressList = []
-      this.defaultParams.suggest.getSuggestions({ 
-        keyword: value, 
-        location: this.defaultParams.map.getCenter() 
+      this.defaultParams.suggest.getSuggestions({
+        keyword: value,
+        location: this.defaultParams.map.getCenter()
       })
-      .then((result) => {
-        this.addressList = result.data || []
-      })
+        .then((result) => {
+          this.addressList = result.data || []
+        })
     },
 
     // 创建经纬度
@@ -917,5 +959,8 @@ export default {
       return new TMap.LatLng(myLatitude, myLongitude)
     },
 
+    getMapDict(mapArray) {
+      return [...mapArray].map(([value, label]) => ({ label, value }))
+    },
   }
 }

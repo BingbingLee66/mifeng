@@ -165,7 +165,7 @@
 import TableMixins from '@/mixins/table'
 import FormDialog from '@/views/investment-promotion/manager/components/form-dialog'
 import DetailDialog from '@/views/member/manager/reaudit/component/detailDialog'
-import { getAreaTree } from '@/api/area'
+import getAreaList from '@/utils/get-area-list'
 import { getList, updateStatus } from '@/api/chamber/manager'
 
 export default {
@@ -196,20 +196,10 @@ export default {
       tableData: [],
     }
   },
-  mounted() {
-    this.getAreaList()
+  async mounted() {
+    this.areaOptions = await getAreaList(3)
   },
   methods: {
-    async getAreaList() {
-      const { data } = await getAreaTree({ level: 2 })
-      if (data) {
-        data.forEach(p => {
-          p.children.forEach(c => (c.children = undefined))
-        })
-        this.areaOptions = data
-      }
-    },
-
     fetchData(reset) {
       if (reset) this.currentPage = 1
       this.loading = true
