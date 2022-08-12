@@ -21,9 +21,9 @@ service.interceptors.request.use(
     var token = getToken()
     var menuId = window.localStorage.getItem('menuId')
     var actionId = window.localStorage.getItem('actionId')
+    config.headers['appcode'] = AppCode
     if (token) {
       config.headers['access-token'] = token // 让每个请求携带自定义token 请根据实际情况自行修改
-      config.headers['appcode'] = AppCode
       config.headers['menu-id'] = menuId === null ? '' : menuId
       config.headers['action-id'] = actionId === null ? '' : actionId
     }

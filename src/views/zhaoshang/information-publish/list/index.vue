@@ -162,12 +162,12 @@ export default {
       switch (name) {
         case 'statistics':
           this.$router.push({
-            path: `/information-publish/${item.id}/statistics`,
+            path: `/zhaoshang/information-publish/${item.id}/statistics`,
           })
           break
         case 'card':
           this.$router.push({
-            path: `/information-publish/${item.id}/card-list`,
+            path: `/zhaoshang/information-publish/${item.id}/card-list`,
           })
           break
       }

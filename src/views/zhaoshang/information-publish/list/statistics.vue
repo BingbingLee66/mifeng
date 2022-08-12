@@ -34,7 +34,7 @@
 
 <script>
 import 'echarts/lib/chart/line'
-import CardBox from '@/views/information-publish/components/card-box'
+import CardBox from '@/views/zhaoshang/information-publish/components/card-box'
 
 export default {
   name: 'Statistics',

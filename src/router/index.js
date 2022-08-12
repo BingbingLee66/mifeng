@@ -371,43 +371,43 @@ export const constantRoutes = [
       },
       {
         name: '活动详情',
-        path: '/activity/:activeId/detail',
-        component: () => import('@/views/activity/detail/index.vue'),
+        path: '/zhaoshang/activity/:activeId/detail',
+        component: () => import('@/views/zhaoshang/activity/detail/index.vue'),
         hidden: true,
         meta: { title: '活动详情' }
       },
       {
         name: '我收到的名片',
-        path: '/activity/:chamberId/card-list',
-        component: () => import('@/views/business-card/list/index.vue'),
+        path: '/zhaoshang/activity/:chamberId/card-list',
+        component: () => import('@/views/zhaoshang/business-card/list/index.vue'),
         hidden: true,
         meta: { title: '我收到的名片' }
       },
       {
         name: '名片详情',
-        path: '/activity/:cardId/card-detail',
-        component: () => import('@/views/business-card/detail/index.vue'),
+        path: '/zhaoshang/activity/:cardId/card-detail',
+        component: () => import('@/views/zhaoshang/business-card/detail/index.vue'),
         hidden: true,
         meta: { title: '名片详情' }
       },
       {
         name: '数据统计',
-        path: '/information-publish/:chamberId/statistics',
-        component: () => import('@/views/information-publish/list/statistics.vue'),
+        path: '/zhaoshang/information-publish/:chamberId/statistics',
+        component: () => import('@/views/zhaoshang/information-publish/list/statistics.vue'),
         hidden: true,
         meta: { title: '数据统计' }
       },
       {
         name: '我收到的名片',
-        path: '/information-publish/:chamberId/card-list',
-        component: () => import('@/views/business-card/list/index.vue'),
+        path: '/zhaoshang/information-publish/:chamberId/card-list',
+        component: () => import('@/views/zhaoshang/business-card/list/index.vue'),
         hidden: true,
         meta: { title: '我收到的名片' }
       },
       {
         name: '名片详情',
-        path: '/information-publish/:cardId/card-detail',
-        component: () => import('@/views/business-card/detail/index.vue'),
+        path: '/zhaoshang/information-publish/:cardId/card-detail',
+        component: () => import('@/views/zhaoshang/business-card/detail/index.vue'),
         hidden: true,
         meta: { title: '名片详情' }
       }

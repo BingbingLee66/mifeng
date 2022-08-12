@@ -156,8 +156,8 @@ export default {
 
     goToDetail(id) {
       let path = ''
-      if (this.$route.path.indexOf('/information-publish') > -1) path = `/information-publish/${id}/card-detail`
-      else path = `/activity/${id}/card-detail`
+      if (this.$route.path.indexOf('/information-publish') > -1) path = `/zhaoshang/information-publish/${id}/card-detail`
+      else path = `/zhaoshang/activity/${id}/card-detail`
       this.$router.push({ path })
     }
   }

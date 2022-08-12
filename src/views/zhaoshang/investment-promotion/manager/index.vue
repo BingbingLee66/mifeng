@@ -132,7 +132,7 @@
 
 <script >
 import TableMixins from '@/mixins/table'
-import FormDialog from '@/views/investment-promotion/manager/components/form-dialog'
+import FormDialog from '@/views/zhaoshang/investment-promotion/manager/components/form-dialog'
 import DetailDialog from '@/views/member/manager/reaudit/component/detailDialog'
 import getAreaList from '@/utils/get-area-list'
 import { getList, updateStatus } from '@/api/chamber/manager'

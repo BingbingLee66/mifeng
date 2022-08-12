@@ -23,7 +23,7 @@ export function traverseRoutes(menus) {
       guideId: menu.guideId,
       hadGuide: menu.hadGuide,
     }
-    if (routeMenu.component) {
+    if (routeMenu.component && typeof routeMenu.component === 'string') {
       let name = routeMenu.component
       routeMenu.component = (resolve) => require([`@/${name}`], resolve)
     }
