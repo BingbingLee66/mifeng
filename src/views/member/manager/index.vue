@@ -90,15 +90,17 @@
           </el-select>
         </el-form-item>
         <el-form-item label="会员标签">
-          <el-select
-            v-model="query.activatedState"
-            placeholder="请选择激活状态"
-            style="width: 100%"
-          >
-            <el-option label="全部" :value="0" />
-            <el-option label="已激活" :value="1" />
-            <el-option label="未激活" :value="-1" />
-          </el-select>
+          <el-cascader
+            ref="eleLabel"
+            v-model="memberLabelIds"
+            :props="{ multiple: true }"
+            :options="labelOptions"
+            :show-all-levels="false"
+            size="small"
+            clearable
+            filterable
+            collapse-tags
+          ></el-cascader>
         </el-form-item>
         <el-form-item label="入会时间">
           <el-date-picker

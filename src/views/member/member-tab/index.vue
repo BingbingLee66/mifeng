@@ -37,7 +37,7 @@
           {{ item.name }}
         </el-tag>
         <span
-          v-if="row.data.memberLabelVOList.length > 3"
+          v-if="row.data.memberLabelVOList && row.data.memberLabelVOList > 3"
           class="text-blue"
           @click="handleMoreLabel(row.data)"
           >查看更多</span

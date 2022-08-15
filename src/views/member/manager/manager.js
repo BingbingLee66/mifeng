@@ -15,6 +15,7 @@ const baseUrl = process.env.VUE_APP_BASE_API;
 import attachLabel from "@/components/Label/attach-label";
 import moreLabel from "@/components/Label/more-label";
 import Labels from "@/api/labels/labels";
+
 export default {
   name: "商/协会成员",
   components: {
@@ -107,9 +108,12 @@ export default {
       attachVisible: false,
       moreVisible: false,
       moreType: "",
-      moreData: {}
+      moreData: {},
+      memberLabelIds: [],
+      labelOptions: []
     };
   },
+
   computed: {
     nativePlaceStr() {
       return function(str) {
@@ -117,6 +121,14 @@ export default {
           return "";
         }
         return str.replace(new RegExp("-", "gm"), "");
+      };
+    },
+    labelProps() {
+      return {
+        multiple: true
+        // checkStrictly: true,
+        // lazy: true,
+        // lazyLoad: this.lazyLoad
       };
     }
   },
@@ -129,6 +141,7 @@ export default {
     this.importUrl = baseUrl + "/ec/member/import-excel";
     this.importQuery.ckey = this.$store.getters.ckey;
     this.uploadHeaders["access-token"] = getToken();
+    this.getLabelOptions();
   },
   mouted() {},
   methods: {
@@ -203,7 +216,16 @@ export default {
           );
         }
       }
-      // this.listLoading = true
+      let _memberLabelIds = "";
+      if (this.memberLabelIds.length > 0) {
+        let ids = this.memberLabelIds.map(item => {
+          item = item.filter((id, idx) => {
+            return idx === 1;
+          });
+          return item[0];
+        });
+        _memberLabelIds = ids.join(",");
+      }
       const params = {
         status: this.query.status,
         uname: this.query.uname,
@@ -218,6 +240,7 @@ export default {
         tradeType: this.query.tradeType,
         department: this.query.department,
         activatedState: this.query.activatedState,
+        memberLabelIds: _memberLabelIds,
         pageSize: this.limit,
         page: this.currentpage
       };
@@ -480,6 +503,72 @@ export default {
         });
       });
     },
+    // 选择会员选择标签
+    handleLabelChange() {
+      /* if (this.memberLabelIds.length === 0) {
+        let eleLabel = this.$refs.eleLabel;
+        eleLabel.panel.activePath = [];
+        eleLabel.panel.loadCount = 0;
+        eleLabel.panel.lazyLoad();
+      } */
+    },
+    async getLabelOptions() {
+      const res = await Labels.getLabelGroupLst({
+        noPaging: true,
+        sourceCkeyList: this.$store.getters.ckey,
+        freeze: 0
+      });
+      let memberLabelList = res.data.list;
+      let _memberLabelList = memberLabelList.map(item => {
+        let obj = {
+          value: item.id,
+          label: item.name,
+          children: item.memberLabelVOList.map(item => {
+            return {
+              value: item.id,
+              label: item.name
+            };
+          })
+        };
+        return obj;
+      });
+      this.labelOptions = _memberLabelList;
+    },
+    /* async lazyLoad(node, resolve) {
+      let level = node.level;
+      let result;
+      const res = await Labels.getLabelGroupLst({
+        noPaging: true,
+        sourceCkeyList: this.$store.getters.ckey,
+        freeze: 0
+      });
+      const memberLabelList = res.data.list;
+      switch (level) {
+        case 0:
+          result = memberLabelList.map(item => {
+            return {
+              value: item.id,
+              label: item.name
+            };
+          });
+          break;
+        case 1:
+          const index1 = memberLabelList.findIndex(
+            item => item.id == node.data.value
+          );
+          result = memberLabelList[index1].memberLabelVOList.map(item => {
+            return {
+              value: item.id,
+              label: item.name
+            };
+          });
+          break;
+        default:
+          result = [];
+          break;
+      }
+      resolve(result);
+    }, */
     /* 打标签 */
     handleAttachLabel() {
       if (this.multipleSelection.length === 0) {
