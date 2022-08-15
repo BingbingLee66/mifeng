@@ -1,32 +1,62 @@
 <template>
   <div class="app-container">
     <div class="block">
-      <el-form ref="query" label-width="auto" label-position="left" :model="query" :inline="true">
+      <el-form
+        ref="query"
+        label-width="auto"
+        label-position="left"
+        :model="query"
+        :inline="true"
+      >
         <el-form-item label="用户ID：">
-          <el-input v-model="query.mulValue" placeholder="请输入ID"/>
+          <el-input v-model="query.mulValue" placeholder="请输入ID" />
         </el-form-item>
         <el-form-item label="用户名：">
-          <el-input v-model="query.uname" placeholder="请输入用户名"/>
+          <el-input v-model="query.uname" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item :span="12" label="用户属性：">
           <el-select v-model="query.userType" placeholder="请选择操作行为">
-            <el-option label="全部" :value="-1"/>
-            <el-option label="商会会员" :value="1"/>
-            <el-option label="普通用户" :value="2"/>
+            <el-option label="全部" :value="-1" />
+            <el-option label="商会会员" :value="1" />
+            <el-option label="普通用户" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item label="所属商会：">
-          <el-select v-model="query.chamberId" placeholder="请选择职业类型" filterable>
-            <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id" />
+          <el-select
+            v-model="query.chamberId"
+            placeholder="请选择职业类型"
+            filterable
+          >
+            <el-option
+              v-for="chamber in chamberOptions"
+              :key="chamber.id"
+              :label="chamber.name"
+              :value="chamber.id"
+            />
+          </el-select>
+          <!-- <el-input v-model="query.chamberName" placeholder="请输入所属商会"/> -->
+        </el-form-item>
+        <el-form-item label="标签：">
+          <el-select
+            v-model="query.chamberId"
+            placeholder="请选择职业类型"
+            filterable
+          >
+            <el-option
+              v-for="chamber in chamberOptions"
+              :key="chamber.id"
+              :label="chamber.name"
+              :value="chamber.id"
+            />
           </el-select>
           <!-- <el-input v-model="query.chamberName" placeholder="请输入所属商会"/> -->
         </el-form-item>
         <el-form-item :span="12" label="状态：">
           <el-select v-model="query.status" placeholder="请选择操作行为">
             <!-- <el-option v-for="(item, index) in typeOptions" :label="item" :value="item" :key="index"></el-option> -->
-            <el-option label="全部" :value="-1"/>
-            <el-option label="正常" :value="1"/>
-            <el-option label="已冻结" :value="0"/>
+            <el-option label="全部" :value="-1" />
+            <el-option label="正常" :value="1" />
+            <el-option label="已冻结" :value="0" />
           </el-select>
         </el-form-item>
         <el-form-item label="注册时间：">
@@ -41,7 +71,12 @@
           />
         </el-form-item>
         <el-form-item label="">
-          <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
+          <el-button
+            v-if="has('', '查询')"
+            type="primary"
+            :actionid="getId('', '查询')"
+            @click="fetchData($event)"
+            >查询
           </el-button>
         </el-form-item>
         <!-- <el-form-item label="">
@@ -50,8 +85,20 @@
         </el-form-item> -->
       </el-form>
     </div>
-    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column type="index" label="序号" width="60px"/>
+    <el-row>
+      <el-button type="primary" @click="handleAttach">打标签</el-button>
+    </el-row>
+    <el-table
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="50px" />
+      <el-table-column type="index" label="序号" width="60px" />
       <el-table-column label="ID" width="70px">
         <template slot-scope="scope">
           {{ scope.row.id }}
@@ -84,6 +131,48 @@
           <div v-if="!scope.row.chamberName">未加入商会</div>
         </template>
       </el-table-column>
+      <el-table-column label="平台标记">
+        <template slot-scope="scope">
+          <div v-if="scope.row.platformTag">
+            <el-tag
+              v-for="item in scope.row.platformTag.slice(0, 3)"
+              :key="item.tagId"
+              type="info"
+              effect="plain"
+              style="margin: 0 6px 6px 0"
+            >
+              {{ item.tagName }}
+            </el-tag>
+            <span
+              v-if="scope.row.platformTag.length > 3"
+              class="text-blue"
+              @click="handleMoreLabel(scope.row)"
+              >查看更多</span
+            >
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="商协会标记">
+        <template slot-scope="scope">
+          <div v-if="scope.row.chamberTag">
+            <el-tag
+              v-for="item in scope.row.chamberTag.slice(0, 3)"
+              :key="item.id"
+              type="info"
+              effect="plain"
+              style="margin: 0 6px 6px 0"
+            >
+              {{ item.tagName }}
+            </el-tag>
+            <span
+              v-if="scope.row.chamberTag.length > 3"
+              class="text-blue"
+              @click="handleMoreLabel(row.data)"
+              >查看更多</span
+            >
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="注册时间">
         <template slot-scope="scope">
           {{ scope.row.createdTs }}
@@ -97,14 +186,36 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button v-if="has('', '详情')" type="text" :actionid="getId('', '详情')" @click="detail($event, scope.row)">
+          <el-button
+            v-if="has('', '详情')"
+            type="text"
+            :actionid="getId('', '详情')"
+            @click="detail($event, scope.row)"
+          >
             详情
           </el-button>
-          <el-button v-if="has('', '冻结') && scope.row.status == 1" type="text" :actionid="getId('', '冻结')" @click="updateStatus($event, scope.row)">
+          <el-button
+            v-if="has('', '冻结') && scope.row.status == 1"
+            type="text"
+            :actionid="getId('', '冻结')"
+            @click="updateStatus($event, scope.row)"
+          >
             冻结
           </el-button>
-          <el-button v-if="has('', '解冻') && scope.row.status == 0" type="text" :actionid="getId('', '解冻')" @click="updateStatus($event, scope.row)">
+          <el-button
+            v-if="has('', '解冻') && scope.row.status == 0"
+            type="text"
+            :actionid="getId('', '解冻')"
+            @click="updateStatus($event, scope.row)"
+          >
             解冻
+          </el-button>
+          <el-button
+            v-if="scope.row.platformTag && scope.row.platformTag.length>0"
+            type="text"
+            @click="handleRemoveLabel(scope.row)"
+          >
+            移除标签
           </el-button>
         </template>
       </el-table-column>
@@ -119,8 +230,25 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-  </div>
 
+    <!-- 查看更多标签 -->
+    <more-label
+      :more-visible.sync="moreVisible"
+      :labelData="moreData"
+      :showGroupName="false"
+      :showGroupType="moreType"
+      @close="handleCloseMore"
+      @remove="handleRemoveLabelConfirm"
+    />
+    <!-- 打标签 -->
+    <attach-label
+      ref="eleAttach"
+      :attach-visible.sync="attachVisible"
+      :isMember="false"
+      @close="handleCloseAttach"
+      @confirm="handleConfirmAttach"
+    />
+  </div>
 </template>
 
 <script src="./wxuser.js"></script>

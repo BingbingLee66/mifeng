@@ -1,15 +1,16 @@
-@import './variables.scss';
-@import './mixin.scss';
-@import './transition.scss';
-@import './element-ui.scss';
-@import './sidebar.scss';
+@import "./variables.scss";
+@import "./mixin.scss";
+@import "./transition.scss";
+@import "./element-ui.scss";
+@import "./sidebar.scss";
 
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
 }
 
 label {
@@ -60,6 +61,99 @@ div:focus {
 }
 
 // main-container global css
-.app-container {
+.app-container,
+.container {
   padding: 20px;
+}
+
+.text-gray {
+  color: #999999;
+}
+
+.text-red {
+  color: #ff0000;
+}
+
+.text-red-cur {
+  color: #ff0000;
+  cursor: pointer;
+}
+
+.text-green-cur {
+  color: #67C23A;
+  cursor: pointer;
+}
+
+.text-blue {
+  color: #409eff;
+  cursor: pointer;
+}
+
+.text-yellow,
+.text-yellow-cur {
+  color: #e6a23c;
+}
+
+.warn-label-cur {
+  cursor: pointer;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
+.ml-10 {
+  margin-left: 10px;
+}
+
+.ml-10 {
+  margin-right: 10px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mr-20 {
+  margin-right: 20px;
+}
+
+.ml-20 {
+  margin-left: 20px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.mb-40 {
+  margin-bottom: 40px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.d-felx {
+  display: flex;
+}
+
+.f-shrink-0 {
+  flex-shrink: 0;
+}
+
+.f-wrap {
+  flex-wrap: wrap;
 }

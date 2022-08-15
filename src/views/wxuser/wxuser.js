@@ -1,7 +1,13 @@
 import { getUserList, updateUserStatus } from '@/api/member/manager'
 import { getChamberAllList } from '@/api/goods/goods'
-
+import attachLabel from "@/components/Label/attach-label";
+import moreLabel from "@/components/Label/more-label";
+import Labels from "@/api/labels/labels";
 export default {
+  components: {
+    "attach-label": attachLabel,
+    "more-label": moreLabel,
+  },
   data() {
     return {
       chamberOptions: [],
@@ -19,7 +25,12 @@ export default {
         chamberId: -1,
         status: -1,
         date: ''
-      }
+      },
+      multipleSelection: [],
+      attachVisible: false,
+      moreVisible: false,
+      moreType: "",
+      moreData: {}
     }
   },
   computed: {},
@@ -71,7 +82,9 @@ export default {
     },
     fetchData(e) {
       if (e !== undefined) {
-        window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+        if (e !== 1) {
+          window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+        }
         this.currentpage = 1
       }
       this.listLoading = true
@@ -103,7 +116,7 @@ export default {
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.$router.push({ name: '用户详情', params: { 'userDetail': row }})
+      this.$router.push({ name: '用户详情', params: { 'userDetail': row } })
     },
     updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -125,6 +138,80 @@ export default {
         }
         this.fetchData()
       })
+    },
+
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+
+    /* 打标签 */
+    handleAttach() {
+      if (this.multipleSelection.length === 0) {
+        return this.$message.warning('请至少选择一位用户')
+      }
+      this.attachVisible = true
+      this.$refs.eleAttach.labelObj.selectType = "1"
+      this.$refs.eleAttach.fetchData(1)
+    },
+    async handleConfirmAttach(labelIds) {
+      if(labelIds.length === 0){
+        return this.$message.warning('请至少选择一个标签')
+      }
+      let wxUserIds = this.multipleSelection.map((item) => {
+        return item.id;
+      });
+      const res = await Labels.attachLabel({
+        labelIds,
+        wxUserIds,
+      });
+      if (res.state !== 1) return this.$message.error(res.msg);
+      this.$message.success(res.msg);
+      this.attachVisible = false
+      this.fetchData(1)
+    },
+    handleCloseAttach() {
+      this.attachVisible = false
+    },
+
+    /** 查看更多标签 */
+    handleMoreLabel(rowData) {
+      this.moreType = ""
+      let moreData = {
+        labeList: []
+      }
+      moreData.labeList = rowData.platformTag.map(item => {
+        return {
+          id: item.tagId,
+          name: item.tagName
+        }
+      })
+      this.moreData = moreData
+      this.moreVisible = true
+    },
+    handleCloseMore() {
+      this.moreVisible = false
+    },
+
+    /** 移除标签 */
+    handleRemoveLabel(rowData) {
+      this.moreType = "delete"
+      let moreData = {
+        wxUserId: rowData.id,
+        uname: rowData.uname,
+        lableList: []
+      }
+      moreData.lableList = rowData.platformTag.map(item => {
+        return {
+          id: item.tagId,
+          name: item.tagName
+        }
+      })
+      this.moreData = moreData
+      this.moreVisible = true
+    },
+    handleRemoveLabelConfirm() {
+      this.moreVisible = false
+      this.fetchData(1)
     }
   }
 }

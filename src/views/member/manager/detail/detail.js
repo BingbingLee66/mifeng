@@ -1,7 +1,12 @@
 import { getMemberDetail, getMemberAuditDetail, updateAudit, updateReaudit, authorizeMemberAuth, cancelAuthorizeMemberAuth } from '@/api/member/manager'
-
+import Labels from "@/api/labels/labels";
+import ysTable from "@/components/ys-table";
+import datas from "../../member-tab/data";
 export default {
   name: 'memebrDetails',
+  components: {
+    "ys-table": ysTable
+  },
   data() {
     return {
       type: '', // 0会员 1提交审核 2修改审核
@@ -26,7 +31,16 @@ export default {
       },
       userInfo: {},
       telephones: [],
-      contactAddress: []
+      contactAddress: [],
+      activeName: "1",
+      tableColumn: datas.tableColumn,
+      labelData: [],
+      pageData: {
+        currentpage: 1,
+        limit: 10,
+        pageSizes: [10, 20, 50, 100, 500],
+        total: 0,
+      },
     }
   },
   filters: {
@@ -40,7 +54,7 @@ export default {
   },
   computed: {
     resumeCp() {
-      return function(msg) {
+      return function (msg) {
         let result = msg
         if (!!msg && msg.length > 100) {
           result = msg.substring(0, 100) + '...'
@@ -49,7 +63,7 @@ export default {
       }
     },
     companyInstrodCp() {
-      return function(msg) {
+      return function (msg) {
         let result = msg
         if (!!msg && msg.length > 100) {
           result = msg.substring(0, 100) + '...'
@@ -66,6 +80,10 @@ export default {
   },
   deactivated() {
     console.log('出去缓存')
+  },
+  created() {
+    /* 获取用户标签列表 */
+    this.fetchLableList()
   },
   mounted() {
     console.log('this.$route.params', this.$route.params)
@@ -90,9 +108,19 @@ export default {
     }
     this.init()
   },
-  created() {
-  },
   methods: {
+    async fetchLableList() {
+      const userId = this.$route.query.userId
+      if (!userId) return
+      const { currentpage, limit } = this.pageData;
+      const res = await Labels.getUserDetailLabelLst(userId, 1, {
+        page: currentpage,
+        pageSize: limit,
+      })
+      if (res.state !== 1) return;
+      this.labelData = res.data.list;
+      this.pageData.total = res.data.totalRows;
+    },
     // 执行会员认证或者取消
     async handleAuthMember(isAuth) {
       const content = isAuth
@@ -180,7 +208,7 @@ export default {
       this.companyIntroductionVisible = true
     },
     goEdit() {
-      this.$router.push({ name: '编辑会员', params: { 'memberId': this.memberDetail.id, 'querytype': this.type }})
+      this.$router.push({ name: '编辑会员', params: { 'memberId': this.memberDetail.id, 'querytype': this.type } })
     },
     approved(row) {
       let arr = []

@@ -7,8 +7,16 @@ import { getDepartmentList } from '@/api/org-structure/org'
 // import { downLoad } from '@/directive/down-load-url'
 import { getToken } from '@/utils/auth'
 const baseUrl = process.env.VUE_APP_BASE_API
+import attachLabel from "@/components/Label/attach-label";
+import moreLabel from "@/components/Label/more-label";
+import Labels from "@/api/labels/labels";
 export default {
   name: '商/协会成员',
+  components: {
+    "attach-label": attachLabel,
+    "more-label": moreLabel,
+  },
+
   // directives: { downLoad },
   directives: {
     downLoad: {
@@ -87,11 +95,16 @@ export default {
       uploadHeaders: {
         'access-token': ''
       },
+      multipleSelection: [],
+      attachVisible: false,
+      moreVisible: false,
+      moreType: "",
+      labelData: {}
     }
   },
   computed: {
     nativePlaceStr() {
-      return function(str) {
+      return function (str) {
         if (str === null) {
           return ''
         }
@@ -110,7 +123,7 @@ export default {
     this.importQuery.ckey = this.$store.getters.ckey
     this.uploadHeaders['access-token'] = getToken()
   },
-  mouted(){
+  mouted() {
 
   },
   methods: {
@@ -178,7 +191,9 @@ export default {
     async fetchData(e) {
       if (e !== undefined) {
         this.currentpage = 1
-        window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+        if (e !== 1) {
+          window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+        }
       }
       // this.listLoading = true
       const params = {
@@ -207,9 +222,14 @@ export default {
       }
 
       try {
-        const { data: { data = {}}} = await list(params)
+        const { data: { data = {} } } = await list(params)
         console.log(data)
         this.list = data.list || []
+        this.list.forEach(item => {
+          if (!item.memberLabelList) {
+            item.memberLabelList = []
+          }
+        })
         this.total = data.totalRows || 0
       } catch (error) { /*  */ }
       this.listLoading = false
@@ -224,6 +244,7 @@ export default {
       window.localStorage.setItem('membereditor', this.$route.path)
       this.$router.push({
         name: '会员详情',
+        query: { userId: row.id },
         params: { 'memberDetail': row, 'querytype': '0' }
       })
     },
@@ -260,6 +281,7 @@ export default {
     },
 
     handleSelectionChange(value) {
+      this.multipleSelection = value;
       let datas = value
       this.selectionDatas = []
       this.selectionIds = []
@@ -278,7 +300,6 @@ export default {
           '激活状态': data.activatedState === 1 ? '已激活' : '未激活',
           '短信发送状态': data.activatedState === 1 ? '--' : data.sendStatus === 1 ? '已发送' : '未发送',
         }
-        // console.log('data.identityVOList', data.identityVOList)
         if (data.identityVOList.length > 0) {
           // console.log('data.identityVOList', data.identityVOList)
           let str = ''
@@ -292,6 +313,13 @@ export default {
             str = str + '\n'
           })
           new_data['身份信息'] = str
+        }
+        if (data.memberLabelList && data.memberLabelList.length > 0) {
+          let arr = data.memberLabelList.map(item => {
+            return item.tagName
+          })
+          let str = arr.join("、")
+          new_data['会员标签'] = str
         }
         this.selectionDatas.push(new_data)
       }
@@ -391,6 +419,75 @@ export default {
           this.transferVisible = false
         })
       })
+    },
+    /* 打标签 */
+    attachLabel() {
+      if (this.query.activatedState != 1) {
+        return this.$message.warning('请先筛选激活状态为已激活的会员')
+      }
+      if (this.multipleSelection.length === 0) {
+        return this.$message.warning('请至少选择一位已激活会员')
+      }
+      this.attachVisible = true
+      this.$refs.eleAttach.labelObj.selectType = "1"
+      this.$refs.eleAttach.fetchData(1)
+    },
+    handleActivatedStateChange(value) {
+      this.query.activatedState = value
+      this.fetchData(1)
+    },
+    handleMoreLabel(rowData) {
+      this.moreType = ""
+      let labelData = {
+        lableList: []
+      }
+      labelData.lableList = rowData.memberLabelList.map(item => {
+        return {
+          id: item.tagId,
+          name: item.tagName
+        }
+      })
+      this.labelData = labelData
+      this.moreVisible = true
+    },
+    handleCloseMore() {
+      this.moreVisible = false
+    },
+    handleCloseAttach() {
+      this.attachVisible = false
+    },
+    async handleConfirmAttach(labelIds) {
+      let wxUserIds = this.multipleSelection.map((item) => {
+        return item.wxUserId;
+      });
+      const res = await Labels.attachLabel({
+        labelIds,
+        wxUserIds,
+      });
+      if (res.state !== 1) return;
+      this.$message.success(res.msg);
+      this.attachVisible = false
+      this.fetchData(1)
+    },
+    handleRemoveLabel(rowData) {
+      this.moreType = "delete"
+      let labelData = {
+        wxUserId: rowData.wxUserId,
+        uname: rowData.uname,
+        lableList: []
+      }
+      labelData.lableList = rowData.memberLabelList.map(item => {
+        return {
+          id: item.tagId,
+          name: item.tagName
+        }
+      })
+      this.labelData = labelData
+      this.moreVisible = true
+    },
+    handleRemoveLabelConfirm() {
+      this.moreVisible = false
+      this.fetchData(1)
     }
   }
 }
