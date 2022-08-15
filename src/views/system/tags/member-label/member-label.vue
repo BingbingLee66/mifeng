@@ -128,6 +128,7 @@
     />
     <!-- 新建标签组 -->
     <add-label-group
+      ref="eleAdd"
       :add-visible.sync="addVisible"
       @close="handleCloseAdd"
       @confirm="handleConfirmAdd"
@@ -195,8 +196,14 @@ export default {
   methods: {
     async fetchData(e) {
       this.tableConfig.loading = true;
-      const { labelGroupName, labelName, collectStatus, sourceCkeyList } =
-        this.formObj;
+      const {
+        labelGroupName,
+        labelName,
+        collectStatus,
+        sourceCkeyList,
+        weightZero,
+      } = this.formObj;
+      console.log("weightZero...", weightZero);
       this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage;
       const { currentpage, limit } = this.pageData;
       const params = {
@@ -207,6 +214,7 @@ export default {
           collectStatus == "-1" || !collectStatus ? "" : collectStatus,
         sourceCkeyList:
           sourceCkeyList == "-1" || !sourceCkeyList ? "" : sourceCkeyList,
+        weightZero: weightZero == "1" ? true : weightZero == "0" ? "false" : "",
         pageNum: currentpage,
         pageSize: limit,
       };
@@ -293,6 +301,7 @@ export default {
 
     /** 新建标签组 */
     handleShowAdd() {
+      this.$refs.eleAdd.reset();
       this.addVisible = true;
     },
 
@@ -348,7 +357,7 @@ export default {
         id: rowData.id,
         weight: rowData.weight,
       });
-      if (res.state != 1) return;
+      if (res.state != 1) return this.$message.error(res.msg);
       this.$message.success(res.msg);
       this.fetchData(1);
     },
@@ -389,7 +398,7 @@ export default {
           value: item.ckey,
         };
       });
-      // list.unshift({ label: "全部", value: -1 });
+      list.unshift({ label: "全部", value: -1 });
       this.chamberList = list;
     },
   },

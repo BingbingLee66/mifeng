@@ -4,7 +4,7 @@ const formData = {
   // 标签名称
   labelName: "",
   // 权重是否为0
-  weightZero: -1
+  weightZero: "-1"
 };
 
 const formItem = [
@@ -25,9 +25,9 @@ const formItem = [
     prop: "weightZero",
     type: "select",
     options: [
-      { label: "全部", value: -1 },
-      { label: "是", value: 1 },
-      { label: "否", value: 0 }
+      { label: "全部", value: "-1" },
+      { label: "是", value: "1" },
+      { label: "否", value: "0" }
     ]
   }
 ];
@@ -69,7 +69,7 @@ const formData1 = {
   // 标签名称
   labelName: "",
   // 所属商协会
-  sourceCkeyList: "",
+  sourceCkeyList: -1,
   // 采集状态
   collectStatus: "-1"
 };
@@ -91,7 +91,6 @@ const formItem1 = [
     label: "所属商协会",
     prop: "sourceCkeyList",
     filterable: true,
-    clearable: true,
     type: "select",
     options: []
   },

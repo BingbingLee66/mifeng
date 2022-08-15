@@ -18,7 +18,6 @@
           label="标签组"
           :rules="[
             { required: true, message: '请填写标签组名称', trigger: 'blur' },
-            { validator: checkName, trigger: 'blur' },
           ]"
         >
           <el-input
@@ -33,11 +32,13 @@
           :label="'标签' + (index + 1)"
           :key="label.key"
           :prop="'labelList.' + index + '.name'"
-          :rules="{
-            required: true,
-            message: '请填写标签',
-            trigger: 'blur',
-          }"
+          :rules="[
+            {
+              required: true,
+              message: '请填写标签',
+              trigger: 'blur',
+            },
+          ]"
         >
           <el-input
             v-model.trim="label.name"
@@ -46,9 +47,10 @@
             style="width: 300px"
           />
           <i
+            v-if="labelObj.labelList.length > 1"
             style="font-size: 16px; cursor: pointer"
             class="el-icon-circle-close"
-            @click="remove"
+            @click="remove(label)"
           ></i>
         </el-form-item>
         <el-form-item label="">
@@ -75,6 +77,7 @@ export default {
           },
         ],
         name: "",
+        weight: 999,
       },
     };
   },
@@ -85,6 +88,17 @@ export default {
     },
   },
   methods: {
+    reset() {
+      this.labelObj = {
+        labelList: [
+          {
+            name: "",
+          },
+        ],
+        name: "",
+        weight: 999,
+      };
+    },
     close() {
       this.$emit("close");
     },
@@ -95,30 +109,30 @@ export default {
       }
     },
     add() {
-      const bol = this.labelObj.labelList.every((item) => item.name);
-      const index = this.labelObj.labelList.length - 1;
+      const _labelList = this.labelObj.labelList;
+      // 校验标签名是否已填
+      const bol = _labelList.every((item) => item.name);
+      const index = _labelList.length - 1;
       if (!bol) {
         this.$refs["labelObj"].validateField("labelList." + index + ".name");
         return;
+      }
+      // 校验标签名是否重复
+      const bol2 =
+        [...new Set(_labelList.map((item) => item.name))].length <
+        _labelList.length;
+      if (bol2) {
+        return this.$message.error("标签名重复，换一个试试");
       }
       this.labelObj.labelList.push({
         name: "",
       });
     },
-    checkName(rule, value, callback) {
-      if (value === "") {
-        callback(new Error("请填写标签组名称"));
-      } else if (!value) {
-        callback(new Error("标签名重复，换一个试试"));
-      } else {
-        callback();
-      }
-    },
     confirm() {
       this.$refs["labelObj"].validate(async (valid) => {
         if (valid) {
           const res = await Labels.addLabelGroup(this.labelObj);
-          if (res.state !== 1) return;
+          if (res.state !== 1) return this.$message.error(res.msg);
           this.$message.success(res.msg);
           this.$emit("confirm");
         }

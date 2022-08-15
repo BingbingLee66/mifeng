@@ -72,7 +72,6 @@
             v-model="query.activatedState"
             placeholder="请选择激活状态"
             style="width: 100%"
-            @change="handleActivatedStateChange"
           >
             <el-option label="全部" :value="0" />
             <el-option label="已激活" :value="1" />
@@ -124,7 +123,7 @@
       </el-form>
     </div>
     <div style="margin-bottom: 30px">
-      <el-button type="primary" @click="attachLabel">打标签</el-button>
+      <el-button type="primary" @click="handleAttachLabel">打标签</el-button>
       <el-button
         v-if="has('', '添加会员')"
         type="primary"
@@ -222,7 +221,7 @@
             <span
               v-if="scope.row.memberLabelList.length > 3"
               class="text-blue"
-              @click="handleMoreLabel(row.data)"
+              @click="handleMoreLabel(scope.row)"
               >查看更多</span
             >
           </template>
@@ -455,7 +454,7 @@
 
     <more-label
       :more-visible.sync="moreVisible"
-      :labelData="labelData"
+      :labelData="moreData"
       :showGroupName="false"
       :showGroupType="moreType"
       @close="handleCloseMore"
