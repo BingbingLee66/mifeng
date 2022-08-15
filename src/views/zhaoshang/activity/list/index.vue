@@ -28,10 +28,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="">
-          <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
-          </el-button>
+          <el-button type="primary" @click="fetchData($event)">查询</el-button>
         </el-form-item>
       </el-form>
+      <el-button type="primary" @click="goTo('create', null)">创建活动</el-button>
     </div>
     <div>
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
@@ -168,6 +168,16 @@
             </div>
 
             <div class="blue-label" @click="goTo('card', scope.row)">收到的名片</div>
+            <div
+              v-if="[
+                ACTIVE_STATUS.registering,
+                ACTIVE_STATUS.started,
+              ].includes(scope.row.status)"
+              class="blue-label"
+              @click="goTo('verify', scope.row)"
+            >
+              报名审核
+            </div>
             <div class="blue-label" @click="goTo('detail', scope.row)">详情</div>
 
           </template>

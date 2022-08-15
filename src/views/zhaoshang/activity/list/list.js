@@ -181,6 +181,12 @@ export default {
         case 'detail':
           path = `/zhaoshang/activity/${row.id}/detail`
           break
+        case 'verify':
+          path = `/zhaoshang/activity/activity-verify`
+          break
+        case 'create':
+          path = `/zhaoshang/activity/create`
+          break
       }
       this.$router.push({ path })
     },

@@ -370,6 +370,20 @@ export const constantRoutes = [
         meta: { title: '爬虫发布供需' }
       },
       {
+        name: '报名审核',
+        path: '/zhaoshang/activity/activity-verify',
+        component: () => import('@/views/zhaoshang/activity/activity-verify/index.vue'),
+        hidden: true,
+        meta: { title: '报名审核' }
+      },
+      {
+        name: '创建招商活动',
+        path: '/zhaoshang/activity/create',
+        component: () => import('@/views/zhaoshang/activity/create/index.vue'),
+        hidden: true,
+        meta: { title: '创建招商活动' }
+      },
+      {
         name: '活动详情',
         path: '/zhaoshang/activity/:activeId/detail',
         component: () => import('@/views/zhaoshang/activity/detail/index.vue'),
