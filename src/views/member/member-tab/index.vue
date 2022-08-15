@@ -27,28 +27,41 @@
       @handleSizeChange="handleSizeChange"
     >
       <template v-slot:labels="row">
-        <el-tag
-          v-for="item in row.data.labelList"
-          :key="item.name"
-          type="info"
-          effect="plain"
-          style="margin: 0 6px 6px 0"
-        >
-          {{ item.name }}
-        </el-tag>
-        <span
-          v-if="row.data.memberLabelVOList && row.data.memberLabelVOList > 3"
-          class="text-blue"
-          @click="handleMoreLabel(row.data)"
-          >查看更多</span
-        >
+        <div v-if="row.data.memberLabelVOList">
+          <el-tag
+            v-for="item in row.data.memberLabelVOList.slice(0, 3)"
+            :key="item.name"
+            type="info"
+            effect="plain"
+            style="margin: 0 6px 6px 0"
+          >
+            {{ item.name }}
+          </el-tag>
+          <span
+            v-if="row.data.memberLabelVOList.length > 3"
+            class="text-blue"
+            @click="handleMoreLabel(row.data)"
+            >查看更多</span
+          >
+        </div>
       </template>
       <template v-slot:operate="row">
         <span class="text-blue ml-10" @click="handleEdit(row.data)">
           编辑
         </span>
-        <span class="text-red-cur" @click="handleDel(row.data)">删除</span>
-        <span class="text-gray" v-if="row.data.freeze === 0">平台冻结</span>
+        <span class="text-red-cur ml-10" @click="handleDel(row.data)"
+          >删除</span
+        >
+        <span class="text-gray" v-if="row.data.status === 2">平台冻结</span>
+        <el-tooltip
+          v-if="row.data.status == 2"
+          class="item"
+          effect="dark"
+          :content="row.data.frozenReasons"
+          placement="top"
+        >
+          <i class="el-icon-question"></i>
+        </el-tooltip>
       </template>
     </ys-table>
 
@@ -138,12 +151,10 @@ export default {
       };
       let res = await Labels.getLabelGroupLst(params);
       if (res.state !== 1) return;
-      res.data.list.forEach((item) => {
-        if (item.memberLabelVOList) {
-          item.labelList = item.memberLabelVOList.slice(0, 3);
-        }
-      });
       this.tableData = res.data.list;
+      /*      this.tableData = this.tableData.forEach((item) => {
+        item.memberLabelVOList = item.memberLabelVOList || [];
+      }); */
       this.pageData.total = res.data.totalRows;
       this.tableConfig.loading = false;
     },

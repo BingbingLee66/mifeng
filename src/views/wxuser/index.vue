@@ -7,21 +7,30 @@
         label-position="left"
         :model="query"
         :inline="true"
+        size="small"
       >
-        <el-form-item label="用户ID：">
-          <el-input v-model="query.mulValue" placeholder="请输入ID" />
+        <el-form-item label="用户ID">
+          <el-input
+            style="width: 199px"
+            v-model="query.mulValue"
+            placeholder="请输入ID"
+          />
         </el-form-item>
-        <el-form-item label="用户名：">
-          <el-input v-model="query.uname" placeholder="请输入用户名" />
+        <el-form-item label="用户名">
+          <el-input
+            style="width: 199px"
+            v-model="query.uname"
+            placeholder="请输入用户名"
+          />
         </el-form-item>
-        <el-form-item :span="12" label="用户属性：">
+        <el-form-item :span="12" label="用户属性">
           <el-select v-model="query.userType" placeholder="请选择操作行为">
             <el-option label="全部" :value="-1" />
             <el-option label="商会会员" :value="1" />
             <el-option label="普通用户" :value="2" />
           </el-select>
         </el-form-item>
-        <el-form-item label="所属商会：">
+        <el-form-item label="所属商会">
           <el-select
             v-model="query.chamberId"
             placeholder="请选择职业类型"
@@ -34,22 +43,35 @@
               :value="chamber.id"
             />
           </el-select>
-          <!-- <el-input v-model="query.chamberName" placeholder="请输入所属商会"/> -->
         </el-form-item>
-        <el-form-item label="标签：">
+        <el-form-item label="商会标签">
           <el-cascader
             ref="eleLabel"
             v-model="memberLabelIds"
-            :props="labelProps"
+            :props="{ multiple: true }"
             :options="labelOptions"
-            :show-all-levels="false"
+            :show-all-levels="true"
             size="small"
-            clearable
             filterable
+            clearable
             collapse-tags
           ></el-cascader>
         </el-form-item>
-        <el-form-item :span="12" label="状态：">
+        <el-form-item label="平台标签">
+          <el-cascader
+            ref="eleLabel"
+            v-model="memberLabelIds"
+            :props="{ multiple: true }"
+            :options="PlatformOptions"
+            :show-all-levels="true"
+            size="small"
+            filterable
+            clearable
+            collapse-tags
+          ></el-cascader>
+        </el-form-item>
+
+        <el-form-item :span="12" label="状态">
           <el-select v-model="query.status" placeholder="请选择操作行为">
             <!-- <el-option v-for="(item, index) in typeOptions" :label="item" :value="item" :key="index"></el-option> -->
             <el-option label="全部" :value="-1" />
@@ -57,7 +79,7 @@
             <el-option label="已冻结" :value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="注册时间：">
+        <el-form-item label="注册时间">
           <el-date-picker
             v-model="query.date"
             format="yyyy-MM-dd"
@@ -209,7 +231,7 @@
             解冻
           </el-button>
           <el-button
-            v-if="scope.row.platformTag && scope.row.platformTag.length>0"
+            v-if="scope.row.platformTag && scope.row.platformTag.length > 0"
             type="text"
             @click="handleRemoveLabel(scope.row)"
           >

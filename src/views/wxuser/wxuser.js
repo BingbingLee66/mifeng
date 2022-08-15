@@ -32,87 +32,83 @@ export default {
       moreType: "",
       moreData: {},
       memberLabelIds: [],
-      labelOptions: []
+      labelOptions: [],
+      PlatformOptions: []
     };
-  },
-  computed: {
-    labelProps() {
-      return {
-        multiple: true,
-        lazy: true,
-        lazyLoad: this.lazyLoad
-      };
-    }
   },
   created() {
     this.getAllChamberList();
+    this.getLabelOptions();
+    this.getPlatformOptions();
     this.init();
   },
   methods: {
-    // 选择会员选择标签
-    handleLabelChange() {
-      if (this.memberLabelIds.length === 0) {
-        let eleLabel = this.$refs.eleLabel;
-        eleLabel.panel.activePath = [];
-        eleLabel.panel.loadCount = 0;
-        eleLabel.panel.lazyLoad();
-      }
+    async getLabelOptions() {
+      const res0 = await Labels.getLabelGroupLst({
+        noPaging: true,
+        freeze: 0,
+        selectType: 2
+      });
+      const memberLabelList0 = res0.data.list.map(item => {
+        return {
+          value: item.ckey,
+          label: item.chamberName
+        };
+      });
+      const map = new Map();
+      const chamberList = memberLabelList0.filter(
+        item => !map.has(item.value) && map.set(item.value, 1)
+      );
+      let _labelOptions = chamberList;
+      let sourceCkeyList = chamberList.map(item => {
+        return item.value;
+      });
+      sourceCkeyList = sourceCkeyList.join(",");
+      const res = await Labels.getLabelGroupLst({
+        noPaging: true,
+        sourceCkeyList: sourceCkeyList,
+        freeze: 0
+      });
+      let memberLabelList = res.data.list;
+      _labelOptions.forEach(item => {
+        item.children = memberLabelList.map(item1 => {
+          return {
+            value: item1.id,
+            label: item1.name,
+            children: item1.memberLabelVOList
+              ? item1.memberLabelVOList.map(item2 => {
+                  return {
+                    value: item2.id,
+                    label: item2.name
+                  };
+                })
+              : []
+          };
+        });
+      });
+      this.labelOptions = _labelOptions;
     },
-    async lazyLoad(node, resolve) {
-      let level = node.level;
-      let result;
-      switch (level) {
-        case 0:
-          const res0 = await Labels.getLabelGroupLst({
-            noPaging: true,
-            sourceCkeyList: "",
-            freeze: 0,
-            selectType: 2
-          });
-          const memberLabelList0 = res0.data.list.map(item => {
-            return {
-              value: item.ckey,
-              label: item.chamberName
-            };
-          });
-          const map = new Map();
-          result = memberLabelList0.filter(
-            item => !map.has(item.value) && map.set(item.value, 1)
-          );
-          break;
-        case 1:
-          const res1 = await Labels.getLabelGroupLst({
-            noPaging: true,
-            sourceCkeyList: node.data.value,
-            freeze: 0,
-            selectType: 2
-          });
-          result = res1.data.list.map(item => {
+    async getPlatformOptions() {
+      const res = await Labels.getLabelGroupLst({
+        noPaging: true,
+        dataSource: 0,
+        freeze: 0
+      });
+      let memberLabelList = res.data.list;
+      let _memberLabelList = memberLabelList.map(item => {
+        let obj = {
+          value: item.id,
+          label: item.name,
+          children: item.memberLabelVOList.map(item => {
             return {
               value: item.id,
               label: item.name
             };
-          });
-          break;
-        case 2:
-          const res2 = await Labels.getLabelGroupLst({
-            noPaging: true,
-            groupId: node.data.value,
-            freeze: 0,
-            selectType: 2
-          });
-          result = res2.data.list.map(item => {
-            return {
-              value: item.id,
-              label: item.name
-            };
-          });
-          break;
-        default:
-          result = [];
-          break;
-      }
-      resolve(result);
+          })
+        };
+        return obj;
+      });
+      this.PlatformOptions = _memberLabelList;
     },
     clickRouter() {
       this.$router.push({
@@ -169,13 +165,23 @@ export default {
         this.currentpage = 1;
       }
       this.listLoading = true;
-      console.log("memberLabelIdsmemberLabelIds", this.memberLabelIds);
+      let _memberLabelIds = "";
+      if (this.memberLabelIds.length > 0) {
+        let ids = this.memberLabelIds.map(item => {
+          item = item.filter((id, idx) => {
+            return idx === 2;
+          });
+          return item[0];
+        });
+        _memberLabelIds = ids.join(",");
+      }
       let params = {
         pageSize: this.limit,
         page: this.currentpage,
         userType: this.query.userType,
         status: this.query.status,
-        chamberId: this.query.chamberId
+        chamberId: this.query.chamberId,
+        memberLabelIds: _memberLabelIds
       };
       if (this.query.mulValue) {
         params["mulValue"] = this.query.mulValue;

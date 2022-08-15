@@ -523,12 +523,14 @@ export default {
         let obj = {
           value: item.id,
           label: item.name,
-          children: item.memberLabelVOList.map(item => {
-            return {
-              value: item.id,
-              label: item.name
-            };
-          })
+          children:
+            item.memberLabelVOList &&
+            item.memberLabelVOList.map(item => {
+              return {
+                value: item.id,
+                label: item.name
+              };
+            })
         };
         return obj;
       });
@@ -598,6 +600,23 @@ export default {
       };
       this.$refs.eleAttach.fetchData(1);
     },
+    async handleConfirmAttach(labelIds) {
+      if (labelIds.length === 0)
+        return this.$message.error("请至少选择一个标签");
+      let wxUserIds = this.multipleSelection.map(item => {
+        return item.wxUserId;
+      });
+      const res = await Labels.attachLabel({
+        labelIds,
+        wxUserIds
+      });
+      if (res.state !== 1) return;
+      this.$message.success(res.msg);
+      this.attachVisible = false;
+      this.fetchData(1);
+    },
+
+    /** 查看更多标签 */
     handleMoreLabel(rowData) {
       this.moreType = "";
       let moreData = {
@@ -618,19 +637,7 @@ export default {
     handleCloseAttach() {
       this.attachVisible = false;
     },
-    async handleConfirmAttach(labelIds) {
-      let wxUserIds = this.multipleSelection.map(item => {
-        return item.wxUserId;
-      });
-      const res = await Labels.attachLabel({
-        labelIds,
-        wxUserIds
-      });
-      if (res.state !== 1) return;
-      this.$message.success(res.msg);
-      this.attachVisible = false;
-      this.fetchData(1);
-    },
+
     handleRemoveLabel(rowData) {
       this.moreType = "delete";
       let moreData = {

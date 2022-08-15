@@ -46,6 +46,7 @@
             style="width: 300px"
           />
           <i
+            v-if="labelObj.labelList.length > 1"
             style="font-size: 16px; cursor: pointer"
             class="el-icon-circle-close"
             @click="remove(label)"

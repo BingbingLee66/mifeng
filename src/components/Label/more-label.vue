@@ -40,6 +40,9 @@
       </div>
 
       <div slot="footer" class="text-center">
+        <el-button v-if="showGroupType === 'delete'" @click="close"
+          >取消</el-button
+        >
         <el-button
           v-if="showGroupType === 'delete'"
           type="primary"
@@ -47,9 +50,6 @@
         >
           确定
         </el-button>
-        <el-button v-if="showGroupType === 'delete'" @click="close"
-          >取消</el-button
-        >
         <el-button v-else type="primary" @click="close">我知道了</el-button>
       </div>
     </el-dialog>

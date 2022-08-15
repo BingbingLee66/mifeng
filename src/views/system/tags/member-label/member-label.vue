@@ -358,7 +358,7 @@ export default {
         weight: rowData.weight,
       });
       if (res.state != 1) return this.$message.error(res.msg);
-      this.$message.success(res.msg);
+      this.$message.success('采集成功，请在 平台推荐处 查看');
       this.fetchData(1);
     },
 

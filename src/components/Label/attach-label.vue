@@ -35,15 +35,7 @@
         <el-tab-pane v-if="isMember" label="平台推荐" name="1"></el-tab-pane>
         <el-tab-pane v-if="isMember" label="本会创建" name="3"></el-tab-pane>
         <div style="max-height: 50vh; overflow-y: auto">
-          <div v-if="lableList.length === 0" class="text-center">
-            <div class="mb-40 mt-40">暂无数据</div>
-            <router-link to="/member/member-tab">
-              <el-button v-if="labelObj.selectType == 3"
-                >去创建</el-button
-              ></router-link
-            >
-          </div>
-          <div v-else>
+          <div v-if="lableList.length === 0">
             <el-row v-for="item in lableList" :key="item.id">
               <div class="mb-10">{{ item.name }}</div>
               <el-checkbox-group v-model="checkedLabel">
@@ -56,6 +48,12 @@
                 >
               </el-checkbox-group>
             </el-row>
+          </div>
+          <div v-else class="text-center">
+            <div class="mb-40 mt-40">暂无数据</div>
+            <el-button v-if="labelObj.selectType == 3" @click="goCreateLabel"
+              >去创建</el-button
+            >
           </div>
         </div>
         <el-row v-if="lableList.length > 0" class="mt-20">
@@ -91,7 +89,7 @@ export default {
         // 1平台推荐 2商协会创建 3本会创建
         selectType: "1",
       },
-      lableList: {},
+      lableList: [],
       memberLabelVOList: [],
       pageData: {
         currentpage: 1,
@@ -119,7 +117,7 @@ export default {
       this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage;
       const { currentpage, limit } = this.pageData;
       const params = {
-        freeze: "",
+        freeze: 0,
         selectType,
         labelGroupName,
         labelName,
@@ -129,9 +127,7 @@ export default {
       let res = await Labels.getLabelGroupLst(params);
       if (res.state !== 1) return;
       res.data.list.forEach((item) => {
-        if (item.memberLabelVOList) {
-          item.labelList = item.memberLabelVOList.slice(0, 3);
-        }
+        item.labelList = item.memberLabelVOList || [];
       });
       this.lableList = res.data.list;
       this.pageData.total = res.data.totalRows;
@@ -153,6 +149,13 @@ export default {
 
     confirm() {
       this.$emit("confirm", this.checkedLabel);
+    },
+
+    goCreateLabel() {
+      this.close();
+      this.$router.push({
+        path: "/member/member-tab",
+      });
     },
   },
 };
