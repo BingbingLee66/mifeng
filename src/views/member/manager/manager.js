@@ -544,18 +544,18 @@ export default {
     },
     handleRemoveLabel(rowData) {
       this.moreType = "delete";
-      let labelData = {
+      let moreData = {
         wxUserId: rowData.wxUserId,
         uname: rowData.uname,
         lableList: []
       };
-      labelData.lableList = rowData.memberLabelList.map(item => {
+      moreData.lableList = rowData.memberLabelList.map(item => {
         return {
           id: item.tagId,
           name: item.tagName
         };
       });
-      this.labelData = labelData;
+      this.moreData = moreData;
       this.moreVisible = true;
     },
     handleRemoveLabelConfirm() {
