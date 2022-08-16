@@ -187,7 +187,7 @@
             <span
               v-if="scope.row.chamberTag.length > 3"
               class="text-blue"
-              @click="handleMoreLabel(row.data)"
+              @click="handleMoreLabel(scope.row)"
               >查看更多</span
             >
           </div>

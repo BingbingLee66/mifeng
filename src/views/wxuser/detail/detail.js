@@ -131,6 +131,7 @@ export default {
     handleTabClick(e) {
       if (e.name == "2") {
         // 获取会员标签
+        this.activeName2 = "0"
         this.getMemberLableList();
       } else if (e.name == "3") {
         // 获取供需标签
