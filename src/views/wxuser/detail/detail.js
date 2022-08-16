@@ -14,11 +14,32 @@ const memberLabelData = [
     slotName: "tagName"
   },
   {
-    label: "标记信息",
-    prop: "updateInfo",
-    type: "operator",
-    operatorName: "tagPeople",
-    operatorTime: "markTime"
+    label: "标记时间",
+    prop: "markTime",
+    type: "time"
+  }
+];
+const memberLabelData2 = [
+  {
+    label: "标签组",
+    prop: "tagGroupName"
+  },
+  {
+    label: "标签",
+    prop: "tagName",
+    type: "slot",
+    slotName: "tagName"
+  },
+  {
+    label: "标记方",
+    prop: "markingSide",
+    type: "slot",
+    slotName: "markingSide"
+  },
+  {
+    label: "标记时间",
+    prop: "markTime",
+    type: "time"
   }
 ];
 /* 供需标签 */
@@ -63,6 +84,7 @@ export default {
       activeName2: "0",
       tableColumn: memberLabelData,
       tableColumn1: supplyLabelData,
+      tableColumn2: memberLabelData2,
       labelData: [],
       supplyData: [],
       pageData: {

@@ -299,23 +299,42 @@
 
       <el-tab-pane label="会员标签" name="2">
         <el-tabs v-model="activeName2" @tab-click="handleTab2Click">
-          <el-tab-pane label="平台标记" name="0"></el-tab-pane>
-          <el-tab-pane label="商协会标记" name="1"></el-tab-pane>
+          <el-tab-pane label="平台标记" name="0">
+            <ys-table
+              :tableConfig="{}"
+              :tableColumn="tableColumn"
+              :tableData="labelData"
+              :pageData="pageData"
+              @handleCurrentChange="handleCurrentChange"
+              @handleSizeChange="handleSizeChange"
+            >
+              <template v-slot:tagName="row">
+                <el-tag type="info" effect="plain" style="margin: 0 6px 6px 0">
+                  {{ row.data.tagName }}
+                </el-tag>
+              </template>
+            </ys-table>
+          </el-tab-pane>
+          <el-tab-pane label="商协会标记" name="1">
+            <ys-table
+              :tableConfig="{}"
+              :tableColumn="tableColumn2"
+              :tableData="labelData"
+              :pageData="pageData"
+              @handleCurrentChange="handleCurrentChange"
+              @handleSizeChange="handleSizeChange"
+            >
+              <template v-slot:tagName="row">
+                <el-tag type="info" effect="plain" style="margin: 0 6px 6px 0">
+                  {{ row.data.tagName }}
+                </el-tag>
+              </template>
+              <template v-slot:markingSide="row">
+                {{ row.data.markingSide }}
+              </template>
+            </ys-table>
+          </el-tab-pane>
         </el-tabs>
-        <ys-table
-          :tableConfig="{}"
-          :tableColumn="tableColumn"
-          :tableData="labelData"
-          :pageData="pageData"
-          @handleCurrentChange="handleCurrentChange"
-          @handleSizeChange="handleSizeChange"
-        >
-          <template v-slot:tagName="row">
-            <el-tag type="info" effect="plain" style="margin: 0 6px 6px 0">
-              {{ row.data.tagName }}
-            </el-tag>
-          </template>
-        </ys-table>
       </el-tab-pane>
       <el-tab-pane label="供需标签" name="3">
         <ys-table
