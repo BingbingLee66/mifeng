@@ -1,9 +1,11 @@
 <template>
   <el-dialog
+    ref="form"
     :visible="visible"
     title="添加/编辑招商办"
     width="50%"
     @close="close"
+    :close-on-click-modal="false"
   >
     <el-form
       ref="form"
@@ -12,6 +14,13 @@
       label-position="left"
       label-width="150px"
     >
+     <el-row>
+        <el-col :offset="2" :span="20">
+          <el-form-item label="账号名称：" prop="invesName">
+            <el-input :disabled="editId!= ''"  v-model.trim="formObj.invesName" max-length="12" />
+          </el-form-item>
+        </el-col>
+      </el-row>
       <el-row>
         <el-col :offset="2" :span="20">
           <el-form-item label="招商办名称：" prop="name">
@@ -22,7 +31,7 @@
 
       <el-row>
         <el-col :offset="2" :span="20">
-          <el-form-item label="招商办LOGO：" prop="systemLogo">
+          <el-form-item label="招商办LOGO：" prop="logoUrl">
             <el-upload
               class="systemLogo_uploader"
               action="/"
@@ -31,8 +40,8 @@
               :http-request="uploadSystemLogo"
             >
               <img
-                v-if="formObj.systemLogo"
-                :src="formObj.systemLogo"
+                v-if="formObj.logoUrl"
+                :src="formObj.logoUrl"
                 class="system_logo"
                 alt=""
               >
@@ -47,9 +56,9 @@
 
       <el-row>
         <el-col :offset="2" :span="20">
-          <el-form-item label="联系人姓名：" prop="president">
+          <el-form-item label="联系人姓名：" prop="contactUser">
             <el-input
-              v-model.trim="formObj.president"
+              v-model.trim="formObj.contactUser"
               max-length="20"
             />
           </el-form-item>
@@ -58,11 +67,11 @@
 
       <el-row>
         <el-col :offset="2" :span="20">
-          <el-form-item label="联系人手机号" prop="phone">
+          <el-form-item label="联系人手机号" prop="contactPhone">
             <el-input
-              v-model="formObj.phone"
+              v-model="formObj.contactPhone"
               minlength="1"
-              placeholder="手机号码即商会后台登录账号"
+              placeholder=""
               :readonly="isEdit"
             />
           </el-form-item>
@@ -71,13 +80,15 @@
 
       <el-row>
         <el-col :offset="2" :span="20">
-          <el-form-item label="地区" prop="area">
+          <el-form-item label="地区" prop="district">
             <el-cascader
-              v-model="formObj.area"
+              ref="cascader"
+              v-model="formObj.district"
               clearable
               separator="-"
               :options="areaOptions"
-              :props="{ expandTrigger: 'hover', value: 'code', label: 'name'}"
+              :props="{ expandTrigger: 'hover', value: 'name', label: 'name'}"
+              @change="handleChange"
             />
           </el-form-item>
         </el-col>
@@ -137,19 +148,11 @@
 
 <script>
 
-import { getDetail, save, upload } from '@/api/chamber/manager'
-
+import {  upload } from '@/api/chamber/manager'
+import { getInfoAdd,getInfoEdit,getInfoDetails } from '@/api/attract'
 export default {
   name: 'FormDialog',
   props: {
-    visible: {
-      type: Boolean,
-      default: false
-    },
-    id: {
-      type: String,
-      default: ''
-    },
     areaOptions: {
       type: Array,
       default: () => []
@@ -157,17 +160,23 @@ export default {
   },
   data() {
     return {
+      editId:'', // 编辑获取id
+      visible:false,
       formObj: {
-        name: '',
-        president: '',
-        address: '',
-        phone: '',
-        referrer: '',
-        password: '',
+        name: '', // 招商办名称
+        contactUser: '', // 联系人姓名
+        address: '',// 	办公地址
+        contactPhone: '', // 联系人手机号
+        referrer: '', // 推荐人
+        password: '', // 密码
         confirmPassword: '',
-        systemLogo: '',
-        area: []
+        logoUrl: '', // 招商办logo图，oss存储
+        area: '', // 选中地区字符串拼接在一起 
+        district:[], // 地区选择
+        areaCode:'' , // 选择地区最后一个城区code
+        invesName:'', // 账号名称
       },
+     
     }
   },
   computed: {
@@ -176,13 +185,26 @@ export default {
     },
     rules() {
       return {
+      invesName: [
+          { required: true, message: '账号名称不能为空', trigger: 'blur' },
+            {
+            validator: (rule, value, callback) => {
+               if (!/(^[a-zA-Z]{1}[a-zA-Z0-9]{5,11}$)|(^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$)/.test(value)) {
+                return callback(new Error('账号只能为字母和数字，且以字母开头，长度为6-12个字符！或为11位手机号码'))
+              } else {
+                callback() // 必须加上这个，不然一直塞在验证状态
+              }
+            },
+            trigger: 'change'
+          }
+        ],
         name: [
           { required: true, message: '招商办名称不能为空', trigger: 'blur' },
           { min: 1, max: 50, message: '招商办名称1-50个字', trigger: 'change' }
         ],
-        systemLogo: [{ required: true, message: '请上传商/协会logo', trigger: 'change' }],
-        president: [{ required: true, message: '联系人姓名不能为空', trigger: 'blur' }],
-        phone: [
+        logoUrl: [{ required: true, message: '请上传商/协会logo', trigger: 'change' }],
+        contactUser: [{ required: true, message: '联系人姓名不能为空', trigger: 'blur' }],
+        contactPhone: [
           { required: true, message: '联系人手机号不能为空', trigger: 'blur' },
           {
             validator: (rule, value, callback) => {
@@ -194,7 +216,7 @@ export default {
             trigger: 'change'
           }
         ],
-        area: [{
+        district: [{
           required: true, message: '地区不能为空', trigger: 'change',
           validator: (rule, value, callback) => {
             if (!value[0]) return callback(new Error(rule.message))
@@ -226,43 +248,62 @@ export default {
       }
     }
   },
-  watch: {
-    visible(n) {
-      if (!n || !this.isEdit) return
 
-      // TODO 获取详情逻辑
-      // getDetail({ id: this.id }).then(response => {
-      //   const { dtl = {}} = response.data
-      //   this.formObj = {
-      //     ...dtl,
-      //     password: '',
-      //     area: [dtl.provinceCode, dtl.cityCode]
-      //   }
-      // })
-    }
-  },
   methods: {
+    // 显示
+    show(id){
+      this.visible = true
+      if(id){
+        this.editId = id
+        this.ongetInfoDetails(id)
+      }
+    },
+    // 保存
     save() {
       this.$refs.form.validate(valid => {
         if (!valid) return
         // TODO 保存逻辑待完善
-        // const { area: [province, city], ...formObj } = this.formObj
-        // save({ ...formObj, province, city }).then(response => {
-        //   if (response.state === 1) {
-        //     this.$message({
-        //       message: '操作成功',
-        //       type: 'success'
-        //     })
-        //     this.fetchData()
-        //     this.editorVisible = false
-        //   } else {
-        //     this.$message({
-        //       message: response.msg,
-        //       type: 'success'
-        //     })
-        //   }
-        // })
+        const { district,...formObj } = this.formObj
+      
+        let response
+        if(this.editId){
+          // 编辑 
+          response = getInfoEdit({ ...formObj, id:this.editId })
+        }else{
+          // 新增
+          response = getInfoAdd({ ...formObj })
+        }
+        response.then((res)=>{
+          if (res.state === 1) {
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.$emit('fetchData')
+            this.close()
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'success'
+            })
+          }
+        })
       })
+    },
+    // 编辑
+    edit(){
+
+    },
+    // 获取页面详情
+    ongetInfoDetails(id){
+      getInfoDetails(id).then((res)=>{
+        const  dtl = res.data
+        this.formObj = {
+          ...dtl
+        }
+        this.formObj.district = dtl.area.split("-")
+      })
+
     },
     beforeSystemLogoUpload(file) {
       if (file.type !== 'image/jpeg' &&
@@ -276,17 +317,39 @@ export default {
         return false
       }
     },
-
+    // 上传图片
     uploadSystemLogo(content) {
       const formData = new FormData()
       formData.append('file', content.file)
       upload(formData).then(response => {
-        this.formObj.systemLogo = response.data.filePath
+        this.formObj.logoUrl = response.data.filePath
       })
     },
-
+    // 关闭
     close() {
-      this.$emit('update:visible', false)
+      this.visible = false
+      this.formObj = {
+        name: '',
+        contactUser: '',
+        address: '',
+        contactPhone: '',
+        referrer: '',
+        password: '',
+        createdTs: '',
+        logoUrl: '',
+        area: '',
+        district:[],
+        areaCode:'',
+        invesName:'',
+      }
+      this.editId = ""
+      this.$refs['form'].resetFields();
+    },
+    // 选择地区回调
+    handleChange(){
+      let getCheckedNodes = this.$refs.cascader.getCheckedNodes()[0]
+      this.formObj.area = getCheckedNodes.pathLabels.join('-')
+      this.formObj.areaCode = getCheckedNodes.data.code
     }
   }
 }
@@ -330,6 +393,7 @@ export default {
   line-height: 88px;
   border-radius: 50%;
   text-align: center;
+  border: 1px dashed #d9d9d9;
 }
 
 .avatar {

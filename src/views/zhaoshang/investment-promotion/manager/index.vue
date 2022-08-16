@@ -15,9 +15,9 @@
 
         <el-form-item label="状态">
           <el-select v-model="query.status" placeholder="请选择招商办状态">
-            <el-option label="全部" :value="0" />
-            <el-option label="正常" :value="1" />
-            <el-option label="已冻结" :value="2" />
+            <el-option label="全部" :value="-1" />
+            <el-option label="正常" :value="0" />
+            <el-option label="已冻结" :value="1" />
           </el-select>
         </el-form-item>
 
@@ -32,14 +32,14 @@
         </el-form-item>
 
         <el-form-item label="招商办ID">
-          <el-input v-model="query.id" clearable placeholder="请输入招商办ID" />
+          <el-input v-model="query.invesKey" clearable placeholder="请输入招商办ID" />
         </el-form-item>
 
         <el-form-item label="创建时间">
           <el-date-picker
             v-model="query.date"
             format="yyyy-MM-dd"
-            value-format="yyyy-MM-dd"
+            value-format="timestamp"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -69,8 +69,8 @@
       fit
       highlight-current-row
     >
-      <el-table-column type="id" label="招商办ID" width="120px" />
-      <el-table-column label="招商办LOGO" width="140px">
+      <el-table-column align="center" center prop="id" label="招商办ID" width="120px" />
+      <el-table-column align="center" label="招商办LOGO" width="140px">
         <template slot-scope="scope">
           <img
             style="
@@ -80,36 +80,37 @@
               object-fit: cover;
             "
             :src="
-              scope.row.systemLogo
-                ? scope.row.systemLogo
+              scope.row.logoUrl
+                ? scope.row.logoUrl
                 : 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/default_avatar.png'
             "
             alt=""
           >
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="招商办名称" />
-      <el-table-column label="地区">
+      <el-table-column align="center" prop="name" label="招商办名称" />
+      <el-table-column align="center" label="地区">
         <template slot-scope="scope">
-          {{ scope.row.province }}{{ scope.row.city }}
+          {{ scope.row.area }}{{ scope.row.address }}
         </template>
       </el-table-column>
-      <el-table-column label="状态" width="150px">
+      <el-table-column align="center" label="状态" width="150px">
         <template slot-scope="scope">
           {{ statusMap.get(scope.row.status) }}
         </template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作">
+      <el-table-column align="center" fixed="right" label="操作">
         <template slot-scope="scope">
           <el-button type="text" @click="detail($event, scope.row)">详情</el-button>
           <el-button type="text" @click="edit($event, scope.row)">编辑</el-button>
-          <el-button type="text" @click="updateStatus($event, scope.row)">冻结账号</el-button>
-          <el-button type="text" @click="updateStatus($event, scope.row)">解冻账号</el-button>
+          <el-button v-if="scope.row.status == 0"  type="text" @click="updateStatus($event, scope.row)">冻结</el-button>
+          <el-button v-else type="text" @click="updateStatus($event, scope.row)">解冻</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <el-pagination
+      style="margin-top:20px"
       background
       layout="total, sizes, prev, pager, next, jumper"
       :page-sizes="pageSizes"
@@ -121,9 +122,9 @@
     />
 
     <FormDialog
-      :id="editId"
-      :visible.sync="formDialogVisible"
+      ref="FormDialog"
       :area-options="areaOptions"
+      @fetchData="fetchData(true)"
     />
 
     <DetailDialog :id="detailId" :visible.sync="detailDialogVisible" />
@@ -133,78 +134,83 @@
 <script >
 import TableMixins from '@/mixins/table'
 import FormDialog from '@/views/zhaoshang/investment-promotion/manager/components/form-dialog'
-import DetailDialog from '@/views/member/manager/reaudit/component/detailDialog'
+import DetailDialog from '@/views/zhaoshang/investment-promotion/manager/components/detail-dialog'
 import getAreaList from '@/utils/get-area-list'
-import { getList, updateStatus } from '@/api/chamber/manager'
+import { getPageList,getInfoFreeze,getInfoUnFreeze } from '@/api/attract'
 
 export default {
   components: { FormDialog, DetailDialog },
   mixins: [TableMixins],
   data() {
     return {
-      formDialogVisible: false,
       detailDialogVisible: false,
-      editId: '',
-      detailId: '',
+      detailId: null,
 
       statusMap: new Map([
-        [0, '已冻结'],
-        [1, '正常'],
-        [3, '待邀请'],
+        [0, '正常'],
+        [1, '已冻结'],
       ]),
       areaOptions: [], // 地址选项
       // 搜索表单
       query: {
-        name: null,
-        status: null,
+        name: null, // 招商办名称
+        status: null, // 状态 -1全部 0正常 1冻结
         area: [],
-        id: null,
-        date: null,
+        invesKey: null, // 招商办id
+        date: null, 
       },
-
-      tableData: [],
+      currentpage: 1,
+      limit: 10,
+      pageSizes: [10, 20, 50, 100, 500],
+      total: 0,
+      loading:false,
+      tableData: [], // 列表数据
     }
   },
   async mounted() {
     this.areaOptions = await getAreaList(3)
+    this.fetchData()
   },
   methods: {
+    // 获取列表接口数据
     fetchData(reset) {
       if (reset) this.currentPage = 1
       this.loading = true
       // TODO 获取招商办列表
-      // let {
-      //   name,
-      //   status,
-      //   area,
-      //   id,
-      //   date,
-      // } = this.query
-      // let params = {
-      //   'pageSize': this.limit,
-      //   'page': this.currentPage,
-      //   name,
-      //   status,
-      //   startTime: date ? date[0] : '',
-      //   endTime: date ? date[1] : '',
-      //   id,
-      //   // province: area.map(v => v[0]).join(','),
-      //   city: area.map(v => v[1]).join(','),
-      // }
-      // console.log('query', this.query)
-      // getList(params).then(response => {
-      //   this.tableData = response.data.data.list
-      //   this.total = response.data.data.totalRows
-      //   this.loading = false
-      // })
+      let {
+        name,
+        status,
+        area,
+        invesKey,
+        date,
+      } = this.query
+    
+      let arr = []
+      arr = area.map(v=> v)
+      
+      let params = {
+        'pageSize': this.limit,
+        'page': this.currentPage,
+        name,
+        status,
+        startCreatedTs: date ? date[0] : '',
+        endCreatedTs: date ? date[1] : '',
+        invesKey,  // 招商办id
+        areaCode: [...new Set(arr)].join(','),
+      }
+  
+      getPageList(params).then(response => {
+        this.tableData = response.data.list
+        this.total = response.data.totalRows
+        this.loading = false
+      })
     },
-
+    //  编辑
     edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      this.editId = row.id
-      this.formDialogVisible = true
+      this.$refs.FormDialog.show(row.id)
     },
-
+    // 详情
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.detailId = row.id
@@ -212,10 +218,9 @@ export default {
     },
 
     updateStatus(e, row) {
-      console.log('row', row)
       const h = this.$createElement
       let self = this
-      if (row.status === 1) {
+      if (row.status === 0) {
         this.$msgbox({
           title: '冻结账号',
           message: h('p', null, [
@@ -236,38 +241,60 @@ export default {
         }).then(action => {
         })
       } else {
-        this.updateStatusFunc(row)
+        getInfoUnFreeze(row.id).then((res)=>{
+          this.$message({
+            message: '解冻成功',
+            type: 'success'
+          })
+          this.fetchData()
+        })
+
       }
     },
 
     updateStatusFunc(row) {
       // TODO 更新招商办账号状态
-      // let params = {
-      //   'chamberId': row.id,
-      //   'action': row.status === 0 ? 'active' : 'notactive'
-      // }
-      // updateStatus(params).then(response => {
-      //   if (row.status === 0) {
-      //     this.$message({
-      //       message: '解冻成功',
-      //       type: 'success'
-      //     })
-      //   } else {
-      //     this.$message({
-      //       message: '冻结成功',
-      //       type: 'success'
-      //     })
-      //   }
-      //   this.fetchData()
-      // })
+      getInfoFreeze(row.id).then(response => {
+        this.$message({
+          message: '冻结成功',
+          type: 'success'
+        })
+        this.fetchData()
+      })
     },
-
+    //  新增招商办
     add() {
-      this.editId = ''
-      this.formDialogVisible = true
+      this.$refs.FormDialog.show()
     },
 
+    handleSizeChange(val) {
+      this.limit = val
+      this.currentpage = 1
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+        this.currentpage = val
+        this.fetchData()
+    },
+
+  },
+  watch:{
+    //  监听多选地区
+    'query.area':function(newData, oldData){
+      if (newData.length > 5) {
+        this.$message({
+          message: '最多只支持选择3项',
+          duration: 1500,
+          type: 'warning'
+        })
+        this.$nextTick(() => {
+          this.query.area= newData.slice(0,3);
+        })
+      }
+
+    }
   }
+
 }
 </script>
 

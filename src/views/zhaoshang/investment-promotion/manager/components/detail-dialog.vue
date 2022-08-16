@@ -5,6 +5,10 @@
     width="50%"
     @close="close"
   >
+     <el-row>
+      <el-col :offset="2" :span="6">账号名称：</el-col>
+      <el-col :span="10">{{ detailObj.invesName }}</el-col>
+    </el-row>
     <el-row>
       <el-col :offset="2" :span="6">招商办名称：</el-col>
       <el-col :span="10">{{ detailObj.name }}</el-col>
@@ -14,8 +18,8 @@
       <el-col :span="10">
         <img
           :src="
-            detailObj.systemLogo
-              ? detailObj.systemLogo
+            detailObj.logoUrl
+              ? detailObj.logoUrl
               : 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/default_avatar.png'
           "
           alt=""
@@ -25,15 +29,15 @@
     </el-row>
     <el-row>
       <el-col :offset="2" :span="6">联系人姓名：</el-col>
-      <el-col :span="10">{{ detailObj.president }}</el-col>
+      <el-col :span="10">{{ detailObj.contactUser }}</el-col>
     </el-row>
     <el-row>
       <el-col :offset="2" :span="6">联系人手机号：</el-col>
-      <el-col :span="10">{{ detailObj.phone }}</el-col>
+      <el-col :span="10">{{ detailObj.contactPhone }}</el-col>
     </el-row>
     <el-row>
       <el-col :offset="2" :span="6">地区：</el-col>
-      <el-col :span="10">{{ detailObj.province + detailObj.city }}</el-col>
+      <el-col :span="10">{{ detailObj.area }}</el-col>
     </el-row>
     <el-row>
       <el-col :offset="2" :span="6">办公地址：</el-col>
@@ -53,7 +57,7 @@
     </el-row>
     <el-row>
       <el-col :offset="2" :span="6">操作人：</el-col>
-      <el-col :span="10">{{ detailObj.operator }}</el-col>
+      <el-col :span="10">{{ detailObj.operatorId }}</el-col>
     </el-row>
     <el-row>
       <el-col :offset="20" :span="2">
@@ -64,7 +68,7 @@
 </template>
 
 <script>
-import { getDetail } from '@/api/chamber/manager'
+import { getInfoDetails } from '@/api/attract'
 
 export default {
   props: {
@@ -73,8 +77,8 @@ export default {
       default: false
     },
     id: {
-      type: String,
-      default: '',
+      type: Number,
+      default: null,
     }
   },
   data() {
@@ -86,9 +90,9 @@ export default {
     visible(n) {
       if (!n) return
       // TODO 获取详情逻辑
-      // getDetail({ id: this.id }).then(response => {
-      //   this.detailObj = response.data.dtl
-      // })
+      getInfoDetails(this.id).then(response => {
+        this.detailObj = response.data
+      })
     }
   },
   methods: {
