@@ -318,46 +318,31 @@
           :tableData="labelData"
           :pageData="pageData"
         >
-          <template v-slot:labels="row">
-            <el-tag
-              v-for="item in row.data.labelList"
-              :key="item.name"
-              type="success"
-              style="margin: 0 6px 6px 0"
-            >
-              {{ item.name }}
+          <template v-slot:tagName="row">
+            <el-tag type="info" effect="plain" style="margin: 0 6px 6px 0">
+              {{ row.data.tagName }}
             </el-tag>
-            <span
-              v-if="row.data.memberLabelVOList.length > 3"
-              class="text-blue"
-              @click="handleMoreLabel(row.data)"
-              >查看更多</span
-            >
           </template>
         </ys-table>
       </el-tab-pane>
       <el-tab-pane label="供需标签" name="3">
         <ys-table
           :tableConfig="{}"
-          :tableColumn="tableColumn"
-          :tableData="labelData"
-          :pageData="pageData"
+          :tableColumn="tableColumn1"
+          :tableData="supplyData"
         >
-          <template v-slot:labels="row">
-            <el-tag
-              v-for="item in row.data.labelList"
-              :key="item.name"
-              type="success"
-              style="margin: 0 6px 6px 0"
-            >
-              {{ item.name }}
-            </el-tag>
-            <span
-              v-if="row.data.memberLabelVOList.length > 3"
-              class="text-blue"
-              @click="handleMoreLabel(row.data)"
-              >查看更多</span
-            >
+          <template v-slot:tagGroupName="row">
+            <div v-if="row.data.labelNames.length > 0">
+              <el-tag
+                v-for="item in row.data.labelNames"
+                :key="item"
+                type="info"
+                effect="plain"
+                style="margin: 0 6px 6px 0"
+              >
+                {{ item }}
+              </el-tag>
+            </div>
           </template>
         </ys-table>
       </el-tab-pane>

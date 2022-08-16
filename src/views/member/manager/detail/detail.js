@@ -9,6 +9,40 @@ import {
 import Labels from "@/api/labels/labels";
 import ysTable from "@/components/ys-table";
 import datas from "../../member-tab/data";
+/* 会员标签 */
+const memberLabelData = [
+  {
+    label: "标签组",
+    prop: "tagGroupName"
+  },
+  {
+    label: "标签",
+    prop: "tagName",
+    type: "slot",
+    slotName: "tagName"
+  },
+  {
+    label: "标记信息",
+    prop: "updateInfo",
+    type: "operator",
+    operatorName: "tagPeople",
+    operatorTime: "markTime"
+  }
+];
+/* 供需标签 */
+const supplyLabelData = [
+  {
+    label: "标签",
+    prop: "tagGroupName",
+    type: "slot",
+    slotName: "tagGroupName"
+  },
+  {
+    label: "标记时间",
+    prop: "markTime",
+    type: "time"
+  }
+];
 export default {
   name: "memebrDetails",
   components: {
@@ -40,8 +74,10 @@ export default {
       telephones: [],
       contactAddress: [],
       activeName: "1",
-      tableColumn: datas.tableColumn,
+      tableColumn: memberLabelData,
+      tableColumn1: supplyLabelData,
       labelData: [],
+      supplyData: [],
       pageData: {
         currentpage: 1,
         limit: 10,
@@ -157,6 +193,9 @@ export default {
       const res = await Labels.getFirstInterestLabel(userId);
       console.log("---供需标签---", res);
       if (res.state !== 1) return;
+      if (res.data) {
+        this.supplyData = res.data;
+      }
     },
     // 执行会员认证或者取消
     async handleAuthMember(isAuth) {

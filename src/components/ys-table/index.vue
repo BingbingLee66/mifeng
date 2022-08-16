@@ -35,6 +35,7 @@
       "
       :row-key="tableConfig.rowKey"
       @selection-change="handleSelectionChange"
+      @sort-change="handleSortChange"
     >
       <el-table-column label width="35" v-if="tableConfig.single">
         <template slot-scope="scope">
@@ -58,6 +59,7 @@
         v-if="tableConfig.selection"
         :reserve-selection="tableConfig.reserve"
       />
+
       <template v-for="item in tableColumn">
         <!-- 纯文本渲染 -->
         <el-table-column
@@ -81,7 +83,11 @@
         >
           <template slot-scope="scope">
             <el-image
-              :style="{ width: '100px',height: '100px', borderRadius: item.radius || 0}"
+              :style="{
+                width: '100px',
+                height: '100px',
+                borderRadius: item.radius || 0,
+              }"
               :src="item.url && item.url(scope.row)"
               :preview-src-list="item.urlList && item.urlList(scope.row)"
             />
@@ -191,6 +197,17 @@
           <template slot-scope="scope">
             <div>{{ scope.row[item.prop] | dateFormat }}</div>
           </template>
+        </el-table-column>
+        <!-- 排序 -->
+        <el-table-column
+          v-if="item.type === 'sort'"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width || ''"
+          :align="item.align || 'left'"
+          sortable="custom"
+        >
         </el-table-column>
         <!-- 操作者信息 -->
         <el-table-column
@@ -324,6 +341,9 @@ export default {
       } else {
         this.$refs["yyTable"].clearSelection();
       }
+    },
+    handleSortChange(e) {
+      this.$emit("handleSortChange", e);
     },
   },
   watch: {

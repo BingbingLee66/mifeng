@@ -110,7 +110,9 @@ export default {
       moreType: "",
       moreData: {},
       memberLabelIds: [],
-      labelOptions: []
+      labelOptions: [],
+      platformLabelIds: [],
+      PlatformOptions: []
     };
   },
 
@@ -142,6 +144,7 @@ export default {
     this.importQuery.ckey = this.$store.getters.ckey;
     this.uploadHeaders["access-token"] = getToken();
     this.getLabelOptions();
+    this.getPlatformOptions();
   },
   mouted() {},
   methods: {
@@ -216,7 +219,7 @@ export default {
           );
         }
       }
-      let _memberLabelIds = "";
+      let _tagIds = "";
       if (this.memberLabelIds.length > 0) {
         let ids = this.memberLabelIds.map(item => {
           item = item.filter((id, idx) => {
@@ -224,7 +227,17 @@ export default {
           });
           return item[0];
         });
-        _memberLabelIds = ids.join(",");
+        _tagIds = ids.join(",");
+      }
+      if (this.platformLabelIds.length > 0) {
+        let ids = this.platformLabelIds.map(item => {
+          item = item.filter((id, idx) => {
+            return idx === 1;
+          });
+          return item[0];
+        });
+        _tagIds = _tagIds + "," + ids.join(",");
+        _tagIds = _tagIds.replace(/^(\s|,)+|(\s|,)+$/g, "");
       }
       const params = {
         status: this.query.status,
@@ -240,7 +253,7 @@ export default {
         tradeType: this.query.tradeType,
         department: this.query.department,
         activatedState: this.query.activatedState,
-        memberLabelIds: _memberLabelIds,
+        memberLabelIds: _tagIds,
         pageSize: this.limit,
         page: this.currentpage
       };
@@ -511,6 +524,28 @@ export default {
         eleLabel.panel.loadCount = 0;
         eleLabel.panel.lazyLoad();
       } */
+    },
+    async getPlatformOptions() {
+      const res = await Labels.getLabelGroupLst({
+        noPaging: true,
+        dataSource: 0,
+        freeze: 0
+      });
+      let memberLabelList = res.data.list;
+      let _memberLabelList = memberLabelList.map(item => {
+        let obj = {
+          value: item.id,
+          label: item.name,
+          children: item.memberLabelVOList.map(item => {
+            return {
+              value: item.id,
+              label: item.name
+            };
+          })
+        };
+        return obj;
+      });
+      this.PlatformOptions = _memberLabelList;
     },
     async getLabelOptions() {
       const res = await Labels.getLabelGroupLst({

@@ -102,6 +102,19 @@
             collapse-tags
           ></el-cascader>
         </el-form-item>
+        <el-form-item label="平台标签">
+          <el-cascader
+            ref="eleLabel"
+            v-model="platformLabelIds"
+            :props="{ multiple: true }"
+            :options="PlatformOptions"
+            :show-all-levels="true"
+            size="small"
+            filterable
+            clearable
+            collapse-tags
+          ></el-cascader>
+        </el-form-item>
         <el-form-item label="入会时间">
           <el-date-picker
             v-model="query.date"

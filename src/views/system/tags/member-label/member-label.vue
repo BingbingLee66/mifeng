@@ -29,6 +29,7 @@
       @handleCurrentChange="handleCurrentChange"
       @handleSizeChange="handleSizeChange"
       @handleLevelCallback="handleLevelCallback"
+      @handleSortChange="handleSortChange"
     >
       <template v-slot:labels="row">
         <el-tag
@@ -191,6 +192,7 @@ export default {
       addVisible: false,
       editVisible: false,
       chamberList: [],
+      orderByUserNum: "",
     };
   },
   methods: {
@@ -207,6 +209,7 @@ export default {
       this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage;
       const { currentpage, limit } = this.pageData;
       const params = {
+        orderByUserNum: this.orderByUserNum,
         dataSource: this.dataSource,
         selectType: this.dataSource == "0" ? 1 : 2,
         labelGroupName,
@@ -253,6 +256,19 @@ export default {
     handleCurrentChange(val) {
       this.pageData.currentpage = val;
       this.fetchData();
+    },
+
+    handleSortChange(e) {
+      if (e.order === "ascending") {
+        this.orderByUserNum = "ASC";
+        this.fetchData(1);
+        return;
+      }
+      if (e.order === "descending") {
+        this.orderByUserNum = "DESC";
+        this.fetchData(1);
+        return;
+      }
     },
 
     handleTabsChange() {

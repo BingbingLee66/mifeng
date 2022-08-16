@@ -51,7 +51,12 @@
           </div>
           <div v-else class="text-center">
             <div class="mb-40 mt-40">暂无数据</div>
-            <el-button v-if="labelObj.selectType == 3" @click="goCreateLabel"
+            <!-- 商会后台引导创建 -->
+            <el-button v-if="labelObj.selectType == 3" @click="goMemberLabel"
+              >去创建</el-button
+            >
+            <!-- 总后台引导创建 -->
+            <el-button v-if="!isMember" @click="goPlatformLabel"
               >去创建</el-button
             >
           </div>
@@ -151,10 +156,17 @@ export default {
       this.$emit("confirm", this.checkedLabel);
     },
 
-    goCreateLabel() {
+    goMemberLabel() {
       this.close();
       this.$router.push({
         path: "/member/member-tab",
+      });
+    },
+
+    goPlatformLabel() {
+      this.close();
+      this.$router.push({
+        path: "/sys/tags",
       });
     },
   },

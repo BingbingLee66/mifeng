@@ -12,13 +12,13 @@ const formItem = [
     label: "标签组",
     prop: "labelGroupName",
     type: "input",
-    clearable: true,
+    clearable: true
   },
   {
     label: "标签",
     prop: "labelName",
     type: "input",
-    clearable: true,
+    clearable: true
   },
   {
     label: "权重是否为0",
@@ -35,18 +35,18 @@ const formItem = [
 const tableColumn = [
   {
     label: "标签组",
-    prop: "name",
+    prop: "name"
   },
   {
     label: "标签",
     prop: "labels",
     type: "slot",
-    slotName: "labels",
+    slotName: "labels"
   },
   {
     label: "权重",
     prop: "weight",
-    type: "level",
+    type: "level"
   },
   {
     label: "更新信息",
@@ -59,8 +59,8 @@ const tableColumn = [
     label: "操作",
     prop: "operate",
     type: "slot",
-    slotName: "operate",
-  },
+    slotName: "operate"
+  }
 ];
 
 const formData1 = {
@@ -79,13 +79,13 @@ const formItem1 = [
     label: "标签组",
     prop: "labelGroupName",
     type: "input",
-    clearable: true,
+    clearable: true
   },
   {
     label: "标签",
     prop: "labelName",
     type: "input",
-    clearable: true,
+    clearable: true
   },
   {
     label: "所属商协会",
@@ -109,33 +109,34 @@ const formItem1 = [
 const tableColumn1 = [
   {
     label: "标签组",
-    prop: "name",
+    prop: "name"
   },
   {
     label: "标签",
     prop: "labels",
     type: "slot",
-    slotName: "labels",
+    slotName: "labels"
   },
   {
     label: "所属商协会",
-    prop: "chamberName",
+    prop: "chamberName"
   },
   {
     label: "标签使用人数",
     prop: "useNum",
+    type: "sort"
   },
   {
     label: "采集状态",
     prop: "collectStatus",
     type: "function",
-    callback: (row) => {
+    callback: row => {
       if (row.collectStatus == 0) {
-        return "未采集"
+        return "未采集";
       } else if (row.collectStatus == 1) {
-        return "已采集"
+        return "已采集";
       } else {
-        return "--"
+        return "--";
       }
     }
   },
@@ -143,8 +144,8 @@ const tableColumn1 = [
     label: "操作",
     prop: "operate",
     type: "slot",
-    slotName: "operate",
-  },
+    slotName: "operate"
+  }
 ];
 
 export default {
@@ -153,5 +154,5 @@ export default {
   tableColumn,
   formItem1,
   formData1,
-  tableColumn1,
+  tableColumn1
 };

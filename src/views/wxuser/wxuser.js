@@ -41,7 +41,8 @@ export default {
     this.getAllChamberList();
     this.getLabelOptions();
     this.getPlatformOptions();
-    this.init();
+    // this.init();
+    this.fetchData(1);
   },
   methods: {
     async getLabelOptions() {
@@ -218,7 +219,11 @@ export default {
         "actionId",
         e.currentTarget.getAttribute("actionid")
       );
-      this.$router.push({ name: "用户详情", params: { userDetail: row } });
+      this.$router.push({
+        name: "用户详情",
+        query: {userId: row.id},
+        params: { userDetail: row }
+      });
     },
     updateStatus(e, row) {
       window.localStorage.setItem(
