@@ -166,7 +166,7 @@
             <span
               v-if="scope.row.platformTag.length > 3"
               class="text-blue"
-              @click="handleMoreLabel(scope.row)"
+              @click="handleMoreLabel(scope.row.platformTag)"
               >查看更多</span
             >
           </div>
@@ -187,7 +187,7 @@
             <span
               v-if="scope.row.chamberTag.length > 3"
               class="text-blue"
-              @click="handleMoreLabel(scope.row)"
+              @click="handleMoreLabel(scope.row.chamberTag)"
               >查看更多</span
             >
           </div>

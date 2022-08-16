@@ -289,7 +289,7 @@ export default {
       let moreData = {
         labeList: []
       };
-      moreData.labeList = rowData.platformTag.map(item => {
+      moreData.labeList = rowData.map(item => {
         return {
           id: item.tagId,
           name: item.tagName
