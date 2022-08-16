@@ -123,7 +123,7 @@ class Labels {
   /** 用户详情-用户标签列表 */
   static async getUserDetailLabelLst(userId, type, params) {
     return request({
-      url: `/ec/member-label-bridge/userInfoLabelList/${userId}/${1}`,
+      url: `/ec/member-label-bridge/userInfoLabelList/${userId}/${type}`,
       method: "get",
       params
     });

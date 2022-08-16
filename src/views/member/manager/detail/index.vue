@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-tabs v-model="activeName">
+    <el-tabs v-model="activeName" @tab-click="handleTabClick">
       <el-tab-pane label="账号信息" name="1">
         <div class="block">
           <el-row>

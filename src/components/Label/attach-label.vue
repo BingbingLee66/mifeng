@@ -35,7 +35,7 @@
         <el-tab-pane v-if="isMember" label="平台推荐" name="1"></el-tab-pane>
         <el-tab-pane v-if="isMember" label="本会创建" name="3"></el-tab-pane>
         <div style="max-height: 50vh; overflow-y: auto">
-          <div v-if="lableList.length === 0">
+          <div v-if="lableList.length > 0">
             <el-row v-for="item in lableList" :key="item.id">
               <div class="mb-10">{{ item.name }}</div>
               <el-checkbox-group v-model="checkedLabel">
@@ -86,7 +86,6 @@ export default {
       labelObj: {
         labelGroupName: "",
         labelName: "",
-        // 1平台推荐 2商协会创建 3本会创建
         selectType: "1",
       },
       lableList: [],

@@ -33,6 +33,7 @@ export default {
       moreData: {},
       memberLabelIds: [],
       labelOptions: [],
+      platformLabelIds: [],
       PlatformOptions: []
     };
   },
@@ -165,7 +166,7 @@ export default {
         this.currentpage = 1;
       }
       this.listLoading = true;
-      let _memberLabelIds = "";
+      let _tagIds = "";
       if (this.memberLabelIds.length > 0) {
         let ids = this.memberLabelIds.map(item => {
           item = item.filter((id, idx) => {
@@ -173,7 +174,16 @@ export default {
           });
           return item[0];
         });
-        _memberLabelIds = ids.join(",");
+        _tagIds = ids.join(",");
+      }
+      if (this.platformLabelIds.length > 0) {
+        let ids = this.platformLabelIds.map(item => {
+          item = item.filter((id, idx) => {
+            return idx === 1;
+          });
+          return item[0];
+        });
+        _tagIds = _tagIds + "," + ids.join(",");
       }
       let params = {
         pageSize: this.limit,
@@ -181,7 +191,7 @@ export default {
         userType: this.query.userType,
         status: this.query.status,
         chamberId: this.query.chamberId,
-        memberLabelIds: _memberLabelIds
+        tagIds: _tagIds
       };
       if (this.query.mulValue) {
         params["mulValue"] = this.query.mulValue;
@@ -241,7 +251,7 @@ export default {
     /* 打标签 */
     handleAttach() {
       if (this.multipleSelection.length === 0) {
-        return this.$message.warning("请至少选择一位用户");
+        return this.$message.error("请至少选择一位用户");
       }
       this.attachVisible = true;
       this.$refs.eleAttach.labelObj.selectType = "1";

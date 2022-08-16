@@ -60,7 +60,7 @@
         <el-form-item label="平台标签">
           <el-cascader
             ref="eleLabel"
-            v-model="memberLabelIds"
+            v-model="platformLabelIds"
             :props="{ multiple: true }"
             :options="PlatformOptions"
             :show-all-levels="true"

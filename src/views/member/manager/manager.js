@@ -285,7 +285,7 @@ export default {
       window.localStorage.setItem("membereditor", this.$route.path);
       this.$router.push({
         name: "会员详情",
-        query: { userId: row.id },
+        query: { userId: row.wxUserId },
         params: { memberDetail: row, querytype: "0" }
       });
     },
