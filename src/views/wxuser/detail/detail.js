@@ -137,7 +137,7 @@ export default {
       console.log("---供需标签---", res);
       if (res.state !== 1) return;
       if (res.data) {
-        this.supplyData = res.data;
+        this.supplyData = [res.data];
       }
     },
     handleSizeChange(val) {

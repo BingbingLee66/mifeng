@@ -194,7 +194,7 @@ export default {
       console.log("---供需标签---", res);
       if (res.state !== 1) return;
       if (res.data) {
-        this.supplyData = res.data;
+        this.supplyData = [res.data];
       }
     },
     // 执行会员认证或者取消
