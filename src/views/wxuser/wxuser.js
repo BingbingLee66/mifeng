@@ -184,6 +184,7 @@ export default {
           return item[0];
         });
         _tagIds = _tagIds + "," + ids.join(",");
+        _tagIds = _tagIds.replace(/^(\s|,)+|(\s|,)+$/g, "");
       }
       let params = {
         pageSize: this.limit,

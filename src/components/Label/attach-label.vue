@@ -116,6 +116,7 @@ export default {
       this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage;
       const { currentpage, limit } = this.pageData;
       const params = {
+        weightZero: false,
         freeze: 0,
         selectType,
         labelGroupName,

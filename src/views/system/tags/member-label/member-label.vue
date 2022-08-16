@@ -208,6 +208,7 @@ export default {
       const { currentpage, limit } = this.pageData;
       const params = {
         dataSource: this.dataSource,
+        selectType: this.dataSource == "0" ? 1 : 2,
         labelGroupName,
         labelName,
         collectStatus:
@@ -358,7 +359,7 @@ export default {
         weight: rowData.weight,
       });
       if (res.state != 1) return this.$message.error(res.msg);
-      this.$message.success('采集成功，请在 平台推荐处 查看');
+      this.$message.success("采集成功，请在 平台推荐处 查看");
       this.fetchData(1);
     },
 
