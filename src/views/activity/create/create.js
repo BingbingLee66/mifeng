@@ -181,15 +181,6 @@ export default {
 
   },
   methods: {
-    loadScript(src){
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script')
-            script.src = src
-            script.onload = resolve
-            script.onerror = reject
-            document.head.appendChild(script)
-        })
-    },
     postSelectInit() {
       const params = {
         'ckey': this.$store.getters.ckey,
@@ -883,8 +874,7 @@ export default {
 
     // 初始化地图
    async initMap(){
-      await this.loadScript(`https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=${this.defaultParams.appkey}`)
-     
+
       const myLatLng = this.createZuoBiao(this.formObj.latitude, this.formObj.longitude)
 
       this.defaultParams.map = new TMap.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map

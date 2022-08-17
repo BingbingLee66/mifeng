@@ -290,11 +290,8 @@ export default {
         })
       })
     },
-    // 编辑
-    edit(){
 
-    },
-    // 获取页面详情
+    // 编辑获取页面详情
     ongetInfoDetails(id){
       getInfoDetails(id).then((res)=>{
         const  dtl = res.data

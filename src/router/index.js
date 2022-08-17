@@ -413,14 +413,14 @@ export const constantRoutes = [
       },
       {
         name: '我收到的名片',
-        path: '/zhaoshang/information-publish/:chamberId/card-list',
+        path: '/zhaoshang/information-publish/:chamberId/:chamberkey/:type/card-list',
         component: () => import('@/views/zhaoshang/business-card/list/index.vue'),
         hidden: true,
         meta: { title: '我收到的名片' }
       },
       {
         name: '名片详情',
-        path: '/zhaoshang/information-publish/:cardId/card-detail',
+        path: '/zhaoshang/information-publish/:cardId/:type/:targetId/card-detail',
         component: () => import('@/views/zhaoshang/business-card/detail/index.vue'),
         hidden: true,
         meta: { title: '名片详情' }

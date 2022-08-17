@@ -1,74 +1,90 @@
 <template>
   <div class="card-detail-wrap">
     <div class="avatar">
-      <img src="@/assets/img/avatar.gif" alt="">
+      <img :src="listData.avatar || 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/default_avatar.png'" alt="">
     </div>
     <div class="card-detail-info">
       <div class="header">
-        <div class="name">马化腾</div>
-        <div class="company">深圳市腾讯科技有限公司</div>
-        <div class="post">腾讯公司执行董事、董事会主席兼本公司首席执行官</div>
+        <div class="name">{{listData.userName}}</div>
+        <div class="company">{{listData.unit}}</div>
+        <div class="post">{{listData.post}}</div>
       </div>
 
       <div class="hr" />
 
       <div class="profile common">
         <div class="title">个人简介：</div>
-        <div class="desc">1998年，创办腾讯计算机系统有限公司。</div>
-        <div class="desc">2009年当选中国经济十年商业领袖。</div>
-        <div class="desc">2010年，福布斯富豪排行榜第249位，大陆富豪第6位。</div>
-        <div class="desc">2010年5月14日，“2010新财富500富人榜”，以336.2亿元资产排名第5位。</div>
-        <div class="desc">2010年10月21日，“2010胡润IT富豪榜”以293亿资产，屈居第二。</div>
-        <div class="desc">连续三年入选《巴伦周刊》评出的2011、2012、2013年度排名前30位的全球最佳CEO。</div>
+        <div class="desc">{{listData.resume}}</div>
+       
       </div>
 
       <div class="hr" />
 
       <div class="chamber common">
         <div class="title">所在商/协会：</div>
-        <div class="desc">广州商会 <el-tag size="mini">会长</el-tag></div>
-        <div class="desc">广州商会 <el-tag size="mini">会长</el-tag></div>
-        <div class="desc">广州商会 <el-tag size="mini">会长</el-tag></div>
-        <div class="desc">广州商会 <el-tag size="mini">会长</el-tag></div>
+        <div class="desc" v-for="(item,index) in listData.cardChambers" :key="index">{{item.chamberName}} <el-tag size="mini">{{item.memberPost}}</el-tag></div>
       </div>
 
       <div class="hr" />
 
       <div class="identity common">
         <div class="title">身份：</div>
-        <div class="identity-detail">
-          <div class="title">深圳市腾讯科技有限公司</div>
-          <div class="desc">腾讯公司执行董事、董事会主席兼本公司首席执行官</div>
+        <div class="identity-detail" v-for="(item,index) in listData.identitiys" :key="index">
+          <div class="title">{{ item.unit }}</div>
+          <div class="desc">{{ item.post }}</div>
         </div>
-        <div class="identity-detail">
-          <div class="title">深圳市腾讯科技有限公司</div>
-          <div class="desc">腾讯公司执行董事、董事会主席兼本公司首席执行官</div>
-        </div>
+       
       </div>
 
       <div class="tag common">
         <div class="title">标签：</div>
-        <div class="desc">计算机软，硬件设计，技术开发，货物及技术进出口，利用互联网经营游戏产品运营,</div>
-        <div class="desc">计算机软，硬件设计，技术开发，货物及技术进出口，利用互联网经营游戏产品运营,</div>
+        <div v-if="listData.tagList" class="desc">{{ listData.tagList.join('，') }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { getIpCardDetail } from '@/api/attract'
 export default {
   name: 'BusinessCardDetail',
+  data() {
+    return {
+      listData:{},
+    }
+  },
   computed: {
-    cardId() {
+    cardId() { // ip名片详情,示例值(0)
       return this.$route.params.cardId || ''
+    },
+    type() { // 1-招商信息2-招商活动
+      return this.$route.params.type || ''
+    },
+    targetId() { // 招商活动或招商信息id
+      return this.$route.params.targetId || ''
     }
   },
   mounted() {
+    console.log('cardId',this.cardId,this.type,this.targetId)
     this.fetchData()
   },
   methods: {
+    // 获取数据
     fetchData() {
-      // TODO 待完善
+      let params = {
+        cardId:this.cardId,
+        targetId : this.targetId,
+        type:this.type // 1-招商信息2-招商活动
+      }
+      getIpCardDetail(params).then((res)=>{
+        console.log('res',res)
+        this.listData = res.data
+        this.listData.tagList = []
+        this.listData.memberLabels.forEach((v)=>{
+          this.listData.tagList.push(v.memberLabelName)   
+        })
+
+      })
     }
   }
 }
