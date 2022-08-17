@@ -107,7 +107,7 @@
 
     <div class="footer">
       <el-button style="margin-left:20px;" @click="$router.push('/management')">取消</el-button>
-      <el-button style="margin-left:20px;" type="primary" @click="onSubmit">{{ isEdit?'确定':'发布' }}</el-button>
+      <el-button v-dbClick style="margin-left:20px;" type="primary" @click="onSubmit">{{ isEdit?'确定':'发布' }}</el-button>
     </div>
 
     <!-- 弹窗表单 -->
