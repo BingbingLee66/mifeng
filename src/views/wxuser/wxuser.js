@@ -73,19 +73,23 @@ export default {
       });
       let memberLabelList = res.data.list;
       _labelOptions.forEach(item => {
-        item.children = memberLabelList.map(item1 => {
-          return {
-            value: item1.id,
-            label: item1.name,
-            children: item1.memberLabelVOList
-              ? item1.memberLabelVOList.map(item2 => {
-                  return {
-                    value: item2.id,
-                    label: item2.name
-                  };
-                })
-              : []
-          };
+        item.children = [];
+        memberLabelList.forEach(item1 => {
+          if (item1.ckey === item.value) {
+            item.children.push({
+              value: item1.id,
+              label: item1.name,
+              children:
+                item1.memberLabelVOList && item1.memberLabelVOList
+                  ? item1.memberLabelVOList.map(item2 => {
+                      return {
+                        value: item2.id,
+                        label: item2.name
+                      };
+                    })
+                  : []
+            });
+          }
         });
       });
       this.labelOptions = _labelOptions;
@@ -221,7 +225,7 @@ export default {
       );
       this.$router.push({
         name: "用户详情",
-        query: {userId: row.id},
+        query: { userId: row.id },
         params: { userDetail: row }
       });
     },

@@ -44,7 +44,11 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="商会标签">
+        <el-form-item>
+          <div slot="label">
+            <div style="line-height:1;text-align: center;">用户标签</div>
+            <span class="text-gray">(商协会创建)</span>
+          </div>
           <el-cascader
             ref="eleLabel"
             v-model="memberLabelIds"
@@ -57,7 +61,11 @@
             collapse-tags
           ></el-cascader>
         </el-form-item>
-        <el-form-item label="平台标签">
+        <el-form-item>
+          <div slot="label">
+            <div style="line-height:1;text-align: center;">用户标签</div>
+            <span class="text-gray">(平台创建)</span>
+          </div>
           <el-cascader
             ref="eleLabel"
             v-model="platformLabelIds"

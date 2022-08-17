@@ -692,6 +692,15 @@ export default {
     handleRemoveLabelConfirm() {
       this.moreVisible = false;
       this.fetchData(1);
+    },
+    getPathFun() {
+      if (this.$route.path === "/member/manager") {
+        this.getLabelOptions();
+        this.getPlatformOptions();
+      }
     }
+  },
+  watch: {
+    $route: "getPathFun"
   }
 };

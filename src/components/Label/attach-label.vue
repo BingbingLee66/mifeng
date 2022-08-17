@@ -183,4 +183,16 @@ export default {
   margin-right: 20px;
   border: 1px solid #dcdfe6;
 }
+
+/deep/ .el-checkbox-button:first-child .el-checkbox-button__inner {
+  border-radius: 0 !important;
+}
+
+/deep/ .el-checkbox-button:last-child .el-checkbox-button__inner {
+  border-radius: 0 !important;
+}
+
+/deep/ .el-checkbox-button__inner {
+  border: 0 !important;
+}
 </style>
