@@ -123,7 +123,10 @@
             <el-col style="width: 600px;">
               <el-form-item label="类型摘要" prop="summary">
                 <el-button style="margin-right: 10px;" size="small" @click="makeTagDialogVisible = true">选择摘要标签</el-button>
-                <el-select v-model="formObj.summary" multiple disabled remote filterable />
+                <!-- <el-select v-model="formObj.summary"  :label="name" multiple disabled remote filterable /> -->
+                <div class="tags">
+                  <div class="tags-block" v-for="(item,index) in formObj.summary" :key="index">#{{item.name}}</div>
+                </div>
               </el-form-item>
             </el-col>
           </el-row>
@@ -286,9 +289,9 @@
           </el-row>
 
           <el-row>
-            <el-col style="width: 600px;">
-              <el-form-item label="招商表格" prop="chamberTable">
-                <el-upload action="/" :before-upload="beforeUploadFile" :http-request="uploadFile">
+            <el-col style="width: 700px;">
+              <el-form-item label="招商表格:" >
+                <el-upload action="/" ref="uploadFile" :on-remove="handleRemoveAttachment" :file-list="formObj.fileList" :limit="20" :before-upload="beforeUploadFile" :http-request="uploadFile">
                   <el-button type="primary" size="small">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">上传格式限制word、excel、pdf、ppt</div>
                 </el-upload>
@@ -790,6 +793,7 @@
     <MakeTagDialog
       :visible.sync="makeTagDialogVisible"
       :custom-group="customTagGroup"
+      :list="formObj.summary.map(v=> v.id)"
       @add="tagFormDialogVisible = true"
       @confirm="checkTagList => formObj.summary = checkTagList"
     />
@@ -1046,6 +1050,14 @@
   .sign-right{
     margin-left: 10px;
     width: 100%;
+  }
+}
+.tags{
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  .tags-block{
+    margin:0 8px 0px 0;
   }
 }
 </style>

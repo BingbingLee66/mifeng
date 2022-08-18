@@ -29,14 +29,16 @@
         </el-form-item>
 
         <el-form-item label="标签筛选">
-          <el-select v-model="query.memberLabelId" clearable placeholder="请选择">
-            <el-option
-              v-for="item in tagOpt"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+          <el-cascader
+            ref="eleLabel"
+            v-model="query.memberLabelId"
+            :props="{ multiple: true, value: 'value', label: 'label', }"
+            :options="PlatformOptions"
+            :show-all-levels="true"
+            filterable
+            clearable
+            collapse-tags
+          ></el-cascader>
         </el-form-item>
 
         <el-form-item label="">
@@ -88,6 +90,7 @@
 import { getAndTargetId,getDetailsByInvesKey } from '@/api/attract'
 import avatarBg from '@/assets/img/avatar.gif'
 import {chamberSearchList} from '@/api/chamber/manager'
+import Labels from "@/api/labels/labels";
 export default {
   name: 'BusinessCardList',
   data() {
@@ -95,12 +98,12 @@ export default {
       query: {
         userName: '', // 姓名
         companyName: '', // 公司名称
-        ckey: null, // 商协会唯一标识
-        memberLabelId: null,  // 标签筛选
+        ckey: '', // 商协会唯一标识
+        memberLabelId: [],  // 标签筛选
       },
       title:'', // 招商办名称
       chamberList: [],
-      tagOpt: [
+      PlatformOptions: [
         { label: '房地产', value: 'fdc' },
         { label: '跨境电商', value: 'kj' },
       ],
@@ -126,6 +129,7 @@ export default {
   mounted(){
     this.onGetDetailsByInvesKey()  // 招商办名称
     this.chamberSearchListFunc() // 获取商协会
+    this.getPlatformOptions(); // 标签筛选
     this.fetchData()
   },
   methods: {
@@ -146,6 +150,29 @@ export default {
         }
       })
     },
+    // 标签筛选
+    async getPlatformOptions() {
+      const res = await Labels.getLabelGroupLst({
+        noPaging: true,
+        dataSource: 0,
+        freeze: 0
+      });
+      let memberLabelList = res.data.list;
+      let _memberLabelList = memberLabelList.map(item => {
+        let obj = {
+          value: item.id,
+          label: item.name,
+          children: item.memberLabelVOList.map(item => {
+            return {
+              value: item.id,
+              label: item.name
+            };
+          })
+        };
+        return obj;
+      });
+      this.PlatformOptions = _memberLabelList;
+    },
     // 获取页面数据
     fetchData(reset) { 
       if (reset) this.currentPage = 1
@@ -156,7 +183,7 @@ export default {
         userName : this.query.userName,
         companyName : this.query.companyName,
         ckey : this.query.ckey,
-        memberLabelId : this.query.memberLabelId,
+        memberLabelId : this.query.memberLabelId.map(v => v[1]).join(','),
         targetId : this.chamberId,
         type:this.type // 1-招商信息2-招商活动
       } 
@@ -168,7 +195,6 @@ export default {
             v.tagList.push(j.memberLabelName)
           })
         })
-        console.log('this.cardList',this.cardList)
         this.total = res.data.totalRows
         this.listLoading = false;
       })
@@ -196,6 +222,22 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
+  },
+    watch:{
+    //  监听多选标签
+    'query.area':function(newData, oldData){
+      if (newData.length > 20) {
+        this.$message({
+          message: '最多只支持选择20项',
+          duration: 1500,
+          type: 'warning'
+        })
+        this.$nextTick(() => {
+          this.query.memberLabelId= newData.slice(0,20);
+        })
+      }
+
+    }
   }
 }
 </script>

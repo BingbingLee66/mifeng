@@ -27,6 +27,7 @@
             :options="areaOptions"
             separator="-"
             collapse-tags
+            clearable 
             :props="{ expandTrigger: 'hover', value: 'code', label: 'name', multiple: true }"
           />
         </el-form-item>

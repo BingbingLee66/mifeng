@@ -2,6 +2,7 @@ import { createActivity, uploadPortrait, getActivity, setLinkAndCompetence } fro
 import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
 import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
+import { getFile2name } from '@/api/attract'
 import MakeTagDialog from '@/views/zhaoshang/activity/create/component/make-tag-dialog'
 import TagFormDialog from '@/views/zhaoshang/activity/create/component/tag-form-dialog'
 import { ACTIVE_MODE, activeModeMap, stageMap, getMapDict } from '@/consts'
@@ -101,13 +102,13 @@ export default {
         extraSeat: 0, // 拓展功能座位 0否 1是
         isPublish: 0, // 是否发布 0否 1是
         linkType: 1, // 直播链接类型 1 云会播小程序 2 H5链接
-        chamber: '',
-        stage: null,
-        chamberAddress: '',
+        chamber: '', // 关联招商办
+        stage: null, // 招商阶段
+        chamberAddress: [], // 招商地区
         weight: 0,
-        summary: ['a', 'b'],
-        activeMode: '',
-        chamberTable: [],
+        summary: [],
+        activeMode: '', // 活动模式
+        fileList: [], // 上传文件数组
       },
       roleIds: [], // 多选框 扩展功能
       addressList: [], // 搜索数组
@@ -525,12 +526,26 @@ export default {
     },
     // 上传文件
     uploadFile(content) {
-      // TODO 待确定上传文件接口
-      // let formData = new FormData()
-      // formData.append('file', content.file)
-      // uploadPortrait(formData).then(response => {
-      //   this.formObj.chamberTable = response.data.filePath
-      // })
+      let formData = new FormData()
+      formData.append('file', content.file)
+      let folder = 'government'
+      getFile2name(formData,folder).then(res=>{
+        if(res.state == 1){
+          let obj = {
+            name:content.file.name,
+            url:res.data
+          }
+          this.formObj.fileList.push(obj)
+        }else{
+          const idx = this.$refs.uploadFile.uploadFiles.findIndex(item => item.uid === file.file.uid)
+          this.$refs.uploadFile.uploadFiles.splice(idx, 1)
+          return this.$message.error('上传失败,请重试')
+        }
+      })
+    },
+    // 删除上传文件
+    handleRemoveAttachment(file, fileList){
+      this.formObj.fileList = this.formObj.fileList.filter(item => item.uid !== file.uid)
     },
 
     // 上传图片校验

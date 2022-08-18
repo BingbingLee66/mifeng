@@ -31,3 +31,19 @@ export const getAndTargetId = data => request({ url: '/api/ec/invesCard/getCardL
 export const getDetailsByInvesKey = invesKey => request({ url: `/ec/investment-info/detailsByInvesKey/${invesKey}`, method: 'get' })
 // 名片详情
 export const getIpCardDetail = data => request({ url: `/api/ec/invesCard/ipCardDetail/${data.cardId}`, method: 'post', data: { targetId:data.targetId, type:data.type } })
+
+// 上传文件到对应目录(分享-share, 动态-articleCoverImg,视频封面-video-cover,供需-demand)
+export function getFile2name(params,query) {
+    return request({
+        url: `/ec/upload/file?folder=${query}`,
+        method: 'post',
+        data:params
+    })
+}
+
+// 查询活动列表
+export const getInvesActivityList = params => request({ url: '/api/ec/invesActivity/activity-list', method: 'get', params })
+// 查询活动详情
+export const getEcActivity = params => request({ url: '/api/ec/invesActivity/get-activity', method: 'get', params })
+// 活动列表修改权重
+export const getUpdateActivitySort = params => request({ url: '/api/ec/invesActivity/update-activity-sort', method: 'put', params })

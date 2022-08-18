@@ -6,7 +6,7 @@ import {
   delActivity
 } from '@/api/activity/activity'
 import { activeModeMap, stageMap, activeStatusMap, ACTIVE_STATUS, getMapDict } from '@/consts'
-
+import { getInfoList,getInvesActivityList,getUpdateActivitySort } from '@/api/attract'
 export default {
   data() {
     var checkNumber = (rule, value, callback) => {
@@ -27,10 +27,11 @@ export default {
       previewImgVisible: false,
       previewUrl: '',
       query: {
-        ckey: '', // 来源
-        id: '', // 活动ID
+        invesKey: '', // 招商办标识
+        activityId: '', // 活动ID
         activityName: '', // 活动名称
-        status: '' // 活动状态
+        phaseStatus:null, // 状态 0筹备阶段 1拟策阶段 2公开招商阶段
+        status: 0 //  活动状态 0.全部1.未开始2.报名中3.已结束,4:报名中
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -38,7 +39,7 @@ export default {
       currentpage: 1,
       limit: 10,
       listLoading: false,
-      chamberOptions: [],
+      chamberOptions: [], // 活动来源
       isPublish: '',
       rowId: '',
       showSortDialog: false,
@@ -69,26 +70,17 @@ export default {
     if (this.$route.params.type !== undefined) {
       this.type = this.$route.params.type + ''
     }
-    this.getChamberOptions()
+    // 获取信息来源
+    this.ongetInfoList()
     this.fetchData()
   },
   methods: {
-    handleClick(tab) {
-      this.type = tab.name
-      this.query.id = ''
-      this.query.activityName = ''
-      this.query.ckey = ''
-      this.query.status = ''
-      this.fetchData(1)
-    },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.limit = val
       this.currentpage = 1
       this.fetchData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.currentpage = val
       this.fetchData()
     },
@@ -98,12 +90,7 @@ export default {
     getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    // 获取活动来源
-    getChamberOptions() {
-      getActivitySource().then(response => {
-        this.chamberOptions = response.data
-      })
-    },
+    // 点击活动列表图
     openPreviewModal(url) {
       this.previewImgVisible = true
       this.previewUrl = url
@@ -111,7 +98,7 @@ export default {
     handleInput(e) {
       let regexp = /^[1-9]\d*$/
       if (!regexp.test(e)) {
-        this.query.id = ''
+        this.query.activityId = ''
       }
     },
     // 查询活动列表
@@ -121,15 +108,16 @@ export default {
       }
       this.listLoading = true
       let params = {
-        // 'isPublish': this.type,
-        'ckey': this.ckey ? this.ckey : this.query.ckey,
-        'id': this.query.id,
-        'activityName': this.query.activityName,
-        'status': this.query.status,
-        'pageSize': this.limit,
-        'page': this.currentpage,
+        activityId: this.query.activityId,
+        activityName: this.query.activityName,
+        invesKey:this.query.invesKey,
+        status: this.query.status,
+        pageSize: this.limit,
+        pageNum: this.currentpage,
+        isInves:false,
+        phaseStatus:this.query.phaseStatus
       }
-      getActivityList(params).then(res => {
+      getInvesActivityList(params).then(res => {
         this.list = res.data.list
         this.total = res.data.totalRows
         this.listLoading = false
@@ -137,6 +125,7 @@ export default {
     },
     // 修改活动发布状态
     showUpdate(row, isPublish) {
+      // isPublish 0： 上线  1：下线
       this.rowId = row.id
       this.isPublish = isPublish
       this.showUpdateDialog = true
@@ -165,7 +154,7 @@ export default {
     editActivity(row) {
       window.localStorage.setItem('activityeditor', this.$route.path)
       this.$router.push({
-        name: '创建活动',
+        name: '创建招商活动',
         query: {
           activityId: row.id,
           type: this.type
@@ -176,7 +165,7 @@ export default {
       let path = ''
       switch (type) {
         case 'card':
-          path = `/zhaoshang/activity/${row.id}/card-list`
+          path = `/zhaoshang/activity/${row.id}/${row.invesKey}/${2}/card-list`
           break
         case 'detail':
           path = `/zhaoshang/activity/${row.id}/detail`
@@ -195,6 +184,7 @@ export default {
       this.rowId = row.id
       this.showDelDialog = true
     },
+    // 删除活动
     delActivity() {
       let params = {
         id: this.rowId
@@ -216,7 +206,7 @@ export default {
     updateSort(sortForm) {
       this.$refs[sortForm].validate((valid) => {
         if (valid) {
-          updateActivitySort(this.sortForm).then(response => {
+          getUpdateActivitySort(this.sortForm).then(response => {
             if (response.state === 1) {
               this.$message({
                 message: '操作成功',
@@ -224,12 +214,19 @@ export default {
               })
               this.fetchData()
               this.showSortDialog = false
+            }else{
+              this.$message.error(response.msg)
             }
           })
         } else {
           return false
         }
       })
-    }
+    },
+    ongetInfoList(){
+      getInfoList({status:0}).then((res)=>{
+        this.chamberOptions = res.data || []
+      })
+    },
   }
 }

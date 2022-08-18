@@ -4,10 +4,86 @@
     <div class="sub-title">活动信息</div>
     <div class="activity-info">
       <el-row :gutter="20">
-        <el-col v-for="(activity, index) in activityInfo" :key="index" :span="8">
+        <el-col :span="8">
           <div class="grid-content ">
-            <div class="label">{{ activity.label }}：</div>
-            <div class="value">{{ activity.value }}</div>
+            <div class="label">活动状态：</div>
+            <div class="value">{{ infoList.status == 1 ? '未开始' : infoList.status == 2 ? '进行中' : '已结束' }}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">招商阶段：</div>
+            <div class="value">{{ infoList.phaseStatus == 0 ? '筹备阶段' : infoList.status == 1 ? '拟策阶段' : '公开招商阶段' }}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">招商地区：</div>
+            <div class="value">{{ infoList.province }}{{ infoList.city }}{{ infoList.area }}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">已报名人数：</div>
+            <div class="value">{{ infoList.activityCount }}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">报名审核：</div>
+            <div class="value">{{ infoList.auditStatus == 0 ? '无需审核' : '需审核' }}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">报名时间：</div>
+            <div class="value">{{ infoList.applyStartTime | dateFormat }} ~ {{infoList.applyEndTime | dateFormat}}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">参加人数：</div>
+            <div class="value">{{ infoList.activityCount }}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">扩展功能：</div>
+            <div class="value">
+              <span style="margin-right:2px;" v-if="infoList.extraSeat == 1">座位表,</span>
+              <span style="margin-right:2px;"  v-if="infoList.extraSignin == 1">签到,</span>
+              <span v-if="infoList.extraSignout == 1">签退</span>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">报名时间：</div>
+            <div class="value">{{ infoList.activityStartTime | dateFormat }} ~ {{infoList.activityEndTime | dateFormat}}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">活动类型：</div>
+            <div class="value">{{ infoList.applyMode == 1 ? '线上活动' : infoList.status == 2 ? '线下活动' : '线上线下活动' }}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">直播间链接类型：</div>
+            <div class="value">{{ infoList.zhiboAddressType == 1 ? '云会播小程序' : 'H5链接' }}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">直播间链接：</div>
+            <div class="value">{{ infoList.zhiboAddress  || '--'}}</div>
+          </div>
+        </el-col>
+        <el-col :span="8">
+          <div class="grid-content ">
+            <div class="label">活动地址：</div>
+            <div class="value">{{ infoList.addressInfo || '--'}}</div>
           </div>
         </el-col>
       </el-row>
@@ -16,32 +92,31 @@
     <div class="grid-content">
       <div class="label">类型摘要：</div>
       <div class="value">
-        <el-select v-model="detail.summary" multiple disabled remote filterable placeholder="" />
+         <div class="tags">
+            <div class="tags-block" v-for="(item,index) in infoList.labels" :key="index">#{{item.label}} <span v-if="infoList.labels.length-1 != index">,</span></div>
+          </div>
       </div>
     </div>
 
     <div class="grid-content">
       <div class="label">活动简介：</div>
-      <div class="value">
-        文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案文案
-      </div>
+      <div class="value" v-html="infoList.introduce"></div>
     </div>
 
     <div class="grid-content">
       <div class="label">活动头图：</div>
-      <div class="value"><img src="@/assets/img/logo_active.png" alt=""></div>
+      <div class="value"><img :src="infoList.headImage" alt=""></div>
     </div>
 
     <div class="grid-content">
       <div class="label">活动分享图：</div>
-      <div class="value"><img src="@/assets/img/logo_active.png" alt=""></div>
+      <div class="value"><img :src="infoList.listImage" alt=""></div>
     </div>
 
     <div class="grid-content">
       <div class="label">招商附件：</div>
       <div class="value">
-        <div><el-button type="text">广州南沙自贸区招商报名表.doc</el-button></div>
-        <div><el-button type="text">广州南沙自贸区招商报名表.doc</el-button></div>
+        <div v-for="(item,index) in infoList.attachment" :key="index"><el-button type="text">{{item.fileName}}</el-button></div>
       </div>
     </div>
 
@@ -49,13 +124,13 @@
 </template>
 
 <script>
+import { getEcActivity } from '@/api/attract'
 export default {
   name: 'ActivityDetail',
   data() {
     return {
-      detail: {
-        summary: ['1', '2']
-      },
+      infoList: {}, 
+      introduce:'<p><img src=\"https://ysh-cdn.kaidicloud.com/ysh-test2/content/19171e1768db4fe08b17de9673252936.jpg\" /></p>\n\n<p>&nbsp;</p>',
       activityInfo: [
         { prop: 'status', label: '活动状态', value: '报名中' },
         { prop: 'stage', label: '招商阶段', value: '筹备阶段' },
@@ -71,11 +146,36 @@ export default {
         { prop: 'status', label: '活动地址', value: '广州市海珠区阅江大道888号' },
       ]
     }
+  },
+  computed: {
+    activeId() { // 活动ID
+      return this.$route.params.activeId || ''
+    },
+  },
+  created(){
+    this.fetchData()
+  },
+  methods:{
+    async fetchData(){
+      const params = {
+        id:this.activeId
+      };
+      let res = await getEcActivity(params);
+      if (res.state === 1) {
+        this.infoList = res.data
+        console.log('this.infoList',this.infoList)
+      } else {
+        this.$message({
+          message: res.msg,
+          type: 'success'
+        })
+      }
+    }
   }
 }
 </script>
 
-<style scoped lang="scss">
+<style  lang="scss">
 .activity-detail-wrap {
   padding: 40px;
 
@@ -93,6 +193,16 @@ export default {
 
     .value {
       flex: 1;
+    }
+  }
+  .tags{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid #000;
+    padding: 10px;
+    .tags-block{
+      margin:0 8px 0px 0;
     }
   }
 

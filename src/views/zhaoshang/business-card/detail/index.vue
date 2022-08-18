@@ -65,7 +65,6 @@ export default {
     }
   },
   mounted() {
-    console.log('cardId',this.cardId,this.type,this.targetId)
     this.fetchData()
   },
   methods: {
@@ -77,10 +76,9 @@ export default {
         type:this.type // 1-招商信息2-招商活动
       }
       getIpCardDetail(params).then((res)=>{
-        console.log('res',res)
         this.listData = res.data
         this.listData.tagList = []
-        this.listData.memberLabels.forEach((v)=>{
+        this.listData.memberLabels && this.listData.memberLabels.forEach((v)=>{
           this.listData.tagList.push(v.memberLabelName)   
         })
 
