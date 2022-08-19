@@ -76,9 +76,9 @@
 
           <el-row>
             <el-col style="width: 600px;">
-              <el-form-item label="关联招商办：" prop="chamber">
-                <el-select v-model="formObj.chamber">
-                  <el-option label="24h内" :value="1" />
+              <el-form-item label="关联招商办：" prop="invesKey">
+                <el-select v-model="formObj.invesKey">
+                  <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.invesKey" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -87,7 +87,7 @@
           <el-row>
             <el-col style="width: 600px;">
               <el-form-item label="招商阶段：" prop="stage">
-                <el-select v-model="formObj.stage">
+                <el-select v-model="formObj.phaseStatus">
                   <el-option v-for="stage in getMapDict(stageMap)" :key="stage.value" :label="stage.label" :value="stage.value" />
                 </el-select>
               </el-form-item>
@@ -100,11 +100,15 @@
                 <el-cascader
                   v-model="formObj.chamberAddress"
                   clearable
+                  :key="modalKey"
                   separator="-"
                   :options="areaOptions"
+                  ref="cascader"
                   :props="{ expandTrigger: 'hover', value: 'code', label: 'name'}"
+                  @change="handleChange"
                   style="width: 480px;"
                   filterable
+                  :disabled="status == 2 || status == 3"
                 />
               </el-form-item>
             </el-col>
@@ -113,7 +117,7 @@
           <el-row>
             <el-col>
               <el-form-item label="权重" prop="weight">
-                <el-input-number v-model="formObj.weight" :min="0" :max="999" :controls="false" />
+                <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="formObj.sort" maxlength="3" style="width:120px"  />
                 请输入1-999的整数
               </el-form-item>
             </el-col>
@@ -121,11 +125,10 @@
 
           <el-row>
             <el-col style="width: 600px;">
-              <el-form-item label="类型摘要" prop="summary">
+              <el-form-item label="类型摘要" prop="labels">
                 <el-button style="margin-right: 10px;" size="small" @click="makeTagDialogVisible = true">选择摘要标签</el-button>
-                <!-- <el-select v-model="formObj.summary"  :label="name" multiple disabled remote filterable /> -->
                 <div class="tags">
-                  <div class="tags-block" v-for="(item,index) in formObj.summary" :key="index">#{{item.name}}</div>
+                  <div class="tags-block" v-for="(item,index) in formObj.labels" :key="index">#{{item.label}}</div>
                 </div>
               </el-form-item>
             </el-col>
@@ -133,15 +136,11 @@
 
           <el-row>
             <el-col style="width: 600px;">
-              <el-form-item label="活动模式" prop="activeMode">
-                <el-radio-group v-model="formObj.activeMode">
-                  <el-radio
-                    v-for="mode in getMapDict(activeModeMap)"
-                    :key="mode.value"
-                    :label="mode.value"
-                  >
-                    {{ mode.label }}
-                  </el-radio>
+              <el-form-item label="活动模式" prop="applyMode">
+                <el-radio-group v-model="formObj.applyMode">
+                    <el-radio   :disabled="status == 2 || status == 3" :label="1">线上活动</el-radio>
+                    <el-radio   :disabled="status == 2 || status == 3" :label="2">线下活动</el-radio>
+                    <el-radio   :disabled="status == 2 || status == 3" :label="3">线上线下活动</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -169,7 +168,7 @@
                     </el-option>
                   </el-select> -->
                   <div class="address-Obscuration">
-                    <el-input v-model="formObj.addressInfo" style="width:450px;" :disabled="status == 2 || status == 3" clearable placeholder="请输入地址" @input="addressChange">
+                    <el-input v-model="formObj.addressInfo" style="width:750px;" :disabled="status == 2 || status == 3" clearable placeholder="请输入地址" @input="addressChange">
                       <i
                         slot="suffix"
                         class="el-icon-location-information"
@@ -276,7 +275,7 @@
                 >限</el-checkbox>
                 <el-input
                   v-show="applyCount.limit"
-                  v-model="formObj.applyCount"
+                  v-model="formObj.activityCount"
                   style="width: 200px"
                   placeholder="大于0的整数"
                   maxlength="9"
@@ -291,100 +290,10 @@
           <el-row>
             <el-col style="width: 700px;">
               <el-form-item label="招商表格:" >
-                <el-upload action="/" ref="uploadFile" :on-remove="handleRemoveAttachment" :file-list="formObj.fileList" :limit="20" :before-upload="beforeUploadFile" :http-request="uploadFile">
+                <el-upload action="/" ref="uploadFile" :on-remove="handleRemoveAttachment" :file-list="formObj.attachment" :limit="20" :before-upload="beforeUploadFile" :http-request="uploadFile">
                   <el-button type="primary" size="small">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">上传格式限制word、excel、pdf、ppt</div>
                 </el-upload>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row>
-            <el-col style="width: 700px; height: 20px">
-              <el-form-item label="报名对象：" required>
-                <el-checkbox
-                  v-model="applyObject.unlimit"
-                  :disabled="status == 2 || status == 3"
-                  @change="handleCheckTarget($event, 0)"
-                >不限</el-checkbox>
-                <el-checkbox
-                  v-model="applyObject.limit"
-                  :disabled="status == 2 || status == 3"
-                  @change="handleCheckTarget($event, 1)"
-                >
-                  {{ ckey ? "限本商会成员" : "限云商会成员" }}
-                </el-checkbox>
-                <el-checkbox
-                  v-if="ckey"
-                  v-model="applyObject.port"
-                  :disabled="status == 2 || status == 3"
-                  @change="handleCheckTarget($event, 2)"
-                >
-                  限定本商会内指定职位
-                </el-checkbox>
-                <el-checkbox
-                  v-if="ckey"
-                  v-model="applyObject.department"
-                  :disabled="status == 2 || status == 3"
-                  @change="handleCheckTarget($event, 3)"
-                >
-                  限本商会内指定部门
-                </el-checkbox>
-                <!--                <span style="margin-left: 20px;color: #ff0000" v-if="!ckey">指云商会平台的任意商会的任意成员</span>-->
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row v-if="applyObject.port">
-            <el-col style="width: 600px; height: 40px">
-              <el-form-item label="会内职位：" required>
-                <el-select
-                  v-model="portValue"
-                  multiple
-                  placeholder="请选择"
-                  :disabled="status == 2 || status == 3"
-                >
-                  <el-option
-                    v-for="item in portSelect"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row v-if="applyObject.department">
-            <el-col style="width: 600px">
-              <el-form-item label="会内部门：" required>
-                <div>
-                  <!-- <el-cascader
-                    placeholder="请选择"
-                    :options="options"
-                    :props="{ multiple: true, checkStrictly: true}"
-                    clearable
-                    filterable
-                    v-model="valueTree"
-                    @change="test()"
-                  >
-                  </el-cascader> -->
-                  <treeselect
-                    id="treeselect"
-                    v-model="valueTree"
-                    :multiple="true"
-                    :options="options"
-                    placeholder="请选择"
-                    :normalizer="normalizer"
-                    :flat="true"
-                    no-children-text="无子部门"
-                    no-options-text="暂时没有部门"
-                    no-results-text="没找到部门"
-                    :default-expand-level="3"
-                    :disabled="status == 2 || status == 3"
-                  />
-                  <!-- <treeselect-value :value="valueTree" /> -->
-                </div>
               </el-form-item>
             </el-col>
           </el-row>
@@ -456,7 +365,7 @@
             <el-row>
               <el-col>
                 <el-form-item label="直播链接类型：">
-                  <el-radio-group v-model="formObj.linkType">
+                  <el-radio-group v-model="formObj.zhiboAddressType">
                     <el-radio :label="1">云会播小程序</el-radio>
                     <el-radio :label="2">H5链接</el-radio>
                   </el-radio-group>
@@ -465,9 +374,9 @@
             </el-row>
             <el-row>
               <el-col style="width: 600px; height: 50px">
-                <el-form-item label="直播间链接：" prop="link">
+                <el-form-item label="直播间链接：" prop="zhiboAddress">
                   <el-input
-                    v-model="formObj.link"
+                    v-model="formObj.zhiboAddress"
                     show-word-limit
                     maxlength="2000"
                     placeholder="输入直播间链接，在活动开始后的活动详情页面会显示相应的入口"
@@ -481,19 +390,11 @@
               </div>
             </el-row>
 
-            <el-row>
-              <el-col>
-                <el-form-item label="观看权限：" prop="competence">
-                  <el-radio v-model="formObj.competence" label="0">不限</el-radio>
-                  <el-radio v-if="ckey" v-model="formObj.competence" label="1">限本商会会员</el-radio>
-                  <el-radio v-else v-model="formObj.competence" label="2">限云商会会员</el-radio>
-                </el-form-item>
-              </el-col>
-            </el-row>
+  
           </div>
 
           <el-row>
-            <el-col style="width: 600px; padding-left: 120px">
+            <el-col style="width: 600px; padding-left: 120px;margin-top:50px">
               <!-- <el-button type="primary" v-dbClick @click="save">保存</el-button>
               <el-button @click="cancel">取消</el-button> -->
               <el-button @click="onpreview">预览</el-button>
@@ -793,9 +694,9 @@
     <MakeTagDialog
       :visible.sync="makeTagDialogVisible"
       :custom-group="customTagGroup"
-      :list="formObj.summary.map(v=> v.id)"
+      :list="formObj.labels.map(v=> v.labelId)"
       @add="tagFormDialogVisible = true"
-      @confirm="checkTagList => formObj.summary = checkTagList"
+      @confirm="checkTagList => formObj.labels = checkTagList"
     />
     <TagFormDialog
       :visible.sync="tagFormDialogVisible"

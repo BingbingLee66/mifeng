@@ -12,7 +12,7 @@ export const getInfoDetails = id => request({ url: `/ec/investment-info/details/
 export const getInfoFreeze = id => request({ url: `/ec/investment-info/freeze/${id}`, method: 'post' })
 // 解冻招商办
 export const getInfoUnFreeze = id => request({ url: `/ec/investment-info/unFreeze/${id}`, method: 'post' })
-// 查询招商办信息
+// 查询招商办信息 status 状态 -1全部 0正常 1冻结 
 export const getInfoList = params => request({ url: '/ec/investment-info/list', method: 'get', params })
 
 
@@ -47,3 +47,9 @@ export const getInvesActivityList = params => request({ url: '/api/ec/invesActiv
 export const getEcActivity = params => request({ url: '/api/ec/invesActivity/get-activity', method: 'get', params })
 // 活动列表修改权重
 export const getUpdateActivitySort = params => request({ url: '/api/ec/invesActivity/update-activity-sort', method: 'put', params })
+// 创建或编辑活动
+export const getActivitySaveV1 = data => request({ url: '/api/ec/invesActivity/activity-save-v1', method: 'post', data })
+// 删除活动
+export const getDeleteActivity = params => request({ url: '/api/ec/invesActivity/delete-activity', method: 'DELETE', params })
+// 修改发布状态
+export const getUpdateActivityPublish = params => request({ url: '/api/ec/invesActivity/update-activity-publish', method: 'put', params })

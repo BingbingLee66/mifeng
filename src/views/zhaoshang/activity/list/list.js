@@ -6,7 +6,7 @@ import {
   delActivity
 } from '@/api/activity/activity'
 import { activeModeMap, stageMap, activeStatusMap, ACTIVE_STATUS, getMapDict } from '@/consts'
-import { getInfoList,getInvesActivityList,getUpdateActivitySort } from '@/api/attract'
+import { getInfoList,getInvesActivityList,getUpdateActivitySort,getDeleteActivity,getUpdateActivityPublish } from '@/api/attract'
 export default {
   data() {
     var checkNumber = (rule, value, callback) => {
@@ -125,7 +125,7 @@ export default {
     },
     // 修改活动发布状态
     showUpdate(row, isPublish) {
-      // isPublish 0： 上线  1：下线
+      // isPublish 0： 下线  1：上线
       this.rowId = row.id
       this.isPublish = isPublish
       this.showUpdateDialog = true
@@ -136,17 +136,14 @@ export default {
         id: this.rowId,
         isPublish: this.isPublish
       }
-      publishActivity(params).then(res => {
+      getUpdateActivityPublish(params).then(res => {
         if (res.state === 1) {
-          if (this.isPublish === 0) {
-            this.type = '0'
-          } else if (this.isPublish === 1) {
-            this.type = '1'
-          }
           this.list = []
           this.fetchData(1)
           this.showUpdateDialog = false
-          this.$message.success(res.msg)
+          this.$message.success('操作成功')
+        }else{
+          this.$message.error(res.msg)
         }
       })
     },
@@ -189,7 +186,7 @@ export default {
       let params = {
         id: this.rowId
       }
-      delActivity(params).then(res => {
+      getDeleteActivity(params).then(res => {
         if (res.state === 1) {
           this.$message.success(res.msg)
           this.fetchData(1)

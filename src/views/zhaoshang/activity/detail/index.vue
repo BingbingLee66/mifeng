@@ -91,9 +91,9 @@
 
     <div class="grid-content">
       <div class="label">类型摘要：</div>
-      <div class="value">
-         <div class="tags">
-            <div class="tags-block" v-for="(item,index) in infoList.labels" :key="index">#{{item.label}} <span v-if="infoList.labels.length-1 != index">,</span></div>
+      <div class="value" >
+         <div class="tags" v-if="infoList.labels">
+            <div class="tags-block" v-for="(item,index) in infoList.labels" :key="index">#{{item.label}} <span v-if="infoList.labels.length -1 != index">,</span></div>
           </div>
       </div>
     </div>
@@ -114,7 +114,7 @@
     </div>
 
     <div class="grid-content">
-      <div class="label">招商附件：</div>
+      <div class="label" style="margin-top: 10px;">招商附件：</div>
       <div class="value">
         <div v-for="(item,index) in infoList.attachment" :key="index"><el-button type="text">{{item.fileName}}</el-button></div>
       </div>
@@ -130,21 +130,6 @@ export default {
   data() {
     return {
       infoList: {}, 
-      introduce:'<p><img src=\"https://ysh-cdn.kaidicloud.com/ysh-test2/content/19171e1768db4fe08b17de9673252936.jpg\" /></p>\n\n<p>&nbsp;</p>',
-      activityInfo: [
-        { prop: 'status', label: '活动状态', value: '报名中' },
-        { prop: 'stage', label: '招商阶段', value: '筹备阶段' },
-        { prop: 'address', label: '招商地区', value: '广州市南沙自贸区' },
-        { prop: 'status', label: '已报名人数', value: '120' },
-        { prop: 'status', label: '报名审核', value: '需审核' },
-        { prop: 'status', label: '报名时间', value: '2022-07-11 00:00:00 ~2022-07-12 00:00:00' },
-        { prop: 'status', label: '参加人数', value: '线下限50人' },
-        { prop: 'status', label: '拓展功能', value: '签到，签退，座位表' },
-        { prop: 'status', label: '活动类型', value: '线上线下活动' },
-        { prop: 'status', label: '直播间链接类型', value: 'H5小程序' },
-        { prop: 'status', label: '活动时间', value: '2022-07-11 00:00:00 ~2022-07-12 00:00:00' },
-        { prop: 'status', label: '活动地址', value: '广州市海珠区阅江大道888号' },
-      ]
     }
   },
   computed: {
@@ -163,7 +148,6 @@ export default {
       let res = await getEcActivity(params);
       if (res.state === 1) {
         this.infoList = res.data
-        console.log('this.infoList',this.infoList)
       } else {
         this.$message({
           message: res.msg,

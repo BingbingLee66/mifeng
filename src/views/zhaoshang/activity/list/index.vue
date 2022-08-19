@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item label="招商阶段">
           <el-select clearable v-model="query.phaseStatus" placeholder="请选择阶段">
-            <el-option v-for="status in getMapDict(stageMap)" :key="status.value" :label="status.label" :value="status.value" />
+            <el-option v-for="item in getMapDict(stageMap)" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="活动状态">
@@ -42,7 +42,7 @@
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column align="center" label="活动列表图" width="115px">
           <template slot-scope="scope">
-            <img class="activity-img" :src="scope.row.headImage" @click="openPreviewModal(scope.row.listImage)">
+            <img class="activity-img" :src="scope.row.headImage" @click="openPreviewModal(scope.row.headImage)">
           </template>
         </el-table-column>
         <el-table-column align="center" label="活动ID/名称" width="180px">
@@ -130,21 +130,21 @@
           <template slot-scope="scope">
 
             <div
-              v-if="scope.row.operatorId == 0"
+              v-if="scope.row.isPublish == 0"
               class="blue-label"
               @click="showUpdate(scope.row,1)"
             >
               上线
             </div>
             <div
-              v-if="scope.row.operatorId == 1"
+              v-if="scope.row.isPublish == 1"
               class="blue-label"
               @click="showUpdate(scope.row,0)"
             >
               下线
             </div>
 
-            <div v-if="scope.row.operatorId == 0">
+            <div v-if="scope.row.isPublish == 0">
               <div class="blue-label" @click="showDel(scope.row)">删除</div>
               <div class="blue-label" @click="editActivity(scope.row)">编辑</div>
             </div>

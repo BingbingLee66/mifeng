@@ -139,8 +139,8 @@ export default {
           this.checkTagList.forEach(j =>{
             if(t.id == j){
             let obj = {
-              name:t.name,
-              id:t.id
+              label:t.name,
+              labelId:t.id
             }
               checkTagListAll.push(obj)
             }
@@ -157,7 +157,6 @@ export default {
       this.query = {
         labelGroupName: '',
         labelName: '',
-      
       }
       this.pageData= {
         currentpage: 1,
