@@ -109,7 +109,7 @@
         </el-table-column>
         <el-table-column align="center" label="活动状态" width="100px">
           <template slot-scope="scope">
-            <div >{{ scope.row.status == 0 ? '全部' : scope.row.status == 1 ? '未开始' :scope.row.status  == 2 ? '报名中' : '已结束'  }}</div>
+            <div >{{ scope.row.status == 0 ? '全部' : scope.row.status == 1 ? '未开始' : scope.row.status  == 2 ? '进行中' : scope.row.status  == 3 ?  '已结束' : '报名中' }}</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="创建人" width="100px">

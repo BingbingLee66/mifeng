@@ -389,7 +389,6 @@ export default {
     fetchData() {
       getEcActivity({ id: this.activityId }).then(res => {
         let resData = res.data
-        console.log('resData',resData)
         this.status = resData.status
         this.formObj.activityName = resData.activityName
         this.formObj.headImage = resData.headImage
@@ -482,8 +481,7 @@ export default {
             }
           })
         }
-        console.log('this.formObj',this.formObj)
-       
+
         // 动态字段回显
         // this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
 
@@ -528,12 +526,11 @@ export default {
           return this.$message.error('上传失败,请重试')
         }
       })
-      console.log('this.formObj.attachment',this.formObj.attachment)
     },
     // 删除上传文件
     handleRemoveAttachment(file, fileList){
       this.formObj.attachment = this.formObj.attachment.filter(item => item.uid !== file.uid)
-      console.log('this.formObj.attachment',this.formObj.attachment)
+   
     },
 
     // 上传图片校验
@@ -773,7 +770,6 @@ export default {
             this.formObj.longitude = ''
             this.formObj.latitude = ''
           }
-          console.log('this.formObj',this.formObj)
         
           getActivitySaveV1(this.formObj).then(res => {
             if (res.state === 1) {

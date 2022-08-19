@@ -288,7 +288,7 @@
           </el-row>
 
           <el-row>
-            <el-col style="width: 550px;">
+            <el-col style="width: 600px;">
               <el-form-item label="招商表格:" >
                 <el-upload action="/" ref="uploadFile" :on-remove="handleRemoveAttachment" :file-list="formObj.attachment" :limit="20" :before-upload="beforeUploadFile" :http-request="uploadFile">
                   <el-button type="primary" size="small">点击上传</el-button>

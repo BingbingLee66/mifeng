@@ -99,7 +99,7 @@
     </div>
 
     <div class="grid-content">
-      <div class="label">活动简介：</div>
+      <div class="label" style="line-height: 47px;">活动简介：</div>
       <div class="value" v-html="infoList.introduce"></div>
     </div>
 
