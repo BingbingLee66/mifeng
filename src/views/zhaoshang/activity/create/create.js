@@ -711,7 +711,7 @@ export default {
             return this.$message.error('请选择参加人数')
           } else if (this.formObj.isLimit === 1) {
             let regexp = /^[1-9]\d*$/
-            if (!regexp.test(this.formObj.applyCount)) {
+            if (!regexp.test(this.formObj.activityCount)) {
               return this.$message.error('参加人数为大于0的正整数')
             }
           }

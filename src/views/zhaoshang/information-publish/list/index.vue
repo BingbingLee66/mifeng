@@ -55,7 +55,8 @@
     >
       <el-table-column align="center" label="招商信息名称/ID" width="140px">
         <template slot-scope="scope">
-          {{ scope.row.title }} / {{ scope.row.id }}
+          <div class="red-label">{{ scope.row.id }}</div>
+          <div> {{ scope.row.title }}</div>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="investmentInfoVO.name" label="信息来源" width="120px" />

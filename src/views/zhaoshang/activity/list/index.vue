@@ -72,7 +72,7 @@
             {{ scope.row.city }}{{scope.row.area}}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="类型摘要" width="100px">
+        <el-table-column align="center" label="类型摘要" width="130px">
           <template slot-scope="scope" >
             <div class="tag-info" v-if="scope.row.labels.length > 0" >
               <span  v-for="(item,index) in scope.row.labels" :key="index">
@@ -102,7 +102,7 @@
             {{ scope.row.addressInfo }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="已报名人数" width="100px">
+        <el-table-column align="center" label="已报名人数" width="70px">
           <template slot-scope="scope">
             <span >{{ scope.row.registeredCount || 0 }}</span>
           </template>

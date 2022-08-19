@@ -80,7 +80,7 @@
             <div class="value">{{ infoList.zhiboAddress  || '--'}}</div>
           </div>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="20">
           <div class="grid-content ">
             <div class="label">活动地址：</div>
             <div class="value">{{ infoList.addressInfo || '--'}}</div>
