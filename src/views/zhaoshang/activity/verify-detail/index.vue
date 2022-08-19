@@ -101,7 +101,7 @@ import SaveImgDialog from './components/SaveImgDialog'
 import ActivityCode from './components/ActivityCode'
 import SignInCode from './components/SignInCode'
 import { formatDate } from './util'
-import { getChamberActivityInfoById, uploadSeating, deleteSeating } from '@/api/activity/activity-verify-new'
+import { getInvesChamberActivityInfoById, uploadInvesSeating, deleteInvesSeating } from '@/api/zhaoshang/activity/activity-verify-new'
 
 export default {
   components: {
@@ -142,7 +142,7 @@ export default {
   },
   methods: {
     async getActivityInfo() {
-      const { data } = await getChamberActivityInfoById(this.activityId)
+      const { data } = await getInvesChamberActivityInfoById(this.activityId)
       data.id = this.activityId
       this.activity = data
     },
@@ -167,13 +167,13 @@ export default {
       formData.append('multipartFile', content.file)
 
       try {
-        const { data } = await uploadSeating(formData)
+        const { data } = await uploadInvesSeating(formData)
         this.activity.seating = data
       } catch (error) { /*  */ }
       this.imgLoading = false
     },
     async delSeating() {
-      const { state, msg } = await deleteSeating(this.activityId)
+      const { state, msg } = await deleteInvesSeating(this.activityId)
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) this.activity.seating = ''
     },

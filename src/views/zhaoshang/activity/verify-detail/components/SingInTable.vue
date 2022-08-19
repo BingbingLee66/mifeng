@@ -146,19 +146,19 @@ import { downloadFile } from '@/utils/index'
 import { formatDate } from '../util'
 
 import {
-  getActivitySigninList,
-  uploadSigninData,
-  modifySigninStatus,
-  saveRemark,
-  handleSignin,
-  querySubInfo,
-  setSubUser,
-  handleSignOut,
-  getSigninStatusCount,
-  resetSigninSeat,
-  modifySeatStatus,
-  getActivityExcel
-} from '@/api/activity/activity-verify-new'
+  getActivityList,
+  uploadInvesSigninData,
+  modifyInvesSigninStatus,
+  saveInvesRemark,
+  handleApplySignin,
+  queryInvesSubInfo,
+  setInvesSubUser,
+  handleInvesSignOut,
+  getStatusCount,
+  resetInvesSigninSeat,
+  modifyInvesSeatStatus,
+  getInvesActivityExcel,
+} from '@/api/zhaoshang/activity/activity-verify-new'
 
 export default {
   components: {
@@ -295,7 +295,7 @@ export default {
   },
   methods: {
     async getStatusCount() {
-      const { data } = await getSigninStatusCount(this.activityId)
+      const { data } = await getStatusCount(this.activityId)
       this.statusCount = data
     },
 
@@ -308,7 +308,7 @@ export default {
       this.tableLoading = true
       try {
         const { query: { pageNum: page, ...query }, activityId, status } = this
-        const { data: { totalRows, list }} = await getActivitySigninList(activityId, {
+        const { data: { totalRows, list }} = await getActivityList(activityId, {
           page,
           status,
           ...query,
@@ -344,7 +344,7 @@ export default {
     onDownLoadSignin() {
       downloadFile({
         title: '报名信息模板表.xlsx',
-        url: `${process.env.VUE_APP_BASE_API}/api/ec/singin/download/dynamicTemplate/${this.activityId}`
+        url: `${process.env.VUE_APP_BASE_API}/api/ec/invesSingin/download/dynamicTemplate/${this.activityId}`
       })
     },
 
@@ -353,7 +353,7 @@ export default {
       const formData = new FormData()
       formData.append('activityId', this.activityId)
       formData.append('file', this.fileList[0])
-      const { state, msg } = await uploadSigninData(formData)
+      const { state, msg } = await uploadInvesSigninData(formData)
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.importVisible = false
@@ -372,7 +372,7 @@ export default {
     },
 
     async querySubDetail() {
-      const { data } = await querySubInfo(this.subDialog.phone)
+      const { data } = await queryInvesSubInfo(this.subDialog.phone)
       this.subInfo = data
     },
 
@@ -380,7 +380,7 @@ export default {
       const { phone, signinId } = this.subDialog
       if (!phone) return this.$message({ message: '请输入替补人员手机号', type: 'warning' })
       if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(phone)) return this.$message({ message: '手机号格式错误', type: 'warning' })
-      const { state, msg } = await setSubUser({ phone, id: signinId })
+      const { state, msg } = await setInvesSubUser({ phone, id: signinId })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getTableData()
@@ -404,7 +404,7 @@ export default {
         this.seatDialog.show = false
         return
       }
-      const { state, msg } = await resetSigninSeat(signinId, seats.map(({ status, ...v }) => v))
+      const { state, msg } = await resetInvesSigninSeat(signinId, seats.map(({ status, ...v }) => v))
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getTableData()
@@ -414,7 +414,7 @@ export default {
 
     async setSitted(item) {
       const { signinId } = this.seatDialog
-      const { state, msg } = await modifySeatStatus(signinId, [item.seatId])
+      const { state, msg } = await modifyInvesSeatStatus(signinId, [item.seatId])
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         item.status = 1
@@ -424,7 +424,7 @@ export default {
     },
 
     async modifySigninStatus({ id, status, ...data }) {
-      const { state, msg } = await modifySigninStatus({ id, status, activityId: this.activityId }, data)
+      const { state, msg } = await modifyInvesSigninStatus({ id, status, activityId: this.activityId }, data)
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getStatusCount()
@@ -445,7 +445,7 @@ export default {
 
     async saveRemark() {
       const { value, signinId } = this.remarkDialog
-      const { state, msg } = await saveRemark(signinId, { remark: value })
+      const { state, msg } = await saveInvesRemark(signinId, { remark: value })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         const item = this.tableData.find(v => v.id === signinId)
@@ -455,7 +455,7 @@ export default {
     },
 
     async onSignin({ id, num, status }) {
-      const { state, msg } = await handleSignin({ id, num, status })
+      const { state, msg } = await handleApplySignin({ id, num, status })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getTableData()
@@ -464,7 +464,7 @@ export default {
     },
 
     async onSignOut({ id, status }) {
-      const { state, msg } = await handleSignOut({ id, status })
+      const { state, msg } = await handleInvesSignOut({ id, status })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getTableData()
@@ -652,7 +652,7 @@ export default {
       this.exportLoaing = true
       try {
         const { query: { namephone, seatStatus, signStatus }, status, activityId, activity } = this
-        const blob = await getActivityExcel(activityId, { namephone, seatStatus, signStatus, status, page: 1, pageSize: 1 })
+        const blob = await getInvesActivityExcel(activityId, { namephone, seatStatus, signStatus, status, page: 1, pageSize: 1 })
         downloadFile({
           title: `【参与人员】${activity.activityName}.xlsx`,
           url: window.URL.createObjectURL(blob)
