@@ -46,7 +46,7 @@
         </el-form-item>
       </el-form>
 
-      <div class="card-wrap" v-loading="listLoading">
+      <div class="card-wrap" v-if="cardList.length > 0" v-loading="listLoading">
         <div v-for="card in cardList" :key="card.id" class="card" @click="goToDetail(card.cardId)">
           <div class="header">
             <div class="brief">
@@ -71,6 +71,7 @@
 
         </div>
       </div>
+      <div class="not-available" v-else>暂无数据~</div>
 
       <el-pagination
         background
@@ -248,6 +249,11 @@ export default {
   .title {
     padding-bottom: 20px;
     font-size: 20px;
+  }
+  .not-available{
+    width: 100%;
+    text-align: center;
+    margin: 60px 0;
   }
 
   .card-wrap {
