@@ -108,7 +108,7 @@ export default {
       }
       this.listLoading = true
       let params = {
-        activityId: this.query.activityId,
+        id: this.query.activityId,
         activityName: this.query.activityName,
         invesKey:this.query.invesKey,
         status: this.query.status,
