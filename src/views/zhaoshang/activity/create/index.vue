@@ -134,7 +134,7 @@
             </el-col>
           </el-row>
 
-          <el-row>
+          <!-- <el-row>
             <el-col style="width: 600px;">
               <el-form-item label="活动模式" prop="applyMode">
                 <el-radio-group v-model="formObj.applyMode">
@@ -144,7 +144,7 @@
                 </el-radio-group>
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row> -->
           <el-row v-show="formObj.activeMode !== ACTIVE_MODE.online">
             <el-col>
               <el-form-item
@@ -248,7 +248,7 @@
           </el-row>
 
           <!-- 扩展功能 -->
-          <el-row v-if="formObj.activeMode !== ACTIVE_MODE.online">
+          <!-- <el-row v-if="formObj.activeMode !== ACTIVE_MODE.online">
             <el-col style="width: 700px; height: 40px;margin-top: -38px;">
               <el-form-item label="扩展功能：">
                 <el-checkbox-group v-model="roleIds">
@@ -258,7 +258,7 @@
                 </el-checkbox-group>
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row> -->
 
           <el-row v-if="formObj.activeMode !== ACTIVE_MODE.online">
             <el-col style="width: 900px">
