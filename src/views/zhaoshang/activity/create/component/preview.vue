@@ -57,7 +57,7 @@
           </div>
           <div class="active-middle">
             <!-- 账户详情 -->
-            <div class="active-data">
+            <!-- <div class="active-data">
               <div class="active-left">
                   <img class="active-avatar" :src="systemLogo ? systemLogo : imgUrl">
               </div>
@@ -65,8 +65,8 @@
                 <div class="right-cham">{{ chamberName ? chamberName : '凯迪云商会总后台管理系统' }}</div>
                 <div class="right-member">已入驻200名会员</div>
               </div>
-            </div>
-             <img src="https://ysh-cdn.kaidicloud.com/prod/png/active.png" class="pic"  />
+            </div> -->
+             <img src="https://ysh-cdn.kaidicloud.com/prod/png/active2.png" class="pic"  />
           </div>
           <div class="active-introduce">活动介绍</div>
 
@@ -314,7 +314,7 @@ export default {
   }
   .active-middle{
     width: 100%;
-    height: 135px;
+    height: 60px;
     position: relative;
     .active-data{
       position: absolute;
