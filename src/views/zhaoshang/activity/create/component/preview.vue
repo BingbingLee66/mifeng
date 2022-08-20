@@ -18,10 +18,10 @@
           <!-- 标题 -->
           <div class="active-title">
             <div class="title-left" >{{formObj.activityName}}</div>
-            <div class="title-right">
+            <!-- <div class="title-right">
               <div><i class="el-icon-share"></i></div>
               <div style=" color: #c62134;font-size:12px;">分享</div>
-            </div>
+            </div> -->
           </div>
           <!-- 时间 -->
           <div class="active-Date">
@@ -54,10 +54,16 @@
               </div>
               <div class="info-site">{{formObj.province + formObj.city +formObj.area + formObj.addressInfo}}</div>
             </div>
+            <div class="label" >
+              <div style="margin-right:6px" v-for="(item,index) in formObj.labels" :key="index">#{{item.label}}</div>
+            </div>
           </div>
           <div class="active-middle">
-            <!-- 账户详情 -->
-            <!-- <div class="active-data">
+            <img src="https://ysh-cdn.kaidicloud.com/prod/png/active-share.png?3" class="pic"  />
+            <div class="shelter"></div>
+          </div>
+          <!-- <div class="active-middle">
+             <div class="active-data">
               <div class="active-left">
                   <img class="active-avatar" :src="systemLogo ? systemLogo : imgUrl">
               </div>
@@ -65,11 +71,10 @@
                 <div class="right-cham">{{ chamberName ? chamberName : '凯迪云商会总后台管理系统' }}</div>
                 <div class="right-member">已入驻200名会员</div>
               </div>
-            </div> -->
+            </div> 
              <img src="https://ysh-cdn.kaidicloud.com/prod/png/active2.png" class="pic"  />
-          </div>
+          </div> -->
           <div class="active-introduce">活动介绍</div>
-
            <div class="phone-article-content" id="my-phone-article-content" v-html="formObj.introduce"></div>
         </div>
 
@@ -280,7 +285,7 @@ export default {
   }
   .active-Date{
     margin-top: 10px;
-    border-bottom: 2px solid #f5f5f5;
+    // border-bottom: 2px solid #f5f5f5;
     padding-bottom: 10px;
     font-size: 12px;
     .Date-info{
@@ -314,8 +319,16 @@ export default {
   }
   .active-middle{
     width: 100%;
-    height: 60px;
+    height: 106px;
     position: relative;
+    .shelter{
+      position: absolute;
+      background: #fff;
+      right: 0;
+      bottom: 0;
+      width: 100px;
+      height: 40px;
+    }
     .active-data{
       position: absolute;
       top: 58%;
@@ -360,6 +373,18 @@ export default {
     font-weight: 700;
     margin-left: 10px;
   }
+  .label{
+    color: #6C353D;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+  }
+
+
 }
 
 </style>
