@@ -90,6 +90,8 @@
         </template>
       </el-table-column>
       <el-table-column align="center" prop="name" label="招商办名称" />
+      <el-table-column align="center" prop="contactUser" label="联系人姓名" />
+      <el-table-column align="center" prop="contactPhone" label="联系人手机" />
       <el-table-column align="center" label="地区">
         <template slot-scope="scope">
           {{ scope.row.area }}
