@@ -1,92 +1,93 @@
 <template>
   <div class="page">
-    <el-row :gutter="20">
-      <el-col :span="15" style="max-width:530px">
-        <el-card class="activity-card" shadow="never">
-          <div class="board flex-x-between-center ">
-            <div class="board-left">
-              <div class="board-title">{{ activity.activityName }}</div>
-              <div v-if="activity.activitySignUpStartTime" class="board-item"><span class="mr10">报名时间</span> {{ formatDate(activity.activitySignUpStartTime) }} ～ {{ formatDate(activity.activitySignUpEndTime) }}</div>
-              <div class="board-item"><span class="mr10">活动时间</span> {{ formatDate(activity.activityStartTime) }} ～ {{ formatDate(activity.activityEndTime) }}</div>
-              <div class="board-item"><span class="mr10">举办地点</span> {{ activity.hostPlace }} </div>
-              <div v-if="activity.limit" class="board-item"><span class="mr10">参加限制</span> {{ activity.numberOfApplicants }}/{{ activity.participants }}</div>
-            </div>
-            <div class="board-right flex-y-center-center">
-              <img class="qr-code" :src="activity.qrCode" @click="activityQrCodeShow=true">
-              <div class="qr-code-desc"> 活动二维码 <el-button type="text" @click="$refs.activityDialog.saveImage()">下载</el-button> </div>
-              <SaveImgDialog ref="activityDialog" v-model="activityQrCodeShow" title="活动二维码">
-                <ActivityCode :id="id" slot-scope="{id}" :activity="activity" />
-              </SaveImgDialog>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col v-if="activity.seatFunction" :span="9" style="max-width:390px">
-        <el-card class="activity-card" shadow="never">
-          <div class="board flex-x-between-center">
-            <div class="board-left">
-              <div class="board-title">座位表</div>
-              <div class="flex-x-center-center">
-                <el-upload
-                  action="#"
-                  class="image-upload"
-                  list-type="picture-card"
-                  :http-request="upload"
-                  :show-file-list="false"
-                  :before-upload="beforeUpload"
-                >
-                  <div
-                    v-if="activity.seating"
-                    class="image-item"
-                    :style="{backgroundImage: `url(${activity.seating})`}"
-                  >
-                    <i class="el-icon-circle-close" @click.stop="delSeating" />
-                    <div class="image-preview" @click.stop="previewSeatDialogShow=true">预览</div>
-                  </div>
-                  <div v-else v-loading="imgLoading" class="upload-description">
-                    <i class="el-icon-plus" />
-                    <span>上传座位表</span>
-                    <span>（0 / 1）</span>
-                  </div>
-                </el-upload>
-                <div>会员可在小程序看到座位排序情况</div>
-              </div>
-            </div>
-            <el-dialog :visible.sync="previewSeatDialogShow" width="40%">
-              <img :src="activity.seating" style="width:100%">
-            </el-dialog>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
+    <!--    <el-row :gutter="20">-->
+    <!--      <el-col :span="15" style="max-width:530px">-->
+    <!--        <el-card class="activity-card" shadow="never">-->
+    <!--          <div class="board flex-x-between-center ">-->
+    <!--            <div class="board-left">-->
+    <!--              <div class="board-title">{{ activity.activityName }}</div>-->
+    <!--              <div v-if="activity.activitySignUpStartTime" class="board-item"><span class="mr10">报名时间</span> {{ formatDate(activity.activitySignUpStartTime) }} ～ {{ formatDate(activity.activitySignUpEndTime) }}</div>-->
+    <!--              <div class="board-item"><span class="mr10">活动时间</span> {{ formatDate(activity.activityStartTime) }} ～ {{ formatDate(activity.activityEndTime) }}</div>-->
+    <!--              <div class="board-item"><span class="mr10">举办地点</span> {{ activity.hostPlace }} </div>-->
+    <!--              <div v-if="activity.limit" class="board-item"><span class="mr10">参加限制</span> {{ activity.numberOfApplicants }}/{{ activity.participants }}</div>-->
+    <!--            </div>-->
+    <!--            <div class="board-right flex-y-center-center">-->
+    <!--              <img class="qr-code" :src="activity.qrCode" @click="activityQrCodeShow=true">-->
+    <!--              <div class="qr-code-desc"> 活动二维码 <el-button type="text" @click="$refs.activityDialog.saveImage()">下载</el-button> </div>-->
+    <!--              <SaveImgDialog ref="activityDialog" v-model="activityQrCodeShow" title="活动二维码">-->
+    <!--                <ActivityCode :id="id" slot-scope="{id}" :activity="activity" />-->
+    <!--              </SaveImgDialog>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </el-card>-->
+    <!--      </el-col>-->
+    <!--      <el-col v-if="activity.seatFunction" :span="9" style="max-width:390px">-->
+    <!--        <el-card class="activity-card" shadow="never">-->
+    <!--          <div class="board flex-x-between-center">-->
+    <!--            <div class="board-left">-->
+    <!--              <div class="board-title">座位表</div>-->
+    <!--              <div class="flex-x-center-center">-->
+    <!--                <el-upload-->
+    <!--                  action="#"-->
+    <!--                  class="image-upload"-->
+    <!--                  list-type="picture-card"-->
+    <!--                  :http-request="upload"-->
+    <!--                  :show-file-list="false"-->
+    <!--                  :before-upload="beforeUpload"-->
+    <!--                >-->
+    <!--                  <div-->
+    <!--                    v-if="activity.seating"-->
+    <!--                    class="image-item"-->
+    <!--                    :style="{backgroundImage: `url(${activity.seating})`}"-->
+    <!--                  >-->
+    <!--                    <i class="el-icon-circle-close" @click.stop="delSeating" />-->
+    <!--                    <div class="image-preview" @click.stop="previewSeatDialogShow=true">预览</div>-->
+    <!--                  </div>-->
+    <!--                  <div v-else v-loading="imgLoading" class="upload-description">-->
+    <!--                    <i class="el-icon-plus" />-->
+    <!--                    <span>上传座位表</span>-->
+    <!--                    <span>（0 / 1）</span>-->
+    <!--                  </div>-->
+    <!--                </el-upload>-->
+    <!--                <div>会员可在小程序看到座位排序情况</div>-->
+    <!--              </div>-->
+    <!--            </div>-->
+    <!--            <el-dialog :visible.sync="previewSeatDialogShow" width="40%">-->
+    <!--              <img :src="activity.seating" style="width:100%">-->
+    <!--            </el-dialog>-->
+    <!--          </div>-->
+    <!--        </el-card>-->
+    <!--      </el-col>-->
+    <!--    </el-row>-->
 
-    <el-row v-if="activity.signFunction || activity.signOutFunction">
-      <el-col :span="24" style="max-width:900px">
-        <el-card class="activity-card" shadow="never">
-          <div class="board flex-x-between-center">
-            <div class="board-left">
-              <div class="board-title">签到/签退码</div>
-              <div class="flex-x-between-center">
-                <div v-for="(item,i) of codeList" :key="i" class="qr-code-wrap flex-y-center-center">
-                  <img class="qr-code" :src="activity[item.codeKey]" @click="onQrCodePreview({url:activity[item.codeKey],title:item.title})">
-                  <el-button type="text" @click="onQrCodeDownload({url:activity[item.codeKey],title:item.title})">下载{{ item.title }}</el-button>
-                </div>
-              </div>
-              <SaveImgDialog ref="codeDialog" v-model="qrCodeDialog.show" :title="qrCodeDialog.title">
-                <SignInCode :id="id" slot-scope="{id}" :title="qrCodeDialog.title" :url="qrCodeDialog.url" />
-              </SaveImgDialog>
-            </div>
-            <div class="board-right flex-y-center-center">
-              <div class="desc">
-                <div class="desc-title">使用说明</div>
-                <div class="desc-item">保存图片打印在活动海报、易拉宝等场合 </div>
-                <div class="desc-item">用户使用微信扫码即签到成功，并显示会场座位号。</div>
-                <div class="desc-item">临时报名签到码用于临时到场会员，未报名无法签到情况，扫码后自动通过并签到。</div>
-              </div>
-            </div>
-          </div>
-        </el-card>
-      </el-col></el-row>
+    <!--    <el-row v-if="activity.signFunction || activity.signOutFunction">-->
+    <!--      <el-col :span="24" style="max-width:900px">-->
+    <!--        <el-card class="activity-card" shadow="never">-->
+    <!--          <div class="board flex-x-between-center">-->
+    <!--            <div class="board-left">-->
+    <!--              <div class="board-title">签到/签退码</div>-->
+    <!--              <div class="flex-x-between-center">-->
+    <!--                <div v-for="(item,i) of codeList" :key="i" class="qr-code-wrap flex-y-center-center">-->
+    <!--                  <img class="qr-code" :src="activity[item.codeKey]" @click="onQrCodePreview({url:activity[item.codeKey],title:item.title})">-->
+    <!--                  <el-button type="text" @click="onQrCodeDownload({url:activity[item.codeKey],title:item.title})">下载{{ item.title }}</el-button>-->
+    <!--                </div>-->
+    <!--              </div>-->
+    <!--              <SaveImgDialog ref="codeDialog" v-model="qrCodeDialog.show" :title="qrCodeDialog.title">-->
+    <!--                <SignInCode :id="id" slot-scope="{id}" :title="qrCodeDialog.title" :url="qrCodeDialog.url" />-->
+    <!--              </SaveImgDialog>-->
+    <!--            </div>-->
+    <!--            <div class="board-right flex-y-center-center">-->
+    <!--              <div class="desc">-->
+    <!--                <div class="desc-title">使用说明</div>-->
+    <!--                <div class="desc-item">保存图片打印在活动海报、易拉宝等场合 </div>-->
+    <!--                <div class="desc-item">用户使用微信扫码即签到成功，并显示会场座位号。</div>-->
+    <!--                <div class="desc-item">临时报名签到码用于临时到场会员，未报名无法签到情况，扫码后自动通过并签到。</div>-->
+    <!--              </div>-->
+    <!--            </div>-->
+    <!--          </div>-->
+    <!--        </el-card>-->
+    <!--      </el-col>-->
+    <!--    </el-row>-->
 
     <SingInTable
       :activity="activity"

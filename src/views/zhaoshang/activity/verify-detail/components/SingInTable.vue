@@ -523,45 +523,45 @@ export default {
             </el-button>
           </div>)
         },
-        {
-          label: '到场人数',
-          minWidth: 120,
-          render: ({ row }) => (<div>
-            <div>预计到场：{row.subscribeTotal}</div>
-            <div>到场人数：
-              <span style={row.realTotal > 0 && row.realTotal < row.subscribeTotal ? 'color:red;' : ''}>
-                {row.realTotal ? row.realTotal : '-'}
-              </span>
-            </div>
-          </div>)
-        },
-        {
-          label: '座位号',
-          minWidth: 120,
-          render: ({ row }) => (<div>
-            {row.seats ? row.seats.map(v => {
-              if (v.status === 0) return <div>{v.seatName}</div>
-              if (v.status === 1) return <div style='color:#409eff;'>{v.seatName}</div>
-              if (v.status === 2) return <div style='color:red;'>{v.seatName} 空座</div>
-            }) : '-'}
-          </div>)
-        },
-        {
-          label: '签到',
-          render: ({ row }) => row.signStatus === 1 ? '是' : '-'
-        },
-        {
-          label: '签到时间',
-          render: ({ row }) => row.signTs ? formatDate(row.signTs) : '-'
-        },
-        {
-          label: '签退',
-          render: ({ row }) => row.signOutStatus === 1 ? '是' : '-'
-        },
-        {
-          label: '签退时间',
-          render: ({ row }) => row.signoutTs ? formatDate(row.signoutTs) : '-'
-        },
+        // {
+        //   label: '到场人数',
+        //   minWidth: 120,
+        //   render: ({ row }) => (<div>
+        //     <div>预计到场：{row.subscribeTotal}</div>
+        //     <div>到场人数：
+        //       <span style={row.realTotal > 0 && row.realTotal < row.subscribeTotal ? 'color:red;' : ''}>
+        //         {row.realTotal ? row.realTotal : '-'}
+        //       </span>
+        //     </div>
+        //   </div>)
+        // },
+        // {
+        //   label: '座位号',
+        //   minWidth: 120,
+        //   render: ({ row }) => (<div>
+        //     {row.seats ? row.seats.map(v => {
+        //       if (v.status === 0) return <div>{v.seatName}</div>
+        //       if (v.status === 1) return <div style='color:#409eff;'>{v.seatName}</div>
+        //       if (v.status === 2) return <div style='color:red;'>{v.seatName} 空座</div>
+        //     }) : '-'}
+        //   </div>)
+        // },
+        // {
+        //   label: '签到',
+        //   render: ({ row }) => row.signStatus === 1 ? '是' : '-'
+        // },
+        // {
+        //   label: '签到时间',
+        //   render: ({ row }) => row.signTs ? formatDate(row.signTs) : '-'
+        // },
+        // {
+        //   label: '签退',
+        //   render: ({ row }) => row.signOutStatus === 1 ? '是' : '-'
+        // },
+        // {
+        //   label: '签退时间',
+        //   render: ({ row }) => row.signoutTs ? formatDate(row.signoutTs) : '-'
+        // },
         this.generateSigninTime(),
         {
           label: '来源',
@@ -588,9 +588,11 @@ export default {
           minWidth: 100,
           render: ({ row }) => {
             return (<div>
+              {/*
               <div><el-button type='text' onClick={() => this.initSeatDialog(row)}>设置座位号</el-button></div>
               <div> { this.generateSigninButton(row) } </div>
               <div> { this.generateSignOutButton(row) } </div>
+              */}
               <div><el-button type='text' onClick={() => this.onDelSingin(row)}><div style='color:red;'>移除</div></el-button></div>
             </div>)
           }
