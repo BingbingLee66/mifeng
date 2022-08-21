@@ -57,7 +57,7 @@
     </el-row>
     <el-row>
       <el-col :offset="2" :span="6">操作人：</el-col>
-      <el-col :span="10">{{ detailObj.operatorId }}</el-col>
+      <el-col :span="10">{{ detailObj.operatorName }}</el-col>
     </el-row>
     <el-row>
       <el-col :offset="20" :span="2">

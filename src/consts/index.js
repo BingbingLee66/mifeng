@@ -57,7 +57,7 @@ const publishStatusMap = new Map([
   [PUBLISH_STATUS.goOnline, '待上线'],
   [PUBLISH_STATUS.online, '已上线'],
   [PUBLISH_STATUS.offline, '已下线'],
-  [stageMap.over, '已结束'],
+  [PUBLISH_STATUS.over, '已结束'],
 ])
 
 // 转成下拉框option

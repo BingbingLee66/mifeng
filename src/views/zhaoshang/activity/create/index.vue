@@ -25,6 +25,7 @@
           :rules="rules"
           label-position="right"
           label-width="120px"
+        
         >
           <el-row>
             <el-col style="width: 600px; height: 50px">
@@ -86,7 +87,7 @@
 
           <el-row>
             <el-col style="width: 600px;">
-              <el-form-item label="招商阶段：" prop="stage">
+              <el-form-item label="招商阶段：" >
                 <el-select v-model="formObj.phaseStatus">
                   <el-option v-for="stage in getMapDict(stageMap)" :key="stage.value" :label="stage.label" :value="stage.value" />
                 </el-select>
@@ -116,7 +117,7 @@
 
           <el-row>
             <el-col>
-              <el-form-item label="权重" prop="weight">
+              <el-form-item label="权重">
                 <el-input oninput="value=value.replace(/[^\d]/g,'')" v-model="formObj.sort" maxlength="3" style="width:120px"  />
                 请输入1-999的整数
               </el-form-item>
@@ -126,7 +127,7 @@
           <el-row>
             <el-col style="width: 600px;">
               <el-form-item label="类型摘要" prop="labels">
-                <el-button style="margin-right: 10px;" size="small" @click="makeTagDialogVisible = true">选择摘要标签</el-button>
+                <el-button  style="margin-right: 10px;" size="small" @click="makeTagDialogVisible = true">选择摘要标签</el-button>
                 <div class="tags">
                   <div class="tags-block" v-for="(item,index) in formObj.labels" :key="index">#{{item.label}}</div>
                 </div>
@@ -696,7 +697,7 @@
       :custom-group="customTagGroup"
       :list="formObj.labels.map(v=> v.labelId)"
       @add="tagFormDialogVisible = true"
-      @confirm="checkTagList => formObj.labels = checkTagList"
+      @confirm="onConfirm"
     />
     <TagFormDialog
       :visible.sync="tagFormDialogVisible"

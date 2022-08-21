@@ -115,7 +115,14 @@
 
       <el-row>
         <el-col :offset="2" :span="20">
-          <el-form-item label="密码" prop="password">
+          <el-form-item label="密码" prop="password" v-if="!editId">
+            <el-input
+              v-model="formObj.password"
+              type="password"
+              minlength="1"
+            />
+          </el-form-item>
+           <el-form-item label="密码"  v-else>
             <el-input
               v-model="formObj.password"
               type="password"
@@ -125,7 +132,7 @@
         </el-col>
       </el-row>
 
-      <el-row v-if="!isEdit">
+      <el-row v-if="!editId">
         <el-col :offset="2" :span="20">
           <el-form-item label="确认密码" prop="confirmPassword">
             <el-input
@@ -202,7 +209,7 @@ export default {
           { required: true, message: '招商办名称不能为空', trigger: 'blur' },
           { min: 1, max: 50, message: '招商办名称1-50个字', trigger: 'change' }
         ],
-        logoUrl: [{ required: true, message: '请上传商/协会logo', trigger: 'change' }],
+        logoUrl: [{ required: true, message: '请上传招商办logo', trigger: 'change' }],
         contactUser: [{ required: true, message: '联系人姓名不能为空', trigger: 'blur' }],
         contactPhone: [
           { required: true, message: '联系人手机号不能为空', trigger: 'blur' },
@@ -225,7 +232,7 @@ export default {
         }],
         address: [{ required: true, message: '办公地址不能为空', trigger: 'change' }],
         password: [
-          { required: !this.isEdit, message: '账号密码不能为空', trigger: 'blur' },
+          { required: true, message: '账号密码不能为空', trigger: 'blur' },
           {
             validator: (rule, value, callback) => {
               if (!/^\w*$/.test(value)) return callback(new Error('密码只能由字母、数字和下划线"_"组成！'))
@@ -235,7 +242,7 @@ export default {
           }
         ],
         confirmPassword: [
-          { required: !this.isEdit, message: '确认密码不能为空', trigger: 'blur' },
+          { required: true, message: '确认密码不能为空', trigger: 'blur' },
           {
             validator: (rule, value, callback) => {
               if (!/^\w*$/.test(value)) return callback(new Error('密码只能由字母、数字和下划线"_"组成！'))
@@ -296,7 +303,8 @@ export default {
       getInfoDetails(id).then((res)=>{
         const  dtl = res.data
         this.formObj = {
-          ...dtl
+          ...dtl,
+          password:''
         }
         this.formObj.district = dtl.area.split("-")
       })

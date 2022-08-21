@@ -10,7 +10,7 @@
         size="small"
       >
         <el-form-item label="信息来源">
-          <el-select v-model="query.invesId" placeholder="请选择">
+          <el-select clearable v-model="query.invesId" placeholder="请选择">
             <el-option
               v-for="item in originOpt"
               :key="item.invesKey"
@@ -183,6 +183,11 @@ export default {
     ongetInfoList(){
       getInfoList({status:0}).then((res)=>{
         this.originOpt = res.data || []
+        this.originOpt.unshift({
+          invesKey:'',
+          name:'全部',
+          id:''
+        })
       })
     },
     // 获取表格数据
@@ -202,7 +207,7 @@ export default {
         invesId,
         invesKey:null,
         'pageSize': this.limit,
-        'pageNum': this.currentPage,
+        'page': this.currentPage,
       }
       getinvesInfoList(params).then(response=>{
         this.tableData = response.data.list
@@ -310,8 +315,12 @@ export default {
 <style scoped lang="scss">
 .tag-info{
   width: 100%;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+	text-overflow: -o-ellipsis-lastline;
+	overflow: hidden;				//溢出内容隐藏
+	text-overflow: ellipsis;		//文本溢出部分用省略号表示
+	display: -webkit-box;			//特别显示模式
+	-webkit-line-clamp: 3;			//行数
+	line-clamp: 3;					
+	-webkit-box-orient: vertical;	//盒子中内容竖直排列
 }
 </style>

@@ -69,7 +69,7 @@
         </el-table-column>
         <el-table-column align="center" label="地区" width="100px"  >
            <template slot-scope="scope">
-            {{ scope.row.city }}{{scope.row.area}}
+            {{scope.row.province}}{{ scope.row.city }}{{scope.row.area}}
           </template>
         </el-table-column>
         <el-table-column align="center" label="类型摘要" width="130px">

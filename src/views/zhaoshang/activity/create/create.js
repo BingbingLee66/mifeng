@@ -139,8 +139,8 @@ export default {
       ruleCkeys: ['nJ3VNk', 'Jtn1w3', '3cWTv8', 'fIk3Ay', 'EbOpOz', 'q7fiqR', 'bSQk8X', 'Ip2cCA'],
       rules: {
         activityName: [
-          { required: true, message: '活动名称不能为空', trigger: 'blur' },
-          { validator: checkSpace, trigger: 'blur' }
+          { required: true, message: '活动名称不能为空', trigger: 'change' },
+          { validator: checkSpace, trigger: 'change' }
         ],
         // headImage: [
         //   { required: true, message: '活动头图不能为空', trigger: 'blur' }
@@ -154,22 +154,23 @@ export default {
         applyDate: [
           { required: true, message: '报名时间不能为空', trigger: 'blur' }
         ],
-        // addressInfo: [
-        //   { required: true, message: '活动地点不能为空', trigger: 'blur' },
-        //   { validator: checkSpace, trigger: 'blur' }
-        // ]
+
         invesKey: [
-          { required: true, message: '招商办不能为空', trigger: 'blur' }
+          { required: true, message: '招商办不能为空', trigger: 'change' }
         ],
         chamberAddress: [
-          { required: true, message: '招商地区不能为空', trigger: 'blur' }
+          { required: true, message: '招商地区不能为空', trigger: 'change' }
         ],
         labels: [
-          { required: true, message: '类型摘要不能为空', trigger: 'blur' }
+          { required: true, message: '类型摘要不能为空', trigger: ['blur', 'change'] }
         ],
         applyMode: [
           { required: true, message: '活动模式不能为空', trigger: 'blur' }
         ],
+        // addressInfo: [
+        //   { required: true, message: '活动地点不能为空', trigger: 'blur' },
+        //   { validator: checkSpace, trigger: 'blur' }
+        // ]
       },
       stageMap,
       ACTIVE_MODE,
@@ -817,7 +818,12 @@ export default {
       this.formObj.cityCode	 = getCheckedNodes.path[1]
       this.formObj.area = getCheckedNodes.pathLabels[2] // 区
       this.formObj.areaCode	 = getCheckedNodes.path[2]
+    },
 
+    // 选择标签
+    onConfirm(e){
+      this.formObj.labels = e
+      if(this.formObj.labels.length > 0) this.$refs.form.validateField('labels')
     },
     // 预览
     onpreview() {
