@@ -33,7 +33,7 @@
         </el-form-item>
 
         <el-form-item label="招商办ID">
-          <el-input v-model="query.invesKey" clearable placeholder="请输入招商办ID" />
+          <el-input v-model="query.id" clearable placeholder="请输入招商办ID" />
         </el-form-item>
 
         <el-form-item label="创建时间">
@@ -159,7 +159,7 @@ export default {
         name: null, // 招商办名称
         status: null, // 状态 -1全部 0正常 1冻结
         area: [],
-        invesKey: null, // 招商办id
+        id: null, // 招商办id
         date: null, 
       },
       currentpage: 1,
@@ -184,7 +184,7 @@ export default {
         name,
         status,
         area,
-        invesKey,
+        id,
         date,
       } = this.query
     
@@ -198,7 +198,7 @@ export default {
         status,
         startCreatedTs: date ? date[0] : '',
         endCreatedTs: date ? date[1] : '',
-        invesKey,  // 招商办id
+        id,  // 招商办id
         areaCode: [...new Set(arr)].join(','),
       }
   
