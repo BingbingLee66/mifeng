@@ -207,7 +207,7 @@ export default {
         ],
         name: [
           { required: true, message: '招商办名称不能为空', trigger: 'blur' },
-          { min: 1, max: 50, message: '招商办名称1-50个字', trigger: 'change' }
+          { min: 1, max: 30, message: '招商办名称1-30个字', trigger: 'change' }
         ],
         logoUrl: [{ required: true, message: '请上传招商办logo', trigger: 'change' }],
         contactUser: [{ required: true, message: '联系人姓名不能为空', trigger: 'blur' }],
@@ -340,7 +340,7 @@ export default {
         contactPhone: '',
         referrer: '',
         password: '',
-        createdTs: '',
+        confirmPassword: '',
         logoUrl: '',
         area: '',
         district:[],
