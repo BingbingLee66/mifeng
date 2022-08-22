@@ -228,7 +228,7 @@ export default {
           title: '冻结账号',
           message: h('p', null, [
             h('div', null, '是否确定冻结该招商办的账号？'),
-            h('div', null, '冻结后，该商会无法登录商会后台，但是不会影响商会在前台的显示'),
+            h('div', null, '冻结后，该招商办无法登录招商办后台，但是不会影响招商办在前台的显示'),
           ]),
           showCancelButton: true,
           confirmButtonText: '确定',
