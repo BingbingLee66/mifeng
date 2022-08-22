@@ -17,14 +17,14 @@
      <el-row>
         <el-col :offset="2" :span="20">
           <el-form-item label="账号名称：" prop="invesName">
-            <el-input :disabled="editId!= ''"  v-model.trim="formObj.invesName" max-length="12" />
+            <el-input :disabled="editId!= ''"  v-model.trim="formObj.invesName" maxlength="12" />
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :offset="2" :span="20">
           <el-form-item label="招商办名称：" prop="name">
-            <el-input v-model.trim="formObj.name" max-length="100" />
+            <el-input v-model.trim="formObj.name"  maxlength="30" />
           </el-form-item>
         </el-col>
       </el-row>
