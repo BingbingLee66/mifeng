@@ -284,7 +284,7 @@ export default {
   watch:{
     //  监听多选地区
     'query.area':function(newData, oldData){
-      if (newData.length > 5) {
+      if (newData.length > 3) {
         this.$message({
           message: '最多只支持选择3项',
           duration: 1500,
