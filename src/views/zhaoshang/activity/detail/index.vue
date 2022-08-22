@@ -43,7 +43,7 @@
         <el-col :span="8">
           <div class="grid-content ">
             <div class="label">参加人数：</div>
-            <div class="value">{{ infoList.activityCount }}</div>
+            <div class="value">{{ infoList.isLimit == 0 ? '不限' : infoList.activityCount }}</div>
           </div>
         </el-col>
         <el-col :span="8">
