@@ -25,7 +25,7 @@
         <el-col :span="8">
           <div class="grid-content ">
             <div class="label">已报名人数：</div>
-            <div class="value">{{ infoList.activityCount }}</div>
+            <div class="value">{{ infoList.registeredCount }}</div>
           </div>
         </el-col>
         <el-col :span="8">
