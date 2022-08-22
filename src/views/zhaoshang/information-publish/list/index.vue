@@ -10,7 +10,7 @@
         size="small"
       >
         <el-form-item label="信息来源">
-          <el-select clearable v-model="query.invesId" placeholder="请选择">
+          <el-select clearable filterable  v-model="query.invesId" placeholder="请选择">
             <el-option
               v-for="item in originOpt"
               :key="item.invesKey"
