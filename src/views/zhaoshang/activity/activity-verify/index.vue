@@ -101,7 +101,7 @@
         <el-table-column label="审核通过" width="100px">
           <template slot-scope="scope">
             {{ scope.row.approvedNum === null ? 0 : scope.row.approvedNum }}
-            <div class="blue-label" @click="goVerifyDetail(scope.row,'auditStatus',1)">下载签到表</div>
+            <!--            <div class="blue-label" @click="goVerifyDetail(scope.row,'auditStatus',1)">下载签到表</div>-->
           </template>
         </el-table-column>
 
