@@ -86,7 +86,7 @@
       </el-table-column>
       <el-table-column align="center" label="地区">
         <template slot-scope="scope">
-          {{ scope.row.addressDTO.province }}{{ scope.row.addressDTO.city }}{{ scope.row.addressDTO.area }}{{ scope.row.addressDTO.addressInfo	 }}
+          {{ scope.row.invesAddress }}
         </template>
       </el-table-column>
       <el-table-column  align="center" label="权重" width="70px">
