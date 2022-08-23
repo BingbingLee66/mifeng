@@ -78,7 +78,7 @@
           <el-row>
             <el-col style="width: 600px;">
               <el-form-item label="关联招商办：" prop="invesKey">
-                <el-select v-model="formObj.invesKey">
+                <el-select v-model="formObj.invesKey"   :disabled="status == 2 || status == 3">
                   <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.invesKey" />
                 </el-select>
               </el-form-item>
@@ -88,7 +88,7 @@
           <el-row>
             <el-col style="width: 600px;">
               <el-form-item label="招商阶段：" >
-                <el-select v-model="formObj.phaseStatus">
+                <el-select v-model="formObj.phaseStatus"   :disabled="status == 2 || status == 3">
                   <el-option v-for="stage in getMapDict(stageMap)" :key="stage.value" :label="stage.label" :value="stage.value" />
                 </el-select>
               </el-form-item>
@@ -127,7 +127,7 @@
           <el-row>
             <el-col style="width: 600px;">
               <el-form-item label="类型摘要" prop="labels">
-                <el-button  style="margin-right: 10px;" size="small" @click="makeTagDialogVisible = true">选择摘要标签</el-button>
+                <el-button  style="margin-right: 10px;"   :disabled="status == 2 || status == 3" size="small" @click="makeTagDialogVisible = true">选择摘要标签</el-button>
                 <div class="tags">
                   <div class="tags-block" v-for="(item,index) in formObj.labels" :key="index">#{{item.label}}</div>
                 </div>
@@ -291,8 +291,8 @@
           <el-row>
             <el-col style="width: 600px;">
               <el-form-item label="招商表格:" >
-                <el-upload action="/" ref="uploadFile" :on-remove="handleRemoveAttachment" :file-list="formObj.attachment" :limit="20" :before-upload="beforeUploadFile" :http-request="uploadFile">
-                  <el-button type="primary" size="small">点击上传</el-button>
+                <el-upload :disabled="status == 2 || status == 3"  action="/" ref="uploadFile" :on-remove="handleRemoveAttachment" :file-list="formObj.attachment" :limit="20" :before-upload="beforeUploadFile" :http-request="uploadFile">
+                  <el-button  :disabled="status == 2 || status == 3"  type="primary" size="small">点击上传</el-button>
                   <div slot="tip" class="el-upload__tip">上传格式限制word、excel、pdf、ppt</div>
                 </el-upload>
               </el-form-item>
