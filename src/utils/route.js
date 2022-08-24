@@ -15,7 +15,7 @@ export function traverseRoutes(menus) {
       hidden: menu.hidden,
       id: menu.id,
       meta: { title: menu.menuName, icon: menu.icon, id: menu.id },
-      name: menu.menuName,
+      name: menu.menuName, // TODO 具名路由不应该用中文且必须保证唯一，待优化
       num: index + 1,
       parentId: menu.parentId,
       path: menu.menuUrl,
@@ -23,7 +23,7 @@ export function traverseRoutes(menus) {
       guideId: menu.guideId,
       hadGuide: menu.hadGuide,
     }
-    if (routeMenu.component) {
+    if (routeMenu.component && typeof routeMenu.component === 'string') {
       let name = routeMenu.component
       routeMenu.component = (resolve) => require([`@/${name}`], resolve)
     }

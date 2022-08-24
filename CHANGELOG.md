@@ -1,12 +1,25 @@
 # CHANGELOG
 
 ## [Released]
+## [2.24.0] - 2022-08-23
+### Added
+-  【锦鲤招商】创建活动 [982](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/982)
+-  【锦鲤招商】活动列表-收到的名片 [978](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/978)
+-  【锦鲤招商】活动详情 [977](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/977)
+-  【锦鲤招商】活动列表 [976](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/976)
+-  【锦鲤招商】信息列表-收到的名片 [975](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/975)
+-  【锦鲤招商】招商办管理 [972](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/972)
+-  【锦鲤招商】信息管理列表模块 [973](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/973)
+
+
+## [Released]
 ## [2.22.0] - 2022-08-02
 ### Added
 - 【ip 名片】 名片数据 [949](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/949)
 - 【社会组织名录】社会组织名录管理页面 [945](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/945)
 - 【社会组织名录】线索管理页面 [946](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/946)
 - 【管理后台】邀请好友入会时，突出商协会 [961](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/961)
+
 
 ## [Released]
 ## [2.21.1] - 2022-07-27
