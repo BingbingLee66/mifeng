@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { useResetFilter } from '@/src/utils/resetFilter.js'
+import { useResetFilter } from '@/utils/resetFilter.js'
 export default {
 
   date() {
