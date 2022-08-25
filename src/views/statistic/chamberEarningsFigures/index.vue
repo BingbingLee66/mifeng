@@ -123,12 +123,11 @@ export default {
   methods: {
     fetchData(isPagination) {
       this.loading = true
-      const { createdTime, ckeys } = this.query
+      const { createdTime } = this.query
       const params = {
         ...this.query,
-        ckeys: ckeys ? [ckeys] : '',
-        endTime: createdTime && createdTime.length > 0 ? createdTime[0] : '',
-        startTime: createdTime && createdTime.length > 0 ? createdTime[1] : ''
+        startTime: createdTime && createdTime.length > 0 ? createdTime[0] : '',
+        endTime: createdTime && createdTime.length > 0 ? createdTime[1] : '',
       }
       delete params.createdTime
       this.getList(params)
@@ -168,8 +167,8 @@ export default {
       const { createdTime } = this.query
       const params = {
         ...this.query,
-        endTime: createdTime && createdTime.length > 0 ? createdTime[0] : '',
-        startTime: createdTime && createdTime.length > 0 ? createdTime[1] : ''
+        startTime: createdTime && createdTime.length > 0 ? createdTime[0] : '',
+        endTime: createdTime && createdTime.length > 0 ? createdTime[1] : '',
       }
       delete params.createdTime
       delete params.pageSize
