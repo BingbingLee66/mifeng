@@ -47,18 +47,25 @@
       </el-card>
     </el-row>
     <h3>明细</h3>
-    <el-table v-loading="loading" :data="dataSource" element-loading-text="Loading" fit highlight-current-row>
-      <el-table-column v-show="!ckey" label="商会名称" min-width="200px" prop="chamberName" />
+    <el-table
+      v-loading="loading"
+      :data="dataSource"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+    >
+      <el-table-column v-if="!ckey" label="商会名称" min-width="200px" prop="chamberName" />
       <el-table-column label="供应商企业名称" min-width="200px" prop="supplierCompanyName" />
       <el-table-column label="供应商手机号" width="200px" prop="supplierPhone" />
-      <el-table-column label="在售商品数量" width="120px" prop="goodsCount" />
-      <el-table-column label="销售额" width="120px" prop="price" />
-      <el-table-column label="捐赠比例" width="120px" prop="donationRatio">
+      <el-table-column label="在售商品数量" width="200px" prop="goodsCount" />
+      <el-table-column label="销售额" width="200px" prop="price" />
+      <el-table-column label="捐赠比例" width="200px" prop="donationRatio">
         <span slot-scope="{ row }">
           {{ row.donationRatio * 100 }}%
         </span>
       </el-table-column>
-      <el-table-column label="捐赠金额(元)" width="120px" prop="donationPrice" />
+      <el-table-column label="捐赠金额(元)" width="200px" prop="donationPrice" />
     </el-table>
     <el-pagination
       :current-page="query.page"
@@ -120,8 +127,8 @@ export default {
       const params = {
         ...this.query,
         ckeys: ckeys ? [ckeys] : '',
-        endTime: createdTime.length > 0 ? createdTime[0] : '',
-        startTime: createdTime.length > 0 ? createdTime[1] : ''
+        endTime: createdTime && createdTime.length > 0 ? createdTime[0] : '',
+        startTime: createdTime && createdTime.length > 0 ? createdTime[1] : ''
       }
       delete params.createdTime
       this.getList(params)
@@ -161,8 +168,8 @@ export default {
       const { createdTime } = this.query
       const params = {
         ...this.query,
-        endTime: createdTime.length > 0 ? createdTime[0] : '',
-        startTime: createdTime.length > 0 ? createdTime[1] : ''
+        endTime: createdTime && createdTime.length > 0 ? createdTime[0] : '',
+        startTime: createdTime && createdTime.length > 0 ? createdTime[1] : ''
       }
       delete params.createdTime
       delete params.pageSize
