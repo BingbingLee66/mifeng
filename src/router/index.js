@@ -53,6 +53,12 @@ export const constantRoutes = [
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
         meta: { title: 'dashboard', icon: 'dashboard', affix: true }
+      },
+      {
+        path: 'mass-notification/create',
+        name: 'create',
+        component: () => import('@/views/mass-notification/create/index'),
+        meta: { title: '创建群发' }
       }
     ]
   },
