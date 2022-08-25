@@ -25,10 +25,10 @@ module.exports = {
   publicPath: './',
   outputDir: 'dist',
   assetsDir: 'static',
-  lintOnSave: false,
+  lintOnSave: true,
   productionSourceMap: false,
   devServer: {
-    port: port,
+    port,
     open: true,
     overlay: {
       warnings: false,
@@ -98,10 +98,12 @@ module.exports = {
           config
             .plugin('ScriptExtHtmlWebpackPlugin')
             .after('html')
-            .use('script-ext-html-webpack-plugin', [{
+            .use('script-ext-html-webpack-plugin', [
+              {
               // `runtime` must same as runtimeChunk name. default is `runtime`
-              inline: /runtime\..*\.js$/
-            }])
+                inline: /runtime\..*\.js$/
+              }
+            ])
             .end()
           config
             .optimization.splitChunks({
@@ -132,9 +134,9 @@ module.exports = {
       )
   },
   configureWebpack: {
-    name: name,
+    name,
     externals: {
-      'CKEDITOR': 'window.CKEDITOR'
+      CKEDITOR: 'window.CKEDITOR'
     },
     resolve: {
       alias: {
