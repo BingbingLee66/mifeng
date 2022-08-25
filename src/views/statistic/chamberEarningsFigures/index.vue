@@ -35,15 +35,15 @@
     <el-row type="flex">
       <el-card shadow="never" class="card">
         <p>销售额</p>
-        <p class="card-value">{{ data.price || 0 }}</p>
+        <p class="card-value">{{ price || 0 }}</p>
       </el-card>
       <el-card shadow="never" class="card">
         <p>捐赠金额</p>
-        <p class="card-value">{{ data.donationPrice || 0 }}</p>
+        <p class="card-value">{{ donationPrice || 0 }}</p>
       </el-card>
       <el-card shadow="never" class="card">
         <p>商品数量</p>
-        <p class="card-value">{{ data.goodsCount || 0 }}</p>
+        <p class="card-value">{{ goodsCount || 0 }}</p>
       </el-card>
     </el-row>
     <h3>明细</h3>
@@ -106,12 +106,10 @@ export default {
       dataSource: [],
       total: 0,
       // 汇总数据
-      data: {
-        price: 0,
-        donationPrice: 0,
-        donationRatio: 0,
-        goodsCount: 0
-      }
+      price: 0,
+      donationPrice: 0,
+      donationRatio: 0,
+      goodsCount: 0
     }
   },
   computed: {
@@ -136,7 +134,10 @@ export default {
     // 汇总
     getSummaryData(params) {
       getChamberList(params).then(res => {
-        this.data = res.data
+        this.price = res.data && res.data.price || 0
+        this.donationPrice = res.data && res.data.donationPrice || 0
+        this.donationRatio = res.data && res.data.donationRatio || 0
+        this.goodsCount = res.data && res.data.goodsCount || 0
       })
     },
     // 列表
