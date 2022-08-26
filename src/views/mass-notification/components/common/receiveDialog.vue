@@ -9,11 +9,15 @@
       :dialog-title="dialogTitle"
     >
       <div slot="content">
+        <!-- 表单选型 -->
         <el-form-item label="搜索">
           <el-input v-model="name" :placeholder="placeholder"></el-input>
         </el-form-item>
+        <!-- 表格 -->
         
-        <kdTable :table-data="tableData" :column-config="columnConfig"/>      
+        <kdTable :table-data="tableData" :column-config="columnConfig"/>   
+        <!-- 分页  -->
+        <KdPagination></KdPagination>  
       </div>
       <div slot="customFooter">
         <el-button type="primary" @click="save">我知道了</el-button>
@@ -24,9 +28,10 @@
 <script>
 import kdDialog from '@/components/common/kdDialog'
 import kdTable from './kdTable'
+import KdPagination from '@/components/common/KdPagination/index'
 export default {
   name: 'ReceiveDialog',
-  components: { kdDialog, kdTable },
+  components: { kdDialog, kdTable, KdPagination },
   props: {
     selection: {
       type: Boolean,

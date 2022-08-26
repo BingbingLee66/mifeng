@@ -11,6 +11,7 @@
     <template v-for="col in columnConfig">
       <el-table-column v-if="col.type === 'select'" :key="col" type="selection" width="55"> </el-table-column>
       <el-table-column v-else :key="col" :formatter="col.formatter" :prop="col.prop" :label="col.label">
+        <el-table-column v-if="col.isOperation">
       </el-table-column>
     </template>
   </el-table>
@@ -44,6 +45,9 @@ export default {
   },
   created(){
     console.log('tableData', this.tableData)
+  },
+  methods: {
+    handleSelectionChange(){},
   }
 }
 </script>

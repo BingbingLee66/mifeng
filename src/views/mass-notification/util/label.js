@@ -8,7 +8,7 @@ export const labelType = [
 ]
 export const receiveType = [
   { n: '所有人', type: -1, show: 1 },
-  { n: '指定商会会员', type: 5, show: 2   }, 
+  { n: '本商会会员', type: 5, show: 2   }, 
   { n: '指定手机号', type: 6, show: 1   }, 
   { n: '本商会会员', type: 1, show: 1 },
   { n: '指定职位', type: 2, show: 2 }, 
