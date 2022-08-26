@@ -7,9 +7,13 @@
     @close="close"
   >
     <slot name="content"></slot>
-    <span slot="footer" class="dialog-footer" v-if="showFooter">
-      <el-button @click="cancel">取 消</el-button>
-      <el-button type="primary" @click="save">确 定</el-button>
+    <span slot="footer" :class="['dialog-footer',center? 'center':''] " v-if="showFooter">
+      <div v-if="!customFooter">
+       <el-button @click="cancel">取 消</el-button>
+       <el-button type="primary" @click="save">确 定</el-button>
+      </div>
+      <slot name="customFooter"/>
+      
     </span>
   </el-dialog>
 </template>
@@ -20,7 +24,7 @@ export default {
   data() {
     return {
       // if show dialog
-      dialogVisible: false,
+      //dialogVisible: false,
     };
   },
   props: {
@@ -44,6 +48,20 @@ export default {
       type: Boolean,
       default: true,
     },
+    dialogVisible:{
+    type: Boolean,
+      default: false,
+    },
+    //底部按钮是否居中
+    center:{
+     type: Boolean,
+      default: false,
+    },
+    //自定义底部按钮
+    customFooter:{
+    type: Boolean,
+      default: false,
+    }
   },
   methods: {
     cancel() {
@@ -79,6 +97,11 @@ export default {
   border-bottom: 1px solid #e6e6e6;
   margin: 0 20px;
   // padding: 20px 0 !important;
+}
+
+.center{
+  display: flex;
+  justify-content: center;
 }
 </style>
 

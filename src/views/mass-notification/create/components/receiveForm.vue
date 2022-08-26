@@ -6,13 +6,16 @@
         <el-radio v-for="(item,index) in receiveList" :key="index" :label="item.n" :value="item.type"></el-radio>
        </el-radio-group>
      </el-form-item>
+     <receiveDialog/>
     </el-form>
   </div>
 </template>
 
 <script>
+import receiveDialog from '../../components/common/receiveDialog'
 export default {
   name: 'ReceiveForm',
+  components: { receiveDialog },
   props: ['receiveList'],
   data(){return {
     form: {
