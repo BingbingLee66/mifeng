@@ -113,8 +113,7 @@ export const constantRoutes = [
       {
         path: '/content/article-column-editor',
         name: '修改栏目内容',
-        component: () =>
-          import('@/views/content/articleupdate/editor/artcolumn'),
+        component: () => import('@/views/content/articleupdate/editor/artcolumn'),
         hidden: true,
         meta: { title: '修改栏目内容' }
       },
@@ -198,8 +197,7 @@ export const constantRoutes = [
       {
         path: '/org-structure/department-manage',
         name: '部门管理',
-        component: () =>
-          import('@/views/org-structure/department-manage/index'),
+        component: () => import('@/views/org-structure/department-manage/index'),
         hidden: true,
         meta: { title: '部门管理' }
       },
@@ -441,6 +439,20 @@ export const constantRoutes = [
         component: () => import('@/views/zhaoshang/business-card/detail/index.vue'),
         hidden: true,
         meta: { title: '名片详情' }
+      },
+      {
+        name: '模板管理',
+        path: '/template-library/synchronization/index',
+        component: () => import('@/views/mass-notification/template-library/synchronization/index.vue'),
+        hidden: true,
+        meta: { title: '模板管理' }
+      },
+      {
+        name: '短信模板',
+        path: '/template-set/add-note/index',
+        component: () => import('@/views/mass-notification/template-set/add-note/index.vue'),
+        hidden: true,
+        meta: { title: '短信模板' }
       }
     ]
   }
