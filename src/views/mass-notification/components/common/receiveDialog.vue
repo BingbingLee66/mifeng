@@ -77,6 +77,9 @@ export default {
       console.log('row', row)
       console.log('clolum', clolum)
     },
+    setData(columnConfig,tableData){
+
+    },
     handleSelectionChange() {},
     save() {}
   }

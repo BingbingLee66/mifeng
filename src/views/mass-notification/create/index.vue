@@ -7,7 +7,7 @@
         </el-radio-group>
       </el-form-item>
       <!-- 接收人 -->
-      <ReceiveForm :receive-list="receiveList" />
+      <ReceiveForm :ckey="ckey" :receive-list="receiveList" />
     </el-form>
   </div>
 </template>
