@@ -38,17 +38,33 @@
               @check-change="checkChange"
             >
               <span slot-scope="{ node, data }" class="custom-tree-node">
-                {{ node.label }} <span v-if="data.departmentRespList.length > 0">({{ data.departmentRespList.length }})</span> </span>
+                {{ node.label }}
+                <span v-if="data.departmentRespList.length > 0">({{ data.departmentRespList.length }})</span>
+              </span>
               >
             </el-tree>
           </div>
         </div>
         <!-- 指定会员 -->
         <div v-if="form.receive === 4">
-          <SelectShow :btn-text="btnTextComput " :num="selectMember" @selectEmit="selectEmit" @showDialog="showDialog" />
-        </div>      
+          <SelectShow :btn-text="btnTextComput" :num="selectMember" @selectEmit="selectEmit" @showDialog="showDialog" />
+        </div>
       </el-form-item>
-      <receiveDialog v-if="show" />
+      <receiveDialog ref="receiveRef" :commit-type="commitType" @tableSelect="tableSelect" @hide="hide">
+        <!-- 搜索框 -->
+        <div slot="form">
+           <el-form-item label="搜索">
+          <el-input v-model="name" :placeholder="placeholder"></el-input>
+        </el-form-item>         
+        </div>
+        <div slot="receive">
+          <el-button v-if="commitType === 1" type="primary" @click="save">我知道了</el-button>
+          <div v-if="commitType === 2">
+            <el-button type="primary" @click="save">确定</el-button>
+            <el-button @click="hide">取消</el-button>
+          </div>
+        </div>
+      </receiveDialog>
     </el-form>
   </div>
 </template>
@@ -62,6 +78,34 @@ export default {
   name: 'ReceiveForm',
   components: { receiveDialog, SelectShow },
   props: ['receiveList', 'ckey'],
+  provide() {
+    return {
+      columnConfig: [
+        { type: 'select' },
+        {
+          prop: 'name',
+          label: '名称',
+          width: 180,
+          formatter: row => {
+            return 'formatter之后的名称' + row.name
+          }
+        },
+        { prop: 'address', label: '地址', width: 180 }
+      ],
+      tableData: [
+        {
+          date: '2016-05-03',
+          name: '王小虎22',
+          address: '上海市普陀区金沙江路 1518 弄'
+        },
+        {
+          date: '2016-05-02',
+          name: '王小虎333',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }
+      ]
+    }
+  },
   data() {
     return {
       form: {
@@ -85,7 +129,12 @@ export default {
       memberNum: 0,
       // 指定会员数
       selectMember: 0,
-      show: false
+      // 操作type 1 查看 2选择
+      commitType: 1,
+      name: '',
+      placeholder: '请输入',
+      // 已选表格数据
+      selectData: []
     }
   },
   computed: {
@@ -94,7 +143,7 @@ export default {
         ? this.form.department.reduce((pre, cur) => pre + cur.departmentRespList.length, 0)
         : 0
     },
-    btnTextComput(){
+    btnTextComput() {
       return this.selectMember > 0 ? '查看' : '去选择'
     }
   },
@@ -122,7 +171,7 @@ export default {
       this.$refs.tree.setChecked(id, false, true)
     },
     /** 请求 */
-    async listFunc(){
+    async listFunc() {
       await list({
         pageSize: 10,
         page: 1,
@@ -135,19 +184,34 @@ export default {
       } = await getDepartmentList({ ckey: this.ckey, parentId: 0 })
       this.treeList = data[0].departmentRespList
     },
+    /** 行为操作 */
+    save() {
+      // 点击确定按钮
+      console.log('this.selectData', this.selectData)
+    },
 
     /** 与子组件交互 */
 
     // 点击去选择按钮
-    selectEmit(){
-      console.log('去选择')
-      this.show = true
-
+    selectEmit() {
+      this.commitType = 2
+      // this.dialogVisible = true
+      // 显示弹框组件
+      console.log(this.$refs['receiveRef'].$children[0].show())
+    },
+    // 已选表格
+    tableSelect(val){
+      this.selectData = val
+    },
+    // 关闭弹框
+    hide() {
+      this.$refs['receiveRef'].$children[0].hide()
     },
     // 点击查看按钮
-    showDialog(){
+    showDialog() {
+      this.commitType = 1
       console.log('查看按钮')
-    },
+    }
   }
 }
 </script>

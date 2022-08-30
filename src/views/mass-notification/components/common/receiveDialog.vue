@@ -5,22 +5,20 @@
       dialog-width="40%"
       :custom-footer="true"
       :center="true"
-      :dialog-visible="true"
       :dialog-title="dialogTitle"
+      @hide="hide"
     >
       <div slot="content">
         <!-- 表单选型 -->
-        <el-form-item label="搜索">
-          <el-input v-model="name" :placeholder="placeholder"></el-input>
-        </el-form-item>
+        <div slot="form"></div>      
         <!-- 表格 -->
-        
-        <kdTable :table-data="tableData" :column-config="columnConfig"/>   
+         <kdTable @tableSelect="tableSelect"/>  
+        <!-- <kdTable :table-data="tableData" :column-config="columnConfig"/>    -->
         <!-- 分页  -->
         <KdPagination></KdPagination>  
       </div>
       <div slot="customFooter">
-        <el-button type="primary" @click="save">我知道了</el-button>
+        <slot name="receive"></slot>     
       </div>
     </kdDialog>
   </div>
@@ -36,52 +34,47 @@ export default {
     selection: {
       type: Boolean,
       default: false
+    },
+    commitType: {
+      type: Number,
+      default: 1
     }
   },
   data() {
     return {
       dialogTitle: '接收人',
       placeholder: '姓名',
-      columnConfig: [
-        { type: 'select' },
-        {
-          prop: 'name',
-          label: '名称',
-          width: 180,
-          formatter: row => {
-            return 'formatter之后的名称' + row.name
-          }
-        },
-        { prop: 'address', label: '地址', width: 180 }
-      ],
+     
       name: '',
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: '王小虎22',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎333',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ]
+      // 已选表格数据
+      selectData: []
+
     }
   },
   created() {
-    // console.log('组件receiveList', this.receiveList)
+
   },
   methods: {
-    formatter(row, clolum) {
-      console.log('row', row)
-      console.log('clolum', clolum)
-    },
-    setData(columnConfig,tableData){
 
-    },
     handleSelectionChange() {},
-    save() {}
+    hide(){
+      this.$emit("hide")
+    },
+    // save() {
+    //   // 去选择
+    //   if (this.commitType === 2){
+    //     this.$emit('')
+
+    //   } else if (this.commitType === 1){
+
+    //   }
+    //   this.$refs['kdDialog'].hide()
+    // },
+    /** 与子组件的交互 */
+    tableSelect(val){
+      this.selectData = val
+      this.$emit('tableSelect', val)
+    }
   }
 }
 </script>

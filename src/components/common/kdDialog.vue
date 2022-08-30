@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       // if show dialog
-      //dialogVisible: false,
+      dialogVisible: false,
     };
   },
   props: {
@@ -47,10 +47,6 @@ export default {
     closeCancel: {
       type: Boolean,
       default: true,
-    },
-    dialogVisible:{
-    type: Boolean,
-      default: false,
     },
     //底部按钮是否居中
     center:{
