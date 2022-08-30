@@ -435,6 +435,20 @@ export const constantRoutes = [
         component: () => import('@/views/zhaoshang/business-card/detail/index.vue'),
         hidden: true,
         meta: { title: '名片详情' }
+      },
+      {
+        name: '编辑直播相册',
+        path: '/album/edit',
+        component: () => import('@/views/album/create'),
+        hidden: true,
+        meta: { title: '编辑直播相册' }
+      },
+      {
+        name: '图片直播详情',
+        path: '/album/detail',
+        component: () => import('@/views/album/detail'),
+        hidden: true,
+        meta: { title: '图片直播详情' }
       }
     ]
   }

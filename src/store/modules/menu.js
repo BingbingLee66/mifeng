@@ -31,7 +31,7 @@ const actions = {
                 hidden: false,
                 icon: 'operation',
                 menuName: '创建直播相册',
-                menuUrl: '/activity/album/create',
+                menuUrl: 'album/create',
                 parentId: 25
               },
               {
@@ -42,7 +42,7 @@ const actions = {
                 hidden: false,
                 icon: 'operation',
                 menuName: '图片直播',
-                menuUrl: '/activity/album/list',
+                menuUrl: 'album/list',
                 parentId: 25
               },
             ])

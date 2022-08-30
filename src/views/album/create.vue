@@ -81,17 +81,16 @@ export default {
   },
   props: {},
   data() {
-    const formModel = {
-      albumName: '',
-      introduce: '',
-      type: 0,
-      businessId: undefined,
-      albumAdminUser: '',
-      watchLimitType: 0,
-      limitData: ''
-    }
     return {
-      formModel,
+      formModel: {
+        albumName: '',
+        introduce: '',
+        type: 0,
+        businessId: undefined,
+        albumAdminUser: '',
+        watchLimitType: 0,
+        limitData: ''
+      },
       formRules: {
         albumName: [
           { required: true, message: '活动名称不能为空', trigger: 'blur' },
@@ -99,8 +98,8 @@ export default {
         businessId: [
           {
             required: true,
-            validator(rule, value, callback) {
-              if (formModel.type === 2 && !value) return callback(new Error('关联活动不能为空'))
+            validator: (rule, value, callback) => {
+              if (this.formModel.type === 2 && !value) return callback(new Error('关联活动不能为空'))
               callback()
             },
             trigger: 'change'
@@ -109,9 +108,10 @@ export default {
         limitData: [
           {
             required: true,
-            validator(rule, value, callback) {
-              if (formModel.watchLimitType === 2 && !value) return callback(new Error('会内部门不能为空'))
-              if (formModel.watchLimitType === 3 || !value) return callback(new Error('会内职位不能为空'))
+            validator: (rule, value, callback) => {
+              const { watchLimitType } = this.formModel
+              if (watchLimitType === 2 && !value) return callback(new Error('会内部门不能为空'))
+              if (watchLimitType === 3 || !value) return callback(new Error('会内职位不能为空'))
               callback()
             },
             trigger: 'change'
@@ -251,7 +251,7 @@ export default {
         ...formModel,
         ckey
       })
-      if (state === 1) 1 // TODO
+      if (state === 1) this.$router.push('/album/list')
     }
   },
 }
