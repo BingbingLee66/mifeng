@@ -37,6 +37,7 @@
 
 <script>
 export default {
+  name: 'Subscribe',
   data() {
     return {
       formObj: {

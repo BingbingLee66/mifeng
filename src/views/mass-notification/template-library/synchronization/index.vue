@@ -26,12 +26,17 @@ export default {
   },
 
   mounted() {
-    console.log(this.$route.query)
     this.activeName = this.$route.query.activeName || '1'
   },
   methods: {
+    // 回退模板库
     close() {
-      this.$router.back()
+      this.$router.push({
+        path: '/dashboard',
+        query: {
+          activeName: this.activeName
+        }
+      })
     },
     save() {}
   }

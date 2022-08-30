@@ -31,6 +31,7 @@
 
 <script>
 export default {
+  name: 'AppInform',
   data() {
     return {
       formObj: {

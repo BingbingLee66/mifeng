@@ -58,6 +58,7 @@
 
 <script>
 export default {
+  name: 'Note',
   data() {
     return {
       formObj: {

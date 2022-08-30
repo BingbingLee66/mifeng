@@ -41,11 +41,6 @@
               {{ scope.row.uname }}
             </template>
           </el-table-column>
-          <el-table-column label="审核状态" align="center">
-            <template slot-scope="scope">
-              {{ scope.row.uname }}
-            </template>
-          </el-table-column>
         </template>
 
         <!-- 订阅消息 -->
@@ -62,6 +57,11 @@
               {{ scope.row.uname }}
             </template>
           </el-table-column>
+          <el-table-column label="创建信息" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.uname }}
+            </template>
+          </el-table-column>
         </template>
 
         <!-- APP通知 -->
@@ -69,6 +69,11 @@
           <el-table-column prop="ID" label="ID" align="center" />
           <el-table-column prop="title" label="标题" align="center" />
           <el-table-column label="内容" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.uname }}
+            </template>
+          </el-table-column>
+          <el-table-column label="创建信息" align="center">
             <template slot-scope="scope">
               {{ scope.row.uname }}
             </template>

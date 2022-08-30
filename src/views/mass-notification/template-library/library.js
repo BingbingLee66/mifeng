@@ -12,31 +12,37 @@ export default {
         title: '' // 标题
       },
       listLoading: false,
-      random: 1 // 动态改变table试图
+      random: 1 // 动态改变table视图
     }
   },
   components: {
     Details
   },
   created() {
+    this.activeName = this.$route.query.activeName || '1'
     this.list.push({ title: '1' })
+  },
+  mounted() {
+    this.fetchData(true)
   },
   methods: {
     // 切换头部tabs
     handleClick() {
       this.query.title = ''
-      this.listLoading = true
+      this.total = 0
+      this.limit = 10
       this.fetchData(true)
     },
     // 表格数据
-    fetchData(reset) {
-      if (reset) this.currentPage = 1
+    async fetchData(reset) {
+      this.listLoading = true
       this.list = []
+      if (reset) this.currentPage = 1
       this.list.push({
         uname: '1'
       })
       this.listLoading = false
-      //   this.total = res.data.totalRows
+      //   this.total = res.data.totalRows || 0
       this.random = Math.random()
       console.log('list', this.list)
     },
