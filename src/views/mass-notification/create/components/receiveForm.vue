@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin-bottom:20px">
     <el-form :model="form">
       <el-form-item label="接收人" prop="receive">
         <el-radio-group v-model="form.receive">
