@@ -20,7 +20,7 @@
       <el-table
         :key="random"
         v-loading="listLoading"
-        style="margin-top:20px;"
+        style="margin-top: 20px"
         :data="list"
         element-loading-text="Loading"
         border
@@ -38,7 +38,8 @@
           </el-table-column>
           <el-table-column label="创建信息" align="center">
             <template slot-scope="scope">
-              {{ scope.row.uname }}
+              <div>{{ scope.row.uname }}</div>
+              <div>{{ scope.row.data | dateFormat }}</div>
             </template>
           </el-table-column>
         </template>
@@ -59,7 +60,8 @@
           </el-table-column>
           <el-table-column label="创建信息" align="center">
             <template slot-scope="scope">
-              {{ scope.row.uname }}
+              <div>{{ scope.row.uname }}</div>
+              <div>{{ scope.row.data | dateFormat }}</div>
             </template>
           </el-table-column>
         </template>
@@ -75,22 +77,21 @@
           </el-table-column>
           <el-table-column label="创建信息" align="center">
             <template slot-scope="scope">
-              {{ scope.row.uname }}
+              <div>{{ scope.row.uname }}</div>
+              <div>{{ scope.row.data | dateFormat }}</div>
             </template>
           </el-table-column>
         </template>
 
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="text" @click="particulars(scope.row)">
-              详情
-            </el-button>
+            <el-button type="text" @click="particulars(scope.row)"> 详情 </el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <el-pagination
-        style="margin-top:20px"
+        style="margin-top: 20px"
         background
         layout="total, sizes, prev, pager, next, jumper"
         :page-sizes="pageSizes"

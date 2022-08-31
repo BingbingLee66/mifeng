@@ -37,8 +37,7 @@ export default {
           activeName: this.activeName
         }
       })
-    },
-    save() {}
+    }
   }
 }
 </script>

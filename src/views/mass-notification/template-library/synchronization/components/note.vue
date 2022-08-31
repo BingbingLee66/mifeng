@@ -40,7 +40,7 @@
         <el-form-item label="变量属性：" :required="true">
           <div class="property">
             <div>name：</div>
-            <el-select v-model="formObj.variable" clearable filterable placeholder="请选择" style="width:330px">
+            <el-select v-model="formObj.variable" clearable filterable placeholder="请选择" style="width: 330px">
               <el-option v-for="item in originOpt" :key="item.invesKey" :label="item.name" :value="item.id" />
             </el-select>
           </div>
@@ -78,6 +78,7 @@ export default {
           { required: true, message: '模板CODE不能为空', trigger: 'blur' },
           {
             validator: (rule, value, callback) => {
+              console.log('value', value)
               if (
                 !/(^[a-zA-Z]{1}[a-zA-Z0-9]{5,11}$)|(^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$)/.test(
                   value
@@ -88,7 +89,7 @@ export default {
                 callback() // 必须加上这个，不然一直塞在验证状态
               }
             },
-            trigger: 'change'
+            trigger: 'blur'
           }
         ],
         type: [{ required: true, message: '模板类型不能为空', trigger: 'change' }],
