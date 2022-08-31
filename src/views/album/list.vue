@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { getAlbumList, modifyAlbumData } from '@/api/album'
+import { getAlbumList, modifyAlbumData, changeAlbumFreezeStatus } from '@/api/album'
 
 const updateKeys = ['browseNum', 'visitorsNum', 'downloadNum', 'shareNum']
 
@@ -135,7 +135,7 @@ export default {
               isPlatform || ckey ? <div>
                 <el-button type='text' onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id }})}>编辑</el-button>
                 <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id }})}>进入相册</el-button>
-              </div> : <el-button type='text'>冻结</el-button>
+              </div> : <el-button type='text' onClick={() => this.toggleFreeze(row)}>{+row.status === 1 ? '冻结' : '解冻'}</el-button>
             }
             {!ckey ? <el-button type='text' onClick={() => this.changeDialog({ visible: true, sourceData: row })}>修改数据</el-button> : ''}
           </div>
@@ -153,9 +153,7 @@ export default {
     onQueryChange(e) {
       Object.assign(this.query, e)
       clearTimeout(this.timer)
-      this.timer = setTimeout(() => {
-        this.queryTableData()
-      }, 300)
+      this.timer = setTimeout(() => this.queryTableData(), 300)
     },
     async queryTableData() {
       this.loading = true
@@ -205,6 +203,14 @@ export default {
       if (state === 1) {
         this.changeDialog({ visible: false })
         this.$set(sourceData, updateKeys[updateType], num)
+      }
+    },
+    // 切换冻结状态
+    async toggleFreeze(row) {
+      const { status, id } = row
+      const { state } = await changeAlbumFreezeStatus({ id, status: +!status })
+      if (state === 1) {
+        this.$set(row, 'status', +!status)
       }
     }
   }

@@ -13,7 +13,9 @@ module.exports = {
   globals: {
     CKEDITOR: 'readonly',
     ClipboardJS: 'readonly',
-    TMap: 'readonly'
+    TMap: 'readonly',
+    Aliplayer: 'readonly',
+    AliPlayerComponent: 'readonly',
   },
 
   // add your custom rules here

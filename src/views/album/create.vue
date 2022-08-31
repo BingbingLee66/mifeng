@@ -15,8 +15,8 @@
         </el-select>
       </el-form-item>
       <el-form-item v-if="formModel.type === 2" label="关联活动" prop="businessId">
-        <el-select v-model="formModel.businessId">
-          <el-option v-for="item of businessList" :key="item.id" :label="item.activeName" :value="item.id" />
+        <el-select v-model="formModel.businessId" filterable>
+          <el-option v-for="item of businessList" :key="item.id" :label="item.activityName" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item v-if="ckey" label="观看权限">
@@ -66,7 +66,7 @@
       </el-form-item>
     </el-form>
 
-    <AlbumPreview v-model="isPreview" />
+    <AlbumPreview v-model="isPreview" :album="formModel" />
   </div>
 </template>
 
@@ -93,7 +93,7 @@ export default {
       },
       formRules: {
         albumName: [
-          { required: true, message: '活动名称不能为空', trigger: 'blur' },
+          { required: true, message: '相册名称不能为空', trigger: 'blur' },
         ],
         businessId: [
           {
@@ -118,10 +118,7 @@ export default {
           }
         ]
       },
-      businessList: [
-        { activeName: '无', id: undefined },
-        { activeName: '阿达', id: 1 }
-      ],
+      businessList: [],
       isPreview: false,
       watchLimitOptions: [
         { name: '无限制', value: 0 },
@@ -182,6 +179,12 @@ export default {
     },
   },
   watch: {
+    'formModel.type': {
+      handler(type) {
+        if (type === 2) this.queryBusinessList()
+      },
+      immediate: true
+    },
     'formModel.watchLimitType': {
       handler(watchLimitType) {
         if (watchLimitType === 2) this.queryDepartmentOptions()
@@ -190,11 +193,9 @@ export default {
       immediate: true
     }
   },
-  created() {
-    this.queryBusinessList()
-  },
   methods: {
     async queryBusinessList() {
+      if (this.businessList.length) return
       const { data } = await getActivityList()
       this.businessList = data
     },
@@ -259,7 +260,7 @@ export default {
 
 <style lang="scss" scoped>
 .wrap {
-  padding: 0 20px;
+  padding: 20px;
 
   .form {
     max-width: 750px;
