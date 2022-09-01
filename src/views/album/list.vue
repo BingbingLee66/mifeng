@@ -5,8 +5,8 @@
       <el-tab-pane label="商协会" name="1" />
     </el-tabs>
     <div class="flex-x-start-center">
-      <el-input :value="query.albumName" class="input-item" placeholder="相册名称、商协会名称" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
-      <template v-if="query.queryType === '1'">
+      <el-input :value="query.albumName" class="input-item" :placeholder="`相册名称${!ckey&&query.queryType==='1'?'、商协会名称':''}`" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
+      <template v-if="!ckey && query.queryType === '1'">
         相册状态
         <el-select :value="query.status" class="input-item" @change="onQueryChange({status:$event,pageNum:1})">
           <el-option label="全部" value="" />
@@ -30,7 +30,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="原数值">
-          <el-button type="text" disabled>{{ dialog.sourceData[dialog.updateKeys[dialog.updateType]] }}</el-button>
+          <el-button type="text" disabled>{{ sourceValue }}</el-button>
         </el-form-item>
         <el-form-item label="修改数值" prop="num">
           <el-input v-model="dialog.num" placeholder="请输入" />
@@ -47,22 +47,19 @@
 <script>
 import { getAlbumList, modifyAlbumData, changeAlbumFreezeStatus } from '@/api/album'
 
-const updateKeys = ['browseNum', 'visitorsNum', 'downloadNum', 'shareNum']
-
 const generateDialog = () => ({
   visible: false,
   updateType: '', // 0-浏览数 1-浏览人数 2-下载数 3-分享数
   num: '', // 要修改的数据
   sourceData: {}, // 源数据
-  typeDisabled: false,
-  updateKeys
+  typeDisabled: false
 })
 
 const updateTypeOptions = [
-  { value: '0', label: '浏览量' },
-  { value: '1', label: '浏览人数' },
-  { value: '2', label: '下载数' },
-  { value: '3', label: '分享数' },
+  { value: '0', label: '浏览量', realy: 'realBrowseNum', fake: 'browseNum' },
+  { value: '1', label: '浏览人数', realy: 'realVisitorsNum', fake: 'visitorsNum' },
+  { value: '2', label: '下载数', realy: 'realDownloadNum', fake: 'downloadNum' },
+  { value: '3', label: '分享数', realy: 'realShareNum', fake: 'shareNum' },
 ]
 
 export default {
@@ -90,9 +87,7 @@ export default {
           { required: true, message: '修改数值不能为空', trigger: 'blur' },
           {
             validator: (rule, value, callback) => {
-              const { sourceData, updateType, updateKeys } = this.dialog
-              const sourceValue = sourceData[updateKeys[updateType]]
-              if (sourceValue && value < sourceValue) return callback(new Error('修改数值不能小于原数值'))
+              if (this.sourceValue && value < this.sourceValue) return callback(new Error('修改数值不能小于原数值'))
               callback()
             },
             trigger: 'change'
@@ -117,22 +112,22 @@ export default {
         },
         {
           label: '关联业务', width: 200,
-          render: ({ row }) => row.type === 2 ? <div>活动<div style='color:#66b1ff'>{row.businessId}</div>{row.businessName}</div> : '-'
+          render: ({ row }) => +row.type === 2 ? <div>活动<div style='color:#66b1ff'>{row.businessId}</div>{row.businessName}</div> : '-'
         },
-        { label: '商协会', hidden: isPlatform, prop: 'chamberName' },
+        { label: '商协会', hidden: ckey || isPlatform, prop: 'chamberName' },
         { label: '图片数', prop: 'imgNum' },
-        { label: '浏览量', render: e => this.generateModifiedData(e, 'browseNum') },
-        { label: '浏览人数', render: e => this.generateModifiedData(e, 'visitorsNum') },
+        { label: '浏览量', render: e => this.generateModifiedData(e, '0') },
+        { label: '浏览人数', render: e => this.generateModifiedData(e, '1') },
         { label: '点赞数', prop: 'likeNum' },
-        { label: '下载数', render: e => this.generateModifiedData(e, 'downloadNum') },
-        { label: '分享数', render: e => this.generateModifiedData(e, 'shareNum') },
-        { label: '相册状态', hidden: isPlatform, render: ({ row }) => row.status ? <span style='color:#67c23a'>正常</span> : <span style='color:#f56c6c'>冻结</span> },
+        { label: '下载数', render: e => this.generateModifiedData(e, '2') },
+        { label: '分享数', render: e => this.generateModifiedData(e, '3') },
+        { label: '相册状态', hidden: ckey || isPlatform, render: ({ row }) => row.status ? <span style='color:#67c23a'>正常</span> : <span style='color:#f56c6c'>冻结</span> },
         {
           label: '操作',
           fixed: 'right',
           render: ({ row }) => <div>
             {
-              isPlatform || ckey ? <div>
+              ckey || isPlatform ? <div>
                 <el-button type='text' onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id }})}>编辑</el-button>
                 <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id }})}>进入相册</el-button>
               </div> : <el-button type='text' onClick={() => this.toggleFreeze(row)}>{+row.status === 1 ? '冻结' : '解冻'}</el-button>
@@ -141,6 +136,11 @@ export default {
           </div>
         },
       ]
+    },
+    sourceValue() {
+      const { sourceData, updateType } = this.dialog
+      const curUpdate = updateTypeOptions[updateType] || {}
+      return sourceData[curUpdate.realy]
     }
   },
   created() {
@@ -168,9 +168,9 @@ export default {
       } catch { }
       this.loading = false
     },
-    generateModifiedData({ row, column }, key) {
-      const realKey = `real${key.replace(/[a-z]/, _ => _.toUpperCase())}`
-      if (row[realKey] >= row[key] || this.ckey) return row[key]
+    generateModifiedData({ row, column }, updateType) {
+      const { realy, fake } = updateTypeOptions[updateType]
+      if (row[realy] >= row[fake] || this.ckey) return row[fake]
       return <div>
         <el-button
           type='text'
@@ -179,10 +179,11 @@ export default {
             visible: true,
             typeDisabled: true,
             sourceData: row,
-            updateType: `${updateKeys.indexOf(key)}`
+            updateType,
+            num: row[fake]
           })}
         > 改 </el-button>
-        {row[key]}
+        {row[fake]}
       </div>
     },
     goPage(params) {
@@ -199,10 +200,11 @@ export default {
     async onModifyData() {
       await this.$refs.dialogForm.validate()
       const { updateType, num, sourceData } = this.dialog
-      const { state } = await modifyAlbumData({ updateType, num, albumCkey: sourceData.albumCkey })
+      const { state, msg } = await modifyAlbumData({ updateType, num, albumCkey: sourceData.albumCkey })
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.changeDialog({ visible: false })
-        this.$set(sourceData, updateKeys[updateType], num)
+        this.$set(sourceData, updateTypeOptions[updateType].fake, num)
       }
     },
     // 切换冻结状态
