@@ -30,7 +30,7 @@
           {{ item.name }}
         </el-radio>
       </el-form-item>
-      <el-form-item v-if="formModel.watchLimitType === 2" label="会内部门" prop="limitData">
+      <el-form-item v-if="formModel.watchLimitType === 2" key="department" label="会内部门" prop="limitData">
         <el-cascader
           v-model="limitDatas"
           :style="{width: '100%'}"
@@ -39,7 +39,7 @@
           collapse-tags
         />
       </el-form-item>
-      <el-form-item v-else-if="formModel.watchLimitType === 3" label="会内职务" prop="limitData">
+      <el-form-item v-else-if="formModel.watchLimitType === 3" key="post" label="会内职务" prop="limitData">
         <el-select v-model="limitDatas" multiple placeholder="请选择">
           <el-option
             v-for="item in postOptions"
@@ -71,7 +71,7 @@
 </template>
 
 <script>
-import { getActivityList, saveAlbum } from '@/api/album'
+import { getActivityList, saveAlbum, getAlbumInfo } from '@/api/album'
 import { getDepartmentList } from '@/api/org-structure/org'
 import { getList } from '@/api/member/post'
 
@@ -111,7 +111,7 @@ export default {
             validator: (rule, value, callback) => {
               const { watchLimitType } = this.formModel
               if (watchLimitType === 2 && !value) return callback(new Error('会内部门不能为空'))
-              if (watchLimitType === 3 || !value) return callback(new Error('会内职位不能为空'))
+              if (watchLimitType === 3 && !value) return callback(new Error('会内职位不能为空'))
               callback()
             },
             trigger: 'change'
@@ -148,7 +148,7 @@ export default {
       get() {
         const { formModel: { watchLimitType, limitData }, departmentMap } = this
         // 部门限制
-        if (watchLimitType === 2) {
+        if (watchLimitType === 2 && limitData) {
           return limitData.split(',').reduce((arr, id) => {
             const cur = departmentMap[id]
             if (cur && !cur.children) {
@@ -158,8 +158,8 @@ export default {
           }, [])
         }
         // 职位限制
-        if (watchLimitType === 3) {
-          return limitData ? limitData.split(',').map(v => +v) : []
+        if (watchLimitType === 3 && limitData) {
+          return limitData.split(',').map(v => +v)
         }
         return []
       },
@@ -193,7 +193,15 @@ export default {
       immediate: true
     }
   },
+  created() {
+    this.queryAlbumInfo()
+  },
   methods: {
+    async queryAlbumInfo() {
+      if (!this.$route.query.id) return
+      const { data } = await getAlbumInfo(this.$route.query)
+      Object.assign(this.formModel, data)
+    },
     async queryBusinessList() {
       if (this.businessList.length) return
       const { data } = await getActivityList()
@@ -248,10 +256,11 @@ export default {
     async onSave() {
       await this.$refs.form.validate()
       const { formModel, ckey } = this
-      const { state } = await saveAlbum({
+      const { state, msg } = await saveAlbum({
         ...formModel,
         ckey
       })
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) this.$router.push('/album/list')
     }
   },

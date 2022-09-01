@@ -1,6 +1,6 @@
 <template>
   <div v-show="visible" class="overlay" @click="$emit('change', false)">
-    <div class="preview" @click.stop>
+    <div class="preview">
       <div class="title">相册详情</div>
       <div class="content">
         <div class="btns">
@@ -23,11 +23,11 @@
           <div class="flex-x">
             <div class="info-desc">
               浏览
-              <span class="info-desc-value">10W+</span>
+              <span class="info-desc-value">{{ num }}W+</span>
             </div>
             <div class="info-desc">
               点赞
-              <span class="info-desc-value">10</span>
+              <span class="info-desc-value">{{ num }}</span>
             </div>
           </div>
         </div>
@@ -79,7 +79,8 @@ export default {
     return {
       dateStr: '',
       timeStr: '',
-      imgList: []
+      imgList: [],
+      num: 1
     }
   },
   watch: {
@@ -97,6 +98,7 @@ export default {
       this.dateStr = formatDateTime(date, 'yyyy-MM-dd')
       this.timeStr = `${time}:00 ~ ${+time + 1}:00`
       this.imgList = defaultImgs.sort(() => Math.random() - 0.5).slice(0, 4)
+      this.num = Math.floor((Math.random() * 10)) + 1
     }
   },
 }

@@ -112,21 +112,21 @@ export default {
       const isPlatform = query.queryType === '0' // 云商会平台
       return [
         {
-          label: '相册信息',
-          render: ({ row }) => <div>{row.id}<br/>{row.albumName}</div>
+          label: '相册信息', width: 200,
+          render: ({ row }) => <div><div style='color:#66b1ff'>{row.id}</div>{row.albumName}</div>
         },
         {
-          label: '关联业务',
-          render: ({ row }) => row.type === 2 ? <div>活动<br/>{row.businessId}<br/>{row.businessName}</div> : '-'
+          label: '关联业务', width: 200,
+          render: ({ row }) => row.type === 2 ? <div>活动<div style='color:#66b1ff'>{row.businessId}</div>{row.businessName}</div> : '-'
         },
-        { label: '商协会', hidden: isPlatform },
+        { label: '商协会', hidden: isPlatform, prop: 'chamberName' },
         { label: '图片数', prop: 'imgNum' },
         { label: '浏览量', render: e => this.generateModifiedData(e, 'browseNum') },
         { label: '浏览人数', render: e => this.generateModifiedData(e, 'visitorsNum') },
         { label: '点赞数', prop: 'likeNum' },
         { label: '下载数', render: e => this.generateModifiedData(e, 'downloadNum') },
         { label: '分享数', render: e => this.generateModifiedData(e, 'shareNum') },
-        { label: '相册状态', hidden: isPlatform },
+        { label: '相册状态', hidden: isPlatform, render: ({ row }) => row.status ? <span style='color:#67c23a'>正常</span> : <span style='color:#f56c6c'>冻结</span> },
         {
           label: '操作',
           fixed: 'right',
@@ -208,6 +208,7 @@ export default {
     // 切换冻结状态
     async toggleFreeze(row) {
       const { status, id } = row
+      await this.$confirm('', status ? '是否冻结？' : '是否解冻？')
       const { state } = await changeAlbumFreezeStatus({ id, status: +!status })
       if (state === 1) {
         this.$set(row, 'status', +!status)
