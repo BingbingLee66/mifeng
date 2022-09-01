@@ -26,7 +26,7 @@
       </div>
       <!-- 通知详情  为自定义通知的时候显示-->
 
-      <div class="label-item">
+      <div v-if="form.type === 5" class="label-item">
         <div class="title-hd">通知详情 <span>(必填将推送到小程序/APP的会内通知) </span></div>
         <el-form-item label="消息标题" prop="title">
           <el-input
@@ -48,8 +48,11 @@
             show-word-limit
           ></el-input>
         </el-form-item>
-        <div class="img-containers">
-          <div v-for="item in form.imgList" :key="item" class="img-list">
+        <!-- 图片 -->
+        <div >
+          <div class="img-msg">图片（选填）</div>
+          <div class="img-containers">
+ <div v-for="item in form.imgList" :key="item" class="img-list">
             <img class="img" :src="item" />
             <div class="hover-msg">
               <div>
@@ -76,18 +79,12 @@
               <span>({{ form.imgList.length }} /9)</span>
             </div>
           </el-upload>
+          </div>
+         
         </div>
       </div>
 
-      <!-- 发送方式 -->
-      <el-form-item label="发送方式" prop="sendType">
-        <el-radio-group v-model="form.sendType">
-          <el-radio label="1">立即发送</el-radio>
-          <el-radio label="2 ">定时发送</el-radio>
-          <el-date-picker v-if="form.sendType == 2" v-model="sendTime" type="datetime" placeholder="请选择发送时间">
-          </el-date-picker>
-        </el-radio-group>
-      </el-form-item>
+     
 
       <!-- 同步渠道 -->
       <el-form-item label="同步渠道" prop="synchChannels">
@@ -107,7 +104,31 @@
           </div>
         </el-checkbox-group>
       </el-form-item>
+       <!-- 发送方式 -->
+      <el-form-item label="发送方式" prop="sendType">
+        <el-radio-group v-model="form.sendType">
+          <el-radio label="1">立即发送</el-radio>
+          <el-radio label="2 ">定时发送</el-radio>
+          <el-date-picker v-if="form.sendType == 2" v-model="sendTime" type="datetime" placeholder="请选择发送时间">
+          </el-date-picker>
+        </el-radio-group>
+      </el-form-item>
+      <!-- 通知发送规则 -->
+       <el-checkbox v-model="form.agreeRule">已阅读并同意</el-checkbox>
+        <el-link type="primary" @click="showSendRule">《通知发送规则》</el-link> 
+
+        <el-form-item style="margin-top:10px">
+    <el-button type="primary" @click="onSubmit">发送</el-button>
+    <el-button>取消</el-button>
+  </el-form-item>
     </el-form>
+
+<kdDialog ref="kdDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true" @hide="hide">
+  <div slot="content">
+    规则说明，文案先找业务定一下
+  </div>
+  <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
+</kdDialog>
   </div>
 </template>
 
@@ -115,9 +136,10 @@
 import { labelType, receiveType } from '../util/label'
 import { uploadCoverImg } from '@/api/content/article'
 import ReceiveForm from './components/receiveForm.vue'
+import kdDialog from '@/components/common/kdDialog'
 export default {
   name: 'Create',
-  components: { ReceiveForm },
+  components: { ReceiveForm, kdDialog },
 
   data() {
     return {
@@ -132,6 +154,7 @@ export default {
         sendType: '1',
         // 同步渠道
         synchChannels: [],
+        agreeRule: false,
 
         // 自定义通知相关
         title: '', // 消息标题
@@ -163,6 +186,14 @@ export default {
     /** 行为操作 */
     // 删除已选活动
     handleClose(tag) {},
+    // 点击通知发送规则
+    showSendRule(){
+      this.$refs['kdDialog'].show()
+    },
+    // 关闭通知发送规则
+    hideSendRule(){
+      this.$refs['kdDialog'].hide()
+    },
     /** 父子组件交互 */
     /** 工具 */
     restTypeData() {
@@ -243,6 +274,10 @@ export default {
   margin-top: 50%;
   transform: translateY(-50%);
   font-size: 14px;
+}
+.img-msg{
+  font-size: 14px;
+  margin-bottom: 10px;
 }
 .img-containers {
   display: flex;

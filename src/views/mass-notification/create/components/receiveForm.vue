@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-bottom:20px">
+  <div style="margin-bottom: 20px">
     <el-form :model="form">
       <el-form-item label="接收人" prop="receive">
         <el-radio-group v-model="form.receive">
@@ -49,13 +49,28 @@
         <div v-if="form.receive === 4">
           <SelectShow :btn-text="btnTextComput" :num="selectMember" @selectEmit="selectEmit" @showDialog="showDialog" />
         </div>
+        <!-- 手机号 -->
+        <div v-if="form.receive === 6">
+          <el-input
+            v-model="form.phones"
+            type="textarea"
+            placeholder="请输入手机号"
+            autosize
+            style="width: 600px"
+          ></el-input>
+          <div class="tips">
+            <span>提示:</span>
+            <span>1.输入多个手机号时，请以回车换行。</span>
+            <span>2.单次指定的手机号不得大于1000个。</span>
+          </div>
+        </div>
       </el-form-item>
       <receiveDialog ref="receiveRef" :commit-type="commitType" @tableSelect="tableSelect" @hide="hide">
         <!-- 搜索框 -->
         <div slot="form">
-           <el-form-item label="搜索">
-          <el-input v-model="name" :placeholder="placeholder"></el-input>
-        </el-form-item>         
+          <el-form-item label="搜索">
+            <el-input v-model="name" :placeholder="placeholder"></el-input>
+          </el-form-item>
         </div>
         <div slot="receive">
           <el-button v-if="commitType === 1" type="primary" @click="save">我知道了</el-button>
@@ -109,9 +124,11 @@ export default {
   data() {
     return {
       form: {
-        receive: 3,
+        receive: 6,
         position: null,
-        department: null
+        department: null,
+        // 输入手机号
+        phones: ''
       },
       // 会内职位
       options: [
@@ -200,7 +217,7 @@ export default {
       console.log(this.$refs['receiveRef'].$children[0].show())
     },
     // 已选表格
-    tableSelect(val){
+    tableSelect(val) {
       this.selectData = val
     },
     // 关闭弹框
@@ -246,5 +263,11 @@ export default {
   margin-top: 10px;
   max-height: 200px;
   overflow-y: scroll;
+}
+.tips {
+  display: flex;
+  flex-direction: column;
+  color: #7f7f7f;
+  line-height: 22px;
 }
 </style>
