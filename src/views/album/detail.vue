@@ -53,7 +53,7 @@
                       :key="img.id"
                       :img="img"
                       class="img-item"
-                      :operations="isCover(img)?['preview']:['preview', 'cover']"
+                      :operations="!img.auditStatus||isCover(img)?['preview']:['preview', 'cover']"
                       :tag="generateTag(img)"
                       @click="toggleSelect(img)"
                       @tagClick="!isCover(img) && toggleImgStatus([img.id], +!img.auditStatus)"

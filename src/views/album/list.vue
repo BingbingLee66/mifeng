@@ -5,8 +5,8 @@
       <el-tab-pane label="商协会" name="1" />
     </el-tabs>
     <div class="flex-x-start-center">
-      <el-input :value="query.albumName" class="input-item" :placeholder="`相册名称${!ckey&&query.queryType==='1'?'、商协会名称':''}`" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
-      <template v-if="!ckey && query.queryType === '1'">
+      <el-input :value="query.albumName" class="input-item" :placeholder="`相册名称${isPlatform?'':'、商协会名称'}`" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
+      <template v-if="!isPlatform">
         相册状态
         <el-select :value="query.status" class="input-item" @change="onQueryChange({status:$event,pageNum:1})">
           <el-option label="全部" value="" />
@@ -102,9 +102,11 @@ export default {
     ckey() {
       return this.$store.getters.ckey
     },
+    isPlatform() {
+      return this.query.queryType === '0'
+    },
     columns() {
-      const { ckey, query } = this
-      const isPlatform = query.queryType === '0' // 云商会平台
+      const { ckey, isPlatform } = this
       return [
         {
           label: '相册信息', width: 200,
@@ -114,7 +116,7 @@ export default {
           label: '关联业务', width: 200,
           render: ({ row }) => +row.type === 2 ? <div>活动<div style='color:#66b1ff'>{row.businessId}</div>{row.businessName}</div> : '-'
         },
-        { label: '商协会', hidden: ckey || isPlatform, prop: 'chamberName' },
+        { label: '商协会', hidden: isPlatform, prop: 'chamberName' },
         { label: '图片数', prop: 'imgNum' },
         { label: '浏览量', render: e => this.generateModifiedData(e, '0') },
         { label: '浏览人数', render: e => this.generateModifiedData(e, '1') },
@@ -127,7 +129,7 @@ export default {
           fixed: 'right',
           render: ({ row }) => <div>
             {
-              ckey || isPlatform ? <div>
+              isPlatform ? <div>
                 <el-button type='text' onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id }})}>编辑</el-button>
                 <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id }})}>进入相册</el-button>
               </div> : <el-button type='text' onClick={() => this.toggleFreeze(row)}>{+row.status === 1 ? '冻结' : '解冻'}</el-button>
@@ -144,7 +146,7 @@ export default {
     }
   },
   created() {
-    this.onQueryChange({ queryType: this.ckey ? '1' : '0' })
+    this.onQueryChange({ queryType: '0' })
   },
   beforeDestroy() {
     clearTimeout(this.timer)
