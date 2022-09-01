@@ -31,7 +31,7 @@
                 <div class="subscribe-img">
                   <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-icon.png" alt="" />
                 </div>
-                <div style="margin-top:3px">云商会 Solink</div>
+                <div style="margin-top: 3px">云商会 Solink</div>
               </div>
               <div class="dot"><img src="https://ysh-cdn.kaidicloud.com/prod/png/library-more.png" alt="" /></div>
             </div>
@@ -42,6 +42,14 @@
               <div class="subscribe-circularize">
                 <div class="circularize-matter">活动内容</div>
                 <div class="circularize-designation">【活动名称】</div>
+              </div>
+              <div class="subscribe-circularize">
+                <div class="circularize-matter">活动</div>
+                <div class="circularize-designation">【活动地址】</div>
+              </div>
+              <div class="subscribe-circularize">
+                <div class="circularize-matter">活动</div>
+                <div class="circularize-designation">【活动地址】</div>
               </div>
               <div class="subscribe-circularize">
                 <div class="circularize-matter">活动</div>
@@ -63,7 +71,7 @@
       </div>
     </div>
     <!-- app -->
-    <div v-if="activeName == 3" style="height:320px" class="content">
+    <div v-if="activeName == 3" style="height: 320px" class="content">
       <div class="content-left">
         <div class="Present-img">
           <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-app.png" class="pic" />
@@ -73,7 +81,7 @@
                 <div class="subscribe-img">
                   <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-icon.png" alt="" />
                 </div>
-                <div style="margin-top:3px">云商会 Solink</div>
+                <div style="margin-top: 3px">云商会 Solink</div>
               </div>
               <div class="dot">now</div>
             </div>

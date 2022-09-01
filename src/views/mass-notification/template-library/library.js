@@ -23,7 +23,7 @@ export default {
     this.list.push({ title: '1' })
   },
   mounted() {
-    this.fetchData(true)
+    // this.fetchData(true)
   },
   methods: {
     // 切换头部tabs
@@ -52,7 +52,6 @@ export default {
       this.$router.push({
         path: '/template-library/synchronization/index',
         query: {
-          id: 1,
           activeName: this.activeName
         }
       })
