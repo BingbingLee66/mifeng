@@ -78,3 +78,11 @@ export const getClueList = params => request({
   url: '/chamber/ysh-clue/getList',
   params
 })
+
+//  商会后台使用统计 全部导出
+export const listAllChamberStatsDataByCkeyDownload = (params) => request({
+    url:  '/ec/chamberStats/listAllChamberStatsDataByCkeyDownload',
+    method: 'get',
+    params,
+    responseType: 'blob'
+})
