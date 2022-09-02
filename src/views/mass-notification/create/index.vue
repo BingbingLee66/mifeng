@@ -13,14 +13,14 @@
         <div class="title-hd">关联活动详情 <span>（必填，配置会内通知"立即进入活动详情"跳转页）</span></div>
         <!-- <el-form-item label="关联活动详情" prop="sendType"> </el-form-item> -->
         <el-tag
-          v-for="tag in 10"
-          :key="tag"
+          v-for="tag in activityList"
+          :key="tag.id"
           class="activity-tab"
           closable
           :disable-transitions="false"
           @close="handleClose(tag)"
         >
-          {{ tag }}
+          {{ tag.activityName}}
         </el-tag>
         <el-button size="small " type="primary " @click="selectActivity">选择活动</el-button>
       </div>
@@ -129,7 +129,7 @@
   </div>
   <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
 </kdDialog>
-<activityDialog v-if="showActivityDialog"></activityDialog>
+<activityDialog ref="activityDialogRef" @addActivity="function addActivity(val){activityList=val}" v-if="showActivityDialog"></activityDialog>
   </div>
 </template>
 
@@ -176,7 +176,9 @@ export default {
         content: [{ required: true, message: '请填写', trigger: 'blur' }]
       },
       // 显示活动弹框
-      showActivityDialog: false
+      showActivityDialog: true,
+      //已选活动列表
+      activityList:[]
     }
   },
   created() {
@@ -188,7 +190,12 @@ export default {
     /** 请求 */
     /** 行为操作 */
     // 删除已选活动
-    handleClose(tag) {},
+    handleClose(tag) {
+      const {id}=tag
+      const {activityList}=this;
+    activityList.splice(activityList.findIndex(item=>item.id===id),1)
+     this.activityList=activityList
+    },
     // 点击通知发送规则
     showSendRule(){
       this.$refs['kdDialog'].show()
@@ -199,7 +206,8 @@ export default {
     },
     // 打开选择活动弹框
     selectActivity(){
-      this.showActivityDialog = true
+      // this.showActivityDialog = true
+      this.$refs['activityDialogRef'].open()
     },
     // 提交表单
     onSubmit(){},
@@ -269,7 +277,7 @@ export default {
   margin-bottom: 10px;
 }
 .activity-tab {
-  margin-right: 10px;
+  margin: 0px 10px 6px 0px;
 }
 /deep/ .el-upload {
   width: 148px;

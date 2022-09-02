@@ -1,35 +1,43 @@
 <template>
   <div style="margin-bottom: 20px">
-    <el-dialog title="选择活动" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+    <el-dialog title="选择活动" :visible.sync="dialogVisible" width="65%" :before-close="handleClose">
       <el-form :inline="true" :model="form">
         <el-form-item label="活动来源" prop="chamberName">
-         <el-select v-model="form.chamberName" class="select" placeholder="选择模板">
-                <el-option
-                  v-for="item2 in chamberList"
-                  :key="item2.id"
-                  :label="item2.name"
-                  :value="item2.id"
-                ></el-option>
-              </el-select>
+          <el-select v-model="form.chamberName" class="select" placeholder="请选择">
+            <el-option v-for="item2 in chamberList" :key="item2.id" :label="item2.name" :value="item2.id"></el-option>
+          </el-select>
         </el-form-item>
 
         <el-form-item label="活动id" prop="id">
-          <el-input v-model="form.id" :placeholder="placeholder"></el-input>
+          <el-input clearable v-model="form.id" :placeholder="placeholder"></el-input>
         </el-form-item>
 
         <el-form-item label="活动名称" prop="activityName">
-          <el-input v-model="form.activityName" :placeholder="placeholder"></el-input>
+          <el-input clearable v-model="form.activityName" :placeholder="placeholder"></el-input>
         </el-form-item>
 
         <el-form-item label="活动状态" prop="status">
-          <el-input v-model="form.status" :placeholder="placeholder"></el-input>
+          <el-select v-model="form.status" class="select" placeholder="请选择">
+            <el-option v-for="item2 in statusList" :key="item2.id" :label="item2.name" :value="item2.id"></el-option>
+          </el-select>
         </el-form-item>
+        <el-button type="primary" @click="getActivityListFunc">查询</el-button>
       </el-form>
       <!-- 表格 -->
-      <kdTable @tableSelect="tableSelect" />
+      <div class="table">
+        <kdTable @tableSelect="tableSelect" />
+      </div>
+
+      <!-- 分页  前期先不做分页-->
+      <!-- <KdPagination
+        :page-size="pageSize"
+        :current-page="pageNum"
+        :total="total"
+        @change="onPageChange($event, item, i)"
+      /> -->
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -38,21 +46,23 @@
 <script>
 import kdTable from '../../components/common/kdTable.vue'
 import { getActivityList } from '@/api/activity/activity'
+import dayjs from 'dayjs'
 export default {
   name: 'ReceiveForm',
-  components: { kdTable },
+  components: { kdTable, KdPagination: () => import('@/components/common/KdPagination') },
   props: ['receiveList', 'ckey'],
   provide() {
     return {
-      columnConfig: this.columnConfig,
-      tableData: this.tableData
+      table: this
+      // columnConfig: this.columnConfig,
+      // tableData: this.tableData
     }
   },
   data() {
     return {
-      dialogVisible: true,
+      dialogVisible: false,
       form: {
-        activityName: 6,
+        activityName: '',
         id: null,
         status: null,
         chamberName: ''
@@ -60,70 +70,152 @@ export default {
       chamberList: [],
       // 表格配置
       columnConfig: [],
+      //表格数据
       tableData: [],
-      // 会内职位
-      options: [
-        { name: '会长', count: 33 },
-        { name: '学生', count: 93 }
-      ],
-      treeList: [],
-      defaultProps: {
-        children: 'departmentRespList',
-        label: 'departmentName'
-      },
-      // 显示部门树结构
-      showTree: false,
-      // 本商会会员数
-      memberNum: 0,
-      // 指定会员数
-      selectMember: 0,
-      // 操作type 1 查看 2选择
-      commitType: 1,
-      name: '',
+      pageSize: 100000,
+      pageNum: 1,
+      total: 0,
+
       placeholder: '请输入',
       // 已选表格数据
-      selectData: []
+      selectData: [],
+      statusList: [
+        { id: 0, name: '全部' },
+        { id: 1, name: '未开始' },
+        { id: 2, name: '报名中' },
+        { id: 3, name: '已结束' },
+        { id: 4, name: '报名中' }
+      ]
     }
   },
 
   created() {
     this.getActivityListFunc()
-   
+
     this.columnConfig = [
       { type: 'select' },
       {
-        prop: 'name',
-        label: '活动ID/名称',
+        prop: 'id',
+        label: '活动ID',
+        type: 'general',
+        width: 60
+      },
+      {
+        prop: 'activeHead',
+        label: '活动列表图',
+        type: 'img',
+        width: 180
+      },
+      {
+        prop: 'activityName',
+        label: '活动名称',
+        type: 'general'
+      },
+      {
+        prop: 'activeTime',
+        label: '活动时间',
         width: 180,
+        type: 'general',
         formatter: row => {
-          return row.id + row.name
+          return (
+            dayjs(parseInt(row.startTime)).format('YYYY-MM-DD HH:mm:ss') +
+            '~' +
+            dayjs(parseInt(row.endTime)).format('YYYY-MM-DD HH:mm:ss')
+          )
         }
       },
+      {
+        prop: 'address',
+        label: '活动地点',
+        width: 180,
+        type: 'general',
+        formatter: row => {
+          return row.province + row.city + row.area + row.addressInfo
+        }
+      },
+      {
+        prop: 'chamberName',
+        label: '活动来源',
+        type: 'general'
+      },
+      {
+        prop: 'applyObject',
+        label: '报名对象',
+        type: 'general',
+
+        formatter: row => {
+          return row.applyObject === 0 ? '不限' : '商会会员'
+        }
+      },
+      {
+        prop: 'chamberName',
+        label: '发布状态',
+        type: 'general',
+        width: 80,
+        formatter: row => {
+          return row.isPublish ? '已发布' : '未发布'
+        }
+      },
+      {
+        prop: 'status',
+        label: '活动状态',
+        type: 'general',
+
+        formatter: row => {
+          return row.status === 1 ? '未开发' : row.status === 2 ? '报名中' : '已结束'
+        }
+      },
+      {
+        prop: 'createdTs',
+        label: '创建时间',
+        type: 'general',
+        formatter: row => {
+          return dayjs(parseInt(row.createdTs)).format('YYYY-MM-DD HH:mm:ss')
+        }
+      }
     ]
-    // this.form.receive = this.receiveList[0].type
-    // this.getDepartmentListFunc()
-    // this.listFunc()
   },
   methods: {
     /** 请求 */
-    async getActivityListFunc(){
-      const { data: { list } } = await getActivityList({
+    async getActivityListFunc() {
+      const { pageSize, pageNum: page, form } = this
+      const { data } = await getActivityList({
         isPublish: 1,
-        pageSize: 10,
-        page: 1
+        pageSize,
+        page,
+        ...form
       })
-      this.tableData = list
-      console.log('data', list)
+      this.tableData = data.list
+      this.total = data.totalRows
     },
     /** 行为操作 */
     save() {
       // 点击确定按钮
       console.log('this.selectData', this.selectData)
     },
-    handleClose(){},
+    //打开弹框
+    open() {
+      this.dialogVisible = true
+    },
+    //关闭弹框
+    submit() {
+      this.dialogVisible = false
+      this.$emit('addActivity', this.selectData)
+    },
+    handleClose() {},
 
     /** 与子组件交互 */
-    tableSelect(){}
+    tableSelect(val) {
+      console.log(val)
+      this.selectData = val
+    }
+    // 分页改变
+    // onPageChange($event) {
+    //   const { pageNum, pageSize } = $event
+    //   this.pageNum = pageNum
+    //   this.pageSize = pageSize ? pageSize : this.pageSize
+    //   this.getActivityListFunc()
+    // }
   }
 }
 </script>
@@ -164,5 +256,10 @@ export default {
   flex-direction: column;
   color: #7f7f7f;
   line-height: 22px;
+}
+.table {
+  overflow-y: scroll;
+  height: 600px;
+  margin-top: 16px;
 }
 </style>
