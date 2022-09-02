@@ -1,5 +1,6 @@
 <template>
 <div>
+  {{columnConfig}}--
   <el-table
   ref="multipleTable"
     border
@@ -50,6 +51,13 @@ export default {
   methods: {
     handleSelectionChange(val){
       this.$emit('tableSelect', val)
+    },
+    // 设置某一行选中
+    toggleSelection(rows) {
+      if (!rows.length > 0) return
+      rows.forEach(row => {
+        this.$refs.multipleTable.toggleRowSelection(row)
+      })
     },
   }
 }

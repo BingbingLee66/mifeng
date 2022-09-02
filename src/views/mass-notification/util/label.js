@@ -4,7 +4,7 @@ export const labelType = [
   { n: '活动通知', type: 2, show: 3 },
   { n: '招商活动', type: 3, show: 3 }, 
   { n: '邀请入会', type: 4, show: 2 },
-  { n: '自定义通知', type: 5, show: 2 },
+  { n: '自定义通知', type: 5, show: 3 },
 ]
 export const receiveType = [
   { n: '所有人', type: -1, show: 1 },

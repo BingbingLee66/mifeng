@@ -59,6 +59,12 @@ export const constantRoutes = [
         name: 'create',
         component: () => import('@/views/mass-notification/create/index'),
         meta: { title: '创建群发' }
+      },
+      {
+        path: 'mass-notification/mass-list',
+        name: 'massList',
+        component: () => import('@/views/mass-notification/mass-list/index'),
+        meta: { title: '群发管理' }
       }
     ]
   },

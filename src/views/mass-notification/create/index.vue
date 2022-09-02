@@ -22,7 +22,7 @@
         >
           {{ tag }}
         </el-tag>
-        <el-button size="small " type="primary ">选择活动</el-button>
+        <el-button size="small " type="primary " @click="selectActivity">选择活动</el-button>
       </div>
       <!-- 通知详情  为自定义通知的时候显示-->
 
@@ -123,12 +123,13 @@
   </el-form-item>
     </el-form>
 
-<kdDialog ref="kdDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true" @hide="hide">
+<kdDialog ref="kdDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true" >
   <div slot="content">
     规则说明，文案先找业务定一下
   </div>
   <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
 </kdDialog>
+<activityDialog v-if="showActivityDialog"></activityDialog>
   </div>
 </template>
 
@@ -137,10 +138,10 @@ import { labelType, receiveType } from '../util/label'
 import { uploadCoverImg } from '@/api/content/article'
 import ReceiveForm from './components/receiveForm.vue'
 import kdDialog from '@/components/common/kdDialog'
+import activityDialog from './components/activityDialog.vue'
 export default {
   name: 'Create',
-  components: { ReceiveForm, kdDialog },
-
+  components: { ReceiveForm, kdDialog, activityDialog },
   data() {
     return {
       labelList: [],
@@ -173,7 +174,9 @@ export default {
         sendType: [{ required: true, message: '请选择', trigger: 'blur' }],
         title: [{ required: true, message: '请填写', trigger: 'blur' }],
         content: [{ required: true, message: '请填写', trigger: 'blur' }]
-      }
+      },
+      // 显示活动弹框
+      showActivityDialog: false
     }
   },
   created() {
@@ -194,6 +197,12 @@ export default {
     hideSendRule(){
       this.$refs['kdDialog'].hide()
     },
+    // 打开选择活动弹框
+    selectActivity(){
+      this.showActivityDialog = true
+    },
+    // 提交表单
+    onSubmit(){},
     /** 父子组件交互 */
     /** 工具 */
     restTypeData() {
