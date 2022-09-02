@@ -3,7 +3,7 @@
     <h2>创建直播相册</h2>
     <el-form ref="form" class="form" :model="formModel" :rules="formRules" label-width="120px">
       <el-form-item label="相册名称" prop="albumName">
-        <el-input v-model="formModel.albumName" :maxlength="60" />
+        <el-input v-model="formModel.albumName" placeholder="限60字内" :maxlength="60" />
       </el-form-item>
       <el-form-item label="相册介绍" prop="introduce">
         <el-input v-model="formModel.introduce" type="textarea" :maxlength="200" show-word-limit :autosize="{minRows:3}" resize="none" />
