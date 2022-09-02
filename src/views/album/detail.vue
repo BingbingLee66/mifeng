@@ -15,10 +15,9 @@
         </div>
         <el-upload
           action="#"
-          accept="image/jpg,image/pnb,image/jpeg,image/bmp"
+          accept="image/jpg,image/png,image/jpeg,image/bmp"
           multiple
           :show-file-list="false"
-          :limit="5"
           :file-list="uploadingList"
           :http-request="onUpload"
         >
@@ -44,7 +43,10 @@
                       :key="img.id"
                       :file="img.file"
                       :album-id="$route.query.id"
+                      :index="uploadingList.findIndex(v => v.id === img.id)"
                       @delete="onDelUploadingImg(img, $event)"
+                      @reject="onUploadFail(img)"
+                      @fail="onUploadFail(img)"
                       @success="onUploadSuccess(img, $event)"
                       @coverChange="onCoverChange"
                     />
@@ -247,6 +249,10 @@ export default {
     onDelUploadingImg(img) {
       const index = this.uploadingList.findIndex(v => v.id === img.id)
       this.uploadingList.splice(index, 1)
+    },
+    onUploadFail(img) {
+      this.onDelUploadingImg(img)
+      this.uploadingList.push(img)
     },
     onUploadSuccess(img, { value }) {
       this.onDelUploadingImg(img) // 删除正在上传

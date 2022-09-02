@@ -1,7 +1,10 @@
 <template>
   <BaseImg :img="imgObj" class="img-item" :operations="['preview']">
     <div class="img-overlay">
-      <div v-if="status === 'begin'" class="pending">
+      <template v-if="status === 'wait'">
+        等待上传
+      </template>
+      <div v-else-if="status === 'begin'" class="pending">
         上传中
         <el-progress class="mt-10" text-inside :stroke-width="16" :percentage="percentage" />
       </div>
@@ -12,7 +15,6 @@
         上传失败
         <el-button class="mt-10" type="primary" size="small" @click="handleUpload">重新上传</el-button>
       </div>
-
     </div>
     <i class="close-icon el-icon-error" @click.stop="status = 'delete'" />
   </BaseImg>
@@ -35,12 +37,20 @@ export default {
     albumId: {
       type: [String, Number],
       default: undefined
+    },
+    index: {
+      type: Number,
+      default: 0
+    },
+    defaultStatus: {
+      type: String,
+      default: 'wait'
     }
   },
   data() {
     return {
       imgObj: {},
-      status: '', // 上传状态 begin-上传中 success-上传成功 reject-审核失败 fail-上传失败 delete-已经删除
+      status: 'wait', // 上传状态 begin-上传中 success-上传成功 reject-审核失败 fail-上传失败 delete-已经删除
       percentage: 0, // 进度百分比
     }
   },
@@ -50,19 +60,33 @@ export default {
     }
   },
   watch: {
+    index() {
+      this.handleUpload()
+    },
     status(status) {
       // 事件 - begin | success | reject | fail | delete
       this.$emit(status, { status: this.status, percentage: this.percentage, value: this.imgObj })
     }
   },
   created() {
-    const { file } = this
-    this.formData = new FormData()
-    this.formData.append('file', file)
-    this.generateImgObj(file) // 初始化图片对象
+    this.init()
     this.handleUpload()
   },
   methods: {
+    init() {
+      this.formData = new FormData()
+      this.formData.append('file', this.file)
+      this.generateImgObj() // 初始化图片对象
+      this.status = this.defaultStatus
+    },
+    // 根据上传图片文件 生成图片列表所需的图片对象
+    generateImgObj() {
+      // 初始化上传图片
+      this.imgObj = { img: '', fileName: this.file.name, }
+      const reader = new FileReader()
+      reader.readAsDataURL(this.file)
+      reader.onload = e => (this.imgObj.img = e.target.result)
+    },
     // async stay(time) {
     //   return new Promise(resolve => {
     //     setTimeout(() => {
@@ -71,6 +95,7 @@ export default {
     //   })
     // },
     async handleUpload() {
+      if (this.status === 'reject' || this.index >= 4) return
       this.status = 'begin'
       this.percentage = 10
       // await this.stay(3000)
@@ -79,14 +104,6 @@ export default {
       const url = await this.uploadImgToOss()
       // await this.stay(3000)
       this.saveImgUrlToAlbum(url)
-    },
-    // 根据上传图片文件 生成图片列表所需的图片对象
-    generateImgObj(file) {
-      // 初始化上传图片
-      this.imgObj = { img: '', fileName: file.name, }
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = e => (this.imgObj.img = e.target.result)
     },
 
     // 图片审核
