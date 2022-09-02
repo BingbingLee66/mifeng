@@ -19,6 +19,7 @@
           multiple
           :show-file-list="false"
           :file-list="uploadingList"
+          :before-upload="beforeUpload"
           :http-request="onUpload"
         >
           <el-button type="primary">上传图片</el-button>
@@ -242,7 +243,17 @@ export default {
     isCover(img) {
       return +img.useType === 1
     },
-
+    // 上传前校验
+    beforeUpload(file, index) {
+      if (!['image/jpeg', 'image/jpg', 'image/png', 'image/bmp'].includes(file.type)) {
+        this.$message.error('上传图片只能是 JPG 或 PNG 或 BMP 格式!')
+        return false
+      }
+      if (file.size > 1024 * 1024 * 10) {
+        this.$message.error('上传图片大小不能超过 10MB!')
+        return false
+      }
+    },
     onUpload({ file }) {
       this.uploadingList.unshift(this.formatImgData({ file, createdTs: Date.now(), id: `uid_${file.uid}` }))
     },
