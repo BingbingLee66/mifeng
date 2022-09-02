@@ -20,34 +20,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       listForRouter().then(response => {
         let menus = response.data.menu
-        menus.forEach(v => {
-          if (v.id === 25) {
-            v.children.push(...[
-              {
-                children: [],
-                component: 'views/album/create',
-                guideId: null,
-                hadGuide: false,
-                hidden: false,
-                icon: 'operation',
-                menuName: '创建直播相册',
-                menuUrl: '/album/create',
-                parentId: 25
-              },
-              {
-                children: [],
-                component: 'views/album/list',
-                guideId: null,
-                hadGuide: false,
-                hidden: false,
-                icon: 'operation',
-                menuName: '图片直播',
-                menuUrl: '/album/list',
-                parentId: 25
-              },
-            ])
-          }
-        })
         let remoteroutes = traverseRoutes(menus)
         commit('SET_ROUTES', remoteroutes)
         resolve(remoteroutes)
