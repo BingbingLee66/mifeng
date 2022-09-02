@@ -208,7 +208,10 @@ export default {
       }
     },
     async onDelImgs(imgIds) {
-      await this.$confirm('', '确定删除？', { confirmButtonText: '确定', cancelButtonText: '取消' })
+      await this.$confirm('删除后无法恢复', '是否继续删除？', {
+        confirmButtonText: '确认删除',
+        cancelButtonText: '取消'
+      })
       const { state } = await delAlbumImgs({ imgIds })
       if (state === 1) {
         this.imgList = this.imgList.filter(v => !imgIds.includes(v.id))

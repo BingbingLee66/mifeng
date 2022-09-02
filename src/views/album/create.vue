@@ -56,7 +56,7 @@
         </template>
         <div v-for="item of albumAdminPhones" :key="item">
           {{ item }}
-          <el-button type="text" style="color:red;" @click="albumAdminPhones = albumAdminPhones.filter(v => v!==item)">删除</el-button>
+          <el-button type="text" style="color:red;" @click="delAlbumAdminUser(item)">删除</el-button>
         </div>
         <el-button type="text" @click="addAlbumAdminUser">+添加上传人员</el-button>
       </el-form-item>
@@ -262,6 +262,13 @@ export default {
       })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) this.$router.push('/album/list')
+    },
+    async delAlbumAdminUser(item) {
+      await this.$confirm('删除后无法恢复', '是否继续删除？', {
+        confirmButtonText: '确认删除',
+        cancelButtonText: '取消'
+      })
+      this.albumAdminPhones = this.albumAdminPhones.filter(v => v !== item)
     }
   },
 }
