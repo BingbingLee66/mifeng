@@ -18,8 +18,14 @@
           </div>
         </div>
         <div class="info">
-          <div class="info-title">相册名称</div>
-          <div class="album-name">{{ album.albumName }}</div>
+          <div class="info-name"> {{ album.albumName }}</div>
+          <div v-if="album.introduce.length>37" class="album-intr" :class="{expanded:toggle}">
+            {{
+              toggle ? album.introduce : `${album.introduce.slice(0,37)}...`
+            }}
+            <div class="expand" @click="toggle=!toggle">{{ toggle?'收起':'展开' }}</div>
+          </div>
+          <div v-else class="album-intr">{{ album.introduce }}</div>
           <div class="flex-x">
             <div class="info-desc">
               浏览
@@ -81,7 +87,8 @@ export default {
       dateStr: '',
       timeStr: '',
       imgList: [],
-      num: 1
+      num: 1,
+      toggle: true
     }
   },
   watch: {
@@ -181,7 +188,7 @@ export default {
     padding: 15px;
     border-bottom: 1px solid #e8e8e8;
 
-    .info-title {
+    .info-name {
       height: 23px;
       font-size: 17px;
       font-family: PingFangSC-Semibold, PingFang SC;
@@ -189,15 +196,28 @@ export default {
       color: #222222;
       line-height: 23px;
       margin-bottom: 2px;
+      @include ellipsis(1);
     }
 
-    .album-name {
+    .album-intr {
+      position: relative;
       font-size: 16px;
       color: #333;
       line-height: 28px;
-      max-height: 56px;
-      @include ellipsis(2);
       margin-bottom: 11px;
+
+      &.expanded {
+        padding-bottom: 28px;
+      }
+
+      .expand {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        color: #D01A33;
+        line-height: 28px;
+        cursor: pointer;
+      }
     }
 
     .info-desc {
