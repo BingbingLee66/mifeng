@@ -58,7 +58,7 @@
           {{ item }}
           <el-button type="text" style="color:red;" @click="delAlbumAdminUser(item)">删除</el-button>
         </div>
-        <el-button type="text" @click="addAlbumAdminUser">+添加上传人员</el-button>
+        <el-button v-if="albumAdminPhones.length<5" type="text" @click="addAlbumAdminUser">+添加上传人员</el-button>
       </el-form-item>
       <el-form-item>
         <el-button @click="isPreview = true">预览</el-button>
