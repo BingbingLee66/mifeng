@@ -1,5 +1,5 @@
 <template>
-  <div v-show="visible" class="overlay" @click="$emit('change', false)">
+  <div v-show="visible" class="overlay">
     <div class="preview">
       <div class="title">相册详情</div>
       <div class="content">
@@ -44,6 +44,7 @@
           </div>
         </div>
       </div>
+      <el-button class="footer" type="primary" @click="$emit('change', false)">回到相册创建</el-button>
     </div>
   </div>
 </template>
@@ -241,6 +242,13 @@ export default {
         border-radius: 7px;
       }
     }
+  }
+
+  .footer {
+    position: absolute;
+    left: 50%;
+    bottom: 55px;
+    transform: translate(-50%);
   }
 }
 
