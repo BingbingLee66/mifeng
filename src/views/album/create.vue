@@ -16,7 +16,7 @@
       </el-form-item>
       <el-form-item v-if="formModel.type === 2" label="关联活动" prop="businessId">
         <el-select v-model="formModel.businessId" filterable>
-          <el-option v-for="item of businessList" :key="item.id" :label="item.activityName" :value="item.id" />
+          <el-option v-for="item of businessList" :key="item.id" :label="`${item.activityName}（ID：${item.id}）`" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item v-if="ckey" label="观看权限">
