@@ -117,10 +117,11 @@ export default {
         })
     },
     // 保存oss地址到相册
-    async saveImgUrlToAlbum(url) {
+    async saveImgUrlToAlbum(url, count = 1) { // 605状态需要重新调接口 重复调用3次
       if (this.status === 'delete') return Promise.reject() // 已经删除阻断流程
       return saveImgToAlbum({ ckey: this.ckey, fileName: this.file.name, id: this.albumId, img: url })
         .then(({ state, data }) => {
+          if (state === 605 && count <= 3) this.saveImgUrlToAlbum(url, count + 1)
           if (state !== 1) return Promise.reject()
           this.percentage = 100 // 进度上涨
           this.status = 'success' // 上传成功状态
