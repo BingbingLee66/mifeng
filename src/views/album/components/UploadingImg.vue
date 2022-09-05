@@ -184,6 +184,9 @@ export default {
   font-size: 24px;
   background-color: #fff;
   border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .pending{
