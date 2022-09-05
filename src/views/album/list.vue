@@ -33,7 +33,7 @@
           <el-button type="text" disabled>{{ sourceValue }}</el-button>
         </el-form-item>
         <el-form-item label="修改数值" prop="num">
-          <el-input v-model="dialog.num" placeholder="请输入" />
+          <el-input :value="dialog.num" placeholder="请输入" :maxlength="9" @input="dialog.num = $event.replace(/[^\d]/g, '')" />
         </el-form-item>
         <el-form-item style="text-align:right;">
           <el-button @click="dialog.visible=false">返回</el-button>
@@ -194,7 +194,7 @@ export default {
     async onModifyData() {
       await this.$refs.dialogForm.validate()
       const { updateType, num, sourceData } = this.dialog
-      const { state, msg } = await modifyAlbumData({ updateType, num, albumCkey: sourceData.albumCkey })
+      const { state, msg } = await modifyAlbumData({ updateType, num: +num, albumCkey: sourceData.albumCkey })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.changeDialog({ visible: false })
@@ -209,7 +209,7 @@ export default {
       if (state === 1) {
         this.$set(row, 'status', +!status)
       }
-    }
+    },
   }
 }
 </script>
