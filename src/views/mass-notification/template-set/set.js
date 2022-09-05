@@ -1,25 +1,30 @@
 import Details from '../template-library/components/details'
+import { noticeTemplateSetList, getNoticeTemplateSetDetailById } from '@/api/mass-notification'
 export default {
   data() {
     return {
-      activeName: '1',
       currentpage: 1,
       limit: 10,
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       list: [],
       query: {
-        title: '' // 标题
+        title: '', // 标题
+        type: '1' // 模板类型 1短信通知、2订阅消息、3APP通知
       },
       listLoading: false,
-      random: 1 // 动态改变table试图
+      random: 1, // 动态改变table试图
+      noticeTypeId: ['', '缴费通知', '活动通知', '招商活动', '邀请入会', '自定义通知']
     }
   },
   components: {
     Details
   },
   created() {
-    this.list.push({ title: '1' })
+    this.query.type = this.$route.query.type || '1'
+  },
+  mounted() {
+    this.fetchData(true)
   },
   methods: {
     // 切换头部tabs
@@ -29,35 +34,41 @@ export default {
       this.fetchData(true)
     },
     // 表格数据
-    fetchData(reset) {
-      this.list = []
+    async fetchData(reset) {
       if (reset) this.currentPage = 1
-      this.list.push({
-        uname: '1'
-      })
+      this.listLoading = true
+      this.list = []
+      let { type, title } = this.query
+      let parmas = {
+        type,
+        title,
+        pageSize: this.limit,
+        page: this.currentpage
+      }
+      const res = await noticeTemplateSetList(parmas)
       this.listLoading = false
-      //   this.total = res.data.totalRows
-      this.random = Math.random()
-      console.log('list', this.list)
+      if (res.state === 1) {
+        this.list = res.data.list || []
+        this.total = res.data.totalRows || 0
+        this.random = Math.random()
+      }
     },
     // 跳转添加模板
     onSynchronization() {
-      //  activeName   1:短信 2：消息订阅  3：app
-      let path = ''
+      //  query.type   1:短信 2：消息订阅  3：app
       let id = 1
-      if (this.activeName === '1') {
-        path = '/template-set/add-note/index'
-      }
       this.$router.push({
-        path,
+        path: '/template-set/add-note/index',
         query: {
-          id
+          id,
+          type: this.query.type
         }
       })
     },
     // 详情
-    particulars() {
-      this.$refs.details.show()
+    async particulars(row) {
+      const res = await getNoticeTemplateSetDetailById({ id: row.id })
+      this.$refs.details.show(res)
     },
     // 编辑
     onEdit() {},

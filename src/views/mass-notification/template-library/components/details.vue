@@ -1,27 +1,62 @@
 <template>
-  <el-dialog ref="form" :visible="visible" title="通知详情" width="60%" @close="close">
+  <el-dialog ref="form" :visible="visible" title="详情" width="60%" @close="close">
     <!-- 短信 -->
-    <div v-if="activeName == 1" class="content">
-      <div class="content-left">
+    <div v-if="type == 1" class="container">
+      <div class="container-left">
         <div class="Present-img">
           <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-note.png" class="pic" />
-          <div class="Present-note">亲爱的【会员姓名】诚挚邀请您加入【商协会名称】,期待您于</div>
+          <div class="Present-note" v-html="infoDate.demonstrate"></div>
         </div>
       </div>
-      <div class="content-right">
+      <div class="container-right">
         <div class="offside">
-          <div class="offside-stencil">模板ID</div>
-          <div class="details">FJIhJ3AL8MXiuz4LoGSK5QkmZlbcnt7Bsl173JZnVIA</div>
+          <div class="offside-stencil">模板类型</div>
+          <div class="details">{{ infoDate.type == 1 ? '短信通知' : infoDate.type == 2 ? '订阅消息' : 'APP通知' }}</div>
         </div>
         <div class="offside">
-          <div class="offside-stencil">标题</div>
-          <div class="details">活动开始通知</div>
+          <div class="offside-stencil">模板名称</div>
+          <div class="details">{{ infoDate.templateName }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">模板CODE</div>
+          <div class="details">{{ infoDate.templateCode }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">模板内容</div>
+          <div class="details">{{ infoDate.content }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">变量属性</div>
+          <div class="details" v-if="infoDate.smsNoticeTemplateVo">
+            <div
+              class="details-box"
+              v-for="(item, index) in infoDate.smsNoticeTemplateVo.variableAttributes"
+              :key="index"
+            >
+              <div>{{ item.key }}</div>
+              <div v-if="item.value">- {{ item.value }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">场外链接</div>
+          <div class="details" v-if="infoDate.smsNoticeTemplateVo">{{ infoDate.smsNoticeTemplateVo.link }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">场外说明</div>
+          <div class="details" v-if="infoDate.smsNoticeTemplateVo">
+            {{ infoDate.smsNoticeTemplateVo.sceneDescription }}
+          </div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">创建时间</div>
+          <div class="details">{{ infoDate.createdTs | dateFormat }}</div>
         </div>
       </div>
     </div>
     <!-- 订阅 -->
-    <div v-if="activeName == 2" class="content">
-      <div class="content-left">
+    <div v-if="type == 2" class="container">
+      <div class="container-left">
         <div class="Present-img">
           <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-subscribe.png" />
           <div class="subscribe-wire"></div>
@@ -37,42 +72,69 @@
             </div>
 
             <!-- 内容 -->
-            <div class="subscribe-middle">
+            <div class="subscribe-middle" v-if="infoDate.subscriptionNoticeTemplateVo">
               <div class="subscribe-prosperity">报名成功通知</div>
-              <div class="subscribe-circularize">
-                <div class="circularize-matter">活动内容</div>
-                <div class="circularize-designation">【活动名称】</div>
-              </div>
-              <div class="subscribe-circularize">
-                <div class="circularize-matter">活动</div>
-                <div class="circularize-designation">【活动地址】</div>
-              </div>
-              <div class="subscribe-circularize">
-                <div class="circularize-matter">活动</div>
-                <div class="circularize-designation">【活动地址】</div>
-              </div>
-              <div class="subscribe-circularize">
-                <div class="circularize-matter">活动</div>
-                <div class="circularize-designation">【活动地址】</div>
+              <div
+                class="subscribe-circularize"
+                v-for="(item, index) in infoDate.subscriptionNoticeTemplateVo.variableAttributes"
+                :key="index"
+              >
+                <div class="circularize-matter">{{ item.key }}</div>
+                <div class="circularize-designation">
+                  <div class="designation-variable">【{{ item.value2 }}】</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="content-right">
+      <div class="container-right">
         <div class="offside">
           <div class="offside-stencil">模板ID</div>
-          <div class="details">FJIhJ3AL8MXiuz4LoGSK5QkmZlbcnt7Bsl173JZnVIA</div>
+          <div class="details">{{ infoDate.templateCode }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">模板编号</div>
+          <div class="details">{{ infoDate.id }}</div>
         </div>
         <div class="offside">
           <div class="offside-stencil">标题</div>
-          <div class="details">活动开始通知</div>
+          <div class="details">{{ infoDate.templateName }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">类目</div>
+          <div class="details" v-if="infoDate.subscriptionNoticeTemplateVo">
+            {{ infoDate.subscriptionNoticeTemplateVo.category }}
+          </div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">操作人</div>
+          <div class="details">{{ infoDate.creator }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">详细内容</div>
+          <div class="details" v-if="infoDate.subscriptionNoticeTemplateVo">
+            <div
+              class="details-box"
+              v-for="(item, index) in infoDate.subscriptionNoticeTemplateVo.variableAttributes"
+              :key="index"
+            >
+              <div>{{ item.key }}</div>
+              <div v-if="item.value">- {{ item.value }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">场景说明</div>
+          <div class="details" v-if="infoDate.subscriptionNoticeTemplateVo">
+            {{ infoDate.subscriptionNoticeTemplateVo.sceneDescription }}
+          </div>
         </div>
       </div>
     </div>
     <!-- app -->
-    <div v-if="activeName == 3" style="height: 320px" class="content">
-      <div class="content-left">
+    <div v-if="type == 3" style="height: 320px" class="container">
+      <div class="container-left">
         <div class="Present-img">
           <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-app.png" class="pic" />
           <div class="Present-app">
@@ -86,19 +148,31 @@
               <div class="dot">now</div>
             </div>
             <!-- 内容 -->
-            <div>邀请入会通知</div>
-            <div class="characters">邀请入会通知邀请入会通知邀请入会通知邀请入会通知</div>
+            <div>通知</div>
+            <div class="characters stencil-onhiden" v-html="infoDate.demonstrate"></div>
           </div>
         </div>
       </div>
-      <div class="content-right">
-        <div class="offside">
-          <div class="offside-stencil">模板ID</div>
-          <div class="details">FJIhJ3AL8MXiuz4LoGSK5QkmZlbcnt7Bsl173JZnVIA</div>
-        </div>
+      <div class="container-right">
         <div class="offside">
           <div class="offside-stencil">标题</div>
-          <div class="details">活动开始通知</div>
+          <div class="details">{{ infoDate.templateName }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">模板内容</div>
+          <div class="details">{{ infoDate.content }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">链接</div>
+          <div class="details" v-if="infoDate.appNoticeTemplateVo">{{ infoDate.appNoticeTemplateVo.link }}</div>
+        </div>
+        <div class="offside" v-if="active == 2">
+          <div class="offside-stencil">所属类型</div>
+          <div class="details">{{ infoDate.type == 1 ? '短信通知' : infoDate.type == 2 ? '订阅消息' : 'APP通知' }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">创建时间</div>
+          <div class="details">{{ infoDate.createdTs | dateFormat }}</div>
         </div>
       </div>
     </div>
@@ -109,27 +183,64 @@
 </template>
 
 <script>
+import { getNoticeTemplateDetailById } from '@/api/mass-notification'
 export default {
   name: 'Details',
   props: {
-    activeName: {
+    type: {
       type: String,
       default: ''
-    } // activeName   1:短信 2：消息订阅  3：app
+    }, // type   1:短信 2：消息订阅  3：app
+    active: {
+      type: Number,
+      default: null
+    } // 1:模板库 2：模板设置
   },
   data() {
     return {
-      visible: false
+      visible: false,
+      infoDate: {
+        demonstrate: '',
+        subscriptionNoticeTemplateVo: {},
+        smsNoticeTemplateVo: {},
+        appNoticeTemplateVo: {}
+      }
     }
   },
 
   methods: {
     // 显示
-    show() {
-      this.visible = true
-      console.log('activeName', this.activeName)
-    },
+    async show(res) {
+      //   const res = await getNoticeTemplateDetailById({ id })
 
+      this.visible = true
+      this.infoDate = res.data
+      //   短信和app
+      if (this.type != 2 && res.data.content) {
+        let a = res.data.content.indexOf('${')
+        if (a >= 0) this.infoDate.demonstrate = this.analysis(res.data.content)
+        else this.infoDate.demonstrate = res.data.content
+      }
+      //  订阅消息
+      if (res.data && res.data.subscriptionNoticeTemplateVo) {
+        res.data.subscriptionNoticeTemplateVo.variableAttributes.forEach(v => {
+          v.value2 = v.value
+          if (v.value2.length >= 17) {
+            v.value2 = v.value2.substring(0, 17) + '...'
+          }
+        })
+      }
+    },
+    // 把字符串里面特殊符号${}  加上红色标识
+    analysis(vlue) {
+      const regx = /\$.*?\}/g
+      const arr = vlue.match(regx)
+
+      arr.forEach(item => {
+        vlue = vlue.replace(item, `<span style="color:red">${item}</span>`)
+      })
+      return vlue
+    },
     // 关闭
     close() {
       this.visible = false
@@ -139,9 +250,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.content {
+.container {
   display: flex;
-  .content-left {
+  .container-left {
     width: 45%;
     position: relative;
     .Present-img {
@@ -214,13 +325,8 @@ export default {
             .circularize-designation {
               color: #d01a33;
               width: 70%;
-              overflow: hidden;
-              text-overflow: ellipsis; /* 超出部分省略号 */
-              word-break: break-all; /* break-all(允许在单词内换行。) */
-              display: -webkit-box; /* 对象作为伸缩盒子模型显示 */
-              -webkit-box-orient: vertical; /* 设置或检索伸缩盒对象的子元素的排列方式 */
-              -webkit-line-clamp: 2; /* 显示的行数 */
-              max-height: 80rpx; /* 设置最大高度，根据行高，要几行乘以几倍 */
+              display: flex;
+              flex-wrap: wrap;
             }
           }
         }
@@ -258,6 +364,14 @@ export default {
         .characters {
           margin-top: 5px;
         }
+        .stencil-onhiden {
+          overflow: hidden;
+          text-overflow: ellipsis; /* 超出部分省略号 */
+          word-break: break-all; /* break-all(允许在单词内换行。) */
+          display: -webkit-box; /* 对象作为伸缩盒子模型显示 */
+          -webkit-box-orient: vertical; /* 设置或检索伸缩盒对象的子元素的排列方式 */
+          -webkit-line-clamp: 5; /* 显示的行数 */
+        }
       }
     }
     img {
@@ -265,18 +379,23 @@ export default {
       height: 100%;
     }
   }
-  .content-right {
+  .container-right {
     width: 55%;
     .offside {
       display: flex;
       align-content: center;
       margin-bottom: 20px;
       .offside-stencil {
-        width: 12%;
+        width: 14%;
         font-weight: bold;
       }
       .details {
         width: 85%;
+        .details-box {
+          display: flex;
+          align-items: center;
+          margin-bottom: 7px;
+        }
       }
     }
   }

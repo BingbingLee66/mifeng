@@ -1,15 +1,16 @@
 <template>
   <div class="app-container">
     <!-- 短信 -->
-    <Note v-if="activeName == 1" @close="close" />
+    <Note v-if="type == 1" @close="close" @save="save" />
     <!-- 消息订阅 -->
-    <Subscribe v-if="activeName == 2" @close="close" />
+    <Subscribe v-if="type == 2" @close="close" @save="save" />
     <!-- APP通知 -->
-    <AppInform v-if="activeName == 3" @close="close" />
+    <AppInform v-if="type == 3" @close="close" @save="save" />
   </div>
 </template>
 
 <script>
+import { synchronizeAndApplyTemplate } from '@/api/mass-notification'
 import Subscribe from './components/subscribe'
 import AppInform from './components/app-inform'
 import Note from './components/note'
@@ -21,12 +22,12 @@ export default {
   },
   data() {
     return {
-      activeName: '' //  1:短信 2：消息订阅  3：app
+      type: '' //  1:短信 2：消息订阅  3：app
     }
   },
 
   mounted() {
-    this.activeName = this.$route.query.activeName || '1'
+    this.type = this.$route.query.type || '1'
   },
   methods: {
     // 回退模板库
@@ -34,9 +35,25 @@ export default {
       this.$router.push({
         path: '/dashboard',
         query: {
-          activeName: this.activeName
+          type: this.type
         }
       })
+    },
+    // 保存
+    async save(e) {
+      const res = await synchronizeAndApplyTemplate(e)
+      if (res.state === 1) {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.close()
+      } else {
+        this.$message({
+          message: res.msg,
+          type: 'error'
+        })
+      }
     }
   }
 }

@@ -2,23 +2,23 @@
   <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="110px">
     <el-row>
       <el-col :span="15">
-        <el-form-item label="模板CODE：" prop="code">
-          <el-input v-model.trim="formObj.code" maxlength="20" clearable show-word-limit />
+        <el-form-item label="模板CODE：" prop="templateCode">
+          <el-input v-model.trim="formObj.templateCode" maxlength="20" @change="check_num" clearable show-word-limit />
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="15">
-        <el-form-item label="模板类型：" prop="type">
-          <el-radio v-model="formObj.type" label="1">通知短信</el-radio>
-          <el-radio v-model="formObj.type" label="2">推广短信</el-radio>
+        <el-form-item label="模板类型：" :required="true">
+          <el-radio disabled v-model="formObj.smsNoticeTemplateDTO.templateType" label="1">通知短信</el-radio>
+          <el-radio disabled v-model="formObj.smsNoticeTemplateDTO.templateType" label="2">推广短信</el-radio>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="15">
-        <el-form-item label="模板名称：" prop="name">
-          <el-input v-model.trim="formObj.name" maxlength="30" clearable show-word-limit />
+        <el-form-item label="模板名称：" prop="templateName">
+          <el-input disabled v-model.trim="formObj.templateName" maxlength="30" clearable show-word-limit />
         </el-form-item>
       </el-col>
     </el-row>
@@ -26,6 +26,7 @@
       <el-col :span="15">
         <el-form-item label="模板内容：" prop="content">
           <el-input
+            disabled
             v-model.trim="formObj.content"
             type="textarea"
             maxlength="500"
@@ -38,11 +39,8 @@
     <el-row>
       <el-col :span="15">
         <el-form-item label="变量属性：" :required="true">
-          <div class="property">
-            <div>name：</div>
-            <el-select v-model="formObj.variable" clearable filterable placeholder="请选择" style="width: 330px">
-              <el-option v-for="item in originOpt" :key="item.invesKey" :label="item.name" :value="item.id" />
-            </el-select>
+          <div class="property" v-for="(item, index) in formObj.smsNoticeTemplateDTO.variableAttributes" :key="index">
+            {{ item.key }}
           </div>
         </el-form-item>
       </el-col>
@@ -57,43 +55,45 @@
 </template>
 
 <script>
+import { getNoticeTemplateDetail } from '@/api/mass-notification'
 export default {
   name: 'Note',
   data() {
     return {
       formObj: {
-        code: '',
-        type: '1',
-        name: '',
-        content: '',
-        variable: ''
-      },
-      originOpt: []
+        type: '1', //模板类型 1短信通知、2订阅消息、3APP通知
+        templateCode: '', //模板code/模板id  SMS_251110108
+        templateName: '', // 模板名称
+        content: '', //模板内容
+        smsNoticeTemplateDTO: {
+          templateType: '1' // 1通知短信 2推广短信
+        }
+      }
     }
   },
   computed: {
     rules() {
       return {
-        code: [
+        templateCode: [
           { required: true, message: '模板CODE不能为空', trigger: 'blur' },
           {
-            validator: (rule, value, callback) => {
-              console.log('value', value)
-              if (
-                !/(^[a-zA-Z]{1}[a-zA-Z0-9]{5,11}$)|(^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$)/.test(
-                  value
-                )
-              ) {
-                return callback(new Error('账号只能为字母和数字，且以字母开头，长度为6-12个字符！或为11位手机号码'))
+            validator: async (rule, value, callback) => {
+              const res = await getNoticeTemplateDetail({ templateCode: value })
+              if (res.state == 0) {
+                return callback(new Error(res.msg))
               } else {
+                let formObj = this.formObj
+                formObj.content = res.data.content
+                formObj.smsNoticeTemplateDTO.templateType = res.data.smsNoticeTemplateVo.templateType + ''
+                formObj.smsNoticeTemplateDTO.variableAttributes = res.data.smsNoticeTemplateVo.variableAttributes
+                formObj.templateName = res.data.templateName
                 callback() // 必须加上这个，不然一直塞在验证状态
               }
             },
             trigger: 'blur'
           }
         ],
-        type: [{ required: true, message: '模板类型不能为空', trigger: 'change' }],
-        name: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
+        templateName: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
         content: [{ required: true, message: '模板内容不能为空', trigger: 'blur' }]
       }
     }
@@ -103,18 +103,17 @@ export default {
     save() {
       this.$refs.form.validate(valid => {
         if (!valid) return
+        this.$emit('save', this.formObj)
       })
     },
     close() {
       this.$emit('close')
+    },
+    check_num() {
+      this.formObj.templateCode = this.formObj.templateCode.replace(/[^\x00-\xff]/g, '')
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
-.property {
-  display: flex;
-  align-items: center;
-}
-</style>
+<style scoped lang="scss"></style>
