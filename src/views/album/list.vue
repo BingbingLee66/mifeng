@@ -122,7 +122,7 @@ export default {
         { label: '点赞数', prop: 'likeNum' },
         { label: '下载数', render: e => this.generateModifiedData(e, '2') },
         { label: '分享数', render: e => this.generateModifiedData(e, '3') },
-        { label: '相册状态', hidden: ckey || isPlatform, render: ({ row }) => row.status ? <span style='color:#67c23a'>正常</span> : <span style='color:#f56c6c'>冻结</span> },
+        { label: '相册状态', hidden: !ckey && isPlatform, render: ({ row }) => row.status ? <span style='color:#67c23a'>正常</span> : <span style='color:#f56c6c'>冻结</span> },
         {
           label: '操作',
           fixed: 'right',
