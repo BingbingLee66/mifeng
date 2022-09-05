@@ -174,7 +174,9 @@ export default {
       const { realy, fake } = updateTypeOptions[updateType]
       if (row[realy] >= row[fake] || this.ckey) return row[fake]
       return <div>
-        <el-tooltip style='color:red;margin-right:8px;' effect='light' content={`${this.sourceValue}`} placement='top'> 改 </el-tooltip>
+        <el-tooltip style='color:red;margin-right:8px;' effect='light' content={`${row[realy]}`} placement='top'>
+          <span>改</span>
+        </el-tooltip>
         {row[fake]}
       </div>
     },
