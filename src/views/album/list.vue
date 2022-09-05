@@ -109,7 +109,7 @@ export default {
       return [
         {
           label: '相册信息', width: 200,
-          render: ({ row }) => <div><div style='color:#66b1ff'>{row.id}</div>{row.albumName}</div>
+          render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumCkey}</div>{row.albumName}</div>
         },
         {
           label: '关联业务', width: 200,
