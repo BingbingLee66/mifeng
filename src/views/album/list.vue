@@ -20,7 +20,7 @@
     <el-dialog :visible.sync="dialog.visible" width="450px" title="修改数据" @close="onDialogClose">
       <el-form ref="dialogForm" style="padding:0 20px;" :model="dialog" :rules="formRules" label-width="80px">
         <el-form-item label="修改类型" prop="updateType">
-          <el-select v-model="dialog.updateType" :disabled="dialog.typeDisabled">
+          <el-select v-model="dialog.updateType">
             <el-option
               v-for="v of updateTypeOptions"
               :key="v.value"
@@ -51,8 +51,7 @@ const generateDialog = () => ({
   visible: false,
   updateType: '', // 0-浏览数 1-浏览人数 2-下载数 3-分享数
   num: '', // 要修改的数据
-  sourceData: {}, // 源数据
-  typeDisabled: false
+  sourceData: {} // 源数据
 })
 
 const updateTypeOptions = [
@@ -167,24 +166,15 @@ export default {
         })
         this.tableData = list
         this.total = totalRows
-      } catch { }
-      this.loading = false
+      } finally {
+        this.loading = false
+      }
     },
     generateModifiedData({ row, column }, updateType) {
       const { realy, fake } = updateTypeOptions[updateType]
       if (row[realy] >= row[fake] || this.ckey) return row[fake]
       return <div>
-        <el-button
-          type='text'
-          style='color:red;margin-right:8px;'
-          onClick={() => this.changeDialog({
-            visible: true,
-            typeDisabled: true,
-            sourceData: row,
-            updateType,
-            num: row[fake]
-          })}
-        > 改 </el-button>
+        <el-tooltip style='color:red;margin-right:8px;' effect='light' content={`${this.sourceValue}`} placement='top'> 改 </el-tooltip>
         {row[fake]}
       </div>
     },

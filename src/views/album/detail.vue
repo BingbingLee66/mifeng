@@ -172,9 +172,9 @@ export default {
         }
         const lastImg = list[list.length - 1]
         query.imgId = lastImg && lastImg.id // 最后一张照片id
-      } catch {}
-
-      this.loading = false
+      } finally {
+        this.loading = false
+      }
     },
     onScroll(e) {
       if (this.scrollTimer) return

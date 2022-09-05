@@ -13,7 +13,7 @@
       </template>
       <div v-else-if="status === 'fail'" class="flex-y-center-center">
         上传失败
-        <el-button class="mt-10" type="primary" size="small" @click="handleUpload">重新上传</el-button>
+        <el-button class="mt-10" type="primary" size="small" @click="reUpload">重新上传</el-button>
       </div>
     </div>
     <i class="close-icon el-icon-error" @click.stop="status = 'delete'" />
@@ -38,7 +38,7 @@ export default {
       type: [String, Number],
       default: undefined
     },
-    index: {
+    index: { // 上传顺序
       type: Number,
       default: 0
     },
@@ -61,7 +61,7 @@ export default {
   },
   watch: {
     index() {
-      this.handleUpload()
+      if (this.index <= 4) this.handleUpload()
     },
     status(status) {
       // 事件 - begin | success | reject | fail | delete
@@ -70,7 +70,7 @@ export default {
   },
   created() {
     this.init()
-    this.handleUpload()
+    if (this.index <= 4) this.handleUpload()
   },
   methods: {
     init() {
@@ -95,7 +95,7 @@ export default {
     //   })
     // },
     async handleUpload() {
-      if (this.status === 'reject' || this.index >= 4) return
+      if (this.status !== 'wait') return
       this.status = 'begin'
       this.percentage = 10
       // await this.stay(3000)
@@ -151,6 +151,12 @@ export default {
           return Promise.reject() // 上传失败返回reject阻断后面流程
         })
     },
+
+    // 重新上传
+    reUpload() {
+      this.status = 'wait'
+      this.handleUpload()
+    }
   },
 }
 </script>
