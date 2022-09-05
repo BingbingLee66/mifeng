@@ -129,13 +129,13 @@
   </div>
   <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
 </kdDialog>
-<activityDialog ref="activityDialogRef" @addActivity="function addActivity(val){activityList=val}" v-if="showActivityDialog"></activityDialog>
+<activityDialog :activityList="activityList" :activityType="form.type" ref="activityDialogRef" @addActivity="function addActivity(val){activityList=val}" v-if="showActivityDialog"></activityDialog>
   </div>
 </template>
 
 <script>
 import { labelType, receiveType } from '../util/label'
-import { uploadCoverImg } from '@/api/content/article'
+import { uploadCoverImg ,uploadFile} from '@/api/content/article'
 import ReceiveForm from './components/receiveForm.vue'
 import kdDialog from '@/components/common/kdDialog'
 import activityDialog from './components/activityDialog.vue'
@@ -239,7 +239,9 @@ export default {
       try {
         let formData = new FormData()
         formData.append('file', content.file)
-        const res = await uploadCoverImg(formData)
+        formData.append('folder','notice') 
+        
+        const res = await uploadFile(formData)
         if (res.state === 1) {
           this.form.imgList.push(res.data.filePath)
         } else {

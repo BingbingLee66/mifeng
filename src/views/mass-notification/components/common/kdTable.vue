@@ -1,11 +1,14 @@
 <template>
   <div>
+    <!-- :row-key="(row) => { return row.id }" -->
     <el-table
       ref="multipleTable"
       border
       :data="table.tableData"
       tooltip-effect="dark"
       style="width: 100%"
+      row-key="id"
+      :reserve-selection="true"
       @selection-change="handleSelectionChange"
     >
       <template v-for="col in table.columnConfig">
@@ -53,14 +56,22 @@ export default {
   },
   methods: {
     handleSelectionChange(val) {
+      console.log('val',val)
       this.$emit('tableSelect', val)
     },
     // 设置某一行选中
     toggleSelection(rows) {
-      if (!rows.length > 0) return
-      rows.forEach(row => {
-        this.$refs.multipleTable.toggleRowSelection(row)
+      // console.log('rows',rows)
+      if (!rows.length > 0) return;
+      this.$nextTick(()=>{
+ rows.forEach(row => {
+        // console.log('row',row)
+        // console.log('this.table.tableData',this.table.tableData);
+        // console.log('this.table.tableData.find(item=>item.id===row.id)',this.table.tableData.find(item=>item.id===row.id))
+       this.table.tableData.find(item=>item.id===row.id) && this.$refs['multipleTable'].toggleRowSelection(this.table.tableData.find(item=>item.id===row.id),true);
       })
+      })
+      
     }
   }
 }

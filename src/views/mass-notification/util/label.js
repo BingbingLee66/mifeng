@@ -16,3 +16,18 @@ export const receiveType = [
   { n: '指定会员', type: 4, show: 2 }, 
 
 ]
+// form表单通知类型
+//通知列表的通知类型
+export const notificationType=[
+  {id:-1,name:'全部'},
+   {id:2,name:'活动通知'},
+   {id:1,name:'缴费通知'},
+   {id:4,name:'邀请入会'},
+]
+//群发管理的通知类型
+export const massNotificationType=[
+  {id:-1,name:'全部'},
+   {id:2,name:'活动通知'},
+   {id:1,name:'缴费通知'},
+   {id:5,name:'自定义通知'},
+]

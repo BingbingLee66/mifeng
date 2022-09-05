@@ -25,7 +25,7 @@
       </el-form>
       <!-- 表格 -->
       <div class="table">
-        <kdTable @tableSelect="tableSelect" />
+        <kdTable ref="table" @tableSelect="tableSelect" />
       </div>
 
       <!-- 分页  前期先不做分页-->
@@ -46,11 +46,21 @@
 <script>
 import kdTable from '../../components/common/kdTable.vue'
 import { getActivityList } from '@/api/activity/activity'
+import { getInvesActivityList } from '@/api/attract/index'
 import dayjs from 'dayjs'
 export default {
   name: 'ReceiveForm',
   components: { kdTable, KdPagination: () => import('@/components/common/KdPagination') },
-  props: ['receiveList', 'ckey'],
+  props: {
+    activityType: {
+      type: Number,
+      default: 2
+    },
+    activityList:{
+      type:Array,
+      default:[]
+    }
+  },
   provide() {
     return {
       table: this
@@ -64,7 +74,7 @@ export default {
       form: {
         activityName: '',
         id: null,
-        status: null,
+        status: 0,
         chamberName: ''
       },
       chamberList: [],
@@ -90,111 +100,37 @@ export default {
   },
 
   created() {
-    this.getActivityListFunc()
-
-    this.columnConfig = [
-      { type: 'select' },
-      {
-        prop: 'id',
-        label: '活动ID',
-        type: 'general',
-        width: 60
-      },
-      {
-        prop: 'activeHead',
-        label: '活动列表图',
-        type: 'img',
-        width: 180
-      },
-      {
-        prop: 'activityName',
-        label: '活动名称',
-        type: 'general'
-      },
-      {
-        prop: 'activeTime',
-        label: '活动时间',
-        width: 180,
-        type: 'general',
-        formatter: row => {
-          return (
-            dayjs(parseInt(row.startTime)).format('YYYY-MM-DD HH:mm:ss') +
-            '~' +
-            dayjs(parseInt(row.endTime)).format('YYYY-MM-DD HH:mm:ss')
-          )
-        }
-      },
-      {
-        prop: 'address',
-        label: '活动地点',
-        width: 180,
-        type: 'general',
-        formatter: row => {
-          return row.province + row.city + row.area + row.addressInfo
-        }
-      },
-      {
-        prop: 'chamberName',
-        label: '活动来源',
-        type: 'general'
-      },
-      {
-        prop: 'applyObject',
-        label: '报名对象',
-        type: 'general',
-
-        formatter: row => {
-          return row.applyObject === 0 ? '不限' : '商会会员'
-        }
-      },
-      {
-        prop: 'chamberName',
-        label: '发布状态',
-        type: 'general',
-        width: 80,
-        formatter: row => {
-          return row.isPublish ? '已发布' : '未发布'
-        }
-      },
-      {
-        prop: 'status',
-        label: '活动状态',
-        type: 'general',
-
-        formatter: row => {
-          return row.status === 1 ? '未开发' : row.status === 2 ? '报名中' : '已结束'
-        }
-      },
-      {
-        prop: 'createdTs',
-        label: '创建时间',
-        type: 'general',
-        formatter: row => {
-          return dayjs(parseInt(row.createdTs)).format('YYYY-MM-DD HH:mm:ss')
-        }
-      }
-    ]
+ this.resetColumnConfig()
+      
+   
   },
   methods: {
     /** 请求 */
     async getActivityListFunc() {
+      let api=getActivityList;
+      if(this.activityType === 3){
+        api=getInvesActivityList
+      }
       const { pageSize, pageNum: page, form } = this
-      const { data } = await getActivityList({
+      const { data } = await api({
         isPublish: 1,
         pageSize,
         page,
-        ...form
+        ...form,
+        isInves: false
       })
       this.tableData = data.list
       this.total = data.totalRows
+      this.$refs['table'].toggleSelection(this.activityList)
     },
     /** 行为操作 */
-    save() {
-      // 点击确定按钮
-      console.log('this.selectData', this.selectData)
-    },
+    // save() {
+    //   // 点击确定按钮
+    //   this.submit()
+    // },
     //打开弹框
     open() {
+      this.getActivityListFunc()
       this.dialogVisible = true
     },
     //关闭弹框
@@ -202,13 +138,15 @@ export default {
       this.dialogVisible = false
       this.$emit('addActivity', this.selectData)
     },
-    handleClose() {},
+    handleClose() {
+      this.dialogVisible = false
+    },
 
     /** 与子组件交互 */
     tableSelect(val) {
-      console.log(val)
+      // console.log(val)
       this.selectData = val
-    }
+    },
     // 分页改变
     // onPageChange($event) {
     //   const { pageNum, pageSize } = $event
@@ -216,6 +154,102 @@ export default {
     //   this.pageSize = pageSize ? pageSize : this.pageSize
     //   this.getActivityListFunc()
     // }
+
+    /**工具 */
+    resetColumnConfig() {
+      this.columnConfig = [
+        { type: 'select' },
+        {
+          prop: 'id',
+          label: '活动ID',
+          type: 'general',
+          width: 70
+        },
+        {
+          prop: 'activeHead',
+          label: '活动列表图',
+          type: 'img',
+          width: 180
+        },
+        {
+          prop: 'activityName',
+          label: '活动名称',
+          type: 'general'
+        },
+        {
+          prop: 'activeTime',
+          label: '活动时间',
+          width: 180,
+          type: 'general',
+          formatter: row => {
+            return (
+              dayjs(parseInt(this.activityType===2 ? row.startTime : row.activityStartTime)).format('YYYY-MM-DD HH:mm:ss') +
+              '~' +
+              dayjs(parseInt(this.activityType===2 ? row.startTime :row.activityEndTime)).format('YYYY-MM-DD HH:mm:ss')
+            )
+          }
+        },
+        {
+          prop: 'address',
+          label: '活动地点',
+          width: 180,
+          type: 'general',
+          formatter: row => {
+            return row.province + row.city + row.area + row.addressInfo
+          }
+        },
+        {
+          prop: 'chamberName',
+          label: '活动来源',
+          type: 'general',
+          formatter:row=>{
+            return this.activityType===2 ? row.chamberName :row.invesName
+            
+          }
+        },
+        {
+          prop: 'applyObject',
+          label: '报名对象',
+          type: 'general',
+
+          formatter: row => {
+            return row.applyObject === 0 ? '不限' : '商会会员'
+          }
+        },
+        {
+          prop: 'chamberName',
+          label: '发布状态',
+          type: 'general',
+          width: 80,
+          formatter: row => {
+            return row.isPublish ? '已发布' : '未发布'
+          }
+        },
+        {
+          prop: 'status',
+          label: '活动状态',
+          type: 'general',
+
+          formatter: row => {
+            return row.status === 1 ? '未开发' : row.status === 2 ? '报名中' : '已结束'
+          }
+        },
+
+      ]
+      if(this.activityType===2){
+        this.columnConfig.push(
+          {
+          prop: 'createdTs',
+          label: '创建时间',
+          type: 'general',
+          formatter: row => {
+            return dayjs(parseInt(row.createdTs)).format('YYYY-MM-DD HH:mm:ss')
+          }
+        }
+        )
+      }
+              
+    }
   }
 }
 </script>
