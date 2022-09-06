@@ -1,7 +1,7 @@
 <template>
   <div class="select" @click="selectEmit">
     <span v-if="onlyShow">已选{{num}}人</span>
-    <span v-else class="select-text">请选择</span>
+    <span v-else class="select-text"> 请选择</span>
     <el-button v-if="onlyShow" class="btn" type="primary" size="mini" plain>{{btnText}}</el-button>
     <i v-else class="el-icon-arrow-down"></i>
   </div>

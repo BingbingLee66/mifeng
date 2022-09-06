@@ -2,11 +2,19 @@
   <div style="margin-bottom: 20px">
     <el-form :model="form">
       <el-form-item label="接收人" prop="receive">
-        <el-radio-group v-model="form.receive">
+        <el-radio-group @change="radioChange" v-model="form.receive">
           <el-radio v-for="(item, index) in receiveList" :key="index" :label="item.type">{{ item.n }}</el-radio>
         </el-radio-group>
-        <!-- 本商会会员 -->
-        <SelectShow v-if="form.receive === 5" :num="memberNum" />
+        <!-- 所有会员 -->
+        <SelectShow @showDialog="showDialog" v-if="form.receive === -1" :num="memberNum" />
+        <!-- 指定商会会员 -->
+        <SelectShow
+          v-if="form.receive === 5"
+          :btn-text="btnTextComput"
+          :num="selectMemberList.length"
+          @selectEmit="selectEmit"
+          @showDialog="selectEmit"
+        />
         <!-- 指定职位 -->
         <el-select v-if="form.receive === 2" v-model="form.position" class="my-input" multiple placeholder="请选择">
           <el-option v-for="(item, index) in options" :key="index" :value="item.name">
@@ -65,13 +73,27 @@
           </div>
         </div>
       </el-form-item>
-      <receiveDialog ref="receiveRef" :commit-type="commitType" @tableSelect="tableSelect" @hide="hide">
+      <receiveDialog
+        :page-size="pageSize"
+        :current-page="page"
+        :total="total"
+        @change="change"
+        ref="receiveRef"
+        :commit-type="commitType"
+        @tableSelect="tableSelect"
+        @hide="hide"
+      >
         <!-- 搜索框 -->
         <div slot="form">
-          <el-form-item label="搜索">
-            <el-input v-model="name" :placeholder="placeholder"></el-input>
+          <el-form-item label="搜索" v-if="form.receive === -1">
+            <el-input class="search-input" v-model="name" :placeholder="placeholder"></el-input>
+          </el-form-item>
+
+          <el-form-item label="搜索" v-if="form.receive === 5">
+            <el-input class="search-input" v-model="name" placeholder="商协会名称"></el-input>
           </el-form-item>
         </div>
+
         <div slot="receive">
           <el-button v-if="commitType === 1" type="primary" @click="save">我知道了</el-button>
           <div v-if="commitType === 2">
@@ -88,41 +110,23 @@
 import receiveDialog from '../../components/common/receiveDialog'
 import SelectShow from '../../components/content/selectShow'
 import { getDepartmentList } from '@/api/org-structure/org'
+import { getMemberList, getMemberCountList } from '@/api/mass-notification/index'
 import { list } from '@/api/member/manager'
+import { memberTableConfig, memberCountTableConfig } from '../../util/label'
 export default {
   name: 'ReceiveForm',
   components: { receiveDialog, SelectShow },
   props: ['receiveList', 'ckey'],
   provide() {
     return {
-      columnConfig: [
-        { type: 'select' },
-        {
-          prop: 'name',
-          label: '名称',
-          width: 180,
-          formatter: row => {
-            return 'formatter之后的名称' + row.name
-          }
-        },
-        { prop: 'address', label: '地址', width: 180 }
-      ],
-      tableData: [
-        {
-          date: '2016-05-03',
-          name: '王小虎22',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎333',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }
-      ]
+      tableMsg: this
     }
   },
   data() {
     return {
+      a: '1',
+      b: '2',
+      c: '3',
       form: {
         receive: 6,
         position: null,
@@ -131,10 +135,7 @@ export default {
         phones: ''
       },
       // 会内职位
-      options: [
-        { name: '会长', count: 33 },
-        { name: '学生', count: 93 }
-      ],
+      options: [{ name: '会长', count: 33 }, { name: '学生', count: 93 }],
       treeList: [],
       defaultProps: {
         children: 'departmentRespList',
@@ -142,16 +143,23 @@ export default {
       },
       // 显示部门树结构
       showTree: false,
-      // 本商会会员数
+      // 所有会员数
       memberNum: 0,
-      // 指定会员数
-      selectMember: 0,
+      // 已选指定会员数，用来显示和储存
+      selectMemberList:[],
       // 操作type 1 查看 2选择
       commitType: 1,
       name: '',
       placeholder: '请输入',
-      // 已选表格数据
-      selectData: []
+      //表格配置
+
+      selectData: [], // 已选表格数据,临时
+      tableData: [],
+      columnConfig: [], //列配置
+      //分页
+      page: 1,
+      pageSize: 10,
+      total: 0
     }
   },
   computed: {
@@ -161,13 +169,14 @@ export default {
         : 0
     },
     btnTextComput() {
-      return this.selectMember > 0 ? '查看' : '去选择'
+      return this.selectMemberList.length > 0 ? '查看' : '去选择'
     }
   },
   created() {
     this.form.receive = this.receiveList[0].type
     this.getDepartmentListFunc()
     this.listFunc()
+    this.getNumberList()
   },
   methods: {
     showTreeFunc() {
@@ -180,10 +189,7 @@ export default {
     handleClose(id) {
       console.log('id', id)
       // 删除表单中已选tree数据
-      this.form.department.splice(
-        this.form.department.indexOf(item => item.id === id),
-        1
-      )
+      this.form.department.splice(this.form.department.indexOf(item => item.id === id), 1)
       // 手动设置tree树 setChecked(key/data, checked, deep) 接收三个参数，1. 勾选节点的 key 或者 data 2. boolean 类型，节点是否选中 3. boolean 类型，是否设置子节点 ，默认为 false
       this.$refs.tree.setChecked(id, false, true)
     },
@@ -201,23 +207,76 @@ export default {
       } = await getDepartmentList({ ckey: this.ckey, parentId: 0 })
       this.treeList = data[0].departmentRespList
     },
+    //拉取所有会员
+    async getNumberList() {
+      const { page, pageSize } = this
+      let API = getMemberList;
+      //所有会员
+      if (this.form.receive === -1) {
+        API = getMemberList
+      } else if (this.form.receive === 5) {
+        //指定商会会员
+        API = getMemberCountList
+      }
+
+      const { data } = await API({ page, pageSize })
+      this.memberNum = data.totalRows
+      this.total = data.totalRows
+      this.tableData = data.list
+      // const { data } = await getMemberList({ page, pageSize })
+      // this.memberNum = data.totalRows
+      // this.total=data.totalRows
+      // this.tableData=data.list
+    },
     /** 行为操作 */
     save() {
       // 点击确定按钮
-      console.log('this.selectData', this.selectData)
+      console.log('this.selectData', this.selectData);
+      console.log('this.$refs.$children',this.$refs['receiveRef'].$refs['tableRef'])
+      //查看模式
+      if(this.commitType === 1){
+
+      }else{
+        //选择模式
+        this.selectMemberList=this.selectData
+      }
+      this.hide()
+    },
+    //接收人发生改变
+    radioChange() {
+      this.page = 1
+      this.pageSize = 10
     },
 
     /** 与子组件交互 */
+    //点击查看
+    // showDialog() {
 
+    // },
     // 点击去选择按钮
     selectEmit() {
       this.commitType = 2
       // this.dialogVisible = true
       // 显示弹框组件
-      console.log(this.$refs['receiveRef'].$children[0].show())
+      this.$refs['receiveRef'].$children[0].show()
+      //回显已选数据
+      setTimeout(()=>{
+        console.log('this.$refs.$children',this.$refs['receiveRef'].$refs['tableRef'])
+        this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
+      },500)
+      
+      // this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
+      console.log('his.form.receive === 5', this.form.receive)
+      //指定商会会员
+      if (this.form.receive === 5) {
+        this.columnConfig = memberCountTableConfig
+        // this.columnConfig = [{ type: 'select' }]
+        this.getNumberList()
+      }
     },
     // 已选表格
     tableSelect(val) {
+      // console.log('vale已选表格',val)
       this.selectData = val
     },
     // 关闭弹框
@@ -228,6 +287,23 @@ export default {
     showDialog() {
       this.commitType = 1
       console.log('查看按钮')
+      // 显示弹框组件
+      console.log(this.$refs['receiveRef'].$children[0].show())
+      this.columnConfig = memberTableConfig
+    },
+    //分页的改变
+    async change(val) {
+      this.page = val.pageNum ? val.pageNum : this.page
+      this.pageSize = val.pageSize ? val.pageSize : this.pageSize
+      await this.getNumberList();
+      if(this.form.receive === 5 && this.selectMemberList.length>0){
+        // setTimeout(()=>{
+        console.log('this.$refs.$children',this.$refs['receiveRef'].$refs['tableRef'])
+        this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
+      // },500)
+        // this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
+      }
+      console.log('val', val)
     }
   }
 }
@@ -243,6 +319,10 @@ export default {
 
 .text {
   color: #c0c4cc;
+}
+.search-input{
+  width: 280px;
+  margin-bottom: 20px;
 }
 .my-input {
   width: 500px;

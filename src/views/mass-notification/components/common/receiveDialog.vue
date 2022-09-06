@@ -10,15 +10,18 @@
     >
       <div slot="content">
         <!-- 表单选型 -->
-        <div slot="form"></div>      
+        <slot name="form"></slot>
         <!-- 表格 -->
-         <kdTable @tableSelect="tableSelect"/>  
-        <!-- <kdTable :table-data="tableData" :column-config="columnConfig"/>    -->
+        <div class="table">
+          <kdTable @tableSelect="tableSelect" ref="tableRef" />
+        </div>
+
         <!-- 分页  -->
-        <KdPagination></KdPagination>  
+        <!-- <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="change" ></KdPagination>   -->
+        <KdPagination v-on="$listeners" v-bind="$attrs" @change="change"></KdPagination>
       </div>
       <div slot="customFooter">
-        <slot name="receive"></slot>     
+        <slot name="receive"></slot>
       </div>
     </kdDialog>
   </div>
@@ -38,27 +41,27 @@ export default {
     commitType: {
       type: Number,
       default: 1
+    },
+    pageSize: {
+      type: Number,
+      default: 1
     }
   },
   data() {
     return {
       dialogTitle: '接收人',
       placeholder: '姓名',
-     
+
       name: '',
       // 已选表格数据
       selectData: []
-
     }
   },
-  created() {
-
-  },
+  created() {},
   methods: {
-
     handleSelectionChange() {},
-    hide(){
-      this.$emit("hide")
+    hide() {
+      this.$emit('hide')
     },
     // save() {
     //   // 去选择
@@ -71,9 +74,15 @@ export default {
     //   this.$refs['kdDialog'].hide()
     // },
     /** 与子组件的交互 */
-    tableSelect(val){
+    tableSelect(val) {
       this.selectData = val
       this.$emit('tableSelect', val)
+    },
+    handleSizeChange(val) {
+      this.$emit('change', { pageSize: val, pageNum: 1 })
+    },
+    change(val) {
+      this.$emit('change', val)
     }
   }
 }
@@ -85,5 +94,9 @@ export default {
 }
 .el-input {
   width: 200px;
+}
+.table {
+  overflow-y: scroll;
+  height: 500px;
 }
 </style>
