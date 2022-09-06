@@ -365,7 +365,7 @@ export default {
       this.moreData = moreData;
       this.moreVisible = true;
     },
-    handleMoretradeBridges() {
+    handleMoretradeBridges(rowData) {
       this.moreType = "";
       let moreData = {
         labeList: []
