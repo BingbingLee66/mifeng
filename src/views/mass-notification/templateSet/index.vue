@@ -94,8 +94,8 @@
               <el-button type="text" @click="particulars(scope.row)"> 详情 </el-button>
             </div>
             <div>
-              <el-button type="text" v-if="scope.row.status == 1" @click="onForbidden(scope.row)"> 禁用 </el-button>
-              <el-button type="text" v-if="scope.row.status == 0" @click="onInvoke(scope.row)"> 启用 </el-button>
+              <el-button v-if="scope.row.status == 1" type="text" @click="onForbidden(scope.row)"> 禁用 </el-button>
+              <el-button v-if="scope.row.status == 0" type="text" @click="onInvoke(scope.row)"> 启用 </el-button>
               <el-button type="text" @click="onDelete(scope.row)"> 删除 </el-button>
             </div>
           </template>

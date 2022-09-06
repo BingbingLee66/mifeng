@@ -3,22 +3,22 @@
     <el-row>
       <el-col :span="15">
         <el-form-item label="模板CODE：" prop="templateCode">
-          <el-input v-model.trim="formObj.templateCode" maxlength="20" @change="check_num" clearable show-word-limit />
+          <el-input v-model.trim="formObj.templateCode" maxlength="20" clearable show-word-limit @change="check_num" />
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="15">
         <el-form-item label="模板类型：" :required="true">
-          <el-radio disabled v-model="formObj.smsNoticeTemplateDTO.templateType" label="1">通知短信</el-radio>
-          <el-radio disabled v-model="formObj.smsNoticeTemplateDTO.templateType" label="2">推广短信</el-radio>
+          <el-radio v-model="formObj.smsNoticeTemplateDTO.templateType" disabled label="1">通知短信</el-radio>
+          <el-radio v-model="formObj.smsNoticeTemplateDTO.templateType" disabled label="2">推广短信</el-radio>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="15">
         <el-form-item label="模板名称：" prop="templateName">
-          <el-input disabled v-model.trim="formObj.templateName" maxlength="30" clearable show-word-limit />
+          <el-input v-model.trim="formObj.templateName" disabled maxlength="30" clearable show-word-limit />
         </el-form-item>
       </el-col>
     </el-row>
@@ -26,8 +26,8 @@
       <el-col :span="15">
         <el-form-item label="模板内容：" prop="content">
           <el-input
-            disabled
             v-model.trim="formObj.content"
+            disabled
             type="textarea"
             maxlength="500"
             show-word-limit
@@ -39,7 +39,7 @@
     <el-row>
       <el-col :span="15">
         <el-form-item label="变量属性：" :required="true">
-          <div class="property" v-for="(item, index) in formObj.smsNoticeTemplateDTO.variableAttributes" :key="index">
+          <div v-for="(item, index) in formObj.smsNoticeTemplateDTO.variableAttributes" :key="index" class="property">
             {{ item.key }}
           </div>
         </el-form-item>
@@ -61,10 +61,10 @@ export default {
   data() {
     return {
       formObj: {
-        type: '1', //模板类型 1短信通知、2订阅消息、3APP通知
-        templateCode: '', //模板code/模板id  SMS_251110108
+        type: '1', // 模板类型 1短信通知、2订阅消息、3APP通知
+        templateCode: '', // 模板code/模板id  SMS_251110108
         templateName: '', // 模板名称
-        content: '', //模板内容
+        content: '', // 模板内容
         smsNoticeTemplateDTO: {
           templateType: '1', // 1通知短信 2推广短信
           variableAttributes: []
@@ -80,10 +80,10 @@ export default {
           {
             validator: async (rule, value, callback) => {
               const res = await getNoticeTemplateDetail({ templateCode: value })
-              if (res.state == 0) {
+              if (res.state === 0) {
                 return callback(new Error(res.msg))
               } else {
-                let formObj = this.formObj
+                let { formObj } = this
                 formObj.content = res.data.content
                 formObj.smsNoticeTemplateDTO.templateType = res.data.smsNoticeTemplateVo.templateType + ''
                 formObj.smsNoticeTemplateDTO.variableAttributes = res.data.variableAttributes
@@ -111,6 +111,7 @@ export default {
       this.$emit('close')
     },
     check_num() {
+      // eslint-disable-next-line no-control-regex
       this.formObj.templateCode = this.formObj.templateCode.replace(/[^\x00-\xff]/g, '')
     }
   }

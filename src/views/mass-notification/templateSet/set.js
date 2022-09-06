@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import Details from '../templateLibrary/components/details'
 import {
   noticeTemplateSetList,
@@ -72,12 +73,17 @@ export default {
     },
     // 详情
     async particulars(row) {
-      const res = await getNoticeTemplateSetDetailById({ id: row.id })
       // 短信: smsNoticeTemplateVo  订阅 :subscriptionNoticeTemplateVo  app:appNoticeTemplateVo
-      let toxon = 'smsNoticeTemplateVo'
+      let toxon =
+        this.query.type === '1'
+          ? 'smsNoticeTemplateVo'
+          : this.query.type === '2'
+          ? 'subscriptionNoticeTemplateVo'
+          : 'appNoticeTemplateVo'
+      let res = await getNoticeTemplateSetDetailById({ id: row.id })
       res.data.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(v => {
         res.data[toxon].variableAttributes.forEach(j => {
-          if (v.key == j.key) j.value = v.value.value
+          if (v.key === j.key) j.value = v.value.value
         })
       })
       this.$refs.details.show(res)

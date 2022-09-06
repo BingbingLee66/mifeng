@@ -27,11 +27,11 @@
         </div>
         <div class="offside">
           <div class="offside-stencil">变量属性</div>
-          <div class="details" v-if="infoDate.smsNoticeTemplateVo">
+          <div v-if="infoDate.smsNoticeTemplateVo" class="details">
             <div
-              class="details-box"
               v-for="(item, index) in infoDate.smsNoticeTemplateVo.variableAttributes"
               :key="index"
+              class="details-box"
             >
               <div>{{ item.key }}</div>
               <div v-if="item.value">- {{ item.value }}</div>
@@ -40,11 +40,11 @@
         </div>
         <div class="offside">
           <div class="offside-stencil">场外链接</div>
-          <div class="details" v-if="infoDate.smsNoticeTemplateVo">{{ infoDate.smsNoticeTemplateVo.link }}</div>
+          <div v-if="infoDate.smsNoticeTemplateVo" class="details">{{ infoDate.smsNoticeTemplateVo.link }}</div>
         </div>
         <div class="offside">
           <div class="offside-stencil">场外说明</div>
-          <div class="details" v-if="infoDate.smsNoticeTemplateVo">
+          <div v-if="infoDate.smsNoticeTemplateVo" class="details">
             {{ infoDate.smsNoticeTemplateVo.sceneDescription }}
           </div>
         </div>
@@ -52,7 +52,7 @@
           <div class="offside-stencil">创建时间</div>
           <div class="details">{{ infoDate.createdTs | dateFormat }}</div>
         </div>
-        <div class="offside" v-if="active == 2">
+        <div v-if="active == 2" class="offside">
           <div class="offside-stencil">模板备注</div>
           <div class="details">{{ infoDate.templateRemark }}</div>
         </div>
@@ -76,12 +76,12 @@
             </div>
 
             <!-- 内容 -->
-            <div class="subscribe-middle" v-if="infoDate.subscriptionNoticeTemplateVo">
+            <div v-if="infoDate.subscriptionNoticeTemplateVo" class="subscribe-middle">
               <div class="subscribe-prosperity">报名成功通知</div>
               <div
-                class="subscribe-circularize"
                 v-for="(item, index) in infoDate.subscriptionNoticeTemplateVo.variableAttributes"
                 :key="index"
+                class="subscribe-circularize"
               >
                 <div class="circularize-matter">{{ item.key }}</div>
                 <div class="circularize-designation">
@@ -107,7 +107,7 @@
         </div>
         <div class="offside">
           <div class="offside-stencil">类目</div>
-          <div class="details" v-if="infoDate.subscriptionNoticeTemplateVo">
+          <div v-if="infoDate.subscriptionNoticeTemplateVo" class="details">
             {{ infoDate.subscriptionNoticeTemplateVo.category }}
           </div>
         </div>
@@ -117,11 +117,11 @@
         </div>
         <div class="offside">
           <div class="offside-stencil">详细内容</div>
-          <div class="details" v-if="infoDate.subscriptionNoticeTemplateVo">
+          <div v-if="infoDate.subscriptionNoticeTemplateVo" class="details">
             <div
-              class="details-box"
               v-for="(item, index) in infoDate.subscriptionNoticeTemplateVo.variableAttributes"
               :key="index"
+              class="details-box"
             >
               <div>{{ item.key }}</div>
               <div v-if="item.value">- {{ item.value }}</div>
@@ -130,11 +130,11 @@
         </div>
         <div class="offside">
           <div class="offside-stencil">场景说明</div>
-          <div class="details" v-if="infoDate.subscriptionNoticeTemplateVo">
+          <div v-if="infoDate.subscriptionNoticeTemplateVo" class="details">
             {{ infoDate.subscriptionNoticeTemplateVo.sceneDescription }}
           </div>
         </div>
-        <div class="offside" v-if="active == 2">
+        <div v-if="active == 2" class="offside">
           <div class="offside-stencil">模板备注</div>
           <div class="details">{{ infoDate.templateRemark }}</div>
         </div>
@@ -172,22 +172,22 @@
         </div>
         <div class="offside">
           <div class="offside-stencil">链接</div>
-          <div class="details" v-if="infoDate.appNoticeTemplateVo">{{ infoDate.appNoticeTemplateVo.link }}</div>
+          <div v-if="infoDate.appNoticeTemplateVo" class="details">{{ infoDate.appNoticeTemplateVo.link }}</div>
         </div>
-        <div class="offside" v-if="active == 2">
+        <div v-if="active == 2" class="offside">
           <div class="offside-stencil">变量属性</div>
-          <div class="details" v-if="infoDate.appNoticeTemplateVo">
+          <div v-if="infoDate.appNoticeTemplateVo" class="details">
             <div
-              class="details-box"
               v-for="(item, index) in infoDate.appNoticeTemplateVo.variableAttributes"
               :key="index"
+              class="details-box"
             >
               <div>{{ item.key }}</div>
               <div v-if="item.value">- {{ item.value }}</div>
             </div>
           </div>
         </div>
-        <div class="offside" v-if="active == 2">
+        <div v-if="active == 2" class="offside">
           <div class="offside-stencil">所属类型</div>
           <div class="details">{{ noticeTypeId[infoDate.noticeTypeId] }}</div>
         </div>
@@ -195,7 +195,7 @@
           <div class="offside-stencil">创建时间</div>
           <div class="details">{{ infoDate.createdTs | dateFormat }}</div>
         </div>
-        <div class="offside" v-if="active == 2">
+        <div v-if="active == 2" class="offside">
           <div class="offside-stencil">模板备注</div>
           <div class="details">{{ infoDate.templateRemark }}</div>
         </div>
@@ -240,13 +240,13 @@ export default {
       this.visible = true
       this.infoDate = res.data
       //   短信和app
-      if (this.type != 2 && res.data.content) {
+      if (this.type !== '2' && res.data.content) {
         let a = res.data.content.indexOf('${')
         if (a >= 0) this.infoDate.demonstrate = this.analysis(res.data.content)
         else this.infoDate.demonstrate = res.data.content
       }
       //  订阅消息
-      if (res.data && this.type == 2 && res.data.subscriptionNoticeTemplateVo) {
+      if (res.data && this.type === '2' && res.data.subscriptionNoticeTemplateVo) {
         res.data.subscriptionNoticeTemplateVo.variableAttributes.forEach(v => {
           v.value2 = v.value
           if (v.value2.length >= 17) {
@@ -261,11 +261,11 @@ export default {
       const arr = vlue.match(regx)
 
       arr.forEach(item => {
-        if (this.active == 1) vlue = vlue.replace(item, `<span style="color:red">${item}</span>`)
+        if (this.active === 1) vlue = vlue.replace(item, `<span style="color:red">${item}</span>`)
         else {
           item = item.replace('${', '').replace('}', '')
           this.infoDate.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(j => {
-            if (item == j.key) {
+            if (item === j.key) {
               vlue = vlue
                 .replace(item, `<span style="color:red">【${j.value.value}】</span>`)
                 .replace('${', '')

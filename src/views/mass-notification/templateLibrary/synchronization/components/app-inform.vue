@@ -35,7 +35,7 @@ export default {
   data() {
     return {
       formObj: {
-        type: '3', //模板类型 1短信通知、2订阅消息、3APP通知
+        type: '3', // 模板类型 1短信通知、2订阅消息、3APP通知
         templateName: '',
         content: ''
       }
