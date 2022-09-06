@@ -37,7 +37,8 @@
       @selection-change="handleSelectionChange"
       @sort-change="handleSortChange"
     >
-      <el-table-column label width="35" v-if="tableConfig.single">
+      </el-table-column>
+      <el-table-column label width="30px" v-if="tableConfig.single">
         <template slot-scope="scope">
           <el-radio
             :label="scope.row[tableConfig.singleKey]"
@@ -221,6 +222,19 @@
           <template slot-scope="scope">
             <div>{{ scope.row[item.operatorName] || "--" }}</div>
             <div>{{ scope.row[item.operatorTime] | dateFormat }}</div>
+          </template>
+        </el-table-column>
+        <!--头像 -->
+        <el-table-column
+          v-if="item.type === 'avatar'"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width || ''"
+          :align="item.align || 'left'"
+        >
+          <template slot-scope="scope">
+             <el-avatar :shape="item.shape || 'circle' " :size="item.size || 70" :fit="item.fit" :src="scope.row[item.prop] || 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/yunshanghui-nologo.png.png'"></el-avatar>
           </template>
         </el-table-column>
       </template>

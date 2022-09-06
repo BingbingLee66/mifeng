@@ -3,6 +3,7 @@ import { getChamberAllList } from "@/api/goods/goods";
 import attachLabel from "@/components/Label/attach-label";
 import moreLabel from "@/components/Label/more-label";
 import Labels from "@/api/labels/labels";
+import { getAvailableLabelList, getTradeLabelList } from "@/api/lable";
 export default {
   components: {
     "attach-label": attachLabel,
@@ -34,13 +35,19 @@ export default {
       memberLabelIds: [],
       labelOptions: [],
       platformLabelIds: [],
-      PlatformOptions: []
+      PlatformOptions: [],
+      supplyIds: [],
+      industryIds: [],
+      SupplyformOptions: [],
+      IndustryformOptions: []
     };
   },
   created() {
     this.getAllChamberList();
     this.getLabelOptions();
     this.getPlatformOptions();
+    this.getSupplyformOptions();
+    this.getIndustryformOptions();
     // this.init();
     this.fetchData(1);
   },
@@ -71,7 +78,7 @@ export default {
         sourceCkeyList: sourceCkeyList,
         freeze: 0
       });
-      let memberLabelList = res.data.list;
+      let memberLabelList = res.data.list || [];
       _labelOptions.forEach(item => {
         item.children = [];
         memberLabelList.forEach(item1 => {
@@ -100,7 +107,7 @@ export default {
         dataSource: 0,
         freeze: 0
       });
-      let memberLabelList = res.data.list;
+      let memberLabelList = res.data.list || [];
       let _memberLabelList = memberLabelList.map(item => {
         let obj = {
           value: item.id,
@@ -115,6 +122,30 @@ export default {
         return obj;
       });
       this.PlatformOptions = _memberLabelList;
+    },
+    async getSupplyformOptions() {
+      //供需
+      const res = await getAvailableLabelList();
+      console.log(res);
+      if (res.state != 1) return this.$message.error("供需标签请求失败");
+      this.SupplyformOptions = res.data;
+    },
+    async getIndustryformOptions() {
+      const res = await getTradeLabelList();
+      // 行业
+      if (res.state != 1) return this.$message.error("行业标签请求失败");
+      this.IndustryformOptions = res.data.map(item => {
+        return {
+          value: item.id,
+          label: item.typeName,
+          children: item.subList.map(item1 => {
+            return {
+              value: item1.id,
+              label: item1.typeName
+            };
+          })
+        };
+      });
     },
     clickRouter() {
       this.$router.push({
@@ -191,14 +222,29 @@ export default {
         _tagIds = _tagIds + "," + ids.join(",");
         _tagIds = _tagIds.replace(/^(\s|,)+|(\s|,)+$/g, "");
       }
+      // 供需标签
+      let supIds = "";
+      if (this.supplyIds.length > 0) {
+        supIds = this.supplyIds.join(",");
+        console.log(supIds);
+      }
+      // 行业标签
+      let indusIds = "";
+      if (this.industryIds.length > 0) {
+        indusIds = this.industryIds.map(item => item[1]).join(",");
+        console.log(indusIds);
+      }
       let params = {
         pageSize: this.limit,
         page: this.currentpage,
         userType: this.query.userType,
         status: this.query.status,
         chamberId: this.query.chamberId,
-        tagIds: _tagIds
+        tagIds: _tagIds,
+        tradeLabelIds: indusIds,
+        demandLabelIds: supIds
       };
+      console.log(params, "行业标签");
       if (this.query.mulValue) {
         params["mulValue"] = this.query.mulValue;
       }
@@ -213,7 +259,9 @@ export default {
         params["endTs"] = this.query.date[1];
       }
       getUserList(params).then(response => {
-        this.list = response.data.data.list;
+        console.log(response, "wuhuqifei");
+        this.list = response.data.data.list || [];
+        // console.log(this.list, "asdsadsadsadsadsadsa");
         this.total = response.data.data.totalRows;
         this.listLoading = false;
       });
@@ -256,6 +304,7 @@ export default {
 
     handleSelectionChange(val) {
       this.multipleSelection = val;
+      console.log(this.multipleSelection);
     },
 
     /* 打标签 */
@@ -297,6 +346,34 @@ export default {
         return {
           id: item.tagId,
           name: item.tagName
+        };
+      });
+      this.moreData = moreData;
+      this.moreVisible = true;
+    },
+    handleMorebridgeLabels(rowData) {
+      this.moreType = "";
+      let moreData = {
+        labeList: []
+      };
+      moreData.labeList = rowData.bridgeLabels.map(item => {
+        return {
+          id: item.id,
+          name: item.name
+        };
+      });
+      this.moreData = moreData;
+      this.moreVisible = true;
+    },
+    handleMoretradeBridges() {
+      this.moreType = "";
+      let moreData = {
+        labeList: []
+      };
+      moreData.labeList = rowData.tradeBridges.map(item => {
+        return {
+          id: item.id,
+          name: item.name
         };
       });
       this.moreData = moreData;

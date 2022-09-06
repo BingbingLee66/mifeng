@@ -10,7 +10,7 @@ class Labels {
     return request({
       url: "/ec/member-label-group/collect",
       method: "post",
-      data,
+      data
     });
   }
 
@@ -19,7 +19,7 @@ class Labels {
     return request({
       url: "/ec/member-label-group/deleteBatch",
       method: "delete",
-      data,
+      data
     });
   }
 
@@ -28,7 +28,7 @@ class Labels {
     return request({
       url: "/ec/member-label-group/detail/" + id,
       method: "get",
-      params,
+      params
     });
   }
 
@@ -37,7 +37,7 @@ class Labels {
     return request({
       url: "/ec/member-label-group/freeze",
       method: "post",
-      data,
+      data
     });
   }
 
@@ -46,7 +46,7 @@ class Labels {
     return request({
       url: "/ec/member-label-group/unfreeze",
       method: "post",
-      data,
+      data
     });
   }
 
@@ -55,7 +55,7 @@ class Labels {
     return request({
       url: "/ec/member-label-group/insertMemberGroup",
       method: "post",
-      data,
+      data
     });
   }
 
@@ -64,7 +64,7 @@ class Labels {
     return request({
       url: "/ec/member-label-group/list",
       method: "get",
-      params,
+      params
     });
   }
 
@@ -73,7 +73,7 @@ class Labels {
     return request({
       url: "/ec/member-label-group/updateMemberGroup",
       method: "put",
-      data,
+      data
     });
   }
 
@@ -82,7 +82,7 @@ class Labels {
     return request({
       url: "/ec/member-label-group/weight",
       method: "put",
-      data,
+      data
     });
   }
 
@@ -91,7 +91,7 @@ class Labels {
     return request({
       url: "/ec/member-label-bridge/attachALabel",
       method: "post",
-      data,
+      data
     });
   }
 
@@ -104,19 +104,33 @@ class Labels {
   }
 
   /** 用户第一次选择的感兴趣的供需标签 */
-  static async getFirstInterestLabel(userId) {
+  /*   static async getFirstInterestLabel(userId) {
     return request({
       url: "/ec/member-label-bridge/firstInterestDemandLabels/" + userId,
       method: "get",
     });
+  } */
+  static async getFirstInterestLabel(params) {
+    return request({
+      url: `/ec/label/usedList`,
+      params: params,
+      method: "get"
+    });
   }
-
+  /** 用户行业标签 */
+  static async getTradeLabel(params) {
+    return request({
+      url: `/ec/trade/usedList`,
+      params: params,
+      method: "get"
+    });
+  }
   /** 查询符合标签的用户数量 */
   static async getMatchLabelNum(params) {
     return request({
       url: "/ec/member-label-bridge/matchMemberNum",
       method: "get",
-      params,
+      params
     });
   }
 

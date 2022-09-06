@@ -29,7 +29,7 @@
         <div class="txt">
           <el-tag
             v-for="item in labelData.labeList"
-            :key="item.name"
+            :key="item.id"
             type="info"
             effect="plain"
             style="margin: 0 6px 6px 0"

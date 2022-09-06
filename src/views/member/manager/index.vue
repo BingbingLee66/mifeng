@@ -91,7 +91,7 @@
         </el-form-item>
         <el-form-item>
           <div slot="label">
-            <div style="line-height:1;text-align: right;">会员标签</div>
+            <div style="line-height: 1; text-align: right">会员标签</div>
             <span class="text-gray">(本会创建)</span>
           </div>
           <el-cascader
@@ -108,7 +108,7 @@
         </el-form-item>
         <el-form-item>
           <div slot="label">
-            <div style="line-height:1;text-align: right;">会员标签</div>
+            <div style="line-height: 1; text-align: right">会员标签</div>
             <div class="text-gray">(平台推荐)</div>
           </div>
           <el-cascader
@@ -121,6 +121,33 @@
             filterable
             clearable
             collapse-tags
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item label="供需标签">
+          <el-select
+            v-model="supplyIds"
+            placeholder="请选择供需标签"
+            filterable
+            multiple
+            clearable
+            :multiple-limit="50"
+            collapse-tags
+          >
+            <el-option
+              v-for="supply in SupplyformOptions"
+              :key="supply.id"
+              :label="supply.name"
+              :value="supply.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="行业标签">
+          <el-cascader
+            v-model="industryIds"
+            :options="IndustryformOptions"
+            :props="{ multiple: true }"
+            :collapse-tags="true"
+            clearable
           ></el-cascader>
         </el-form-item>
         <el-form-item label="入会时间">
@@ -183,10 +210,11 @@
         element-loading-text="Loading"
         border
         fit
+        :row-key="'id'"
         highlight-current-row
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55px" />
+        <el-table-column type="selection" width="55px" reserve-selection />
         <el-table-column label="用户头像" width="92px">
           <template slot-scope="scope">
             <img
@@ -245,6 +273,44 @@
               v-if="scope.row.memberLabelList.length > 3"
               class="text-blue"
               @click="handleMoreLabel(scope.row)"
+              >查看更多</span
+            >
+          </template>
+        </el-table-column>
+        <el-table-column label="供需标签" width="200px">
+          <template slot-scope="scope">
+            <el-tag
+              v-for="item in scope.row.bridgeLabels.slice(0, 3)"
+              :key="item.id"
+              type="info"
+              effect="plain"
+              style="margin: 0 6px 6px 0"
+            >
+              {{ item.name }}
+            </el-tag>
+            <span
+              v-if="scope.row.bridgeLabels.length > 3"
+              class="text-blue"
+              @click="handleMorebridgeLabels(scope.row)"
+              >查看更多</span
+            >
+          </template>
+        </el-table-column>
+        <el-table-column label="行业标签" width="200px">
+          <template slot-scope="scope">
+            <el-tag
+              v-for="item in scope.row.tradeBridges.slice(0, 3)"
+              :key="item.name"
+              type="info"
+              effect="plain"
+              style="margin: 0 6px 6px 0"
+            >
+              {{ item.name }}
+            </el-tag>
+            <span
+              v-if="scope.row.tradeBridges.length > 3"
+              class="text-blue"
+              @click="handleMoretradeBridges(scope.row)"
               >查看更多</span
             >
           </template>

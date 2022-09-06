@@ -148,7 +148,7 @@ export default {
         labelName,
         pageNum: currentpage,
         pageSize: limit,
-        selectType: 3
+        selectType: 3,
       };
       let res = await Labels.getLabelGroupLst(params);
       if (res.state !== 1) return;

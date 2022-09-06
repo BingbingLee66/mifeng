@@ -15,7 +15,7 @@ const baseUrl = process.env.VUE_APP_BASE_API;
 import attachLabel from "@/components/Label/attach-label";
 import moreLabel from "@/components/Label/more-label";
 import Labels from "@/api/labels/labels";
-
+import { getAvailableLabelList, getTradeLabelList } from "@/api/lable";
 export default {
   name: "商/协会成员",
   components: {
@@ -76,6 +76,8 @@ export default {
         type: -1, // 入会类型
         tradeType: -1, // 行业
         date: "", // 入会时间
+        supplyId: "", // 供需标签
+        industryId: "", // 行业标签
         activatedState: 0 // 激活状态 -1未激活 0全部 1已激活
       },
       pageSizes: [10, 20, 50, 100, 500],
@@ -112,7 +114,11 @@ export default {
       memberLabelIds: [],
       labelOptions: [],
       platformLabelIds: [],
-      PlatformOptions: []
+      PlatformOptions: [],
+      supplyIds: [],
+      industryIds: [],
+      SupplyformOptions: [],
+      IndustryformOptions: []
     };
   },
 
@@ -145,6 +151,8 @@ export default {
     this.uploadHeaders["access-token"] = getToken();
     this.getLabelOptions();
     this.getPlatformOptions();
+    this.getSupplyformOptions();
+    this.getIndustryformOptions();
   },
   mouted() {},
   methods: {
@@ -175,7 +183,7 @@ export default {
         ckey: this.$store.getters.ckey
       };
       getMemberOptions(params).then(response => {
-        this.memberPostOptions = response.data.data;
+        this.memberPostOptions = response.data.data ? response.data.data : [];
         this.memberPostOptions.unshift({ label: "全部", value: -1 });
       });
     },
@@ -185,7 +193,7 @@ export default {
         ckey: this.$store.getters.ckey
       };
       getTradeOptions(params).then(response => {
-        this.tradeOptions = response.data.data;
+        this.tradeOptions = response.data.data ? response.data.data : [];
         this.tradeOptions.unshift({ label: "全部", value: -1 });
       });
     },
@@ -239,6 +247,16 @@ export default {
         _tagIds = _tagIds + "," + ids.join(",");
         _tagIds = _tagIds.replace(/^(\s|,)+|(\s|,)+$/g, "");
       }
+      let supIds;
+      if (this.supplyIds.length > 0) {
+        supIds = this.supplyIds.join(",");
+        console.log(supIds);
+      }
+      let indusIds;
+      if (this.industryIds.length > 0) {
+        indusIds = this.industryIds.map(item => item[1]).join(",");
+        console.log(indusIds);
+      }
       const params = {
         status: this.query.status,
         uname: this.query.uname,
@@ -255,7 +273,10 @@ export default {
         activatedState: this.query.activatedState,
         memberLabelIds: _tagIds,
         pageSize: this.limit,
-        page: this.currentpage
+        page: this.currentpage,
+        // 供需标签id
+        demandLabelIds: supIds,
+        tradeLabelIds: indusIds
       };
       if (this.query.date) {
         params["startTs"] = this.query.date[0];
@@ -264,7 +285,7 @@ export default {
       if (this.query.sendStatus !== -1) {
         params["sendStatus"] = this.query.sendStatus;
       }
-
+      console.log(params, "adsdsadsadsadas");
       try {
         const {
           data: { data = {} }
@@ -274,6 +295,12 @@ export default {
         this.list.forEach(item => {
           if (!item.memberLabelList) {
             item.memberLabelList = [];
+          }
+          if (!item.tradeBridges) {
+            item.tradeBridges = [];
+          }
+          if (!item.bridgeLabels) {
+            item.bridgeLabels = [];
           }
         });
         this.total = data.totalRows || 0;
@@ -412,6 +439,7 @@ export default {
         "actionId",
         e.currentTarget.getAttribute("actionid")
       );
+      console.log(this.selectionDatas);
       exportJson2Excel("商会会员", this.selectionDatas);
     },
     // 认证会员身份
@@ -531,7 +559,7 @@ export default {
         dataSource: 0,
         freeze: 0
       });
-      let memberLabelList = res.data.list;
+      let memberLabelList = res.data.list || [];
       let _memberLabelList = memberLabelList.map(item => {
         let obj = {
           value: item.id,
@@ -553,7 +581,7 @@ export default {
         sourceCkeyList: this.$store.getters.ckey,
         freeze: 0
       });
-      let memberLabelList = res.data.list;
+      let memberLabelList = res.data.list || [];
       let _memberLabelList = memberLabelList.map(item => {
         let obj = {
           value: item.id,
@@ -570,6 +598,31 @@ export default {
         return obj;
       });
       this.labelOptions = _memberLabelList;
+    },
+    async getSupplyformOptions() {
+      //供需
+      const res = await getAvailableLabelList();
+      console.log(res);
+      if (res.state != 1) return "供需标签请求失败";
+      this.SupplyformOptions = res.data;
+    },
+    async getIndustryformOptions() {
+      const res = await getTradeLabelList();
+      // 行业
+      if (res.state != 1) return this.$message.error("行业标签请求失败");
+      console.log(res, "bbbbbbbbbbbbb");
+      this.IndustryformOptions = res.data.map(item => {
+        return {
+          value: item.id,
+          label: item.typeName,
+          children: item.subList.map(item1 => {
+            return {
+              value: item1.id,
+              label: item1.typeName
+            };
+          })
+        };
+      });
     },
     /* async lazyLoad(node, resolve) {
       let level = node.level;
@@ -661,6 +714,34 @@ export default {
         return {
           id: item.tagId,
           name: item.tagName
+        };
+      });
+      this.moreData = moreData;
+      this.moreVisible = true;
+    },
+    handleMorebridgeLabels(rowData) {
+      this.moreType = "";
+      let moreData = {
+        labeList: []
+      };
+      moreData.labeList = rowData.bridgeLabels.map(item => {
+        return {
+          id: item.id,
+          name: item.name
+        };
+      });
+      this.moreData = moreData;
+      this.moreVisible = true;
+    },
+    handleMoretradeBridges() {
+      this.moreType = "";
+      let moreData = {
+        labeList: []
+      };
+      moreData.labeList = rowData.tradeBridges.map(item => {
+        return {
+          id: item.id,
+          name: item.name
         };
       });
       this.moreData = moreData;

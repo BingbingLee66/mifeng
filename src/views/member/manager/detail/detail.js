@@ -33,13 +33,31 @@ const memberLabelData = [
 const supplyLabelData = [
   {
     label: "标签",
-    prop: "tagGroupName",
-    type: "slot",
-    slotName: "tagGroupName"
+    prop: "name"
   },
   {
-    label: "标记时间",
-    prop: "markTime",
+    label: "使用次数",
+    prop: "useNum"
+  },
+  {
+    label: "最近使用时间",
+    prop: "lastTime",
+    type: "time"
+  }
+];
+/* 行业标签 */
+const industryLabelData = [
+  {
+    label: "标签",
+    prop: "name"
+  },
+  {
+    label: "使用次数",
+    prop: "useNum"
+  },
+  {
+    label: "最近使用时间",
+    prop: "lastTime",
     type: "time"
   }
 ];
@@ -76,9 +94,25 @@ export default {
       activeName: "1",
       tableColumn: memberLabelData,
       tableColumn1: supplyLabelData,
+      tableColumn2: industryLabelData,
       labelData: [],
       supplyData: [],
+      industryData: [],
       pageData: {
+        currentpage: 1,
+        limit: 10,
+        pageSizes: [10, 20, 50, 100, 500],
+        total: 0
+      },
+      // 供需标签
+      pageData1: {
+        currentpage: 1,
+        limit: 10,
+        pageSizes: [10, 20, 50, 100, 500],
+        total: 0
+      },
+      // 行业标签
+      pageData2: {
         currentpage: 1,
         limit: 10,
         pageSizes: [10, 20, 50, 100, 500],
@@ -173,6 +207,9 @@ export default {
       } else if (e.name == "3") {
         // 获取供需标签
         this.getSupplyLabelList();
+      } else if (e.name == "4") {
+        //获取行业标签
+        this.getIndustryLabelList();
       }
     },
     async getMemberLableList() {
@@ -188,14 +225,40 @@ export default {
       this.labelData = res.data.list;
       this.pageData.total = res.data.totalRows;
     },
+    // 获取供需标签
     async getSupplyLabelList() {
       const userId = this.$route.query.userId;
-      const res = await Labels.getFirstInterestLabel(userId);
-      console.log("---供需标签---", res);
+      let params = {
+        userId: userId,
+        pageNum: this.pageData1.currentpage,
+        pageSize: this.pageData1.limit
+      };
+      // console.log(params, "params");
+      const res = await Labels.getFirstInterestLabel(params);
+      // console.log("---供需标签---", res);
       if (res.state !== 1) return;
       if (res.data) {
-        this.supplyData = [res.data];
+        this.supplyData = res.data.list;
+        const { totalRows } = res.data;
+        this.pageData1.total = totalRows;
+        // console.log(this.supplyData, "asdasdasdasdasdasd");
       }
+    },
+    // 获取行业标签
+    async getIndustryLabelList() {
+      const userId = this.$route.query.userId;
+      let params = {
+        userId: userId,
+        pageNum: this.pageData2.currentpage,
+        pageSize: this.pageData2.limit
+      };
+      console.log(params, "params");
+      const res = await Labels.getTradeLabel(params);
+      if (res.state !== 1) return;
+      this.industryData = res.data.list;
+      const { totalRows } = res.data;
+      this.pageData2.total = totalRows;
+      console.log(this.industryData, "行业标签");
     },
     // 执行会员认证或者取消
     async handleAuthMember(isAuth) {
@@ -353,6 +416,36 @@ export default {
         });
       }
       this.rejectVisible = false;
+    },
+    // 会员标签分页器
+    handleMemberCurrentChange(val) {
+      console.log(val);
+      this.pageData.currentpage = val;
+      this.getMemberLableList();
+    },
+    handlMembereSizeChange(val) {
+      this.pageData.limit = val;
+      this.getMemberLableList();
+    },
+    // 供需标签分页器
+    handleSupplyCurrentChange(val) {
+      console.log(val);
+      this.pageData1.currentpage = val;
+      this.getSupplyLabelList();
+    },
+    handleSupplySizeChange(val) {
+      this.pageData1.limit = val;
+      this.getSupplyLabelList();
+    },
+    // 行业标签
+    handleIndustryCurrentChange(val) {
+      console.log(val);
+      this.pageData2.currentpage = val;
+      this.getIndustryLabelList();
+    },
+    handleIndustrySizeChange(val) {
+      this.pageData2.limit = val;
+      this.getIndustryLabelList();
     }
   }
 };

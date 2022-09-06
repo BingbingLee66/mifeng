@@ -341,20 +341,21 @@
           :tableConfig="{}"
           :tableColumn="tableColumn1"
           :tableData="supplyData"
+          :pageData="pageData1"
+          @handleCurrentChange="handleCurrentChange1"
+          @handleSizeChange="handleSizeChange1"
         >
-          <template v-slot:tagGroupName="row">
-            <div v-if="row.data.labelNames && row.data.labelNames.length > 0">
-              <el-tag
-                v-for="item in row.data.labelNames"
-                :key="item"
-                type="info"
-                effect="plain"
-                style="margin: 0 6px 6px 0"
-              >
-                {{ item }}
-              </el-tag>
-            </div>
-          </template>
+        </ys-table>
+      </el-tab-pane>
+      <el-tab-pane label="行业标签" name="4">
+        <ys-table
+          :tableConfig="{}"
+          :tableColumn="tableColumn3"
+          :tableData="industryData"
+          :pageData="pageData2"
+          @handleCurrentChange="handleCurrentChange2"
+          @handleSizeChange="handleSizeChange2"
+        >
         </ys-table>
       </el-tab-pane>
     </el-tabs>
