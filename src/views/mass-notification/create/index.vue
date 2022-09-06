@@ -56,8 +56,8 @@
             <img class="img" :src="item" />
             <div class="hover-msg">
               <div>
-                <i class="el-icon-zoom-in preview" @click="preview"></i>
-              <i class="el-icon-delete close" ></i>
+                <i class="el-icon-zoom-in preview" @click="preview(item)"></i>
+              <i class="el-icon-delete close" @click="deleteImg(item)"></i>
               </div>
               
             </div>
@@ -129,6 +129,12 @@
   </div>
   <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
 </kdDialog>
+<kdDialog ref="imgDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true" >
+  <div slot="content">
+   <img :src="currentImg" class="preview-img"/>
+  </div>
+  <!-- <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button> -->
+</kdDialog>
 <activityDialog :activityList="activityList" :activityType="form.type" ref="activityDialogRef" @addActivity="function addActivity(val){activityList=val}" v-if="showActivityDialog"></activityDialog>
   </div>
 </template>
@@ -178,7 +184,9 @@ export default {
       // 显示活动弹框
       showActivityDialog: true,
       //已选活动列表
-      activityList:[]
+      activityList:[],
+      //当前正在预览的图片
+      currentImg:''
     }
   },
   created() {
@@ -209,6 +217,15 @@ export default {
       // this.showActivityDialog = true
       this.$refs['activityDialogRef'].open()
     },
+    //点击预览图片
+    preview(val){
+      this.currentImg=val;
+      this.$refs['imgDialog'].show()
+    },
+    //点击删除图片
+    deleteImg(val){
+      this.form.imgList.splice(this.form.imgList.findIndex(item=>item===val),1)
+    },
     // 提交表单
     onSubmit(){},
     /** 父子组件交互 */
@@ -238,12 +255,10 @@ export default {
     async upload(content, type) {
       try {
         let formData = new FormData()
-        formData.append('file', content.file)
-        formData.append('folder','notice') 
-        
-        const res = await uploadFile(formData)
+        formData.append('file', content.file)      
+        const res = await uploadFile(formData,'notice')
         if (res.state === 1) {
-          this.form.imgList.push(res.data.filePath)
+          this.form.imgList.push(res.data)
         } else {
           this.$message.error(res.msg)
         }
@@ -346,7 +361,10 @@ export default {
     height: 148px;
   }
 }
-
+.preview-img{
+  width: 100%;
+  height: 100%;
+}
 .label-item {
   margin-bottom: 20px;
   .title-hd {
