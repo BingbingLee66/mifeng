@@ -66,7 +66,8 @@ export default {
         templateName: '', // 模板名称
         content: '', //模板内容
         smsNoticeTemplateDTO: {
-          templateType: '1' // 1通知短信 2推广短信
+          templateType: '1', // 1通知短信 2推广短信
+          variableAttributes: []
         }
       }
     }
@@ -85,7 +86,7 @@ export default {
                 let formObj = this.formObj
                 formObj.content = res.data.content
                 formObj.smsNoticeTemplateDTO.templateType = res.data.smsNoticeTemplateVo.templateType + ''
-                formObj.smsNoticeTemplateDTO.variableAttributes = res.data.smsNoticeTemplateVo.variableAttributes
+                formObj.smsNoticeTemplateDTO.variableAttributes = res.data.variableAttributes
                 formObj.templateName = res.data.templateName
                 callback() // 必须加上这个，不然一直塞在验证状态
               }

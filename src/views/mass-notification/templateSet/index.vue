@@ -90,12 +90,12 @@
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <div>
-              <el-button type="text" @click="onEdit(scope.row)"> 编辑 </el-button>
+              <el-button type="text" @click="onSynchronization(scope.row)"> 编辑 </el-button>
               <el-button type="text" @click="particulars(scope.row)"> 详情 </el-button>
             </div>
             <div>
-              <el-button type="text" @click="onForbidden(scope.row)"> 禁用 </el-button>
-              <el-button type="text" @click="onInvoke(scope.row)"> 启用 </el-button>
+              <el-button type="text" v-if="scope.row.status == 1" @click="onForbidden(scope.row)"> 禁用 </el-button>
+              <el-button type="text" v-if="scope.row.status == 0" @click="onInvoke(scope.row)"> 启用 </el-button>
               <el-button type="text" @click="onDelete(scope.row)"> 删除 </el-button>
             </div>
           </template>

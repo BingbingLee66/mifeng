@@ -1,5 +1,9 @@
-import Details from '../template-library/components/details'
-import { noticeTemplateSetList, getNoticeTemplateSetDetailById } from '@/api/mass-notification'
+import Details from '../templateLibrary/components/details'
+import {
+  noticeTemplateSetList,
+  getNoticeTemplateSetDetailById,
+  noticeTemplateSetUpdateStatus
+} from '@/api/mass-notification'
 export default {
   data() {
     return {
@@ -54,9 +58,10 @@ export default {
       }
     },
     // 跳转添加模板
-    onSynchronization() {
+    onSynchronization(row) {
       //  query.type   1:短信 2：消息订阅  3：app
-      let id = 1
+      let id = null
+      if (row.id) id = row.id
       this.$router.push({
         path: '/template-set/add-note/index',
         query: {
@@ -68,19 +73,26 @@ export default {
     // 详情
     async particulars(row) {
       const res = await getNoticeTemplateSetDetailById({ id: row.id })
+      // 短信: smsNoticeTemplateVo  订阅 :subscriptionNoticeTemplateVo  app:appNoticeTemplateVo
+      let toxon = 'smsNoticeTemplateVo'
+      res.data.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(v => {
+        res.data[toxon].variableAttributes.forEach(j => {
+          if (v.key == j.key) j.value = v.value.value
+        })
+      })
       this.$refs.details.show(res)
     },
     // 编辑
     onEdit() {},
     // 禁用
-    onForbidden() {
+    onForbidden(row) {
       const h = this.$createElement
       this.$msgbox({
         title: '提示',
         message: h('p', null, [
           h('p', null, [
             h('span', null, '当前共有'),
-            h('span', { style: 'color: #f5222d' }, `${1}`),
+            h('span', { style: 'color: #f5222d' }, `${row.count || 0}`),
             h('span', null, '条定时发送通知使用了该模板，确定禁用模板吗？ ')
           ]),
           h('p', { style: 'color: #7f7f7f' }, '禁用后：'),
@@ -92,16 +104,12 @@ export default {
         cancelButtonText: '取消'
       })
         .then(() => {
-          this.$message({
-            message: '禁用成功',
-            type: 'success'
-          })
-          this.fetchData()
+          this.SetUpdateStatus(row, 0)
         })
         .catch(() => {})
     },
     // 启用
-    onInvoke() {
+    onInvoke(row) {
       const h = this.$createElement
       this.$msgbox({
         title: '提示',
@@ -116,23 +124,19 @@ export default {
         cancelButtonText: '取消'
       })
         .then(() => {
-          this.$message({
-            message: '启用成功',
-            type: 'success'
-          })
-          this.fetchData()
+          this.SetUpdateStatus(row, 1)
         })
         .catch(() => {})
     },
     // 删除
-    onDelete() {
+    onDelete(row) {
       const h = this.$createElement
       this.$msgbox({
         title: '提示',
         message: h('p', null, [
           h('p', null, [
             h('span', null, '当前共有'),
-            h('span', { style: 'color: #f5222d' }, `${1}`),
+            h('span', { style: 'color: #f5222d' }, `${row.count || 0}`),
             h('span', null, '条定时发送通知使用了该模板，确定删除模板吗？ ')
           ]),
           h('p', { style: 'color: #7f7f7f' }, '删除后：'),
@@ -144,13 +148,31 @@ export default {
         cancelButtonText: '取消'
       })
         .then(() => {
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-          this.fetchData()
+          this.SetUpdateStatus(row, 2)
         })
         .catch(() => {})
+    },
+    // 删除-禁用-启用
+    async SetUpdateStatus(row, status) {
+      // status 状态 0禁用 1启用 2删除
+      let params = {
+        channelTypeId: this.query.type,
+        id: row.id,
+        status
+      }
+      const res = await noticeTemplateSetUpdateStatus(params)
+      if (res.state === 1) {
+        this.$message({
+          message: '操作成功',
+          type: 'success'
+        })
+        this.fetchData()
+      } else {
+        this.$message({
+          message: res.msg,
+          type: 'error'
+        })
+      }
     },
     handleSizeChange(val) {
       this.limit = val

@@ -52,6 +52,10 @@
           <div class="offside-stencil">创建时间</div>
           <div class="details">{{ infoDate.createdTs | dateFormat }}</div>
         </div>
+        <div class="offside" v-if="active == 2">
+          <div class="offside-stencil">模板备注</div>
+          <div class="details">{{ infoDate.templateRemark }}</div>
+        </div>
       </div>
     </div>
     <!-- 订阅 -->
@@ -130,6 +134,10 @@
             {{ infoDate.subscriptionNoticeTemplateVo.sceneDescription }}
           </div>
         </div>
+        <div class="offside" v-if="active == 2">
+          <div class="offside-stencil">模板备注</div>
+          <div class="details">{{ infoDate.templateRemark }}</div>
+        </div>
       </div>
     </div>
     <!-- app -->
@@ -167,12 +175,29 @@
           <div class="details" v-if="infoDate.appNoticeTemplateVo">{{ infoDate.appNoticeTemplateVo.link }}</div>
         </div>
         <div class="offside" v-if="active == 2">
+          <div class="offside-stencil">变量属性</div>
+          <div class="details" v-if="infoDate.appNoticeTemplateVo">
+            <div
+              class="details-box"
+              v-for="(item, index) in infoDate.appNoticeTemplateVo.variableAttributes"
+              :key="index"
+            >
+              <div>{{ item.key }}</div>
+              <div v-if="item.value">- {{ item.value }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="offside" v-if="active == 2">
           <div class="offside-stencil">所属类型</div>
-          <div class="details">{{ infoDate.type == 1 ? '短信通知' : infoDate.type == 2 ? '订阅消息' : 'APP通知' }}</div>
+          <div class="details">{{ noticeTypeId[infoDate.noticeTypeId] }}</div>
         </div>
         <div class="offside">
           <div class="offside-stencil">创建时间</div>
           <div class="details">{{ infoDate.createdTs | dateFormat }}</div>
+        </div>
+        <div class="offside" v-if="active == 2">
+          <div class="offside-stencil">模板备注</div>
+          <div class="details">{{ infoDate.templateRemark }}</div>
         </div>
       </div>
     </div>
@@ -183,7 +208,6 @@
 </template>
 
 <script>
-import { getNoticeTemplateDetailById } from '@/api/mass-notification'
 export default {
   name: 'Details',
   props: {
@@ -203,16 +227,16 @@ export default {
         demonstrate: '',
         subscriptionNoticeTemplateVo: {},
         smsNoticeTemplateVo: {},
-        appNoticeTemplateVo: {}
-      }
+        appNoticeTemplateVo: {},
+        keyValueNoticeTemplateSetVo: {}
+      },
+      noticeTypeId: ['', '缴费通知', '活动通知', '招商活动', '邀请入会', '自定义通知']
     }
   },
 
   methods: {
     // 显示
     async show(res) {
-      //   const res = await getNoticeTemplateDetailById({ id })
-
       this.visible = true
       this.infoDate = res.data
       //   短信和app
@@ -222,7 +246,7 @@ export default {
         else this.infoDate.demonstrate = res.data.content
       }
       //  订阅消息
-      if (res.data && res.data.subscriptionNoticeTemplateVo) {
+      if (res.data && this.type == 2 && res.data.subscriptionNoticeTemplateVo) {
         res.data.subscriptionNoticeTemplateVo.variableAttributes.forEach(v => {
           v.value2 = v.value
           if (v.value2.length >= 17) {
@@ -237,7 +261,18 @@ export default {
       const arr = vlue.match(regx)
 
       arr.forEach(item => {
-        vlue = vlue.replace(item, `<span style="color:red">${item}</span>`)
+        if (this.active == 1) vlue = vlue.replace(item, `<span style="color:red">${item}</span>`)
+        else {
+          item = item.replace('${', '').replace('}', '')
+          this.infoDate.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(j => {
+            if (item == j.key) {
+              vlue = vlue
+                .replace(item, `<span style="color:red">【${j.value.value}】</span>`)
+                .replace('${', '')
+                .replace('}', '')
+            }
+          })
+        }
       })
       return vlue
     },
@@ -264,7 +299,7 @@ export default {
         position: absolute;
         top: 93px;
         left: 25px;
-        width: 75%;
+        width: 80%;
         background: #e9e9ea;
         color: #222222;
         padding: 10px;

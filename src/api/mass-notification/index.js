@@ -57,14 +57,6 @@ export const getNoticeTemplateSetDetailById = params =>
     params
   })
 
-// 根据渠道查询总后台模板
-export const noticeTemplateSetSelectList = params =>
-  request({
-    url: '/ec/notice-template-set/gnotice-template-set-select-list',
-    method: 'get',
-    params
-  })
-
 // 新增-编辑模板设置
 export function noticeTemplateSetAdd(data) {
   return request({
@@ -79,5 +71,13 @@ export const noticeTemplateSetUpdateStatus = params =>
   request({
     url: '/ec/notice-template-set/updateStatus',
     method: 'put',
+    params
+  })
+
+// 变量值列表
+export const getKeyValueList = params =>
+  request({
+    url: '/ec/notice-template-set/getKeyValueList',
+    method: 'get',
     params
   })

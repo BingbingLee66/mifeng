@@ -33,7 +33,7 @@ export default {
     // 回退模板库
     close() {
       this.$router.push({
-        path: '/dashboard',
+        path: '/mass-notification/template-library',
         query: {
           type: this.type
         }
