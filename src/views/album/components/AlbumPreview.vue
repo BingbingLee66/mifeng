@@ -19,13 +19,13 @@
         </div>
         <div class="info">
           <div class="info-name"> {{ album.albumName }}</div>
-          <div v-if="album.introduce.length>37" class="album-intr" :class="{expanded:toggle}">
+          <div v-if="cutStr" class="album-intr" :class="{expanded:toggle}">
             {{
-              toggle ? album.introduce : `${album.introduce.slice(0,37)}...`
+              toggle ? intro : cutStr
             }}
             <div class="expand" @click="toggle=!toggle">{{ toggle?'收起':'展开' }}</div>
           </div>
-          <div v-else class="album-intr">{{ album.introduce }}</div>
+          <div v-else class="album-intr">{{ intro }}</div>
           <div class="flex-x">
             <div class="info-desc">
               浏览
@@ -88,7 +88,50 @@ export default {
       timeStr: '',
       imgList: [],
       num: 1,
-      toggle: true
+      toggle: false
+    }
+  },
+  computed: {
+    intro() {
+      if (!this.album.introduce) return ''
+      return this.album.introduce.replace(/[\s]+/g, ' ').trim()
+    },
+    cutStr() {
+      const str = this.intro
+      const fontSize = 16
+      const line = 2
+      const containerWidth = 320
+      const chineseWidth = 1 * fontSize // 中文字符宽度
+      const englishWidth = 0.55 * fontSize // 英文字符宽度
+      const spaceWidth = 0.27 * fontSize // 空格宽度
+      const totalLen = line * containerWidth - 3 * chineseWidth
+
+      let str_length = 0
+      let cutStr = ''
+
+      for (let i = 0, len = str.length; i < len; i++) {
+        const a = str[i]
+
+        // 中文字符的长度经编码之后大于6
+        if (encodeURI(a).length > 6) {
+          str_length += chineseWidth
+        } else if (encodeURI(a) === encodeURI(' ')) {
+          str_length += spaceWidth
+        } else {
+          str_length += englishWidth
+        }
+
+        // 达到目标长度，即为字符串加上省略号并返回,-3是为了空3个中文出来展示 展开 文案
+        if (str_length > totalLen && !cutStr) {
+          cutStr = `${str.slice(0, i)}...`
+        }
+
+        if (str_length > line * containerWidth) {
+          return cutStr
+        }
+      }
+
+      return ''
     }
   },
   watch: {
@@ -107,7 +150,9 @@ export default {
       this.timeStr = `${time}:00 ~ ${+time + 1}:00`
       this.imgList = defaultImgs.sort(() => Math.random() - 0.5).slice(0, 4)
       this.num = Math.floor((Math.random() * 10)) + 1
-    }
+      this.toggle = false
+    },
+
   },
 }
 </script>

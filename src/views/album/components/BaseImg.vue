@@ -1,6 +1,6 @@
 <template>
   <div class="img-item" @click="$emit('click',$event)">
-    <img :src="img.img">
+    <img :src="img.middleImg || img.img">
     <div class="img-name">{{ img.fileName }}</div>
     <el-tag v-if="tag.name" class="img-tag" effect="dark" size="mini" v-bind="tag" @click.stop="$emit('tagClick')">{{ tag.name }}</el-tag>
     <slot />
