@@ -250,6 +250,7 @@ export default {
       color: #333;
       line-height: 28px;
       margin-bottom: 11px;
+      word-break: break-all;
 
       &.expanded {
         padding-bottom: 28px;
