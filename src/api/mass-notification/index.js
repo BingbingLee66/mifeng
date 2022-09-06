@@ -1,10 +1,85 @@
 import request from '@/utils/request'
 
-// 获取商会活动详情
-export const getInvesChamberActivityInfoById = activityId =>
+// 模板库列表
+export const noticeTemplateList = params =>
   request({
-    url: `/api/ec/invesActivity-apply/chamberActivityInfo/${activityId}`,
-    method: 'get'
+    url: '/ec/notice-template/noticeTemplateList',
+    method: 'get',
+    params
+  })
+
+// 单个查询模板库信息
+export const getNoticeTemplateDetail = params =>
+  request({
+    url: '/ec/notice-template/getNoticeTemplateDetail',
+    method: 'get',
+    params
+  })
+
+// 模板库详情
+export const getNoticeTemplateDetailById = params =>
+  request({
+    url: '/ec/notice-template/getNoticeTemplateDetailById',
+    method: 'get',
+    params
+  })
+
+// 模板名称列表
+export const noticeTemplateNameList = params =>
+  request({
+    url: '/ec/notice-template/noticeTemplateNameList',
+    method: 'get',
+    params
+  })
+
+// 同步模板库、申请模板库
+export function synchronizeAndApplyTemplate(data) {
+  return request({
+    url: '/ec/notice-template/synchronizeAndApplyTemplate',
+    method: 'post',
+    data
+  })
+}
+
+// 模板设置列表
+export const noticeTemplateSetList = params =>
+  request({
+    url: '/ec/notice-template-set/noticeTemplateSetList',
+    method: 'get',
+    params
+  })
+
+// 模板设置详情
+export const getNoticeTemplateSetDetailById = params =>
+  request({
+    url: '/ec/notice-template-set/getNoticeTemplateSetDetailById',
+    method: 'get',
+    params
+  })
+
+// 新增-编辑模板设置
+export function noticeTemplateSetAdd(data) {
+  return request({
+    url: '/ec/notice-template-set/add',
+    method: 'post',
+    data
+  })
+}
+
+// 模板设置删除-禁用-启用 (0禁用 1启用 2删除)
+export const noticeTemplateSetUpdateStatus = params =>
+  request({
+    url: '/ec/notice-template-set/updateStatus',
+    method: 'put',
+    params
+  })
+
+// 变量值列表
+export const getKeyValueList = params =>
+  request({
+    url: '/ec/notice-template-set/getKeyValueList',
+    method: 'get',
+    params
   })
 
 // 查询所有会员列表

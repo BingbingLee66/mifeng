@@ -449,16 +449,16 @@ export const constantRoutes = [
       {
         name: '模板管理',
         path: '/template-library/synchronization/index',
-        component: () => import('@/views/mass-notification/template-library/synchronization/index.vue'),
+        component: () => import('@/views/mass-notification/templateLibrary/synchronization/index.vue'),
         hidden: true,
         meta: { title: '模板管理' }
       },
       {
-        name: '短信模板',
+        name: '新增模板',
         path: '/template-set/add-note/index',
-        component: () => import('@/views/mass-notification/template-set/add-note/index.vue'),
+        component: () => import('@/views/mass-notification/templateSet/add-note/index.vue'),
         hidden: true,
-        meta: { title: '短信模板' }
+        meta: { title: '新增模板' }
       }
     ]
   }

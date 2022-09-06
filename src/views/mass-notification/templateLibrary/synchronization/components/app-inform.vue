@@ -2,8 +2,8 @@
   <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="110px">
     <el-row>
       <el-col :span="15">
-        <el-form-item label="消息标题：" prop="title">
-          <el-input v-model.trim="formObj.title" clearable maxlength="60" show-word-limit />
+        <el-form-item label="消息标题：" prop="templateName">
+          <el-input v-model.trim="formObj.templateName" clearable maxlength="24" show-word-limit />
         </el-form-item>
       </el-col>
     </el-row>
@@ -13,7 +13,7 @@
           <el-input
             v-model.trim="formObj.content"
             type="textarea"
-            maxlength="500"
+            maxlength="72"
             show-word-limit
             :autosize="{ minRows: 4, maxRows: 7 }"
           />
@@ -35,7 +35,8 @@ export default {
   data() {
     return {
       formObj: {
-        title: '',
+        type: '3', //模板类型 1短信通知、2订阅消息、3APP通知
+        templateName: '',
         content: ''
       }
     }
@@ -43,7 +44,7 @@ export default {
   computed: {
     rules() {
       return {
-        title: [{ required: true, message: '消息标题不能为空', trigger: 'change' }],
+        templateName: [{ required: true, message: '消息标题不能为空', trigger: 'change' }],
         content: [{ required: true, message: '内容不能为空', trigger: 'blur' }]
       }
     }
@@ -53,6 +54,7 @@ export default {
     save() {
       this.$refs.form.validate(valid => {
         if (!valid) return
+        this.$emit('save', this.formObj)
       })
     },
     close() {
