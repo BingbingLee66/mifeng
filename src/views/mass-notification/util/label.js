@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 // 创建群发通知类型  show显示规则代表1是总后台 2 是商会后台 3是共有
 export const labelType = [
   { n: '缴费通知', type: 1, show: 2 }, 
@@ -64,5 +65,53 @@ export const memberCountTableConfig=[
   label: '会员数（人）',
   type: 'general',
 },
-
+]
+ //指定商会会员 商会后台用
+export const memberPageListConfig=[
+  {type:'select'}, 
+  {
+  prop: 'type',
+  label: '入会类型',
+  type: 'general',
+  formatter:row=>{
+    return row.type===0 ? '个人入会' :'企业入会'
+  }
+},
+{
+  prop: 'companyName',
+  label: '企业/团体名称',
+  type: 'general',
+},
+{
+  prop: 'name',
+  label: '联系人/会员姓名',
+  type: 'general',
+},
+{
+  prop: 'phone',
+  label: '手机号',
+  type: 'general',
+  width:110
+},
+{
+  prop: 'joinedTs',
+  label: '入会时间',
+  type: 'general',
+  width:110
+},
+{
+  prop: 'postName',
+  label: '会内职位',
+  type: 'general'
+},
+{
+  prop: 'type',
+  label: '所属部门',
+  type: 'general',
+  formatter:row=>{
+    let msg=''
+    row.memberDepartmentVOS  && row.memberDepartmentVOS.forEach((item,index)=>{ if(index!=row.memberDepartmentVOS.length-1){msg+item.departmentName+'、'}else{msg+item.departmentName} })
+    return msg
+  }
+},
 ]

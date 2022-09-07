@@ -1,13 +1,13 @@
 <template>
   <div class="containers">
-    <el-form :rules="rules">
+    <el-form :rules="rules" ref="indexFormRef" :model="form">
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="form.type">
           <el-radio v-for="(item, index) in labelList" :key="index" :label="item.type">{{ item.n }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <!-- 接收人 -->
-      <ReceiveForm :ckey="ckey" :receive-list="receiveList" />
+      <ReceiveForm ref="receiveForm" @receiveChange="receiveChange" :ckey="ckey" :receive-list="receiveList" />
       <!-- 关联活动详情  为活动通知或招商活动的时候显示-->
       <div v-if="form.type === 2 || form.type === 3" class="label-item">
         <div class="title-hd">关联活动详情 <span>（必填，配置会内通知"立即进入活动详情"跳转页）</span></div>
@@ -20,7 +20,7 @@
           :disable-transitions="false"
           @close="handleClose(tag)"
         >
-          {{ tag.activityName}}
+          {{ tag.activityName }}
         </el-tag>
         <el-button size="small " type="primary " @click="selectActivity">选择活动</el-button>
       </div>
@@ -28,7 +28,7 @@
 
       <div v-if="form.type === 5" class="label-item">
         <div class="title-hd">通知详情 <span>(必填将推送到小程序/APP的会内通知) </span></div>
-        <el-form-item label="消息标题" prop="title">
+        <el-form-item label="消息标题" prop="title" style="margin-bottom:20px">
           <el-input
             v-model="form.title"
             placeholder="请输入消息标题"
@@ -49,45 +49,41 @@
           ></el-input>
         </el-form-item>
         <!-- 图片 -->
-        <div >
+        <div>
           <div class="img-msg">图片（选填）</div>
           <div class="img-containers">
- <div v-for="item in form.imgList" :key="item" class="img-list">
-            <img class="img" :src="item" />
-            <div class="hover-msg">
-              <div>
-                <i class="el-icon-zoom-in preview" @click="preview(item)"></i>
-              <i class="el-icon-delete close" @click="deleteImg(item)"></i>
+            <div v-for="item in form.imgs" :key="item" class="img-list">
+              <img class="img" :src="item" />
+              <div class="hover-msg">
+                <div>
+                  <i class="el-icon-zoom-in preview" @click="preview(item)"></i>
+                  <i class="el-icon-delete close" @click="deleteImg(item)"></i>
+                </div>
               </div>
-              
             </div>
-          </div>
 
-          <el-upload
-            v-if="form.imgList.length < 9"
-            action="/"
-            class="uploader"
-            :show-file-list="false"
-            :on-remove="handleRemove"
-            :before-upload="function (file) { return beforeAvatarUpload(file)}"
-            :http-request="function (content) { return upload(content)} "
-          >
-            
-            <div class="upload-msg">
-              <i class="el-icon-plus"></i>
-              <span>上传图片</span>
-              <span>({{ form.imgList.length }} /9)</span>
-            </div>
-          </el-upload>
+            <el-upload
+              v-if="form.imgs.length < 9"
+              action="/"
+              class="uploader"
+              :show-file-list="false"
+              :on-remove="handleRemove"
+              :before-upload="function(file) { return beforeAvatarUpload(file)} "
+              :http-request="function(content) { return upload(content) }"
+            >
+              <div class="upload-msg">
+                <i class="el-icon-plus"></i>
+                <span>上传图片</span>
+                <span>({{ form.imgs.length }} /9)</span>
+              </div>
+            </el-upload>
           </div>
-         
         </div>
       </div>
 
-     
-
       <!-- 同步渠道 -->
-      <el-form-item label="同步渠道" prop="synchChannels">
+      <div class="title-hd">同步渠道 <span>(选填，可多选) </span></div>
+      <el-form-item label="">
         <el-checkbox-group v-model="form.synchChannels">
           <div class="synch-channels">
             <div v-for="item in synchChannels" :key="item.id">
@@ -104,7 +100,7 @@
           </div>
         </el-checkbox-group>
       </el-form-item>
-       <!-- 发送方式 -->
+      <!-- 发送方式 -->
       <el-form-item label="发送方式" prop="sendType">
         <el-radio-group v-model="form.sendType">
           <el-radio label="1">立即发送</el-radio>
@@ -114,40 +110,52 @@
         </el-radio-group>
       </el-form-item>
       <!-- 通知发送规则 -->
-       <el-checkbox v-model="form.agreeRule">已阅读并同意</el-checkbox>
-        <el-link type="primary" @click="showSendRule">《通知发送规则》</el-link> 
+      <el-checkbox v-model="form.agreeRule">已阅读并同意</el-checkbox>
+      <el-link type="primary" @click="showSendRule">《通知发送规则》</el-link>
 
-        <el-form-item style="margin-top:10px">
-    <el-button type="primary" @click="onSubmit">发送</el-button>
-    <el-button>取消</el-button>
-  </el-form-item>
+      <el-form-item style="margin-top:10px">
+        <el-button type="primary" @click="onSubmit">发送</el-button>
+        <el-button>取消</el-button>
+      </el-form-item>
     </el-form>
 
-<kdDialog ref="kdDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true" >
-  <div slot="content">
-    规则说明，文案先找业务定一下
-  </div>
-  <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
-</kdDialog>
-<kdDialog ref="imgDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true" >
-  <div slot="content">
-   <img :src="currentImg" class="preview-img"/>
-  </div>
-  <!-- <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button> -->
-</kdDialog>
-<activityDialog :activityList="activityList" :activityType="form.type" ref="activityDialogRef" @addActivity="function addActivity(val){activityList=val}" v-if="showActivityDialog"></activityDialog>
+    <kdDialog ref="kdDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true">
+      <div slot="content">
+        规则说明，文案先找业务定一下
+      </div>
+      <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
+    </kdDialog>
+    <kdDialog ref="imgDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true">
+      <div slot="content">
+        <img :src="currentImg" class="preview-img" />
+      </div>
+      <!-- <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button> -->
+    </kdDialog>
+    <activityDialog
+      :activityList="activityList"
+      :activityType="form.type"
+      ref="activityDialogRef"
+      @addActivity="
+        function addActivity(val) {
+          activityList = val
+        }
+      "
+      v-if="showActivityDialog"
+    ></activityDialog>
   </div>
 </template>
 
 <script>
 import { labelType, receiveType } from '../util/label'
-import { uploadCoverImg ,uploadFile} from '@/api/content/article'
+import { uploadCoverImg, uploadFile } from '@/api/content/article'
+import { selectTemplateList, selectTemplateListAdmin } from '@/api/mass-notification/index'
 import ReceiveForm from './components/receiveForm.vue'
 import kdDialog from '@/components/common/kdDialog'
 import activityDialog from './components/activityDialog.vue'
 export default {
   name: 'Create',
   components: { ReceiveForm, kdDialog, activityDialog },
+
   data() {
     return {
       labelList: [],
@@ -166,17 +174,22 @@ export default {
         // 自定义通知相关
         title: '', // 消息标题
         content: '', // 消息内容
-        imgList: [] // 图片
+        imgs: [] // 图片
       },
       synchChannels: [
-        { label: '短信', templateList: [{ name: '活动1', id: 1 }], id: 1, selectActivity: 1 },
-        { label: '微信订阅消息', templateList: [], id: 2, selectActivity: null },
-        { label: 'APP通知', templateList: [], id: 3, selectActivity: null }
+        { label: '短信', templateList: [], id: 1 },
+        { label: '微信订阅消息', templateList: [], id: 2 },
+        { label: 'APP通知', templateList: [], id: 3 }
+        // { label: '短信', templateList: [{ name: '活动1', id: 1 }], id: 1, selectActivity: 1 },
+        // { label: '微信订阅消息', templateList: [], id: 2, selectActivity: null },
+        // { label: 'APP通知', templateList: [], id: 3, selectActivity: null }
       ],
       sendTime: '',
       rules: {
         type: [{ required: true, message: '请选择', trigger: 'blur' }],
-        synchChannels: [{ required: true, message: '请选择', trigger: 'blur' }],
+        // synchChannels: [
+        //   // { required: true, message: '请选择', trigger: 'blur' },
+        //  { validator: validateSynchChannels, trigger: 'blur' }],
         sendType: [{ required: true, message: '请选择', trigger: 'blur' }],
         title: [{ required: true, message: '请填写', trigger: 'blur' }],
         content: [{ required: true, message: '请填写', trigger: 'blur' }]
@@ -184,52 +197,186 @@ export default {
       // 显示活动弹框
       showActivityDialog: true,
       //已选活动列表
-      activityList:[],
+      activityList: [],
       //当前正在预览的图片
-      currentImg:''
+      currentImg: ''
     }
   },
   created() {
     const { ckey } = this.$store.getters
     this.ckey = ckey
     this.restTypeData()
+
+    //除了邀请入会只有短信1，其他都是三个渠道
+    if (this.form.type === 4) {
+      this.selectTemplateListFunc(1)
+    } else {
+      //请求每次只能请求一种，所以要请求3次
+      for (let i = 1; i < 4; i++) {
+        this.selectTemplateListFunc(i)
+      }
+    }
   },
   methods: {
     /** 请求 */
+    async selectTemplateListFunc(channelTypeId) {
+      //拉取总后台
+      let API = selectTemplateListAdmin
+      //商会后台
+      const {
+        ckey,
+        form: { type: noticeTypeId }
+      } = this
+      if (ckey) {
+        API = selectTemplateList
+      }
+      const { data } = await API({ channelTypeId, noticeTypeId })
+      this.synchChannels[channelTypeId - 1].templateList = data
+    },
     /** 行为操作 */
     // 删除已选活动
     handleClose(tag) {
-      const {id}=tag
-      const {activityList}=this;
-    activityList.splice(activityList.findIndex(item=>item.id===id),1)
-     this.activityList=activityList
+      const { id } = tag
+      const { activityList } = this
+      activityList.splice(activityList.findIndex(item => item.id === id), 1)
+      this.activityList = activityList
     },
     // 点击通知发送规则
-    showSendRule(){
+    showSendRule() {
       this.$refs['kdDialog'].show()
     },
     // 关闭通知发送规则
-    hideSendRule(){
+    hideSendRule() {
       this.$refs['kdDialog'].hide()
     },
     // 打开选择活动弹框
-    selectActivity(){
+    selectActivity() {
       // this.showActivityDialog = true
       this.$refs['activityDialogRef'].open()
     },
     //点击预览图片
-    preview(val){
-      this.currentImg=val;
+    preview(val) {
+      this.currentImg = val
       this.$refs['imgDialog'].show()
     },
     //点击删除图片
-    deleteImg(val){
-      this.form.imgList.splice(this.form.imgList.findIndex(item=>item===val),1)
+    deleteImg(val) {
+      this.form.imgs.splice(this.form.imgs.findIndex(item => item === val), 1)
     },
     // 提交表单
-    onSubmit(){},
+    onSubmit() {
+      //先校验
+      console.log('创建群发通知')
+       this.extendFunc()
+      if(!this.verify())return;
+     
+      this.$refs['indexFormRef'].validate(valid => {
+        if (valid) {
+          let params = {
+            channelTypeTemplateDTOS: this.form.synchChannels.map(item => ({
+              channelTypeId: item.id,
+              id: item.selectActivity
+            })),
+            //         接收人：当接收人类型为-1、1不用传;
+            // 当接收人类型为2时传职位id集合({'receiverList': []});
+            // 当接收人类型为3时，传部门id集合({'receiverList': []});
+            // 当接收人类型为4时，传会员id集合({'receiverList': []});
+            // 当接收人类型为5时，传商会ckey集合({'receiverList': []});
+            // 当接收人类型为6时，传手机号集合({'receiverList': []});
+            // 当通知类型为1、4、5时不用传
+            // 当通知类型为2时，{'associationId': 活动id}
+            // 当通知类型为3时，{'associationId': 招商活动id}
+            // 当通知类型为5时：
+            // extend:{'title':'标题','content':'内容',imgs:['图片', '图片2']}
+            extend: {
+              receiverList: []
+            }
+          }
+        } else {
+          return false
+        }
+      })
+    },
     /** 父子组件交互 */
+    receiveChange(val) {
+      this.form.receive = val
+    },
     /** 工具 */
+    //表单提交校验
+    verify() {
+      const {
+        form: { receive, type, synchChannels, agreeRule },
+        activityList
+      } = this
+      //渠道必填  现在为选填了
+      // if (!synchChannels.length > 0) {
+      //   this.$message.error('请选择同步渠道')
+      //   return false
+      // } else {
+      //   let flag = false
+      //   for (let item of synchChannels) {
+      //     if (!item.selectActivity) {
+      //       flag = true
+      //       this.$message.error('请选择模板')
+      //       break
+      //     }
+      //   }
+      //   if (flag) return flag
+      // }
+      //同意发送规则
+      if (!agreeRule) {
+        this.$message.error('请同意发送规则')
+        return false
+      }
+      //活动通知 、招商活动 已选活动列表必须大于0
+      if (type === 2 || type === 3) {
+        if (!activityList.length > 0) {
+          this.$message.error('请选择关联活动详情')
+          return false
+        }
+      } else if (type === 5) {
+        //自定义通知
+      }
+
+      // if(receive === -1){
+
+      // }else if(receive === 6){
+
+      // }
+      return true
+    },
+    // extend扩展字段
+    extendFunc(){
+      const {form:{receive}}=this;
+      let obj={}
+      switch (receive){
+        case 2:
+          //职位id集合
+    
+        break;
+        case 3:
+          //传部门id集合
+        
+        break;
+        case 4:
+          //会员id集合
+      
+        break;
+        case 5:
+          //商会ckey集合
+       obj['receiverList']=this.$refs['receiveForm'].$data.selectMemberList.map(v=>v.ckey)    
+        break;
+        case 6:
+          //手机号集合
+          obj['receiverList']=this.$refs['receiveForm'].$data.form.phones.split("\n")    
+        break;
+       default:
+
+      }
+      console.log('obj',obj)
+      return obj
+
+    },
     restTypeData() {
       const { ckey } = this
       // 判断是否是总后台 类型：总后台显示1和3的show类型
@@ -237,6 +384,9 @@ export default {
       this.receiveList = ckey
         ? receiveType.filter(item => item.show !== 1)
         : receiveType.filter(item => item.show !== 2)
+
+      //给receive一个默认值
+      this.form.receive = this.receiveList[0].type
     },
     // 图片上传前校验
     beforeAvatarUpload(file, index) {
@@ -255,10 +405,10 @@ export default {
     async upload(content, type) {
       try {
         let formData = new FormData()
-        formData.append('file', content.file)      
-        const res = await uploadFile(formData,'notice')
+        formData.append('file', content.file)
+        const res = await uploadFile(formData, 'notice')
         if (res.state === 1) {
-          this.form.imgList.push(res.data)
+          this.form.imgs.push(res.data)
         } else {
           this.$message.error(res.msg)
         }
@@ -300,6 +450,9 @@ export default {
   width: 148px;
   height: 148px;
 }
+/deep/ .el-form-item__error {
+  left: 77px;
+}
 
 .upload-msg {
   display: flex;
@@ -309,7 +462,7 @@ export default {
   transform: translateY(-50%);
   font-size: 14px;
 }
-.img-msg{
+.img-msg {
   font-size: 14px;
   margin-bottom: 10px;
 }
@@ -323,31 +476,30 @@ export default {
     margin: 0px 5px 5px;
     width: 148px;
     height: 148px;
-   cursor:pointer
+    cursor: pointer;
   }
-  
- 
+
   .hover-msg {
     // display: none;
     position: absolute;
     top: 0px;
     right: 0;
-     width: 148px;
+    width: 148px;
     height: 148px;
- background-color: rgba(0, 0, 0, .5);
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 2;
     text-align: center;
     line-height: 148px;
     display: none;
-    .preview ,.close{
-     color: white;
+    .preview,
+    .close {
+      color: white;
     }
-    
   }
-  .img-list:hover .hover-msg{
- display: block;
+  .img-list:hover .hover-msg {
+    display: block;
   }
-  
+
   .img {
     position: absolute;
     z-index: 1;
@@ -361,26 +513,26 @@ export default {
     height: 148px;
   }
 }
-.preview-img{
+.preview-img {
   width: 100%;
   height: 100%;
 }
 .label-item {
   margin-bottom: 20px;
-  .title-hd {
-    background-color: #f2f2f2;
-    padding: 10px 5px;
-    font-weight: 700;
+}
+.title-hd {
+  background-color: #f2f2f2;
+  padding: 10px 5px;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 16px;
+  margin-bottom: 10px;
+  span {
+    font-weight: 400;
     font-style: normal;
-    font-size: 16px;
-    margin-bottom: 10px;
-    span {
-      font-weight: 400;
-      font-style: normal;
-      font-size: 14px;
-      color: #767676;
-      margin-left: 10px;
-    }
+    font-size: 14px;
+    color: #767676;
+    margin-left: 10px;
   }
 }
 </style>

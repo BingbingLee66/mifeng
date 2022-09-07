@@ -63,7 +63,7 @@ export default {
   },
   provide() {
     return {
-      table: this
+      tableMsg: this
       // columnConfig: this.columnConfig,
       // tableData: this.tableData
     }

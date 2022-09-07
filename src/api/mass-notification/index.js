@@ -89,3 +89,11 @@ export const getMemberList = params => request({ url: '/ec/member/all-member-pag
 export const getChamberMemberList = params => request({ url: '/ec/member/chamber-member-page-list', method: 'get', params })
 //查询商会和会员数
 export const getMemberCountList = params => request({ url: '/ec/chamber/chamber-member-count-list', method: 'get', params })
+
+// 根据渠道查询商会后台模板
+export const selectTemplateList = params => request({ url: '/ec/template-distribution/template-distribution-select-list', method: 'get', params })
+// 根据渠道查询总后台模板
+export const selectTemplateListAdmin = params => request({ url: '/ec/notice-template-set/notice-template-set-select-list', method: 'get', params })
+
+// 查询指定商会会员列表
+export const memberPageList = params => request({ url: '/ec/member/chamber-member-page-list', method: 'get', params })

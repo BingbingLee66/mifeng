@@ -55,7 +55,7 @@
         </div>
         <!-- 指定会员 -->
         <div v-if="form.receive === 4">
-          <SelectShow :btn-text="btnTextComput" :num="selectMember" @selectEmit="selectEmit" @showDialog="showDialog" />
+          <SelectShow :btn-text="btnTextComput" :num="selectMemberList.length" @selectEmit="selectEmit" @showDialog="showDialog" />
         </div>
         <!-- 手机号 -->
         <div v-if="form.receive === 6">
@@ -110,9 +110,9 @@
 import receiveDialog from '../../components/common/receiveDialog'
 import SelectShow from '../../components/content/selectShow'
 import { getDepartmentList } from '@/api/org-structure/org'
-import { getMemberList, getMemberCountList } from '@/api/mass-notification/index'
+import { getMemberList, getMemberCountList,memberPageList } from '@/api/mass-notification/index'
 import { list } from '@/api/member/manager'
-import { memberTableConfig, memberCountTableConfig } from '../../util/label'
+import { memberTableConfig, memberCountTableConfig,memberPageListConfig } from '../../util/label'
 export default {
   name: 'ReceiveForm',
   components: { receiveDialog, SelectShow },
@@ -128,7 +128,7 @@ export default {
       b: '2',
       c: '3',
       form: {
-        receive: 6,
+        receive: 4,
         position: null,
         department: null,
         // 输入手机号
@@ -209,7 +209,7 @@ export default {
     },
     //拉取所有会员
     async getNumberList() {
-      const { page, pageSize } = this
+      const { page, pageSize ,ckey} = this
       let API = getMemberList;
       //所有会员
       if (this.form.receive === -1) {
@@ -217,9 +217,12 @@ export default {
       } else if (this.form.receive === 5) {
         //指定商会会员
         API = getMemberCountList
+      }else if (this.form.receive === 4) {
+        //指定商会会员 商会后台用
+        API = memberPageList
       }
-
-      const { data } = await API({ page, pageSize })
+      
+      const { data } = await API({ page, pageSize,ckey })
       this.memberNum = data.totalRows
       this.total = data.totalRows
       this.tableData = data.list
@@ -246,6 +249,11 @@ export default {
     radioChange() {
       this.page = 1
       this.pageSize = 10
+      this.$emit('receiveChange',this.form.receive)
+      //清楚已选数据
+      this.selectData=[];
+      this.columnConfig =[];
+      this.selectMemberList=[]
     },
 
     /** 与子组件交互 */
@@ -272,6 +280,9 @@ export default {
         this.columnConfig = memberCountTableConfig
         // this.columnConfig = [{ type: 'select' }]
         this.getNumberList()
+      }else if(this.form.receive === 4){       
+       this.columnConfig = memberPageListConfig
+        this.getNumberList()
       }
     },
     // 已选表格
@@ -289,7 +300,16 @@ export default {
       console.log('查看按钮')
       // 显示弹框组件
       console.log(this.$refs['receiveRef'].$children[0].show())
-      this.columnConfig = memberTableConfig
+      //指定商会会员
+      if (this.form.receive === 5) {
+        this.columnConfig = memberCountTableConfig
+      }else if(this.form.receive === 4){       
+       this.columnConfig = memberPageListConfig
+      }else{
+        //this.form.receive === -1
+        this.columnConfig = memberTableConfig
+
+      }   
     },
     //分页的改变
     async change(val) {
