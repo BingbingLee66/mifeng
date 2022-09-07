@@ -123,7 +123,7 @@ export default {
 
         // 达到目标长度，即为字符串加上省略号并返回,-3是为了空3个中文出来展示 展开 文案
         if (str_length > totalLen && !cutStr) {
-          cutStr = `${str.slice(0, i)}...`
+          cutStr = `${str.slice(0, i - 2)}...`
         }
 
         if (str_length > line * containerWidth) {
@@ -235,12 +235,14 @@ export default {
 
     .info-name {
       height: 23px;
+      width: 100%;
       font-size: 17px;
       font-family: PingFangSC-Semibold, PingFang SC;
       font-weight: 600;
       color: #222222;
       line-height: 23px;
       margin-bottom: 2px;
+      word-break: break-all;
       @include ellipsis(1);
     }
 
