@@ -70,6 +70,10 @@ export default {
           this.formObj['ckey'] = this.$store.getters.ckey
           this.formObj['contentModuleId'] = this.activeName
           save(this.formObj).then(response => {
+            if(response.state == 0){
+              this.$message.error(response.msg)
+              return
+            }
             this.$message({
               message: '操作成功',
               type: 'success'
