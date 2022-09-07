@@ -235,20 +235,20 @@ export default {
     handleSizeChange1(val) {
       this.pageData1.limit = val;
       this.pageData1.page = 1;
-      this.getMemberLableList(this.activeName2);
+      this.getSupplyLabelList(this.activeName2);
     },
     handleCurrentChange1(val) {
       this.pageData1.currentpage = val;
-      this.getMemberLableList(this.activeName2);
+      this.getSupplyLabelList(this.activeName2);
     },
     handleSizeChange2(val) {
       this.pageData2.limit = val;
       this.pageData2.page = 1;
-      this.getMemberLableList(this.activeName2);
+      this.getIndustryLabelList(this.activeName2);
     },
     handleCurrentChange2(val) {
       this.pageData2.currentpage = val;
-      this.getMemberLableList(this.activeName2);
+      this.getIndustryLabelList(this.activeName2);
     },
     init() {
       this.fetchData();
