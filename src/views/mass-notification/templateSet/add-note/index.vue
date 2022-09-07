@@ -120,6 +120,7 @@ export default {
     await this.onGetKeyValueList()
     if (this.$route.query.id) {
       this.formObj.id = this.$route.query.id || null
+      this.formObj.status = this.$route.query.status 
       await this.particulars()
     }
   },

@@ -61,12 +61,18 @@ export default {
     // 跳转添加模板
     onSynchronization(row) {
       //  query.type   1:短信 2：消息订阅  3：app
+      // status  状态 0禁用 1启用 2删除
       let id = null
+      let status =  1
+   
       if (row.id) id = row.id
+      if (row.status !== undefined)status = row.status
+      
       this.$router.push({
         path: '/template-set/add-note/index',
         query: {
           id,
+          status,
           type: this.query.type
         }
       })
@@ -88,8 +94,6 @@ export default {
       })
       this.$refs.details.show(res)
     },
-    // 编辑
-    onEdit() {},
     // 禁用
     onForbidden(row) {
       const h = this.$createElement
