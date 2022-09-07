@@ -104,7 +104,7 @@ export default {
     return {
       albumDetail: { },
       query: {
-        pageSize: 10,
+        pageSize: 20,
         auditStatus: '',
         fileName: '',
         imgId: '',
@@ -351,10 +351,21 @@ export default {
         position: absolute;
         top: 10px;
         right: 10px;
-        z-index: 19;
         font-size: 24px;
-        background-color: #fff;
         border-radius: 50%;
+        z-index: 19;
+
+        &::after {
+          content: '';
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 8px;
+          height: 8px;
+          transform: translate(-50%,-50%);
+          background-color: #fff;
+          z-index: -1;
+        }
       }
 
       .radio {
