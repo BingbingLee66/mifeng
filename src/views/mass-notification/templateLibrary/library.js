@@ -35,7 +35,7 @@ export default {
     },
     // 表格数据
     async fetchData(reset) {
-      if (reset) this.currentPage = 1
+      if (reset) this.currentpage = 1
       this.listLoading = true
       this.list = []
       let { type, title } = this.query

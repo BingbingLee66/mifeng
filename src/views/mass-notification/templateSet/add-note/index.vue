@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-template-shadow -->
 <template>
   <div class="app-container">
     <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="110px">
@@ -17,7 +18,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item :label="formObj.type == 3 ? '消息标题：' : '模板名称：'" prop="ntId">
-            <el-select v-model="formObj.ntId" @change="onLibrary" filterable placeholder="请选择">
+            <el-select v-model="formObj.ntId" filterable placeholder="请选择模板" @change="onLibrary">
               <el-option v-for="(item, index) in originOpt" :key="index" :label="item.templateName" :value="item.id" />
             </el-select>
           </el-form-item>
@@ -27,8 +28,8 @@
         <el-col :span="13">
           <el-form-item :label="formObj.type == 3 ? '内容：' : '模板内容：'" prop="content">
             <el-input
-              disabled
               v-model.trim="formObj.content"
+              disabled
               type="textarea"
               maxlength="500"
               show-word-limit
@@ -41,12 +42,12 @@
         <el-col :span="9">
           <el-form-item :label="formObj.type == 2 ? '关键词：' : '变量属性：'" :required="true">
             <div
-              class="hinge"
               v-for="(item, index) in formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList"
               :key="index"
+              class="hinge"
             >
               <div class="hinge-additional">{{ item.key }}</div>
-              <el-select clear="hinge-sele" v-model="item.codeKey" filterable placeholder="请选择" size="mini">
+              <el-select v-model="item.codeKey" clear="hinge-sele" filterable placeholder="请选择" size="mini">
                 <el-option v-for="(item, index) in variateList" :key="index" :label="item.value" :value="item.key" />
               </el-select>
             </div>
@@ -95,15 +96,13 @@ export default {
         id: null // 编辑的时候需要带id
       },
       originOpt: [], // 模板名称
-      variateList: [] //变量属性值
+      variateList: [] // 变量属性值
     }
   },
   computed: {
     rules() {
       return {
-        ntId: [
-          { required: true, message: this.formObj.type == 3 ? '请选择消息标题' : '请选择模板名称', trigger: 'change' }
-        ],
+        ntId: [{ required: true, message: '请选择模板', trigger: 'change' }],
         content: [{ required: true, message: '模板内容不能为空', trigger: 'change' }],
         templateRemark: [{ required: true, message: '模板备注不能为空', trigger: 'blur' }]
       }
@@ -115,6 +114,7 @@ export default {
     await this.onGetKeyValueList()
     if (this.$route.query.id) {
       this.formObj.id = this.$route.query.id || null
+      this.formObj.status = this.$route.query.status
       await this.particulars()
     }
   },
@@ -131,11 +131,11 @@ export default {
     },
     // 选择模板名称 列表
     async onLibrary() {
-      let formObj = this.formObj
+      let { formObj } = this
       let detailsCode = ''
       if (!formObj.ntId) return
       this.originOpt.forEach(v => {
-        if (v.id == formObj.ntId) detailsCode = v.templateCode
+        if (v.id === formObj.ntId) detailsCode = v.templateCode
       })
       const res = await getNoticeTemplateDetail({ templateCode: detailsCode })
       formObj.content = res.data.content
@@ -145,7 +145,7 @@ export default {
     },
     // 编辑获取数据
     async particulars() {
-      let formObj = this.formObj
+      let { formObj } = this
       const { data } = await getNoticeTemplateSetDetailById({ id: formObj.id })
       formObj.noticeTypeId = data.noticeTypeId + ''
       formObj.content = data.content
@@ -161,7 +161,7 @@ export default {
       this.$refs.form.validate(async valid => {
         if (!valid) return
 
-        if (this.formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.some(v => v.codeKey == '')) {
+        if (this.formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.some(v => v.codeKey === '')) {
           return this.$message({
             message: '请选择属性变量',
             type: 'error'
@@ -170,7 +170,7 @@ export default {
 
         this.formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(v => {
           this.variateList.forEach(j => {
-            if (v.codeKey == j.key) {
+            if (v.codeKey === j.key) {
               v.value.dataBase = j.dataBase
               v.value.key = j.key
               v.value.table = j.table

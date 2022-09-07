@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import Details from '../templateLibrary/components/details'
 import {
   noticeTemplateSetList,
@@ -39,7 +40,7 @@ export default {
     },
     // 表格数据
     async fetchData(reset) {
-      if (reset) this.currentPage = 1
+      if (reset) this.currentpage = 1
       this.listLoading = true
       this.list = []
       let { type, title } = this.query
@@ -60,30 +61,39 @@ export default {
     // 跳转添加模板
     onSynchronization(row) {
       //  query.type   1:短信 2：消息订阅  3：app
+      // status  状态 0禁用 1启用 2删除
       let id = null
+      let status = 1
+
       if (row.id) id = row.id
+      if (row.status !== undefined) status = row.status
+
       this.$router.push({
         path: '/template-set/add-note/index',
         query: {
           id,
+          status,
           type: this.query.type
         }
       })
     },
     // 详情
     async particulars(row) {
-      const res = await getNoticeTemplateSetDetailById({ id: row.id })
       // 短信: smsNoticeTemplateVo  订阅 :subscriptionNoticeTemplateVo  app:appNoticeTemplateVo
-      let toxon = 'smsNoticeTemplateVo'
+      let toxon =
+        this.query.type === '1'
+          ? 'smsNoticeTemplateVo'
+          : this.query.type === '2'
+          ? 'subscriptionNoticeTemplateVo'
+          : 'appNoticeTemplateVo'
+      let res = await getNoticeTemplateSetDetailById({ id: row.id })
       res.data.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(v => {
         res.data[toxon].variableAttributes.forEach(j => {
-          if (v.key == j.key) j.value = v.value.value
+          if (v.key === j.key) j.value = v.value.value
         })
       })
       this.$refs.details.show(res)
     },
-    // 编辑
-    onEdit() {},
     // 禁用
     onForbidden(row) {
       const h = this.$createElement

@@ -46,7 +46,7 @@ export default {
   data() {
     return {
       formObj: {
-        type: '2', //模板类型 1短信通知、2订阅消息、3APP通知
+        type: '2', // 模板类型 1短信通知、2订阅消息、3APP通知
         templateCode: '', // 模板code/模板id
         templateName: '', // 模板名称
         subscriptionNoticeTemplateDTO: {
@@ -69,11 +69,12 @@ export default {
           {
             validator: async (rule, value, callback) => {
               const res = await getNoticeTemplateDetail({ templateCode: value })
-              if (res.state == 0) {
+              if (res.state === 0) {
                 return callback(new Error(res.msg))
               } else {
-                let formObj = this.formObj
-
+                let { formObj } = this
+                formObj.subscriptionNoticeTemplateDTO.variableAttributes = res.data.variableAttributes
+                formObj.templateName = res.data.templateName
                 callback() // 必须加上这个，不然一直塞在验证状态
               }
             },
