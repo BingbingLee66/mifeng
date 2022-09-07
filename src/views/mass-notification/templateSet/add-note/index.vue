@@ -18,7 +18,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item :label="formObj.type == 3 ? '消息标题：' : '模板名称：'" prop="ntId">
-            <el-select v-model="formObj.ntId" filterable placeholder="请选择" @change="onLibrary">
+            <el-select v-model="formObj.ntId" filterable placeholder="请选择模板" @change="onLibrary">
               <el-option v-for="(item, index) in originOpt" :key="index" :label="item.templateName" :value="item.id" />
             </el-select>
           </el-form-item>
@@ -102,13 +102,7 @@ export default {
   computed: {
     rules() {
       return {
-        ntId: [
-          {
-            required: true,
-            message: this.formObj.type === '3' ? '请选择消息标题' : '请选择模板名称',
-            trigger: 'change'
-          }
-        ],
+        ntId: [{ required: true, message: '请选择模板', trigger: 'change' }],
         content: [{ required: true, message: '模板内容不能为空', trigger: 'change' }],
         templateRemark: [{ required: true, message: '模板备注不能为空', trigger: 'blur' }]
       }
@@ -120,7 +114,7 @@ export default {
     await this.onGetKeyValueList()
     if (this.$route.query.id) {
       this.formObj.id = this.$route.query.id || null
-      this.formObj.status = this.$route.query.status 
+      this.formObj.status = this.$route.query.status
       await this.particulars()
     }
   },

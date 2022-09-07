@@ -39,11 +39,11 @@
           </div>
         </div>
         <div class="offside">
-          <div class="offside-stencil">场外链接</div>
+          <div class="offside-stencil">场景链接</div>
           <div v-if="infoDate.smsNoticeTemplateVo" class="details">{{ infoDate.smsNoticeTemplateVo.link }}</div>
         </div>
         <div class="offside">
-          <div class="offside-stencil">场外说明</div>
+          <div class="offside-stencil">场景说明</div>
           <div v-if="infoDate.smsNoticeTemplateVo" class="details">
             {{ infoDate.smsNoticeTemplateVo.sceneDescription }}
           </div>
