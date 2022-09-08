@@ -10,7 +10,7 @@ const formData = {
   // 联系人电话
   contactPhone: "",
   // 入会类型
-  membershipType: -1,
+  type: -1,
   //审核状态
   status: -1
 };
@@ -52,7 +52,7 @@ const formItem = [
   },
   {
     label: "入会类型",
-    prop: "membershipType",
+    prop: "type",
     type: "select",
     options: [
       { label: "全部", value: -1 },

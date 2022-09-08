@@ -79,7 +79,7 @@ export default {
         chamberName,
         contactPhone,
         name,
-        membershipType,
+        type,
         status,
         applySource,
       } = this.formData;
@@ -87,7 +87,7 @@ export default {
         chamberName,
         contactPhone,
         name,
-        membershipType,
+        type,
         status,
         applySource,
         pageNum: currentpage,
@@ -106,7 +106,7 @@ export default {
     },
     async queryData(formData) {
       this.formData = { ...formData };
-      await this.fetchData(1);
+      await this.fetchData();
       this.$refs.tableRef.handleSelectionClear();
     },
     resetData() {
@@ -133,7 +133,7 @@ export default {
       if (res.state != 1) return this.$message.error(res.msg);
       this.$message.success(res.msg);
       console.log(res);
-      await this.fetchData(1);
+      await this.fetchData();
       this.$refs.tableRef.handleSelectionClear();
       console.log("通过操作");
     },
