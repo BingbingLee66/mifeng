@@ -279,9 +279,22 @@ export default {
     },
     downloadImgs() {
       if (!this.selectedImgIds.length) return this.$message({ message: '请选择下载图片', type: 'warning' })
-      this.imgList.forEach(v => {
-        if (this.selectedImgIds.includes(v.id)) {
-          downloadFile({ url: v.img, title: v.fileName })
+      this.handleDownload(this.selectedImgIds)
+      this.selectedImgIds = []
+    },
+    handleDownload(imgIds = []) {
+      if (!this.downloadQueue) {
+        this.downloadQueue = []
+        this.downloadingQueue = []
+      }
+      if (imgIds.length) this.downloadQueue.push(...imgIds)
+      const downloadingCount = this.downloadingQueue.length
+      if (!this.downloadQueue.length || downloadingCount >= 5) return // 维持5个并发
+      const preDownloadingQueue = this.downloadQueue.splice(0, 5 - downloadingCount)
+      this.imgList.forEach(async v => {
+        if (preDownloadingQueue.includes(v.id)) {
+          await downloadFile({ url: v.img, title: v.fileName }) // 下载
+          this.handleDownload() // 递归
         }
       })
     }
