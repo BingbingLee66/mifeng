@@ -309,8 +309,11 @@ export default {
       const preDownloadingQueue = this.downloadQueue.splice(0, 5 - downloadingCount)
       this.imgList.forEach(async v => {
         if (preDownloadingQueue.includes(v.id)) {
-          await downloadFile({ url: v.img, title: v.fileName }) // 下载
-          this.handleDownload() // 递归
+          try {
+            await downloadFile({ url: v.img, title: v.fileName }) // 下载
+          } finally {
+            this.handleDownload() // 递归
+          }
         }
       })
     }
