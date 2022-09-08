@@ -108,7 +108,7 @@ export default {
       const { ckey, isPlatform } = this
       return [
         {
-          label: '相册信息', width: 200,
+          label: '图片直播信息', width: 200,
           render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumCkey}</div>{row.albumName}</div>
         },
         {

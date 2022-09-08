@@ -1,11 +1,11 @@
 <template>
   <div class="wrap">
-    <h2>创建直播相册</h2>
+    <h2>创建图片直播</h2>
     <el-form ref="form" class="form" :model="formModel" :rules="formRules" label-width="120px">
-      <el-form-item label="相册名称" prop="albumName">
+      <el-form-item label="图片直播名称" prop="albumName">
         <el-input v-model="formModel.albumName" placeholder="限60字内" :maxlength="60" />
       </el-form-item>
-      <el-form-item label="相册介绍" prop="introduce">
+      <el-form-item label="图片直播介绍" prop="introduce">
         <el-input v-model="formModel.introduce" type="textarea" :maxlength="200" show-word-limit :autosize="{minRows:3}" resize="none" />
       </el-form-item>
       <el-form-item label="关联业务" prop="name">
@@ -51,7 +51,7 @@
       </el-form-item>
       <el-form-item>
         <template #label>
-          <div>前台相册管理</div>
+          <div>前台图片管理</div>
           <div class="desc">最多5位</div>
         </template>
         <div v-for="item of albumAdminPhones" :key="item">
