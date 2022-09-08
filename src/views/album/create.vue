@@ -258,7 +258,7 @@ export default {
       const { formModel, ckey } = this
       const { state, msg } = await saveAlbum({
         ...formModel,
-        introduce: formModel.introduce.replace(/[\s]+/g, ' ').trim(),
+        introduce: (formModel.introduce || '').replace(/[\s]+/g, ' ').trim(),
         ckey
       })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
