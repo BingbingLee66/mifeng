@@ -83,7 +83,7 @@ export const getKeyValueList = params =>
   })
 
 // 查询所有会员列表
-export const getMemberList = params => request({ url: '/ec/member/all-member-page-list', method: 'post', params })
+export const getMemberList = data => request({ url: '/ec/member/all-member-page-list', method: 'post', data })
 
 // 查询指定商会会员列表
 export const getChamberMemberList = data => request({ url: '/ec/member/chamber-member-page-list', method: 'post', data })
@@ -99,3 +99,6 @@ export const selectTemplateListAdmin = params => request({ url: '/ec/notice-temp
 export const memberPageList = data => request({ url: '/ec/member/chamber-member-page-list', method: 'post', data })
 // 查询某个商会下面的职位
 export const memberPostList = params => request({ url: '/ec/memberPost/member-post-select-list', method: 'get', params })
+
+//商会后台 查询本商会会员
+

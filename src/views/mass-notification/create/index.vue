@@ -7,7 +7,7 @@
         </el-radio-group>
       </el-form-item>
       <!-- 接收人 -->
-      <ReceiveForm ref="receiveForm" @receiveChange="receiveChange" :ckey="ckey" :receive-list="receiveList" />
+      <ReceiveForm :receive="form.receive" ref="receiveForm" @receiveChange="receiveChange" :ckey="ckey" :receive-list="receiveList" />
       <!-- 关联活动详情  为活动通知或招商活动的时候显示-->
       <div v-if="form.type === 2 || form.type === 3" class="label-item">
         <div class="title-hd">关联活动详情 <span>（必填，配置会内通知"立即进入活动详情"跳转页）</span></div>
@@ -104,8 +104,8 @@
       <el-form-item label="发送方式" prop="sendType">
         <el-radio-group v-model="form.sendType">
           <el-radio label="1">立即发送</el-radio>
-          <el-radio label="2 ">定时发送</el-radio>
-          <el-date-picker v-if="form.sendType == 2" v-model="sendTime" type="datetime" placeholder="请选择发送时间">
+          <el-radio label="2">定时发送</el-radio>
+          <el-date-picker type="datetime"  value-format="timestamp"  v-if="form.sendType == 2" v-model="form.sendTime"  placeholder="请选择发送时间">
           </el-date-picker>
         </el-radio-group>
       </el-form-item>
@@ -125,7 +125,7 @@
       </div>
       <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
     </kdDialog>
-    <kdDialog ref="imgDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true">
+    <kdDialog ref="imgDialog" :custom-footer="true" dialog-title="图片预览" :center="true">
       <div slot="content">
         <img :src="currentImg" class="preview-img" />
       </div>
@@ -170,6 +170,7 @@ export default {
         // 同步渠道
         synchChannels: [],
         agreeRule: false,
+        sendTime: '',
 
         // 自定义通知相关
         title: '', // 消息标题
@@ -184,7 +185,7 @@ export default {
         // { label: '微信订阅消息', templateList: [], id: 2, selectActivity: null },
         // { label: 'APP通知', templateList: [], id: 3, selectActivity: null }
       ],
-      sendTime: '',
+      
       rules: {
         type: [{ required: true, message: '请选择', trigger: 'blur' }],
         // synchChannels: [
@@ -272,6 +273,7 @@ export default {
      
       this.$refs['indexFormRef'].validate(valid => {
         if (valid) {
+          const {ckey,form:{type:noticeTypeId,receive:receiveTypeId,sendTime:sendTs,sendType}}=this
           let params = {
             channelTypeTemplateDTOS: this.form.synchChannels.map(item => ({
               channelTypeId: item.id,
@@ -289,10 +291,10 @@ export default {
             // 当通知类型为3时，{'associationId': 招商活动id}
             // 当通知类型为5时：
             // extend:{'title':'标题','content':'内容',imgs:['图片', '图片2']}
-            extend: {
-              receiverList: []
-            }
+            extend: this.extendFunc(),
+            ckey,noticeTypeId,receiveTypeId,sendTs,sendType
           }
+          console.log('params',params)
         } else {
           return false
         }
@@ -383,7 +385,6 @@ export default {
       if(type===5){const {form:{title,content,imgs}} =this ;obj={title,content,imgs}}
       console.log('obj',obj)
       return obj
-
     },
     restTypeData() {
       const { ckey } = this
@@ -393,8 +394,10 @@ export default {
         ? receiveType.filter(item => item.show !== 1)
         : receiveType.filter(item => item.show !== 2)
 
-      //给receive一个默认值
-      this.form.receive = this.receiveList[0].type
+      //给type receive一个默认值
+      this.form.type = this.labelList[0].type
+      this.form.receive = this.receiveList[0].type;
+      console.log('父组件的create')
     },
     // 图片上传前校验
     beforeAvatarUpload(file, index) {

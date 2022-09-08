@@ -5,8 +5,8 @@
         <el-radio-group @change="radioChange" v-model="form.receive">
           <el-radio v-for="(item, index) in receiveList" :key="index" :label="item.type">{{ item.n }}</el-radio>
         </el-radio-group>
-        <!-- 所有会员 -->
-        <SelectShow @showDialog="showDialog" v-if="form.receive === -1" :num="memberNum" />
+        <!-- 所有会员（总后台） 本商会会员（商会后台）-->
+        <SelectShow @showDialog="showDialog" v-if="form.receive === -1 || form.receive === 1" :num="memberNum" />
         <!-- 指定商会会员 -->
         <SelectShow
           v-if="form.receive === 5"
@@ -16,13 +16,17 @@
           @showDialog="selectEmit"
         />
         <!-- 指定职位 -->
-        <div v-if="form.receive === 2" style="display:flex">
-          <el-select  v-model="form.position" class="my-input" multiple placeholder="请选择">
+        <div v-if="form.receive === 2">
+          <el-select v-model="form.position" class="my-input" multiple placeholder="请选择">
             <el-option v-for="(item, index) in options" :key="index" :label="item.postName" :value="item.id">
               {{ item.postName }}({{ item.memberNum }})</el-option
             >
           </el-select>
-           <span style="margin-left:10px">已选{{positionCount}}人</span>
+          <div>
+            <SelectShow v-if="positionCount > 0" @showDialog="showDialog" :num="positionCount" />
+          </div>
+
+          <!-- <span style="margin-left:10px">已选{{positionCount}}人</span> -->
         </div>
 
         <!-- 指定部门 -->
@@ -36,7 +40,7 @@
             </div>
           </div>
 
-          <SelectShow v-if="departmentCount > 0" :num="departmentCount" />
+          <SelectShow v-if="departmentCount > 0" @showDialog="showDialog" :num="departmentCount" />
           <div v-if="showTree" class="tree">
             <el-tree
               ref="tree"
@@ -93,13 +97,21 @@
       >
         <!-- 搜索框 -->
         <div slot="form">
-          <el-form-item label="搜索" v-if="form.receive === -1">
-            <el-input class="search-input" v-model="name" :placeholder="placeholder"></el-input>
+          <el-form :inline="true">
+            <el-form-item :label="labelComputed">
+              <!-- <el-input class="search-input" v-model="query.chamberName" :placeholder="placeholder"></el-input> -->
+            </el-form-item>
+
+            <el-button @click="getNumberList">查询</el-button>
+          </el-form>
+
+          <!-- <el-form-item :label="labelComputed" v-if="form.receive === -1">
+            <el-input class="search-input" v-model="query.chamberName" :placeholder="placeholder"></el-input>
           </el-form-item>
 
           <el-form-item label="搜索" v-if="form.receive === 5">
             <el-input class="search-input" v-model="name" placeholder="商协会名称"></el-input>
-          </el-form-item>
+          </el-form-item> -->
         </div>
 
         <div slot="receive">
@@ -124,7 +136,7 @@ import { memberTableConfig, memberCountTableConfig, memberPageListConfig } from 
 export default {
   name: 'ReceiveForm',
   components: { receiveDialog, SelectShow },
-  props: ['receiveList', 'ckey'],
+  props: ['receiveList', 'ckey', 'receive'],
   provide() {
     return {
       tableMsg: this
@@ -141,6 +153,16 @@ export default {
         department: null,
         // 输入手机号
         phones: ''
+      },
+      query: {
+        //手机号/姓名/企业名称 商会后台本商会会员 1
+        keyword: '',
+        //手机号/姓名  指定会员商会后台 4
+        keyword: '',
+        //姓名  所有会员 -1
+        uname: '',
+        //商协会名称 指定商会会员 5
+        chamberName: ''
       },
       // 会内职位
       options: [],
@@ -170,6 +192,26 @@ export default {
       total: 0
     }
   },
+  watch: {
+    'form.receive'(newVal, oldVal) {
+      this.page = 1
+      this.pageSize = 10
+      //所有会员
+      if (this.form.receive === -1 || this.form.receive === 4 || this.form.receive === 1) {
+        this.getNumberList()
+      } else if (this.form.receive === 3) {
+        //指定部门
+        this.getDepartmentListFunc()
+      } else if (this.form.receive === 2) {
+        //指定职位
+        this.memberPostListFunc()
+      }
+      //清楚已选数据
+      this.selectData = []
+      this.columnConfig = []
+      this.selectMemberList = []
+    }
+  },
   computed: {
     departmentCount() {
       return this.form.department
@@ -179,21 +221,37 @@ export default {
     btnTextComput() {
       return this.selectMemberList.length > 0 ? '查看' : '去选择'
     },
-    positionCount(){
-      const {options,form:{position}}=this;
-      if(!position.length>0)return 0
-      let count =0
-      for(let v of position){
-       let result= options.find(item=>item.id===v);
-       result && (count+=result.memberNum)}
+    positionCount() {
+      const {
+        options,
+        form: { position }
+      } = this
+      if (!position.length > 0) return 0
+      let count = 0
+      for (let v of position) {
+        let result = options.find(item => item.id === v)
+        result && (count += result.memberNum)
+      }
       return count
+    },
+    labelComputed() {
+      const {
+        form: { receive }
+      } = this
+      return receive === -1
+        ? '姓名'
+        : receive === 5
+        ? '商协会名称'
+        : receive === 4
+        ? '手机号/姓名'
+        : '手机号/姓名/企业名称'
     }
   },
   created() {
-    this.form.receive = this.receiveList[0].type
-    this.getDepartmentListFunc()
-    this.listFunc()
-    this.getNumberList()
+    console.log('this.receive', this.receive)
+    this.form.receive = this.receive
+    // this.getDepartmentListFunc()
+    // this.getNumberList()
   },
   methods: {
     showTreeFunc() {
@@ -211,13 +269,6 @@ export default {
       this.$refs.tree.setChecked(id, false, true)
     },
     /** 请求 */
-    async listFunc() {
-      await list({
-        pageSize: 10,
-        page: 1,
-        ckey: 'tlUMN9'
-      })
-    },
     //拉取部门
     async getDepartmentListFunc() {
       const { data } = await getDepartmentList({ ckey: this.ckey, parentId: 0 })
@@ -230,9 +281,10 @@ export default {
       this.options = data
       console.log('data', data)
     },
-    //拉取所有会员
+    //拉取
     async getNumberList() {
-      const { page, pageSize, ckey } = this
+      const { page, pageSize, ckey, query } = this
+      let params = { page, pageSize, ckey }
       let API = getMemberList
       //所有会员
       if (this.form.receive === -1) {
@@ -240,12 +292,27 @@ export default {
       } else if (this.form.receive === 5) {
         //指定商会会员
         API = getMemberCountList
-      } else if (this.form.receive === 4) {
-        //指定商会会员 商会后台用
+      } else if (
+        this.form.receive === 2 ||
+        this.form.receive === 3 ||
+        this.form.receive === 4 ||
+        this.form.receive === 1
+      ) {
+        //指定商会会员 and本商会会员 商会后台用
+        const {
+          form: { position, department }
+        } = this
         API = getChamberMemberList
+        if (this.form.receive === 2) {
+          params.postIds = position
+        }
+        if (this.form.receive === 3) {
+          params['departmentIds'] = department && department.map(v => v.id)
+        }
+        //todo 写到query传参
       }
 
-      const { data } = await API({ page, pageSize, ckey })
+      const { data } = await API(params)
       this.memberNum = data.totalRows
       this.total = data.totalRows
       this.tableData = data.list
@@ -269,20 +336,8 @@ export default {
     },
     //接收人发生改变
     radioChange() {
-      this.page = 1
-      this.pageSize = 10
+      console.log('接收人改变')
       this.$emit('receiveChange', this.form.receive)
-      if (this.form.receive === 3) {
-        //指定部门
-        this.getDepartmentListFunc()
-      } else if (this.form.receive === 2) {
-        //指定职位
-        this.memberPostListFunc()
-      }
-      //清楚已选数据
-      this.selectData = []
-      this.columnConfig = []
-      this.selectMemberList = []
     },
 
     /** 与子组件交互 */
@@ -328,12 +383,25 @@ export default {
       this.commitType = 1
       console.log('查看按钮')
       // 显示弹框组件
-      console.log(this.$refs['receiveRef'].$children[0].show())
+
       //指定商会会员
       if (this.form.receive === 5) {
         this.columnConfig = memberCountTableConfig
       } else if (this.form.receive === 4) {
         this.columnConfig = memberPageListConfig
+      }else if (this.form.receive === 1) {
+        this.$refs['receiveRef'].$children[0].show()
+         this.columnConfig = memberPageListConfig
+        this.columnConfig.shift()
+        this.getNumberList()
+       
+      }
+      //指定部门 //指定职位
+      else if (this.form.receive === 3 || this.form.receive === 2) {
+        this.$refs['receiveRef'].$children[0].show()
+        this.columnConfig = memberPageListConfig
+        this.columnConfig.shift()
+        this.getNumberList()
       } else {
         //this.form.receive === -1
         this.columnConfig = memberTableConfig
