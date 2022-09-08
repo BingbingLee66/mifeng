@@ -250,10 +250,14 @@ export default {
     },
     // 上传前校验
     beforeUpload(file, index) {
-      if (!['image/jpeg', 'image/jpg', 'image/png', 'image/bmp'].includes(file.type)) {
+      if (
+        !['image/jpeg', 'image/jpg', 'image/png', 'image/bmp'].includes(file.type) ||
+        !/(jpeg)|(jpg)|(png)|(bmp)$/.test(file.name)
+      ) {
         this.$message.error('上传图片只能是 JPG 或 PNG 或 BMP 格式!')
         return false
       }
+
       if (file.size > 1024 * 1024 * 10) {
         this.$message.error('上传图片大小不能超过 10MB!')
         return false
