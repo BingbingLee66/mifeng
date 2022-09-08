@@ -18,9 +18,11 @@
           accept="image/jpg,image/png,image/jpeg,image/bmp"
           multiple
           :show-file-list="false"
+          :limit="Math.max(1000 - albumDetail.imgCount, 0.1)"
           :file-list="uploadingList"
           :before-upload="beforeUpload"
           :http-request="onUpload"
+          :on-exceed="onExceed"
         >
           <el-button type="primary">上传图片</el-button>
         </el-upload>
@@ -45,7 +47,7 @@
                       :file="img.file"
                       :album-id="$route.query.id"
                       :index="uploadingList.findIndex(v => v.id === img.id)"
-                      @delete="onDelUploadingImg(img, $event)"
+                      @delete="onDelUploadingImg(img, true)"
                       @reject="onUploadFail(img)"
                       @fail="onUploadFail(img)"
                       @success="onUploadSuccess(img, $event)"
@@ -102,7 +104,9 @@ export default {
   props: {},
   data() {
     return {
-      albumDetail: { },
+      albumDetail: {
+        imgCount: 0
+      },
       query: {
         pageSize: 20,
         auditStatus: '',
@@ -219,6 +223,7 @@ export default {
       if (state === 1) {
         this.imgList = this.imgList.filter(v => !imgIds.includes(v.id))
         this.selectedImgs = []
+        this.albumDetail.imgCount = this.albumDetail.imgCount - imgIds.length
       }
     },
     // 切换图片状态
@@ -254,16 +259,23 @@ export default {
         return false
       }
     },
+    // 超出1000张
+    onExceed(e) {
+      this.$message.error('图片数量超过1000张')
+    },
     onUpload({ file }) {
+      this.albumDetail.imgCount++
       this.uploadingList.unshift(this.formatImgData({ file, createdTs: Date.now(), id: `uid_${file.uid}` }))
     },
-    onDelUploadingImg(img) {
+    onDelUploadingImg(img, isDelete) {
+      if (isDelete) this.albumDetail.imgCount--
       const index = this.uploadingList.findIndex(v => v.id === img.id)
       this.uploadingList.splice(index, 1)
     },
     onUploadFail(img) {
       this.onDelUploadingImg(img)
       this.uploadingList.push(img)
+      this.albumDetail.imgCount--
     },
     onUploadSuccess(img, { value }) {
       this.onDelUploadingImg(img) // 删除正在上传
