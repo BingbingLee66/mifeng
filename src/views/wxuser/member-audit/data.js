@@ -33,6 +33,7 @@ const formItem = [
     type: "select",
     options: [
       { label: "全部", value: -1 },
+      { label: "未知", value: 0 },
       { label: "小程序会员入住", value: 1 },
       { label: "小程序商协会主页", value: 2 },
       { label: "App会员入驻", value: 3 },
@@ -102,8 +103,8 @@ const tableColumn = [
   },
   {
     label: "申请时间",
-    type: "joinTime",
-    prop: "time"
+    type: "time",
+    prop:'joinTime'
   },
   {
     label: "入会名称",
