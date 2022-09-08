@@ -162,7 +162,7 @@ export default {
       receiveList: [],
       form: {
         // 类型
-        type: 3,
+        type: 2,
         // 接收人
         receive: 1,
         // 发送方式
@@ -283,6 +283,7 @@ export default {
             // 当接收人类型为4时，传会员id集合({'receiverList': []});
             // 当接收人类型为5时，传商会ckey集合({'receiverList': []});
             // 当接收人类型为6时，传手机号集合({'receiverList': []});
+            //关联对象：
             // 当通知类型为1、4、5时不用传
             // 当通知类型为2时，{'associationId': 活动id}
             // 当通知类型为3时，{'associationId': 招商活动id}
@@ -347,32 +348,39 @@ export default {
     },
     // extend扩展字段
     extendFunc(){
-      const {form:{receive}}=this;
+      const {form:{receive,type},activityList}=this;
       let obj={}
+    console.log('this.$refs[receiveForm].$data.form.department',this.$refs['receiveForm'].$data);
+    let refData=this.$refs['receiveForm'].$data
       switch (receive){
         case 2:
           //职位id集合
-    
+          obj['receiverList']=refData.form.position  
         break;
         case 3:
-          //传部门id集合
-        
+          //传部门id集合          
+          obj['receiverList']=refData.form.department.map(v=>v.id)
         break;
         case 4:
           //会员id集合
-      
+          obj['receiverList']=refData.selectMemberList.map(v=>v.id) 
         break;
         case 5:
           //商会ckey集合
-       obj['receiverList']=this.$refs['receiveForm'].$data.selectMemberList.map(v=>v.ckey)    
+       obj['receiverList']=refData.selectMemberList.map(v=>v.ckey)    
         break;
         case 6:
           //手机号集合
-          obj['receiverList']=this.$refs['receiveForm'].$data.form.phones.split("\n")    
+          obj['receiverList']=refData.form.phones.split("\n")    
         break;
        default:
 
       }
+      //当通知类型为2时，{'associationId': 活动id},当通知类型为3时，{'associationId': 招商活动id}
+      if(type===2 || type ===3){
+        obj['associationId']=activityList[0] && activityList[0].id       
+      }
+      if(type===5){const {form:{title,content,imgs}} =this ;obj={title,content,imgs}}
       console.log('obj',obj)
       return obj
 

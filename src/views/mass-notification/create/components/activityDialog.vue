@@ -56,9 +56,9 @@ export default {
       type: Number,
       default: 2
     },
-    activityList:{
-      type:Array,
-      default:[]
+    activityList: {
+      type: Array,
+      default: []
     }
   },
   provide() {
@@ -100,16 +100,14 @@ export default {
   },
 
   created() {
- this.resetColumnConfig()
-      
-   
+    this.resetColumnConfig()
   },
   methods: {
     /** 请求 */
     async getActivityListFunc() {
-      let api=getActivityList;
-      if(this.activityType === 3){
-        api=getInvesActivityList
+      let api = getActivityList
+      if (this.activityType === 3) {
+        api = getInvesActivityList
       }
       const { pageSize, pageNum: page, form } = this
       const { data } = await api({
@@ -134,9 +132,13 @@ export default {
       this.dialogVisible = true
     },
     //关闭弹框
-    submit() {
-      this.dialogVisible = false
-      this.$emit('addActivity', this.selectData)
+    submit() {     
+      if (this.selectData.length > 1) {
+         this.$message.error('只能选一个')
+      } else {
+        this.dialogVisible = false
+        this.$emit('addActivity', this.selectData)
+      }
     },
     handleClose() {
       this.dialogVisible = false
@@ -183,9 +185,13 @@ export default {
           type: 'general',
           formatter: row => {
             return (
-              dayjs(parseInt(this.activityType===2 ? row.startTime : row.activityStartTime)).format('YYYY-MM-DD HH:mm:ss') +
+              dayjs(parseInt(this.activityType === 2 ? row.startTime : row.activityStartTime)).format(
+                'YYYY-MM-DD HH:mm:ss'
+              ) +
               '~' +
-              dayjs(parseInt(this.activityType===2 ? row.startTime :row.activityEndTime)).format('YYYY-MM-DD HH:mm:ss')
+              dayjs(parseInt(this.activityType === 2 ? row.startTime : row.activityEndTime)).format(
+                'YYYY-MM-DD HH:mm:ss'
+              )
             )
           }
         },
@@ -202,9 +208,8 @@ export default {
           prop: 'chamberName',
           label: '活动来源',
           type: 'general',
-          formatter:row=>{
-            return this.activityType===2 ? row.chamberName :row.invesName
-            
+          formatter: row => {
+            return this.activityType === 2 ? row.chamberName : row.invesName
           }
         },
         {
@@ -233,22 +238,18 @@ export default {
           formatter: row => {
             return row.status === 1 ? '未开发' : row.status === 2 ? '报名中' : '已结束'
           }
-        },
-
+        }
       ]
-      if(this.activityType===2){
-        this.columnConfig.push(
-          {
+      if (this.activityType === 2) {
+        this.columnConfig.push({
           prop: 'createdTs',
           label: '创建时间',
           type: 'general',
           formatter: row => {
             return dayjs(parseInt(row.createdTs)).format('YYYY-MM-DD HH:mm:ss')
           }
-        }
-        )
+        })
       }
-              
     }
   }
 }

@@ -16,11 +16,14 @@
           @showDialog="selectEmit"
         />
         <!-- 指定职位 -->
-        <el-select v-if="form.receive === 2" v-model="form.position" class="my-input" multiple placeholder="请选择">
-          <el-option v-for="(item, index) in options" :key="index" :value="item.name">
-            {{ item.name }}({{ item.count }})</el-option
-          >
-        </el-select>
+        <div v-if="form.receive === 2" style="display:flex">
+          <el-select  v-model="form.position" class="my-input" multiple placeholder="请选择">
+            <el-option v-for="(item, index) in options" :key="index" :label="item.postName" :value="item.id">
+              {{ item.postName }}({{ item.memberNum }})</el-option
+            >
+          </el-select>
+           <span style="margin-left:10px">已选{{positionCount}}人</span>
+        </div>
 
         <!-- 指定部门 -->
         <div v-if="form.receive === 3">
@@ -55,7 +58,12 @@
         </div>
         <!-- 指定会员 -->
         <div v-if="form.receive === 4">
-          <SelectShow :btn-text="btnTextComput" :num="selectMemberList.length" @selectEmit="selectEmit" @showDialog="showDialog" />
+          <SelectShow
+            :btn-text="btnTextComput"
+            :num="selectMemberList.length"
+            @selectEmit="selectEmit"
+            @showDialog="showDialog"
+          />
         </div>
         <!-- 手机号 -->
         <div v-if="form.receive === 6">
@@ -110,9 +118,9 @@
 import receiveDialog from '../../components/common/receiveDialog'
 import SelectShow from '../../components/content/selectShow'
 import { getDepartmentList } from '@/api/org-structure/org'
-import { getMemberList, getMemberCountList,memberPageList } from '@/api/mass-notification/index'
+import { getMemberList, getMemberCountList, getChamberMemberList, memberPostList } from '@/api/mass-notification/index'
 import { list } from '@/api/member/manager'
-import { memberTableConfig, memberCountTableConfig,memberPageListConfig } from '../../util/label'
+import { memberTableConfig, memberCountTableConfig, memberPageListConfig } from '../../util/label'
 export default {
   name: 'ReceiveForm',
   components: { receiveDialog, SelectShow },
@@ -129,13 +137,13 @@ export default {
       c: '3',
       form: {
         receive: 4,
-        position: null,
+        position: [],
         department: null,
         // 输入手机号
         phones: ''
       },
       // 会内职位
-      options: [{ name: '会长', count: 33 }, { name: '学生', count: 93 }],
+      options: [],
       treeList: [],
       defaultProps: {
         children: 'departmentRespList',
@@ -146,7 +154,7 @@ export default {
       // 所有会员数
       memberNum: 0,
       // 已选指定会员数，用来显示和储存
-      selectMemberList:[],
+      selectMemberList: [],
       // 操作type 1 查看 2选择
       commitType: 1,
       name: '',
@@ -170,6 +178,15 @@ export default {
     },
     btnTextComput() {
       return this.selectMemberList.length > 0 ? '查看' : '去选择'
+    },
+    positionCount(){
+      const {options,form:{position}}=this;
+      if(!position.length>0)return 0
+      let count =0
+      for(let v of position){
+       let result= options.find(item=>item.id===v);
+       result && (count+=result.memberNum)}
+      return count
     }
   },
   created() {
@@ -201,28 +218,34 @@ export default {
         ckey: 'tlUMN9'
       })
     },
+    //拉取部门
     async getDepartmentListFunc() {
-      const {
-        data: { data }
-      } = await getDepartmentList({ ckey: this.ckey, parentId: 0 })
+      const { data } = await getDepartmentList({ ckey: this.ckey, parentId: 0 })
+      console.log('data', data)
       this.treeList = data[0].departmentRespList
+    },
+    //拉取职位
+    async memberPostListFunc() {
+      const { data } = await memberPostList({ ckey: this.ckey })
+      this.options = data
+      console.log('data', data)
     },
     //拉取所有会员
     async getNumberList() {
-      const { page, pageSize ,ckey} = this
-      let API = getMemberList;
+      const { page, pageSize, ckey } = this
+      let API = getMemberList
       //所有会员
       if (this.form.receive === -1) {
         API = getMemberList
       } else if (this.form.receive === 5) {
         //指定商会会员
         API = getMemberCountList
-      }else if (this.form.receive === 4) {
+      } else if (this.form.receive === 4) {
         //指定商会会员 商会后台用
-        API = memberPageList
+        API = getChamberMemberList
       }
-      
-      const { data } = await API({ page, pageSize,ckey })
+
+      const { data } = await API({ page, pageSize, ckey })
       this.memberNum = data.totalRows
       this.total = data.totalRows
       this.tableData = data.list
@@ -234,14 +257,13 @@ export default {
     /** 行为操作 */
     save() {
       // 点击确定按钮
-      console.log('this.selectData', this.selectData);
-      console.log('this.$refs.$children',this.$refs['receiveRef'].$refs['tableRef'])
+      console.log('this.selectData', this.selectData)
+      console.log('this.$refs.$children', this.$refs['receiveRef'].$refs['tableRef'])
       //查看模式
-      if(this.commitType === 1){
-
-      }else{
+      if (this.commitType === 1) {
+      } else {
         //选择模式
-        this.selectMemberList=this.selectData
+        this.selectMemberList = this.selectData
       }
       this.hide()
     },
@@ -249,11 +271,18 @@ export default {
     radioChange() {
       this.page = 1
       this.pageSize = 10
-      this.$emit('receiveChange',this.form.receive)
+      this.$emit('receiveChange', this.form.receive)
+      if (this.form.receive === 3) {
+        //指定部门
+        this.getDepartmentListFunc()
+      } else if (this.form.receive === 2) {
+        //指定职位
+        this.memberPostListFunc()
+      }
       //清楚已选数据
-      this.selectData=[];
-      this.columnConfig =[];
-      this.selectMemberList=[]
+      this.selectData = []
+      this.columnConfig = []
+      this.selectMemberList = []
     },
 
     /** 与子组件交互 */
@@ -268,11 +297,11 @@ export default {
       // 显示弹框组件
       this.$refs['receiveRef'].$children[0].show()
       //回显已选数据
-      setTimeout(()=>{
-        console.log('this.$refs.$children',this.$refs['receiveRef'].$refs['tableRef'])
+      setTimeout(() => {
+        console.log('this.$refs.$children', this.$refs['receiveRef'].$refs['tableRef'])
         this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
-      },500)
-      
+      }, 500)
+
       // this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
       console.log('his.form.receive === 5', this.form.receive)
       //指定商会会员
@@ -280,8 +309,8 @@ export default {
         this.columnConfig = memberCountTableConfig
         // this.columnConfig = [{ type: 'select' }]
         this.getNumberList()
-      }else if(this.form.receive === 4){       
-       this.columnConfig = memberPageListConfig
+      } else if (this.form.receive === 4) {
+        this.columnConfig = memberPageListConfig
         this.getNumberList()
       }
     },
@@ -303,24 +332,23 @@ export default {
       //指定商会会员
       if (this.form.receive === 5) {
         this.columnConfig = memberCountTableConfig
-      }else if(this.form.receive === 4){       
-       this.columnConfig = memberPageListConfig
-      }else{
+      } else if (this.form.receive === 4) {
+        this.columnConfig = memberPageListConfig
+      } else {
         //this.form.receive === -1
         this.columnConfig = memberTableConfig
-
-      }   
+      }
     },
     //分页的改变
     async change(val) {
       this.page = val.pageNum ? val.pageNum : this.page
       this.pageSize = val.pageSize ? val.pageSize : this.pageSize
-      await this.getNumberList();
-      if(this.form.receive === 5 && this.selectMemberList.length>0){
+      await this.getNumberList()
+      if (this.form.receive === 5 && this.selectMemberList.length > 0) {
         // setTimeout(()=>{
-        console.log('this.$refs.$children',this.$refs['receiveRef'].$refs['tableRef'])
+        console.log('this.$refs.$children', this.$refs['receiveRef'].$refs['tableRef'])
         this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
-      // },500)
+        // },500)
         // this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
       }
       console.log('val', val)
@@ -340,13 +368,16 @@ export default {
 .text {
   color: #c0c4cc;
 }
-.search-input{
+.search-input {
   width: 280px;
   margin-bottom: 20px;
 }
 .my-input {
   width: 500px;
   display: flex;
+}
+.custom-tree-node {
+  margin-left: 5px;
 }
 .department {
   min-height: 100px;
@@ -361,7 +392,7 @@ export default {
   width: 500px;
   border: 1px solid #dcdfe6;
   margin-top: 10px;
-  max-height: 200px;
+  max-height: 250px;
   overflow-y: scroll;
 }
 .tips {
