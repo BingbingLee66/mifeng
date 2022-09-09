@@ -1,6 +1,25 @@
 # CHANGELOG
 
 ## [Released]
+## [2.26.0] - 2022-09-08
+### Added
+-  【图片直播】创建相册 [1057](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1057)
+-  【图片直播】相册预览 [1058](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1058)
+-  【图片直播】图片直播列表 [1059](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1059)
+-  【图片直播】图片直播详情 [1060](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1060)
+
+### Fixed
+-  【商会后台】从“会员资料修改审核”切到“入会审核”，无数据（接口未调） [1056](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1056)
+
+## [Released]
+## [2.25.1] - 2022-09-01
+### Added
+-   
+### Fixed
+-  【总后台】商会后台数据统计，“全部导出”按钮不见了 [1064]（https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1064）
+
+
+## [Released]
 ## [2.24.0] - 2022-08-23
 ### Added
 -  【锦鲤招商】创建活动 [982](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/982)
