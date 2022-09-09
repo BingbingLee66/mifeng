@@ -57,3 +57,10 @@ export const organizationMarker = [
   { label: '公开募捐资格', value: 4 },
 ]
 export const orgMarkerObj = conversionObj(organizationMarker)
+// 信用状态
+export const codestatusOptions = [
+  { label: '正常', value: 0 },
+  { label: '活动异常', value: 1 },
+  { label: '严重违法失信', value: 2 },
+]
+export const orgStatusOptions = conversionObj(codestatusOptions)

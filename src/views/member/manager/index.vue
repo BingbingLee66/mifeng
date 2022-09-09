@@ -40,7 +40,7 @@
               checkStrictly: true,
               value: 'id',
               label: 'departmentName',
-              children: 'departmentRespList',
+              children: 'departmentRespList'
             }"
             placeholder="请选择部门"
             @change="handlerDepartmentChange"
@@ -104,7 +104,7 @@
             clearable
             filterable
             collapse-tags
-          ></el-cascader>
+          />
         </el-form-item>
         <el-form-item>
           <div slot="label">
@@ -121,7 +121,7 @@
             filterable
             clearable
             collapse-tags
-          ></el-cascader>
+          />
         </el-form-item>
         <el-form-item label="供需标签">
           <el-select
@@ -148,7 +148,7 @@
             :props="{ multiple: true }"
             :collapse-tags="true"
             clearable
-          ></el-cascader>
+          />
         </el-form-item>
         <el-form-item label="入会时间">
           <el-date-picker
@@ -167,7 +167,7 @@
             type="primary"
             :actionid="getId('', '查询')"
             @click="fetchData($event)"
-            >查询
+          >查询
           </el-button>
         </el-form-item>
       </el-form>
@@ -179,32 +179,36 @@
         type="primary"
         :actionid="getId('', '添加会员')"
         @click="add($event)"
-        >添加会员
+      >添加会员
       </el-button>
       <el-button
         v-if="has('', '导表')"
         type="primary"
         :actionid="getId('', '导表')"
         @click="exportExcel($event)"
-        >导表
+      >导表
       </el-button>
-      <el-button v-downLoad="exportExcelModel" type="primary"
-        >下载导入模板
+      <el-button
+        v-downLoad="exportExcelModel"
+        type="primary"
+      >下载导入模板
       </el-button>
       <el-button type="primary" @click="openVisible">导入 </el-button>
       <el-button type="primary" @click="openSmsTab">发送短信 </el-button>
       <el-tooltip icon="el-icon-warning" placement="right-start">
         <div slot="content">
-          针对未激活会员，可发送一次短信；<br />短信模板示例：广东省江西商会引进凯迪云商会平台，助力商协会建设，
+          针对未激活会员，可发送一次短信；<br>短信模板示例：广东省江西商会引进凯迪云商会平台，助力商协会建设，
           【这里是商会主页链接】 您可实时接收资讯动态。
         </div>
         <i class="el-icon-question" />
       </el-tooltip>
       <el-button type="primary" @click="authMember">批量认证身份信息</el-button>
+      <el-button type="primary" @click="showRemoveDialog">批量移除会员</el-button>
     </div>
     <div style="margin-bottom: 20px">
       <el-table
         id="out-table"
+        ref="tableRef"
         v-loading="listLoading"
         :data="list"
         element-loading-text="Loading"
@@ -229,7 +233,7 @@
                   ? scope.row.uavatar
                   : 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/yunshanghui-nologo.png.png'
               "
-            />
+            >
           </template>
         </el-table-column>
         <el-table-column label="用户名" width="200px" prop="uname" />
@@ -273,8 +277,7 @@
               v-if="scope.row.memberLabelList.length > 3"
               class="text-blue"
               @click="handleMoreLabel(scope.row)"
-              >查看更多</span
-            >
+            >查看更多</span>
           </template>
         </el-table-column>
         <el-table-column label="供需标签" width="200px">
@@ -292,8 +295,7 @@
               v-if="scope.row.bridgeLabels.length > 3"
               class="text-blue"
               @click="handleMorebridgeLabels(scope.row)"
-              >查看更多</span
-            >
+            >查看更多</span>
           </template>
         </el-table-column>
         <el-table-column label="行业标签" width="200px">
@@ -311,8 +313,7 @@
               v-if="scope.row.tradeBridges.length > 3"
               class="text-blue"
               @click="handleMoretradeBridges(scope.row)"
-              >查看更多</span
-            >
+            >查看更多</span>
           </template>
         </el-table-column>
         <el-table-column label="身份信息" width="200px">
@@ -465,9 +466,11 @@
         </el-row>
         <el-form-item>
           <el-col :offset="6" :span="8">
-            <el-button v-dbClick type="primary" @click="transferPresident"
-              >确定</el-button
-            >
+            <el-button
+              v-dbClick
+              type="primary"
+              @click="transferPresident"
+            >确定</el-button>
             <el-button @click.native="transferVisible = false">取消</el-button>
           </el-col>
         </el-form-item>
@@ -481,9 +484,10 @@
       @close="closeVisible"
     >
       <div style="margin-left: 50px; margin-top: -25px">
-        <span class="excelSpan" style="font-size: 20px; margin-left: 100px"
-          >导入说明</span
-        >
+        <span
+          class="excelSpan"
+          style="font-size: 20px; margin-left: 100px"
+        >导入说明</span>
         <span class="excelSpan">1、请勿增加、删除、修改表格中的字段</span>
         <span class="excelSpan">2、其他字段多次导入数据会进行覆盖</span>
       </div>
@@ -536,19 +540,34 @@
     <attach-label
       ref="eleAttach"
       :attach-visible.sync="attachVisible"
-      :isMember="true"
+      :is-member="true"
       @close="handleCloseAttach"
       @confirm="handleConfirmAttach"
     />
 
     <more-label
       :more-visible.sync="moreVisible"
-      :labelData="moreData"
-      :showGroupName="false"
-      :showGroupType="moreType"
+      :label-data="moreData"
+      :show-group-name="false"
+      :show-group-type="moreType"
       @close="handleCloseMore"
       @remove="handleRemoveLabelConfirm"
     />
+    <el-dialog
+      title="批量移除"
+      :visible.sync="removeMemberDialog"
+      width="30%"
+    >
+      <div>共<span style="color:red;">{{ notActiveMember }}</span>位未激活会员，是否确定移除</div>
+      <div>移除后可重新导入或添加;</div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="removeMemberDialog = false">取 消</el-button>
+        <el-button
+          type="primary"
+          @click="confirmRemoveMember"
+        >确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
