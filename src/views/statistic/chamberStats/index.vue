@@ -29,6 +29,7 @@
             </el-date-picker>
         </div>
         <div>
+            <el-button type="primary" :loading="exportLoaing"   @click="AllExportExcel">全部导出</el-button>
             <el-button type="primary"   @click="exportExcel">导表</el-button>
         </div>
     </div>
