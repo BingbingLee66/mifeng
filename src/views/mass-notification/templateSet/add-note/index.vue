@@ -170,13 +170,7 @@ export default {
 
         this.formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(v => {
           this.variateList.forEach(j => {
-            if (v.codeKey === j.key) {
-              v.value.dataBase = j.dataBase
-              v.value.key = j.key
-              v.value.table = j.table
-              v.value.type = j.type
-              v.value.value = j.value
-            }
+            if (v.codeKey === j.key) v.value = j
           })
         })
 

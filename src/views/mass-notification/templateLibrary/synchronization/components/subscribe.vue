@@ -10,7 +10,7 @@
     <el-row>
       <el-col :span="15">
         <el-form-item label="模板名称：" prop="templateName">
-          <el-input v-model.trim="formObj.templateName" maxlength="60" clearable show-word-limit />
+          <el-input v-model.trim="formObj.templateName" disabled maxlength="60" clearable show-word-limit />
         </el-form-item>
       </el-col>
     </el-row>
@@ -22,11 +22,12 @@
             :key="index"
             class="hinge"
           >
-            <el-input v-model="item.key" placeholder="请输入模板名称" />
+            {{ item.key }}
+            <!-- <el-input v-model="item.key" placeholder="请输入模板名称" />
             <el-input v-model="item.value" placeholder="请输入关键词" />
-            <el-button type="danger" :disabled="index == 0" @click="onDelete(index)">删除</el-button>
+            <el-button type="danger" :disabled="index == 0" @click="onDelete(index)">删除</el-button> -->
           </div>
-          <div><el-button type="primary" @click="onNewly">+新增</el-button></div>
+          <!-- <div><el-button type="primary" @click="onNewly">+新增</el-button></div> -->
         </el-form-item>
       </el-col>
     </el-row>
@@ -91,11 +92,11 @@ export default {
     save() {
       this.$refs.form.validate(valid => {
         if (!valid) return
-        let pass = false // 判断关键词内容是否填写
-        this.formObj.subscriptionNoticeTemplateDTO.variableAttributes.forEach(v => {
-          if (v.key === '' || v.value === '') pass = true
-        })
-        if (pass) return this.$message.error('请填写关键词')
+        // let pass = false // 判断关键词内容是否填写
+        // this.formObj.subscriptionNoticeTemplateDTO.variableAttributes.forEach(v => {
+        //   if (v.key === '' || v.value === '') pass = true
+        // })
+        // if (pass) return this.$message.error('请填写关键词')
         this.$emit('save', this.formObj)
       })
     },

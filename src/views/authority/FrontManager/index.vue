@@ -18,6 +18,7 @@
       <el-checkbox-group v-model="permissionDialog.permissions">
         <div style="margin-top:10px;"><el-checkbox :label="2">激活与活跃</el-checkbox></div>
         <div style="margin-top:10px;"><el-checkbox :label="1">供需撮合</el-checkbox></div>
+        <div style="margin-top:10px;"><el-checkbox :label="3">APP工作台</el-checkbox></div>
       </el-checkbox-group>
       <div slot="footer">
         <el-button @click="permissionDialog.show = false">取消</el-button>
@@ -48,7 +49,7 @@ export default {
         {
           label: '数据查看权限',
           render: ({ row: { permissions }}) => (<div>
-            {permissions && permissions.length ? permissions.map(v => +v === 1 ? <div>供需撮合</div> : <div>激活与活跃</div>) : '--'}
+            {permissions && permissions.length ? permissions.map(v => +v === 1 ? <div>供需撮合</div> : +v === 2 ? <div>激活与活跃</div> : <div>APP工作台</div>) : '--'}
           </div>)
         },
         {
