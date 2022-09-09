@@ -10,8 +10,8 @@ module.exports = {
     es6: true
   },
   /* 指定如何解析语法 */
-  parser: 'vue-eslint-parser',
-  extends: ['plugin:vue/recommended', 'eslint:recommended', 'plugin:prettier/recommended'],
+  // parser: 'vue-eslint-parser',
+  extends: ['plugin:vue/recommended', 'eslint:recommended'],
   globals: {
     CKEDITOR: 'readonly',
     ClipboardJS: 'readonly',
@@ -35,7 +35,7 @@ module.exports = {
     'prefer-const': 2, // 此规则旨在标记使用 let 关键字声明但在初始分配后从未重新分配的变量，要求使用 const
     'no-irregular-whitespace': 1, // 禁止不规则的空白
     // vue (https://eslint.vuejs.org/rules)
-    'vue/script-setup-uses-vars': 'error', // 防止<script setup>使用的变量<template>被标记为未使用，此规则仅在启用该no-unused-vars规则时有效
+    // 'vue/script-setup-uses-vars': 'error', // 防止<script setup>使用的变量<template>被标记为未使用，此规则仅在启用该no-unused-vars规则时有效
     // '@typescript-eslint/no-unused-vars': 'error', // 禁止定义未使用的变量
     // '@typescript-eslint/no-inferrable-types': 'off', // 可以轻松推断的显式类型可能会增加不必要的冗长
     // '@typescript-eslint/no-namespace': 'off', // 禁止使用自定义 TypeScript 模块和命名空间。

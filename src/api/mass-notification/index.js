@@ -87,7 +87,7 @@ export const getMemberList = data => request({ url: '/ec/member/all-member-page-
 
 // 查询指定商会会员列表
 export const getChamberMemberList = data => request({ url: '/ec/member/chamber-member-page-list', method: 'post', data })
-//查询商会和会员数
+// 查询商会和会员数
 export const getMemberCountList = params => request({ url: '/ec/chamber/chamber-member-count-list', method: 'get', params })
 
 // 根据渠道查询商会后台模板
@@ -100,5 +100,6 @@ export const memberPageList = data => request({ url: '/ec/member/chamber-member-
 // 查询某个商会下面的职位
 export const memberPostList = params => request({ url: '/ec/memberPost/member-post-select-list', method: 'get', params })
 
-//商会后台 查询本商会会员
+// 创建群发通知
+export const sendMsg = data => request({ url: '/ec/group-send/add', method: 'post', data })
 

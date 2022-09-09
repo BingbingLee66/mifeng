@@ -1,9 +1,9 @@
 <template>
   <div class="select" @click="selectEmit">
-    <span v-if="onlyShow">已选{{num}}人</span>
+    <span v-if="onlyShow">已选{{ num }}人</span>
     <span v-else class="select-text"> 请选择</span>
-    <el-button v-if="onlyShow" class="btn" type="primary" size="mini" plain>{{btnText}}</el-button>
-    <i v-else class="el-icon-arrow-down"></i>
+    <el-button v-if="onlyShow" class="btn" type="primary" size="mini" plain>{{ btnText }}</el-button>
+    <i v-else class="el-icon-arrow-down" />
   </div>
 </template>
 
@@ -24,18 +24,18 @@ export default {
     btnText: {
       type: String,
       default: '查看'
-    }    
+    }
   },
   methods: {
-    selectEmit(){
+    selectEmit() {
       let emit = ''
 
       // 查看事件
-      if (this.btnText === '查看'){emit = 'showDialog'}    
+      if (this.btnText === '查看') { emit = 'showDialog' }
       // 去选择事件
-      if (this.btnText === '去选择'){emit = 'selectEmit'}
+      if (this.btnText === '去选择') { emit = 'selectEmit' }
       // 点击事件
-      if (!this.onlyShow){emit = 'clickItem'} 
+      if (!this.onlyShow) { emit = 'clickItem' }
       console
       this.$emit(emit)
     }

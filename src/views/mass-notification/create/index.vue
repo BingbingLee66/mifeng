@@ -1,13 +1,13 @@
 <template>
   <div class="containers">
-    <el-form :rules="rules" ref="indexFormRef" :model="form">
+    <el-form ref="indexFormRef" :rules="rules" :model="form">
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="form.type">
           <el-radio v-for="(item, index) in labelList" :key="index" :label="item.type">{{ item.n }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <!-- 接收人 -->
-      <ReceiveForm :receive="form.receive" ref="receiveForm" @receiveChange="receiveChange" :ckey="ckey" :receive-list="receiveList" />
+      <ReceiveForm ref="receiveForm" :receive="form.receive" :ckey="ckey" :receive-list="receiveList" @receiveChange="receiveChange" />
       <!-- 关联活动详情  为活动通知或招商活动的时候显示-->
       <div v-if="form.type === 2 || form.type === 3" class="label-item">
         <div class="title-hd">关联活动详情 <span>（必填，配置会内通知"立即进入活动详情"跳转页）</span></div>
@@ -36,7 +36,7 @@
             type="text"
             maxlength="60"
             show-word-limit
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item label="消息内容" prop="content">
           <el-input
@@ -46,18 +46,18 @@
             maxlength="5000"
             style="width: 600px"
             show-word-limit
-          ></el-input>
+          />
         </el-form-item>
         <!-- 图片 -->
         <div>
           <div class="img-msg">图片（选填）</div>
           <div class="img-containers">
             <div v-for="item in form.imgs" :key="item" class="img-list">
-              <img class="img" :src="item" />
+              <img class="img" :src="item">
               <div class="hover-msg">
                 <div>
-                  <i class="el-icon-zoom-in preview" @click="preview(item)"></i>
-                  <i class="el-icon-delete close" @click="deleteImg(item)"></i>
+                  <i class="el-icon-zoom-in preview" @click="preview(item)" />
+                  <i class="el-icon-delete close" @click="deleteImg(item)" />
                 </div>
               </div>
             </div>
@@ -72,7 +72,7 @@
               :http-request="function(content) { return upload(content) }"
             >
               <div class="upload-msg">
-                <i class="el-icon-plus"></i>
+                <i class="el-icon-plus" />
                 <span>上传图片</span>
                 <span>({{ form.imgs.length }} /9)</span>
               </div>
@@ -94,7 +94,7 @@
                   :key="item2.id"
                   :label="item2.name"
                   :value="item2.id"
-                ></el-option>
+                />
               </el-select>
             </div>
           </div>
@@ -105,8 +105,7 @@
         <el-radio-group v-model="form.sendType">
           <el-radio label="1">立即发送</el-radio>
           <el-radio label="2">定时发送</el-radio>
-          <el-date-picker type="datetime"  value-format="timestamp"  v-if="form.sendType == 2" v-model="form.sendTime"  placeholder="请选择发送时间">
-          </el-date-picker>
+          <el-date-picker v-if="form.sendType == 2" v-model="form.sendTime" type="datetime" value-format="timestamp" placeholder="请选择发送时间" />
         </el-radio-group>
       </el-form-item>
       <!-- 通知发送规则 -->
@@ -127,28 +126,28 @@
     </kdDialog>
     <kdDialog ref="imgDialog" :custom-footer="true" dialog-title="图片预览" :center="true">
       <div slot="content">
-        <img :src="currentImg" class="preview-img" />
+        <img :src="currentImg" class="preview-img">
       </div>
       <!-- <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button> -->
     </kdDialog>
     <activityDialog
-      :activityList="activityList"
-      :activityType="form.type"
+      v-if="showActivityDialog"
       ref="activityDialogRef"
+      :activity-list="activityList"
+      :activity-type="form.type"
       @addActivity="
         function addActivity(val) {
           activityList = val
         }
       "
-      v-if="showActivityDialog"
-    ></activityDialog>
+    />
   </div>
 </template>
 
 <script>
 import { labelType, receiveType } from '../util/label'
-import { uploadCoverImg, uploadFile } from '@/api/content/article'
-import { selectTemplateList, selectTemplateListAdmin } from '@/api/mass-notification/index'
+import { uploadFile } from '@/api/content/article'
+import { selectTemplateList, selectTemplateListAdmin, sendMsg } from '@/api/mass-notification/index'
 import ReceiveForm from './components/receiveForm.vue'
 import kdDialog from '@/components/common/kdDialog'
 import activityDialog from './components/activityDialog.vue'
@@ -185,7 +184,7 @@ export default {
         // { label: '微信订阅消息', templateList: [], id: 2, selectActivity: null },
         // { label: 'APP通知', templateList: [], id: 3, selectActivity: null }
       ],
-      
+
       rules: {
         type: [{ required: true, message: '请选择', trigger: 'blur' }],
         // synchChannels: [
@@ -197,9 +196,9 @@ export default {
       },
       // 显示活动弹框
       showActivityDialog: true,
-      //已选活动列表
+      // 已选活动列表
       activityList: [],
-      //当前正在预览的图片
+      // 当前正在预览的图片
       currentImg: ''
     }
   },
@@ -208,11 +207,11 @@ export default {
     this.ckey = ckey
     this.restTypeData()
 
-    //除了邀请入会只有短信1，其他都是三个渠道
+    // 除了邀请入会只有短信1，其他都是三个渠道
     if (this.form.type === 4) {
       this.selectTemplateListFunc(1)
     } else {
-      //请求每次只能请求一种，所以要请求3次
+      // 请求每次只能请求一种，所以要请求3次
       for (let i = 1; i < 4; i++) {
         this.selectTemplateListFunc(i)
       }
@@ -221,9 +220,9 @@ export default {
   methods: {
     /** 请求 */
     async selectTemplateListFunc(channelTypeId) {
-      //拉取总后台
+      // 拉取总后台
       let API = selectTemplateListAdmin
-      //商会后台
+      // 商会后台
       const {
         ckey,
         form: { type: noticeTypeId }
@@ -232,7 +231,11 @@ export default {
         API = selectTemplateList
       }
       const { data } = await API({ channelTypeId, noticeTypeId })
-      this.synchChannels[channelTypeId - 1].templateList = data
+      this.synchChannels[channelTypeId - 1].templateList = data || []
+    },
+    //
+    async send(params) {
+      await sendMsg(params)
     },
     /** 行为操作 */
     // 删除已选活动
@@ -255,26 +258,26 @@ export default {
       // this.showActivityDialog = true
       this.$refs['activityDialogRef'].open()
     },
-    //点击预览图片
+    // 点击预览图片
     preview(val) {
       this.currentImg = val
       this.$refs['imgDialog'].show()
     },
-    //点击删除图片
+    // 点击删除图片
     deleteImg(val) {
       this.form.imgs.splice(this.form.imgs.findIndex(item => item === val), 1)
     },
     // 提交表单
     onSubmit() {
-      //先校验
+      // 先校验
       console.log('创建群发通知')
-       this.extendFunc()
-      if(!this.verify())return;
-     
+      this.extendFunc()
+      if (!this.verify()) return
+
       this.$refs['indexFormRef'].validate(valid => {
         if (valid) {
-          const {ckey,form:{type:noticeTypeId,receive:receiveTypeId,sendTime:sendTs,sendType}}=this
-          let params = {
+          const { ckey, form: { type: noticeTypeId, receive: receiveTypeId, sendTime: sendTs, sendType } } = this
+          const params = {
             channelTypeTemplateDTOS: this.form.synchChannels.map(item => ({
               channelTypeId: item.id,
               id: item.selectActivity
@@ -285,16 +288,18 @@ export default {
             // 当接收人类型为4时，传会员id集合({'receiverList': []});
             // 当接收人类型为5时，传商会ckey集合({'receiverList': []});
             // 当接收人类型为6时，传手机号集合({'receiverList': []});
-            //关联对象：
+            // 关联对象：
             // 当通知类型为1、4、5时不用传
             // 当通知类型为2时，{'associationId': 活动id}
             // 当通知类型为3时，{'associationId': 招商活动id}
             // 当通知类型为5时：
             // extend:{'title':'标题','content':'内容',imgs:['图片', '图片2']}
             extend: this.extendFunc(),
-            ckey,noticeTypeId,receiveTypeId,sendTs,sendType
+            ckey, noticeTypeId, receiveTypeId, sendTs, sendType
           }
-          console.log('params',params)
+          this.send(params)
+
+          console.log('params', params)
         } else {
           return false
         }
@@ -305,13 +310,13 @@ export default {
       this.form.receive = val
     },
     /** 工具 */
-    //表单提交校验
+    // 表单提交校验
     verify() {
       const {
-        form: { receive, type, synchChannels, agreeRule },
+        form: { type, agreeRule },
         activityList
       } = this
-      //渠道必填  现在为选填了
+      // 渠道必填  现在为选填了
       // if (!synchChannels.length > 0) {
       //   this.$message.error('请选择同步渠道')
       //   return false
@@ -326,19 +331,19 @@ export default {
       //   }
       //   if (flag) return flag
       // }
-      //同意发送规则
+      // 同意发送规则
       if (!agreeRule) {
         this.$message.error('请同意发送规则')
         return false
       }
-      //活动通知 、招商活动 已选活动列表必须大于0
+      // 活动通知 、招商活动 已选活动列表必须大于0
       if (type === 2 || type === 3) {
         if (!activityList.length > 0) {
           this.$message.error('请选择关联活动详情')
           return false
         }
       } else if (type === 5) {
-        //自定义通知
+        // 自定义通知
       }
 
       // if(receive === -1){
@@ -349,41 +354,40 @@ export default {
       return true
     },
     // extend扩展字段
-    extendFunc(){
-      const {form:{receive,type},activityList}=this;
-      let obj={}
-    console.log('this.$refs[receiveForm].$data.form.department',this.$refs['receiveForm'].$data);
-    let refData=this.$refs['receiveForm'].$data
-      switch (receive){
+    extendFunc() {
+      const { form: { receive, type }, activityList } = this
+      let obj = {}
+      console.log('this.$refs[receiveForm].$data.form.department', this.$refs['receiveForm'].$data)
+      const refData = this.$refs['receiveForm'].$data
+      switch (receive) {
         case 2:
-          //职位id集合
-          obj['receiverList']=refData.form.position  
-        break;
+          // 职位id集合
+          obj['receiverList'] = refData.form.position
+          break
         case 3:
-          //传部门id集合          
-          obj['receiverList']=refData.form.department.map(v=>v.id)
-        break;
+          // 传部门id集合
+          obj['receiverList'] = refData.form.department.map(v => v.id)
+          break
         case 4:
-          //会员id集合
-          obj['receiverList']=refData.selectMemberList.map(v=>v.id) 
-        break;
+          // 会员id集合
+          obj['receiverList'] = refData.selectMemberList.map(v => v.id)
+          break
         case 5:
-          //商会ckey集合
-       obj['receiverList']=refData.selectMemberList.map(v=>v.ckey)    
-        break;
+          // 商会ckey集合
+          obj['receiverList'] = refData.selectMemberList.map(v => v.ckey)
+          break
         case 6:
-          //手机号集合
-          obj['receiverList']=refData.form.phones.split("\n")    
-        break;
-       default:
-
+          // 手机号集合
+          obj['receiverList'] = refData.form.phones.split('\n')
+          break
+        default:
       }
-      //当通知类型为2时，{'associationId': 活动id},当通知类型为3时，{'associationId': 招商活动id}
-      if(type===2 || type ===3){
-        obj['associationId']=activityList[0] && activityList[0].id       
+      // 当通知类型为2时，{'associationId': 活动id},当通知类型为3时，{'associationId': 招商活动id}
+      if (type === 2 || type === 3) {
+        obj['associationId'] = activityList[0] && activityList[0].id
       }
-      if(type===5){const {form:{title,content,imgs}} =this ;obj={title,content,imgs}}
-      console.log('obj',obj)
+      if (type === 5) { const { form: { title, content, imgs } } = this; obj = { title, content, imgs } }
+      console.log('obj', obj)
       return obj
     },
     restTypeData() {
@@ -394,9 +398,9 @@ export default {
         ? receiveType.filter(item => item.show !== 1)
         : receiveType.filter(item => item.show !== 2)
 
-      //给type receive一个默认值
+      // 给type receive一个默认值
       this.form.type = this.labelList[0].type
-      this.form.receive = this.receiveList[0].type;
+      this.form.receive = this.receiveList[0].type
       console.log('父组件的create')
     },
     // 图片上传前校验
@@ -413,9 +417,9 @@ export default {
       }
     },
     // 上传
-    async upload(content, type) {
+    async upload(content) {
       try {
-        let formData = new FormData()
+        const formData = new FormData()
         formData.append('file', content.file)
         const res = await uploadFile(formData, 'notice')
         if (res.state === 1) {

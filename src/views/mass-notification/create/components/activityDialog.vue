@@ -4,21 +4,21 @@
       <el-form :inline="true" :model="form">
         <el-form-item label="活动来源" prop="chamberName">
           <el-select v-model="form.chamberName" class="select" placeholder="请选择">
-            <el-option v-for="item2 in chamberList" :key="item2.id" :label="item2.name" :value="item2.id"></el-option>
+            <el-option v-for="item2 in chamberList" :key="item2.id" :label="item2.name" :value="item2.id" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="活动id" prop="id">
-          <el-input clearable v-model="form.id" :placeholder="placeholder"></el-input>
+          <el-input v-model="form.id" clearable :placeholder="placeholder" />
         </el-form-item>
 
         <el-form-item label="活动名称" prop="activityName">
-          <el-input clearable v-model="form.activityName" :placeholder="placeholder"></el-input>
+          <el-input v-model="form.activityName" clearable :placeholder="placeholder" />
         </el-form-item>
 
         <el-form-item label="活动状态" prop="status">
           <el-select v-model="form.status" class="select" placeholder="请选择">
-            <el-option v-for="item2 in statusList" :key="item2.id" :label="item2.name" :value="item2.id"></el-option>
+            <el-option v-for="item2 in statusList" :key="item2.id" :label="item2.name" :value="item2.id" />
           </el-select>
         </el-form-item>
         <el-button type="primary" @click="getActivityListFunc">查询</el-button>
@@ -50,7 +50,10 @@ import { getInvesActivityList } from '@/api/attract/index'
 import dayjs from 'dayjs'
 export default {
   name: 'ReceiveForm',
-  components: { kdTable, KdPagination: () => import('@/components/common/KdPagination') },
+  components: {
+    kdTable,
+    // KdPagination: () => import('@/components/common/KdPagination')
+  },
   props: {
     activityType: {
       type: Number,
@@ -58,7 +61,7 @@ export default {
     },
     activityList: {
       type: Array,
-      default: []
+      default() { return [] }
     }
   },
   provide() {
@@ -80,7 +83,7 @@ export default {
       chamberList: [],
       // 表格配置
       columnConfig: [],
-      //表格数据
+      // 表格数据
       tableData: [],
       pageSize: 100000,
       pageNum: 1,
@@ -126,15 +129,15 @@ export default {
     //   // 点击确定按钮
     //   this.submit()
     // },
-    //打开弹框
+    // 打开弹框
     open() {
       this.getActivityListFunc()
       this.dialogVisible = true
     },
-    //关闭弹框
-    submit() {     
+    // 关闭弹框
+    submit() {
       if (this.selectData.length > 1) {
-         this.$message.error('只能选一个')
+        this.$message.error('只能选一个')
       } else {
         this.dialogVisible = false
         this.$emit('addActivity', this.selectData)
@@ -157,7 +160,7 @@ export default {
     //   this.getActivityListFunc()
     // }
 
-    /**工具 */
+    /** 工具 */
     resetColumnConfig() {
       this.columnConfig = [
         { type: 'select' },
