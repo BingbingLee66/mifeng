@@ -1,12 +1,11 @@
+<!-- eslint-disable vue/attribute-hyphenation -->
+<!-- eslint-disable vue/html-self-closing -->
 <template>
   <el-dialog ref="form" :visible="visible" title="详情" width="60%" @close="close">
     <!-- 短信 -->
     <div v-if="type == 1" class="container">
       <div class="container-left">
-        <div class="Present-img">
-          <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-note.png" class="pic" />
-          <div class="Present-note" v-html="infoDate.demonstrate"></div>
-        </div>
+        <Note :demonstrate="infoDate.demonstrate" />
       </div>
       <div class="container-right">
         <div class="offside">
@@ -61,36 +60,10 @@
     <!-- 订阅 -->
     <div v-if="type == 2" class="container">
       <div class="container-left">
-        <div class="Present-img">
-          <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-subscribe.png" />
-          <div class="subscribe-wire"></div>
-          <div class="Present-subscribe">
-            <div class="subscribe-top">
-              <div class="commerce">
-                <div class="subscribe-img">
-                  <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-icon.png" alt="" />
-                </div>
-                <div style="margin-top: 3px">云商会 Solink</div>
-              </div>
-              <div class="dot"><img src="https://ysh-cdn.kaidicloud.com/prod/png/library-more.png" alt="" /></div>
-            </div>
-
-            <!-- 内容 -->
-            <div v-if="infoDate.subscriptionNoticeTemplateVo" class="subscribe-middle">
-              <div class="subscribe-prosperity">报名成功通知</div>
-              <div
-                v-for="(item, index) in infoDate.subscriptionNoticeTemplateVo.variableAttributes"
-                :key="index"
-                class="subscribe-circularize"
-              >
-                <div class="circularize-matter">{{ item.key }}</div>
-                <div class="circularize-designation">
-                  <div class="designation-variable">【{{ item.value2 }}】</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Subscribe
+          v-if="infoDate.subscriptionNoticeTemplateVo"
+          :variableAttributes="infoDate.subscriptionNoticeTemplateVo.variableAttributes"
+        />
       </div>
       <div class="container-right">
         <div class="offside">
@@ -143,23 +116,7 @@
     <!-- app -->
     <div v-if="type == 3" style="height: 320px" class="container">
       <div class="container-left">
-        <div class="Present-img">
-          <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-app.png" class="pic" />
-          <div class="Present-app">
-            <div class="subscribe-top">
-              <div class="commerce">
-                <div class="subscribe-img">
-                  <img src="https://ysh-cdn.kaidicloud.com/prod/png/library-icon.png" alt="" />
-                </div>
-                <div style="margin-top: 3px">云商会 Solink</div>
-              </div>
-              <div class="dot">now</div>
-            </div>
-            <!-- 内容 -->
-            <div>通知</div>
-            <div class="characters stencil-onhiden" v-html="infoDate.demonstrate"></div>
-          </div>
-        </div>
+        <DetailsApp :demonstrate="infoDate.demonstrate" />
       </div>
       <div class="container-right">
         <div class="offside">
@@ -208,8 +165,16 @@
 </template>
 
 <script>
+import Note from './details-note'
+import Subscribe from './details-subscribe'
+import DetailsApp from './details-app'
 export default {
   name: 'Details',
+  components: {
+    Note,
+    Subscribe,
+    DetailsApp
+  },
   props: {
     type: {
       type: String,
@@ -241,7 +206,7 @@ export default {
       this.infoDate = res.data
       //   短信和app
       if (this.type !== '2' && res.data.content) {
-        let a = res.data.content.indexOf('${')
+        const a = res.data.content.indexOf('${')
         if (a >= 0) this.infoDate.demonstrate = this.analysis(res.data.content)
         else this.infoDate.demonstrate = res.data.content
       }
@@ -261,11 +226,14 @@ export default {
       const arr = vlue.match(regx)
 
       arr.forEach(item => {
+        // eslint-disable-next-line no-param-reassign
         if (this.active === 1) vlue = vlue.replace(item, `<span style="color:red">${item}</span>`)
         else {
+          // eslint-disable-next-line no-param-reassign
           item = item.replace('${', '').replace('}', '')
           this.infoDate.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(j => {
             if (item === j.key) {
+              // eslint-disable-next-line no-param-reassign
               vlue = vlue
                 .replace(item, `<span style="color:red">【${j.value.value}】</span>`)
                 .replace('${', '')

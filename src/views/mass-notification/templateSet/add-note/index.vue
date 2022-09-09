@@ -5,7 +5,7 @@
       <el-row>
         <el-col :span="15">
           <el-form-item label="所属类型：" :required="true">
-            <el-radio-group v-model="formObj.noticeTypeId">
+            <el-radio-group v-model="formObj.noticeTypeId" @change="onChange">
               <el-radio label="1">缴费通知</el-radio>
               <el-radio label="2">活动通知</el-radio>
               <el-radio label="3">招商活动</el-radio>
@@ -111,12 +111,12 @@ export default {
   async created() {
     this.formObj.type = this.$route.query.type || '1'
     await this.onRiginOpt()
-    await this.onGetKeyValueList()
     if (this.$route.query.id) {
       this.formObj.id = this.$route.query.id || null
       this.formObj.status = this.$route.query.status
       await this.particulars()
     }
+    await this.onGetKeyValueList()
   },
   methods: {
     // 模板名称数据
@@ -126,18 +126,18 @@ export default {
     },
     // 变量值列表
     async onGetKeyValueList() {
-      const res = await getKeyValueList({ type: this.formObj.type })
+      const res = await getKeyValueList({ type: this.formObj.noticeTypeId })
       this.variateList = res.data
     },
     // 选择模板名称 列表
     async onLibrary() {
-      let { formObj } = this
+      const { formObj } = this
       let detailsCode = ''
       if (!formObj.ntId) return
       this.originOpt.forEach(v => {
         if (v.id === formObj.ntId) detailsCode = v.templateCode
       })
-      const res = await getNoticeTemplateDetail({ templateCode: detailsCode })
+      const res = await getNoticeTemplateDetail({ templateCode: detailsCode, type: this.formObj.type })
       formObj.content = res.data.content
       formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList = res.data.variableAttributes.map(v => {
         return { key: v.key, codeKey: '', value: {} }
@@ -145,7 +145,7 @@ export default {
     },
     // 编辑获取数据
     async particulars() {
-      let { formObj } = this
+      const { formObj } = this
       const { data } = await getNoticeTemplateSetDetailById({ id: formObj.id })
       formObj.noticeTypeId = data.noticeTypeId + ''
       formObj.content = data.content
@@ -197,6 +197,15 @@ export default {
           type: this.formObj.type
         }
       })
+    },
+    // 单选点击
+    onChange() {
+      this.onGetKeyValueList()
+      if (this.formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList) {
+        this.formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(v => {
+          v.codeKey = ''
+        })
+      }
     }
   }
 }

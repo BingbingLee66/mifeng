@@ -12,8 +12,8 @@
         </el-form-item>
         <el-button type="primary" @click="fetchData(true)">查询 </el-button>
         <el-row>
-          <el-button type="primary" @click="onSynchronization"
-            >{{ query.type == 1 ? '同步短信模板' : query.type == 2 ? '同步订阅模板' : '申请模板' }}
+          <el-button type="primary" @click="onSynchronization">
+            {{ query.type == 1 ? '同步短信模板' : query.type == 2 ? '同步订阅模板' : '申请模板' }}
           </el-button>
         </el-row>
       </el-form>
@@ -50,7 +50,12 @@
           <el-table-column prop="templateName" label="标题" align="center" />
           <el-table-column label="关键词" align="center">
             <template slot-scope="scope">
-              {{ scope.row.subscriptionNoticeTemplateVo.keyWords.join('、') }}
+              <div class="hit">
+                <div v-for="(item, index) in scope.row.subscriptionNoticeTemplateVo.variableAttributes" :key="index">
+                  {{ item.value }}
+                  <span v-if="index != scope.row.subscriptionNoticeTemplateVo.variableAttributes.length - 1">、</span>
+                </div>
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="类型" align="center">
@@ -112,4 +117,10 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import 'src/styles/common.scss';
+.hit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 </style>

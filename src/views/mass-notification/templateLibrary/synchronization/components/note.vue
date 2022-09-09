@@ -79,11 +79,11 @@ export default {
           { required: true, message: '模板CODE不能为空', trigger: 'blur' },
           {
             validator: async (rule, value, callback) => {
-              const res = await getNoticeTemplateDetail({ templateCode: value })
+              const res = await getNoticeTemplateDetail({ templateCode: value, type: '1' })
               if (res.state === 0) {
                 return callback(new Error(res.msg))
               } else {
-                let { formObj } = this
+                const { formObj } = this
                 formObj.content = res.data.content
                 formObj.smsNoticeTemplateDTO.templateType = res.data.smsNoticeTemplateVo.templateType + ''
                 formObj.smsNoticeTemplateDTO.variableAttributes = res.data.variableAttributes

@@ -22,12 +22,9 @@
             :key="index"
             class="hinge"
           >
-            {{ item.key }}
-            <!-- <el-input v-model="item.key" placeholder="请输入模板名称" />
-            <el-input v-model="item.value" placeholder="请输入关键词" />
-            <el-button type="danger" :disabled="index == 0" @click="onDelete(index)">删除</el-button> -->
+            <div>{{ item.value }}</div>
+            <dir>{{ item.key }}</dir>
           </div>
-          <!-- <div><el-button type="primary" @click="onNewly">+新增</el-button></div> -->
         </el-form-item>
       </el-col>
     </el-row>
@@ -48,7 +45,7 @@ export default {
     return {
       formObj: {
         type: '2', // 模板类型 1短信通知、2订阅消息、3APP通知
-        templateCode: '', // 模板code/模板id
+        templateCode: '', // 模板code/模板id  A40fmD49mtgMnh9RqQ_fP-yz_B-ljLHYgDCA63y2Cd4
         templateName: '', // 模板名称
         subscriptionNoticeTemplateDTO: {
           // 订阅消息模板库dto
@@ -69,11 +66,11 @@ export default {
           { required: true, message: '模板CODE不能为空', trigger: 'blur' },
           {
             validator: async (rule, value, callback) => {
-              const res = await getNoticeTemplateDetail({ templateCode: value })
+              const res = await getNoticeTemplateDetail({ templateCode: value, type: '2' })
               if (res.state === 0) {
                 return callback(new Error(res.msg))
               } else {
-                let { formObj } = this
+                const { formObj } = this
                 formObj.subscriptionNoticeTemplateDTO.variableAttributes = res.data.variableAttributes
                 formObj.templateName = res.data.templateName
                 callback() // 必须加上这个，不然一直塞在验证状态
@@ -92,30 +89,12 @@ export default {
     save() {
       this.$refs.form.validate(valid => {
         if (!valid) return
-        // let pass = false // 判断关键词内容是否填写
-        // this.formObj.subscriptionNoticeTemplateDTO.variableAttributes.forEach(v => {
-        //   if (v.key === '' || v.value === '') pass = true
-        // })
-        // if (pass) return this.$message.error('请填写关键词')
         this.$emit('save', this.formObj)
       })
     },
     // 取消
     close() {
       this.$emit('close')
-    },
-    // 新增
-    onNewly() {
-      let obj = {
-        key: '',
-        value: ''
-      }
-      this.formObj.subscriptionNoticeTemplateDTO.variableAttributes.push(obj)
-    },
-    // 删除
-    onDelete(index) {
-      console.log(index)
-      this.formObj.subscriptionNoticeTemplateDTO.variableAttributes.splice(index, 1)
     }
   }
 }
@@ -125,10 +104,6 @@ export default {
 .hinge {
   display: flex;
   align-items: center;
-  margin-bottom: 15px;
-  .el-input {
-    width: 250px;
-    margin-right: 20px;
-  }
+  line-height: 10px;
 }
 </style>
