@@ -47,6 +47,7 @@ export default {
         type: '2', // 模板类型 1短信通知、2订阅消息、3APP通知
         templateCode: '', // 模板code/模板id  A40fmD49mtgMnh9RqQ_fP-yz_B-ljLHYgDCA63y2Cd4
         templateName: '', // 模板名称
+        content: '',
         subscriptionNoticeTemplateDTO: {
           // 订阅消息模板库dto
           variableAttributes: [
