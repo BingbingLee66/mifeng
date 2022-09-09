@@ -92,18 +92,17 @@ const tableColumn = [
     prop: 'applySource',
     type: 'function',
     callback: function(row, prop) {
-      return row.type === 0
+      return row.applySource === 0
         ? '未知'
-        : row.type === '1'
+        : row.applySource === 1
           ? '小程序会员入驻'
-          : (row.type === '2'
+          : (row.applySource === 2
             ? '小程序商会主页'
-            : (row.type === '3' ? 'app会员入驻' : 'app商会主页'))
+            : (row.applySource === 3 ? 'app会员入驻' : 'app商会主页'))
     }
   },
   {
     label: '申请时间',
-    type: 'time',
     prop: 'joinTime'
   },
   {
@@ -125,7 +124,6 @@ const tableColumn = [
   {
     label: '审核时间',
     prop: 'auditTime',
-    type: 'time'
   },
   {
     label: '审核人',
