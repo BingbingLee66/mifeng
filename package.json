@@ -81,6 +81,7 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-vue": "^5.2.2",
     "html-webpack-plugin": "3.2.0",
+    "lint-staged": "^11.1.2",
     "mockjs": "1.0.1-beta3",
     "node-sass": "^4.13.1",
     "prettier": "^2.7.1",
@@ -101,5 +102,8 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  }
 }

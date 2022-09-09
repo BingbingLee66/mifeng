@@ -1,6 +1,17 @@
 # CHANGELOG
 
 ## [Released]
+## [2.26.0] - 2022-09-08
+### Added
+-  【图片直播】创建相册 [1057](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1057)
+-  【图片直播】相册预览 [1058](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1058)
+-  【图片直播】图片直播列表 [1059](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1059)
+-  【图片直播】图片直播详情 [1060](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1060)
+
+### Fixed
+-  【商会后台】从“会员资料修改审核”切到“入会审核”，无数据（接口未调） [1056](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1056)
+
+## [Released]
 ## [2.25.1] - 2022-09-01
 ### Added
 -   

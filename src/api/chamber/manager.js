@@ -81,8 +81,8 @@ export const getClueList = params => request({
 
 //  商会后台使用统计 全部导出
 export const listAllChamberStatsDataByCkeyDownload = (params) => request({
-    url:  '/ec/chamberStats/listAllChamberStatsDataByCkeyDownload',
-    method: 'get',
-    params,
-    responseType: 'blob'
+  url: '/ec/chamberStats/listAllChamberStatsDataByCkeyDownload',
+  method: 'get',
+  params,
+  responseType: 'blob'
 })

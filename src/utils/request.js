@@ -7,13 +7,15 @@ import { reportSlsData } from '@/api/statistics/tracker'
 
 const AppCode = 'echamber'
 
+const validStates = [-1, 0, 1, 200, 605] // 有效state
+
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: false, // send cookies when cross-domain requests
   timeout: 480000 // request timeout
 })
-console.log('process', process.env)
+// console.log('process', process.env)
 // request interceptor
 service.interceptors.request.use(
   config => {
@@ -57,7 +59,7 @@ service.interceptors.response.use(
       store.dispatch('user/updateToken', { token: response.headers.token })
     }
     // if the custom code is not 1, it is judged as an error.
-    if (response.request.responseType !== 'blob' && res.state !== 1 && res.state !== -1 && res.state !== 0 && res.code !== 200 && res.state !== 200) {
+    if (response.request.responseType !== 'blob' && !validStates.includes(res.state) && res.code !== 200) {
       Message({
         message: res.msg === undefined ? '系统错误，请重试' : res.msg,
         type: 'error',
