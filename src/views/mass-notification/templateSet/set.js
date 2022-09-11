@@ -43,8 +43,8 @@ export default {
       if (reset) this.currentpage = 1
       this.listLoading = true
       this.list = []
-      let { type, title } = this.query
-      let parmas = {
+      const { type, title } = this.query
+      const parmas = {
         type,
         title,
         pageSize: this.limit,
@@ -80,13 +80,13 @@ export default {
     // 详情
     async particulars(row) {
       // 短信: smsNoticeTemplateVo  订阅 :subscriptionNoticeTemplateVo  app:appNoticeTemplateVo
-      let toxon =
+      const toxon =
         this.query.type === '1'
           ? 'smsNoticeTemplateVo'
           : this.query.type === '2'
           ? 'subscriptionNoticeTemplateVo'
           : 'appNoticeTemplateVo'
-      let res = await getNoticeTemplateSetDetailById({ id: row.id })
+      const res = await getNoticeTemplateSetDetailById({ id: row.id })
       res.data.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(v => {
         res.data[toxon].variableAttributes.forEach(j => {
           if (v.key === j.key) j.value = v.value.value
@@ -165,7 +165,7 @@ export default {
     // 删除-禁用-启用
     async SetUpdateStatus(row, status) {
       // status 状态 0禁用 1启用 2删除
-      let params = {
+      const params = {
         channelTypeId: this.query.type,
         id: row.id,
         status

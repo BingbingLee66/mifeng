@@ -5,7 +5,7 @@
     <!-- 短信 -->
     <div v-if="type == 1" class="container">
       <div class="container-left">
-        <Note :demonstrate="infoDate.demonstrate" />
+        <Note :infoDate="infoDate" :active="active" />
       </div>
       <div class="container-right">
         <div class="offside">
@@ -62,7 +62,12 @@
       <div class="container-left">
         <Subscribe
           v-if="infoDate.subscriptionNoticeTemplateVo"
-          :variableAttributes="infoDate.subscriptionNoticeTemplateVo.variableAttributes"
+          :active="active"
+          :variableAttributes="
+            active == 1
+              ? infoDate.subscriptionNoticeTemplateVo.variableAttributes
+              : infoDate.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList
+          "
         />
       </div>
       <div class="container-right">
@@ -116,7 +121,7 @@
     <!-- app -->
     <div v-if="type == 3" style="height: 320px" class="container">
       <div class="container-left">
-        <DetailsApp :demonstrate="infoDate.demonstrate" />
+        <DetailsApp :infoDate="infoDate" :active="active" />
       </div>
       <div class="container-right">
         <div class="offside">
@@ -190,6 +195,7 @@ export default {
       visible: false,
       infoDate: {
         demonstrate: '',
+        content: '',
         subscriptionNoticeTemplateVo: {},
         smsNoticeTemplateVo: {},
         appNoticeTemplateVo: {},
@@ -202,48 +208,10 @@ export default {
   methods: {
     // 显示
     async show(res) {
-      this.visible = true
       this.infoDate = res.data
-      //   短信和app
-      if (this.type !== '2' && res.data.content) {
-        const a = res.data.content.indexOf('${')
-        if (a >= 0) this.infoDate.demonstrate = this.analysis(res.data.content)
-        else this.infoDate.demonstrate = res.data.content
-      }
-      //  订阅消息
-      if (res.data && this.type === '2' && res.data.subscriptionNoticeTemplateVo) {
-        res.data.subscriptionNoticeTemplateVo.variableAttributes.forEach(v => {
-          v.value2 = v.value
-          if (v.value2.length >= 17) {
-            v.value2 = v.value2.substring(0, 17) + '...'
-          }
-        })
-      }
+      this.visible = true
     },
-    // 把字符串里面特殊符号${}  加上红色标识
-    analysis(vlue) {
-      const regx = /\$.*?\}/g
-      const arr = vlue.match(regx)
 
-      arr.forEach(item => {
-        // eslint-disable-next-line no-param-reassign
-        if (this.active === 1) vlue = vlue.replace(item, `<span style="color:red">${item}</span>`)
-        else {
-          // eslint-disable-next-line no-param-reassign
-          item = item.replace('${', '').replace('}', '')
-          this.infoDate.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(j => {
-            if (item === j.key) {
-              // eslint-disable-next-line no-param-reassign
-              vlue = vlue
-                .replace(item, `<span style="color:red">【${j.value.value}】</span>`)
-                .replace('${', '')
-                .replace('}', '')
-            }
-          })
-        }
-      })
-      return vlue
-    },
     // 关闭
     close() {
       this.visible = false

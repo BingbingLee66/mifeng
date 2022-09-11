@@ -38,8 +38,8 @@ export default {
       if (reset) this.currentpage = 1
       this.listLoading = true
       this.list = []
-      let { type, title } = this.query
-      let parmas = {
+      const { type, title } = this.query
+      const parmas = {
         type,
         title,
         pageSize: this.limit,

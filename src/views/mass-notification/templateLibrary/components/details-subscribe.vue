@@ -23,7 +23,8 @@
           <div v-for="(item, index) in variableAttributes" :key="index" class="subscribe-circularize">
             <div class="circularize-matter">{{ item.key }}</div>
             <div class="circularize-designation">
-              <div class="designation-variable">【{{ item.value2 }}】</div>
+              <div v-if="active == 1" class="designation-variable">【{{ item.value }}】</div>
+              <div v-else class="designation-variable">【{{ item.value.value }}】</div>
             </div>
           </div>
         </div>
@@ -38,7 +39,11 @@ export default {
       type: Array,
       // eslint-disable-next-line vue/require-valid-default-prop
       default: []
-    }
+    },
+    active: {
+      type: Number,
+      default: 2
+    } // 1:模板库 2：模板设置
   },
   data() {
     return {}
