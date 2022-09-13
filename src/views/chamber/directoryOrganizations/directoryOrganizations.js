@@ -101,6 +101,7 @@ export default {
         console.log(res)
       } catch (error) {
         this.list = []
+        this.total = 0
       }
       this.loading = false
     },

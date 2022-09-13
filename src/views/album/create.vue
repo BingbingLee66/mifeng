@@ -244,6 +244,7 @@ export default {
       const { value } = await this.$prompt('', '添加人员', {
         confirmButtonText: '确认',
         cancelButtonText: '返回',
+        inputPlaceholder: '请输入手机号',
         inputValidator(value = '') {
           value = value && value.trim()
           if (!value) return '手机号不能为空'
