@@ -119,19 +119,21 @@
         <el-button>取消</el-button>
       </el-form-item>
     </el-form>
-
+    <!-- 通知发送规则dialog -->
     <kdDialog ref="kdDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true">
       <div slot="content">
         规则说明，文案先找业务定一下
       </div>
       <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
     </kdDialog>
+    <!-- 图片预览dialog -->
     <kdDialog ref="imgDialog" :custom-footer="true" dialog-title="图片预览" :center="true">
       <div slot="content">
         <img :src="currentImg" class="preview-img">
       </div>
       <!-- <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button> -->
     </kdDialog>
+    <!-- 选择活动dialog -->
     <activityDialog
       v-if="showActivityDialog"
       ref="activityDialogRef"
@@ -143,13 +145,13 @@
         }
       "
     />
-    模板预览
+    <!-- 模板预览dialog -->
     <kdDialog ref="previewDialog" dialog-title="预览" :custom-footer="true" :center="true">
       <div slot="content">
         <div class="preview">
-          <detailsApp v-if="showApp" :info-date="infoData" />
-          <detailsNote v-if="showNote" :info-date="infoData" />
-          <detailsSubscribe v-if="showSubscribe" :variable-attributes="variableAttributes" />
+          <detailsApp v-if="showApp && currentShowType === 3" :info-date="infoData" />
+          <detailsNote v-if="showNote && currentShowType === 1" :info-date="infoData" />
+          <detailsSubscribe v-if="showSubscribe && currentShowType === 2" :variable-attributes="subscribeComputed" />
         </div>
       </div>
       <el-button slot="customFooter" type="primary" @click="hidePreviewDialog">我知道啦</el-button>
@@ -222,6 +224,8 @@ export default {
       activityList: [],
       // 当前正在预览的图片
       currentImg: '',
+      // 当前正在预览的模板类型
+      currentShowType: 1,
       // showApp通知
       showApp: false,
       // show短信
@@ -230,6 +234,12 @@ export default {
       showSubscribe: false,
       infoData: null
 
+    }
+  },
+  computed: {
+    subscribeComputed() {
+      const { infoData } = this
+      return infoData && infoData.keyValueNoticeTemplateSetVo && infoData.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList
     }
   },
   created() {
@@ -270,7 +280,7 @@ export default {
     // 模板设置详情
     async getNoticeTemplateSetDetailById(id) {
       console.log(id)
-      const { data } = await getNoticeTemplateSetDetailById({ id: '1568183828108357633' })
+      const { data } = await getNoticeTemplateSetDetailById({ id })
       this.infoData = data
     },
     /** 行为操作 */
@@ -283,10 +293,13 @@ export default {
       const { selectActivity, id } = item
       this.$refs['previewDialog'].show()
       if (id === 1) {
+        this.currentShowType = 1
         this.showNote = true
       } else if (id === 2) {
+        this.currentShowType = 2
         this.showSubscribe = true
       } else if (id === 3) {
+        this.currentShowType = 3
         this.showApp = true
       }
       this.getNoticeTemplateSetDetailById(selectActivity)
