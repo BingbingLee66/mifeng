@@ -87,21 +87,22 @@ export default {
       this.query.pageNum = 1
       this.fetchData()
     },
-    fetchData() {
+    async fetchData() {
       this.loading = true
       const { cities } = this.query
       const params = {
         ...this.query,
         cities: cities.length > 0 ? cities[1] : ''
       }
-      getListInfo(params)
-        .then(response => {
-          this.list = response.data.list
-          this.total = response.data.totalRows
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      try {
+        let res = await getListInfo(params)
+        this.list = res.data.list
+        this.total = res.data.totalRows
+        console.log(res)
+      } catch (error) {
+        this.list = []
+      }
+      this.loading = false
     },
     // 获取地区信息
     async getAreaList() {
@@ -161,7 +162,9 @@ export default {
     },
     // 删除提示
     delConfirm() {
-      if (!this.multipleSelection.length) { return this.$message({ message: '请选择删除的数据', type: 'warning' }) }
+      if (!this.multipleSelection.length) {
+        return this.$message({ message: '请选择删除的数据', type: 'warning' })
+      }
       this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
