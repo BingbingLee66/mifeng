@@ -123,3 +123,23 @@ export const memberPageListConfig = [
     }
   },
 ]
+
+// 工具类数据channelType
+export const channelTypeList = [
+  {
+    id: 1,
+    n: '短信'
+  },
+  {
+    id: 2,
+    n: '订阅消息'
+  },
+  {
+    id: 3,
+    n: 'app通知'
+  },
+  {
+    id: 4,
+    n: '应用内通知'
+  },
+]

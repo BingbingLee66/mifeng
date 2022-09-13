@@ -102,4 +102,6 @@ export const memberPostList = params => request({ url: '/ec/memberPost/member-po
 
 // 创建群发通知
 export const sendMsg = data => request({ url: '/ec/group-send/add', method: 'post', data })
+// 群发列表
+export const sendList = params => request({ url: '/ec/group-send/page-list', method: 'get', params })
 

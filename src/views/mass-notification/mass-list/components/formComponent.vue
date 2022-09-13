@@ -1,5 +1,5 @@
 <template>
-  <el-form :inline="true" :model="form" ref="form" class="demo-form-inline">
+  <el-form ref="form" :inline="true" :model="form" class="demo-form-inline">
     <el-form-item v-if="activeName !== 'notification'" label="商协会名称" prop="chamberName">
       <el-autocomplete
         v-model="form.chamberName"
@@ -7,23 +7,23 @@
         :fetch-suggestions="querySearch"
         placeholder="搜索/选择"
         @select="handleSelect"
-      ></el-autocomplete>
+      />
     </el-form-item>
     <template v-if="activeName !== 'template'">
       <el-form-item :label="activeName == 'notification' ? '标题' : ' 消息标题'" prop="title">
-        <el-input clearable v-model="form.title" :placeholder="placeholder"></el-input>
+        <el-input v-model="form.title" clearable :placeholder="placeholder" />
       </el-form-item>
 
       <el-form-item label="通知类型" prop="notification">
         <el-select v-model="form.notification" class="select" placeholder="请选择">
-          <el-option v-for="item2 in statusList" :key="item2.id" :label="item2.name" :value="item2.id"></el-option>
+          <el-option v-for="item2 in statusList" :key="item2.id" :label="item2.name" :value="item2.id" />
         </el-select>
       </el-form-item>
     </template>
 
-    <el-form-item v-if="activeName === 'notification'" label="创建人" prop="title">
-      <el-input clearable v-model="form.title" :placeholder="placeholder"></el-input>
-    </el-form-item>
+    <!-- <el-form-item v-if="activeName === 'notification'" label="创建人" prop="title">
+      <el-input v-model="form.title" clearable :placeholder="placeholder" />
+    </el-form-item> -->
 
     <el-form-item v-if="activeName !== 'template'" label="发布时间" prop="activityName">
       <el-date-picker
@@ -32,8 +32,7 @@
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
-      >
-      </el-date-picker>
+      />
     </el-form-item>
     <!-- 为模板管理时展示 -->
     <template v-if="activeName === 'template'">
@@ -54,23 +53,12 @@
 <script>
 import { notificationType, massNotificationType } from '../../util/label'
 export default {
-  name: 'formComponent',
+  name: 'FormComponent',
   props: {
-    //活跃的tab名称
+    // 活跃的tab名称
     activeName: {
       type: String,
       default: 'template'
-    }
-  },
-  watch: {
-    activeName(newVal, oldVal) {
-      if (newVal === 'mass') {
-        this.statusList = notificationType
-      } else {
-        this.statusList = massNotificationType
-      }
-      //清空表单内容
-      this.$refs['form'].resetFields()
     }
   },
   data() {
@@ -79,7 +67,7 @@ export default {
         chamberName: '',
         title: '',
         time: [],
-        //通知类型
+        // 通知类型
         notification: -1
       },
       nameList: [
@@ -92,6 +80,17 @@ export default {
       ],
       placeholder: '请输入',
       statusList: []
+    }
+  },
+  watch: {
+    activeName(newVal) {
+      if (newVal === 'mass') {
+        this.statusList = notificationType
+      } else {
+        this.statusList = massNotificationType
+      }
+      // 清空表单内容
+      this.$refs['form'].resetFields()
     }
   },
   created() {

@@ -167,9 +167,6 @@ import { selectTemplateList, getNoticeTemplateSetDetailById, selectTemplateListA
 import ReceiveForm from './components/receiveForm.vue'
 import kdDialog from '@/components/common/kdDialog'
 import activityDialog from './components/activityDialog.vue'
-// import detailsApp from '../templateLibrary/components/details-app'
-// import detailsNote from '../templateLibrary/components/details-note'
-// import detailsSubscribe from '../templateLibrary/components/details-subscribe'
 export default {
   name: 'Create',
   components: { ReceiveForm, kdDialog, activityDialog,
@@ -204,9 +201,6 @@ export default {
         { label: '短信', templateList: [], id: 1 },
         { label: '微信订阅消息', templateList: [], id: 2 },
         { label: 'APP通知', templateList: [], id: 3 }
-        // { label: '短信', templateList: [{ name: '活动1', id: 1 }], id: 1, selectActivity: 1 },
-        // { label: '微信订阅消息', templateList: [], id: 2, selectActivity: null },
-        // { label: 'APP通知', templateList: [], id: 3, selectActivity: null }
       ],
 
       rules: {
