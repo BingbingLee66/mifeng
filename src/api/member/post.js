@@ -61,7 +61,7 @@ export function postNameExistValid(params) {
 
 export function deleteManyMember(params) {
   return request({
-    url: '/ec/member/getNotActiveMemberNum',
+    url: '/ec/member/delBatchMember',
     method: 'delete',
     params
   })
