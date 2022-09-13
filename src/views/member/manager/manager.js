@@ -425,6 +425,20 @@ export default {
           let str = arr.join('、')
           new_data['会员标签'] = str
         }
+        if (data.bridgeLabels && data.bridgeLabels.length > 0) {
+          let arr = data.bridgeLabels.map(item => {
+            return item.name
+          })
+          let str = arr.join('、')
+          new_data['供需标签'] = str
+        }
+        if (data.tradeBridges && data.tradeBridges.length > 0) {
+          let arr = data.tradeBridges.map(item => {
+            return item.name
+          })
+          let str = arr.join('、')
+          new_data['行业标签'] = str
+        }
         this.selectionDatas.push(new_data)
       }
     },
