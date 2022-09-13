@@ -86,10 +86,13 @@
       </el-form-item>
       <receiveDialog
         ref="receiveRef"
+        :a="a"
         :page-size="pageSize"
         :current-page="page"
         :total="total"
         :commit-type="commitType"
+        :table-data="tableData"
+        :column-config="columnConfig"
         @change="change"
         @tableSelect="tableSelect"
         @hide="hide"
@@ -137,11 +140,11 @@ export default {
   name: 'ReceiveForm',
   components: { receiveDialog, SelectShow },
   props: ['receiveList', 'ckey', 'receive'],
-  provide() {
-    return {
-      tableMsg: this
-    }
-  },
+  // provide() {
+  //   return {
+  //     tableMsg: this
+  //   }
+  // },
   data() {
     return {
       a: '1',
@@ -230,6 +233,7 @@ export default {
   },
   watch: {
     'form.receive'() {
+      console.log('接收人发生改变')
       this.page = 1
       this.pageSize = 10
       // 所有会员
@@ -285,7 +289,7 @@ export default {
       console.log('data', data)
     },
     // 拉取
-    async getNumberList(flag = false) {
+    async getNumberList() {
       console.log('query', this.query.attr)
       console.log('aComputed', this.aComputed)
       const { page, pageSize, ckey, query: { attr } } = this
@@ -324,10 +328,10 @@ export default {
       this.memberNum = data.totalRows
       this.total = data.totalRows
       this.tableData = data.list
-      if (flag) {
-        // 回显数据
-        this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
-      }
+      // if (flag) {
+      //   // 回显数据
+      //   this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
+      // }
       // const { data } = await getMemberList({ page, pageSize })
       // this.memberNum = data.totalRows
       // this.total=data.totalRows
@@ -342,30 +346,31 @@ export default {
       if (this.commitType === 1) {
         console.log('aa')
       } else {
-        // 选择模式   去重数组，如果没有再添加
-        this.selectData.forEach(item => {
-          if (! this.selectMemberList.some(s => s.id === item.id)) {
-            this.selectMemberList.push(item)
-          }
-        })
-        // this.tableData 当前页的数据
-        // this.selectData 表格当前页已选数据
-        // 因为不知道哪些是用户取消勾选，所以只能通过这种方法拿到当前页没有选的数据，去已选数组中删除
-        const deleteArr = []
-        this.tableData.forEach(item => {
-          if (!this.selectData.some(s => s.id === item.id)) {
-            deleteArr.push(item)
-          }
-        })
-        console.log('deleteArr', deleteArr)
-        // 从已选数组中删除
-        deleteArr.forEach(item => {
-          const index = this.selectMemberList.findIndex(v => v.id === item.id)
-          console.log('index', index)
-          if (index > 0) {
-            this.selectMemberList.splice(index, 1)
-          }
-        })
+        this.selectMemberList = this.selectData
+        // // 选择模式   去重数组，如果没有再添加
+        // this.selectData.forEach(item => {
+        //   if (! this.selectMemberList.some(s => s.id === item.id)) {
+        //     this.selectMemberList.push(item)
+        //   }
+        // })
+        // // this.tableData 当前页的数据
+        // // this.selectData 表格当前页已选数据
+        // // 因为不知道哪些是用户取消勾选，所以只能通过这种方法拿到当前页没有选的数据，去已选数组中删除
+        // const deleteArr = []
+        // this.tableData.forEach(item => {
+        //   if (!this.selectData.some(s => s.id === item.id)) {
+        //     deleteArr.push(item)
+        //   }
+        // })
+        // console.log('deleteArr', deleteArr)
+        // // 从已选数组中删除
+        // deleteArr.forEach(item => {
+        //   const index = this.selectMemberList.findIndex(v => v.id === item.id)
+        //   console.log('index', index)
+        //   if (index > 0) {
+        //     this.selectMemberList.splice(index, 1)
+        //   }
+        // })
       }
       this.hide()
     },
@@ -388,7 +393,7 @@ export default {
       // 回显已选数据
       setTimeout(() => {
         console.log('this.$refs.$children', this.$refs['receiveRef'].$refs['tableRef'])
-        this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
+        // this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
       }, 500)
       console.log('form.receive ', this.form.receive)
       // 指定商会会员

@@ -10,18 +10,20 @@
     >
       <div slot="content">
         <!-- 表单选型 -->
-        <slot name="form"></slot>
+        <slot name="form" />
+
         <!-- 表格 -->
         <div class="table">
-          <kdTable @tableSelect="tableSelect" ref="tableRef" />
+          <kdTable ref="tableRef" v-bind="$attrs" @tableSelect="tableSelect" />
+          <!-- <kdTable v-bind="$attrs" @tableSelect="tableSelect" ref="tableRef" /> -->
         </div>
 
         <!-- 分页  -->
         <!-- <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="change" ></KdPagination>   -->
-        <KdPagination v-on="$listeners" v-bind="$attrs" @change="change"></KdPagination>
+        <KdPagination v-bind="$attrs" v-on="$listeners" @change="change" />
       </div>
       <div slot="customFooter">
-        <slot name="receive"></slot>
+        <slot name="receive" />
       </div>
     </kdDialog>
   </div>
@@ -34,18 +36,18 @@ export default {
   name: 'ReceiveDialog',
   components: { kdDialog, kdTable, KdPagination },
   props: {
-    selection: {
-      type: Boolean,
-      default: false
-    },
-    commitType: {
-      type: Number,
-      default: 1
-    },
-    pageSize: {
-      type: Number,
-      default: 1
-    }
+    // selection: {
+    //   type: Boolean,
+    //   default: false
+    // },
+    // commitType: {
+    //   type: Number,
+    //   default: 1
+    // },
+    // pageSize: {
+    //   type: Number,
+    //   default: 1
+    // }
   },
   data() {
     return {

@@ -95,7 +95,9 @@
                   :label="item2.name"
                   :value="item2.id"
                 />
+
               </el-select>
+              <span style="margin-left:8px"><el-button v-if="item.selectActivity" @click="showTemplate(item)">预览</el-button> <span v-if="item.templateList.length>0 &&ckey" class="remain-sum"> 剩余短信{{ item.templateList[0].remainSum }}条</span></span>
             </div>
           </div>
         </el-checkbox-group>
@@ -105,7 +107,7 @@
         <el-radio-group v-model="form.sendType">
           <el-radio label="1">立即发送</el-radio>
           <el-radio label="2">定时发送</el-radio>
-          <el-date-picker v-if="form.sendType == 2" v-model="form.sendTime" type="datetime" value-format="timestamp" placeholder="请选择发送时间" />
+          <el-date-picker v-if="form.sendType == 2" v-model="form.sendTs" type="datetime" value-format="timestamp" placeholder="请选择发送时间" />
         </el-radio-group>
       </el-form-item>
       <!-- 通知发送规则 -->
@@ -141,22 +143,41 @@
         }
       "
     />
+    模板预览
+    <kdDialog ref="previewDialog" dialog-title="预览" :custom-footer="true" :center="true">
+      <div slot="content">
+        <div class="preview">
+          <detailsApp v-if="showApp" :info-date="infoData" />
+          <detailsNote v-if="showNote" :info-date="infoData" />
+          <detailsSubscribe v-if="showSubscribe" :variable-attributes="variableAttributes" />
+        </div>
+      </div>
+      <el-button slot="customFooter" type="primary" @click="hidePreviewDialog">我知道啦</el-button>
+    </kdDialog>
+
   </div>
 </template>
 
 <script>
 import { labelType, receiveType } from '../util/label'
 import { uploadFile } from '@/api/content/article'
-import { selectTemplateList, selectTemplateListAdmin, sendMsg } from '@/api/mass-notification/index'
+import { selectTemplateList, getNoticeTemplateSetDetailById, selectTemplateListAdmin, sendMsg } from '@/api/mass-notification/index'
 import ReceiveForm from './components/receiveForm.vue'
 import kdDialog from '@/components/common/kdDialog'
 import activityDialog from './components/activityDialog.vue'
+// import detailsApp from '../templateLibrary/components/details-app'
+// import detailsNote from '../templateLibrary/components/details-note'
+// import detailsSubscribe from '../templateLibrary/components/details-subscribe'
 export default {
   name: 'Create',
-  components: { ReceiveForm, kdDialog, activityDialog },
+  components: { ReceiveForm, kdDialog, activityDialog,
+    detailsApp: () => import('../templateLibrary/components/details-app'),
+    detailsNote: () => import('../templateLibrary/components/details-note'),
+    detailsSubscribe: () => import('../templateLibrary/components/details-subscribe'), },
 
   data() {
     return {
+      ckey: null,
       labelList: [],
       receiveList: [],
       form: {
@@ -169,7 +190,8 @@ export default {
         // 同步渠道
         synchChannels: [],
         agreeRule: false,
-        sendTime: '',
+        sendTs: '',
+        receiverRemove: 2,
 
         // 自定义通知相关
         title: '', // 消息标题
@@ -199,7 +221,15 @@ export default {
       // 已选活动列表
       activityList: [],
       // 当前正在预览的图片
-      currentImg: ''
+      currentImg: '',
+      // showApp通知
+      showApp: false,
+      // show短信
+      showNote: false,
+      // show 订阅消息
+      showSubscribe: false,
+      infoData: null
+
     }
   },
   created() {
@@ -230,14 +260,39 @@ export default {
       if (ckey) {
         API = selectTemplateList
       }
-      const { data } = await API({ channelTypeId, noticeTypeId })
+      const { data } = await API({ channelTypeId, noticeTypeId, ckey })
       this.synchChannels[channelTypeId - 1].templateList = data || []
     },
     //
     async send(params) {
       await sendMsg(params)
     },
+    // 模板设置详情
+    async getNoticeTemplateSetDetailById(id) {
+      console.log(id)
+      const { data } = await getNoticeTemplateSetDetailById({ id: '1568183828108357633' })
+      this.infoData = data
+    },
     /** 行为操作 */
+    // 关闭预览弹框
+    hidePreviewDialog() {
+      this.$refs['previewDialog'].hide()
+    },
+    // 点击预览渠道
+    showTemplate(item) {
+      const { selectActivity, id } = item
+      this.$refs['previewDialog'].show()
+      if (id === 1) {
+        this.showNote = true
+      } else if (id === 2) {
+        this.showSubscribe = true
+      } else if (id === 3) {
+        this.showApp = true
+      }
+      this.getNoticeTemplateSetDetailById(selectActivity)
+
+      console.log('item', item)
+    },
     // 删除已选活动
     handleClose(tag) {
       const { id } = tag
@@ -276,8 +331,9 @@ export default {
 
       this.$refs['indexFormRef'].validate(valid => {
         if (valid) {
-          const { ckey, form: { type: noticeTypeId, receive: receiveTypeId, sendTime: sendTs, sendType } } = this
+          const { ckey, form: { type: noticeTypeId, receiverRemove, receive: receiveTypeId, sendTs, sendType } } = this
           const params = {
+            receiverRemove,
             channelTypeTemplateDTOS: this.form.synchChannels.map(item => ({
               channelTypeId: item.id,
               id: item.selectActivity
@@ -313,9 +369,14 @@ export default {
     // 表单提交校验
     verify() {
       const {
-        form: { type, agreeRule },
+        form: { type, agreeRule, sendType, sendTs },
         activityList
       } = this
+      // 当sendType为2时，需要填写sendTs
+      if (parseInt(sendType) === 2 && sendTs.length === 0) {
+        this.$message.error('请选择发送时间')
+        return false
+      }
       // 渠道必填  现在为选填了
       // if (!synchChannels.length > 0) {
       //   this.$message.error('请选择同步渠道')
@@ -435,6 +496,11 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+// .preview{
+//   position: fixed;
+//   top: 20px;
+//   right: 30%;
+// }
 .detail-input {
   width: 500px;
   // display: block;
@@ -549,5 +615,10 @@ export default {
     color: #767676;
     margin-left: 10px;
   }
+}
+.remain-sum{
+  color: #F5222D;
+  font-size: 14px;
+  margin-left: 8px;
 }
 </style>

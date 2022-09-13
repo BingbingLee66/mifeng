@@ -68,12 +68,15 @@ export const memberCountTableConfig = [
 ]
 // 指定商会会员 商会后台用
 export const memberPageListConfig = [
-  { type: 'select', reserveSelection: true },
-  {
-    prop: 'id',
-    label: '企业/id',
-    type: 'general',
-  },
+  { type: 'selection', reserveSelection: true },
+  // {
+  //   prop: 'id',
+  //   label: '企业/id',
+  //   type: 'general',
+  //   render(h, scope) {
+  //     return (<el-input value={scope.row.id}>123</el-input>)
+  //   }
+  // },
   {
     prop: 'type',
     label: '入会类型',
