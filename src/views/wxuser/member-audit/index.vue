@@ -111,7 +111,7 @@ export default {
     },
     async queryData(formData) {
       this.formData = { ...formData }
-      await this.fetchData()
+      await this.fetchData(1)
       this.$refs.tableRef.handleSelectionClear()
     },
     resetData() {
