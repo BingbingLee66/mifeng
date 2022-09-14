@@ -108,3 +108,5 @@ export const sendList = params => request({ url: '/ec/group-send/page-list', met
 // 模板管理列表
 export const templateList = params => request({ url: '/ec/template-distribution/template-distribution-list', method: 'get', params })
 
+// 接收人
+export const receiverInfoList = params => request({ url: '/ec/group-send/receiver-info', method: 'get', params })

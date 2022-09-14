@@ -1,36 +1,39 @@
 <template>
   <div class="containers">
     <tab :tab-list="tabList" @handleClick="handleClick" />
+    <!-- 表单 -->
     <formComponent :active-name="activeName" @templateOperation="templateOperation" @query="sendListFunc" />
+    <!-- 列表表格 -->
     <kdTable :table-data="tableData" :column-config="columnConfig" />
     <kdDialog />
+    <!-- 分页 -->
     <KdPagination :page-size="query.pageSize" :current-page="query.page" :total="total" @change="change" />
-    <!-- <kdDialog ref="
-      kd-dialog-
-      :custom-footer="true"
-      dialog-title="通知发送规则"
-      :center="true"
-      @hide="hide"
-    >
-      <div slot="content">
-        规则说明，文案先找业务定一下
-      </div>
-      <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
-      </kdDialog> -->
+    <receiveDialog
+      ref="receiveRef"
+      :table-data="dialog.tableData"
+      :total="dialog.total"
+      :column-config="dialog.columnConfig"
+      :current-page="dialog.page"
+      :page-size="dialog.pageSize"
+      @change="receiveChange"
+    />
+
   </div>
 </template>
 
 <script>
 import kdDialog from '@/components/common/kdDialog'
 import tab from './components/tab.vue'
-import { sendList, templateList } from '@/api/mass-notification/index'
+import { sendList, receiverInfoList, templateList } from '@/api/mass-notification/index'
 import kdTable from '@/views/mass-notification/components/common/kdTable'
 import KdPagination from '@/components/common/KdPagination'
-import { receiveType, channelTypeList } from '../util/label'
+import { receiveType, channelTypeList, memberPageListConfig } from '../util/label'
+
 import dayjs from 'dayjs'
+import cloneDeep from 'lodash/cloneDeep'
 export default {
   name: 'Create',
-  components: { kdDialog, tab, kdTable, KdPagination, formComponent: () => import('./components/formComponent') },
+  components: { kdDialog, tab, kdTable, KdPagination, receiveDialog: () => import('../components/common/receiveDialog.vue'), formComponent: () => import('./components/formComponent') },
 
   data() {
     return {
@@ -39,12 +42,26 @@ export default {
       tableData: [],
       // 表格配置
       columnConfig: [],
+      // 列表的表单相关
+      total: 0,
       query: {
         page: 1,
         pageSize: 10,
         noticeTypeId: 1,
       },
-      total: 0,
+      // 弹框相关
+      dialog: {
+        query: {
+          page: 1,
+          pageSize: 10,
+
+        },
+        tableData: [],
+        columnConfig: [],
+        total: 0,
+
+      },
+      showDialog: false
 
     }
   },
@@ -72,14 +89,21 @@ export default {
       this.tableData = data.list
       this.total = data.totalRows
     },
+    // 拉取接收人
+    async receiverListFunc(id) {
+      const { data } = await receiverInfoList({ ...this.dialog.query, gsId: id })
+      this.dialog.tableData = data.list.map(v => v.extend)
+      this.dialog.total = data.totalRows
+    },
     // 模板管理
     // async templateListFunc(){
     //   templateList
     // }
     /** 行为操作 */
     // 点击接收人
-    receiverClick() {
+    receiverClick(row) {
       console.log('点击接收人')
+      this.operationClick(6, row)
     },
     // 群发通知点击操作栏
     operationClick(type = 1, row) {
@@ -94,6 +118,20 @@ export default {
       } else if (type === 3) {
         // 删除
 
+      } else if (type === 4) {
+        // 导出发送记录
+
+      } else if (type === 5) {
+        // 未读重发
+
+      } else if (type === 6) {
+        // 接收人
+        this.showDialog = true
+        console.log('this.$refs[receiveRef]', this.$refs['receiveRef'])
+        this.$refs['receiveRef'].$children[0].show()
+        this.dialog.columnConfig = cloneDeep(memberPageListConfig)
+        this.dialog.columnConfig.splice(0, 1)
+        this.receiverListFunc(row.id)
       }
     },
     // 管理模板 分配短信
@@ -110,7 +148,16 @@ export default {
     // 删除已选活动
     handleSelect() {},
     /** 父子组件交互 */
-    change() {},
+    change(val) {
+      console.log('val', val)
+    },
+    // 弹框内分页的改变
+    receiveChange(val) {
+      console.log('val', val)
+      // this.dialog.query.page = val?.pageNum && val.pageNum
+      this.dialog.query.page = val?.pageNum
+      this.dialog.query.pageSize = val.pageSize && val.pageSize
+    },
     // tab改变时
     handleClick(name) {
       this.activeName = name
@@ -168,7 +215,7 @@ export default {
           prop: 'receiverNum',
           label: '接收人',
           render: (h, scope) => {
-            return (<div onClick = {this.receiverClick}>{scope.row.receiverNum}</div>)
+            return (<el-link type="primary" onClick = {() => this.receiverClick(scope.row)}>{scope.row.receiverNum}</el-link>)
           }
         },
         {
@@ -219,7 +266,7 @@ export default {
           prop: 'operation',
           label: '操作',
           render: (h, scope) => {
-            return (<div class="operation"><el-link type="primary" onClick={ () => this.operationClick(2, scope.row)}> 编辑</el-link> <el-link type="primary" onClick={() => this.operationClick(1, scope.row)}>详情</el-link> <el-link type="primary" onClick={() => this.operationClick(3, scope.row)}>删除</el-link> </div>)
+            return (<div class="operation"><el-link v-show={scope.row.editAuth === 1} type="primary" onClick={ () => this.operationClick(2, scope.row)}> 编辑</el-link> <el-link type="primary" v-show={scope.row.statAuth === 1} onClick={() => this.operationClick(1, scope.row)}>详情</el-link> <el-link v-show={scope.row.delAuth === 1} type="primary" onClick={() => this.operationClick(3, scope.row)}>删除</el-link> <el-link v-show={scope.row.statAuth === 1} type="primary" onClick={() => this.operationClick(4, scope.row)}>导出发送记录</el-link><el-link v-show={scope.row.resendAuth === 1} type="primary" onClick={() => this.operationClick(5, scope.row)}>未读重发</el-link></div>)
             // return (<div class="operation"><el-link type="primary" onClick={ () => this.updateItem(scope.row)}> 编辑</el-link> <el-link type="primary" onClick={() => this.detailItem(scope.row)}>详情</el-link> <el-link type="primary" onClick={() => this.deleteItem(scope.row)}>删除</el-link> </div>)
           }
         },
