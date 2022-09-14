@@ -1,7 +1,7 @@
 <template>
   <div class="containers">
     <tab :tab-list="tabList" @handleClick="handleClick" />
-    <formComponent :active-name="activeName" @query="sendListFunc" />
+    <formComponent :active-name="activeName" @templateOperation="templateOperation" @query="sendListFunc" />
     <kdTable :table-data="tableData" :column-config="columnConfig" />
     <kdDialog />
     <KdPagination :page-size="query.pageSize" :current-page="query.page" :total="total" @change="change" />
@@ -101,7 +101,7 @@ export default {
       if (type === 1) {
         // 管理模板
 
-      } else if (type === 1) {
+      } else if (type === 2) {
         // 分配短信
 
       }
