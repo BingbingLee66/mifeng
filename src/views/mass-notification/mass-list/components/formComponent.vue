@@ -38,8 +38,8 @@
     <!-- 为模板管理时展示 -->
     <template v-if="activeName === 'template'">
       <el-form-item>
-        <el-button type="primary" @click="onSubmit">批量配置模板</el-button>
-        <el-button type="primary" @click="onSubmit">批量分配短信</el-button>
+        <el-button type="primary" @click="templateOperation(1)">批量配置模板</el-button>
+        <el-button type="primary" @click="templateOperation(2)">批量分配短信</el-button>
       </el-form-item>
       <div class="mass">短信总量： <span class="note">1234</span></div>
       <div class="mass">剩余短信： <span class="note">1234</span></div>
@@ -123,6 +123,9 @@ export default {
       }
       delete params.time
       this.$emit('query', params)
+    },
+    templateOperation(type) {
+      this.$emit('templateOperation', type)
     },
     handleSelect() {}
   }

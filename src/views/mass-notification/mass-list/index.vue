@@ -2,17 +2,9 @@
   <div class="containers">
     <tab :tab-list="tabList" @handleClick="handleClick" />
     <formComponent :active-name="activeName" @query="sendListFunc" />
-    <kdTable
-      :table-data="tableData"
-      :column-config="columnConfig"
-    />
+    <kdTable :table-data="tableData" :column-config="columnConfig" />
     <kdDialog />
-    <KdPagination
-      :page-size="query.pageSize"
-      :current-page="query.page"
-      :total="total"
-      @change="change"
-    />
+    <KdPagination :page-size="query.pageSize" :current-page="query.page" :total="total" @change="change" />
     <!-- <kdDialog ref="
       kd-dialog-
       :custom-footer="true"
@@ -31,7 +23,7 @@
 <script>
 import kdDialog from '@/components/common/kdDialog'
 import tab from './components/tab.vue'
-import { sendList } from '@/api/mass-notification/index'
+import { sendList, templateList } from '@/api/mass-notification/index'
 import kdTable from '@/views/mass-notification/components/common/kdTable'
 import KdPagination from '@/components/common/KdPagination'
 import { receiveType, channelTypeList } from '../util/label'
@@ -65,21 +57,31 @@ export default {
   },
   methods: {
     /** 请求 */
-    // 拉取群发通知列表
+    // 拉取群发通知列表 and群发管理列表(总后台)
     async sendListFunc(val) {
       console.log('val', val)
+      let API = sendList
       let query = { ...this.query }
-      if (val) { query = Object.assign(query, val) }
-      const { data } = await sendList(query)
+      if (this.activeName === 'template') {
+        API = templateList
+      } else {
+        if (val) { query = Object.assign(query, val) }
+      }
+
+      const { data } = await API(query)
       this.tableData = data.list
       this.total = data.totalRows
     },
+    // 模板管理
+    // async templateListFunc(){
+    //   templateList
+    // }
     /** 行为操作 */
     // 点击接收人
     receiverClick() {
       console.log('点击接收人')
     },
-    // 点击操作栏
+    // 群发通知点击操作栏
     operationClick(type = 1, row) {
       console.log('row', row, type)
       // 详情
@@ -94,18 +96,16 @@ export default {
 
       }
     },
+    // 管理模板 分配短信
+    templateOperation(type = 1) {
+      if (type === 1) {
+        // 管理模板
 
-    // updateItem() {
-    //   console.log('编辑')
-    // },
+      } else if (type === 1) {
+        // 分配短信
 
-    // detailItem(v) {
-    //   console.log('v', v)
-    // },
-
-    // deleteItem(v) {
-    //   console.log('v', v)
-    // },
+      }
+    },
     onSubmit() {},
     // 删除已选活动
     handleSelect() {},
@@ -114,6 +114,8 @@ export default {
     // tab改变时
     handleClick(name) {
       this.activeName = name
+      this.tableConfigUtil()
+      this.sendListFunc()
       console.log('handleClick', name)
     },
     /** 工具 */
@@ -126,7 +128,8 @@ export default {
       }
     },
     tableConfigUtil() {
-      const columnConfig = [
+    // 群发通知表格配置
+      let columnConfig = [
         {
           prop: 'id',
           label: 'ID',
@@ -221,6 +224,62 @@ export default {
           }
         },
       ]
+      // 群发管理
+      if (this.activeName === 'mass') {
+        this.columnConfig.unshift({
+          prop: 'chamberName',
+          label: '商协会名称',
+          width: 180
+        })
+      }
+      // 模板管理列表
+      if (this.activeName === 'template') {
+        columnConfig = [
+          {
+            prop: 'chamberName',
+            label: '商协会名称',
+          },
+          {
+            prop: 'smsTempNum',
+            label: '短信模板',
+          },
+          {
+            prop: 'subscriptionTempNum',
+            label: '订阅消息模板',
+          },
+          {
+            prop: 'appNoticeTempNum',
+            label: 'APP通知模板',
+          },
+          {
+            prop: 'smsDistributionSum',
+            label: '短信总数',
+          },
+          {
+            prop: 'smsRemainSum',
+            label: '短信剩余量',
+          },
+          {
+            prop: 'smsSuccSum',
+            label: '短信发送成功',
+          },
+          {
+            prop: 'smsFailSum',
+            label: '短信发送失败',
+          },
+          {
+            prop: 'smsDistributionNum',
+            label: '分配记录',
+          },
+          {
+            prop: 'operation',
+            label: '操作',
+            render: (h, scope) => {
+              return (<div class="operation"><el-link type="primary" onClick={ () => this.templateOperation(1, scope.row)}> 管理模板</el-link> <el-link type="primary" onClick={() => this.templateOperation(2, scope.row)}>分配短信</el-link>  </div>)
+            }
+          },
+        ]
+      }
       this.columnConfig = columnConfig
     },
     // 根据id查找对应的文本
@@ -246,9 +305,8 @@ export default {
 .containers {
   padding: 20px;
 }
-.operation{
+.operation {
   display: flex;
   flex-direction: column;
 }
-
 </style>

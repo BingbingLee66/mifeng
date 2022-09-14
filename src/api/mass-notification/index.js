@@ -105,3 +105,6 @@ export const sendMsg = data => request({ url: '/ec/group-send/add', method: 'pos
 // 群发列表
 export const sendList = params => request({ url: '/ec/group-send/page-list', method: 'get', params })
 
+// 模板管理列表
+export const templateList = params => request({ url: '/ec/template-distribution/template-distribution-list', method: 'get', params })
+

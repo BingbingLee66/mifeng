@@ -17,7 +17,7 @@ export default {
     }
   },
   render(h, ctx) {
-    console.log('ctx.props.scope', ctx.props.scope)
+    // console.log('ctx.props.scope', ctx.props.scope)
     return ctx.props.render ? ctx.props.render(h, ctx.props.scope) : ''
   }
 
