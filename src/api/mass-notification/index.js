@@ -82,6 +82,30 @@ export const getKeyValueList = params =>
     params
   })
 
+// 管理模板-商会列表
+export const distributionChambers = params =>
+  request({
+    url: '/ec/template-distribution/chambers',
+    method: 'get',
+    params
+  })
+
+// 单个-批量模板分配
+export const batchTemplateDistribution = data =>
+  request({
+    url: '/ec/template-distribution/batch-template-distribution',
+    method: 'post',
+    data
+  })
+
+// 单个-批量分配数量
+export const batchDistributionNum = data =>
+  request({
+    url: '/ec/template-distribution/batch-distribution-num',
+    method: 'post',
+    data
+  })
+
 // 查询所有会员列表
 export const getMemberList = data => request({ url: '/ec/member/all-member-page-list', method: 'post', data })
 

@@ -17,6 +17,10 @@
       :page-size="dialog.pageSize"
       @change="receiveChange"
     />
+    <!--  批量配置模板 -->
+    <configUration :show-configuration.sync="showConfiguration" />
+    <!-- 批量分配短信 -->
+    <allocation :show-allocation.sync="showAllocation" />
 
   </div>
 </template>
@@ -28,12 +32,14 @@ import { sendList, receiverInfoList, templateList } from '@/api/mass-notificatio
 import kdTable from '@/views/mass-notification/components/common/kdTable'
 import KdPagination from '@/components/common/KdPagination'
 import { receiveType, channelTypeList, memberPageListConfig } from '../util/label'
+import configUration from './components/configUration'
+import allocation from './components/allocation'
 
 import dayjs from 'dayjs'
 import cloneDeep from 'lodash/cloneDeep'
 export default {
   name: 'Create',
-  components: { kdDialog, tab, kdTable, KdPagination, receiveDialog: () => import('../components/common/receiveDialog.vue'), formComponent: () => import('./components/formComponent') },
+  components: { kdDialog, tab, kdTable, KdPagination, configUration, allocation, receiveDialog: () => import('../components/common/receiveDialog.vue'), formComponent: () => import('./components/formComponent') },
 
   data() {
     return {
@@ -61,8 +67,9 @@ export default {
         total: 0,
 
       },
-      showDialog: false
-
+      showDialog: false,
+      showConfiguration: false, // 批量配置模板
+      showAllocation: false // 批量分配短信
     }
   },
   created() {
@@ -138,10 +145,10 @@ export default {
     templateOperation(type = 1) {
       if (type === 1) {
         // 管理模板
-
+        this.showConfiguration = true
       } else if (type === 2) {
         // 分配短信
-
+        this.showAllocation = true
       }
     },
     onSubmit() {},
