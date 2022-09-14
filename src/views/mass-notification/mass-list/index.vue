@@ -1,14 +1,30 @@
 <template>
   <div class="containers">
     <tab :tab-list="tabList" @handleClick="handleClick" />
-    <formComponent :active-name="activeName" />
-
-    <kdDialog ref="kdDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true" @hide="hide">
+    <formComponent :active-name="activeName" @query="sendListFunc" />
+    <kdTable
+      :table-data="tableData"
+      :column-config="columnConfig"
+    />
+    <kdDialog />
+    <KdPagination
+      :page-size="query.pageSize"
+      :current-page="query.page"
+      :total="total"
+      @change="change"
+    />
+    <!-- <kdDialog ref="
+      kd-dialog-
+      :custom-footer="true"
+      dialog-title="通知发送规则"
+      :center="true"
+      @hide="hide"
+    >
       <div slot="content">
         规则说明，文案先找业务定一下
       </div>
       <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
-    </kdDialog>
+      </kdDialog> -->
   </div>
 </template>
 
@@ -16,40 +32,85 @@
 import kdDialog from '@/components/common/kdDialog'
 import tab from './components/tab.vue'
 import { sendList } from '@/api/mass-notification/index'
+import kdTable from '@/views/mass-notification/components/common/kdTable'
+import KdPagination from '@/components/common/KdPagination'
 import { receiveType, channelTypeList } from '../util/label'
+import dayjs from 'dayjs'
 export default {
   name: 'Create',
-  components: { kdDialog, tab, formComponent: () => import('./components/formComponent') },
+  components: { kdDialog, tab, kdTable, KdPagination, formComponent: () => import('./components/formComponent') },
 
   data() {
     return {
       // notification :通知列表  mass:群发管理 template:模板管理
       activeName: '',
-      tabList: [],
+      tableData: [],
       // 表格配置
-      columnConfig: []
+      columnConfig: [],
+      query: {
+        page: 1,
+        pageSize: 10,
+        noticeTypeId: 1,
+      },
+      total: 0,
+
     }
   },
   created() {
     const { ckey } = this.$store.getters
     this.ckey = ckey
     this.restTypeData()
+    this.tableConfigUtil()
+    this.sendListFunc()
   },
   methods: {
     /** 请求 */
     // 拉取群发通知列表
-    async sendListFunc() {
-      await sendList()
+    async sendListFunc(val) {
+      console.log('val', val)
+      let query = { ...this.query }
+      if (val) { query = Object.assign(query, val) }
+      const { data } = await sendList(query)
+      this.tableData = data.list
+      this.total = data.totalRows
     },
     /** 行为操作 */
     // 点击接收人
     receiverClick() {
       console.log('点击接收人')
     },
+    // 点击操作栏
+    operationClick(type = 1, row) {
+      console.log('row', row, type)
+      // 详情
+      if (type === 1) {
+        // 打开详情弹框
+
+      } else if (type === 2) {
+        // 编辑
+
+      } else if (type === 3) {
+        // 删除
+
+      }
+    },
+
+    // updateItem() {
+    //   console.log('编辑')
+    // },
+
+    // detailItem(v) {
+    //   console.log('v', v)
+    // },
+
+    // deleteItem(v) {
+    //   console.log('v', v)
+    // },
     onSubmit() {},
     // 删除已选活动
     handleSelect() {},
     /** 父子组件交互 */
+    change() {},
     // tab改变时
     handleClick(name) {
       this.activeName = name
@@ -68,7 +129,8 @@ export default {
       const columnConfig = [
         {
           prop: 'id',
-          label: '姓名',
+          label: 'ID',
+          width: 180
         },
         {
           prop: 'noticeTypeId',
@@ -96,7 +158,7 @@ export default {
           prop: 'receiveTypeId',
           label: '接收人类型',
           formatter: row => {
-            return this.getTypeById('receive', row.id)
+            return this.getTypeById('receive', row.receiveTypeId)
           }
         },
         {
@@ -110,7 +172,52 @@ export default {
           prop: 'receiverNum',
           label: '已读/未读人数',
           render: (h, scope) => {
-            return (<div onClick = {this.receiverClick}>{scope.row.receiverNum}</div>)
+            return (
+              scope.row.groupSendStatVOS && scope.row.groupSendStatVOS.map(item => { return <div><span>{this.getTypeById('channel', item.channelTypeId)}：</span><el-link type="primary">{item.readNum}/{item.unreadNum}</el-link> </div> })
+
+            )
+          }
+        },
+        {
+          prop: 'readRate',
+          label: '已读率',
+          formatter: row => {
+            return row.readRate * 100 + '%'
+          }
+        },
+        {
+          prop: 'sendTs',
+          label: '发送时间',
+          width: 160,
+          render: (h, scope) => {
+            const time = dayjs(parseInt(scope.row.sendTs)).format('YYYY-MM-DD HH:mm:ss')
+            return (<div><div>{scope.row.sendType === 2 ? '定时发送' : ''}</div>  <div>{time}</div></div>)
+          }
+        },
+        {
+          prop: 'createInfo',
+          label: '创建信息',
+          width: 160,
+          render: (h, scope) => {
+            const time = dayjs(parseInt(scope.row.createInfo.operatorTime)).format('YYYY-MM-DD HH:mm:ss')
+            return (<div> <div type="primary">{scope.row.createInfo.operatorName}</div>  <div>{time}</div></div>)
+          }
+        },
+        {
+          prop: 'updateInfo',
+          label: '更新信息',
+          width: 160,
+          render: (h, scope) => {
+            const time = dayjs(parseInt(scope.row.updateInfo.operatorTime)).format('YYYY-MM-DD HH:mm:ss')
+            return (<div><div>{scope.row.updateInfo.operatorName}</div>  <div>{time}</div></div>)
+          }
+        },
+        {
+          prop: 'operation',
+          label: '操作',
+          render: (h, scope) => {
+            return (<div class="operation"><el-link type="primary" onClick={ () => this.operationClick(2, scope.row)}> 编辑</el-link> <el-link type="primary" onClick={() => this.operationClick(1, scope.row)}>详情</el-link> <el-link type="primary" onClick={() => this.operationClick(3, scope.row)}>删除</el-link> </div>)
+            // return (<div class="operation"><el-link type="primary" onClick={ () => this.updateItem(scope.row)}> 编辑</el-link> <el-link type="primary" onClick={() => this.detailItem(scope.row)}>详情</el-link> <el-link type="primary" onClick={() => this.deleteItem(scope.row)}>删除</el-link> </div>)
           }
         },
       ]
@@ -139,4 +246,9 @@ export default {
 .containers {
   padding: 20px;
 }
+.operation{
+  display: flex;
+  flex-direction: column;
+}
+
 </style>

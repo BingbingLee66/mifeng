@@ -269,7 +269,12 @@ export default {
     },
     //
     async send(params) {
-      await sendMsg(params)
+      const res = await sendMsg(params)
+      if (res.state === 1) {
+        this.$message.success('操作成功')
+      } else {
+        this.$message.error(res.msg)
+      }
     },
     // 模板设置详情
     async getNoticeTemplateSetDetailById(id) {
