@@ -114,6 +114,22 @@ export const distributionTemplates = params =>
     params
   })
 
+// 更新模板分配明细状态
+export const distributionUpdateStatus = params =>
+  request({
+    url: '/ec/template-distribution/updateStatus',
+    method: 'put',
+    params
+  })
+
+// 管理模板-分配记录列表
+export const distributionList = params =>
+  request({
+    url: '/ec/template-distribution/distribution-list',
+    method: 'get',
+    params
+  })
+
 // 查询所有会员列表
 export const getMemberList = data => request({ url: '/ec/member/all-member-page-list', method: 'post', data })
 

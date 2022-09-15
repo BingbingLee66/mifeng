@@ -4,32 +4,27 @@
     <el-dialog
       title="管理模板"
       :visible.sync="dialogVisible"
-      width="70%"
+      width="60%"
       :before-close="handleClose"
     >
       <div class="containers">
-        <!-- <div class="management-box"> -->
         <el-row>
-          <!-- <div class="box-left"> -->
-          <el-col :span="2.5">
-            <div class="box-input"><el-input v-model="name" placeholder="搜索商协会" clearable @blur="query" /></div>
-            <el-tabs ref="tabsa" v-model="buinessName" class="eltab" style="height: 700px;" tab-position="left">
-              <el-tab-pane
-                v-for="item in originOpt"
-                :key="item.id"
-                :label="item.name"
-                :name="item.ckey"
-              />
-            </el-tabs>
-          <!-- </div> -->
-          </el-col>
-          <!-- <div class="box-right"> -->
-          <el-col :span="18">
+          <el-col :span="22">
             <el-tabs v-model="type" type="card" @tab-click="tabSwitch">
               <el-tab-pane label="短信模板" name="1"></el-tab-pane>
               <el-tab-pane label="订阅消息模板" name="2"></el-tab-pane>
               <el-tab-pane label="APP通知模板" name="3"></el-tab-pane>
             </el-tabs>
+            <el-select v-model="ckey" filterable placeholder="请选择" @change="fetchData(true)">
+              <el-option
+                v-for="item in originOpt"
+                :key="item.id"
+                :label="item.name"
+                :value="item.ckey"
+              >
+              </el-option>
+            </el-select>
+
             <el-table
               :key="random"
               v-loading="listLoading"
@@ -40,7 +35,7 @@
               fit
               highlight-current-row
             >
-              短信通知
+              <!-- 短信通知 -->
               <template v-if="type == 1">
                 <el-table-column prop="templateName" label="模板名称" align="center" />
                 <el-table-column prop="templateCode" label="模板CODE" align="center" />
@@ -57,13 +52,13 @@
                 <el-table-column prop="templateRemark" label="模板备注" align="center" />
               </template>
 
-              订阅消息
+              <!-- 订阅消息 -->
               <template v-if="type == 2">
                 <el-table-column prop="templateCode" label="模板ID" align="center" />
                 <el-table-column prop="templateName" label="标题" align="center" />
                 <el-table-column label="关键词" align="center">
                   <template slot-scope="scope">
-                    <div class="hit">
+                    <div v-if="scope.row.subscriptionNoticeTemplateVo" class="hit">
                       <div v-for="(item, index) in scope.row.subscriptionNoticeTemplateVo.variableAttributes" :key="index">
                         {{ item.value }}
                         <span v-if="index != scope.row.subscriptionNoticeTemplateVo.variableAttributes.length - 1">、</span>
@@ -79,7 +74,7 @@
                 <el-table-column prop="templateRemark" label="模板备注" align="center" />
               </template>
 
-              APP通知
+              <!-- APP通知 -->
               <template v-if="type == 3">
                 <el-table-column prop="templateCode" label="ID" align="center" />
                 <el-table-column prop="templateName" label="标题" align="center" />
@@ -103,8 +98,8 @@
 
               <el-table-column label="操作" align="center">
                 <template slot-scope="scope">
-                  <el-button v-if="scope.row.tddStatus == 1" type="text" @click="operation(1,scope.row)"> 禁用 </el-button>
-                  <el-button v-else type="text" @click="operation(2,scope.row)"> 启用 </el-button>
+                  <el-button v-if="scope.row.tddStatus == 1" type="text" @click="operation(0,scope.row)"> 禁用 </el-button>
+                  <el-button v-else type="text" :disabled="scope.row.status == 0" @click="operation(1,scope.row)"> 启用 </el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -120,23 +115,24 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
             />
-          <!-- </div> -->
+
           </el-col>
         </el-row>
-        <!-- </div> -->
+
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
 import {
-  distributionChambers, distributionTemplates
+  distributionChambers, distributionTemplates,
+  distributionUpdateStatus
 } from '@/api/mass-notification'
 export default {
   data() {
     return {
       dialogVisible: false,
-      buinessName: '',
+      ckey: '',
       name: '', // 查询名字
       type: '1', // 1短信通知、2订阅消息、3APP通知
       originOpt: [], // 商协会
@@ -156,8 +152,7 @@ export default {
 
   methods: {
     async show(row) {
-      console.log('row', row)
-      this.buinessName = 'G5cIMo'
+      this.ckey = row.ckey
       await this.query()
       await this.fetchData()
       this.dialogVisible = true
@@ -165,7 +160,13 @@ export default {
     // 取消
     handleClose() {
       this.dialogVisible = false
-      this.buinessName = ''
+      this.ckey = ''
+      this.list = []
+      this.originOpt = []
+      this.currentpage = 1
+      this.limit = 10
+      this.total = 0
+      this.type = '1'
     },
     // 查询
     async query() {
@@ -175,7 +176,6 @@ export default {
       }
       const res = await distributionChambers(parmas)
       this.originOpt = res.data
-      this.handleClick()
     },
     // 点击头部
     tabSwitch() {
@@ -185,9 +185,8 @@ export default {
     async fetchData(reset) {
       if (reset) this.currentpage = 1
       this.listLoading = true
-      this.list = []
       const parmas = {
-        ckey: this.buinessName,
+        ckey: this.ckey,
         pageSize: this.limit,
         page: this.currentpage,
         type: this.type
@@ -198,19 +197,43 @@ export default {
       this.total = res.data.totalRows || 0
       this.random = Math.random()
     },
-    // 选中左边tabs
-    handleClick() {
-      console.log(1111111, this.buinessName)
-      this.$nextTick(() => {
-        // const ele = document.getElementsByClassName('el-tabs__nav is-left')[0]
-        // const distance = '-640px'
-        // ele.style.transform = `translateY(${distance})`
+    async operation(status, row) {
+      // 状态 0禁用 1启用 2删除
+      const parmas = {
+        status,
+        id: row.id
+      }
+      if (status === 0) {
+        this.$confirm('禁用后，该商会后台不可使用该模板', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(() => {
+          this.UpdateStatus(parmas)
+        }).catch(() => {
 
-        const index = this.originOpt.findIndex(item => { return item.ckey === this.buinessName })
-        const ele = document.getElementsByClassName('el-tabs__nav is-left')[0]
-        console.log('ele', ele, index)
-        ele.setAttribute('style', `transform:translateY(-${index * 35}px)`)
-      })
+        })
+      }
+      if (status === 1) {
+        this.$confirm('启用后，该商会后台可使用该模板', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+        }).then(() => {
+          this.UpdateStatus(parmas)
+        }).catch(() => {
+
+        })
+      }
+    },
+    // 禁用 启用
+    async UpdateStatus(parmas) {
+      const res = await distributionUpdateStatus(parmas)
+
+      if (res.state === 1) {
+        this.$message.success('操作成功')
+        this.fetchData()
+      } else {
+        this.$message.error(res.msg)
+      }
     },
     handleSizeChange(val) {
       this.limit = val
@@ -224,37 +247,14 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-.management-box{
-  display: flex;
-  .box-left{
-    width: 20%;
-    .box-input{
-      width: 250px;
-      margin-bottom: 20px;
-    }
-  }
-  .box-right{
-    width: 80%;
-  }
-}
 
 .hit{
   display: flex;
   flex-wrap: wrap;
 }
-// ::v-deep .eltab {
-//   width: 200px;
-// }
-// ::v-deep .el-tabs--left .el-tabs__header.is-left {
-//   width: 200px;
-// }
-// ::v-deep .el-tabs--left .el-tabs__item.is-left {
-//   white-space: pre-wrap;
-//   text-align: right;
-//   padding: 10px 5px;
-//   line-height: 20px;
-//   height: auto;
-// }
+.el-select{
+  width: 400px;
+}
 
 .elInput {
   width: 96%;

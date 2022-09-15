@@ -49,6 +49,10 @@
     <allocation :show-allocation.sync="showAllocation" />
     <!-- 管理模板 -->
     <Management ref="showManagement" />
+    <!-- 分配短信 -->
+    <Allot ref="Allot" />
+    <!-- 分配记录 -->
+    <Record ref="Record" />
   </div>
 </template>
 
@@ -62,13 +66,15 @@ import { receiveType, channelTypeList, memberPageListConfig } from '../util/labe
 import configUration from './components/configUration'
 import allocation from './components/allocation'
 import Management from './components/management'
+import Allot from './components/Allot'
+import Record from './components/Record'
 
 import dayjs from 'dayjs'
 import cloneDeep from 'lodash/cloneDeep'
 export default {
   name: 'Create',
   // eslint-disable-next-line vue/no-unused-components
-  components: { kdDialog, tab, kdTable, KdPagination, configUration, allocation, Management, receiveDialog: () => import('../components/common/receiveDialog.vue'), formComponent: () => import('./components/formComponent') },
+  components: { kdDialog, tab, kdTable, KdPagination, Allot, Record, configUration, allocation, Management, receiveDialog: () => import('../components/common/receiveDialog.vue'), formComponent: () => import('./components/formComponent') },
 
   data() {
     return {
@@ -241,7 +247,9 @@ export default {
     templateOperation(type, row) {
       if (type === 1) this.showConfiguration = true
       else if (type === 2) this.showAllocation = true
-      else if (type === 3) this.$refs.showManagement.show(row.ckey)
+      else if (type === 3) this.$refs.showManagement.show(row)
+      else if (type === 4) this.$refs.Allot.show(row)
+      else if (type === 5 && row.smsDistributionNum > 0) this.$refs.Record.show(row)
     },
     // 弹框确认
     save() {
@@ -439,6 +447,9 @@ export default {
           {
             prop: 'smsDistributionNum',
             label: '分配记录',
+            render: (h, scope) => {
+              return (<div onClick={ () => this.templateOperation(5, scope.row)} style="color:#339dff">{scope.row.smsDistributionNum} </div>)
+            }
           },
           {
             prop: 'operation',
