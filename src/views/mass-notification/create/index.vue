@@ -434,11 +434,11 @@ export default {
       const refData = this.$refs['receiveForm'].$data
       switch (receive) {
         case 2:
-          // 职位id集合
+          // 职位id集合  todo 改为对象数组 {id：1，name:'aaa'}
           obj['receiverList'] = refData.form.position
           break
         case 3:
-          // 传部门id集合
+          // 传部门id集合  todo 改为对象数组 {id：1，name:'aaa'}
           obj['receiverList'] = refData.form.department.map(v => v.id)
           break
         case 4:
@@ -459,7 +459,11 @@ export default {
       if (type === 2 || type === 3) {
         obj['associationId'] = activityList[0] && activityList[0].id
       }
-      if (type === 5) { const { form: { title, content, imgs } } = this; obj = { title, content, imgs } }
+      if (type === 5) {
+        const { form: { title, content, imgs } } = this
+        const foo = { title, content, imgs }
+        obj = Object.assign(obj, foo)
+      }
       console.log('obj', obj)
       return obj
     },

@@ -13,6 +13,7 @@
       style="width: 100%"
       :row-key="rowKeys"
       :reserve-selection="true"
+      v-on="$listeners"
       @selection-change="handleSelectionChange"
     >
 
@@ -90,15 +91,15 @@ export default {
       console.log('rows', rows)
       console.log('.$refs[multipleTable].selection', this.$refs['multipleTable'].selection)
       if (!rows.length > 0) return
-      // this.$nextTick(() => {
-      //   rows.forEach(row => {
-      //     this.tableData.find(item => item.id === row.id) &&
-      //       this.$refs['multipleTable'].toggleRowSelection(
-      //         this.tableData.find(item => item.id === row.id),
-      //         true
-      //       )
-      //   })
-      // })
+      this.$nextTick(() => {
+        rows.forEach(row => {
+          this.tableData.find(item => item.id === row.id) &&
+            this.$refs['multipleTable'].toggleRowSelection(
+              this.tableData.find(item => item.id === row.id),
+              true
+            )
+        })
+      })
     }
     // toggleSelection(rows) {
     //   console.log('rows', rows)

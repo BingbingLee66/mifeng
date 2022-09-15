@@ -20,7 +20,7 @@
 
         <!-- 分页  -->
         <!-- <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="change" ></KdPagination>   -->
-        <KdPagination v-bind="$attrs" v-on="$listeners" @change="change" />
+        <KdPagination v-if="needPagination" v-bind="$attrs" v-on="$listeners" @change="change" />
       </div>
       <div slot="customFooter">
         <slot name="receive" />
@@ -36,6 +36,10 @@ export default {
   name: 'ReceiveDialog',
   components: { kdDialog, kdTable, KdPagination },
   props: {
+    needPagination: {
+      type: Boolean,
+      default: true
+    }
     // selection: {
     //   type: Boolean,
     //   default: false

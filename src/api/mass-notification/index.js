@@ -143,4 +143,7 @@ export const templateList = params => request({ url: '/ec/template-distribution/
 // 接收人
 export const receiverInfoList = params => request({ url: '/ec/group-send/receiver-info', method: 'get', params })
 // 未读重发(一个渠道都没读)
-export const unreadList = data => request({ url: '/ec/group-send/unread-list-retry', method: 'put', data })
+export const unreadRetry = data => request({ url: '/ec/group-send/unread-list-retry', method: 'put', data })
+
+// 未读重发列表(一个渠道都没读)
+export const unreadList = params => request({ url: '/ec/group-send/unread-list', method: 'get', params })

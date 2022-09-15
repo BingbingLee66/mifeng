@@ -15,12 +15,15 @@
       :column-config="dialog.columnConfig"
       :current-page="dialog.page"
       :page-size="dialog.pageSize"
+      :need-pagination="dialog.needPagination"
       @change="receiveChange"
+      @tableSelect="selectionChange"
     >
 
       <!-- 搜索框 -->
       <div slot="form">
-        <el-form :inline="true">
+        <div v-if="currentType===5" class="reset-send">确认给以下 <span>{{ dialog.selectList.length }}</span>  位未读用户重新发送通知吗？</div>
+        <el-form v-else :inline="true">
           <el-form-item label="搜索">
             <!-- <el-input class="search-input" v-model="query.chamberName" :placeholder="placeholder"></el-input> -->
             <el-input v-model="dialog.query.keyword" class="search-input" :placeholder="placeholder" />
@@ -51,7 +54,7 @@
 <script>
 import kdDialog from '@/components/common/kdDialog'
 import tab from './components/tab.vue'
-import { sendList, receiverInfoList, templateList, unreadList } from '@/api/mass-notification/index'
+import { sendList, unreadRetry, receiverInfoList, templateList, unreadList } from '@/api/mass-notification/index'
 import kdTable from '@/views/mass-notification/components/common/kdTable'
 import KdPagination from '@/components/common/KdPagination'
 import { receiveType, channelTypeList, memberPageListConfig } from '../util/label'
@@ -85,9 +88,11 @@ export default {
         query: {
           page: 1,
           pageSize: 10,
-          keyword: ''
+          keyword: '',
 
         },
+        needPagination: true,
+        selectList: [],
         tableData: [],
         columnConfig: [],
         total: 0,
@@ -97,6 +102,8 @@ export default {
       currentRow: null,
       // 弹框类型 1：查看  2：选择操作
       commitType: 1,
+      // 当前操作type 1:详情 2：编辑 3：删除 4：导出发送记录 5：未读重法 6：接收人
+      currentType: 1,
 
       placeholder: '手机号/姓名/企业名称',
       showDialog: false,
@@ -129,14 +136,25 @@ export default {
       this.total = data.totalRows
     },
     // 拉取接收人
-    async receiverListFunc(id) {
-      const { data } = await receiverInfoList({ ...this.dialog.query, gsId: id })
+    async receiverListFunc(id, type = 1) {
+      // type为1：拉取接收人列表 type为2：拉取未读列表
+      let API = receiverInfoList
+      if (type === 2) { API = unreadList }
+      const { data } = await API({ ...this.dialog.query, gsId: id })
       this.dialog.tableData = data.list.map(v => v.extend)
       this.dialog.total = data.totalRows
     },
-    // 未读从发列表
-    unreadListFunc() {
-      unreadList()
+    // 未读重发发
+    async unreadRetryFunc() {
+      let { dialog: { selectList: riIds } } = this
+      const { currentRow: { id: gsId } } = this
+      riIds = riIds.map(v => v.id)
+      const res = await unreadRetry({ riIds, gsId })
+      if (res.state === 1) {
+        this.$message.success('重发成功')
+      } else {
+        this.$message.error(res.msg)
+      }
     },
     // 模板管理
     // async templateListFunc(){
@@ -149,9 +167,10 @@ export default {
       this.operationClick(6, row)
     },
     // 群发通知点击操作栏
-    operationClick(type = 1, row) {
+    async operationClick(type = 1, row) {
       console.log('row', row, type)
       this.currentRow = row
+      this.currentType = type
       // 详情
       if (type === 1) {
         // 打开详情弹框
@@ -170,8 +189,12 @@ export default {
         if (!row.resendAuth) { this.$message.warning('不能未读重发'); return }
         this.commitType = 2
         this.open()
+        // 未读重发布不需要分页
+        this.dialog.query.pageSize = 20000
+        this.dialog.needPagination = false
         this.dialog.columnConfig = cloneDeep(memberPageListConfig)
-        this.receiverListFunc(row.id)
+        await this.receiverListFunc(row.id, 2)
+        console.log('ref', this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.dialog.tableData))
       } else if (type === 6) {
         // 接收人
         // 接收人弹框是否能够被查看
@@ -190,13 +213,18 @@ export default {
       else if (type === 2) this.showAllocation = true
       else if (type === 3) this.$refs.showManagement.show(row.ckey)
     },
-    // receive弹确认
+    // 弹框确认
     save() {
       this.hide()
+      // 未读重发 需请求保存
+      if (this.currentType === 5) {
+        this.unreadRetryFunc()
+      }
     },
     // 关闭弹框
     hide() {
       this.$refs['receiveRef'].$children[0].hide()
+      // 置空弹框分页内容 表单内容
     },
     // 打开弹框
     open() {
@@ -206,6 +234,10 @@ export default {
     // 删除已选活动
     handleSelect() {},
     /** 父子组件交互 */
+    // 弹框内已选表格数组发生变化
+    selectionChange(val) {
+      this.dialog.selectList = val
+    },
     change(val) {
       console.log('val', val)
     },
@@ -215,6 +247,10 @@ export default {
       // this.dialog.query.page = val?.pageNum && val.pageNum
       this.dialog.query.page = val?.pageNum
       this.dialog.query.pageSize = val?.pageSize
+      const { currentType, currentRow } = this
+      if (currentType === 6 || currentType === 5) {
+        this.receiverListFunc(currentRow.id, currentType === 6 ? 1 : 2)
+      }
     },
     // tab改变时
     handleClick(name) {
@@ -409,6 +445,12 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .containers {
   padding: 20px;
+}
+.reset-send{
+  margin-bottom: 10px;
+  span{
+    color: #F5222D;
+  }
 }
 .operation {
   display: flex;

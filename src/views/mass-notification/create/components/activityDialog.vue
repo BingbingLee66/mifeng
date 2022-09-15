@@ -25,7 +25,7 @@
       </el-form>
       <!-- 表格 -->
       <div class="table">
-        <kdTable ref="table" @tableSelect="tableSelect" />
+        <kdTable ref="table" v-on="$listeners" @tableSelect="tableSelect" />
       </div>
 
       <!-- 分页  前期先不做分页-->
