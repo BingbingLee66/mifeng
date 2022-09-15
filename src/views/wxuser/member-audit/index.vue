@@ -208,15 +208,15 @@ export default {
         // console.log(data);
         let new_data = {
           商协会名称: data.chamberName,
-          入会类型: data.type === 0 ? '个人' : '企业/团体入驻',
+          入会类型: data.applySource === 0 ? '个人' : '企业/团体入驻',
           申请来源:
-            data.type === 0
+            data.applySource === 0
               ? '未知'
-              : data.type === 1
+              : data.applySource === 1
                 ? '小程序会员入驻'
-                : data.type === 2
+                : data.applySource === 2
                   ? '小程序商会主页'
-                  : data.type === 3
+                  : data.applySource === 3
                     ? 'app会员入驻'
                     : 'app商会主页',
           入会名称: data.name,
