@@ -252,7 +252,7 @@ export default {
     beforeUpload(file, index) {
       if (
         !['image/jpeg', 'image/jpg', 'image/png', 'image/bmp'].includes(file.type) ||
-        !/(jpeg)|(jpg)|(png)|(bmp)$/.test(file.name)
+        !/(jpeg)|(jpg)|(png)|(bmp)$/i.test(file.name)
       ) {
         this.$message.error('上传图片只能是 JPG 或 PNG 或 BMP 格式!')
         return false
