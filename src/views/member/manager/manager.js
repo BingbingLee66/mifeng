@@ -675,10 +675,12 @@ export default {
     /* 打标签 */
     handleAttachLabel() {
       if (this.multipleSelection.length === 0) {
+        console.log(this.multipleSelection)
         return this.$message.error('请至少选择一位会员')
       }
       // 至少判断是否选择了一个已激活的会员
-      if (!this.multipleSelection.some(item => item.activatedState === '1')) {
+      console.log(this.multipleSelection)
+      if (!this.multipleSelection.some(item => item.activatedState === 1)) {
         this.$confirm(
           '不支持给未激活的会员打标签，请至少选择一个已激活的会员。',
           '提示',
