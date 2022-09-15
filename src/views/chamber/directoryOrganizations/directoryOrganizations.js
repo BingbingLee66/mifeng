@@ -190,7 +190,7 @@ export default {
     },
     setWeights() {
       if (this.multipleSelection.length === 0) {
-        this.$message.error('没有选择记录无法操作。')
+        return this.$message.error('没有选择记录无法操作。')
       }
       this.$refs.levelDialog.show()
     },

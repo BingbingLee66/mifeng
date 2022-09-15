@@ -77,21 +77,6 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="组织状态：">
-          <el-select
-            v-model="query.status"
-            placeholder="请选择组织状态"
-            filterable
-          >
-            <el-option label="全部" value="" />
-            <el-option
-              v-for="organization in organizationState"
-              :key="organization.value"
-              :label="organization.label"
-              :value="organization.value"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item label="信用状态">
           <el-select
             v-model="query.codestatus"
@@ -209,6 +194,16 @@
       <el-table-column label="入驻来源" width="120px">
         <template slot-scope="{ row }">
           <span>{{ inSourceObj[row.settledSource] }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="组织状态" width="120px">
+        <template slot-scope="{ row }">
+          <span>{{ row.status === 0 ?'不可用': row.status === 1 ?'正常' :row.status === 2 ? '删除' : row.status === 4 ? '注销' : '撤销' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="信用状态" width="120px">
+        <template slot-scope="{ row }">
+          <span>{{ row.creditStatus === 0 ? '正常' : row.creditStatus === 1 ?'活动异常' :'严重违法失信' }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="120px" fixed="right">
