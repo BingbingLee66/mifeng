@@ -29,14 +29,12 @@ export default {
       inserted: (el, binding) => {
         el.style.cssText = 'cursor:pointer;'
         el.addEventListener('click', () => {
-          // console.log(binding.value)
           let link = document.createElement('a')
           let url = binding.value
           fetch(url)
             .then(res => res.blob())
             .then(blob => {
               link.href = URL.createObjectURL(blob)
-              // console.log(link.href)
               link.download = '商会成员信息导入模板.xlsx'
               document.body.appendChild(link)
               link.click()
@@ -238,6 +236,7 @@ export default {
           })
           return item[0]
         })
+        ids = ids.slice(0, 200)
         _tagIds = ids.join(',')
       }
       if (this.platformLabelIds.length > 0) {
@@ -247,18 +246,20 @@ export default {
           })
           return item[0]
         })
+        ids = ids.slice(0, 200)
         _tagIds = _tagIds + ',' + ids.join(',')
         _tagIds = _tagIds.replace(/^(\s|,)+|(\s|,)+$/g, '')
+      }
+      if (this.memberLabelIds.length > 200 || this.platformLabelIds.length > 200) {
+        this.$message.warning('每次最多支持查询200个标签')
       }
       let supIds
       if (this.supplyIds.length > 0) {
         supIds = this.supplyIds.join(',')
-        console.log(supIds)
       }
       let indusIds
       if (this.industryIds.length > 0) {
         indusIds = this.industryIds.map(item => item[1]).join(',')
-        console.log(indusIds)
       }
       const params = {
         status: this.query.status,
@@ -288,12 +289,10 @@ export default {
       if (this.query.sendStatus !== -1) {
         params['sendStatus'] = this.query.sendStatus
       }
-      console.log(params, 'adsdsadsadsadas')
       try {
         const {
           data: { data = {}}
         } = await list(params)
-        console.log(data)
         this.list = data.list || []
         this.list.forEach(item => {
           if (!item.memberLabelList) {
@@ -405,7 +404,6 @@ export default {
                 : '未发送'
         }
         if (data.identityVOList.length > 0) {
-          // console.log('data.identityVOList', data.identityVOList)
           let str = ''
           data.identityVOList.forEach(element => {
             if (element.type === 1) {
@@ -456,7 +454,6 @@ export default {
         'actionId',
         e.currentTarget.getAttribute('actionid')
       )
-      console.log(this.selectionDatas)
       exportJson2Excel('商会会员', this.selectionDatas)
     },
     // 认证会员身份
@@ -620,7 +617,6 @@ export default {
     async getSupplyformOptions() {
       // 供需
       const res = await getAvailableLabelList()
-      console.log(res)
       if (res.state !== 1) return '供需标签请求失败'
       this.SupplyformOptions = res.data
     },
@@ -628,7 +624,6 @@ export default {
       const res = await getTradeLabelList()
       // 行业
       if (res.state !== 1) return this.$message.error('行业标签请求失败')
-      console.log(res, 'bbbbbbbbbbbbb')
       this.IndustryformOptions = res.data.map(item => {
         return {
           value: item.id,
@@ -801,7 +796,6 @@ export default {
     },
     showRemoveDialog() {
       this.notActiveMember = 0
-      // console.log(this.multipleSelection.some(item => item.activatedState !== -1))
       if (this.multipleSelection.every(item => item.activatedState !== -1)) {
         return this.$message.error('请至少选择一位 “未激活” 的会员')
       }
@@ -810,7 +804,6 @@ export default {
           this.notActiveMember++
         }
       })
-      console.log(this.notActiveMember)
       this.removeMemberDialog = true
     },
     async confirmRemoveMember() {
@@ -823,9 +816,7 @@ export default {
         }
       })
       params.ids = params.ids.join(',')
-      console.log(params)
       let res = await deleteManyMember(params)
-      console.log(res)
       if (res.state === -1) return this.$message.error(res.msg)
       this.init()
       this.$message.success(res.msg)
