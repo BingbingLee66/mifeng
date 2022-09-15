@@ -219,8 +219,9 @@ export default {
                   : data.applySource === 3
                     ? 'app会员入驻'
                     : 'app商会主页',
+          申请时间: data.joinTime,
           入会名称: data.name,
-          入驻状态: data.flag === 1 ? '已入驻' : '未入驻',
+          商会入驻状态: data.flag === 1 ? '已入驻' : '未入驻',
           会内职位: data.postName,
           个人姓名: data.contactName,
           联系人电话: data.phone,
