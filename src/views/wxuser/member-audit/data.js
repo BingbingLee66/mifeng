@@ -106,6 +106,14 @@ const tableColumn = [
     prop: 'joinTime'
   },
   {
+    label: '商会入驻状态',
+    prop: 'flag',
+    type: 'function',
+    callback: function(row, prop) {
+      return row.flag === 1 ? '已入驻' : '未入驻'
+    }
+  },
+  {
     label: '入会名称',
     prop: 'name'
   },

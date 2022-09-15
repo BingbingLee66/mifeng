@@ -29,7 +29,7 @@
       :table-column="tableColumn"
       :table-data="tableData"
       :page-data="pageData"
-      :whether-selection="whetherSelection"
+
       @handleCurrentChange="handleCurrentChange"
       @handleSizeChange="handleSizeChange"
       @handleSelectionChange="handleSelectionChange"
@@ -126,6 +126,9 @@ export default {
       if (this.multipleSelection.every((item) => item.status !== 0)) {
         return this.$message.error('请至少选择一个未审核的条目')
       }
+      if (this.multipleSelection.some(item => item.flag === 0)) {
+        return this.$message.error('您选择了有未入驻的商协会，请检查')
+      }
       this.passBtn = true
       let params = {
         auditStatus: 1,
@@ -135,15 +138,12 @@ export default {
       this.multipleSelection.forEach((item) => {
         params.memberId.push(item.id)
       })
-      console.log(params)
       let res = await rejectAuditStatus(params)
       if (res.state !== 1) return this.$message.error(res.msg)
       this.$message.success(res.msg)
-      console.log(res)
       await this.fetchData()
       this.passBtn = false
       this.$refs.tableRef.handleSelectionClear()
-      console.log('通过操作')
     },
     // 驳回
     async rejectMember() {
@@ -152,6 +152,9 @@ export default {
       }
       if (this.multipleSelection.every((item) => item.status !== 0)) {
         return this.$message.error('请至少选择一个未审核的条目')
+      }
+      if (this.multipleSelection.some(item => item.flag === 0)) {
+        return this.$message.error('您选择了有未入驻的商协会，请检查')
       }
       this.rejectBtn = true
 
@@ -163,9 +166,7 @@ export default {
       this.multipleSelection.forEach((item) => {
         params.memberId.push(item.id)
       })
-      console.log(params)
       let res = await rejectAuditStatus(params)
-      console.log(res)
       if (res.state !== 1) this.$message.error(res.msg)
       this.$message.success(res.msg)
       this.$refs.tableRef.handleSelectionClear()
@@ -219,6 +220,7 @@ export default {
                     ? 'app会员入驻'
                     : 'app商会主页',
           入会名称: data.name,
+          入驻状态: data.flag === 1 ? '已入驻' : '未入驻',
           会内职位: data.postName,
           个人姓名: data.contactName,
           联系人电话: data.phone,
@@ -230,9 +232,9 @@ export default {
         this.selectExportList.push(new_data)
       }
     },
-    whetherSelection(row) {
+  /*   whetherSelection(row) {
       return row.flag === 1
-    }
+    } */
   },
 }
 </script>
