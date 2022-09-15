@@ -21,7 +21,8 @@
     <configUration :show-configuration.sync="showConfiguration" />
     <!-- 批量分配短信 -->
     <allocation :show-allocation.sync="showAllocation" />
-
+    <!-- 管理模板 -->
+    <Management ref="showManagement" />
   </div>
 </template>
 
@@ -34,12 +35,14 @@ import KdPagination from '@/components/common/KdPagination'
 import { receiveType, channelTypeList, memberPageListConfig } from '../util/label'
 import configUration from './components/configUration'
 import allocation from './components/allocation'
+import Management from './components/management'
 
 import dayjs from 'dayjs'
 import cloneDeep from 'lodash/cloneDeep'
 export default {
   name: 'Create',
-  components: { kdDialog, tab, kdTable, KdPagination, configUration, allocation, receiveDialog: () => import('../components/common/receiveDialog.vue'), formComponent: () => import('./components/formComponent') },
+  // eslint-disable-next-line vue/no-unused-components
+  components: { kdDialog, tab, kdTable, KdPagination, configUration, allocation, Management, receiveDialog: () => import('../components/common/receiveDialog.vue'), formComponent: () => import('./components/formComponent') },
 
   data() {
     return {
@@ -141,15 +144,12 @@ export default {
         this.receiverListFunc(row.id)
       }
     },
-    // 管理模板 分配短信
-    templateOperation(type = 1) {
-      if (type === 1) {
-        // 管理模板
-        this.showConfiguration = true
-      } else if (type === 2) {
-        // 分配短信
-        this.showAllocation = true
-      }
+    // 1.批量配置模板 2.批量分配短信 3.管理模板 4.分配短信
+    // eslint-disable-next-line no-unused-vars
+    templateOperation(type, row) {
+      if (type === 1) this.showConfiguration = true
+      else if (type === 2) this.showAllocation = true
+      else if (type === 3) this.$refs.showManagement.show(row.ckey)
     },
     onSubmit() {},
     // 删除已选活动
@@ -329,7 +329,7 @@ export default {
             prop: 'operation',
             label: '操作',
             render: (h, scope) => {
-              return (<div class="operation"><el-link type="primary" onClick={ () => this.templateOperation(1, scope.row)}> 管理模板</el-link> <el-link type="primary" onClick={() => this.templateOperation(2, scope.row)}>分配短信</el-link>  </div>)
+              return (<div class="operation"><el-link type="primary" onClick={ () => this.templateOperation(3, scope.row)}> 管理模板</el-link> <el-link type="primary" onClick={() => this.templateOperation(4, scope.row)}>分配短信</el-link>  </div>)
             }
           },
         ]
