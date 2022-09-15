@@ -29,6 +29,7 @@
       :table-column="tableColumn"
       :table-data="tableData"
       :page-data="pageData"
+      :whether-selection="whetherSelection"
       @handleCurrentChange="handleCurrentChange"
       @handleSizeChange="handleSizeChange"
       @handleSelectionChange="handleSelectionChange"
@@ -229,6 +230,9 @@ export default {
         this.selectExportList.push(new_data)
       }
     },
+    whetherSelection(row) {
+      return row.flag === 1
+    }
   },
 }
 </script>
