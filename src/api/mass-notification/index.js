@@ -106,6 +106,14 @@ export const batchDistributionNum = data =>
     data
   })
 
+// 管理模板-管理模板列表
+export const distributionTemplates = params =>
+  request({
+    url: '/ec/template-distribution/templates',
+    method: 'get',
+    params
+  })
+
 // 查询所有会员列表
 export const getMemberList = data => request({ url: '/ec/member/all-member-page-list', method: 'post', data })
 
