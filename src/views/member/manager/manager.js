@@ -401,7 +401,8 @@ export default {
               ? '--'
               : data.sendStatus === 1
                 ? '已发送'
-                : '未发送'
+                : '未发送',
+          商会认证状态: data.authenticate ? '已认证' : '未认证'
         }
         if (data.identityVOList.length > 0) {
           let str = ''
