@@ -151,3 +151,7 @@ export const unreadList = params => request({ url: '/ec/group-send/unread-list',
 export const deleteSendItem = id => request({ url: `/ec/group-send/del/${id}`, method: 'delete' })
 // 查询详情群发通知
 export const sendDetail = id => request({ url: `/ec/group-send/details/${id}`, method: 'get' })
+// 查询发送情况
+export const sendDetailList = params => request({ url: '/ec/group-send/group-send-detail-page-list', method: 'get', params })
+// 获取通知接收情况
+export const sendGetDetail = id => request({ url: `/ec/group-send/get-send-stat-detail?id=${id}`, method: 'get' })

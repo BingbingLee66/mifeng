@@ -55,7 +55,7 @@
 <script>
 import kdDialog from '@/components/common/kdDialog'
 import tab from './components/tab.vue'
-import { sendList, sendDetail, deleteSendItem, unreadRetry, receiverInfoList, templateList, unreadList } from '@/api/mass-notification/index'
+import { sendList, sendDetailList, sendGetDetail, sendDetail, deleteSendItem, unreadRetry, receiverInfoList, templateList, unreadList } from '@/api/mass-notification/index'
 import kdTable from '@/views/mass-notification/components/common/kdTable'
 import KdPagination from '@/components/common/KdPagination'
 import { receiveType, channelTypeList, memberPageListConfig } from '../util/label'
@@ -131,14 +131,13 @@ export default {
       } else {
         if (val) { query = Object.assign(query, val) }
       }
-
       const { data } = await API(query)
       this.tableData = data.list
       this.total = data.totalRows
     },
     // 拉取接收人
     async receiverListFunc(id, type = 1) {
-      // type为1：拉取接收人列表 type为2：拉取未读列表
+      // type为1：拉取接收人列表 type为2：拉取未读列表  3:查询发送情况
       let API = receiverInfoList
       if (type === 2) { API = unreadList }
       const { data } = await API({ ...this.dialog.query, gsId: id })
@@ -168,6 +167,14 @@ export default {
       } else {
         this.$message.error(res.msg)
       }
+    },
+    // 获取通知接收情况
+    async sendGetDetailFunc() {
+      const res = await sendGetDetail()
+      console.log(res)
+    },
+    sendDetailListFunc() {
+      sendDetailList()
     },
     // 详情
     async sendDetailFunc(id) {
