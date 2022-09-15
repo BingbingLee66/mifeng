@@ -8,6 +8,7 @@
     <kdDialog />
     <!-- 分页 -->
     <KdPagination :page-size="query.pageSize" :current-page="query.page" :total="total" @change="change" />
+    <!-- 所有弹框组件 除模板配置 -->
     <receiveDialog
       ref="receiveRef"
       :table-data="dialog.tableData"
@@ -19,10 +20,11 @@
       @change="receiveChange"
       @tableSelect="selectionChange"
     >
-
       <!-- 搜索框 -->
       <div slot="form">
-        <div v-if="currentType===5" class="reset-send">确认给以下 <span>{{ dialog.selectList.length }}</span>  位未读用户重新发送通知吗？</div>
+        <div v-if="currentType === 5" class="reset-send">
+          确认给以下 <span>{{ dialog.selectList.length }}</span> 位未读用户重新发送通知吗？
+        </div>
         <el-form v-else :inline="true">
           <el-form-item label="搜索">
             <!-- <el-input class="search-input" v-model="query.chamberName" :placeholder="placeholder"></el-input> -->
@@ -40,7 +42,6 @@
           <el-button @click="hide">取消</el-button>
         </div>
       </div>
-
     </receiveDialog>
     <!--  批量配置模板 -->
     <configUration :show-configuration.sync="showConfiguration" />
@@ -54,7 +55,7 @@
 <script>
 import kdDialog from '@/components/common/kdDialog'
 import tab from './components/tab.vue'
-import { sendList, unreadRetry, receiverInfoList, templateList, unreadList } from '@/api/mass-notification/index'
+import { sendList, sendDetail, deleteSendItem, unreadRetry, receiverInfoList, templateList, unreadList } from '@/api/mass-notification/index'
 import kdTable from '@/views/mass-notification/components/common/kdTable'
 import KdPagination from '@/components/common/KdPagination'
 import { receiveType, channelTypeList, memberPageListConfig } from '../util/label'
@@ -81,7 +82,7 @@ export default {
       query: {
         page: 1,
         pageSize: 10,
-        noticeTypeId: 1,
+        // noticeTypeId: -1,
       },
       // 弹框相关
       dialog: {
@@ -156,6 +157,24 @@ export default {
         this.$message.error(res.msg)
       }
     },
+    // 删除通知
+    async deleteSendItemFunc(id) {
+      const res = await deleteSendItem(id)
+      if (res.state === 1) {
+        this.$message.success('删除成功')
+        const { tableData } = this
+        const index = tableData.findIndex(i => i.id === id)
+        if (index > -1) { this.tableData.splice(index, 1) }
+      } else {
+        this.$message.error(res.msg)
+      }
+    },
+    // 详情
+    async sendDetailFunc(id) {
+      const res = await sendDetail(id)
+      console.log('res', res)
+    },
+
     // 模板管理
     // async templateListFunc(){
     //   templateList
@@ -163,7 +182,6 @@ export default {
     /** 行为操作 */
     // 点击接收人
     receiverClick(row) {
-      console.log('点击接收人')
       this.operationClick(6, row)
     },
     // 群发通知点击操作栏
@@ -174,13 +192,25 @@ export default {
       // 详情
       if (type === 1) {
         // 打开详情弹框
-
+        this.sendDetailFunc(row.id)
+        this.open()
       } else if (type === 2) {
         // 编辑
 
       } else if (type === 3) {
         // 删除
-
+        this.$confirm('请谨慎操作,删除后将无法恢复, 确认删除该消息数据？?', '删除', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.deleteSendItemFunc(row.id)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
       } else if (type === 4) {
         // 导出发送记录
 
@@ -273,11 +303,7 @@ export default {
     tableConfigUtil() {
     // 群发通知表格配置
       let columnConfig = [
-        {
-          prop: 'id',
-          label: 'ID',
-          width: 180
-        },
+        { prop: 'id', label: 'ID', width: 180 },
         {
           prop: 'noticeTypeId',
           label: '所属类型',
@@ -448,10 +474,10 @@ export default {
 .containers {
   padding: 20px;
 }
-.reset-send{
+.reset-send {
   margin-bottom: 10px;
-  span{
-    color: #F5222D;
+  span {
+    color: #f5222d;
   }
 }
 .operation {

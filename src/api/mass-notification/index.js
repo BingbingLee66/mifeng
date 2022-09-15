@@ -147,3 +147,7 @@ export const unreadRetry = data => request({ url: '/ec/group-send/unread-list-re
 
 // 未读重发列表(一个渠道都没读)
 export const unreadList = params => request({ url: '/ec/group-send/unread-list', method: 'get', params })
+// 删除群发通知
+export const deleteSendItem = id => request({ url: `/ec/group-send/del/${id}`, method: 'delete' })
+// 查询详情群发通知
+export const sendDetail = id => request({ url: `/ec/group-send/details/${id}`, method: 'get' })
