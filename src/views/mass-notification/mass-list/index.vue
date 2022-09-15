@@ -215,11 +215,13 @@ export default {
     },
     // 弹框确认
     save() {
-      this.hide()
       // 未读重发 需请求保存
       if (this.currentType === 5) {
+        const { dialog: { selectList } } = this
+        if (selectList.length < 1) { this.$message.warning('至少选择一个哦~'); return }
         this.unreadRetryFunc()
       }
+      this.hide()
     },
     // 关闭弹框
     hide() {
