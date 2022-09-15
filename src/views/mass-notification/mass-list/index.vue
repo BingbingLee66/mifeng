@@ -16,7 +16,29 @@
       :current-page="dialog.page"
       :page-size="dialog.pageSize"
       @change="receiveChange"
-    />
+    >
+
+      <!-- 搜索框 -->
+      <div slot="form">
+        <el-form :inline="true">
+          <el-form-item label="搜索">
+            <!-- <el-input class="search-input" v-model="query.chamberName" :placeholder="placeholder"></el-input> -->
+            <el-input v-model="dialog.query.keyword" class="search-input" :placeholder="placeholder" />
+          </el-form-item>
+
+          <el-button @click="receiverListFunc(currentRow.id)">查询</el-button>
+        </el-form>
+      </div>
+      <!-- 按钮栏 -->
+      <div slot="receive">
+        <el-button v-if="commitType === 1" type="primary" @click="save">我知道了</el-button>
+        <div v-if="commitType === 2">
+          <el-button type="primary" @click="save">确定</el-button>
+          <el-button @click="hide">取消</el-button>
+        </div>
+      </div>
+
+    </receiveDialog>
     <!--  批量配置模板 -->
     <configUration :show-configuration.sync="showConfiguration" />
     <!-- 批量分配短信 -->
@@ -28,7 +50,7 @@
 <script>
 import kdDialog from '@/components/common/kdDialog'
 import tab from './components/tab.vue'
-import { sendList, receiverInfoList, templateList } from '@/api/mass-notification/index'
+import { sendList, receiverInfoList, templateList, unreadList } from '@/api/mass-notification/index'
 import kdTable from '@/views/mass-notification/components/common/kdTable'
 import KdPagination from '@/components/common/KdPagination'
 import { receiveType, channelTypeList, memberPageListConfig } from '../util/label'
@@ -60,6 +82,7 @@ export default {
         query: {
           page: 1,
           pageSize: 10,
+          keyword: ''
 
         },
         tableData: [],
@@ -67,6 +90,12 @@ export default {
         total: 0,
 
       },
+      // 当前操作的列
+      currentRow: null,
+      // 弹框类型 1：查看  2：选择操作
+      commitType: 1,
+
+      placeholder: '手机号/姓名/企业名称',
       showDialog: false,
       showConfiguration: false, // 批量配置模板
       showAllocation: false // 批量分配短信
@@ -102,6 +131,10 @@ export default {
       this.dialog.tableData = data.list.map(v => v.extend)
       this.dialog.total = data.totalRows
     },
+    // 未读从发列表
+    unreadListFunc() {
+      unreadList()
+    },
     // 模板管理
     // async templateListFunc(){
     //   templateList
@@ -115,6 +148,7 @@ export default {
     // 群发通知点击操作栏
     operationClick(type = 1, row) {
       console.log('row', row, type)
+      this.currentRow = row
       // 详情
       if (type === 1) {
         // 打开详情弹框
@@ -130,12 +164,17 @@ export default {
 
       } else if (type === 5) {
         // 未读重发
-
+        if (!row.resendAuth) { this.$message.warning('不能未读重发'); return }
+        this.commitType = 2
+        this.open()
+        this.dialog.columnConfig = cloneDeep(memberPageListConfig)
+        this.receiverListFunc(row.id)
       } else if (type === 6) {
         // 接收人
+        // 接收人弹框是否能够被查看
+        if (!row.statAuth) { this.$message.warning('接收人不能被查看'); return }
         this.showDialog = true
-        console.log('this.$refs[receiveRef]', this.$refs['receiveRef'])
-        this.$refs['receiveRef'].$children[0].show()
+        this.open()
         this.dialog.columnConfig = cloneDeep(memberPageListConfig)
         this.dialog.columnConfig.splice(0, 1)
         this.receiverListFunc(row.id)
@@ -151,6 +190,18 @@ export default {
         this.showAllocation = true
       }
     },
+    // receive弹确认
+    save() {
+      this.hide()
+    },
+    // 关闭弹框
+    hide() {
+      this.$refs['receiveRef'].$children[0].hide()
+    },
+    // 打开弹框
+    open() {
+      this.$refs['receiveRef'].$children[0].show()
+    },
     onSubmit() {},
     // 删除已选活动
     handleSelect() {},
@@ -163,7 +214,7 @@ export default {
       console.log('val', val)
       // this.dialog.query.page = val?.pageNum && val.pageNum
       this.dialog.query.page = val?.pageNum
-      this.dialog.query.pageSize = val.pageSize && val.pageSize
+      this.dialog.query.pageSize = val?.pageSize
     },
     // tab改变时
     handleClick(name) {
