@@ -39,7 +39,7 @@
         <div>2、请配置分配短信条数（改配置仅对所选商协会应用）</div>
         <div class="container-top">
           <div>分配短信条数</div>
-          <div class="input"><el-input v-model="formObj.num" size="mini" placeholder="请分配短信" /></div>
+          <div class="input"><el-input v-model="formObj.num" maxlength="5" onkeyup="value=value.replace(/[^0-9]/g,'')" size="mini" placeholder="请分配短信" @change="onChange" /></div>
           <div>条</div>
         </div>
         <div class="container-top">
@@ -82,8 +82,14 @@ export default {
     }
   },
   computed: {
-    maxNum() {
-      return this.formObj.ckeys.length * this.formObj.num || 0
+    maxNum: {
+      get() {
+        return this.formObj.ckeys.length * this.formObj.num || 0
+      },
+      set(v) {
+        this.maxNum = v
+      }
+
     }
   },
   watch: {
@@ -98,7 +104,8 @@ export default {
     handleClose() {
       this.formObj = {
         ckeys: [],
-        num: null
+        num: null,
+        channelTypeId: 1
       }
       this.maxNum = 0
       this.originOpt = []
@@ -108,7 +115,8 @@ export default {
     // 确定
     async handleSave() {
       if (!this.formObj.ckeys.length) return this.$message.error('请选择商协会')
-      if (!this.formObj.num) return this.$message.error('请输入分配短信条数')
+      if (this.formObj.num === '') return this.$message.error('请输入分配短信条数')
+      this.formObj.num = Number(this.formObj.num)
       this.loading = true
       const res = await batchDistributionNum(this.formObj)
       if (res.state === 1) {
@@ -116,10 +124,12 @@ export default {
         this.handleClose()
       } else {
         this.$message.error(res.msg)
-        this.loading = false
       }
+      this.loading = false
     },
-
+    onChange() {
+      if (this.formObj.num > 50000) this.formObj.num = 50000
+    },
     // 查询
     async query() {
       const parmas = {
