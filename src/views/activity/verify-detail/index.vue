@@ -60,6 +60,20 @@
       </el-col>
     </el-row>
 
+    <el-row>
+      <el-col :span="9">
+        <el-card class="activity-card" shadow="never">
+          <div class="board flex-x-between-center">
+            <div class="board-left">
+              <div class="board-title">会员图片</div>
+              <div class="desc"><span class="people-num">80</span>人关联了活动</div>
+              <el-button type="text" class="mt20" @click="$router.push({ path: '/activity/member-album' })">查看会员相册列表</el-button>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
     <el-row v-if="activity.signFunction || activity.signOutFunction">
       <el-col :span="24" style="max-width:900px">
         <el-card class="activity-card" shadow="never">
@@ -209,6 +223,14 @@ export default {
     font-weight: 700;
     margin-bottom: 25px;
     @include ellipsis(2);
+  }
+
+  .desc {
+    font-size: 16px;
+  }
+
+  .people-num {
+    font-size: 30px;
   }
 
   .board-item {
