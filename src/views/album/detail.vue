@@ -14,6 +14,7 @@
           </el-select>
         </div>
         <el-upload
+          v-if="isFirstPerson"
           action="#"
           accept="image/jpg,image/png,image/jpeg,image/bmp"
           multiple
@@ -60,13 +61,15 @@
                       class="img-item"
                       :operations="!img.auditStatus||isCover(img)?['preview']:['preview', 'cover']"
                       :tag="generateTag(img)"
+                      :edit-auth="isFirstPerson || hasEditAuth"
                       @click="toggleSelect(img)"
-                      @tagClick="!isCover(img) && toggleImgStatus([img.id], +!img.auditStatus)"
                       @coverChange="onCoverChange(img)"
                     >
-                      <div v-show="selectedImgIds.includes(img.id)" class="img-overlay" />
-                      <i v-if="!isCover(img)" class="close-icon el-icon-error" @click.stop="onDelImgs([img.id])" />
-                      <i class="radio" :class="{selected:selectedImgIds.includes(img.id)}" />
+                      <template v-if="hasEditAuth">
+                        <div v-show="selectedImgIds.includes(img.id)" class="img-overlay" />
+                        <i v-if="!isCover(img)" class="close-icon el-icon-error" @click.stop="onDelImgs([img.id])" />
+                        <i class="radio" :class="{selected:selectedImgIds.includes(img.id)}" />
+                      </template>
                     </BaseImg>
                   </template>
 
@@ -81,11 +84,23 @@
       </div>
 
     </div>
-    <div class="footer flex-x-start-center">
-      <el-button :disabled="handleDisabled" :class="{red:!handleDisabled}" @click="onDelImgs(selectedImgIds)">删除</el-button>
-      <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 0)">隐藏</el-button>
-      <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 1)">公开</el-button>
-      <el-button @click="downloadImgs">下载</el-button>
+    <div class="footer flex-x-end-center">
+      <template v-if="hasEditAuth">
+        <template v-if="isFirstPerson">
+          <el-button :disabled="handleDisabled" :class="{red:!handleDisabled}" @click="onDelImgs(selectedImgIds)">删除</el-button>
+          <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 0)">隐藏</el-button>
+          <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 1)">公开</el-button>
+        </template>
+        <template v-else>
+          <el-button @click="toggleAlbumStatus">冻结相册</el-button>
+          <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 2)">冻结照片</el-button>
+          <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 3)">解冻照片</el-button>
+        </template>
+        <el-button @click="downloadImgs">下载</el-button>
+      </template>
+      <template v-else>
+        <el-button>取消关联</el-button>
+      </template>
     </div>
 
   </div>
@@ -117,7 +132,7 @@ export default {
       loading: false,
       uploadingList: [],
       imgList: [],
-      selectedImgs: []
+      selectedImgs: [],
     }
   },
   computed: {
@@ -132,7 +147,21 @@ export default {
     handleDisabled() {
       const { selectedImgs, isCover } = this
       return !selectedImgs.length || selectedImgs.some(isCover)
-    }
+    },
+    hasEditAuth() {
+      const editAuth = this.$route.query.editAuth
+
+      if (typeof editAuth === 'number') return !!editAuth
+      if (typeof editAuth === 'string') return !!Number(editAuth)
+
+      return true
+    },
+    queryType() {
+      return this.$route.query.type
+    },
+    isFirstPerson() {
+      return +this.queryType === 0
+    },
   },
   created() {
     this.queryAlbumDetail()
@@ -226,6 +255,13 @@ export default {
         this.albumDetail.imgCount = this.albumDetail.imgCount - imgIds.length
       }
     },
+    // 切换相册状态
+    async toggleAlbumStatus() {
+      await this.$confirm('冻结相册后前台无法显示该相册内容，是否冻结？', '冻结相册')
+
+      // TODO 切换相册状态
+      console.log('冻结相册')
+    },
     // 切换图片状态
     async toggleImgStatus(imgIds, type) { // 0-隐藏 1-公开
       const { state } = await changeAlbumImgStatus({ imgIds: imgIds.join(','), type })
@@ -241,8 +277,11 @@ export default {
     // 生成标签
     generateTag(img) {
       if (this.isCover(img)) return { name: '封面', type: 'success' }
-      if (+img.auditStatus === 0) return { name: '公开' }
-      if (+img.auditStatus === 1) return { name: '取消公开', type: 'info' }
+      if (+img.auditStatus === 0) return { name: '取消公开', type: 'info' }
+      if (+img.auditStatus === 1) return { name: '公开' }
+      //  TODO 待确认 2，3的状态
+      if (+img.auditStatus === 2) return { name: '' }
+      if (+img.auditStatus === 3) return { name: '' }
     },
     // 是否为封面
     isCover(img) {

@@ -3,6 +3,7 @@
     <el-tabs v-if="!ckey" :value="query.queryType" @tab-click="onQueryChange({queryType:$event.name, albumName: '', pageNum: 1})">
       <el-tab-pane label="云商会" name="0" />
       <el-tab-pane label="商协会" name="1" />
+      <el-tab-pane label="用户" name="2" />
     </el-tabs>
     <div class="flex-x-start-center">
       <el-input :value="query.albumName" class="input-item" :placeholder="`相册名称${isPlatform?'':'、商协会名称'}`" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
@@ -70,7 +71,7 @@ export default {
   data() {
     return {
       query: {
-        queryType: '0', // 0-云商会  1-商协会
+        queryType: '0', // 0-云商会  1-商协会 2-用户
         pageNum: 1,
         pageSize: 10,
         albumName: '',
@@ -104,18 +105,29 @@ export default {
     isPlatform() {
       return this.query.queryType === '0'
     },
+    isUser() {
+      return this.query.queryType === '2'
+    },
     columns() {
-      const { ckey, isPlatform } = this
+      const { ckey, isPlatform, isUser } = this
       return [
         {
-          label: '图片直播信息', width: 200,
+          label: '相册信息', width: 200,
           render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumCkey}</div>{row.albumName}</div>
         },
         {
           label: '关联业务', width: 200,
+          hidden: isUser,
           render: ({ row }) => +row.type === 2 ? <div>活动<div style='color:#66b1ff'>{row.businessId}</div>{row.businessName}</div> : '-'
         },
-        { label: '商协会', hidden: isPlatform, prop: 'chamberName' },
+        { label: '商协会', hidden: isPlatform || isUser, prop: 'chamberName' },
+        { label: '用户信息', hidden: !isUser, prop: 'userInfo', render: () =>
+          <div>
+            <img src='https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF' alt='' width='50' height='50' />
+            <div>name</div>
+            <div>13212341234</div>
+          </div>
+        },
         { label: '图片数', prop: 'imgNum' },
         { label: '浏览量', render: e => this.generateModifiedData(e, '0') },
         { label: '浏览人数', render: e => this.generateModifiedData(e, '1') },
@@ -126,12 +138,20 @@ export default {
         {
           label: '操作',
           fixed: 'right',
+          width: '120',
           render: ({ row }) => <div>
             {
-              isPlatform ? <div>
-                <el-button type='text' onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id }})}>编辑</el-button>
-                <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id }})}>进入相册</el-button>
-              </div> : <el-button type='text' onClick={() => this.toggleFreeze(row)}>{+row.status === 1 ? '冻结' : '解冻'}</el-button>
+              isPlatform
+                ? <div>
+                  <el-button type='text' onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id }})}>编辑</el-button>
+                  <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, type: this.query.queryType }})}>进入相册</el-button>
+                  <el-button type='text' onClick={() => this.hideAlbum(row)}>隐藏</el-button>
+                  <el-button type='text' onClick={() => this.delAlbum(row)}>删除</el-button>
+                </div>
+                : <div>
+                  <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, type: this.query.queryType }})}>查看</el-button>
+                  <el-button type='text' onClick={() => this.toggleFreeze(row)}>{+row.status === 1 ? '冻结' : '解冻'}</el-button>
+                </div>
             }
             {!ckey ? <el-button type='text' onClick={() => this.changeDialog({ visible: true, sourceData: row })}>修改数据</el-button> : ''}
           </div>
@@ -200,6 +220,16 @@ export default {
         this.changeDialog({ visible: false })
         this.$set(sourceData, updateTypeOptions[updateType].fake, num)
       }
+    },
+    async hideAlbum(row) {
+      await this.$confirm('', '是否隐藏？')
+      // TODO 待对接
+      console.log('隐藏相册')
+    },
+    async delAlbum(row) {
+      await this.$confirm('', '删除相册会一并删除里面的图片，是否删除？')
+      // TODO 待对接
+      console.log('删除相册')
     },
     // 切换冻结状态
     async toggleFreeze(row) {

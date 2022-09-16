@@ -8,7 +8,7 @@
       <el-image v-if="operations.includes('preview')" ref="previewer" style="margin-right:10px;" :preview-src-list="[img.img]">
         <el-button slot="error" type="text" @click="$refs.previewer.showViewer=true">查看大图</el-button>
       </el-image>
-      <el-button v-if="operations.includes('cover')" type="text" @click="setCover">设为封面</el-button>
+      <el-button v-if="operations.includes('cover') && editAuth" type="text" @click="setCover">设为封面</el-button>
     </div>
 
   </div>
@@ -41,6 +41,10 @@ export default {
         return []
       }
     },
+    editAuth: {
+      type: Boolean,
+      default: false
+    }
   },
   data() { return {} },
   methods: {
