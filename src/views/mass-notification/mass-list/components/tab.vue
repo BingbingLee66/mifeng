@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-model="activeName" :type="type" @tab-click="handleClick">
       <el-tab-pane v-for="item in tabList" :key="item.name" :label="item.label" :name="item.name" />
     </el-tabs>
   </div>
@@ -14,6 +14,10 @@ export default {
       type: Array,
       default() { return [] }
     },
+    type: {
+      type: String,
+      default: ''
+    }
   },
   data() {
     return {

@@ -22,9 +22,15 @@
     >
       <!-- 搜索框 -->
       <div slot="form">
+        <div>
+          <tab :tab-list="sendDetailChannelType" @handleClick="handleClickChannel">ww</tab>
+          <tab type="card" :tab-list="sendStatus" />
+
+        </div>
         <div v-if="currentType === 5" class="reset-send">
           确认给以下 <span>{{ dialog.selectList.length }}</span> 位未读用户重新发送通知吗？
         </div>
+
         <el-form v-else :inline="true">
           <el-form-item label="搜索">
             <!-- <el-input class="search-input" v-model="query.chamberName" :placeholder="placeholder"></el-input> -->
@@ -59,10 +65,10 @@
 <script>
 import kdDialog from '@/components/common/kdDialog'
 import tab from './components/tab.vue'
-import { sendList, sendDetailList, sendGetDetail, sendDetail, deleteSendItem, unreadRetry, receiverInfoList, templateList, unreadList, templateDistributionSmsStat } from '@/api/mass-notification/index'
+import { sendList, sendDetailList, sendGetDetail, deleteSendItem, unreadRetry, receiverInfoList, templateList, unreadList, templateDistributionSmsStat } from '@/api/mass-notification/index'
 import kdTable from '@/views/mass-notification/components/common/kdTable'
 import KdPagination from '@/components/common/KdPagination'
-import { receiveType, channelTypeList, memberPageListConfig } from '../util/label'
+import { receiveType, sendStatusList, channelTypeList, memberPageListConfig, sendDetailChannelType } from '../util/label'
 import configUration from './components/configUration'
 import allocation from './components/allocation'
 import Management from './components/management'
@@ -111,6 +117,12 @@ export default {
       commitType: 1,
       // 当前操作type 1:详情 2：编辑 3：删除 4：导出发送记录 5：未读重法 6：接收人
       currentType: 1,
+      // 详情弹框tab
+      sendDetailChannelType: [],
+      sendStatus: [],
+      // 当前活跃的channelTab
+      activeDialogChannelTab: '',
+      groupSendStatMap: {},
 
       placeholder: '手机号/姓名/企业名称',
       showDialog: false,
@@ -177,23 +189,25 @@ export default {
       }
     },
     // 获取通知接收情况
-    async sendGetDetailFunc() {
-      const res = await sendGetDetail()
-      console.log(res)
+    async sendGetDetailFunc(id) {
+      this.handleTabChannelUtil()
+      const { data } = await sendGetDetail(id)
+      this.sendDetailChannelType = []
+      this.groupSendStatMap = data.groupSendStatMap
+      for (const item in data.groupSendStatMap) {
+        const result = sendDetailChannelType.find(v => parseInt(v.name) === parseInt(item))
+        result && this.sendDetailChannelType.push(result)
+      }
     },
-    sendDetailListFunc() {
-      sendDetailList()
+    // 查询发送情况，列表
+    async sendDetailListFunc() {
+      const { activeDialogChannelTab: channelTypeId, currentRow: { id: gsId }, dialog: { query } } = this
+      // const { data } = sendDetailList({ channelTypeId, gsId, keyword })
+      const { data } = await sendDetailList({ channelTypeId, gsId, ...query })
+      console.log('data', data)
+      this.dialog.tableData = data.list.map(v => { return { ...v.receiverInfoVO.extend, readStatus: v.readStatus } })
+      this.dialog.total = data.totalRows
     },
-    // 详情
-    async sendDetailFunc(id) {
-      const res = await sendDetail(id)
-      console.log('res', res)
-    },
-
-    // 模板管理
-    // async templateListFunc(){
-    //   templateList
-    // }
     /** 行为操作 */
     // 点击接收人
     receiverClick(row) {
@@ -207,8 +221,21 @@ export default {
       // 详情
       if (type === 1) {
         // 打开详情弹框
-        this.sendDetailFunc(row.id)
+        // this.sendStatus = cloneDeep(sendStatusList)
+        console.log('sendStatusList', sendStatusList)
+        await this.sendGetDetailFunc(row.id)
+        this.activeDialogChannelTab = this.sendDetailChannelType[0].name
+        this.handleTabChannelUtil(this.activeDialogChannelTab)
+        this.sendDetailListFunc()
+        // 设置当前活跃的tab的 已读 未读 成功 失败数
+        // succNum
+        //   failNum
+        //   readNum
+        //   unreadNum
+        // this.sendDetailFunc(row.id)
         this.open()
+        this.detailConfigUtil()
+        // 设置初始活跃name值
       } else if (type === 2) {
         // 编辑
 
@@ -272,6 +299,9 @@ export default {
     },
     // 关闭弹框
     hide() {
+      console.log('关闭弹框')
+      this.sendDetailChannelType = []
+      this.sendStatus = []
       this.$refs['receiveRef'].$children[0].hide()
       // 置空弹框分页内容 表单内容
     },
@@ -302,7 +332,14 @@ export default {
       const { currentType, currentRow } = this
       if (currentType === 6 || currentType === 5) {
         this.receiverListFunc(currentRow.id, currentType === 6 ? 1 : 2)
+      } else if (currentType === 1) {
+        // 详情列表数据
+        this.sendDetailListFunc()
       }
+    },
+    // 弹框内tab的改变
+    handleClickChannel(val) {
+      this.handleTabChannelUtil(val)
     },
     // tab改变时
     handleClick(name) {
@@ -365,6 +402,7 @@ export default {
         {
           prop: 'receiverNum',
           label: '已读/未读人数',
+          width: 180,
           render: (h, scope) => {
             return (
               scope.row.groupSendStatVOS && scope.row.groupSendStatVOS.map(item => { return <div><span>{this.getTypeById('channel', item.channelTypeId)}：</span><el-link type="primary">{item.readNum}/{item.unreadNum}</el-link> </div> })
@@ -476,6 +514,29 @@ export default {
       }
       this.columnConfig = columnConfig
     },
+    detailConfigUtil() {
+      this.dialog.columnConfig = [
+        {
+          prop: 'uname',
+          label: '姓名',
+        },
+        {
+          prop: 'phone',
+          label: '手机号',
+        },
+        {
+          prop: 'chamberNames',
+          label: '所属商协会',
+        },
+        {
+          prop: 'status',
+          label: '状态',
+          formatter: row => {
+            return row.readStatus === 1 ? '已读' : '未读'
+          }
+        },
+      ]
+    },
     // 根据id查找对应的文本
     getTypeById(type, id) {
       // 接收人类型
@@ -490,6 +551,32 @@ export default {
         if (index === -1) { return '' }
         return channelTypeList[index].n
       }
+    },
+    // 根据弹框内部tab切换处理不同的数据
+    handleTabChannelUtil(val) {
+      const { groupSendStatMap, activeDialogChannelTab } = this
+      // 只有短信才有已读未读 成功失败，其他只有已读和未读
+      if (val === '1') {
+        this.sendStatus = cloneDeep(sendStatusList)
+      } else {
+        this.sendStatus = cloneDeep(sendStatusList).filter(v => (v.name === '1' || v.name === '2'))
+      }
+      console.log('activeDialogChannelTab', activeDialogChannelTab)
+      if (Object.keys(groupSendStatMap).length < 1) { return }
+      const currentTab = groupSendStatMap[activeDialogChannelTab]
+      this.sendStatus.forEach(item => {
+        item.num = currentTab[item.field]
+        item.label = item.label + '(' + currentTab[item.field] + ')'
+      })
+      // console.log('this.sendStatus', this.sendStatus)
+      // if (val === '1') {
+      //   this.sendStatus[0].label = this.sendStatus[0].label + '(' + currentTab.succNum + ')'
+      //   this.sendStatus[1].label = this.sendStatus[1].label + '(' + currentTab.failNum + ')'
+      // } else {
+      //   this.sendStatus[2].label = this.sendStatus[2].label + '(' + currentTab.readNum + ')'
+      //   this.sendStatus[3].label = this.sendStatus[3].label + '(' + currentTab.unreadNum + ')'
+      // }
+      // console.log('(groupSendStatMap[activeDialogChannelTab]', groupSendStatMap[activeDialogChannelTab])
     },
     // 模板分配短信统计
     async butionSmsStat() {

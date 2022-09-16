@@ -143,3 +143,17 @@ export const channelTypeList = [
     n: '应用内通知'
   },
 ]
+// 群发详情弹框用
+export const sendDetailChannelType = [
+  { name: '4', label: '应用内通知' },
+  { name: '3', label: 'app通知' },
+  { name: '2', label: '订阅消息' },
+  { name: '1', label: '短信' },
+]
+export const sendStatusList = [
+  { name: '1', label: '发送成功', field: 'succNum', num: '0' },
+  { name: '2', label: '发送失败', field: 'failNum', num: '0' },
+  { name: '3', label: '已读', field: 'readNum', num: '0' },
+  { name: '4', label: '未读', field: 'unreadNum', num: '0' },
+]
+
