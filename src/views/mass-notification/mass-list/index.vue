@@ -22,21 +22,18 @@
     >
       <!-- 搜索框 -->
       <div slot="form">
-        <div>
-          <tab :tab-list="sendDetailChannelType" @handleClick="handleClickChannel">ww</tab>
-          <tab type="card" :tab-list="sendStatus" />
-
+        <div v-if="currentType === 1">
+          <tab ref="dialogTab" :active-name="activeDialogChannelTab" :tab-list="sendDetailChannelType" @handleClick="handleClickChannel" />
+          <tab ref="dialogSecondTab" type="card" :tab-list="sendStatus" @handleClick="handleSecondClickChannel" />
         </div>
         <div v-if="currentType === 5" class="reset-send">
           确认给以下 <span>{{ dialog.selectList.length }}</span> 位未读用户重新发送通知吗？
         </div>
-
-        <el-form v-else :inline="true">
+        <el-form v-if="currentType !== 5" :inline="true">
           <el-form-item label="搜索">
             <!-- <el-input class="search-input" v-model="query.chamberName" :placeholder="placeholder"></el-input> -->
             <el-input v-model="dialog.query.keyword" class="search-input" :placeholder="placeholder" />
           </el-form-item>
-
           <el-button @click="receiverListFunc(currentRow.id)">查询</el-button>
         </el-form>
       </div>
@@ -123,6 +120,8 @@ export default {
       // 当前活跃的channelTab
       activeDialogChannelTab: '',
       groupSendStatMap: {},
+      // 当前活跃的二级channelTab
+      activeSecondChannelTab: '',
 
       placeholder: '手机号/姓名/企业名称',
       showDialog: false,
@@ -201,9 +200,9 @@ export default {
     },
     // 查询发送情况，列表
     async sendDetailListFunc() {
-      const { activeDialogChannelTab: channelTypeId, currentRow: { id: gsId }, dialog: { query } } = this
+      const { activeSecondChannelTab: status, activeDialogChannelTab: channelTypeId, currentRow: { id: gsId }, dialog: { query } } = this
       // const { data } = sendDetailList({ channelTypeId, gsId, keyword })
-      const { data } = await sendDetailList({ channelTypeId, gsId, ...query })
+      const { data } = await sendDetailList({ channelTypeId, gsId, ...query, status })
       console.log('data', data)
       this.dialog.tableData = data.list.map(v => { return { ...v.receiverInfoVO.extend, readStatus: v.readStatus } })
       this.dialog.total = data.totalRows
@@ -220,12 +219,20 @@ export default {
       this.currentType = type
       // 详情
       if (type === 1) {
+        this.open()
         // 打开详情弹框
         // this.sendStatus = cloneDeep(sendStatusList)
         console.log('sendStatusList', sendStatusList)
         await this.sendGetDetailFunc(row.id)
+        // 初始化活跃tab
         this.activeDialogChannelTab = this.sendDetailChannelType[0].name
+        // 给子组件设置活跃的tab
+        this.$refs['dialogTab'].setCurrentTab(this.activeDialogChannelTab)
         this.handleTabChannelUtil(this.activeDialogChannelTab)
+        // // 初始化二级活跃tab
+        this.activeSecondChannelTab = this.sendStatus[0].name
+        // 给子组件的二级tab设置活跃的tab
+        this.$refs['dialogSecondTab'].setCurrentTab(this.activeSecondChannelTab)
         this.sendDetailListFunc()
         // 设置当前活跃的tab的 已读 未读 成功 失败数
         // succNum
@@ -233,7 +240,7 @@ export default {
         //   readNum
         //   unreadNum
         // this.sendDetailFunc(row.id)
-        this.open()
+
         this.detailConfigUtil()
         // 设置初始活跃name值
       } else if (type === 2) {
@@ -302,6 +309,7 @@ export default {
       console.log('关闭弹框')
       this.sendDetailChannelType = []
       this.sendStatus = []
+      this.dialog.query = { page: 1, pageSize: 10, keyword: '', }
       this.$refs['receiveRef'].$children[0].hide()
       // 置空弹框分页内容 表单内容
     },
@@ -339,7 +347,21 @@ export default {
     },
     // 弹框内tab的改变
     handleClickChannel(val) {
+      console.log('弹框内tab的改变', val)
+      this.activeDialogChannelTab = val
       this.handleTabChannelUtil(val)
+
+      // 切换一级tab时，二级tab应变为第一个
+      this.activeSecondChannelTab = this.sendStatus[0].name
+      // 同步设置组件内最新的二级tab
+      this.$refs['dialogSecondTab'].setCurrentTab(this.activeSecondChannelTab)
+      this.sendDetailListFunc()
+    },
+    //  弹框内二级tab的改变
+    handleSecondClickChannel(val) {
+      this.activeSecondChannelTab = val
+      this.sendDetailListFunc()
+      console.log('弹框内二级tab的改变')
     },
     // tab改变时
     handleClick(name) {
@@ -351,7 +373,6 @@ export default {
       console.log('handleClick', name)
     },
     /** 工具 */
-
     restTypeData() {
       if (this.ckey) {
         this.tabList = [{ name: 'notification', label: '通知列表' }]
@@ -561,22 +582,12 @@ export default {
       } else {
         this.sendStatus = cloneDeep(sendStatusList).filter(v => (v.name === '1' || v.name === '2'))
       }
-      console.log('activeDialogChannelTab', activeDialogChannelTab)
       if (Object.keys(groupSendStatMap).length < 1) { return }
       const currentTab = groupSendStatMap[activeDialogChannelTab]
       this.sendStatus.forEach(item => {
         item.num = currentTab[item.field]
         item.label = item.label + '(' + currentTab[item.field] + ')'
       })
-      // console.log('this.sendStatus', this.sendStatus)
-      // if (val === '1') {
-      //   this.sendStatus[0].label = this.sendStatus[0].label + '(' + currentTab.succNum + ')'
-      //   this.sendStatus[1].label = this.sendStatus[1].label + '(' + currentTab.failNum + ')'
-      // } else {
-      //   this.sendStatus[2].label = this.sendStatus[2].label + '(' + currentTab.readNum + ')'
-      //   this.sendStatus[3].label = this.sendStatus[3].label + '(' + currentTab.unreadNum + ')'
-      // }
-      // console.log('(groupSendStatMap[activeDialogChannelTab]', groupSendStatMap[activeDialogChannelTab])
     },
     // 模板分配短信统计
     async butionSmsStat() {

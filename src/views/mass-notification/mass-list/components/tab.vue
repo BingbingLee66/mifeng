@@ -14,10 +14,12 @@ export default {
       type: Array,
       default() { return [] }
     },
+    // 类型
     type: {
       type: String,
       default: ''
     }
+
   },
   data() {
     return {
@@ -25,12 +27,16 @@ export default {
     }
   },
   created() {
-    this.activeName = this.tabList.length > 0 ? this.tabList[0].name : null
-    this.handleClick({ name: this.activeName })
+    // this.activeName = this.tabList.length > 0 ? this.tabList[0].name : null
+    // this.handleClick({ name: this.activeName })
   },
   methods: {
     handleClick(tab) {
       this.$emit('handleClick', tab.name)
+    },
+    setCurrentTab(val) {
+      console.log('设置tab', val)
+      this.activeName = val
     }
   }
 }
