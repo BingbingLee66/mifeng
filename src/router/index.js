@@ -262,6 +262,13 @@ export const constantRoutes = [
         meta: { title: '审核详情' }
       },
       {
+        path: '/activity/member-album',
+        name: '会员图片直播',
+        component: () => import('@/views/activity/member-album/index.vue'),
+        hidden: true,
+        meta: { title: '会员图片直播' }
+      },
+      {
         path: '/mall/couponDetail',
         name: '查看优惠券',
         component: () => import('@/views/mall/coupon-detail/index'),
