@@ -1,6 +1,6 @@
 <template>
   <div class="containers">
-    <tab :tab-list="tabList" @handleClick="handleClick" />
+    <tab ref="tab" :tab-list="tabList" @handleClick="handleClick" />
     <!-- 表单 -->
     <formComponent :statistics="statistics" :active-name="activeName" @templateOperation="templateOperation" @query="sendListFunc" />
     <!-- 列表表格 -->
@@ -136,6 +136,9 @@ export default {
     this.restTypeData()
     this.tableConfigUtil()
     this.sendListFunc()
+  },
+  mounted() {
+    this.$refs['tab'].setCurrentTab(this.tabList[0].name)
   },
   methods: {
     /** 请求 */
@@ -306,12 +309,11 @@ export default {
     },
     // 关闭弹框
     hide() {
-      console.log('关闭弹框')
+      // 置空弹框分页内容 表单内容
       this.sendDetailChannelType = []
       this.sendStatus = []
       this.dialog.query = { page: 1, pageSize: 10, keyword: '', }
       this.$refs['receiveRef'].$children[0].hide()
-      // 置空弹框分页内容 表单内容
     },
     // 打开弹框
     open() {
@@ -333,8 +335,6 @@ export default {
     },
     // 弹框内分页的改变
     receiveChange(val) {
-      console.log('val', val)
-      // this.dialog.query.page = val?.pageNum && val.pageNum
       this.dialog.query.page = val?.pageNum
       this.dialog.query.pageSize = val?.pageSize
       const { currentType, currentRow } = this
@@ -361,7 +361,6 @@ export default {
     handleSecondClickChannel(val) {
       this.activeSecondChannelTab = val
       this.sendDetailListFunc()
-      console.log('弹框内二级tab的改变')
     },
     // tab改变时
     handleClick(name) {
@@ -452,8 +451,8 @@ export default {
           label: '创建信息',
           width: 160,
           render: (h, scope) => {
-            const time = dayjs(parseInt(scope.row.createInfo.operatorTime)).format('YYYY-MM-DD HH:mm:ss')
-            return (<div> <div type="primary">{scope.row.createInfo.operatorName}</div>  <div>{time}</div></div>)
+            const time = scope.row.createInfo?.operatorTime && dayjs(parseInt(scope.row.createInfo.operatorTime)).format('YYYY-MM-DD HH:mm:ss')
+            return (<div> <div type="primary">{scope.row.createInfo?.operatorName || ''}</div>  <div>{time}</div></div>)
           }
         },
         {
@@ -461,8 +460,8 @@ export default {
           label: '更新信息',
           width: 160,
           render: (h, scope) => {
-            const time = dayjs(parseInt(scope.row.updateInfo.operatorTime)).format('YYYY-MM-DD HH:mm:ss')
-            return (<div><div>{scope.row.updateInfo.operatorName}</div>  <div>{time}</div></div>)
+            const time = scope.row.updateInfo?.operatorTime && dayjs(parseInt(scope.row.updateInfo.operatorTime)).format('YYYY-MM-DD HH:mm:ss')
+            return (<div><div>{scope.row.updateInfo?.operatorName || ''}</div>  <div>{time}</div></div>)
           }
         },
         {
