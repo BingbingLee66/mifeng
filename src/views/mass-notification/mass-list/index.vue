@@ -2,7 +2,7 @@
   <div class="containers">
     <tab :tab-list="tabList" @handleClick="handleClick" />
     <!-- 表单 -->
-    <formComponent :active-name="activeName" @templateOperation="templateOperation" @query="sendListFunc" />
+    <formComponent :statistics="statistics" :active-name="activeName" @templateOperation="templateOperation" @query="sendListFunc" />
     <!-- 列表表格 -->
     <kdTable :table-data="tableData" :column-config="columnConfig" />
     <kdDialog />
@@ -44,13 +44,13 @@
       </div>
     </receiveDialog>
     <!--  批量配置模板 -->
-    <configUration :show-configuration.sync="showConfiguration" />
+    <configUration :show-configuration.sync="showConfiguration" @onClick="sendListFunc" />
     <!-- 批量分配短信 -->
-    <allocation :show-allocation.sync="showAllocation" />
+    <allocation :show-allocation.sync="showAllocation" @onClick="sendListFunc" />
     <!-- 管理模板 -->
     <Management ref="showManagement" />
     <!-- 分配短信 -->
-    <Allot ref="Allot" />
+    <Allot ref="Allot" @onClick="sendListFunc" />
     <!-- 分配记录 -->
     <Record ref="Record" />
   </div>
@@ -59,7 +59,7 @@
 <script>
 import kdDialog from '@/components/common/kdDialog'
 import tab from './components/tab.vue'
-import { sendList, sendDetailList, sendGetDetail, sendDetail, deleteSendItem, unreadRetry, receiverInfoList, templateList, unreadList } from '@/api/mass-notification/index'
+import { sendList, sendDetailList, sendGetDetail, sendDetail, deleteSendItem, unreadRetry, receiverInfoList, templateList, unreadList, templateDistributionSmsStat } from '@/api/mass-notification/index'
 import kdTable from '@/views/mass-notification/components/common/kdTable'
 import KdPagination from '@/components/common/KdPagination'
 import { receiveType, channelTypeList, memberPageListConfig } from '../util/label'
@@ -115,7 +115,8 @@ export default {
       placeholder: '手机号/姓名/企业名称',
       showDialog: false,
       showConfiguration: false, // 批量配置模板
-      showAllocation: false // 批量分配短信
+      showAllocation: false, // 批量分配短信
+      statistics: {} // 分配短信统计
     }
   },
   created() {
@@ -134,6 +135,7 @@ export default {
       let query = { ...this.query }
       if (this.activeName === 'template') {
         API = templateList
+        this.butionSmsStat() // 模板分配短信统计
       } else {
         if (val) { query = Object.assign(query, val) }
       }
@@ -286,6 +288,9 @@ export default {
       this.dialog.selectList = val
     },
     change(val) {
+      if (val.pageNum) this.query.page = val.pageNum
+      if (val.pageSize) this.query.pageSize = val.pageSize
+      this.sendListFunc()
       console.log('val', val)
     },
     // 弹框内分页的改变
@@ -301,6 +306,8 @@ export default {
     },
     // tab改变时
     handleClick(name) {
+      this.query.page = 1
+      this.query.pageSize = 10
       this.activeName = name
       this.tableConfigUtil()
       this.sendListFunc()
@@ -483,6 +490,11 @@ export default {
         if (index === -1) { return '' }
         return channelTypeList[index].n
       }
+    },
+    // 模板分配短信统计
+    async butionSmsStat() {
+      const res = await templateDistributionSmsStat()
+      this.statistics = res.data
     }
   }
 }

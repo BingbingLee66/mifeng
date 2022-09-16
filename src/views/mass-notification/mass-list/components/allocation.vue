@@ -75,7 +75,6 @@ export default {
         num: null,
         channelTypeId: 1
       },
-      // maxNum: '',
       name: '',
       originOpt: [], // 商协会
       loading: false
@@ -86,8 +85,8 @@ export default {
       get() {
         return this.formObj.ckeys.length * this.formObj.num || 0
       },
-      set(v) {
-        this.maxNum = v
+      set() {
+        // console.log('v', v)
       }
 
     }
@@ -122,6 +121,7 @@ export default {
       if (res.state === 1) {
         this.$message.success('操作成功')
         this.handleClose()
+        this.$emit('onClick')
       } else {
         this.$message.error(res.msg)
       }

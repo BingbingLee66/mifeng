@@ -70,6 +70,7 @@ export default {
       const res = await batchDistributionNum(this.formObj)
       if (res.state === 1) {
         this.$message.success('操作成功')
+        this.$emit('onClick')
         this.handleClose()
       } else {
         this.$message.error(res.msg)

@@ -130,6 +130,14 @@ export const distributionList = params =>
     params
   })
 
+// 管理模板-模板分配短信统计
+export const templateDistributionSmsStat = params =>
+  request({
+    url: '/ec/template-distribution/template-distribution-sms-stat',
+    method: 'get',
+    params
+  })
+
 // 查询所有会员列表
 export const getMemberList = data => request({ url: '/ec/member/all-member-page-list', method: 'post', data })
 

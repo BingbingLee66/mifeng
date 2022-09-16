@@ -122,6 +122,7 @@ export default {
       if (res.state === 1) {
         this.$message.success('操作成功')
         this.handleClose()
+        this.$emit('onClick')
       } else {
         this.$message.error(res.msg)
         this.loading = false

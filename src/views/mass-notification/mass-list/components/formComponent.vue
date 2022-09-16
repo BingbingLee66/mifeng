@@ -41,8 +41,8 @@
         <el-button type="primary" @click="templateOperation(1)">批量配置模板</el-button>
         <el-button type="primary" @click="templateOperation(2)">批量分配短信</el-button>
       </el-form-item>
-      <div class="mass">短信总量： <span class="note">1234</span></div>
-      <div class="mass">剩余短信： <span class="note">1234</span></div>
+      <div class="mass">短信总量： <span class="note">{{ statistics.smsDistributionSum || 0 }}</span></div>
+      <div class="mass">剩余短信： <span class="note">{{ statistics.smsRemainSum || 0 }}</span></div>
     </template>
 
     <el-form-item>
@@ -60,7 +60,12 @@ export default {
     activeName: {
       type: String,
       default: 'template'
-    }
+    },
+    statistics: {
+      type: Object,
+      // eslint-disable-next-line vue/require-valid-default-prop
+      default: {}
+    } // 分配短信统计
   },
   data() {
     return {
