@@ -62,7 +62,7 @@
 <script>
 import kdDialog from '@/components/common/kdDialog'
 import tab from './components/tab.vue'
-import { sendList, sendDetailList, sendGetDetail, deleteSendItem, unreadRetry, receiverInfoList, templateList, unreadList, templateDistributionSmsStat } from '@/api/mass-notification/index'
+import { sendList, exportSendItem, sendDetailList, sendGetDetail, deleteSendItem, unreadRetry, receiverInfoList, templateList, unreadList, templateDistributionSmsStat } from '@/api/mass-notification/index'
 import kdTable from '@/views/mass-notification/components/common/kdTable'
 import KdPagination from '@/components/common/KdPagination'
 import { receiveType, sendStatusList, channelTypeList, memberPageListConfig, sendDetailChannelType } from '../util/label'
@@ -265,7 +265,7 @@ export default {
         })
       } else if (type === 4) {
         // 导出发送记录
-
+        this.onExportExcel(row.id)
       } else if (type === 5) {
         // 未读重发
         if (!row.resendAuth) { this.$message.warning('不能未读重发'); return }
@@ -372,6 +372,25 @@ export default {
       console.log('handleClick', name)
     },
     /** 工具 */
+    onExportExcel(val) {
+      // console.log('val', val)
+      // this.exportLoaing = true
+      exportSendItem(val + '').then(result => {
+        console.log(result)
+        const link = document.createElement('a') // 创建a标签
+        const blob = new Blob([result], { type: 'application/vnd.ms-excel' }) // 设置文件流
+        link.style.display = 'none'
+        // 设置连接
+        link.href = URL.createObjectURL(blob) // 将文件流转化为blob地址
+        link.download = '发送记录'
+        document.body.appendChild(link)
+        // 模拟点击事件
+        link.click() // 设置点击事件
+      })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     restTypeData() {
       if (this.ckey) {
         this.tabList = [{ name: 'notification', label: '通知列表' }]
@@ -425,7 +444,7 @@ export default {
           width: 180,
           render: (h, scope) => {
             return (
-              scope.row.groupSendStatVOS && scope.row.groupSendStatVOS.map(item => { return <div><span>{this.getTypeById('channel', item.channelTypeId)}：</span><el-link type="primary">{item.readNum}/{item.unreadNum}</el-link> </div> })
+              scope.row.groupSendStatVOS && scope.row.groupSendStatVOS.map(item => { return <div><span>{this.getTypeById('channel', item.channelTypeId)}：</span><el-link onClick = {() => this.operationClick(1, scope.row)} type="primary" >{item.readNum}/{item.unreadNum}</el-link> </div> })
 
             )
           }

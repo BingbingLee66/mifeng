@@ -179,3 +179,5 @@ export const sendDetail = id => request({ url: `/ec/group-send/details/${id}`, m
 export const sendDetailList = params => request({ url: '/ec/group-send/group-send-detail-page-list', method: 'get', params })
 // 获取通知接收情况
 export const sendGetDetail = id => request({ url: `/ec/group-send/get-send-stat-detail?id=${id}`, method: 'get' })
+// 导出发送记录
+export const exportSendItem = gsId => request({ url: `/group-send-detail/export/${gsId}`, method: 'post', responseType: 'blob' })

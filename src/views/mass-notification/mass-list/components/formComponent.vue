@@ -1,13 +1,22 @@
 <template>
   <el-form ref="form" :inline="true" :model="form" class="demo-form-inline">
     <el-form-item v-if="activeName !== 'notification'" label="商协会名称" prop="chamberName">
-      <el-autocomplete
+      <!-- 产品这里更改了下需求，所以改用下拉输入框 -->
+      <el-select v-model="form.ckey" clearable filterable placeholder="请选择">
+        <el-option
+          v-for="item in nameList"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        />
+      </el-select>
+      <!-- <el-autocomplete
         v-model="form.chamberName"
         class="inline-input"
         :fetch-suggestions="querySearch"
         placeholder="搜索/选择"
         @select="handleSelect"
-      />
+      /> -->
     </el-form-item>
     <template v-if="activeName !== 'template'">
       <!-- <el-form-item :label="activeName == 'notification' ? '标题' : ' 消息标题'" prop="title">
@@ -52,6 +61,7 @@
 </template>
 
 <script>
+import { distributionChambers } from '@/api/mass-notification'
 import { notificationType, massNotificationType } from '../../util/label'
 export default {
   name: 'FormComponent',
@@ -70,20 +80,13 @@ export default {
   data() {
     return {
       form: {
-        chamberName: '',
+        ckey: '',
         // title: '',
         time: [],
         // 通知类型
         noticeTypeId: -1
       },
-      nameList: [
-        { value: '三全鲜食（北新泾店）', address: '长宁区新渔路144号' },
-        { value: '三Hot honey 首尔炸鸡（仙霞路）', address: '上海市长宁区淞虹路661号' },
-        { value: '新旺角茶餐厅', address: '上海市普陀区真北路988号创邑金沙谷6号楼113' },
-        { value: '泷千家(天山西路店)', address: '天山西路438号' },
-        { value: '胖仙女纸杯蛋糕（上海凌空店）', address: '上海市长宁区金钟路968号1幢18号楼一层商铺18-101' },
-        { value: '贡茶', address: '上海市长宁区金钟路633号' }
-      ],
+      nameList: [],
       placeholder: '请输入',
       statusList: []
     }
@@ -100,21 +103,28 @@ export default {
     }
   },
   created() {
+    this.getChamberOptions()
     this.statusList = this.activeName === 'mass' ? notificationType : massNotificationType
   },
   methods: {
+    /** 接口请求 */
+    async getChamberOptions() {
+      const { data } = await distributionChambers()
+      this.nameList = data
+    },
+    // 拉取商协会列表
     /** 行为操作 */
-    querySearch(queryString, cb) {
-      const { nameList } = this
-      const results = queryString ? nameList.filter(this.createFilter(queryString)) : nameList
-      // 调用 callback 返回建议列表的数据
-      cb(results)
-    },
-    createFilter(queryString) {
-      return restaurant => {
-        return restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-      }
-    },
+    // querySearch(queryString, cb) {
+    //   const { nameList } = this
+    //   const results = queryString ? nameList.filter(this.createFilter(queryString)) : nameList
+    //   // 调用 callback 返回建议列表的数据
+    //   cb(results)
+    // },
+    // createFilter(queryString) {
+    //   return restaurant => {
+    //     return restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+    //   }
+    // },
     onSubmit() {
       let params = { }
       if (this.form.time.length === 2) {
