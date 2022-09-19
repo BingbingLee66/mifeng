@@ -1,6 +1,6 @@
 <template>
   <div style="margin-bottom: 20px">
-    <el-dialog title="选择活动" :visible.sync="dialogVisible" width="65%" :before-close="handleClose">
+    <el-dialog title="选择活动" :visible.sync="dialogVisible" width="75%" :before-close="handleClose">
       <el-form :inline="true" :model="form">
         <el-form-item label="活动来源" prop="chamberName">
           <el-select v-model="form.chamberName" class="select" placeholder="请选择">
@@ -25,16 +25,16 @@
       </el-form>
       <!-- 表格 -->
       <div class="table">
-        <kdTable ref="table" v-on="$listeners" @tableSelect="tableSelect" />
+        <kdTable ref="table" :column-config="columnConfig" :table-data="tableData" v-on="$listeners" @tableSelect="tableSelect" />
       </div>
 
       <!-- 分页  前期先不做分页-->
-      <!-- <KdPagination
+      <KdPagination
         :page-size="pageSize"
         :current-page="pageNum"
         :total="total"
-        @change="onPageChange($event, item, i)"
-      /> -->
+        @change="onPageChange"
+      />
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="submit">确 定</el-button>
@@ -52,7 +52,7 @@ export default {
   name: 'ReceiveForm',
   components: {
     kdTable,
-    // KdPagination: () => import('@/components/common/KdPagination')
+    KdPagination: () => import('@/components/common/KdPagination')
   },
   props: {
     activityType: {
@@ -85,7 +85,7 @@ export default {
       columnConfig: [],
       // 表格数据
       tableData: [],
-      pageSize: 100000,
+      pageSize: 10,
       pageNum: 1,
       total: 0,
 
@@ -153,17 +153,17 @@ export default {
       this.selectData = val
     },
     // 分页改变
-    // onPageChange($event) {
-    //   const { pageNum, pageSize } = $event
-    //   this.pageNum = pageNum
-    //   this.pageSize = pageSize ? pageSize : this.pageSize
-    //   this.getActivityListFunc()
-    // }
+    onPageChange($event) {
+      const { pageNum, pageSize } = $event
+      this.pageNum = pageNum
+      this.pageSize = pageSize || this.pageSize
+      this.getActivityListFunc()
+    },
 
     /** 工具 */
     resetColumnConfig() {
       this.columnConfig = [
-        { type: 'select' },
+        { type: 'selection', reserveSelection: true },
         {
           prop: 'id',
           label: '活动ID',
@@ -172,19 +172,22 @@ export default {
         },
         {
           prop: 'activeHead',
-          label: '活动列表图',
-          type: 'img',
-          width: 180
+          label: '活动头图',
+          width: 180,
+          render: (h, scope) => {
+            return (<img style="width:100px;height:80px" src={scope.row.headImage}/>)
+          }
         },
         {
           prop: 'activityName',
           label: '活动名称',
-          type: 'general'
+          type: 'general',
+          width: 180,
         },
         {
           prop: 'activeTime',
           label: '活动时间',
-          width: 180,
+          width: 170,
           type: 'general',
           formatter: row => {
             return (

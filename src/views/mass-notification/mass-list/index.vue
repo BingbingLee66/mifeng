@@ -2,7 +2,7 @@
   <div class="containers">
     <tab ref="tab" :tab-list="tabList" @handleClick="handleClick" />
     <!-- 表单 -->
-    <formComponent :statistics="statistics" :active-name="activeName" @templateOperation="templateOperation" @query="sendListFunc" />
+    <formComponent :statistics="statistics" :active-name="activeName" @templateOperation="templateOperation" @query="clickQuery" />
     <!-- 列表表格 -->
     <kdTable :table-data="tableData" :column-config="columnConfig" />
     <kdDialog />
@@ -163,7 +163,7 @@ export default {
       let API = receiverInfoList
       if (type === 2) { API = unreadList }
       const { data } = await API({ ...this.dialog.query, gsId: id })
-      this.dialog.tableData = data.list.map(v => v.extend)
+      this.dialog.tableData = data.list.map(v => { return { ...v.extend, id: v.id } })
       this.dialog.total = data.totalRows
     },
     // 未读重发发
@@ -217,7 +217,7 @@ export default {
     },
     // 群发通知点击操作栏
     async operationClick(type = 1, row) {
-      console.log('row', row, type)
+      console.log('row', type)
       this.currentRow = row
       this.currentType = type
       // 详情
@@ -275,6 +275,7 @@ export default {
         this.dialog.query.pageSize = 20000
         this.dialog.needPagination = false
         this.dialog.columnConfig = cloneDeep(memberPageListConfig)
+
         await this.receiverListFunc(row.id, 2)
         console.log('ref', this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.dialog.tableData))
       } else if (type === 6) {
@@ -285,6 +286,9 @@ export default {
         this.open()
         this.dialog.columnConfig = cloneDeep(memberPageListConfig)
         this.dialog.columnConfig.splice(0, 1)
+        this.dialog.columnConfig.push({
+          prop: 'id', label: 'ID',
+        })
         this.receiverListFunc(row.id)
       }
     },
@@ -312,7 +316,7 @@ export default {
       // 置空弹框分页内容 表单内容
       this.sendDetailChannelType = []
       this.sendStatus = []
-      this.dialog.query = { page: 1, pageSize: 10, keyword: '', }
+      this.dialog.query = { page: 1, pageSize: 10, keyword: '', selectLis: [] }
       this.$refs['receiveRef'].$children[0].hide()
     },
     // 打开弹框
@@ -323,7 +327,20 @@ export default {
     // 删除已选活动
     handleSelect() {},
     /** 父子组件交互 */
+    // 子组件点击查询
+    clickQuery(val) {
+      console.log('val', val)
+      this.query = {
+        ...val,
+        page: 1,
+        pageSize: 10
+      }
+      // this.query.page = 1
+      // this.query.pageSize = 10
+      this.sendListFunc()
+    },
     // 弹框内已选表格数组发生变化
+
     selectionChange(val) {
       this.dialog.selectList = val
     },
@@ -359,6 +376,8 @@ export default {
     },
     //  弹框内二级tab的改变
     handleSecondClickChannel(val) {
+      this.dialog.query.page = 1
+      this.dialog.query.pageSize = 10
       this.activeSecondChannelTab = val
       this.sendDetailListFunc()
     },
@@ -555,6 +574,7 @@ export default {
     },
     detailConfigUtil() {
       this.dialog.columnConfig = [
+        { prop: 'id', label: 'ID', width: 180 },
         {
           prop: 'uname',
           label: '姓名',

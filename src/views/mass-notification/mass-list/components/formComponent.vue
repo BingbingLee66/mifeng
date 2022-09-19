@@ -25,7 +25,7 @@
 
       <el-form-item label="通知类型" prop="noticeTypeId">
         <el-select v-model="form.noticeTypeId" class="select" placeholder="请选择">
-          <el-option v-for="item2 in statusList" :key="item2.id" :label="item2.name" :value="item2.id" />
+          <el-option v-for="(item2,index2) in statusList" :key="index2" :label="item2.name" :value="item2.id" />
         </el-select>
       </el-form-item>
     </template>
@@ -63,6 +63,7 @@
 <script>
 import { distributionChambers } from '@/api/mass-notification'
 import { notificationType, massNotificationType } from '../../util/label'
+import cloneDeep from 'lodash/cloneDeep'
 export default {
   name: 'FormComponent',
   props: {
@@ -84,7 +85,7 @@ export default {
         // title: '',
         time: [],
         // 通知类型
-        noticeTypeId: -1
+        noticeTypeId: ''
       },
       nameList: [],
       placeholder: '请输入',
@@ -104,7 +105,8 @@ export default {
   },
   created() {
     this.getChamberOptions()
-    this.statusList = this.activeName === 'mass' ? notificationType : massNotificationType
+    this.statusList = this.activeName === 'mass' ? cloneDeep(notificationType) : cloneDeep(massNotificationType)
+    this.statusList[0].id = ''
   },
   methods: {
     /** 接口请求 */
@@ -127,7 +129,7 @@ export default {
     // },
     onSubmit() {
       let params = { }
-      if (this.form.time.length === 2) {
+      if (this.form.time && this.form.time.length === 2) {
         params = {
           ...this.form,
           sendEndTime: this.form.time[1],
