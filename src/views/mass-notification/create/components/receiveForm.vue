@@ -86,7 +86,6 @@
       </el-form-item>
       <receiveDialog
         ref="receiveRef"
-        :a="a"
         :page-size="pageSize"
         :current-page="page"
         :total="total"
@@ -263,6 +262,8 @@ export default {
       this.selectData = []
       this.columnConfig = []
       this.selectMemberList = []
+      // 置空已选会员
+      this.$refs['receiveRef'].$refs['tableRef'] && this.$refs['receiveRef'].$refs['tableRef'].cancelSelect()
       // 清除query
       this.query.attr = ''
     },

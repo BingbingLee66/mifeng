@@ -240,6 +240,7 @@ export default {
     'form.type'() {
       this.activityList = []
       // 置空活动表格已选
+      this.resetSelectActivity()
       this.$refs['activityDialogRef'].$refs['table'] && this.$refs['activityDialogRef'].$refs['table'].cancelSelect()
     }
   },
@@ -513,6 +514,7 @@ export default {
         }
       } catch (error) {}
     },
+
     handleRemove() {}
   }
 }
