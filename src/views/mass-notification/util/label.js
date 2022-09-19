@@ -54,7 +54,7 @@ export const memberTableConfig = [
 
 // 指定商会会员的table
 export const memberCountTableConfig = [
-  { type: 'select' },
+  { type: 'selection', reserveSelection: true },
   {
     prop: 'name',
     label: '商协会名称',

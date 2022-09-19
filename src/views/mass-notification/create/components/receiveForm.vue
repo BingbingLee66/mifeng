@@ -139,7 +139,20 @@ import { memberTableConfig, memberCountTableConfig, memberPageListConfig } from 
 export default {
   name: 'ReceiveForm',
   components: { receiveDialog, SelectShow },
-  props: ['receiveList', 'ckey', 'receive'],
+  props: {
+    activityType: {
+      type: Number,
+      default: 2
+    },
+    receiveList: {
+      type: Array,
+      default() { return [] }
+    },
+    receive: {
+      type: Number,
+      default: -1
+
+    } },
   // provide() {
   //   return {
   //     tableMsg: this
@@ -233,7 +246,7 @@ export default {
   },
   watch: {
     'form.receive'() {
-      console.log('接收人发生改变')
+      console.log('接收人发生改变', this.form.receive)
       this.page = 1
       this.pageSize = 10
       // 所有会员
@@ -252,7 +265,8 @@ export default {
       this.selectMemberList = []
       // 清除query
       this.query.attr = ''
-    }
+    },
+
   },
   created() {
     console.log('this.receive', this.receive)
@@ -398,7 +412,7 @@ export default {
       console.log('form.receive ', this.form.receive)
       // 指定商会会员
       if (this.form.receive === 5) {
-        this.columnConfig = memberCountTableConfig
+        this.columnConfig = cloneDeep(memberCountTableConfig)
         // this.columnConfig = [{ type: 'select' }]
         this.getNumberList()
       } else if (this.form.receive === 4) {

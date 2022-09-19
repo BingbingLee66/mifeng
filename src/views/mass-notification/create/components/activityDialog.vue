@@ -3,7 +3,7 @@
     <el-dialog title="选择活动" :visible.sync="dialogVisible" width="75%" :before-close="handleClose">
       <el-form :inline="true" :model="form">
         <el-form-item label="活动来源" prop="chamberName">
-          <el-select v-model="form.chamberName" class="select" placeholder="请选择">
+          <el-select v-model="form.chamberName" clearable filterable class="select" placeholder="请选择">
             <el-option v-for="item2 in chamberList" :key="item2.id" :label="item2.name" :value="item2.id" />
           </el-select>
         </el-form-item>
@@ -21,7 +21,7 @@
             <el-option v-for="item2 in statusList" :key="item2.id" :label="item2.name" :value="item2.id" />
           </el-select>
         </el-form-item>
-        <el-button type="primary" @click="getActivityListFunc">查询</el-button>
+        <el-button type="primary" @click="clickQuery">查询</el-button>
       </el-form>
       <!-- 表格 -->
       <div class="table">
@@ -55,6 +55,7 @@ export default {
     kdTable,
     KdPagination: () => import('@/components/common/KdPagination')
   },
+
   props: {
     activityType: {
       type: Number,
@@ -63,13 +64,6 @@ export default {
     activityList: {
       type: Array,
       default() { return [] }
-    }
-  },
-  provide() {
-    return {
-      tableMsg: this
-      // columnConfig: this.columnConfig,
-      // tableData: this.tableData
     }
   },
   data() {
@@ -103,6 +97,14 @@ export default {
     }
   },
 
+  provide() {
+    return {
+      tableMsg: this
+      // columnConfig: this.columnConfig,
+      // tableData: this.tableData
+    }
+  },
+
   created() {
     this.resetColumnConfig()
     this.getChamberOptions()
@@ -116,6 +118,7 @@ export default {
     },
     async getActivityListFunc() {
       let api = getActivityList
+      console.log('this.activityType', this.activityType)
       if (this.activityType === 3) {
         api = getInvesActivityList
       }
@@ -136,11 +139,16 @@ export default {
     //   // 点击确定按钮
     //   this.submit()
     // },
+    // 点击查询
+    clickQuery() {
+      this.pageSize = 10
+      this.pageNum = 1
+      this.getActivityListFunc()
+    },
     // 打开弹框
     open() {
       this.pageSize = 10
       this.pageNum = 1
-
       this.getActivityListFunc()
       this.dialogVisible = true
     },

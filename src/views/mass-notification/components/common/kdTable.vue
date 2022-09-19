@@ -105,6 +105,11 @@ export default {
     getSelect() {
       return this.$refs['multipleTable'] && this.$refs['multipleTable'].selection
     },
+    // 取消表格选择
+    cancelSelect() {
+      this.$refs['multipleTable'].clearSelection()
+    },
+
     // toggleSelection(rows) {
     //   console.log('rows', rows)
     //   console.log('.$refs[multipleTable].selection', this.$refs['multipleTable'].selection)

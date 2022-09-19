@@ -7,7 +7,7 @@
         </el-radio-group>
       </el-form-item>
       <!-- 接收人 -->
-      <ReceiveForm ref="receiveForm" :receive="form.receive" :ckey="ckey" :receive-list="receiveList" @receiveChange="receiveChange" />
+      <ReceiveForm ref="receiveForm" :activity-type="form.type" :receive="form.receive" :ckey="ckey" :receive-list="receiveList" @receiveChange="receiveChange" />
       <!-- 关联活动详情  为活动通知或招商活动的时候显示-->
       <div v-if="form.type === 2 || form.type === 3" class="label-item">
         <div class="title-hd">关联活动详情 <span>（必填，配置会内通知"立即进入活动详情"跳转页）</span></div>
@@ -135,7 +135,7 @@
     </kdDialog>
     <!-- 选择活动dialog -->
     <activityDialog
-      v-if="showActivityDialog"
+
       ref="activityDialogRef"
       :activity-list="activityList"
       :activity-type="form.type"
@@ -234,6 +234,13 @@ export default {
     subscribeComputed() {
       const { infoData } = this
       return infoData && infoData.keyValueNoticeTemplateSetVo && infoData.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList
+    }
+  },
+  watch: {
+    'form.type'() {
+      this.activityList = []
+      // 置空活动表格已选
+      this.$refs['activityDialogRef'].$refs['table'] && this.$refs['activityDialogRef'].$refs['table'].cancelSelect()
     }
   },
   created() {
