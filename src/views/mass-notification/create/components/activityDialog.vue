@@ -47,6 +47,7 @@
 import kdTable from '../../components/common/kdTable.vue'
 import { getActivityList } from '@/api/activity/activity'
 import { getInvesActivityList } from '@/api/attract/index'
+import { distributionChambers } from '@/api/mass-notification'
 import dayjs from 'dayjs'
 export default {
   name: 'ReceiveForm',
@@ -104,9 +105,15 @@ export default {
 
   created() {
     this.resetColumnConfig()
+    this.getChamberOptions()
   },
   methods: {
     /** 请求 */
+    // 拉取商协会数据
+    async getChamberOptions() {
+      const { data } = await distributionChambers()
+      this.chamberList = data
+    },
     async getActivityListFunc() {
       let api = getActivityList
       if (this.activityType === 3) {
@@ -131,16 +138,20 @@ export default {
     // },
     // 打开弹框
     open() {
+      this.pageSize = 10
+      this.pageNum = 1
+
       this.getActivityListFunc()
       this.dialogVisible = true
     },
     // 关闭弹框
     submit() {
-      if (this.selectData.length > 1) {
+      const selectData = this.$refs['table'].getSelect()
+      if (selectData.length > 1) {
         this.$message.error('只能选一个')
       } else {
         this.dialogVisible = false
-        this.$emit('addActivity', this.selectData)
+        this.$emit('addActivity', selectData)
       }
     },
     handleClose() {

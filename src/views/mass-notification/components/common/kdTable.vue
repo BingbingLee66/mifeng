@@ -100,7 +100,11 @@ export default {
             )
         })
       })
-    }
+    },
+    // 获取选中的列
+    getSelect() {
+      return this.$refs['multipleTable'] && this.$refs['multipleTable'].selection
+    },
     // toggleSelection(rows) {
     //   console.log('rows', rows)
     //   console.log('.$refs[multipleTable].selection', this.$refs['multipleTable'].selection)
