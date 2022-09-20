@@ -243,6 +243,8 @@ export default {
       this.activityList = []
       // 置空活动表格已选
       this.$refs['activityDialogRef'].$refs['table'] && this.$refs['activityDialogRef'].$refs['table'].cancelSelect()
+      // 重新请求同步渠道数据
+      this.getTemplateUtil()
     }
   },
   created() {
@@ -252,16 +254,7 @@ export default {
     //
     this.id = this.$route.query.id || null
     console.log('this.$route.params.id', this.$route.query.id)
-
-    // 除了邀请入会只有短信1，其他都是三个渠道
-    if (this.form.type === 4) {
-      this.selectTemplateListFunc(1)
-    } else {
-      // 请求每次只能请求一种，所以要请求3次
-      for (let i = 1; i < 4; i++) {
-        this.selectTemplateListFunc(i)
-      }
-    }
+    this.getTemplateUtil()
   },
   methods: {
     /** 请求 */
@@ -492,6 +485,19 @@ export default {
       this.form.receive = this.receiveList[0].type
       console.log('父组件的create')
     },
+    // 拉取渠道信息
+    getTemplateUtil() {
+      // 除了邀请入会只有短信1，其他都是三个渠道
+      if (this.form.type === 4) {
+        this.selectTemplateListFunc(1)
+      } else {
+      // 请求每次只能请求一种，所以要请求3次
+        for (let i = 1; i < 4; i++) {
+          this.selectTemplateListFunc(i)
+        }
+      }
+    },
+
     // 图片上传前校验
     beforeAvatarUpload(file, index) {
       console.log('file', file)

@@ -145,8 +145,9 @@ export default {
     // 拉取群发通知列表 and群发管理列表(总后台)
     async sendListFunc(val) {
       console.log('val', val)
+      const { ckey } = this
       let API = sendList
-      let query = { ...this.query }
+      let query = { ...this.query, ckey }
       if (this.activeName === 'template') {
         API = templateList
         this.butionSmsStat() // 模板分配短信统计
