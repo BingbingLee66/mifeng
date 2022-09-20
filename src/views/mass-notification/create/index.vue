@@ -163,7 +163,7 @@
 <script>
 import { labelType, receiveType } from '../util/label'
 import { uploadFile } from '@/api/content/article'
-import { selectTemplateList, getNoticeTemplateSetDetailById, selectTemplateListAdmin, sendMsg } from '@/api/mass-notification/index'
+import { selectTemplateList, sendDetail, getNoticeTemplateSetDetailById, selectTemplateListAdmin, sendMsg } from '@/api/mass-notification/index'
 import ReceiveForm from './components/receiveForm.vue'
 import kdDialog from '@/components/common/kdDialog'
 import activityDialog from './components/activityDialog.vue'
@@ -277,6 +277,7 @@ export default {
       const res = await sendMsg(params)
       if (res.state === 1) {
         this.$message.success('操作成功')
+        this.$router.push('/mass-notification/mass-list')
       } else {
         this.$message.error(res.msg)
       }
@@ -286,6 +287,15 @@ export default {
       console.log(id)
       const { data } = await getNoticeTemplateSetDetailById({ id })
       this.infoData = data
+    },
+    // 查询群发通知详情
+    async sendDetail() {
+      const { data } = await sendDetail()
+      console.log(data)
+      this.resetUpdateUtil()
+    },
+    resetUpdateUtil() {
+
     },
     /** 行为操作 */
     // 关闭预览弹框
