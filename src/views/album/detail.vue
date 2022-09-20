@@ -18,7 +18,7 @@
           accept="image/jpg,image/png,image/jpeg,image/bmp"
           multiple
           :show-file-list="false"
-          :limit="Math.max(1000 - albumDetail.imgCount, 0.1)"
+          :limit="Math.max(albumDetail.maxImgCount - albumDetail.imgCount, 0.1)"
           :file-list="uploadingList"
           :before-upload="beforeUpload"
           :http-request="onUpload"
