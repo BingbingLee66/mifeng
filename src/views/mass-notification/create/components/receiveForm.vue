@@ -151,6 +151,10 @@ export default {
       type: Number,
       default: -1
 
+    },
+    ckey: {
+      type: String,
+      default: -1
     } },
   // provide() {
   //   return {

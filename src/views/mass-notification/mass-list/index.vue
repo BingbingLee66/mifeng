@@ -248,7 +248,7 @@ export default {
         // 设置初始活跃name值
       } else if (type === 2) {
         // 编辑
-
+        this.$router.push(`/mass-notification/create?id=${row.id}`)
       } else if (type === 3) {
         // 删除
         this.$confirm('请谨慎操作,删除后将无法恢复, 确认删除该消息数据？?', '删除', {

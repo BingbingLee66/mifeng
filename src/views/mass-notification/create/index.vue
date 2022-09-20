@@ -7,7 +7,7 @@
         </el-radio-group>
       </el-form-item>
       <!-- 接收人 -->
-      <ReceiveForm ref="receiveForm" :activity-type="form.type" :receive="form.receive" :ckey="ckey" :receive-list="receiveList" @receiveChange="receiveChange" />
+      <ReceiveForm ref="receiveForm" :ckey="ckey" :activity-type="form.type" :receive="form.receive" :receive-list="receiveList" @receiveChange="receiveChange" />
       <!-- 关联活动详情  为活动通知或招商活动的时候显示-->
       <div v-if="form.type === 2 || form.type === 3" class="label-item">
         <div class="title-hd">关联活动详情 <span>（必填，配置会内通知"立即进入活动详情"跳转页）</span></div>
@@ -176,6 +176,8 @@ export default {
 
   data() {
     return {
+      // 当前id,仅编辑时有效
+      id: null,
       ckey: null,
       labelList: [],
       receiveList: [],
@@ -240,7 +242,6 @@ export default {
     'form.type'() {
       this.activityList = []
       // 置空活动表格已选
-      this.resetSelectActivity()
       this.$refs['activityDialogRef'].$refs['table'] && this.$refs['activityDialogRef'].$refs['table'].cancelSelect()
     }
   },
@@ -248,6 +249,9 @@ export default {
     const { ckey } = this.$store.getters
     this.ckey = ckey
     this.restTypeData()
+    //
+    this.id = this.$route.query.id || null
+    console.log('this.$route.params.id', this.$route.query.id)
 
     // 除了邀请入会只有短信1，其他都是三个渠道
     if (this.form.type === 4) {
