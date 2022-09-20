@@ -47,6 +47,7 @@
               show-checkbox
               default-expand-all
               node-key="id"
+              :default-checked-keys="defaultChecked"
               highlight-current
               :props="defaultProps"
               @check-change="checkChange"
@@ -155,6 +156,9 @@ export default {
     ckey: {
       type: String,
       default: -1
+    }, id: {
+      type: String,
+      default: null
     } },
   // provide() {
   //   return {
@@ -163,9 +167,6 @@ export default {
   // },
   data() {
     return {
-      a: '1',
-      b: '2',
-      c: '3',
       form: {
         receive: 4,
         position: [],
@@ -187,6 +188,8 @@ export default {
       // 会内职位
       options: [],
       treeList: [],
+      // 默认选择的tree数据
+      defaultChecked: [],
       defaultProps: {
         children: 'departmentRespList',
         label: 'departmentName'
@@ -197,6 +200,8 @@ export default {
       memberNum: 0,
       // 已选指定会员数，用来显示和储存
       selectMemberList: [],
+      // 已选数，用户编辑操作
+      selectUpdateList: [],
       // 操作type 1 查看 2选择
       commitType: 1,
       name: '',
@@ -274,12 +279,48 @@ export default {
 
   },
   created() {
-    console.log('this.receive', this.receive)
     this.form.receive = this.receive
+    console.log('this.receive', this.receive)
     // this.getDepartmentListFunc()
     // this.getNumberList()
   },
   methods: {
+    // 设置receive
+    setFormData(type = 'receive', val) {
+      console.log('val', val)
+      if (type === 'receive') { this.form.receive = val } else if (type === 'phones') { this.form.phones = val.join('\n') }
+    },
+
+    // 设置已选数 编辑回显时用
+    async setSelectMemberList(val) {
+      setTimeout(() => {
+        if (this.form.receive === 5 || this.form.receive === 4) {
+          this.getNumberList().then(() => {
+            console.log('根据后端的id数组，查找列表中的已选数组', val)
+            // 编辑模式，根据后端的id数组，查找列表中的已选数组
+            const arr = []
+            console.log('tableData', this.tableData)
+            val.forEach(item => {
+              let result = null
+              // 5 根据ckey查找 4根据id
+              if (this.form.receive === 5) { result = this.tableData.find(val => item === val.ckey) }
+              if (this.form.receive === 4) { result = this.tableData.find(val => item === val.id) }
+              console.log('result', result)
+              result && arr.push(result)
+            })
+            this.selectMemberList = arr
+          })
+        } else if (this.form.receive === 2) {
+          this.form.position = val
+        } else if (this.form.receive === 3) {
+          this.form.department = val
+          this.defaultChecked = val
+        }
+      }, 500)
+      // console.log('val', val)
+      // console.log('tableData', this.tableData)
+      // this.selectMemberList = val
+    },
     showTreeFunc() {
       this.showTree = !this.showTree
     },
@@ -404,7 +445,7 @@ export default {
 
     // },
     // 点击去选择按钮
-    selectEmit() {
+    async  selectEmit() {
       this.commitType = 2
       // this.dialogVisible = true
       // 显示弹框组件
@@ -419,10 +460,18 @@ export default {
       if (this.form.receive === 5) {
         this.columnConfig = cloneDeep(memberCountTableConfig)
         // this.columnConfig = [{ type: 'select' }]
-        this.getNumberList()
+        await this.getNumberList()
+        if (this.id) {
+          // 编辑模式，需要回显数据
+          this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
+        }
       } else if (this.form.receive === 4) {
         this.columnConfig = cloneDeep(memberPageListConfig)
-        this.getNumberList()
+        await this.getNumberList()
+        if (this.id) {
+          // 编辑模式，需要回显数据
+          this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
+        }
       }
     },
     // 已选表格

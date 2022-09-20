@@ -7,7 +7,7 @@
         </el-radio-group>
       </el-form-item>
       <!-- 接收人 -->
-      <ReceiveForm ref="receiveForm" :ckey="ckey" :activity-type="form.type" :receive="form.receive" :receive-list="receiveList" @receiveChange="receiveChange" />
+      <ReceiveForm :id="id" ref="receiveForm" :ckey="ckey" :activity-type="form.type" :receive="form.receive" :receive-list="receiveList" @receiveChange="receiveChange" />
       <!-- 关联活动详情  为活动通知或招商活动的时候显示-->
       <div v-if="form.type === 2 || form.type === 3" class="label-item">
         <div class="title-hd">关联活动详情 <span>（必填，配置会内通知"立即进入活动详情"跳转页）</span></div>
@@ -253,6 +253,9 @@ export default {
     this.restTypeData()
     //
     this.id = this.$route.query.id || null
+    if (this.id) {
+      this.sendDetail()
+    }
     console.log('this.$route.params.id', this.$route.query.id)
     this.getTemplateUtil()
   },
@@ -290,12 +293,39 @@ export default {
     },
     // 查询群发通知详情
     async sendDetail() {
-      const { data } = await sendDetail()
-      console.log(data)
-      this.resetUpdateUtil()
+      const { id } = this
+      const { data } = await sendDetail(id)
+      this.resetUpdateUtil(data)
     },
-    resetUpdateUtil() {
+    resetUpdateUtil(data) {
+      console.log('data', data)
+      const { sendTs, extend, noticeTypeId: type, receiveTypeId: receive, sendType, groupSendStatVOS } = data
+      console.log('groupSendStatVOS', groupSendStatVOS)
+      this.form.type = type
+      this.form.receive = receive
 
+      this.form.sendType = sendType + ''
+      this.form.sendTs = sendTs
+      const ref = this.$refs['receiveForm']
+      ref.setFormData('receive', receive)
+      // 根据不同的receive 回显不同的数据
+      if (receive === 2 || receive === 4) {
+        ref.setSelectMemberList(extend.receiverList)
+      } else if (receive === 6) {
+        ref.setFormData('phones', extend.receiverList)
+      }
+      ref.setSelectMemberList(extend.receiverList)
+      // 当通知类型为2时，{'associationId': 活动id},当通知类型为3时，{'associationId': 招商活动id}
+      if (type === 2 || type === 3) {
+        // 回显活动数据
+        setTimeout(() => {
+          this.activityList.push({ id: extend.associationId, activityName: extend.activityName })
+        })
+      } else if (type === 5) {
+        this.form.title = extend.title
+        this.form.content = extend.content
+        this.form.imgs = extend.imgs
+      }
     },
     /** 行为操作 */
     // 关闭预览弹框
@@ -472,7 +502,10 @@ export default {
       }
       // 当通知类型为2时，{'associationId': 活动id},当通知类型为3时，{'associationId': 招商活动id}
       if (type === 2 || type === 3) {
-        obj['associationId'] = activityList[0] && activityList[0].id
+        if (activityList[0]) {
+          obj['associationId'] = activityList[0].id
+          obj['activityName'] = activityList[0].activityName
+        }
       }
       if (type === 5) {
         const { form: { title, content, imgs } } = this
