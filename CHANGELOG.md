@@ -1,5 +1,15 @@
 # CHANGELOG
 
+
+## [Released]
+## [2.27.1] - 2022-09-21
+### Added
+-   
+### Fixed
+- 【总后台】相册图片上限修改 和 活动名称字数上限修改 [1126](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1126)
+- 【总后台】新增账号重复提示 [1127](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1127)
+
+
 ## [Released]
 ## [2.27.0] - 2022-09-19
 ### Added
