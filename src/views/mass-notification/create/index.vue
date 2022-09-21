@@ -84,11 +84,11 @@
       <!-- 同步渠道 -->
       <div class="title-hd">同步渠道 <span>(选填，可多选) </span></div>
       <el-form-item label="">
-        <el-checkbox-group v-model="form.synchChannels">
+        <el-checkbox-group v-model="form.synchChannels" @change="checkChange">
           <div class="synch-channels">
-            <div v-for="item in synchChannels" :key="item.id">
-              <el-checkbox :label="item" :disabled="!item.templateList.length > 0">{{ item.label }}</el-checkbox>
-              <el-select v-model="item.selectActivity" class="select" placeholder="选择模板">
+            <div v-for="(item,index) in synchChannels" :key="item.id">
+              <el-checkbox :label="item.id" :disabled="!item.templateList.length > 0">{{ item.label }}</el-checkbox>
+              <el-select v-model="activityChannels[index]" class="select" placeholder="选择模板" @change="function(val){activityChannels[index]=val}">
                 <el-option
                   v-for="item2 in item.templateList"
                   :key="item2.id"
@@ -204,6 +204,8 @@ export default {
         { label: '微信订阅消息', templateList: [], id: 2 },
         { label: 'APP通知', templateList: [], id: 3 }
       ],
+      // 选中的渠道模板
+      activityChannels: ['', '', ''],
 
       rules: {
         type: [{ required: true, message: '请选择', trigger: 'blur' }],
@@ -299,11 +301,21 @@ export default {
     },
     resetUpdateUtil(data) {
       console.log('data', data)
-      const { sendTs, extend, noticeTypeId: type, receiveTypeId: receive, sendType, groupSendStatVOS } = data
-      console.log('groupSendStatVOS', groupSendStatVOS)
+      const { sendTs, extend, noticeTypeId: type, receiveTypeId: receive, sendType, channelTypeTemplateDTOS } = data
+
       this.form.type = type
       this.form.receive = receive
-      if (groupSendStatVOS) { this.form.synchChannels = groupSendStatVOS }
+      if (channelTypeTemplateDTOS) {
+        const { synchChannels } = this
+        channelTypeTemplateDTOS.forEach(item => {
+          const index = synchChannels.findIndex(v => v.id === item.channelTypeId)
+          if (index > -1) {
+            this.form.synchChannels.push(item.channelTypeId)
+            this.activityChannels[index] = item.id
+          }
+        })
+        // this.form.synchChannels = channelTypeTemplateDTOS.map(v => { return { id: v.channelTypeId, selectActivity: v.id } })
+      }
       this.form.sendType = sendType + ''
       this.form.sendTs = sendTs
       const ref = this.$refs['receiveForm']
@@ -390,10 +402,10 @@ export default {
           const { ckey, form: { type: noticeTypeId, receiverRemove, receive: receiveTypeId, sendTs, sendType } } = this
           const params = {
             receiverRemove,
-            channelTypeTemplateDTOS: this.form.synchChannels.map(item => ({
-              channelTypeId: item.id,
-              id: item.selectActivity
-            })),
+            // 组装渠道数据
+            channelTypeTemplateDTOS: this.form.synchChannels.map((item, index) => {
+              return { channelTypeId: item, id: this.activityChannels[index] }
+            }),
             //         接收人：当接收人类型为-1、1不用传;
             // 当接收人类型为2时传职位id集合({'receiverList': []});
             // 当接收人类型为3时，传部门id集合({'receiverList': []});
@@ -417,6 +429,11 @@ export default {
         }
       })
     },
+    // 为了解决el-checkbox 绑定对象不回显的问题，改为change获取选中值，发请求时在组装对象
+    checkChange(val) {
+      console.log('val', val)
+    },
+
     /** 父子组件交互 */
     receiveChange(val) {
       this.form.receive = val
