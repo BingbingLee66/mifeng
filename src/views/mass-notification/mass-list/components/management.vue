@@ -98,7 +98,7 @@
 
               <el-table-column label="操作" align="center">
                 <template slot-scope="scope">
-                  <el-button v-if="scope.row.tddStatus == 1" type="text" @click="operation(0,scope.row)"> 禁用 </el-button>
+                  <el-button v-if="scope.row.tddStatus == 1" :disabled="scope.row.status == 0" type="text" @click="operation(0,scope.row)"> 禁用 </el-button>
                   <el-button v-else type="text" :disabled="scope.row.status == 0" @click="operation(1,scope.row)"> 启用 </el-button>
                 </template>
               </el-table-column>
