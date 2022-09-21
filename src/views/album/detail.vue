@@ -265,7 +265,7 @@ export default {
     },
     // 超出1000张
     onExceed(e) {
-      this.$message.error('图片数量超过1000张')
+      this.$message.error(`图片数量超过${this.albumDetail.maxImgCount}张`)
     },
     onUpload({ file }) {
       this.albumDetail.imgCount++
