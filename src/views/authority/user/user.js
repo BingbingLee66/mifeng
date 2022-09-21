@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     roleName(row) {
-      return function (row) {
+      return function(row) {
         for (let v of this.roleOptions) {
           if (v.value === row.roleId) {
             return v.label
@@ -84,7 +84,6 @@ export default {
     ...mapState({
       ckey: state => state.user.ckey
     })
-
 
   },
   created() {
@@ -173,6 +172,13 @@ export default {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           save(this.formObj).then(response => {
+            if (!response.state) {
+              return this.$message({
+                message: '换个账号试试',
+                type: 'error'
+              })
+            }
+
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -230,7 +236,7 @@ export default {
       })
     },
     setup(row) {
-      this.$router.push({ name: '权限设置', params: { 'roleId': row.id } })
+      this.$router.push({ name: '权限设置', params: { 'roleId': row.id }})
     }
   }
 }

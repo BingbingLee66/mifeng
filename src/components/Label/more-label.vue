@@ -1,4 +1,4 @@
- <template>
+<template>
   <div>
     <el-dialog
       :title="showGroupType === 'delete' ? '移除标签' : '查看标签'"
@@ -6,7 +6,7 @@
       width="80%"
       :before-close="close"
     >
-      <div class="d-felx mb-20" v-if="showGroupName">
+      <div v-if="showGroupName" class="d-felx mb-20">
         <div style="width: 80px" class="text-right">标签组：</div>
         <div class="txt">{{ labelData.name }}</div>
       </div>
@@ -19,8 +19,7 @@
               v-for="i in labelData.lableList"
               :key="i.id"
               :label="i.id"
-              >{{ i.name }}</el-checkbox-button
-            >
+            >{{ i.name }}</el-checkbox-button>
           </el-checkbox-group>
         </div>
       </div>
@@ -29,7 +28,7 @@
         <div class="txt">
           <el-tag
             v-for="item in labelData.labeList"
-            :key="item.name"
+            :key="item.id"
             type="info"
             effect="plain"
             style="margin: 0 6px 6px 0"
@@ -40,9 +39,10 @@
       </div>
 
       <div slot="footer" class="text-center">
-        <el-button v-if="showGroupType === 'delete'" @click="close"
-          >取消</el-button
-        >
+        <el-button
+          v-if="showGroupType === 'delete'"
+          @click="close"
+        >取消</el-button>
         <el-button
           v-if="showGroupType === 'delete'"
           type="primary"
@@ -57,17 +57,14 @@
 </template>
 
 <script>
-import Labels from "@/api/labels/labels";
+import Labels from '@/api/labels/labels'
 export default {
-  data() {
-    return {
-      checkedLabel: [],
-    };
-  },
   props: {
     labelData: {
       type: Object,
-      value: {},
+      default() {
+        return {}
+      }
     },
     moreVisible: {
       type: Boolean,
@@ -79,26 +76,29 @@ export default {
     },
     showGroupType: {
       type: String,
-      value: "",
+      default: ''
     },
+  },
+  data() {
+    return {
+      checkedLabel: [],
+    }
   },
   methods: {
     close() {
-      this.$emit("close");
+      this.$emit('close')
     },
     async remove() {
-      if (this.checkedLabel.length === 0)
-        return this.$message.error("请至少选择一个标签");
-      const tagIds = this.checkedLabel.join(",");
-      const res = await Labels.removeLabel(this.labelData.wxUserId, tagIds);
-      if (res.state !== 1) return;
-      this.$message.success(res.msg);
-      this.$emit("remove");
+      if (this.checkedLabel.length === 0) { return this.$message.error('请至少选择一个标签') }
+      const tagIds = this.checkedLabel.join(',')
+      const res = await Labels.removeLabel(this.labelData.wxUserId, tagIds)
+      if (res.state !== 1) return
+      this.$message.success(res.msg)
+      this.$emit('remove')
     },
   },
-};
+}
 </script>
-
 
 <style lang="scss" scoped>
 /deep/ .el-checkbox-button {

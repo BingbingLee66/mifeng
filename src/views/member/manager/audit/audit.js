@@ -1,5 +1,5 @@
 import { auditList, updateAudit, examineDetail } from '@/api/member/manager'
-import el from "element-ui/src/locale/lang/el";
+import 'element-ui/src/locale/lang/el'
 
 export default {
   data() {
@@ -29,7 +29,7 @@ export default {
       showInput: false,
       rowId: null,
       detailDia: false, // 详情弹窗
-      detailObj:{},
+      detailObj: {}
     }
   },
   computed: {
@@ -68,18 +68,21 @@ export default {
     fetchData(e) {
       if (e !== undefined) {
         this.currentpage = 1
-        window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+        window.localStorage.setItem(
+          'actionId',
+          e.currentTarget.getAttribute('actionid')
+        )
       }
       this.listLoading = true
       const params = {
-        'ckey': this.$store.getters.ckey,
-        'auditStatus': this.query.auditStatus,
-        'name': this.query.name,
-        'phone': this.query.phone,
-        'type': this.query.type,
-        'uname': this.query.uname,
-        'pageSize': this.limit,
-        'page': this.currentpage
+        ckey: this.$store.getters.ckey,
+        auditStatus: this.query.auditStatus,
+        name: this.query.name,
+        phone: this.query.phone,
+        type: this.query.type,
+        uname: this.query.uname,
+        pageSize: this.limit,
+        page: this.currentpage
       }
       auditList(params).then(response => {
         this.list = response.data.data.list
@@ -88,9 +91,15 @@ export default {
       })
     },
     detail(e, row) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      window.localStorage.setItem(
+        'actionId',
+        e.currentTarget.getAttribute('actionid')
+      )
       window.localStorage.setItem('memberaudit', this.$route.path)
-      this.$router.push({ name: '会员详情', params: { 'memberDetail': row, 'querytype': '1' } })
+      this.$router.push({
+        name: '会员详情',
+        params: { memberDetail: row, querytype: '1' }
+      })
     },
     batchApproved(e) {
       if (this.selectionDatas.length === 0) {
@@ -99,10 +108,13 @@ export default {
         })
         return
       }
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      window.localStorage.setItem(
+        'actionId',
+        e.currentTarget.getAttribute('actionid')
+      )
       const params = {
-        'memberId': this.selectionDatas,
-        'auditStatus': 1
+        memberId: this.selectionDatas,
+        auditStatus: 1
       }
       updateAudit(params).then(response => {
         this.$message({
@@ -113,12 +125,15 @@ export default {
       })
     },
     approved(e, row) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      window.localStorage.setItem(
+        'actionId',
+        e.currentTarget.getAttribute('actionid')
+      )
       const arr = []
       arr.push(row.id)
       const params = {
-        'memberId': arr,
-        'auditStatus': 1
+        memberId: arr,
+        auditStatus: 1
       }
       this.rowId = row.id
       updateAudit(params).then(response => {
@@ -137,7 +152,10 @@ export default {
         })
         return
       }
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      window.localStorage.setItem(
+        'actionId',
+        e.currentTarget.getAttribute('actionid')
+      )
       this.audit.remark = '资料乱填'
       this.batchVisible = true
     },
@@ -153,9 +171,9 @@ export default {
         _remark = this.audit.remark
       }
       const params = {
-        'memberId': this.selectionDatas,
-        'auditStatus': 2,
-        'remark': _remark
+        memberId: this.selectionDatas,
+        auditStatus: 2,
+        remark: _remark
       }
       updateAudit(params).then(response => {
         this.$message({
@@ -167,7 +185,10 @@ export default {
       this.batchVisible = false
     },
     rejectRemark(e, row) {
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      window.localStorage.setItem(
+        'actionId',
+        e.currentTarget.getAttribute('actionid')
+      )
       if (row.id !== undefined) {
         this.audit.id = row.id
       }
@@ -188,9 +209,9 @@ export default {
         _remark = this.audit.remark
       }
       const params = {
-        'memberId': arr,
-        'auditStatus': 2,
-        'remark': _remark
+        memberId: arr,
+        auditStatus: 2,
+        remark: _remark
       }
       updateAudit(params).then(response => {
         this.$message({
@@ -221,8 +242,8 @@ export default {
     },
 
     // 详情
-    getDetail(id){
-      examineDetail({id}).then(res=>{
+    getDetail(id) {
+      examineDetail({ id }).then(res => {
         this.detailObj = res.data
       })
       this.detailDia = true

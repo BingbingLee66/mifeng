@@ -19,7 +19,7 @@
           accept="image/jpg,image/png,image/jpeg,image/bmp"
           multiple
           :show-file-list="false"
-          :limit="Math.max(1000 - albumDetail.imgCount, 0.1)"
+          :limit="Math.max(albumDetail.maxImgCount - albumDetail.imgCount, 0.1)"
           :file-list="uploadingList"
           :before-upload="beforeUpload"
           :http-request="onUpload"
@@ -323,7 +323,7 @@ export default {
     },
     // 超出1000张
     onExceed(e) {
-      this.$message.error('图片数量超过1000张')
+      this.$message.error(`图片数量超过${this.albumDetail.maxImgCount}张`)
     },
     onUpload({ file }) {
       this.albumDetail.imgCount++

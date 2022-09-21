@@ -24,11 +24,11 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     if (this.$route.params.activeName) {
       this.activeName = this.$route.params.activeName
     }
-    console.log('this.$route.params.articleObj',this.$route.params.articleObj)
+    console.log('this.$route.params.articleObj', this.$route.params.articleObj)
     if (this.$route.params.articleObj !== undefined) {
       const article = this.$route.params.articleObj
       this.formObj['id'] = article.id
@@ -44,14 +44,13 @@ export default {
   },
   computed: {
   },
-  created () {
+  created() {
   },
   methods: {
-    closeTab () {
+    closeTab() {
       // 退出当前tab, 打开指定tab
       let openPath = window.localStorage.getItem('articleupdate')
       let tagsViews = this.$store.state.tagsView.visitedViews
-      let selectView = null
       for (let view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
@@ -64,12 +63,16 @@ export default {
     // init () {
     //   this.$refs.ckeditor2.initHtml(this.formObj.contentHtml)
     // },
-    save () {
+    save() {
       this.$refs['form'].validate((valid) => {
         if (valid) {
           this.formObj['ckey'] = this.$store.getters.ckey
           this.formObj['contentModuleId'] = this.activeName
           save(this.formObj).then(response => {
+            if (+response.state === 0) {
+              this.$message.error(response.msg)
+              return
+            }
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -84,7 +87,7 @@ export default {
     getHtml(htmlStr) {
       this.formObj.contentHtml = htmlStr
     },
-    addParentHtml(html){
+    addParentHtml(html) {
       this.formObj.contentHtml = html
     },
   }

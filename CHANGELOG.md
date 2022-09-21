@@ -1,5 +1,26 @@
 # CHANGELOG
 
+
+## [Released]
+## [2.27.1] - 2022-09-21
+### Added
+-   
+### Fixed
+- 【总后台】相册图片上限修改 和 活动名称字数上限修改 [1126](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1126)
+- 【总后台】新增账号重复提示 [1127](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1127)
+
+
+## [Released]
+## [2.27.0] - 2022-09-19
+### Added
+-  【公海项目1.1】总后台-新增会员审核 [1063](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1063)
+-  【公海项目1.1】总后台-社会组织名录新增功能 [1062](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1062)
+-  【移除会员】总后台商协会成员列表新增移除会员功能 [1061](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1061)
+-  【回显标签】总后台、商会后台增加标签筛选条件 [995](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/995)
+-  【回显标签】总后台、商会后台列表增加回显标签 [996](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/996)
+-  【回显标签】总后台、商会后台增加供需、行业标签列表 [997](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/997)
+-  【回显标签】商会后台导出会员增加供需、行业标签 [998](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/998)
+
 ## [Released]
 ## [2.26.0] - 2022-09-08
 ### Added

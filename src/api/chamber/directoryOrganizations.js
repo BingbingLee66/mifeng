@@ -94,3 +94,11 @@ export function updateOrganization(data) {
     data
   })
 }
+// 批量权重
+export function batchUpdateOrganization(data) {
+  return request({
+    url: '/ec/socialOrg/weightBatch',
+    method: 'post',
+    data
+  })
+}

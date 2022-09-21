@@ -11,17 +11,17 @@
       >
         {{ item.name }}
       </el-button>
-      <slot name="toolSlot"></slot>
+      <slot name="toolSlot" />
     </el-row>
-    <!-- 
+    <!--
       row-key => 行数据的 Key,reserve-selection为true时，必须指定
      -->
     <el-table
       ref="yyTable"
+      v-loading="tableConfig.loading || false"
       border
       fit
       highlight-current-row
-      v-loading="tableConfig.loading || false"
       :data="tableData"
       :element-loading-text="tableConfig.loadingText || 'Loading'"
       :height="tableConfig.height || null"
@@ -30,34 +30,35 @@
       :header-cell-style="
         tableConfig.headerCellStyle || {
           background: '#fafafa',
-          color: '#606266',
+          color: '#606266'
         }
       "
       :row-key="tableConfig.rowKey"
       @selection-change="handleSelectionChange"
       @sort-change="handleSortChange"
     >
-      <el-table-column label width="35" v-if="tableConfig.single">
+      <el-table-column v-if="tableConfig.single" label width="30px">
         <template slot-scope="scope">
           <el-radio
+            v-model="singleSelection"
             :label="scope.row[tableConfig.singleKey]"
             @change="
-              (e) => {
+              e => {
                 handleSligleChange(e, scope.row);
               }
             "
-            v-model="singleSelection"
-            >&nbsp;</el-radio
-          >
+          >&nbsp;</el-radio>
         </template>
       </el-table-column>
 
       <!--  reserve-selection => 是否保留之前选中的数据  -->
+      <!-- selectable 传入一个函数判断表格每一项是否给选中-->
       <el-table-column
+        v-if="tableConfig.selection"
         type="selection"
         width="50px"
-        v-if="tableConfig.selection"
         :reserve-selection="tableConfig.reserve"
+        :selectable="whetherSelection"
       />
 
       <template v-for="item in tableColumn">
@@ -71,7 +72,7 @@
           :width="item.width || ''"
           :min-width="item.minWidth || ''"
           :align="item.align || 'left'"
-        ></el-table-column>
+        />
         <!-- 图片渲染 -->
         <el-table-column
           v-if="item.type === 'image'"
@@ -86,7 +87,7 @@
               :style="{
                 width: '100px',
                 height: '100px',
-                borderRadius: item.radius || 0,
+                borderRadius: item.radius || 0
               }"
               :src="item.url && item.url(scope.row)"
               :preview-src-list="item.urlList && item.urlList(scope.row)"
@@ -106,7 +107,7 @@
             <router-link
               :to="{
                 name: item.name,
-                query: item.params && item.params(scope.row),
+                query: item.params && item.params(scope.row)
               }"
             >
               <span class="blue-label">{{ scope.row[item.prop] }}</span>
@@ -123,7 +124,7 @@
           :align="item.align || 'left'"
         >
           <template slot-scope="scope">
-            <div v-html="scope.row[item.prop]"></div>
+            <div v-html="scope.row[item.prop]" />
           </template>
         </el-table-column>
         <!-- 回调渲染   -->
@@ -156,7 +157,7 @@
           :align="item.align || 'left'"
         >
           <template slot-scope="scope">
-            <slot :name="item.slotName" :data="scope.row"></slot>
+            <slot :name="item.slotName" :data="scope.row" />
           </template>
         </el-table-column>
 
@@ -207,8 +208,7 @@
           :width="item.width || ''"
           :align="item.align || 'left'"
           sortable="custom"
-        >
-        </el-table-column>
+        />
         <!-- 操作者信息 -->
         <el-table-column
           v-if="item.type === 'operator'"
@@ -221,6 +221,27 @@
           <template slot-scope="scope">
             <div>{{ scope.row[item.operatorName] || "--" }}</div>
             <div>{{ scope.row[item.operatorTime] | dateFormat }}</div>
+          </template>
+        </el-table-column>
+        <!--头像 -->
+        <el-table-column
+          v-if="item.type === 'avatar'"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width || ''"
+          :align="item.align || 'left'"
+        >
+          <template slot-scope="scope">
+            <el-avatar
+              :shape="item.shape || 'circle'"
+              :size="item.size || 70"
+              :fit="item.fit"
+              :src="
+                scope.row[item.prop] ||
+                  'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/yunshanghui-nologo.png.png'
+              "
+            />
           </template>
         </el-table-column>
       </template>
@@ -268,96 +289,100 @@
 </template>
 
 <script>
-import levelDialog from "@/components/levelDialog";
+import levelDialog from '@/components/levelDialog'
 export default {
   components: {
-    "level-dialog": levelDialog,
+    'level-dialog': levelDialog
   },
   props: {
     toolData: {
       type: Array,
-      default: () => [],
+      default: () => []
     },
     tableConfig: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     tableColumn: {
       type: Array,
-      default: () => {},
+      default: () => {}
     },
     tableData: {
       type: Array,
-      default: () => {},
+      default: () => {}
     },
     pageData: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
     handleData: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
+    whetherSelection: {
+      type: Function,
+      default: () => {
+        return true
+      }
+    }
   },
   data() {
     return {
       rowData: {},
-      singleSelection: "",
-    };
+      singleSelection: ''
+    }
   },
   computed: {
     getRowKeys(row) {
-      return row[this.tableConfig.rowKey];
-    },
-  },
-  methods: {
-    handleSizeChange(data) {
-      this.$emit("handleSizeChange", data);
-    },
-    handleCurrentChange(data) {
-      this.$emit("handleCurrentChange", data);
-    },
-    handleSelectionChange(data) {
-      this.$emit("handleSelectionChange", data);
-    },
-    handleSelectionClear() {
-      this.$refs.yyTable.clearSelection();
-    },
-    handleLevel(data, id, row) {
-      this.$refs["levelDialog"].show(data, id, row);
-    },
-    handleLevelCallback(data, row) {
-      this.$emit("handleLevelCallback", data, row);
-    },
-    handleSligleChange(e, data) {
-      this.$emit("handleSligleChange", data);
-    },
-    handleSelection() {
-      let rows = this.update;
-      if (rows) {
-        rows.forEach((row) => {
-          this.$refs["yyTable"].toggleRowSelection(row);
-        });
-      } else {
-        this.$refs["yyTable"].clearSelection();
-      }
-    },
-    handleSortChange(e) {
-      this.$emit("handleSortChange", e);
-    },
+      return row[this.tableConfig.rowKey]
+    }
   },
   watch: {
     tableData: {
       handler() {
         this.$nextTick(() => {
-          this.$refs.yyTable.doLayout(); // 解决表格错位问题
-        });
+          this.$refs.yyTable.doLayout() // 解决表格错位问题
+        })
       },
       immediate: true,
-      deep: true,
-    },
+      deep: true
+    }
   },
-};
+  methods: {
+    handleSizeChange(data) {
+      this.$emit('handleSizeChange', data)
+    },
+    handleCurrentChange(data) {
+      this.$emit('handleCurrentChange', data)
+    },
+    handleSelectionChange(data) {
+      this.$emit('handleSelectionChange', data)
+    },
+    handleSelectionClear() {
+      this.$refs.yyTable.clearSelection()
+    },
+    handleLevel(data, id, row) {
+      this.$refs['levelDialog'].show(data, id, row)
+    },
+    handleLevelCallback(data, row) {
+      this.$emit('handleLevelCallback', data, row)
+    },
+    handleSligleChange(e, data) {
+      this.$emit('handleSligleChange', data)
+    },
+    handleSelection() {
+      let rows = this.update
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs['yyTable'].toggleRowSelection(row)
+        })
+      } else {
+        this.$refs['yyTable'].clearSelection()
+      }
+    },
+    handleSortChange(e) {
+      this.$emit('handleSortChange', e)
+    }
+  }
+}
 </script>
-
-

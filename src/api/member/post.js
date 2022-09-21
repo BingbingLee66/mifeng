@@ -56,3 +56,13 @@ export function postNameExistValid(params) {
     params
   })
 }
+
+// 批量删除会员
+
+export function deleteManyMember(params) {
+  return request({
+    url: '/ec/member/delBatchMember',
+    method: 'delete',
+    params
+  })
+}

@@ -31,11 +31,10 @@
               <span
                 v-if="
                   userDetail.registerType != 0 &&
-                  userDetail.registerType != 1 &&
-                  userDetail.registerType != 2
+                    userDetail.registerType != 1 &&
+                    userDetail.registerType != 2
                 "
-                >空</span
-              >
+              >空</span>
             </el-col>
           </el-row>
         </div>
@@ -46,7 +45,7 @@
           <table border="1" width="100%" align="center" cellspacing="0">
             <tr align="center" height="45">
               <td width="24%" rowspan="15">
-                <div class="head-portrait"><img :src="userInfo.uavatar" /></div>
+                <div class="head-portrait"><img :src="userInfo.uavatar"></div>
               </td>
               <td width="8%">用户名</td>
               <td width="30%">{{ userInfo.uname }}</td>
@@ -57,18 +56,19 @@
             <tr align="center" height="45">
               <td width="8%">联系电话</td>
               <td width="30%" colspan="3">
-                <span v-for="(item, index) in telephones" :key="index"
-                  >{{ item.phone
-                  }}{{ index === telephones.length - 1 ? "" : "," }}</span
-                >
+                <span
+                  v-for="(item, index) in telephones"
+                  :key="index"
+                >{{ item.phone
+                }}{{ index === telephones.length - 1 ? "" : "," }}</span>
               </td>
             </tr>
 
             <tr
-              align="center"
-              height="45"
               v-for="(item, index) in contactAddress"
               :key="index"
+              align="center"
+              height="45"
             >
               <td width="8%">地址{{ index + 1 }}</td>
               <td width="30%" colspan="3">
@@ -104,8 +104,7 @@
                 <el-button
                   type="text"
                   @click="resumeDetail(userInfo.introduction)"
-                  >详情</el-button
-                >
+                >详情</el-button>
               </td>
             </tr>
           </table>
@@ -115,9 +114,9 @@
             <span class="row-title">已加入商会（{{ count }}）</span>
           </el-row>
           <table
-            style="margin-bottom: 20px"
             v-for="(member, index) in memberList"
             :key="index"
+            style="margin-bottom: 20px"
             border="1"
             width="100%"
             align="center"
@@ -239,9 +238,10 @@
               <td width="20%">{{ member.joinedTs }}</td>
               <td width="5%">营业执照</td>
               <td width="20%">
-                <el-button type="text" @click="licenseDetail(member)"
-                  >详情</el-button
-                >
+                <el-button
+                  type="text"
+                  @click="licenseDetail(member)"
+                >详情</el-button>
               </td>
               <!-- <td width="5%">企业职位</td>
           <td width="25%">{{ member.companyPosition }}</td> -->
@@ -301,10 +301,10 @@
         <el-tabs v-model="activeName2" @tab-click="handleTab2Click">
           <el-tab-pane label="平台标记" name="0">
             <ys-table
-              :tableConfig="{}"
-              :tableColumn="tableColumn"
-              :tableData="labelData"
-              :pageData="pageData"
+              :table-config="{}"
+              :table-column="tableColumn"
+              :table-data="labelData"
+              :page-data="pageData"
               @handleCurrentChange="handleCurrentChange"
               @handleSizeChange="handleSizeChange"
             >
@@ -317,10 +317,10 @@
           </el-tab-pane>
           <el-tab-pane label="商协会标记" name="1">
             <ys-table
-              :tableConfig="{}"
-              :tableColumn="tableColumn2"
-              :tableData="labelData"
-              :pageData="pageData"
+              :table-config="{}"
+              :table-column="tableColumn2"
+              :table-data="labelData"
+              :page-data="pageData"
               @handleCurrentChange="handleCurrentChange"
               @handleSizeChange="handleSizeChange"
             >
@@ -338,44 +338,45 @@
       </el-tab-pane>
       <el-tab-pane label="供需标签" name="3">
         <ys-table
-          :tableConfig="{}"
-          :tableColumn="tableColumn1"
-          :tableData="supplyData"
-        >
-          <template v-slot:tagGroupName="row">
-            <div v-if="row.data.labelNames && row.data.labelNames.length > 0">
-              <el-tag
-                v-for="item in row.data.labelNames"
-                :key="item"
-                type="info"
-                effect="plain"
-                style="margin: 0 6px 6px 0"
-              >
-                {{ item }}
-              </el-tag>
-            </div>
-          </template>
-        </ys-table>
+          :table-config="{}"
+          :table-column="tableColumn1"
+          :table-data="supplyData"
+          :page-data="pageData1"
+          @handleCurrentChange="handleCurrentChange1"
+          @handleSizeChange="handleSizeChange1"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="行业标签" name="4">
+        <ys-table
+          :table-config="{}"
+          :table-column="tableColumn3"
+          :table-data="industryData"
+          :page-data="pageData2"
+          @handleCurrentChange="handleCurrentChange2"
+          @handleSizeChange="handleSizeChange2"
+        />
       </el-tab-pane>
     </el-tabs>
 
     <el-dialog title="身份证照" :visible.sync="idCardVisible" width="50%">
       <el-row>身份证头像面</el-row>
-      <el-row><img :src="idCardImage.frontOfIdCard" /></el-row>
+      <el-row><img :src="idCardImage.frontOfIdCard"></el-row>
       <el-row>身份证头像面</el-row>
-      <el-row><img :src="idCardImage.backOfIdCard" /></el-row>
+      <el-row><img :src="idCardImage.backOfIdCard"></el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click.native="idCardVisible = false"
-          >确定</el-button
-        >
+        <el-button
+          type="primary"
+          @click.native="idCardVisible = false"
+        >确定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="营业执照" :visible.sync="licenseVisible" width="50%">
-      <el-row><img :src="licenseImage" /></el-row>
+      <el-row><img :src="licenseImage"></el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click.native="licenseVisible = false"
-          >确定</el-button
-        >
+        <el-button
+          type="primary"
+          @click.native="licenseVisible = false"
+        >确定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="个人履历" :visible.sync="resumeVisible" width="50%">
@@ -383,9 +384,10 @@
         <div class="text-detail">{{ resume }}</div>
       </el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click.native="resumeVisible = false"
-          >确定</el-button
-        >
+        <el-button
+          type="primary"
+          @click.native="resumeVisible = false"
+        >确定</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -400,8 +402,7 @@
         <el-button
           type="primary"
           @click.native="companyIntroductionVisible = false"
-          >确定</el-button
-        >
+        >确定</el-button>
       </span>
     </el-dialog>
   </div>
