@@ -117,8 +117,8 @@ export const memberPageListConfig = [
     label: '所属部门',
     type: 'general',
     formatter: row => {
-      const msg = ''
-      row.memberDepartmentVOS && row.memberDepartmentVOS.forEach((item, index) => { if (index !== row.memberDepartmentVOS.length - 1) { msg + item.departmentName + '、' } else { msg + item.departmentName } })
+      let msg = ''
+      row.memberDepartmentVOS && row.memberDepartmentVOS.forEach((item, index) => { if (index !== row.memberDepartmentVOS.length - 1) { msg += item.departmentName + '、' } else { msg += item.departmentName } })
       return msg
     }
   },

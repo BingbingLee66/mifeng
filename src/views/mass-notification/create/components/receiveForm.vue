@@ -244,9 +244,10 @@ export default {
       if (!position.length > 0) return 0
       let count = 0
       for (const v of position) {
-        const result = options.find(item => item.id === v)
+        const result = options.find(item => item.id === v.id)
         result && (count += result.memberNum)
       }
+      console.log('count', count)
       return count
     },
     labelComputed() {
@@ -295,7 +296,7 @@ export default {
     // this.getNumberList()
   },
   methods: {
-    // 设置receive
+    // 设置receive phone
     setFormData(type = 'receive', val) {
       console.log('val', val)
       if (type === 'receive') { this.form.receive = val } else if (type === 'phones') { this.form.phones = val.join('\n') }
@@ -306,7 +307,6 @@ export default {
       setTimeout(() => {
         if (this.form.receive === 5 || this.form.receive === 4) {
           this.getNumberList().then(() => {
-            console.log('根据后端的id数组，查找列表中的已选数组', val)
             // 编辑模式，根据后端的id数组，查找列表中的已选数组
             const arr = []
             console.log('tableData', this.tableData)
@@ -386,7 +386,7 @@ export default {
         } = this
         API = getChamberMemberList
         if (this.form.receive === 2) {
-          params.postIds = position
+          params.postIds = position.map(v => v.id)
         }
         if (this.form.receive === 3) {
           params['departmentIds'] = department && department.map(v => v.id)
@@ -501,6 +501,7 @@ export default {
     showDialog() {
       this.commitType = 1
       console.log('查看按钮')
+      console.log('this.form.receive', this.form.receive)
       // 显示弹框组件
 
       // 指定商会会员
@@ -510,20 +511,21 @@ export default {
         this.showRefDialog()
         this.columnConfig = cloneDeep(memberPageListConfig)
         this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
-      } else if (this.form.receive === 1) {
+      } else if (this.form.receive === 3 || this.form.receive === 2 || this.form.receive === 1 || this.form.receive === -1) { // 指定部门 //指定职位
         this.showRefDialog()
-        this.columnConfig = cloneDeep(memberPageListConfig)
-        this.columnConfig.shift()
-        this.getNumberList()
-      } else if (this.form.receive === 3 || this.form.receive === 2) { // 指定部门 //指定职位
-        this.showRefDialog()
-        this.columnConfig = cloneDeep(memberPageListConfig)
-        this.columnConfig.shift()
+        this.columnConfig = this.form.receive === -1 ? cloneDeep(memberTableConfig) : cloneDeep(memberPageListConfig)
+        this.form.receive !== -1 && this.columnConfig.shift()
         this.getNumberList()
       } else {
         // this.form.receive === -1
         this.columnConfig = cloneDeep(memberTableConfig)
       }
+      // else if () {
+      //   this.showRefDialog()
+      //   this.columnConfig = this.form.receive === 1 ? cloneDeep(memberPageListConfig) : cloneDeep(memberTableConfig)
+      //   this.form.receive === 1 && this.columnConfig.shift()
+      //   this.getNumberList()
+      // }
     },
     // 分页的改变
     async change(val) {

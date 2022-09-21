@@ -303,18 +303,17 @@ export default {
       console.log('groupSendStatVOS', groupSendStatVOS)
       this.form.type = type
       this.form.receive = receive
-
+      if (groupSendStatVOS) { this.form.synchChannels = groupSendStatVOS }
       this.form.sendType = sendType + ''
       this.form.sendTs = sendTs
       const ref = this.$refs['receiveForm']
       ref.setFormData('receive', receive)
       // 根据不同的receive 回显不同的数据
-      if (receive === 2 || receive === 4) {
+      if (receive === 2 || receive === 3 || receive === 4 || receive === 5) {
         ref.setSelectMemberList(extend.receiverList)
       } else if (receive === 6) {
         ref.setFormData('phones', extend.receiverList)
       }
-      ref.setSelectMemberList(extend.receiverList)
       // 当通知类型为2时，{'associationId': 活动id},当通知类型为3时，{'associationId': 招商活动id}
       if (type === 2 || type === 3) {
         // 回显活动数据
