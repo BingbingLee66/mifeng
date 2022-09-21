@@ -17,8 +17,8 @@
         />
         <!-- 指定职位 -->
         <div v-if="form.receive === 2">
-          <el-select v-model="form.position" class="my-input" multiple placeholder="请选择">
-            <el-option v-for="(item, index) in options" :key="index" :label="item.postName" :value="item.id">
+          <el-select v-model="form.position" class="my-input" multiple placeholder="请选择" value-key="id">
+            <el-option v-for="(item, index) in options" :key="index" :label="item.postName" :value="item">
               {{ item.postName }}({{ item.memberNum }})</el-option>
           </el-select>
           <div>
@@ -54,7 +54,8 @@
             >
               <span slot-scope="{ node, data }" class="custom-tree-node">
                 {{ node.label }}
-                <span v-if="data.departmentRespList.length > 0">({{ data.departmentRespList.length }})</span>
+                <span>({{ data.peopleCount }})</span>
+                <!-- <span v-if="data.departmentRespList.length > 0">({{ data.departmentRespList.peopleCount }})</span> -->
               </span>
               >
             </el-tree>
@@ -219,9 +220,18 @@ export default {
   },
   computed: {
     departmentCount() {
-      return this.form.department
-        ? this.form.department.reduce((pre, cur) => pre + cur.departmentRespList.length, 0)
-        : 0
+      return this.sum(this.form.department)
+      // if (this.form.department) {
+      //   this.form.department.reduce((pre, cur) => {
+      //     if (cur?.departmentRespList) {
+      //       return pre + cur?.departmentRespList.length
+      //     } else {
+      //       pre + 0
+      //     }
+      //   }, 0)
+      // }
+      // return  this.form.department.reduce((pre, cur) => pre + cur?.departmentRespList.length || 0, 0)
+      //   : 0
     },
     btnTextComput() {
       return this.selectMemberList.length > 0 ? '查看' : '去选择'
@@ -314,7 +324,8 @@ export default {
           this.form.position = val
         } else if (this.form.receive === 3) {
           this.form.department = val
-          this.defaultChecked = val
+          this.defaultChecked = val.map(v => v.id)
+          this.showTree = true
         }
       }, 500)
       // console.log('val', val)
@@ -527,7 +538,25 @@ export default {
         // this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
       }
       console.log('val', val)
+    },
+    // 部门人数递归累加
+    sum(department) {
+      if (!department || !department.length > 0) return 0
+      let count = 0
+      function sonSum(list) {
+        list.forEach(item => {
+          if (item.departmentRespList && item.departmentRespList.length > 0) {
+          // 有子集就递归
+            sonSum(item.departmentRespList)
+          } else {
+            count = count + item.peopleCount
+          }
+        })
+      }
+      sonSum(department)
+      return count
     }
+
   }
 }
 </script>

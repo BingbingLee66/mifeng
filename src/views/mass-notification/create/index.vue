@@ -480,11 +480,11 @@ export default {
       switch (receive) {
         case 2:
           // 职位id集合  todo 改为对象数组 {id：1，name:'aaa'}
-          obj['receiverList'] = refData.form.position
+          obj['receiverList'] = refData.form.position.map(v => { return { id: v.id, postName: v.postName } })
           break
         case 3:
           // 传部门id集合  todo 改为对象数组 {id：1，name:'aaa'}
-          obj['receiverList'] = refData.form.department.map(v => v.id)
+          obj['receiverList'] = refData.form.department.map(v => { return { id: v.id, departmentName: v.departmentName } })
           break
         case 4:
           // 会员id集合
