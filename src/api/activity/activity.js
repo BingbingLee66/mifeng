@@ -1,7 +1,5 @@
 import request from '@/utils/request'
 
-const baseUrl2 = process.env.VUE_APP_BASE_API_2
-
 // 创建活动
 export function createActivity(params) {
   return request({
@@ -11,6 +9,14 @@ export function createActivity(params) {
   })
 }
 
+// 获取活动是否有关联个人相册 true-有关联 false-未关联
+export function getAlbumRelevance(params) {
+  return request({
+    url: '/api/ec/activity/activity-personal-album-association',
+    method: 'get',
+    params
+  })
+}
 // 查询活动详情
 export function getActivity(params) {
   return request({

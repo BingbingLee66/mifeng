@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="">
       <h2>会员图片直播</h2>
-      <el-input :value="query.albumName" class="input-item" placeholder="相册名称、用户名称、手机号" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
+      <el-input v-model="query.albumName" class="input-item" placeholder="相册名称、用户名称、手机号" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
     </div>
     <KdTable v-loading="loading" style="margin-top:20px;" :columns="columns" :rows="tableData" />
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
@@ -10,6 +10,8 @@
 </template>
 
 <script>
+import { cancelReleAlbum, getAlbumList, updateAlbumTop } from '@/api/album'
+
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
@@ -22,11 +24,11 @@ export default {
         pageNum: 1,
         pageSize: 10,
         albumName: '',
-        status: ''
       },
       total: 0,
       tableData: [],
       loading: false,
+      timer: null,
     }
   },
 
@@ -35,22 +37,26 @@ export default {
       return this.$store.getters.ckey
     },
 
+    activityId() {
+      return this.$route.query.id || ''
+    },
+
     columns() {
       return [
         {
           label: '相册信息', width: 200,
           render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumCkey}</div>{row.albumName}</div>
         },
-        { label: '用户信息', prop: 'userInfo', render: () =>
+        { label: '用户信息', render: ({ row }) =>
           <div>
-            <img src='https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF' alt='' width='50' height='50' />
-            <div>name</div>
-            <div>13212341234</div>
+            <img src={row.businessImg} alt='' />
+            <div>{row.businessName}</div>
+            <div>{row.number}</div>
           </div>
         },
         { label: '图片数', prop: 'imgNum' },
-        { label: '浏览量', prop: 'pageViews' },
-        { label: '浏览人数', prop: 'viewers' },
+        { label: '浏览量', prop: 'browseNum' },
+        { label: '浏览人数', prop: 'visitorsNum' },
         { label: '点赞数', prop: 'likeNum' },
         { label: '下载数', prop: 'downloadNum' },
         { label: '分享数', prop: 'shareNum' },
@@ -60,8 +66,8 @@ export default {
           fixed: 'right',
           width: '120',
           render: ({ row }) => <div>
-            <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, editAuth: 0 }})}>查看</el-button>
-            <el-button type='text' onClick={() => this.toggleTop(row)}>取消置顶</el-button>
+            <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, editAuth: 0, albumCkey: row.albumCkey }})}>查看</el-button>
+            <el-button type='text' onClick={() => this.toggleTop(row)}>{ row.topStatus ? '取消置顶' : '置顶' }</el-button>
             <el-button type='text' onClick={() => this.toggleRelevance(row)}>取消关联</el-button>
           </div>
         },
@@ -82,14 +88,14 @@ export default {
     async queryTableData() {
       this.loading = true
       try {
-        // TODO 待完善
-        // const { data: { list, totalRows }} = await getAlbumList({
-        //   ...this.query,
-        //   ckey: this.ckey,
-        //   total: true
-        // })
-        // this.tableData = list
-        // this.total = totalRows
+        const { data: { list, totalRows }} = await getAlbumList({
+          ...this.query,
+          ckey: this.ckey,
+          activityId: this.activityId,
+          total: true
+        })
+        this.tableData = list
+        this.total = totalRows
       } finally {
         this.loading = false
       }
@@ -97,15 +103,35 @@ export default {
     goPage(params) {
       this.$router.push(params)
     },
-    async toggleTop() {
-      await this.$confirm('', '确定取消置顶？')
-      // TODO 待对接
-      console.log('删除置顶')
+    async toggleTop(row) {
+      await this.$confirm('', `确定${row.topStatus ? '取消置顶' : '置顶'}？`)
+
+      const { state, msg } = await updateAlbumTop({
+        activityId: this.activityId,
+        albumCkey: row.albumCkey,
+        topStatus: row.topStatus ? 0 : 1
+      })
+
+      if (state) {
+        this.$message.success('操作成功')
+        this.onQueryChange()
+      } else {
+        this.$message.error(msg)
+      }
     },
-    async toggleRelevance() {
+    async toggleRelevance(row) {
       await this.$confirm('', '确定取消关联？')
-      // TODO 待对接
-      console.log('取消关联')
+
+      const { state, msg } = await cancelReleAlbum({
+        albumCkey: row.albumCkey,
+      })
+
+      if (state) {
+        this.$message.success('操作成功')
+        this.onQueryChange()
+      } else {
+        this.$message.error(msg)
+      }
     },
   }
 }

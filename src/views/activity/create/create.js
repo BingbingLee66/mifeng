@@ -1,4 +1,4 @@
-import { createActivity, uploadPortrait, getActivity } from '@/api/activity/activity'
+import { createActivity, uploadPortrait, getActivity, getAlbumRelevance } from '@/api/activity/activity'
 import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
 import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
@@ -91,9 +91,14 @@ export default {
         extraSignout: 0, // 拓展功能签退 0否 1是
         extraSeat: 0, // 拓展功能座位 0否 1是
         isPublish: 0, // 是否发布 0否 1是
-        albumAuth: 1, // 图片直播关联权限 1可关联 0不可关联
+        authAlbum: 1, // 图片直播关联权限 1可关联 0不可关联
+        showEnter: {
+          status: 1,
+          closeDate: ''
+        },
         linkType: 1, // 直播链接类型 1 云会播小程序 2 H5链接
       },
+      isReleActivity: false,
       roleIds: [], // 多选框 扩展功能
       addressList: [], // 搜索数组
       // 是否限制报名对象
@@ -173,6 +178,7 @@ export default {
       }, 500)
     } else {
       this.fetchData()
+      this.fetchAlbumRelevance()
     }
     this.postSelectInit()
     if (this.$store.getters.ckey) {
@@ -389,6 +395,8 @@ export default {
         this.formObj.area = resData.area
         this.formObj.addressInfo = resData.addressInfo
         this.formObj.title = resData.addressInfo
+        this.formObj.authAlbum = resData.authAlbum
+        this.formObj.showEnter = resData.showEnter
 
         this.formObj.district = resData.area
 
@@ -480,6 +488,24 @@ export default {
           }
         })
       })
+    },
+
+    async fetchAlbumRelevance() {
+      const { data, state } = await getAlbumRelevance({ activityId: this.activityId })
+      if (!state) return
+      this.isReleActivity = data
+    },
+
+    onReleChange(evt) {
+      if (evt === 0 && this.isReleActivity) {
+        this.$confirm('', '确定取消置顶？', {
+          callback: (action) => {
+            if (action === 'cancel') {
+              this.formObj.authAlbum = 1
+            }
+          }
+        })
+      }
     },
 
     // 上传图片校验

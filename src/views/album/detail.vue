@@ -99,7 +99,7 @@
         <el-button @click="downloadImgs">下载</el-button>
       </template>
       <template v-else>
-        <el-button>取消关联</el-button>
+        <el-button @click="toggleRelevance">取消关联</el-button>
       </template>
     </div>
 
@@ -108,7 +108,7 @@
 
 <script>
 import { formatDateTime } from '@/utils/date'
-import { getAlbumImgList, delAlbumImgs, changeAlbumImgStatus, getAlbumDetail } from '@/api/album'
+import { getAlbumImgList, delAlbumImgs, changeAlbumImgStatus, getAlbumDetail, cancelReleAlbum } from '@/api/album'
 import { downloadFile } from '@/utils'
 
 export default {
@@ -162,6 +162,9 @@ export default {
     isFirstPerson() {
       return +this.queryType === 0
     },
+    albumCkey() {
+      return this.$route.query.albumCkey || ''
+    }
   },
   created() {
     this.queryAlbumDetail()
@@ -272,6 +275,22 @@ export default {
           }
         })
         this.selectedImgs = []
+      }
+    },
+    async toggleRelevance() {
+      await this.$confirm('', '确定取消关联？')
+
+      const { state, msg } = await cancelReleAlbum({
+        albumCkey: this.albumCkey,
+      })
+
+      if (state) {
+        this.$message.success('操作成功')
+        setTimeout(() => {
+          this.$router.go(-1)
+        }, 500)
+      } else {
+        this.$message.error(msg)
       }
     },
     // 生成标签

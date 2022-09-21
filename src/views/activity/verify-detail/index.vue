@@ -66,8 +66,8 @@
           <div class="board flex-x-between-center">
             <div class="board-left">
               <div class="board-title">会员图片</div>
-              <div class="desc"><span class="people-num">80</span>人关联了活动</div>
-              <el-button type="text" class="mt20" @click="$router.push({ path: '/activity/member-album' })">查看会员相册列表</el-button>
+              <div class="desc"><span class="people-num">{{ albumNum }}</span>人关联了活动</div>
+              <el-button type="text" class="mt20" @click="$router.push({ path: '/activity/member-album', query: { id: activityId } })">查看会员相册列表</el-button>
             </div>
           </div>
         </el-card>
@@ -116,6 +116,7 @@ import ActivityCode from './components/ActivityCode'
 import SignInCode from './components/SignInCode'
 import { formatDate } from './util'
 import { getChamberActivityInfoById, uploadSeating, deleteSeating } from '@/api/activity/activity-verify-new'
+import { getAlbumList } from '@/api/album'
 
 export default {
   components: {
@@ -144,21 +145,38 @@ export default {
       },
       previewSeatDialogShow: false,
       imgLoading: false,
+      albumNum: 0,
     }
   },
   computed: {
     activityId() {
       return +this.$route.query.activityId
+    },
+    ckey() {
+      return this.$store.getters.ckey
     }
   },
   created() {
     this.getActivityInfo()
+    this.getActivityAlbumList()
   },
   methods: {
     async getActivityInfo() {
       const { data } = await getChamberActivityInfoById(this.activityId)
       data.id = this.activityId
       this.activity = data
+    },
+    async getActivityAlbumList() {
+      const { data, state } = await getAlbumList({
+        ckey: this.ckey,
+        pageNum: 1,
+        pageSize: 1,
+        activityId: this.activityId,
+        total: true
+      })
+
+      if (!state) return
+      this.albumNum = data.totalRows
     },
     formatDate,
     // 上传前校验

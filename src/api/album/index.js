@@ -19,6 +19,20 @@ export const getAlbumList = params => request({
   params
 })
 
+// 个人相册：置顶|取消置顶
+export const updateAlbumTop = data => request({
+  url: '/api/ec/ysh-stats-album/album-relation-top',
+  method: 'put',
+  data
+})
+
+// 个人相册：取消关联
+export const cancelReleAlbum = data => request({
+  url: '/api/ec/ysh-stats-album/album-disassociate',
+  method: 'put',
+  data
+})
+
 // 修改相册数据
 export const modifyAlbumData = data => request({
   url: '/api/ec/ysh-stats-album/album-data-update',
