@@ -72,7 +72,7 @@ export default {
     return {
       formObj: {
         ckeys: [],
-        num: null,
+        num: '',
         channelTypeId: 1
       },
       name: '',
@@ -103,7 +103,7 @@ export default {
     handleClose() {
       this.formObj = {
         ckeys: [],
-        num: null,
+        num: '',
         channelTypeId: 1
       }
       this.maxNum = 0
@@ -115,16 +115,26 @@ export default {
     async handleSave() {
       if (!this.formObj.ckeys.length) return this.$message.error('请选择商协会')
       if (this.formObj.num === '') return this.$message.error('请输入分配短信条数')
-      this.formObj.num = Number(this.formObj.num)
+
       this.loading = true
-      const res = await batchDistributionNum(this.formObj)
-      if (res.state === 1) {
-        this.$message.success('操作成功')
-        this.handleClose()
-        this.$emit('onClick')
-      } else {
-        this.$message.error(res.msg)
-      }
+      this.$confirm(`是否确认分配 [ ${this.maxNum} ] 条短信给所选商协会`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        this.formObj.num = Number(this.formObj.num)
+        const res = await batchDistributionNum(this.formObj)
+        if (res.state === 1) {
+          this.$message.success('操作成功')
+          this.handleClose()
+          this.$emit('onClick')
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch(() => {
+
+      })
+
       this.loading = false
     },
     onChange() {

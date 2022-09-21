@@ -34,7 +34,7 @@ export default {
       loading: false,
       formObj: {
         ckeys: [], // 商会ckey集合
-        num: null, // 分配数量
+        num: '', // 分配数量
         channelTypeId: 1
       },
       smsRemainSum: 0, // 剩余数
@@ -53,7 +53,7 @@ export default {
       this.dialogVisible = false
       this.formObj = {
         ckeys: [],
-        num: null,
+        num: '',
         channelTypeId: 1
       }
       this.smsRemainSum = 0
@@ -64,17 +64,26 @@ export default {
     },
     async handleSave() {
       if (this.formObj.num === '') return this.$message.error('请输入分配短信条数')
-      this.formObj.num = Number(this.formObj.num)
-      console.log(this.formObj)
       this.loading = true
-      const res = await batchDistributionNum(this.formObj)
-      if (res.state === 1) {
-        this.$message.success('操作成功')
-        this.$emit('onClick')
-        this.handleClose()
-      } else {
-        this.$message.error(res.msg)
-      }
+      console.log('this.formObj.num', this.formObj.num)
+      this.$confirm(`是否确认分配 [ ${this.formObj.num} ] 条短信给所选商协会`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        this.formObj.num = Number(this.formObj.num)
+        const res = await batchDistributionNum(this.formObj)
+        if (res.state === 1) {
+          this.$message.success('操作成功')
+          this.$emit('onClick')
+          this.handleClose()
+        } else {
+          this.$message.error(res.msg)
+        }
+      }).catch(() => {
+
+      })
+
       this.loading = false
     }
   }
