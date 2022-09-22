@@ -7,7 +7,7 @@
           v-for="item in nameList"
           :key="item.id"
           :label="item.name"
-          :value="item.id"
+          :value="item.ckey"
         />
       </el-select>
       <!-- <el-autocomplete

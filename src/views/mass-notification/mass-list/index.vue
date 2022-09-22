@@ -147,13 +147,15 @@ export default {
       console.log('val', val)
       const { ckey } = this
       let API = sendList
-      let query = { ...this.query, ckey }
+      let query = { ...this.query }
+      ckey && (query.ckey = ckey)
       if (this.activeName === 'template') {
         API = templateList
         this.butionSmsStat() // 模板分配短信统计
       } else {
         if (val) { query = Object.assign(query, val) }
       }
+      console.log('query', query)
       const { data } = await API(query)
       this.tableData = data.list
       this.total = data.totalRows
@@ -336,9 +338,10 @@ export default {
         page: 1,
         pageSize: 10
       }
+      console.log('this.query', this.query)
       // this.query.page = 1
       // this.query.pageSize = 10
-      this.sendListFunc()
+      this.sendListFunc(val)
     },
     // 弹框内已选表格数组发生变化
 
