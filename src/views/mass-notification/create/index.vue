@@ -276,7 +276,18 @@ export default {
         API = selectTemplateList
       }
       const { data } = await API({ channelTypeId, noticeTypeId, ckey })
-      this.synchChannels[channelTypeId - 1].templateList = data || []
+      if (noticeTypeId === 4) {
+        this.synchChannels = [{ label: '短信', templateList: data || [], id: 1 }]
+        // this.synchChannels[0].templateList = data || []
+        // this.synchChannels.splice(1, 2)
+      } else {
+        this.synchChannels = [
+          { label: '短信', templateList: [], id: 1 },
+          { label: '微信订阅消息', templateList: [], id: 2 },
+          { label: 'APP通知', templateList: [], id: 3 }
+        ]
+        this.synchChannels[channelTypeId - 1].templateList = data || []
+      }
     },
     //
     async send(params) {
