@@ -1,10 +1,17 @@
 <template>
   <div style="margin-bottom: 20px">
+
     <el-dialog title="选择活动" :visible.sync="dialogVisible" width="75%" :before-close="handleClose">
+      <!-- <div class="hello">
+        <div id="example">
+          <p>fullName值: {{ fullName }}---computed值 {{ fullNameComputed }}</p>
+        </div>
+        <button @click="ClickCeshi">点击改变fullName的值</button>
+      </div> -->
       <el-form :inline="true" :model="form">
         <el-form-item label="活动来源" prop="chamberName">
-          <el-select v-model="form.chamberName" clearable filterable class="select" placeholder="请选择">
-            <el-option v-for="item2 in chamberList" :key="item2.id" :label="item2.name" :value="item2.id" />
+          <el-select v-model="origin" clearable filterable class="select" placeholder="请选择">
+            <el-option v-for="item2 in chamberList" :key="item2.id" :label="item2.name" :value="activityType===2 ? item2.ckey :item2.invesKey" />
           </el-select>
         </el-form-item>
 
@@ -48,6 +55,7 @@ import kdTable from '../../components/common/kdTable.vue'
 import { getActivityList } from '@/api/activity/activity'
 import { getInvesActivityList } from '@/api/attract/index'
 import { distributionChambers } from '@/api/mass-notification'
+import { getInfoList } from '@/api/attract/index'
 import dayjs from 'dayjs'
 export default {
   name: 'ReceiveForm',
@@ -57,6 +65,7 @@ export default {
   },
 
   props: {
+    // 2 普通活动 3招商活动
     activityType: {
       type: Number,
       default: 2
@@ -68,12 +77,16 @@ export default {
   },
   data() {
     return {
+
+      fullName: 'fullName',
       dialogVisible: false,
       form: {
         activityName: '',
         id: null,
         status: 0,
-        chamberName: ''
+        chamberName: '',
+        invesKey: '',
+        ckey: ''
       },
       chamberList: [],
       // 表格配置
@@ -96,6 +109,30 @@ export default {
       ]
     }
   },
+  computed: {
+    fullNameComputed() {
+      return this.fullName + '123'
+    },
+    origin: {
+      get() {
+        if (this.activityType === 2) {
+          return this.form.ckey
+        } else { return this.form.invesKey }
+      },
+      set(newValue) {
+        if (this.activityType === 2) {
+          this.form.ckey = newValue
+        } else { this.form.invesKey = newValue }
+      }
+
+    }
+  },
+  watch: {
+    activityType() {
+      this.getChamberOptions()
+      console.log('activityType', this.activityType)
+    }
+  },
 
   provide() {
     return {
@@ -107,13 +144,18 @@ export default {
 
   created() {
     this.resetColumnConfig()
-    this.getChamberOptions()
   },
   methods: {
+    ClickCeshi() {
+      this.fullName = 'fullName的新值'
+    },
     /** 请求 */
     // 拉取商协会数据
     async getChamberOptions() {
-      const { data } = await distributionChambers()
+      let API = distributionChambers
+      if (this.activityType === 3) { API = getInfoList }
+      console.log('API', API)
+      const { data } = await API()
       this.chamberList = data
     },
     async getActivityListFunc() {
@@ -128,7 +170,8 @@ export default {
         pageSize,
         page,
         ...form,
-        isInves: false
+        isInves: false,
+        // invesKey:
       })
       this.tableData = data.list
       this.total = data.totalRows
