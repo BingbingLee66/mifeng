@@ -84,7 +84,8 @@
       <!-- 同步渠道 -->
       <div class="title-hd">同步渠道 <span>(选填，可多选) </span></div>
       <el-form-item label="">
-        <el-checkbox-group v-model="form.synchChannels" @change="checkChange">
+        <!-- 为了解决el-checkbox 绑定对象不回显的问题，改为绑Number类型id，发请求时在组装对象 -->
+        <el-checkbox-group v-model="form.synchChannels">
           <div class="synch-channels">
             <div v-for="(item,index) in synchChannels" :key="item.id">
               <el-checkbox :label="item.id" :disabled="!item.templateList.length > 0">{{ item.label }}</el-checkbox>
@@ -305,6 +306,7 @@ export default {
 
       this.form.type = type
       this.form.receive = receive
+      // 同步渠道回显
       if (channelTypeTemplateDTOS) {
         const { synchChannels } = this
         channelTypeTemplateDTOS.forEach(item => {
@@ -314,7 +316,6 @@ export default {
             this.activityChannels[index] = item.id
           }
         })
-        // this.form.synchChannels = channelTypeTemplateDTOS.map(v => { return { id: v.channelTypeId, selectActivity: v.id } })
       }
       this.form.sendType = sendType + ''
       this.form.sendTs = sendTs
@@ -358,8 +359,6 @@ export default {
         this.showApp = true
       }
       this.getNoticeTemplateSetDetailById(selectActivity)
-
-      console.log('item', item)
     },
     // 删除已选活动
     handleClose(tag) {
@@ -393,45 +392,46 @@ export default {
     // 提交表单
     onSubmit() {
       // 先校验
-      console.log('创建群发通知')
       this.extendFunc()
       if (!this.verify()) return
-
+      const self = this
       this.$refs['indexFormRef'].validate(valid => {
         if (valid) {
-          const { ckey, form: { type: noticeTypeId, receiverRemove, receive: receiveTypeId, sendTs, sendType } } = this
-          const params = {
-            receiverRemove,
-            // 组装渠道数据
-            channelTypeTemplateDTOS: this.form.synchChannels.map((item, index) => {
-              return { channelTypeId: item, id: this.activityChannels[index] }
-            }),
-            //         接收人：当接收人类型为-1、1不用传;
-            // 当接收人类型为2时传职位id集合({'receiverList': []});
-            // 当接收人类型为3时，传部门id集合({'receiverList': []});
-            // 当接收人类型为4时，传会员id集合({'receiverList': []});
-            // 当接收人类型为5时，传商会ckey集合({'receiverList': []});
-            // 当接收人类型为6时，传手机号集合({'receiverList': []});
-            // 关联对象：
-            // 当通知类型为1、4、5时不用传
-            // 当通知类型为2时，{'associationId': 活动id}
-            // 当通知类型为3时，{'associationId': 招商活动id}
-            // 当通知类型为5时：
-            // extend:{'title':'标题','content':'内容',imgs:['图片', '图片2']}
-            extend: this.extendFunc(),
-            ckey, noticeTypeId, receiveTypeId, sendTs, sendType
-          }
-          this.send(params)
+          self.$confirm('确认发送该通知嘛?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            const { ckey, form: { type: noticeTypeId, receiverRemove, receive: receiveTypeId, sendTs, sendType } } = self
+            const params = {
+              receiverRemove,
+              // 组装渠道数据
+              channelTypeTemplateDTOS: self.form.synchChannels.map((item, index) => {
+                return { channelTypeId: item, id: self.activityChannels[index] }
+              }),
+              //         接收人：当接收人类型为-1、1不用传;
+              // 当接收人类型为2时传职位id集合({'receiverList': []});
+              // 当接收人类型为3时，传部门id集合({'receiverList': []});
+              // 当接收人类型为4时，传会员id集合({'receiverList': []});
+              // 当接收人类型为5时，传商会ckey集合({'receiverList': []});
+              // 当接收人类型为6时，传手机号集合({'receiverList': []});
+              // 关联对象：
+              // 当通知类型为1、4、5时不用传
+              // 当通知类型为2时，{'associationId': 活动id}
+              // 当通知类型为3时，{'associationId': 招商活动id}
+              // 当通知类型为5时：
+              // extend:{'title':'标题','content':'内容',imgs:['图片', '图片2']}
+              extend: self.extendFunc(),
+              ckey, noticeTypeId, receiveTypeId, sendTs, sendType
+            }
+            this.send(params)
+          }).catch(() => {
 
-          console.log('params', params)
+          })
         } else {
           return false
         }
       })
-    },
-    // 为了解决el-checkbox 绑定对象不回显的问题，改为change获取选中值，发请求时在组装对象
-    checkChange(val) {
-      console.log('val', val)
     },
 
     /** 父子组件交互 */
