@@ -46,7 +46,7 @@
         </el-form-item>
         <el-form-item>
           <div slot="label">
-            <div style="line-height:1;text-align: center;">用户标签</div>
+            <div style="line-height: 1; text-align: center">用户标签</div>
             <span class="text-gray">(商协会创建)</span>
           </div>
           <el-cascader
@@ -63,7 +63,7 @@
         </el-form-item>
         <el-form-item>
           <div slot="label">
-            <div style="line-height:1;text-align: center;">用户标签</div>
+            <div style="line-height: 1; text-align: center">用户标签</div>
             <span class="text-gray">(平台创建)</span>
           </div>
           <el-cascader
@@ -78,7 +78,33 @@
             collapse-tags
           ></el-cascader>
         </el-form-item>
-
+        <el-form-item label="供需标签">
+          <el-select
+            v-model="supplyIds"
+            placeholder="请选择供需标签"
+            filterable
+            multiple
+            clearable
+            :multiple-limit="50"
+            collapse-tags
+          >
+            <el-option
+              v-for="supply in SupplyformOptions"
+              :key="supply.id"
+              :label="supply.name"
+              :value="supply.id"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="行业标签">
+          <el-cascader
+            v-model="industryIds"
+            :options="IndustryformOptions"
+            :props="{ multiple: true }"
+            :collapse-tags="true"
+            clearable
+          ></el-cascader>
+        </el-form-item>
         <el-form-item :span="12" label="状态">
           <el-select v-model="query.status" placeholder="请选择操作行为">
             <!-- <el-option v-for="(item, index) in typeOptions" :label="item" :value="item" :key="index"></el-option> -->
@@ -201,6 +227,48 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column label="供需标签">
+        <template slot-scope="scope">
+          <div v-if="scope.row.bridgeLabels">
+            <el-tag
+              v-for="item in scope.row.bridgeLabels.slice(0, 3)"
+              :key="item.id"
+              type="info"
+              effect="plain"
+              style="margin: 0 6px 6px 0"
+            >
+              {{ item.name }}
+            </el-tag>
+            <span
+              v-if="scope.row.bridgeLabels.length > 3"
+              class="text-blue"
+              @click="handleMorebridgeLabels(scope.row)"
+              >查看更多</span
+            >
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="行业标签">
+        <template slot-scope="scope">
+          <div v-if="scope.row.tradeBridges">
+            <el-tag
+              v-for="item in scope.row.tradeBridges.slice(0, 3)"
+              :key="item.id"
+              type="info"
+              effect="plain"
+              style="margin: 0 6px 6px 0"
+            >
+              {{ item.name }}
+            </el-tag>
+            <span
+              v-if="scope.row.tradeBridges.length > 3"
+              class="text-blue"
+              @click="handleMoretradeBridges(scope.row)"
+              >查看更多</span
+            >
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="注册时间">
         <template slot-scope="scope">
           {{ scope.row.createdTs }}
@@ -212,7 +280,7 @@
           <div v-if="scope.row.status == 0">已冻结</div>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" fixed="right">
         <template slot-scope="scope">
           <el-button
             v-if="has('', '详情')"

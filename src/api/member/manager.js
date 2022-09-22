@@ -3,8 +3,8 @@ import request from '@/utils/request'
 export function getUserList(params) {
   return request({
     url: '/ec/member/all-user',
-    method: 'get',
-    params
+    method: 'post',
+    data: params
   })
 }
 
@@ -95,8 +95,8 @@ export function uploadLicense(params) {
 export function list(params) {
   return request({
     url: '/ec/member/list',
-    method: 'get',
-    params
+    method: 'post',
+    data: params
   })
 }
 
