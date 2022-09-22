@@ -515,15 +515,15 @@ export default {
           break
         case 4:
           // 会员id集合
-          obj['receiverList'] = refData.selectMemberList.map(v => v.id)
+          obj['receiverList'] = refData.selectMemberList.map(v => { return { id: v.id } })
           break
         case 5:
           // 商会ckey集合
-          obj['receiverList'] = refData.selectMemberList.map(v => v.ckey)
+          obj['receiverList'] = refData.selectMemberList.map(v => { return { id: v.ckey } })
           break
         case 6:
           // 手机号集合
-          obj['receiverList'] = refData.form.phones.split('\n')
+          obj['receiverList'] = refData.form.phones.split('\n').map(v => { return { id: v } })
           break
         default:
       }

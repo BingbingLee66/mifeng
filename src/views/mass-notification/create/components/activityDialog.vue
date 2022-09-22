@@ -129,8 +129,8 @@ export default {
   },
   watch: {
     activityType() {
-      this.getChamberOptions()
       console.log('activityType', this.activityType)
+      this.getChamberOptions()
     }
   },
 
@@ -143,6 +143,7 @@ export default {
   },
 
   created() {
+    this.getChamberOptions()
     this.resetColumnConfig()
   },
   methods: {
