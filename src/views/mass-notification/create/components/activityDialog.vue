@@ -115,9 +115,7 @@ export default {
     },
     origin: {
       get() {
-        if (this.activityType === 2) {
-          return this.form.ckey
-        } else { return this.form.invesKey }
+        return this.activityType === 2 ? this.form.ckey : this.form.invesKey
       },
       set(newValue) {
         if (this.activityType === 2) {

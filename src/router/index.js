@@ -54,18 +54,18 @@ export const constantRoutes = [
         component: () => import('@/views/dashboard/index'),
         meta: { title: 'dashboard', icon: 'dashboard', affix: true }
       },
-      {
-        path: 'mass-notification/create',
-        name: 'create',
-        component: () => import('@/views/mass-notification/create/index'),
-        meta: { title: '创建群发' }
-      },
-      {
-        path: 'mass-notification/mass-list',
-        name: 'massList',
-        component: () => import('@/views/mass-notification/mass-list/index'),
-        meta: { title: '群发管理' }
-      }
+      // {
+      //   path: 'mass-notification/create',
+      //   name: 'create',
+      //   component: () => import('@/views/mass-notification/create/index'),
+      //   meta: { title: '创建群发' }
+      // },
+      // {
+      //   path: 'mass-notification/mass-list',
+      //   name: 'massList',
+      //   component: () => import('@/views/mass-notification/mass-list/index'),
+      //   meta: { title: '群发管理' }
+      // }
     ]
   },
   {
