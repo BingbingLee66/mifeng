@@ -4,9 +4,9 @@
       <h2>相册举报列表</h2>
 
       <div class="flex-x-start-center">
-        <el-input :value="query.albumName" class="input-item" placeholder="相册名称、主体名称" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
+        <el-input v-model="query.queryParameter" class="input-item" placeholder="相册名称、主体名称" prefix-icon="el-icon-search" @input="onQueryChange(true)" />
         <span class="ml-20">状态：</span>
-        <el-select :value="query.status" class="input-item" @change="onQueryChange({status:$event,pageNum:1})">
+        <el-select v-model="query.status" class="input-item" @change="onQueryChange(true)">
           <el-option label="全部" value="" />
           <el-option label="正常" value="1" />
           <el-option label="已冻结" value="0" />
@@ -16,12 +16,14 @@
     <KdTable v-loading="loading" style="margin-top:20px;" :columns="columns" :rows="tableData" />
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
-    <DetailDialog :id="albumId" :visible.sync="detailDialogVisible" />
+    <DetailDialog :album-info="albumInfo" :visible.sync="detailDialogVisible" @success="onQueryChange(true)" />
 
   </div>
 </template>
 
 <script>
+
+import { getReportList } from '@/api/report'
 
 export default {
   components: {
@@ -35,14 +37,14 @@ export default {
       query: {
         pageNum: 1,
         pageSize: 10,
-        albumName: '',
+        queryParameter: '',
         status: ''
       },
       total: 0,
       tableData: [],
       loading: false,
       detailDialogVisible: false,
-      albumId: '',
+      albumInfo: {}
     }
   },
 
@@ -55,15 +57,15 @@ export default {
       return [
         {
           label: '举报相册', width: 200,
-          render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumCkey}</div>{row.albumName}</div>
+          render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumId}</div>{row.albumName}</div>
         },
         {
           label: '相册主体',
-          render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumCkey}</div>{row.chamberName}</div>
+          render: ({ row }) => <div><div style='color:#66b1ff'>{row.mainBodyId}</div>{row.mainBodyName}</div>
         },
-        { label: '举报次数', prop: 'imgNum' },
-        { label: '状态', render: ({ row }) => row.status ? <span style='color:#67c23a'>正常</span> : <span style='color:#f56c6c'>已冻结</span> },
-        { label: '处理时间', prop: 'handleTime' },
+        { label: '举报次数', prop: 'reportCount' },
+        { label: '状态', render: ({ row }) => row.albumStatus ? <span style='color:#67c23a'>正常</span> : <span style='color:#f56c6c'>已冻结</span> },
+        { label: '处理时间', prop: 'freezeTime' },
         {
           label: '操作',
           fixed: 'right',
@@ -82,33 +84,33 @@ export default {
     clearTimeout(this.timer)
   },
   methods: {
-    onQueryChange() {
+    onQueryChange(isReset) {
       clearTimeout(this.timer)
-      this.timer = setTimeout(() => this.queryTableData(), 300)
+      this.timer = setTimeout(() => this.queryTableData(isReset), 300)
     },
-    async queryTableData() {
+    async queryTableData(isReset) {
       this.loading = true
       try {
-        // TODO 待完善
-        // const { data: { list, totalRows }} = await getAlbumList({
-        //   ...this.query,
-        //   ckey: this.ckey,
-        //   total: true
-        // })
-        // this.tableData = list
-        // this.total = totalRows
+        const params = {
+          ...this.query,
+          total: true
+        }
+
+        if (isReset) {
+          params.pageNum = 1
+        }
+
+        const { data: { list, totalRows }} = await getReportList(params)
+        this.tableData = list
+        this.total = totalRows
       } finally {
         this.loading = false
       }
     },
-    async toggleTop() {
-      await this.$confirm('', '确定取消置顶？')
-      // TODO 待对接
-      console.log('删除置顶')
-    },
 
     showDetailDialog(row) {
-      this.albumId = row.id
+      this.albumInfo = row
+
       this.detailDialogVisible = true
     }
 

@@ -34,8 +34,8 @@
                 <el-input
                   v-model="formObj.activityName"
                   show-word-limit
-                  maxlength="30"
-                  placeholder="限30字内"
+                  maxlength="60"
+                  placeholder="限60字内"
                 />
               </el-form-item>
             </el-col>

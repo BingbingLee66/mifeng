@@ -92,9 +92,9 @@
           <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 1)">公开</el-button>
         </template>
         <template v-else>
-          <el-button @click="toggleAlbumStatus">冻结相册</el-button>
-          <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 2)">冻结照片</el-button>
-          <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 3)">解冻照片</el-button>
+          <el-button @click="toggleAlbumStatus">{{ albumDetail.status === 1 ? '冻结相册' : '解冻相册' }}</el-button>
+          <el-button :disabled="handleDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 3)">冻结照片</el-button>
+          <el-button :disabled="handleDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 1)">解冻照片</el-button>
         </template>
         <el-button @click="downloadImgs">下载</el-button>
       </template>
@@ -108,7 +108,15 @@
 
 <script>
 import { formatDateTime } from '@/utils/date'
-import { getAlbumImgList, delAlbumImgs, changeAlbumImgStatus, getAlbumDetail, cancelReleAlbum } from '@/api/album'
+import {
+  getAlbumImgList,
+  delAlbumImgs,
+  changeAlbumImgStatus,
+  getAlbumDetail,
+  cancelReleAlbum,
+  changeBatchAlbumFreezeStatus,
+  changeAlbumFreezeStatus
+} from '@/api/album'
 import { downloadFile } from '@/utils'
 
 export default {
@@ -258,12 +266,30 @@ export default {
         this.albumDetail.imgCount = this.albumDetail.imgCount - imgIds.length
       }
     },
-    // 切换相册状态
+    // 切换相册冻结状态
     async toggleAlbumStatus() {
-      await this.$confirm('冻结相册后前台无法显示该相册内容，是否冻结？', '冻结相册')
+      const freezeParams = {
+        0: {
+          title: '是否解冻相册？',
+          content: '',
+          status: 1,
+        },
+        1: {
+          title: '冻结相册',
+          content: '冻结相册后前台无法显示该相册内容，是否冻结？',
+          status: 0,
+        }
+      }[this.albumDetail.status]
 
-      // TODO 切换相册状态
-      console.log('冻结相册')
+      await this.$confirm(freezeParams.content, freezeParams.title)
+
+      const { state, msg } = await changeAlbumFreezeStatus({ id: this.$route.query.id, status: freezeParams.status })
+      if (state) {
+        this.$message.success('操作成功')
+        this.queryAlbumDetail()
+      } else {
+        this.$message.error(msg)
+      }
     },
     // 切换图片状态
     async toggleImgStatus(imgIds, type) { // 0-隐藏 1-公开
@@ -272,6 +298,18 @@ export default {
         this.imgList.forEach(v => {
           if (imgIds.includes(v.id)) {
             this.$set(v, 'auditStatus', type)
+          }
+        })
+        this.selectedImgs = []
+      }
+    },
+    // 切换冻结图片状态
+    async toggleImgFrozeeStatus(imgIds, type) {
+      const { state } = await changeBatchAlbumFreezeStatus({ imgIds: imgIds.join(','), status: type })
+      if (state === 1) {
+        this.imgList.forEach(v => {
+          if (imgIds.includes(v.id)) {
+            this.$set(v, 'status', type)
           }
         })
         this.selectedImgs = []
@@ -296,11 +334,10 @@ export default {
     // 生成标签
     generateTag(img) {
       if (this.isCover(img)) return { name: '封面', type: 'success' }
-      if (+img.auditStatus === 0) return { name: '取消公开', type: 'info' }
+      if (+img.auditStatus === 0) return { name: '隐藏', type: 'info' }
       if (+img.auditStatus === 1) return { name: '公开' }
-      //  TODO 待确认 2，3的状态
-      if (+img.auditStatus === 2) return { name: '' }
-      if (+img.auditStatus === 3) return { name: '' }
+      if (+img.status === 1) return { name: '正常' }
+      if (+img.status === 3) return { name: '已冻结' }
     },
     // 是否为封面
     isCover(img) {

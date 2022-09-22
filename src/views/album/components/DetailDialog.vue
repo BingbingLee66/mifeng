@@ -6,8 +6,8 @@
     @close="close"
   >
     <div class="flex-x-start-center">
-      <div>冻结处理人： 张三（1234）</div>
-      <div class="ml-20">处理时间： 2022-10-23 14:23</div>
+      <div>冻结处理人： {{ albumInfo.freezeBy }}（{{ albumInfo.freezeById }}）</div>
+      <div class="ml-20">处理时间： {{ albumInfo.freezeTime }}</div>
     </div>
 
     <KdTable v-loading="loading" style="margin-top:20px;" :columns="columns" :rows="tableData" />
@@ -21,6 +21,9 @@
 
 <script>
 
+import { getReportById } from '@/api/report'
+import { changeAlbumFreezeStatus } from '@/api/album'
+
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
@@ -31,9 +34,9 @@ export default {
       type: Boolean,
       default: false
     },
-    id: {
-      type: String,
-      default: '',
+    albumInfo: {
+      type: Object,
+      default: () => {},
     }
   },
   data() {
@@ -47,11 +50,11 @@ export default {
       return [
         {
           label: '举报人', width: 200,
-          render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumCkey}</div>{row.albumName}</div>
+          render: ({ row }) => <div><div style='color:#66b1ff'>{row.reportId}</div>{row.reportName}</div>
         },
         {
           label: '举报内容',
-          render: ({ row }) => <div>涉嫌咋骗</div>
+          render: ({ row }) => <div>{row.reportContent}</div>
         },
         { label: '举报时间', prop: 'reportTime' },
       ]
@@ -60,14 +63,38 @@ export default {
   watch: {
     visible(n) {
       if (!n) return
-      // TODO 获取详情逻辑
+      this.fetchDetail()
     }
   },
   methods: {
+    async fetchDetail() {
+      const { state, data } = await getReportById({ albumId: this.albumInfo.id, })
+      if (!state) return
+      this.tableData = data
+    },
+
     async onFreeze() {
-      await this.$confirm('', '是否冻结？')
-      // TODO 冻结
-      console.log('冻结')
+      const freezeParams = {
+        0: {
+          title: '是否解冻？',
+          status: 1,
+        },
+        1: {
+          title: '是否冻结？',
+          status: 0,
+        }
+      }[this.albumInfo.albumStatus]
+
+      await this.$confirm('', freezeParams.title)
+
+      const { state, msg } = await changeAlbumFreezeStatus({ id: this.$route.query.id, status: freezeParams.status })
+      if (state) {
+        this.$message.success('操作成功')
+        this.$emit('success')
+      } else {
+        this.$message.error(msg)
+      }
+
       this.close()
     },
 

@@ -49,7 +49,7 @@ export default {
         },
         { label: '用户信息', render: ({ row }) =>
           <div>
-            <img src={row.businessImg} alt='' />
+            <img src={row.businessImg} alt='' width='50' height='50' />
             <div>{row.businessName}</div>
             <div>{row.number}</div>
           </div>

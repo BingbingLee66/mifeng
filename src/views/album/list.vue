@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { getAlbumList, modifyAlbumData, changeAlbumFreezeStatus } from '@/api/album'
+import { getAlbumList, modifyAlbumData, changeAlbumFreezeStatus, deleteAlbum, auditAlbum } from '@/api/album'
 
 const generateDialog = () => ({
   visible: false,
@@ -121,11 +121,11 @@ export default {
           render: ({ row }) => +row.type === 2 ? <div>活动<div style='color:#66b1ff'>{row.businessId}</div>{row.businessName}</div> : '-'
         },
         { label: '商协会', hidden: isPlatform || isUser, prop: 'chamberName' },
-        { label: '用户信息', hidden: !isUser, prop: 'userInfo', render: () =>
+        { label: '用户信息', hidden: !isUser, render: ({ row }) =>
           <div>
-            <img src='https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF' alt='' width='50' height='50' />
-            <div>name</div>
-            <div>13212341234</div>
+            <img src={row.businessImg} alt='' width='50' height='50' />
+            <div>{row.businessName}</div>
+            <div>{row.number}</div>
           </div>
         },
         { label: '图片数', prop: 'imgNum' },
@@ -145,7 +145,7 @@ export default {
                 ? <div>
                   <el-button type='text' onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id }})}>编辑</el-button>
                   <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, type: this.query.queryType }})}>进入相册</el-button>
-                  <el-button type='text' onClick={() => this.hideAlbum(row)}>隐藏</el-button>
+                  <el-button type='text' onClick={() => this.hideAlbum(row)}>{+row.auditStatus === 1 ? '隐藏' : '公开'}</el-button>
                   <el-button type='text' onClick={() => this.delAlbum(row)}>删除</el-button>
                 </div>
                 : <div>
@@ -179,11 +179,13 @@ export default {
     async queryTableData() {
       this.loading = true
       try {
-        const { data: { list, totalRows }} = await getAlbumList({
+        const params = {
           ...this.query,
           ckey: this.ckey,
           total: true
-        })
+        }
+        if (this.isPlatform) delete params.status
+        const { data: { list, totalRows }} = await getAlbumList(params)
         this.tableData = list
         this.total = totalRows
       } finally {
@@ -222,14 +224,26 @@ export default {
       }
     },
     async hideAlbum(row) {
-      await this.$confirm('', '是否隐藏？')
-      // TODO 待对接
-      console.log('隐藏相册')
+      await this.$confirm('', row.auditStatus ? '是否隐藏？' : '是否公开？')
+
+      const { state, msg } = await auditAlbum({ albumId: row.id, type: row.auditStatus ? 0 : 1 })
+      if (state) {
+        this.$message.success('操作成功')
+        this.queryTableData()
+      } else {
+        this.$message.error(msg)
+      }
     },
     async delAlbum(row) {
       await this.$confirm('', '删除相册会一并删除里面的图片，是否删除？')
-      // TODO 待对接
-      console.log('删除相册')
+
+      const { state, msg } = await deleteAlbum({ albumId: row.id })
+      if (state) {
+        this.$message.success('操作成功')
+        this.queryTableData()
+      } else {
+        this.$message.error(msg)
+      }
     },
     // 切换冻结状态
     async toggleFreeze(row) {

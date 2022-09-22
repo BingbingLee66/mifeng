@@ -40,6 +40,20 @@ export const modifyAlbumData = data => request({
   data
 })
 
+// 相册 隐藏|公开
+export const auditAlbum = data => request({
+  url: '/api/ec/ysh-album/album-audit',
+  method: 'put',
+  data
+})
+
+// 相册删除
+export const deleteAlbum = data => request({
+  url: '/api/ec/ysh-album/album-delete',
+  method: 'delete',
+  data
+})
+
 // 相册冻结 | 解冻
 export const changeAlbumFreezeStatus = data => request({
   url: '/api/ec/ysh-album/album-frozen',
@@ -63,6 +77,13 @@ export const delAlbumImgs = data => request({
 // 隐藏 | 公开图片
 export const changeAlbumImgStatus = data => request({
   url: '/api/ec/ysh-album/album-img-audit',
+  method: 'put',
+  data
+})
+
+// 相册下的图片批量 冻结|解冻
+export const changeBatchAlbumFreezeStatus = data => request({
+  url: '/api/ec/ysh-album/album-img-frozen',
   method: 'put',
   data
 })
