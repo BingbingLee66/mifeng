@@ -246,6 +246,9 @@ export default {
       this.activityList = []
       // 置空活动表格已选
       this.$refs['activityDialogRef'].$refs['table'] && this.$refs['activityDialogRef'].$refs['table'].cancelSelect()
+      // 置空已选渠道数据
+      this.activityChannels = ['', '', '']
+      this.form.synchChannels = []
       // 重新请求同步渠道数据
       this.getTemplateUtil()
     }
@@ -281,11 +284,6 @@ export default {
         // this.synchChannels[0].templateList = data || []
         // this.synchChannels.splice(1, 2)
       } else {
-        this.synchChannels = [
-          { label: '短信', templateList: [], id: 1 },
-          { label: '微信订阅消息', templateList: [], id: 2 },
-          { label: 'APP通知', templateList: [], id: 3 }
-        ]
         this.synchChannels[channelTypeId - 1].templateList = data || []
       }
     },
@@ -561,7 +559,12 @@ export default {
       if (this.form.type === 4) {
         this.selectTemplateListFunc(1)
       } else {
-      // 请求每次只能请求一种，所以要请求3次
+        this.synchChannels = [
+          { label: '短信', templateList: [], id: 1 },
+          { label: '微信订阅消息', templateList: [], id: 2 },
+          { label: 'APP通知', templateList: [], id: 3 }
+        ]
+        // 请求每次只能请求一种，所以要请求3次
         for (let i = 1; i < 4; i++) {
           this.selectTemplateListFunc(i)
         }

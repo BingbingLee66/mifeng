@@ -222,7 +222,7 @@ export default {
     memberCount() {
       const { selectMemberList } = this
       if (!selectMemberList.length > 0) { return 0 }
-      return selectMemberList.reduce((pre, cur) => { pre + cur.memberCount }, 0)
+      return selectMemberList.reduce((pre, cur) => { console.log('pre', pre); return pre + cur.memberCount }, 0)
     },
     departmentCount() {
       return this.sum(this.form.department)
