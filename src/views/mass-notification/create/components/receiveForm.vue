@@ -11,7 +11,7 @@
         <SelectShow
           v-if="form.receive === 5"
           :btn-text="btnTextComput"
-          :num="selectMemberList.length"
+          :num="memberCount"
           @selectEmit="selectEmit"
           @showDialog="selectEmit"
         />
@@ -219,6 +219,11 @@ export default {
     }
   },
   computed: {
+    memberCount() {
+      const { selectMemberList } = this
+      if (!selectMemberList.length > 0) { return 0 }
+      return selectMemberList.reduce((pre, cur) => { pre + cur.memberCount }, 0)
+    },
     departmentCount() {
       return this.sum(this.form.department)
       // if (this.form.department) {
