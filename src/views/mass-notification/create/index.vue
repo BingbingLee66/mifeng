@@ -123,7 +123,7 @@
     <!-- 通知发送规则dialog -->
     <kdDialog ref="kdDialog" :custom-footer="true" dialog-title="通知发送规则" :center="true">
       <div slot="content">
-        规则说明，文案先找业务定一下
+        {{ ruleString }}
       </div>
       <el-button slot="customFooter" type="primary" @click="hideSendRule">我知道啦</el-button>
     </kdDialog>
@@ -162,7 +162,7 @@
 </template>
 
 <script>
-import { labelType, receiveType } from '../util/label'
+import { labelType, receiveType, ruleString } from '../util/label'
 import { uploadFile } from '@/api/content/article'
 import { selectTemplateList, sendDetail, getNoticeTemplateSetDetailById, selectTemplateListAdmin, sendMsg } from '@/api/mass-notification/index'
 import ReceiveForm from './components/receiveForm.vue'
@@ -231,7 +231,8 @@ export default {
       showNote: false,
       // show 订阅消息
       showSubscribe: false,
-      infoData: null
+      infoData: null,
+      ruleString
 
     }
   },

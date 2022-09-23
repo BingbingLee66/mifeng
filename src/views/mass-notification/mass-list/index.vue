@@ -134,11 +134,13 @@ export default {
     const { ckey } = this.$store.getters
     this.ckey = ckey
     this.restTypeData()
-    this.tableConfigUtil()
+
     this.sendListFunc()
   },
   mounted() {
+    this.activeName = this.tabList[0].name
     this.$refs['tab'].setCurrentTab(this.tabList[0].name)
+    this.tableConfigUtil()
   },
   methods: {
     /** 请求 */
@@ -516,8 +518,9 @@ export default {
         },
       ]
       // 群发管理
+      console.log('this.activeName', this.activeName)
       if (this.activeName === 'mass') {
-        this.columnConfig.unshift({
+        columnConfig.unshift({
           prop: 'chamberName',
           label: '商协会名称',
           width: 180
