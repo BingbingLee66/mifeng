@@ -412,9 +412,9 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            const { ckey, form: { type: noticeTypeId, receiverRemove, receive: receiveTypeId, sendTs, sendType } } = self
+            const { ckey, form: { type: noticeTypeId, receive: receiveTypeId, sendTs, sendType } } = self
             const params = {
-              receiverRemove,
+              receiverRemove: self.$refs['receiveForm'] && self.$refs['receiveForm']?.$data?.form.receiverRemove ? 1 : 2,
               // 组装渠道数据
               channelTypeTemplateDTOS: self.form.synchChannels.map((item, index) => {
                 return { channelTypeId: item, id: self.activityChannels[index] }
