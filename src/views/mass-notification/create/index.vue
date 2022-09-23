@@ -416,9 +416,11 @@ export default {
             const params = {
               receiverRemove: self.$refs['receiveForm'] && self.$refs['receiveForm']?.$data?.form.receiverRemove ? 1 : 2,
               // 组装渠道数据
-              channelTypeTemplateDTOS: self.form.synchChannels.map((item, index) => {
-                return { channelTypeId: item, id: self.activityChannels[index] }
+              channelTypeTemplateDTOS: self.form.synchChannels.map(item => {
+                return { channelTypeId: item, id: self.activityChannels[item - 1] }
               }),
+              // 渠道和活跃模板一一对应上
+
               //         接收人：当接收人类型为-1、1不用传;
               // 当接收人类型为2时传职位id集合({'receiverList': []});
               // 当接收人类型为3时，传部门id集合({'receiverList': []});
@@ -434,6 +436,7 @@ export default {
               extend: self.extendFunc(),
               ckey, noticeTypeId, receiveTypeId, sendTs, sendType
             }
+            console.log('params', params)
             this.send(params)
           }).catch(() => {
 
