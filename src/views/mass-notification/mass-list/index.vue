@@ -625,7 +625,7 @@ export default {
       if (val === '1') {
         this.sendStatus = cloneDeep(sendStatusList)
       } else {
-        this.sendStatus = cloneDeep(sendStatusList).filter(v => (v.name === '1' || v.name === '2'))
+        this.sendStatus = cloneDeep(sendStatusList).filter(v => (v.name === '3' || v.name === '4'))
       }
       if (Object.keys(groupSendStatMap).length < 1) { return }
       const currentTab = groupSendStatMap[activeDialogChannelTab]

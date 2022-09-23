@@ -304,7 +304,9 @@ export default {
     // 设置receive phone
     setFormData(type = 'receive', val) {
       console.log('val', val)
-      if (type === 'receive') { this.form.receive = val } else if (type === 'phones') { this.form.phones = val.join('\n') }
+      if (type === 'receive') { this.form.receive = val } else if (type === 'phones') {
+        this.form.phones = val.map(v => v.id).join('\n')
+      }
     },
 
     // 设置已选数 编辑回显时用
