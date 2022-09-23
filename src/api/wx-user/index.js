@@ -23,3 +23,33 @@ export const rejectAuditStatus = data =>
     method: 'put',
     data
   })
+
+// 总后台身份审核列表
+export const getidentityList = params =>
+  request({
+    url: '/ec/useridentity/list',
+    method: 'get',
+    params
+  })
+// 认证信息详情
+export const getApproveDetail = params =>
+  request({
+    url: '/ec/useridentity/approvedetail',
+    method: 'get',
+    params
+  })
+// 申请详情
+export const getAuditDetail = params =>
+  request({
+    url: '/ec/useridentity/auditdetail',
+    method: 'get',
+    params
+  })
+
+// 身份审批
+export const approveIdentity = data =>
+  request({
+    url: '/ec/useridentity/approve',
+    method: 'post',
+    data
+  })

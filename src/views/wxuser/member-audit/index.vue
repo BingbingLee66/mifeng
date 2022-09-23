@@ -1,5 +1,9 @@
 <template>
   <div class="mt-20 ml-10">
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="身份审核" name="identify" />
+      <el-tab-pane label="会员审核" name="member" />
+    </el-tabs>
     <ys-form
       :form-item="formItem"
       :form-config="formConfig"
@@ -7,7 +11,7 @@
       @query="queryData"
       @reset="resetData"
     />
-    <div class="mb-20">
+    <div v-if="activeName === 'member'" class="mb-20">
       <el-button
         type="success"
         icon="el-icon-check"
@@ -29,11 +33,67 @@
       :table-column="tableColumn"
       :table-data="tableData"
       :page-data="pageData"
-
       @handleCurrentChange="handleCurrentChange"
       @handleSizeChange="handleSizeChange"
       @handleSelectionChange="handleSelectionChange"
+    >
+      <template v-if="activeName === 'identify'" v-slot:operate="row">
+        <el-link
+          type="primary"
+          :underline="false"
+          class="ml-10"
+          @click="showDetail(row.data.id)"
+        >
+          详情
+        </el-link>
+        <template v-if="row.data.auditStatus === 0">
+          <el-link
+            type="success"
+            :underline="false"
+            class="ml-10"
+            @click="handleResolve(row.data.id)"
+          >
+            通过
+          </el-link>
+          <el-link
+            :underline="false"
+            class="ml-10"
+            type="danger"
+            @click="handleReject(row.data.id)"
+          >拒绝</el-link>
+        </template>
+      </template>
+    </ys-table>
+    <!-- 详情弹出框 -->
+    <Details
+      :details-visible="detailsVisible"
+      :detail="detailsObject"
+      @handleResolve="handleResolve"
+      @handleReject="handleReject"
+      @detailsClose="detailsClose"
     />
+    <!--拒绝弹出框-->
+    <el-dialog
+      title="提示"
+      :visible.sync="rejectVisible"
+      width="20%"
+      :before-close="rejectDialogClose"
+    >
+      <div>
+        <el-select v-model="rejectReason" placeholder="请选择">
+          <el-option
+            v-for="item in rejectOptions"
+            :key="item.label"
+            :label="item.label"
+            :value="item.label"
+          />
+        </el-select>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="rejectDialogClose">取 消</el-button>
+        <el-button type="primary" @click="confirmReject">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -42,11 +102,20 @@ import { exportJson2Excel } from '@/utils/exportExcel'
 import ysTable from '@/components/ys-table'
 import ysForm from '@/components/ys-form'
 import data from './data'
-import { getAllAuditList, rejectAuditStatus } from '@/api/wx-user'
+import {
+  getAllAuditList,
+  rejectAuditStatus,
+  getidentityList,
+  getApproveDetail,
+  getAuditDetail,
+  approveIdentity,
+} from '@/api/wx-user'
+import details from './components/details.vue'
 export default {
   components: {
     'ys-table': ysTable,
     'ys-form': ysForm,
+    Details: details,
   },
   data() {
     return {
@@ -54,16 +123,16 @@ export default {
         loading: false,
         reserve: true,
         rowKey: 'id',
-        selection: true,
+        selection: false,
       },
       formConfig: {
         type: 'query',
         inline: true,
         labelWidth: '100px',
       },
-      formItem: data.formItem,
-      formData: data.formData,
-      tableColumn: data.tableColumn,
+      formItem: data.identityFormItem,
+      formData: data.identityFormData,
+      tableColumn: data.identityTableColumn,
       chamberOptions: [],
       multipleSelection: [],
       tableData: [],
@@ -74,15 +143,27 @@ export default {
         total: 0,
       },
       selectExportList: [],
+      // 节流控制
       passBtn: false,
       rejectBtn: false,
+      activeName: 'identify',
+      // 详情对话框
+      detailsVisible: false,
+      detailsObject: {
+        trades: [{}],
+      },
+      // 驳回对话框
+      rejectReason: '',
+      rejectVisible: false,
+      rejectOptions: data.rejectOptions,
+      currentId: '',
     }
   },
   async created() {
-    await this.fetchData(1)
+    await this.fetchIdentityData(1)
   },
   methods: {
-    async fetchData(e) {
+    async fetchMemberData(e) {
       this.tableConfig.loading = true
       this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage
       const { currentpage, limit } = this.pageData
@@ -105,14 +186,49 @@ export default {
       }
       console.log(params)
       let res = await getAllAuditList(params)
-      console.log(res)
+      console.log(res, '会员审核')
+      this.tableData = res.data.list || []
+      this.pageData.total = res.data.totalRows
+      this.tableConfig.loading = false
+    },
+    async fetchIdentityData(e) {
+      this.tableConfig.loading = true
+      this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage
+      const { currentpage, limit } = this.pageData
+      console.log(limit, 'limit')
+      const { auditType, auditStatus, source, type, userId } = this.formData
+      let params = {
+        auditType,
+        auditStatus,
+        source,
+        type,
+        userId,
+        page: currentpage,
+        pageSize: limit,
+      }
+      if (this.formData.requestTime) {
+        params['auditStartTime'] = this.formData.requestTime[0]
+        params['auditEndTime'] = this.formData.requestTime[1]
+      }
+      if (this.formData.approvalTime) {
+        params['joinStartTime'] = this.formData.requestTime[0]
+        params['joinEndTime'] = this.formData.requestTime[1]
+      }
+      console.log(params, '身份审核params')
+      let res = await getidentityList(params)
+      console.log(res, '身份审核')
+      if (res.state !== 1) return this.$message.error(res.msg)
       this.tableData = res.data.list || []
       this.pageData.total = res.data.totalRows
       this.tableConfig.loading = false
     },
     async queryData(formData) {
       this.formData = { ...formData }
-      await this.fetchData(1)
+      if (this.activeName === 'identify') {
+        await this.fetchIdentityData(1)
+      } else {
+        await this.fetchMemberData(1)
+      }
       this.$refs.tableRef.handleSelectionClear()
     },
     resetData() {
@@ -126,7 +242,7 @@ export default {
       if (this.multipleSelection.every((item) => item.status !== 0)) {
         return this.$message.error('请至少选择一个未审核的条目')
       }
-      if (this.multipleSelection.some(item => item.flag === 0)) {
+      if (this.multipleSelection.some((item) => item.flag === 0)) {
         return this.$message.error('您选择了有未入驻的商协会，请检查')
       }
       this.passBtn = true
@@ -141,7 +257,7 @@ export default {
       let res = await rejectAuditStatus(params)
       if (res.state !== 1) return this.$message.error(res.msg)
       this.$message.success(res.msg)
-      await this.fetchData()
+      await this.fetchMemberData()
       this.passBtn = false
       this.$refs.tableRef.handleSelectionClear()
     },
@@ -153,7 +269,7 @@ export default {
       if (this.multipleSelection.every((item) => item.status !== 0)) {
         return this.$message.error('请至少选择一个未审核的条目')
       }
-      if (this.multipleSelection.some(item => item.flag === 0)) {
+      if (this.multipleSelection.some((item) => item.flag === 0)) {
         return this.$message.error('您选择了有未入驻的商协会，请检查')
       }
       this.rejectBtn = true
@@ -170,7 +286,7 @@ export default {
       if (res.state !== 1) this.$message.error(res.msg)
       this.$message.success(res.msg)
       this.$refs.tableRef.handleSelectionClear()
-      await this.fetchData()
+      await this.fetchMemberData()
       this.rejectBtn = false
     },
     exportExcel(e) {
@@ -192,12 +308,20 @@ export default {
       console.log(`每页 ${val} 条`)
       this.currentpage = 1
       this.pageData.limit = val
-      this.fetchData()
+      if (this.activeName === 'identify') {
+        this.fetchIdentityData()
+      } else {
+        this.fetchMemberData()
+      }
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`)
       this.pageData.currentpage = val
-      this.fetchData()
+      if (this.activeName === 'identify') {
+        this.fetchIdentityData()
+      } else {
+        this.fetchMemberData()
+      }
     },
     handleSelectionChange(value) {
       this.multipleSelection = value
@@ -233,9 +357,89 @@ export default {
         this.selectExportList.push(new_data)
       }
     },
-  /*   whetherSelection(row) {
-      return row.flag === 1
-    } */
+    async changeIdentity() {
+      this.tableConfig.selection = false
+      this.tableColumn = data.identityTableColumn
+      this.formItem = data.identityFormItem
+      this.formData = data.identityFormData
+      await this.fetchIdentityData(1)
+    },
+    async changeMember() {
+      this.tableConfig.selection = true
+      this.tableColumn = data.tableColumn
+      this.formItem = data.formItem
+      this.formData = data.formData
+      await this.fetchMemberData(1)
+    },
+    handleClick() {
+      if (this.activeName === 'identify') {
+        this.changeIdentity()
+      } else {
+        this.changeMember()
+      }
+      // console.log(this.activeName)
+    },
+    // 审核详情
+    async showDetail(id) {
+      this.currentId = id
+      this.detailsVisible = true
+      this.handleDetails()
+    },
+    async handleDetails() {
+      let approveDetail = await getApproveDetail({ id: this.currentId })
+      let auditDetail = await getAuditDetail({ id: this.currentId })
+      this.detailsObject = { ...approveDetail.data, ...auditDetail.data }
+      this.detailsObject.trades = this.detailsObject.trades
+        ? this.detailsObject.trades
+        : [{}]
+      // console.log(this.detailsObject, '详情内容啊')
+    },
+    detailsClose() {
+      this.detailsVisible = false
+    },
+    // 通过
+    async handleResolve(id) {
+      // console.log(id)
+      let params = {
+        id: id || this.currentId,
+        flag: 1,
+      }
+      let res = await approveIdentity(params)
+      if (res.state !== 1) return this.$message.error(res.msg)
+      this.$message.success(res.msg)
+      await this.handleDetails()
+      // console.log(params, '详情里面通过')
+    },
+    // 拒绝弹出框
+    rejectDialogClose() {
+      // console.log('拒绝弹出框')
+      this.rejectReason = ''
+      this.rejectVisible = false
+    },
+    handleReject(id) {
+      this.rejectVisible = true
+      this.currentId = id || this.currentId
+      console.log(this.currentId)
+    },
+    async confirmReject() {
+      let params = {
+        flag: 2,
+        id: this.currentId,
+        remark: this.rejectReason,
+      }
+      // console.log(params, '拒绝的提交啊')
+      this.rejectVisible = false
+      this.rejectReason = ''
+      try {
+        let res = await approveIdentity(params)
+        if (res.state !== 1) return this.$message.error(res.msg)
+        this.$message.success(res.msg)
+      } catch (error) {
+        this.$message.error('请求错误')
+      }
+      await this.handleDetails()
+      await this.fetchIdentityData()
+    },
   },
 }
 </script>

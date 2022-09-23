@@ -146,9 +146,190 @@ const tableColumn = [
     }
   }
 ]
+const identityFormData = {
 
+  // 用户id
+  userId: '',
+  // 申请类型
+  auditType: -1,
+  // 申请来源
+  source: -1,
+  // 申请时间
+  requestTime: '',
+  // 机构类型
+  type: -1,
+  // 审核状态
+  auditStatus: -1,
+  // 审核时间
+  approvalTime: ''
+}
+const identityFormItem = [
+  {
+    label: '用户ID',
+    prop: 'userId',
+    type: 'input'
+  },
+  {
+    label: '申请类型',
+    prop: 'auditType',
+    type: 'select',
+    options: [
+      { label: '全部', value: -1 },
+      { label: '法人证人', value: 0 },
+      { label: '企业微信认证', value: 1 },
+      { label: '钉钉认证', value: 2 },
+      { label: '工牌认证', value: 3 },
+      { label: '邀请商协会认证', value: 4 }
+    ],
+    clearable: true
+  },
+  {
+    label: '申请来源',
+    prop: 'source',
+    type: 'select',
+    options: [
+      { label: '全部', value: -1 },
+      { label: '未知', value: 0 },
+      { label: '小程序', value: 1 },
+      { label: 'APP', value: 2 },
+      { label: 'IOS', value: 3 },
+    ]
+  },
+  {
+    label: '申请时间',
+    prop: 'requestTime',
+    type: 'date-picker',
+    clearable: true
+  },
+  {
+    label: '机构类型',
+    prop: 'type',
+    type: 'select',
+    options: [
+      { label: '全部', value: -1 },
+      { label: '商业机构', value: 0 },
+      { label: '非商业机构', value: 1 },
+    ]
+  },
+  {
+    label: '审核状态',
+    prop: 'auditStatus',
+    type: 'select',
+    options: [
+      { label: '全部', value: -1 },
+      { label: '待审核', value: 1 },
+      { label: '通过', value: 2 },
+      { label: '未通过', value: 3 }
+    ]
+  },
+  {
+    label: '审核时间',
+    prop: 'approvalTime',
+    type: 'date-picker',
+    clearable: true
+  }
+]
+const identityTableColumn = [
+  {
+    label: '用户ID',
+    prop: 'userId'
+  },
+  {
+    label: '用户名',
+    prop: 'type'
+  },
+  {
+    label: '申请来源',
+    prop: 'source',
+    type: 'function',
+    callback: function(row, prop) {
+      return row.source === 0
+        ? '未知'
+        : row.source === 1
+          ? '微信小程序'
+          : (row.source === 2
+            ? '安卓APP'
+            : (row.source === 3 ? '苹果APP' : 'PC端'))
+    }
+  },
+  {
+    label: '申请时间',
+    prop: 'createdTs',
+  },
+  {
+    label: '申请类型',
+    prop: 'auditType',
+    type: 'function',
+    callback: function(row, prop) {
+      return row.auditType === 1
+        ? '法人证人'
+        : row.auditType === 2
+          ? '企业微信认证'
+          : (row.auditType === 3
+            ? '钉钉认证'
+            : (row.auditType === 4 ? '工牌认证' : '邀请商协会认证'))
+    }
+  },
+  {
+    label: '机构类型',
+    prop: 'orgType',
+    type: 'function',
+    callback: function(row, prop) {
+      return row.orgType === 1 ? '商业机构' : '非商业机构'
+    }
+  },
+  {
+    label: '审核状态',
+    prop: 'auditStatus',
+    type: 'function',
+    callback: function(row, prop) {
+      return row.auditStatus === 0 ? '待审核' : row.auditStatus === 1 ? '通过' : '未通过'
+    }
+  },
+  {
+    label: '审核时间',
+    prop: 'auditTs',
+  },
+  {
+    label: '审核人',
+    prop: 'operator'
+  },
+  {
+    label: '操作',
+    prop: 'operate',
+    type: 'slot',
+    slotName: 'operate',
+    width: '180px'
+  }
+]
+const rejectOptions = [
+  {
+    value: '选2',
+    label: '实名信息与营业执照信息不符'
+  },
+  {
+    value: '选3',
+    label: '提交的机构信息与营业执照信息不符'
+  },
+  {
+    value: '选4',
+    label: '工牌信息与实名信息不符'
+  },
+  {
+    value: '选5',
+    label: '工牌信息与提交的机构信息不符'
+  },
+  {
+    value: '选6',
+    label: '提交的身份信息与入会信息不符'
+  },
+]
 export default {
   formItem,
   formData,
-  tableColumn
+  tableColumn,
+  identityFormData,
+  identityFormItem,
+  identityTableColumn,
+  rejectOptions
 }
