@@ -102,8 +102,8 @@ export default {
       selectData: [],
       statusList: [
         { id: 0, name: '全部' },
-        { id: 1, name: '未开始' },
-        { id: 2, name: '报名中' },
+        { id: 1, name: '待开始' },
+        { id: 2, name: '进行中' },
         { id: 3, name: '已结束' },
         { id: 4, name: '报名中' }
       ]
