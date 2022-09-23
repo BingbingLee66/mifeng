@@ -326,9 +326,9 @@ export default {
             this.selectMemberList = arr
           })
         } else if (this.form.receive === 2) {
-          this.form.position = val
+          this.form.position = val.map(v => { return { id: v.id, postName: v.name } })
         } else if (this.form.receive === 3) {
-          this.form.department = val
+          this.form.department = val.map(v => { return { id: v.id, departmentName: v.name } })
           this.defaultChecked = val.map(v => v.id)
           this.showTree = true
         }

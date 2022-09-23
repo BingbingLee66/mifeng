@@ -82,7 +82,7 @@
       </div>
 
       <!-- 同步渠道 -->
-      <div class="title-hd">同步渠道 <span>(选填，可多选) </span></div>
+      <div class="title-hd">同步渠道 <span> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
       <el-form-item label="">
         <!-- 为了解决el-checkbox 绑定对象不回显的问题，改为绑Number类型id，发请求时在组装对象 -->
         <el-checkbox-group v-model="form.synchChannels">
@@ -505,11 +505,13 @@ export default {
       switch (receive) {
         case 2:
           // 职位id集合  todo 改为对象数组 {id：1，name:'aaa'}
-          obj['receiverList'] = refData.form.position.map(v => { return { id: v.id, postName: v.postName } })
+          // obj['receiverList'] = refData.form.position.map(v => { return { id: v.id, postName: v.postName } })
+          obj['receiverList'] = refData.form.position.map(v => { return { id: v.id, name: v.postName } })
           break
         case 3:
           // 传部门id集合  todo 改为对象数组 {id：1，name:'aaa'}
-          obj['receiverList'] = refData.form.department.map(v => { return { id: v.id, departmentName: v.departmentName } })
+          obj['receiverList'] = refData.form.department.map(v => { return { id: v.id, name: v.departmentName } })
+          // obj['receiverList'] = refData.form.department.map(v => { return { id: v.id, departmentName: v.departmentName } })
           break
         case 4:
           // 会员id集合
