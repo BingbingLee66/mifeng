@@ -62,7 +62,7 @@
 
 <script>
 import { distributionChambers } from '@/api/mass-notification'
-import { notificationType, massNotificationType } from '../../util/label'
+import { massNotificationType, labelTypeForm } from '../../util/label'
 import cloneDeep from 'lodash/cloneDeep'
 export default {
   name: 'FormComponent',
@@ -95,7 +95,7 @@ export default {
   watch: {
     activeName(newVal) {
       if (newVal === 'mass') {
-        this.statusList = notificationType
+        this.statusList = labelTypeForm
       } else {
         this.statusList = massNotificationType
       }
@@ -105,7 +105,7 @@ export default {
   },
   created() {
     this.getChamberOptions()
-    this.statusList = this.activeName === 'mass' ? cloneDeep(notificationType) : cloneDeep(massNotificationType)
+    this.statusList = this.activeName === 'mass' ? cloneDeep(labelTypeForm) : cloneDeep(massNotificationType)
     this.statusList[0].id = ''
   },
   methods: {

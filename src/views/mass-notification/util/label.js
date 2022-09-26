@@ -31,6 +31,15 @@ export const massNotificationType = [
   { id: 1, name: '缴费通知' },
   { id: 5, name: '自定义通知' },
 ]
+// 总后台群发管理的form
+export const labelTypeForm = [
+  { id: -1, name: '全部' },
+  { name: '缴费通知', id: 1 },
+  { name: '活动通知', id: 2 },
+  { name: '招商活动', id: 3 },
+  { name: '邀请入会', id: 4 },
+  { name: '自定义通知', id: 5 },
+]
 // 所有会员的table config
 export const memberTableConfig = [
   {

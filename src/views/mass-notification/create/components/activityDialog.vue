@@ -2,14 +2,8 @@
   <div style="margin-bottom: 20px">
 
     <el-dialog title="选择活动" :visible.sync="dialogVisible" width="75%" :before-close="handleClose">
-      <!-- <div class="hello">
-        <div id="example">
-          <p>fullName值: {{ fullName }}---computed值 {{ fullNameComputed }}</p>
-        </div>
-        <button @click="ClickCeshi">点击改变fullName的值</button>
-      </div> -->
       <el-form :inline="true" :model="form">
-        <el-form-item label="活动来源" prop="chamberName">
+        <el-form-item v-if="(!ckey && activityType===2) || activityType===3" label="活动来源" prop="chamberName">
           <el-select v-model="origin" clearable filterable class="select" placeholder="请选择">
             <el-option v-for="item2 in chamberList" :key="item2.id" :label="item2.name" :value="activityType===2 ? item2.ckey :item2.invesKey" />
           </el-select>
@@ -80,6 +74,7 @@ export default {
 
       fullName: 'fullName',
       dialogVisible: false,
+      ckey: '',
       form: {
         activityName: '',
         id: null,
@@ -141,13 +136,12 @@ export default {
   },
 
   created() {
+    const { ckey } = this.$store.getters
+    this.ckey = ckey
     this.getChamberOptions()
     this.resetColumnConfig()
   },
   methods: {
-    ClickCeshi() {
-      this.fullName = 'fullName的新值'
-    },
     /** 请求 */
     // 拉取商协会数据
     async getChamberOptions() {
@@ -164,14 +158,13 @@ export default {
         api = getInvesActivityList
       }
       const { pageSize, pageNum: page, form } = this
-      const { data } = await api({
-        isPublish: 1,
+      const params = { isPublish: 1,
         pageSize,
         page,
         ...form,
-        isInves: false,
-        // invesKey:
-      })
+        isInves: false, }
+      if (this.ckey && this.activityType === 2) { params.ckey = this.ckey }
+      const { data } = await api(params)
       this.tableData = data.list
       this.total = data.totalRows
       this.$refs['table'].toggleSelection(this.activityList)

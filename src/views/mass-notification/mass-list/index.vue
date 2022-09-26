@@ -318,6 +318,7 @@ export default {
     },
     // 关闭弹框
     hide() {
+      console.log('关闭弹框')
       // 置空弹框分页内容 表单内容
       this.sendDetailChannelType = []
       this.sendStatus = []
