@@ -98,7 +98,7 @@
                 />
 
               </el-select>
-              <span style="margin-left:8px"><el-button v-if="activityChannels[index]" @click="showTemplate(item)">预览</el-button> <span v-if="item.templateList.length>0 &&ckey" class="remain-sum"> 剩余短信{{ item.templateList[0].remainSum }}条</span></span>
+              <span style="margin-left:8px"><el-button v-if="activityChannels[index]" @click="showTemplate(activityChannels[index],index)">预览</el-button> <span v-if="item.templateList.length>0 &&ckey" class="remain-sum"> 剩余短信{{ item.templateList[0].remainSum }}条</span></span>
             </div>
           </div>
         </el-checkbox-group>
@@ -355,8 +355,12 @@ export default {
       this.$refs['previewDialog'].hide()
     },
     // 点击预览渠道
-    showTemplate(item) {
-      const { selectActivity, id } = item
+    showTemplate(item, index) {
+      console.log('iteem', item, index)
+
+      const selectActivity = item + ''
+      const id = index + 1
+      // const { selectActivity, id } = item
       this.$refs['previewDialog'].show()
       if (id === 1) {
         this.currentShowType = 1
