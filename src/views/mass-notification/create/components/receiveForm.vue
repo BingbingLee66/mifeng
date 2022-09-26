@@ -85,7 +85,10 @@
             <span>2.单次指定的手机号不得大于1000个。</span>
           </div>
         </div>
-        <el-checkbox v-if="activityType===2 || activityType===3 ||activityType===1" v-model="form.receiverRemove">接收人名单剔除未报名当前活动的会员</el-checkbox>
+        <el-checkbox v-if="activityType===2 || activityType===3 || activityType===4" v-model="form.receiverRemove">
+          {{ activityType===4 ? '接收人名单剔除已激活人员' :'接收人名单剔除未报名当前活动的会员' }}
+
+        </el-checkbox>
       </el-form-item>
 
       <receiveDialog
