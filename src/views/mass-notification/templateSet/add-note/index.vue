@@ -139,9 +139,12 @@ export default {
       })
       const res = await getNoticeTemplateDetail({ templateCode: detailsCode, type: this.formObj.type })
       formObj.content = res.data.content
-      formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList = res.data.variableAttributes.map(v => {
-        return { key: v.key, codeKey: '', value: {} }
-      })
+      formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList = []
+      if (res.data.variableAttributes) {
+        formObj.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList = res.data.variableAttributes.map(v => {
+          return { key: v.key, codeKey: '', value: {} }
+        })
+      }
     },
     // 编辑获取数据
     async particulars() {

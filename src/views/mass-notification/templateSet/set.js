@@ -87,11 +87,14 @@ export default {
           ? 'subscriptionNoticeTemplateVo'
           : 'appNoticeTemplateVo'
       const res = await getNoticeTemplateSetDetailById({ id: row.id })
-      res.data.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(v => {
-        res.data[toxon].variableAttributes.forEach(j => {
-          if (v.key === j.key) j.value = v.value.value
+      if (res.data[toxon].variableAttributes) {
+        res.data.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList.forEach(v => {
+          res.data[toxon].variableAttributes.forEach(j => {
+            if (v.key === j.key) j.value = v.value.value
+          })
         })
-      })
+      }
+
       this.$refs.details.show(res)
     },
     // 禁用
