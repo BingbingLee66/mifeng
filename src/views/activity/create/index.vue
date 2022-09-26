@@ -422,28 +422,28 @@
               </el-col>
             </el-row>
 
-            <el-row>
-              <el-col>
-                <el-form-item label="入口显示：">
-                  <div>
-                    入口开放时间：
-                    <el-radio-group v-model="formObj.showEnter.status">
-                      <el-radio :label="0">报名成功后</el-radio>
-                      <el-radio :label="1">活动开始后</el-radio>
-                    </el-radio-group>
-                  </div>
-                  <div>
-                    入口关闭时间：
-                    <el-date-picker
-                      v-model="formObj.showEnter.closeDate"
-                      format="yyyy-MM-dd HH:mm:ss"
-                      type="datetime"
-                      value-format="timestamp"
-                    />
-                  </div>
-                </el-form-item>
-              </el-col>
-            </el-row>
+            <!--            <el-row>-->
+            <!--              <el-col>-->
+            <!--                <el-form-item label="入口显示：">-->
+            <!--                  <div>-->
+            <!--                    入口开放时间：-->
+            <!--                    <el-radio-group v-model="formObj.showEnter.status">-->
+            <!--                      <el-radio :label="0">报名成功后</el-radio>-->
+            <!--                      <el-radio :label="1">活动开始后</el-radio>-->
+            <!--                    </el-radio-group>-->
+            <!--                  </div>-->
+            <!--                  <div>-->
+            <!--                    入口关闭时间：-->
+            <!--                    <el-date-picker-->
+            <!--                      v-model="formObj.showEnter.closeDate"-->
+            <!--                      format="yyyy-MM-dd HH:mm:ss"-->
+            <!--                      type="datetime"-->
+            <!--                      value-format="timestamp"-->
+            <!--                    />-->
+            <!--                  </div>-->
+            <!--                </el-form-item>-->
+            <!--              </el-col>-->
+            <!--            </el-row>-->
           </div>
 
           <el-row>

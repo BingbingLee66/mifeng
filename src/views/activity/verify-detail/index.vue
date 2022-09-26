@@ -116,7 +116,6 @@ import ActivityCode from './components/ActivityCode'
 import SignInCode from './components/SignInCode'
 import { formatDate } from './util'
 import { getChamberActivityInfoById, uploadSeating, deleteSeating } from '@/api/activity/activity-verify-new'
-import { getAlbumList } from '@/api/album'
 
 export default {
   components: {
@@ -158,25 +157,13 @@ export default {
   },
   created() {
     this.getActivityInfo()
-    this.getActivityAlbumList()
   },
   methods: {
     async getActivityInfo() {
       const { data } = await getChamberActivityInfoById(this.activityId)
       data.id = this.activityId
+      this.albumNum = data.numberOfAssociated || 0
       this.activity = data
-    },
-    async getActivityAlbumList() {
-      const { data, state } = await getAlbumList({
-        ckey: this.ckey,
-        pageNum: 1,
-        pageSize: 1,
-        activityId: this.activityId,
-        total: true
-      })
-
-      if (!state) return
-      this.albumNum = data.totalRows
     },
     formatDate,
     // 上传前校验
