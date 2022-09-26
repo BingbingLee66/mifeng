@@ -122,6 +122,18 @@ export const memberPageListConfig = [
       return msg
     }
   },
+  {
+    prop: 'status',
+    label: '用户状态',
+    type: 'general',
+    formatter: row => {
+      if (row.status) {
+        return row.status === 1 ? '正常' : '删除'
+      } else {
+        return row.status === null ? '未激活' : '冻结'
+      }
+    }
+  },
 ]
 
 // 工具类数据channelType
