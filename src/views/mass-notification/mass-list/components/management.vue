@@ -92,14 +92,14 @@
               </template>
               <el-table-column label="状态" align="center">
                 <template slot-scope="scope">
-                  {{ scope.row.tddStatus == 0 ? '已禁用' :'使用中' }}
+                  {{ scope.row.tddStatus == 0 ? '已禁用' : scope.row.tddStatus == 1 ? '使用中' : '已删除' }}
                 </template>
               </el-table-column>
 
               <el-table-column label="操作" align="center">
                 <template slot-scope="scope">
-                  <el-button v-if="scope.row.tddStatus == 1" :disabled="scope.row.status == 0" type="text" @click="operation(0,scope.row)"> 禁用 </el-button>
-                  <el-button v-else type="text" :disabled="scope.row.status == 0" @click="operation(1,scope.row)"> 启用 </el-button>
+                  <el-button v-if="scope.row.tddStatus == 1" :disabled="scope.row.status == 0 || scope.row.status == 2" type="text" @click="operation(0,scope.row)"> 禁用 </el-button>
+                  <el-button v-else type="text" :disabled="scope.row.status == 0 || scope.row.status == 2" @click="operation(1,scope.row)"> 启用 </el-button>
                 </template>
               </el-table-column>
             </el-table>
