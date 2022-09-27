@@ -296,7 +296,7 @@ export default {
           type: 'general',
 
           formatter: row => {
-            return row.status === 1 ? '未开发' : row.status === 2 ? '报名中' : '已结束'
+            return row.status === 1 ? '未开始' : row.status === 2 ? '报名中' : '已结束'
           }
         }
       ]
