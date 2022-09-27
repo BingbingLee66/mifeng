@@ -293,6 +293,7 @@ export default {
       let API = sendMsg
       if (this.id) {
         API = updateSendGetDetail
+        params.id = this.id
       }
       const res = await API(params)
       if (res.state === 1) {
