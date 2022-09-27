@@ -318,14 +318,19 @@ export default {
       this.form.receive = receive
       // 同步渠道回显
       if (channelTypeTemplateDTOS) {
-        const { synchChannels } = this
-        channelTypeTemplateDTOS.forEach(item => {
-          const index = synchChannels.findIndex(v => v.id === item.channelTypeId)
-          if (index > -1) {
-            this.form.synchChannels.push(item.channelTypeId)
-            this.activityChannels[index] = item.id
-          }
-        })
+        // 为了防止重新拉取渠道数据覆盖这个回显，加个延迟
+        setTimeout(() => {
+          const { synchChannels } = this
+          channelTypeTemplateDTOS.forEach(item => {
+            const index = synchChannels.findIndex(v => v.id === item.channelTypeId)
+            console.log('index', index)
+            if (index > -1) {
+              this.form.synchChannels.push(item.channelTypeId)
+              console.log('this.form.synchChannels', this.form.synchChannels)
+              this.activityChannels[index] = item.id
+            }
+          })
+        }, 1000)
       }
       this.form.sendType = sendType + ''
       this.form.sendTs = sendTs
@@ -356,8 +361,6 @@ export default {
     },
     // 点击预览渠道
     showTemplate(item, index) {
-      console.log('iteem', item, index)
-
       const selectActivity = item + ''
       const id = index + 1
       // const { selectActivity, id } = item
@@ -564,10 +567,11 @@ export default {
       console.log('父组件的create')
     },
     // 拉取渠道信息
-    getTemplateUtil() {
+    async getTemplateUtil() {
+      console.log('拉取渠道信息')
       // 除了邀请入会只有短信1，其他都是三个渠道
       if (this.form.type === 4) {
-        this.selectTemplateListFunc(1)
+        await this.selectTemplateListFunc(1)
       } else {
         this.synchChannels = [
           { label: '短信', templateList: [], id: 1 },
@@ -576,7 +580,7 @@ export default {
         ]
         // 请求每次只能请求一种，所以要请求3次
         for (let i = 1; i < 4; i++) {
-          this.selectTemplateListFunc(i)
+          await this.selectTemplateListFunc(i)
         }
       }
     },

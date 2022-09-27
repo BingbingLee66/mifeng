@@ -326,8 +326,8 @@ export default {
             val.forEach(item => {
               let result = null
               // 5 根据ckey查找 4根据id
-              if (this.form.receive === 5) { result = this.tableData.find(val => item === val.ckey) }
-              if (this.form.receive === 4) { result = this.tableData.find(val => item === val.id) }
+              if (this.form.receive === 5) { result = this.tableData.find(val => item.id === val.ckey) }
+              if (this.form.receive === 4) { result = this.tableData.find(val => item.id === val.id) }
               console.log('result', result)
               result && arr.push(result)
             })
