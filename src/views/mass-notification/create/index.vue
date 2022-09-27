@@ -164,7 +164,7 @@
 <script>
 import { labelType, receiveType, ruleString } from '../util/label'
 import { uploadFile } from '@/api/content/article'
-import { selectTemplateList, sendDetail, getNoticeTemplateSetDetailById, selectTemplateListAdmin, sendMsg } from '@/api/mass-notification/index'
+import { selectTemplateList, updateSendGetDetail, sendDetail, getNoticeTemplateSetDetailById, selectTemplateListAdmin, sendMsg } from '@/api/mass-notification/index'
 import ReceiveForm from './components/receiveForm.vue'
 import kdDialog from '@/components/common/kdDialog'
 import activityDialog from './components/activityDialog.vue'
@@ -290,7 +290,11 @@ export default {
     },
     //
     async send(params) {
-      const res = await sendMsg(params)
+      let API = sendMsg
+      if (this.id) {
+        API = updateSendGetDetail
+      }
+      const res = await API(params)
       if (res.state === 1) {
         this.$message.success('操作成功')
         this.$router.push('/mass-notification/mass-list')

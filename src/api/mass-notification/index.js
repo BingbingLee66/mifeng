@@ -181,3 +181,6 @@ export const sendDetailList = params => request({ url: '/ec/group-send/group-sen
 export const sendGetDetail = id => request({ url: `/ec/group-send/get-send-stat-detail?id=${id}`, method: 'get' })
 // 导出发送记录
 export const exportSendItem = gsId => request({ url: `/group-send-detail/export/${gsId}`, method: 'post', responseType: 'blob' })
+// 编辑群发通知
+
+export const updateSendGetDetail = data => request({ url: '/ec/group-send/edit', method: 'put', data })
