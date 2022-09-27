@@ -408,6 +408,8 @@ export default {
       if (res.state !== 1) return this.$message.error(res.msg)
       this.$message.success(res.msg)
       await this.handleDetails()
+      await this.fetchIdentityData()
+      await this.fetchIdentityData()
       // console.log(params, '详情里面通过')
     },
     // 拒绝弹出框

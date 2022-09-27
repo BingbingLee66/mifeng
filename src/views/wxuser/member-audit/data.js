@@ -236,7 +236,7 @@ const identityTableColumn = [
   },
   {
     label: '用户名',
-    prop: 'type'
+    prop: 'uname'
   },
   {
     label: '申请来源',
