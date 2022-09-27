@@ -98,7 +98,7 @@
                 />
 
               </el-select>
-              <span style="margin-left:8px"><el-button v-if="activityChannels[index]" @click="showTemplate(activityChannels[index],index)">预览</el-button> <span v-if="item.templateList.length>0 &&ckey" class="remain-sum"> 剩余短信{{ item.templateList[0].remainSum }}条</span></span>
+              <span style="margin-left:8px"><el-button v-if="activityChannels[index]" @click="showTemplate(activityChannels[index],index)">预览</el-button> <span v-if="item.templateList.length>0 && ckey && item.id===1" class="remain-sum"> 剩余短信{{ item.templateList[0].remainSum }}条</span></span>
             </div>
           </div>
         </el-checkbox-group>
