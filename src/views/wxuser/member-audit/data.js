@@ -175,11 +175,12 @@ const identityFormItem = [
     type: 'select',
     options: [
       { label: '全部', value: -1 },
-      { label: '法人证人', value: 0 },
-      { label: '企业微信认证', value: 1 },
-      { label: '钉钉认证', value: 2 },
-      { label: '工牌认证', value: 3 },
-      { label: '邀请商协会认证', value: 4 }
+      { label: '未知', value: 0 },
+      { label: '法人证人', value: 1 },
+      { label: '企业微信认证', value: 2 },
+      { label: '钉钉认证', value: 3 },
+      { label: '工牌认证', value: 4 },
+      { label: '邀请商协会认证', value: 5 }
     ],
     clearable: true
   },
@@ -190,7 +191,7 @@ const identityFormItem = [
     options: [
       { label: '全部', value: -1 },
       { label: '未知', value: 0 },
-      { label: '小程序', value: 1 },
+      { label: '微信小程序', value: 1 },
       { label: 'APP', value: 2 },
       { label: 'IOS', value: 3 },
     ]
@@ -207,8 +208,8 @@ const identityFormItem = [
     type: 'select',
     options: [
       { label: '全部', value: -1 },
-      { label: '商业机构', value: 0 },
-      { label: '非商业机构', value: 1 },
+      { label: '商业机构', value: 1 },
+      { label: '非商业机构', value: 2 },
     ]
   },
   {
@@ -217,9 +218,9 @@ const identityFormItem = [
     type: 'select',
     options: [
       { label: '全部', value: -1 },
-      { label: '待审核', value: 1 },
-      { label: '通过', value: 2 },
-      { label: '未通过', value: 3 }
+      { label: '待审核', value: 0 },
+      { label: '通过', value: 1 },
+      { label: '未通过', value: 2 }
     ]
   },
   {
@@ -258,16 +259,16 @@ const identityTableColumn = [
   },
   {
     label: '申请类型',
-    prop: 'auditType',
+    prop: 'type',
     type: 'function',
     callback: function(row, prop) {
-      return row.auditType === 1
+      return row.type === 1
         ? '法人证人'
-        : row.auditType === 2
+        : row.type === 2
           ? '企业微信认证'
-          : (row.auditType === 3
+          : (row.type === 3
             ? '钉钉认证'
-            : (row.auditType === 4 ? '工牌认证' : '邀请商协会认证'))
+            : (row.type === 4 ? '工牌认证' : '邀请商协会认证'))
     }
   },
   {

@@ -68,7 +68,7 @@
     <Details
       :details-visible="detailsVisible"
       :detail="detailsObject"
-      @handleResolve="handleResolve"
+      @handleResolve="handleDetailResolve"
       @handleReject="handleReject"
       @detailsClose="detailsClose"
     />
@@ -206,13 +206,15 @@ export default {
         page: currentpage,
         pageSize: limit,
       }
+      // 申请
       if (this.formData.requestTime) {
-        params['auditStartTime'] = this.formData.requestTime[0]
-        params['auditEndTime'] = this.formData.requestTime[1]
-      }
-      if (this.formData.approvalTime) {
         params['joinStartTime'] = this.formData.requestTime[0]
         params['joinEndTime'] = this.formData.requestTime[1]
+      }
+      // 审核时间
+      if (this.formData.approvalTime) {
+        params['auditStartTime'] = this.formData.approvalTime[0]
+        params['auditEndTime'] = this.formData.approvalTime[1]
       }
       console.log(params, '身份审核params')
       let res = await getidentityList(params)
@@ -397,18 +399,30 @@ export default {
     detailsClose() {
       this.detailsVisible = false
     },
-    // 通过
+    // 列表通过
     async handleResolve(id) {
       // console.log(id)
       let params = {
-        id: id || this.currentId,
+        id: id,
+        flag: 1,
+      }
+      let res = await approveIdentity(params)
+      if (res.state !== 1) return this.$message.error(res.msg)
+      this.$message.success(res.msg)
+      await this.fetchIdentityData()
+      // console.log(params, '详情里面通过')
+    },
+    // 详情通过
+    async handleDetailResolve() {
+      // console.log(id)
+      let params = {
+        id: this.currentId,
         flag: 1,
       }
       let res = await approveIdentity(params)
       if (res.state !== 1) return this.$message.error(res.msg)
       this.$message.success(res.msg)
       await this.handleDetails()
-      await this.fetchIdentityData()
       await this.fetchIdentityData()
       // console.log(params, '详情里面通过')
     },
