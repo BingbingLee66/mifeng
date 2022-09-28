@@ -153,7 +153,7 @@ export default {
     },
     async getActivityListFunc() {
       let api = getActivityList
-      console.log('this.activityType', this.activityType)
+      // console.log('this.activityType', this.activityType)
       if (this.activityType === 3) {
         api = getInvesActivityList
       }

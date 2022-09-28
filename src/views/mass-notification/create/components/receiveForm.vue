@@ -302,14 +302,13 @@ export default {
   },
   created() {
     this.form.receive = this.receive
-    console.log('this.receive', this.receive)
     // this.getDepartmentListFunc()
     // this.getNumberList()
   },
   methods: {
     // 设置receive phone
     setFormData(type = 'receive', val) {
-      console.log('val', val)
+      // console.log('val', val)
       if (type === 'receive') { this.form.receive = val } else if (type === 'phones') {
         this.form.phones = val.map(v => v.id).join('\n')
       }
@@ -322,13 +321,13 @@ export default {
           this.getNumberList().then(() => {
             // 编辑模式，根据后端的id数组，查找列表中的已选数组
             const arr = []
-            console.log('tableData', this.tableData)
+            // console.log('tableData', this.tableData)
             val.forEach(item => {
               let result = null
               // 5 根据ckey查找 4根据id
               if (this.form.receive === 5) { result = this.tableData.find(val => item.id === val.ckey) }
               if (this.form.receive === 4) { result = this.tableData.find(val => item.id === val.id) }
-              console.log('result', result)
+              // console.log('result', result)
               result && arr.push(result)
             })
             this.selectMemberList = arr
@@ -353,7 +352,7 @@ export default {
     },
     // 删除标签
     handleClose(id) {
-      console.log('id', id)
+      // console.log('id', id)
       // 删除表单中已选tree数据
       this.form.department.splice(this.form.department.indexOf(item => item.id === id), 1)
       // 手动设置tree树 setChecked(key/data, checked, deep) 接收三个参数，1. 勾选节点的 key 或者 data 2. boolean 类型，节点是否选中 3. boolean 类型，是否设置子节点 ，默认为 false
@@ -363,19 +362,17 @@ export default {
     // 拉取部门
     async getDepartmentListFunc() {
       const { data } = await getDepartmentList({ ckey: this.ckey, parentId: 0 })
-      console.log('data', data)
       this.treeList = data?.data[0]?.departmentRespList || []
     },
     // 拉取职位
     async memberPostListFunc() {
       const { data } = await memberPostList({ ckey: this.ckey })
       this.options = data
-      console.log('data', data)
     },
     // 拉取
     async getNumberList() {
-      console.log('query', this.query.attr)
-      console.log('aComputed', this.aComputed)
+      // console.log('query', this.query.attr)
+      // console.log('aComputed', this.aComputed)
       const { page, pageSize, ckey, query: { attr } } = this
       const params = { page, pageSize, ckey }
       let API = getMemberList
@@ -428,7 +425,7 @@ export default {
       console.log('this.$refs.$children', this.$refs['receiveRef'].$refs['tableRef'])
       // 查看模式
       if (this.commitType === 1) {
-        console.log('aa')
+        // console.log('aa')
       } else {
         this.selectMemberList = this.selectData
         // // 选择模式   去重数组，如果没有再添加
@@ -475,11 +472,11 @@ export default {
       // 显示弹框组件
       this.$refs['receiveRef'].$children[0].show()
       // 回显已选数据
-      setTimeout(() => {
-        console.log('this.$refs.$children', this.$refs['receiveRef'].$refs['tableRef'])
-        // this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
-      }, 500)
-      console.log('form.receive ', this.form.receive)
+      // setTimeout(() => {
+      //   console.log('this.$refs.$children', this.$refs['receiveRef'].$refs['tableRef'])
+      //   // this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
+      // }, 500)
+      // console.log('form.receive ', this.form.receive)
       // 指定商会会员
       if (this.form.receive === 5) {
         this.columnConfig = cloneDeep(memberCountTableConfig)
@@ -500,7 +497,7 @@ export default {
     },
     // 已选表格
     tableSelect(val) {
-      console.log('手动获取已选表格', this.$refs['receiveRef'].$refs['tableRef'].$refs['multipleTable'].selection)
+      // console.log('手动获取已选表格', this.$refs['receiveRef'].$refs['tableRef'].$refs['multipleTable'].selection)
       this.selectData = val
     },
     // 关闭弹框
@@ -513,7 +510,6 @@ export default {
     // 点击查看按钮
     showDialog() {
       this.commitType = 1
-      console.log('查看按钮')
       console.log('this.form.receive', this.form.receive)
       // 显示弹框组件
 
@@ -547,12 +543,12 @@ export default {
       await this.getNumberList()
       if ((this.form.receive === 4 || this.form.receive === 5) && this.selectMemberList.length > 0) {
         // setTimeout(()=>{
-        console.log('this.$refs.$children', this.$refs['receiveRef'].$refs['tableRef'])
+        // console.log('this.$refs.$children', this.$refs['receiveRef'].$refs['tableRef'])
         this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
         // },500)
         // this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.selectMemberList)
       }
-      console.log('val', val)
+      // console.log('val', val)
     },
     // 部门人数递归累加
     sum(department) {
