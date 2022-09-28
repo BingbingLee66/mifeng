@@ -18,6 +18,7 @@
       <el-checkbox-group v-model="permissionDialog.permissions">
         <div style="margin-top:10px;"><el-checkbox :label="2">激活与活跃</el-checkbox></div>
         <div style="margin-top:10px;"><el-checkbox :label="1">供需撮合</el-checkbox></div>
+        <div style="margin-top:10px;"><el-checkbox :label="3">APP工作台</el-checkbox></div>
       </el-checkbox-group>
       <div slot="footer">
         <el-button @click="permissionDialog.show = false">取消</el-button>
@@ -47,15 +48,15 @@ export default {
         { label: '会内职务', prop: 'postName' },
         {
           label: '数据查看权限',
-          render: ({ row: { permissions }}) => (<div>
-            {permissions && permissions.length ? permissions.map(v => +v === 1 ? <div>供需撮合</div> : <div>激活与活跃</div>) : '--'}
+          render: ({ row: { permissions } }) => (<div>
+            {permissions && permissions.length ? permissions.map(v => +v === 1 ? <div>供需撮合</div> : +v === 2 ? <div>激活与活跃</div> : <div>APP工作台</div>) : '--'}
           </div>)
         },
         {
           label: '操作', minWidth: 120,
           render: ({ row }) => (<div>
-            <el-button type='text' onClick={() => this.showPermissionDialog(row)} >配置权限</el-button>
-            <el-button type='text' onClick={() => this.delMemberPermission(row)} >移除</el-button>
+            <el-button type="text" onClick={() => this.showPermissionDialog(row)} >配置权限</el-button>
+            <el-button type="text" onClick={() => this.delMemberPermission(row)} >移除</el-button>
           </div>)
         },
         {
@@ -95,7 +96,7 @@ export default {
       this.loading = true
       try {
         const { ckey, pageSize, pageNum: page } = this
-        const { data: { list, totalRows }} = await getMemberPermissionsList({ ckey, pageSize, page })
+        const { data: { list, totalRows } } = await getMemberPermissionsList({ ckey, pageSize, page })
         this.tableData = list || []
         this.total = totalRows || 0
       } catch (error) {
@@ -107,7 +108,7 @@ export default {
     // 移除会员权限
     delMemberPermission(row) {
       this.$confirm('移除后，该会员将无法在前台查看数据，是否继续', '移除', {
-        beforeClose: async(action, instance, done) => {
+        beforeClose: async (action, instance, done) => {
           if (action !== 'confirm') return done()
           const { state, msg } = await deleteMemberPermission(row.id)
           this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })

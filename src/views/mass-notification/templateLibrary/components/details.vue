@@ -1,0 +1,379 @@
+<!-- eslint-disable vue/attribute-hyphenation -->
+<!-- eslint-disable vue/html-self-closing -->
+<template>
+  <el-dialog ref="form" :visible="visible" title="详情" width="60%" @close="close">
+    <!-- 短信 -->
+    <div v-if="type == 1" class="container">
+      <div class="container-left">
+        <Note :infoDate="infoDate" :active="active" />
+      </div>
+      <div class="container-right">
+        <div class="offside">
+          <div class="offside-stencil">模板类型</div>
+          <div class="details">{{ infoDate.type == 1 ? '短信通知' : infoDate.type == 2 ? '订阅消息' : 'APP通知' }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">模板名称</div>
+          <div class="details">{{ infoDate.templateName }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">模板CODE</div>
+          <div class="details">{{ infoDate.templateCode }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">模板内容</div>
+          <div class="details">{{ infoDate.content }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">变量属性</div>
+          <div v-if="infoDate.smsNoticeTemplateVo" class="details">
+            <div
+              v-for="(item, index) in infoDate.smsNoticeTemplateVo.variableAttributes"
+              :key="index"
+              class="details-box"
+            >
+              <div>{{ item.key }}</div>
+              <div v-if="item.value">- {{ item.value }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">场景链接</div>
+          <div v-if="infoDate.smsNoticeTemplateVo" class="details">{{ infoDate.smsNoticeTemplateVo.link }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">场景说明</div>
+          <div v-if="infoDate.smsNoticeTemplateVo" class="details">
+            {{ infoDate.smsNoticeTemplateVo.sceneDescription }}
+          </div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">创建时间</div>
+          <div class="details">{{ infoDate.createdTs | dateFormat }}</div>
+        </div>
+        <div v-if="active == 2" class="offside">
+          <div class="offside-stencil">模板备注</div>
+          <div class="details">{{ infoDate.templateRemark }}</div>
+        </div>
+      </div>
+    </div>
+    <!-- 订阅 -->
+    <div v-if="type == 2" class="container">
+      <div class="container-left">
+        <Subscribe
+          v-if="infoDate.subscriptionNoticeTemplateVo"
+          :active="active"
+          :variableAttributes="
+            active == 1
+              ? infoDate.subscriptionNoticeTemplateVo.variableAttributes
+              : infoDate.keyValueNoticeTemplateSetVo.keyValueTypeVOMapList
+          "
+        />
+      </div>
+      <div class="container-right">
+        <div class="offside">
+          <div class="offside-stencil">模板ID</div>
+          <div class="details">{{ infoDate.templateCode }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">模板编号</div>
+          <div class="details">{{ infoDate.id }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">标题</div>
+          <div class="details">{{ infoDate.templateName }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">类目</div>
+          <div v-if="infoDate.subscriptionNoticeTemplateVo" class="details">
+            {{ infoDate.subscriptionNoticeTemplateVo.category }}
+          </div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">操作人</div>
+          <div class="details">{{ infoDate.creator }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">详细内容</div>
+          <div v-if="infoDate.subscriptionNoticeTemplateVo" class="details">
+            <div
+              v-for="(item, index) in infoDate.subscriptionNoticeTemplateVo.variableAttributes"
+              :key="index"
+              class="details-box"
+            >
+              <div>{{ item.key }}</div>
+              <div v-if="item.value">- {{ item.value }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">场景说明</div>
+          <div v-if="infoDate.subscriptionNoticeTemplateVo" class="details">
+            {{ infoDate.subscriptionNoticeTemplateVo.sceneDescription }}
+          </div>
+        </div>
+        <div v-if="active == 2" class="offside">
+          <div class="offside-stencil">模板备注</div>
+          <div class="details">{{ infoDate.templateRemark }}</div>
+        </div>
+      </div>
+    </div>
+    <!-- app -->
+    <div v-if="type == 3" style="height: 320px" class="container">
+      <div class="container-left">
+        <DetailsApp :infoDate="infoDate" :active="active" />
+      </div>
+      <div class="container-right">
+        <div class="offside">
+          <div class="offside-stencil">标题</div>
+          <div class="details">{{ infoDate.templateName }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">模板内容</div>
+          <div class="details">{{ infoDate.content }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">链接</div>
+          <div v-if="infoDate.appNoticeTemplateVo" class="details">{{ infoDate.appNoticeTemplateVo.link }}</div>
+        </div>
+        <div v-if="active == 2" class="offside">
+          <div class="offside-stencil">变量属性</div>
+          <div v-if="infoDate.appNoticeTemplateVo" class="details">
+            <div
+              v-for="(item, index) in infoDate.appNoticeTemplateVo.variableAttributes"
+              :key="index"
+              class="details-box"
+            >
+              <div>{{ item.key }}</div>
+              <div v-if="item.value">- {{ item.value }}</div>
+            </div>
+          </div>
+        </div>
+        <div v-if="active == 2" class="offside">
+          <div class="offside-stencil">所属类型</div>
+          <div class="details">{{ noticeTypeId[infoDate.noticeTypeId] }}</div>
+        </div>
+        <div class="offside">
+          <div class="offside-stencil">创建时间</div>
+          <div class="details">{{ infoDate.createdTs | dateFormat }}</div>
+        </div>
+        <div v-if="active == 2" class="offside">
+          <div class="offside-stencil">模板备注</div>
+          <div class="details">{{ infoDate.templateRemark }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <el-button type="primary" @click="close">我知道了</el-button>
+    </div>
+  </el-dialog>
+</template>
+
+<script>
+import Note from './details-note'
+import Subscribe from './details-subscribe'
+import DetailsApp from './details-app'
+export default {
+  name: 'Details',
+  components: {
+    Note,
+    Subscribe,
+    DetailsApp
+  },
+  props: {
+    type: {
+      type: String,
+      default: ''
+    }, // type   1:短信 2：消息订阅  3：app
+    active: {
+      type: Number,
+      default: null
+    } // 1:模板库 2：模板设置
+  },
+  data() {
+    return {
+      visible: false,
+      infoDate: {
+        demonstrate: '',
+        content: '',
+        subscriptionNoticeTemplateVo: {},
+        smsNoticeTemplateVo: {},
+        appNoticeTemplateVo: {},
+        keyValueNoticeTemplateSetVo: {}
+      },
+      noticeTypeId: ['', '缴费通知', '活动通知', '招商活动', '邀请入会', '自定义通知']
+    }
+  },
+
+  methods: {
+    // 显示
+    async show(res) {
+      this.infoDate = res.data
+      this.visible = true
+    },
+
+    // 关闭
+    close() {
+      this.visible = false
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+.container {
+  display: flex;
+  .container-left {
+    width: 45%;
+    position: relative;
+    .Present-img {
+      width: 255px;
+      height: 300px;
+      margin: 0 auto;
+      position: relative;
+      .Present-note {
+        position: absolute;
+        top: 93px;
+        left: 25px;
+        width: 80%;
+        background: #e9e9ea;
+        color: #222222;
+        padding: 10px;
+        border-radius: 12px;
+      }
+      .subscribe-wire {
+        position: absolute;
+        top: 73px;
+        left: 18px;
+        width: 83%;
+        height: 1px;
+        border: 1px solid #f0eded;
+        z-index: 10;
+      }
+      .Present-subscribe {
+        position: absolute;
+        top: 35px;
+        left: 25px;
+        width: 80%;
+        background: #ffffff;
+        padding: 10px;
+        .subscribe-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          .commerce {
+            font-size: 12px;
+            font-weight: 600;
+            width: 80%;
+            display: flex;
+            .subscribe-img {
+              width: 17px;
+              height: 17px;
+              margin-right: 5px;
+            }
+          }
+          .dot {
+            width: 13px;
+            height: 3px;
+            margin-top: -19px;
+          }
+        }
+        .subscribe-middle {
+          font-size: 11px;
+          margin-top: 30px;
+          color: #222222;
+          .subscribe-prosperity {
+            margin-bottom: 15px;
+          }
+          .subscribe-circularize {
+            display: flex;
+            align-content: center;
+            margin-bottom: 5px;
+            .circularize-matter {
+              color: #999999;
+              width: 29%;
+            }
+            .circularize-designation {
+              color: #d01a33;
+              width: 70%;
+              display: flex;
+              flex-wrap: wrap;
+            }
+          }
+        }
+      }
+      .Present-app {
+        position: absolute;
+        top: 147px;
+        left: 25px;
+        width: 80%;
+        background-image: url(https://ysh-cdn.kaidicloud.com/prod/png/library-inform.png);
+        background-size: 100% 100%;
+        color: #fff;
+        font-size: 12px;
+        padding: 10px;
+        .subscribe-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 10px;
+          .commerce {
+            font-size: 12px;
+            font-weight: 600;
+            width: 80%;
+            display: flex;
+            .subscribe-img {
+              width: 17px;
+              height: 17px;
+              margin-right: 5px;
+            }
+          }
+          .dot {
+            width: 20%;
+          }
+        }
+        .characters {
+          margin-top: 5px;
+        }
+        .stencil-onhiden {
+          overflow: hidden;
+          text-overflow: ellipsis; /* 超出部分省略号 */
+          word-break: break-all; /* break-all(允许在单词内换行。) */
+          display: -webkit-box; /* 对象作为伸缩盒子模型显示 */
+          -webkit-box-orient: vertical; /* 设置或检索伸缩盒对象的子元素的排列方式 */
+          -webkit-line-clamp: 5; /* 显示的行数 */
+        }
+      }
+    }
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .container-right {
+    width: 55%;
+    .offside {
+      display: flex;
+      align-content: center;
+      margin-bottom: 20px;
+      .offside-stencil {
+        width: 14%;
+        font-weight: bold;
+      }
+      .details {
+        width: 85%;
+        .details-box {
+          display: flex;
+          align-items: center;
+          margin-bottom: 7px;
+        }
+      }
+    }
+  }
+}
+.dialog-footer {
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+</style>

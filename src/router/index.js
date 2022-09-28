@@ -53,7 +53,19 @@ export const constantRoutes = [
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
         meta: { title: 'dashboard', icon: 'dashboard', affix: true }
-      }
+      },
+      // {
+      //   path: 'mass-notification/create',
+      //   name: 'create',
+      //   component: () => import('@/views/mass-notification/create/index'),
+      //   meta: { title: '创建群发' }
+      // },
+      // {
+      //   path: 'mass-notification/mass-list',
+      //   name: 'massList',
+      //   component: () => import('@/views/mass-notification/mass-list/index'),
+      //   meta: { title: '群发管理' }
+      // }
     ]
   },
   {
@@ -107,8 +119,7 @@ export const constantRoutes = [
       {
         path: '/content/article-column-editor',
         name: '修改栏目内容',
-        component: () =>
-          import('@/views/content/articleupdate/editor/artcolumn'),
+        component: () => import('@/views/content/articleupdate/editor/artcolumn'),
         hidden: true,
         meta: { title: '修改栏目内容' }
       },
@@ -192,8 +203,7 @@ export const constantRoutes = [
       {
         path: '/org-structure/department-manage',
         name: '部门管理',
-        component: () =>
-          import('@/views/org-structure/department-manage/index'),
+        component: () => import('@/views/org-structure/department-manage/index'),
         hidden: true,
         meta: { title: '部门管理' }
       },
@@ -456,6 +466,20 @@ export const constantRoutes = [
         component: () => import('@/views/album/detail'),
         hidden: true,
         meta: { title: '图片直播详情' }
+      },
+      {
+        name: '模板管理',
+        path: '/template-library/synchronization/index',
+        component: () => import('@/views/mass-notification/templateLibrary/synchronization/index.vue'),
+        hidden: true,
+        meta: { title: '模板管理' }
+      },
+      {
+        name: '新增模板',
+        path: '/template-set/add-note/index',
+        component: () => import('@/views/mass-notification/templateSet/add-note/index.vue'),
+        hidden: true,
+        meta: { title: '新增模板' }
       }
     ]
   }
