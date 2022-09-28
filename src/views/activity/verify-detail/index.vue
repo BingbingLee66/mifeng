@@ -1,3 +1,4 @@
+<!-- eslint-disable no-unused-vars -->
 <template>
   <div class="page">
     <el-row :gutter="20">
@@ -60,7 +61,7 @@
       </el-col>
     </el-row>
 
-    <el-row>
+    <el-row v-if="authAlbum===1">
       <el-col :span="9">
         <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center">
@@ -145,6 +146,7 @@ export default {
       previewSeatDialogShow: false,
       imgLoading: false,
       albumNum: 0,
+      authAlbum: 0
     }
   },
   computed: {
@@ -164,9 +166,11 @@ export default {
       data.id = this.activityId
       this.albumNum = data.numberOfAssociated || 0
       this.activity = data
+      this.authAlbum = data.authAlbum
     },
     formatDate,
     // 上传前校验
+    // eslint-disable-next-line no-unused-vars
     beforeUpload(file, index) {
       if (!['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type)) {
         this.$message.error('上传图片只能是 JPG 或 PNG 或 GIF格式!')
@@ -181,7 +185,7 @@ export default {
     async upload(content) {
       this.imgLoading = true
 
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('activityId', this.activityId)
       formData.append('multipartFile', content.file)
 
