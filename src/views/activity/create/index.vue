@@ -162,7 +162,7 @@
           </el-row>
 
           <el-row>
-            <el-col style="width: 700px; height: 20px">
+            <el-col style="height: 20px">
               <el-form-item label="报名对象：" required>
                 <el-checkbox
                   v-model="applyObject.unlimit"
@@ -424,7 +424,7 @@
 
             <el-row>
               <el-col>
-                <el-form-item label="入口显示：">
+                <el-form-item label="入口显示：" prop="liveEntranceCloseTime">
                   <div>
                     入口开放时间：
                     <el-radio-group v-model="formObj.liveEntranceDisplayType">
