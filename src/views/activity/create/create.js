@@ -15,11 +15,21 @@ export default {
     preview,
   },
   data() {
-    var checkSpace = (rule, value, callback) => {
+    const checkSpace = (rule, value, callback) => {
       if (!value.trim()) {
         return callback(new Error('不能为空'))
       } else {
         callback() // 必须加上这个，不然一直塞在验证状态
+      }
+    }
+
+    const checkErtanceDate = (rule, value, callback) => {
+      if (!value) {
+        return callback(new Error('入口关闭时间不能为空'))
+      } else if (value < this.formObj.date[1]) {
+        return callback(new Error('入口关闭时间不能小于活动结束时间'))
+      } else {
+        callback()
       }
     }
     return {
@@ -139,16 +149,13 @@ export default {
         // listImage: [
         //   { required: true, message: '活动列表图不能为空', trigger: 'blur' }
         // ],
-        date: [
-          { required: true, message: '活动时间不能为空', trigger: 'blur' }
-        ],
-        applyDate: [
-          { required: true, message: '报名时间不能为空', trigger: 'blur' }
-        ],
+        date: [{ required: true, message: '活动时间不能为空', trigger: 'blur' }],
+        applyDate: [{ required: true, message: '报名时间不能为空', trigger: 'blur' }],
         // addressInfo: [
         //   { required: true, message: '活动地点不能为空', trigger: 'blur' },
         //   { validator: checkSpace, trigger: 'blur' }
         // ]
+        liveEntranceCloseTime: [{ validator: checkErtanceDate, trigger: 'blur' }]
       },
       // 腾讯地图实例
       defaultParams: {
@@ -186,7 +193,7 @@ export default {
   methods: {
     postSelectInit() {
       const params = {
-        'ckey': this.$store.getters.ckey,
+        ckey: this.$store.getters.ckey,
       }
       getListOfSelect(params).then(response => {
         console.log(response.data.data)
@@ -195,8 +202,8 @@ export default {
     },
     treeSelectInit() {
       const params = {
-        'ckey': this.$store.getters.ckey,
-        'parentId': 0
+        ckey: this.$store.getters.ckey,
+        parentId: 0
       }
       getDepartmentListTreeSelect(params).then(response => {
         console.log(response.data.data)
@@ -205,7 +212,7 @@ export default {
     },
     normalizer(node) {
       // 去掉children=[]的children属性
-      if (node.children == null || node.children === 'null' || node.children && !node.children.length) {
+      if (node.children === null || node.children === 'null' || node.children && !node.children.length) {
         delete node.children
       }
       return {
@@ -242,7 +249,7 @@ export default {
     add() {
       let completely = false
       if (+this.infoDate.info === 1) {
-        this.colData.selects.forEach((v) => {
+        this.colData.selects.forEach(v => {
           if (v.value === '') completely = true
         })
       }
@@ -270,16 +277,16 @@ export default {
           return
         }
       }
-      let key = []
+      const key = []
       if (this.colData.selects) {
-        this.colData.selects.forEach((v) => {
+        this.colData.selects.forEach(v => {
           key.push(v.value)
         })
       }
 
       this.colData.key = key.join(';')
 
-      this.$refs['f2'].validate((valid) => {
+      this.$refs['f2'].validate(valid => {
         if (valid) {
           this.colData.type = this.infoDate.info
 
@@ -317,7 +324,7 @@ export default {
       if (index === 0) {
         return
       } else {
-        let data = this.arrayData[index]
+        const data = this.arrayData[index]
         this.arrayData[index] = this.arrayData[index - 1]
         this.arrayData[index - 1] = data
         this.$forceUpdate()
@@ -328,7 +335,7 @@ export default {
       if (index === this.arrayData.length - 1) {
         return
       } else {
-        let data = this.arrayData[index]
+        const data = this.arrayData[index]
         this.arrayData[index] = this.arrayData[index + 1]
         this.arrayData[index + 1] = data
         this.$forceUpdate()
@@ -359,13 +366,13 @@ export default {
     // 获取活动详情
     fetchData() {
       getActivity({ id: this.activityId }).then(res => {
-        let resData = res.data
+        const resData = res.data
         this.status = resData.status
         this.formObj.activityName = resData.activityName
         this.formObj.headImage = resData.headImage
         this.formObj.listImage = resData.listImage
         // 活动时间回显
-        let activityTime = []
+        const activityTime = []
         if (resData.startTime && resData.endTime) {
           activityTime.push(resData.startTime)
           activityTime.push(resData.endTime)
@@ -373,7 +380,7 @@ export default {
         this.$set(this.formObj, 'date', activityTime)
 
         // 报名时间回显
-        let applyTime = []
+        const applyTime = []
         if (resData.applyStartTime && resData.applyEndTime) {
           applyTime.push(resData.applyStartTime)
           applyTime.push(resData.applyEndTime)
@@ -475,12 +482,12 @@ export default {
         // this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
 
         this.arrayData = resData.dtos.map(({ title, msgAlert, lengthLimit, check, type, selects, key }) => ({ title, msgAlert, lengthLimit, check, type, selects, key }))
-        this.arrayData.forEach((v) => {
+        this.arrayData.forEach(v => {
           //  0 : 输入框  1：下拉框
           if (+v.type === 1) {
             v.msgAlert = ''
-            let key = []
-            v.selects.forEach((j) => {
+            const key = []
+            v.selects.forEach(j => {
               key.push(j.value)
             })
             v.key = key.join(';')
@@ -497,8 +504,8 @@ export default {
 
     onReleChange(evt) {
       if (evt === 0 && this.isReleActivity) {
-        this.$confirm('', '确定取消置顶？', {
-          callback: (action) => {
+        this.$confirm('选择【不可关联】后，当前所关联的会员相册全部取消。', '取消关联提醒', {
+          callback: action => {
             if (action === 'cancel') {
               this.formObj.authAlbum = 1
             }
@@ -522,7 +529,7 @@ export default {
     },
     // 上传活动头图
     uploadHeadImage(content) {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', content.file)
       uploadPortrait(formData).then(response => {
         this.formObj.headImage = response.data.filePath
@@ -530,7 +537,7 @@ export default {
     },
     // 上传活动列表图
     uploadListImage(content) {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', content.file)
       uploadPortrait(formData).then(response => {
         this.formObj.listImage = response.data.filePath
@@ -558,7 +565,7 @@ export default {
       this.countryValue = ''
       this.countryOptions = []
     },
-    provinceChange(e) {
+    provinceChange() {
       this.resetCityAndCountryData()
       for (const key in area[this.provinceValue]) {
         this.cityOptions.push({
@@ -677,7 +684,7 @@ export default {
       if (+this.status === 2 || +this.status === 3) {
         this.activeName = '2'
       } else {
-        this.$refs['form'].validate((valid) => {
+        this.$refs['form'].validate(valid => {
           if (valid) {
             this.activeName = '2'
           }
@@ -686,10 +693,10 @@ export default {
     },
     save(e) {
       this.formObj.isPublish = e
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           // 扩展功能
-          this.roleIds.forEach((v) => {
+          this.roleIds.forEach(v => {
             if (+v === 1) this.formObj.extraSignin = 1
             if (+v === 2) this.formObj.extraSignout = 1
             if (+v === 3) this.formObj.extraSeat = 1
@@ -704,7 +711,7 @@ export default {
           } else if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
             return this.$message.error('请选择参加人数')
           } else if (this.formObj.isLimit === 1) {
-            let regexp = /^[1-9]\d*$/
+            const regexp = /^[1-9]\d*$/
             if (!regexp.test(this.formObj.applyCount)) {
               return this.$message.error('参加人数为大于0的正整数')
             }
@@ -805,7 +812,7 @@ export default {
     },
     // 下拉框添加选项
     onOptions() {
-      let obj = {
+      const obj = {
         value: ''
       }
       if (this.colData.selects.length >= 10) return this.$message.error('最多只能添加10个')
@@ -859,14 +866,16 @@ export default {
             src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png', // 图片路径
           })
         },
-        geometries: [{
-          id: '1', // 点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
-          styleId: 'myStyle', // 指定样式id
-          position: myLatLng, // 点标记坐标位置
-          properties: {// 自定义属性
-            title: 'marker'
+        geometries: [
+          {
+            id: '1', // 点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
+            styleId: 'myStyle', // 指定样式id
+            position: myLatLng, // 点标记坐标位置
+            properties: {// 自定义属性
+              title: 'marker'
+            }
           }
-        }]
+        ]
       })
 
       this.addressList = []
@@ -902,7 +911,7 @@ export default {
         keyword: value,
         location: this.defaultParams.map.getCenter()
       })
-        .then((result) => {
+        .then(result => {
           this.addressList = result.data || []
         })
     },

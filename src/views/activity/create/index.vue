@@ -433,7 +433,7 @@
                     </el-radio-group>
                   </div>
                   <div>
-                    入口关闭时间：
+                    <span style="color: #F56C6C;padding: 5px; font-size: 16px;">*</span>入口关闭时间：
                     <el-date-picker
                       v-model="formObj.liveEntranceCloseTime"
                       format="yyyy-MM-dd HH:mm:ss"
