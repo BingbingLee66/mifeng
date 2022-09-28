@@ -83,7 +83,7 @@ const tableColumn = [
     label: '入会类型',
     prop: 'type',
     type: 'function',
-    callback: function(row, prop) {
+    callback(row) {
       return row.type === 0 ? '个人' : '企业 / 团体入驻'
     }
   },
@@ -91,7 +91,7 @@ const tableColumn = [
     label: '申请来源',
     prop: 'applySource',
     type: 'function',
-    callback: function(row, prop) {
+    callback(row) {
       return row.applySource === 0
         ? '未知'
         : row.applySource === 1
@@ -109,7 +109,7 @@ const tableColumn = [
     label: '商会入驻状态',
     prop: 'flag',
     type: 'function',
-    callback: function(row, prop) {
+    callback(row) {
       return row.flag === 1 ? '已入驻' : '未入驻'
     }
   },
@@ -141,7 +141,7 @@ const tableColumn = [
     label: '审核状态',
     prop: 'status',
     type: 'function',
-    callback: function(row, prop) {
+    callback(row) {
       return row.status === 0 ? '未审核' : row.status === 2 ? '驳回' : '通过'
     }
   }
@@ -243,7 +243,7 @@ const identityTableColumn = [
     label: '申请来源',
     prop: 'source',
     type: 'function',
-    callback: function(row, prop) {
+    callback(row) {
       return row.source === 0
         ? '未知'
         : row.source === 1
@@ -261,7 +261,7 @@ const identityTableColumn = [
     label: '申请类型',
     prop: 'type',
     type: 'function',
-    callback: function(row, prop) {
+    callback(row) {
       return row.type === 1
         ? '法人证人'
         : row.type === 2
@@ -275,7 +275,7 @@ const identityTableColumn = [
     label: '机构类型',
     prop: 'orgType',
     type: 'function',
-    callback: function(row, prop) {
+    callback(row) {
       return row.orgType === 1 ? '商业机构' : '非商业机构'
     }
   },
@@ -283,7 +283,7 @@ const identityTableColumn = [
     label: '审核状态',
     prop: 'auditStatus',
     type: 'function',
-    callback: function(row, prop) {
+    callback(row) {
       return row.auditStatus === 0 ? '待审核' : row.auditStatus === 1 ? '通过' : '未通过'
     }
   },

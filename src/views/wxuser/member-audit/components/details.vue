@@ -8,7 +8,7 @@
     >
       <div>
         <el-row>
-          <div class="title">基本信息</div>
+          <div class="title">申请信息</div>
           <el-col class="mb-10" :span="12">用户名：    {{ detail.uname }}</el-col>
           <el-col class="mb-10" :span="12">用户ID：    {{ detail.userId }}</el-col>
           <el-col class="mb-10" :span="12">申请来源：  {{ detail.source === 1?'微信小程序':'app' }}</el-col>
@@ -18,7 +18,7 @@
           <div class="title">认证信息</div>
           <el-col class="mb-10" :span="12">公司名称/机构名称：  {{ detail.unit }}</el-col>
           <el-col class="mb-10" :span="12">职务名称： {{ detail.post }}</el-col>
-          <el-col class="mb-10" :span="12">所属行业： {{ !!detail.trades[0].typeName ? detail.trades[0].typeName : '' }}</el-col>
+          <el-col class="mb-10" :span="12">所属行业： <span v-for="(item,index) in detail.trades" :key="index"> {{ item.typeName }}</span></el-col>
           <el-col class="mb-10" :span="12">公司地址： {{ detail.address }}</el-col>
           <el-col class="mb-10" :span="12">姓名： {{ detail.name }}</el-col>
           <el-col class="mb-20" :span="12">身份证号： {{ detail.idcard }}</el-col>
