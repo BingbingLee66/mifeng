@@ -12,18 +12,8 @@
       @reset="resetData"
     />
     <div v-if="activeName === 'member'" class="mb-20">
-      <el-button
-        type="success"
-        icon="el-icon-check"
-        :loading="passBtn"
-        @click="passMember"
-      >通过</el-button>
-      <el-button
-        type="danger"
-        icon="el-icon-delete"
-        :loading="rejectBtn"
-        @click="rejectMember"
-      >驳回</el-button>
+      <el-button type="success" icon="el-icon-check" :loading="passBtn" @click="passMember">通过</el-button>
+      <el-button type="danger" icon="el-icon-delete" :loading="rejectBtn" @click="rejectMember">驳回</el-button>
       <el-button type="primary" plain @click="exportExcel">导出</el-button>
     </div>
     <div />
@@ -38,29 +28,10 @@
       @handleSelectionChange="handleSelectionChange"
     >
       <template v-if="activeName === 'identify'" v-slot:operate="row">
-        <el-link
-          type="primary"
-          :underline="false"
-          class="ml-10"
-          @click="showDetail(row.data.id)"
-        >
-          详情
-        </el-link>
+        <el-link type="primary" :underline="false" class="ml-10" @click="showDetail(row.data.id)"> 详情 </el-link>
         <template v-if="row.data.auditStatus === 0">
-          <el-link
-            type="success"
-            :underline="false"
-            class="ml-10"
-            @click="handleResolve(row.data.id)"
-          >
-            通过
-          </el-link>
-          <el-link
-            :underline="false"
-            class="ml-10"
-            type="danger"
-            @click="handleReject(row.data.id)"
-          >拒绝</el-link>
+          <el-link type="success" :underline="false" class="ml-10" @click="handleResolve(row.data.id)"> 通过 </el-link>
+          <el-link :underline="false" class="ml-10" type="danger" @click="handleReject(row.data.id)">拒绝</el-link>
         </template>
       </template>
     </ys-table>
@@ -73,20 +44,10 @@
       @detailsClose="detailsClose"
     />
     <!--拒绝弹出框-->
-    <el-dialog
-      title="提示"
-      :visible.sync="rejectVisible"
-      width="20%"
-      :before-close="rejectDialogClose"
-    >
+    <el-dialog title="提示" :visible.sync="rejectVisible" width="20%" :before-close="rejectDialogClose">
       <div>
         <el-select v-model="rejectReason" placeholder="请选择">
-          <el-option
-            v-for="item in rejectOptions"
-            :key="item.label"
-            :label="item.label"
-            :value="item.label"
-          />
+          <el-option v-for="item in rejectOptions" :key="item.label" :label="item.label" :value="item.label" />
         </el-select>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -108,14 +69,14 @@ import {
   getidentityList,
   getApproveDetail,
   getAuditDetail,
-  approveIdentity,
+  approveIdentity
 } from '@/api/wx-user'
 import details from './components/details.vue'
 export default {
   components: {
     'ys-table': ysTable,
     'ys-form': ysForm,
-    Details: details,
+    Details: details
   },
   data() {
     return {
@@ -123,12 +84,12 @@ export default {
         loading: false,
         reserve: true,
         rowKey: 'id',
-        selection: false,
+        selection: false
       },
       formConfig: {
         type: 'query',
         inline: true,
-        labelWidth: '100px',
+        labelWidth: '100px'
       },
       formItem: data.identityFormItem,
       formData: data.identityFormData,
@@ -140,7 +101,7 @@ export default {
         currentpage: 1,
         limit: 10,
         pageSizes: [10, 20, 50, 100, 500],
-        total: 0,
+        total: 0
       },
       selectExportList: [],
       // 节流控制
@@ -150,13 +111,13 @@ export default {
       // 详情对话框
       detailsVisible: false,
       detailsObject: {
-        trades: [{}],
+        trades: [{}]
       },
       // 驳回对话框
       rejectReason: '',
       rejectVisible: false,
       rejectOptions: data.rejectOptions,
-      currentId: '',
+      currentId: ''
     }
   },
   async created() {
@@ -168,9 +129,8 @@ export default {
       this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage
       const { currentpage, limit } = this.pageData
       console.log(limit, 'limit')
-      const { chamberName, contactPhone, name, type, status, applySource } =
-        this.formData
-      let params = {
+      const { chamberName, contactPhone, name, type, status, applySource } = this.formData
+      const params = {
         chamberName,
         contactPhone,
         name,
@@ -178,14 +138,14 @@ export default {
         status,
         applySource,
         pageNum: currentpage,
-        pageSize: limit,
+        pageSize: limit
       }
       if (this.formData.requestTime) {
         params['joinStartTime'] = this.formData.requestTime[0]
         params['joinEndTime'] = this.formData.requestTime[1]
       }
       console.log(params)
-      let res = await getAllAuditList(params)
+      const res = await getAllAuditList(params)
       console.log(res, '会员审核')
       this.tableData = res.data.list || []
       this.pageData.total = res.data.totalRows
@@ -197,14 +157,14 @@ export default {
       const { currentpage, limit } = this.pageData
       console.log(limit, 'limit')
       const { auditType, auditStatus, source, type, userId } = this.formData
-      let params = {
+      const params = {
         auditType,
         auditStatus,
         source,
         type,
         userId,
         page: currentpage,
-        pageSize: limit,
+        pageSize: limit
       }
       // 申请
       if (this.formData.requestTime) {
@@ -217,7 +177,7 @@ export default {
         params['auditEndTime'] = this.formData.approvalTime[1]
       }
       console.log(params, '身份审核params')
-      let res = await getidentityList(params)
+      const res = await getidentityList(params)
       console.log(res, '身份审核')
       if (res.state !== 1) return this.$message.error(res.msg)
       this.tableData = res.data.list || []
@@ -241,22 +201,22 @@ export default {
       if (this.multipleSelection.length === 0) {
         return this.$message.error('没有选择纪录，操作失败')
       }
-      if (this.multipleSelection.every((item) => item.status !== 0)) {
+      if (this.multipleSelection.every(item => item.status !== 0)) {
         return this.$message.error('请至少选择一个未审核的条目')
       }
-      if (this.multipleSelection.some((item) => item.flag === 0)) {
+      if (this.multipleSelection.some(item => item.flag === 0)) {
         return this.$message.error('您选择了有未入驻的商协会，请检查')
       }
       this.passBtn = true
-      let params = {
+      const params = {
         auditStatus: 1,
         memberId: [],
-        remark: '',
+        remark: ''
       }
-      this.multipleSelection.forEach((item) => {
+      this.multipleSelection.forEach(item => {
         params.memberId.push(item.id)
       })
-      let res = await rejectAuditStatus(params)
+      const res = await rejectAuditStatus(params)
       if (res.state !== 1) return this.$message.error(res.msg)
       this.$message.success(res.msg)
       await this.fetchMemberData()
@@ -268,23 +228,23 @@ export default {
       if (this.multipleSelection.length === 0) {
         return this.$message.error('没有选择纪录，操作失败')
       }
-      if (this.multipleSelection.every((item) => item.status !== 0)) {
+      if (this.multipleSelection.every(item => item.status !== 0)) {
         return this.$message.error('请至少选择一个未审核的条目')
       }
-      if (this.multipleSelection.some((item) => item.flag === 0)) {
+      if (this.multipleSelection.some(item => item.flag === 0)) {
         return this.$message.error('您选择了有未入驻的商协会，请检查')
       }
       this.rejectBtn = true
 
-      let params = {
+      const params = {
         auditStatus: 2,
         memberId: [],
-        remark: '',
+        remark: ''
       }
-      this.multipleSelection.forEach((item) => {
+      this.multipleSelection.forEach(item => {
         params.memberId.push(item.id)
       })
-      let res = await rejectAuditStatus(params)
+      const res = await rejectAuditStatus(params)
       if (res.state !== 1) this.$message.error(res.msg)
       this.$message.success(res.msg)
       this.$refs.tableRef.handleSelectionClear()
@@ -294,14 +254,11 @@ export default {
     exportExcel(e) {
       if (this.multipleSelection.length === 0) {
         this.$message.error({
-          message: '没有选择记录，操作失败',
+          message: '没有选择记录，操作失败'
         })
         return
       }
-      window.localStorage.setItem(
-        'actionId',
-        e.currentTarget.getAttribute('actionid')
-      )
+      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       console.log(this.selectExportList)
       exportJson2Excel('会员审核', this.selectExportList)
       this.$refs.tableRef.handleSelectionClear()
@@ -328,11 +285,11 @@ export default {
     handleSelectionChange(value) {
       this.multipleSelection = value
       // console.log(this.multipleSelection);
-      let datas = value
+      const datas = value
       this.selectExportList = []
-      for (let data of datas) {
+      for (const data of datas) {
         // console.log(data);
-        let new_data = {
+        const new_data = {
           商协会名称: data.chamberName,
           入会类型: data.applySource === 0 ? '个人' : '企业/团体入驻',
           申请来源:
@@ -353,8 +310,7 @@ export default {
           联系人电话: data.phone,
           审核时间: data.auditTime,
           审核人: data.auditor,
-          审核状态:
-            data.status === 0 ? '未审核' : data.status === 2 ? '驳回' : '通过',
+          审核状态: data.status === 0 ? '未审核' : data.status === 2 ? '驳回' : '通过'
         }
         this.selectExportList.push(new_data)
       }
@@ -388,13 +344,11 @@ export default {
       this.handleDetails()
     },
     async handleDetails() {
-      let approveDetail = await getApproveDetail({ id: this.currentId })
-      let auditDetail = await getAuditDetail({ id: this.currentId })
+      const approveDetail = await getApproveDetail({ id: this.currentId })
+      const auditDetail = await getAuditDetail({ id: this.currentId })
       this.detailsObject = { ...approveDetail.data, ...auditDetail.data }
-      this.detailsObject.trades = this.detailsObject.trades
-        ? this.detailsObject.trades
-        : [{}]
-      // console.log(this.detailsObject, '详情内容啊')
+      this.detailsObject.trades = this.detailsObject.trades ? this.detailsObject.trades : [{}]
+      console.log(this.detailsObject, '详情内容啊')
     },
     detailsClose() {
       this.detailsVisible = false
@@ -402,11 +356,11 @@ export default {
     // 列表通过
     async handleResolve(id) {
       // console.log(id)
-      let params = {
-        id: id,
-        flag: 1,
+      const params = {
+        id,
+        flag: 1
       }
-      let res = await approveIdentity(params)
+      const res = await approveIdentity(params)
       if (res.state !== 1) return this.$message.error(res.msg)
       this.$message.success(res.msg)
       await this.fetchIdentityData()
@@ -415,11 +369,11 @@ export default {
     // 详情通过
     async handleDetailResolve() {
       // console.log(id)
-      let params = {
+      const params = {
         id: this.currentId,
-        flag: 1,
+        flag: 1
       }
-      let res = await approveIdentity(params)
+      const res = await approveIdentity(params)
       if (res.state !== 1) return this.$message.error(res.msg)
       this.$message.success(res.msg)
       await this.handleDetails()
@@ -438,16 +392,16 @@ export default {
       console.log(this.currentId)
     },
     async confirmReject() {
-      let params = {
+      const params = {
         flag: 2,
         id: this.currentId,
-        remark: this.rejectReason,
+        remark: this.rejectReason
       }
       // console.log(params, '拒绝的提交啊')
       this.rejectVisible = false
       this.rejectReason = ''
       try {
-        let res = await approveIdentity(params)
+        const res = await approveIdentity(params)
         if (res.state !== 1) return this.$message.error(res.msg)
         this.$message.success(res.msg)
       } catch (error) {
@@ -455,8 +409,8 @@ export default {
       }
       await this.handleDetails()
       await this.fetchIdentityData()
-    },
-  },
+    }
+  }
 }
 </script>
 
