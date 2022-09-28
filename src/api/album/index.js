@@ -48,10 +48,10 @@ export const auditAlbum = data => request({
 })
 
 // 相册删除
-export const deleteAlbum = data => request({
+export const deleteAlbum = params => request({
   url: '/api/ec/ysh-album/album-delete',
   method: 'delete',
-  data
+  params
 })
 
 // 相册冻结 | 解冻

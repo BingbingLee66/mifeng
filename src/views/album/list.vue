@@ -113,17 +113,17 @@ export default {
       return [
         {
           label: '相册信息', width: 200,
-          render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumCkey}</div>{row.albumName}</div>
+          render: ({ row }) => <div><div style="color:#66b1ff">{row.albumCkey}</div>{row.albumName}</div>
         },
         {
           label: '关联业务', width: 200,
           hidden: isUser,
-          render: ({ row }) => +row.type === 2 ? <div>活动<div style='color:#66b1ff'>{row.businessId}</div>{row.businessName}</div> : '-'
+          render: ({ row }) => +row.type === 2 ? <div>活动<div style="color:#66b1ff">{row.businessId}</div>{row.businessName}</div> : '-'
         },
         { label: '商协会', hidden: isPlatform || isUser, prop: 'chamberName' },
         { label: '用户信息', hidden: !isUser, render: ({ row }) =>
           <div>
-            <img src={row.businessImg} alt='' width='50' height='50' />
+            <img src={row.businessImg} alt="" width="50" height="50" />
             <div>{row.businessName}</div>
             <div>{row.number}</div>
           </div>
@@ -134,7 +134,13 @@ export default {
         { label: '点赞数', prop: 'likeNum' },
         { label: '下载数', render: e => this.generateModifiedData(e, '2') },
         { label: '分享数', render: e => this.generateModifiedData(e, '3') },
-        { label: '相册状态', hidden: !ckey && isPlatform, render: ({ row }) => row.status ? <span style='color:#67c23a'>正常</span> : <span style='color:#f56c6c'>冻结</span> },
+        { label: '相册状态', render: ({ row }) => {
+          return row.status === 0
+            ? <span style="color:#f56c6c">冻结</span>
+            : row.auditStatus === 0
+              ? <span style="color:#f56c6c">隐藏</span>
+              : <span style="color:#67c23a">正常</span>
+        } },
         {
           label: '操作',
           fixed: 'right',
@@ -143,17 +149,17 @@ export default {
             {
               isPlatform
                 ? <div>
-                  <el-button type='text' onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id }})}>编辑</el-button>
-                  <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, type: this.query.queryType }})}>进入相册</el-button>
-                  <el-button type='text' onClick={() => this.hideAlbum(row)}>{+row.auditStatus === 1 ? '隐藏' : '公开'}</el-button>
-                  <el-button type='text' onClick={() => this.delAlbum(row)}>删除</el-button>
+                  <el-button type="text" onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id } })}>编辑</el-button>
+                  <el-button type="text" onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, type: this.query.queryType } })}>进入相册</el-button>
+                  <el-button type="text" onClick={() => this.hideAlbum(row)}>{+row.auditStatus === 1 ? '隐藏' : '公开'}</el-button>
+                  <el-button type="text" onClick={() => this.delAlbum(row)}>删除</el-button>
                 </div>
                 : <div>
-                  <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, type: this.query.queryType }})}>查看</el-button>
-                  <el-button type='text' onClick={() => this.toggleFreeze(row)}>{+row.status === 1 ? '冻结' : '解冻'}</el-button>
+                  <el-button type="text" onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, type: this.query.queryType } })}>查看</el-button>
+                  <el-button type="text" onClick={() => this.toggleFreeze(row)}>{+row.status === 1 ? '冻结' : '解冻'}</el-button>
                 </div>
             }
-            {!ckey ? <el-button type='text' onClick={() => this.changeDialog({ visible: true, sourceData: row })}>修改数据</el-button> : ''}
+            {!ckey ? <el-button type="text" onClick={() => this.changeDialog({ visible: true, sourceData: row })}>修改数据</el-button> : ''}
           </div>
         },
       ]
@@ -172,6 +178,7 @@ export default {
   },
   methods: {
     onQueryChange(e) {
+      this.tableData = []
       Object.assign(this.query, e)
       clearTimeout(this.timer)
       this.timer = setTimeout(() => this.queryTableData(), 300)
@@ -185,18 +192,18 @@ export default {
           total: true
         }
         if (this.isPlatform) delete params.status
-        const { data: { list, totalRows }} = await getAlbumList(params)
+        const { data: { list, totalRows } } = await getAlbumList(params)
         this.tableData = list
         this.total = totalRows
       } finally {
         this.loading = false
       }
     },
-    generateModifiedData({ row, column }, updateType) {
+    generateModifiedData({ row }, updateType) {
       const { realy, fake } = updateTypeOptions[updateType]
       if (row[realy] >= row[fake] || this.ckey) return row[fake]
       return <div>
-        <el-tooltip style='color:red;margin-right:8px;' effect='light' content={`${row[realy]}`} placement='top'>
+        <el-tooltip style="color:red;margin-right:8px;" effect="light" content={`${row[realy]}`} placement="top">
           <span>改</span>
         </el-tooltip>
         {row[fake]}
