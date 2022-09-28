@@ -780,7 +780,14 @@ export default {
             this.formObj.latitude = ''
           }
 
-          createActivity(this.formObj).then(res => {
+          const params = { ...this.formObj }
+
+          if (!(this.ruleCkeys.includes(this.ckey) || !this.ckey)) {
+            delete params.liveEntranceDisplayType
+            delete params.liveEntranceCloseTime
+          }
+
+          createActivity(params).then(res => {
             if (res.state === 1) {
               this.$message.success(res.msg)
               this.$router.push({
