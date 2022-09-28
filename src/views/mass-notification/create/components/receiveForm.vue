@@ -364,7 +364,7 @@ export default {
     async getDepartmentListFunc() {
       const { data } = await getDepartmentList({ ckey: this.ckey, parentId: 0 })
       console.log('data', data)
-      this.treeList = data[0].departmentRespList
+      this.treeList = data?.data[0]?.departmentRespList || []
     },
     // 拉取职位
     async memberPostListFunc() {
