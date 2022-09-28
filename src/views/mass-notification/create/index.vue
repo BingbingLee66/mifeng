@@ -258,12 +258,10 @@ export default {
     const { ckey } = this.$store.getters
     this.ckey = ckey
     this.restTypeData()
-    //
     this.id = this.$route.query.id || null
     if (this.id) {
       this.sendDetail()
     }
-    console.log('this.$route.params.id', this.$route.query.id)
     this.getTemplateUtil()
   },
   methods: {
@@ -305,7 +303,7 @@ export default {
     },
     // 模板设置详情
     async getNoticeTemplateSetDetailById(id) {
-      console.log(id)
+      // console.log(id)
       const { data } = await getNoticeTemplateSetDetailById({ id })
       this.infoData = data
     },
@@ -316,7 +314,7 @@ export default {
       this.resetUpdateUtil(data)
     },
     resetUpdateUtil(data) {
-      console.log('data', data)
+      // console.log('data', data)
       const { sendTs, extend, noticeTypeId: type, receiveTypeId: receive, sendType, channelTypeTemplateDTOS } = data
 
       this.form.type = type
@@ -328,10 +326,9 @@ export default {
           const { synchChannels } = this
           channelTypeTemplateDTOS.forEach(item => {
             const index = synchChannels.findIndex(v => v.id === item.channelTypeId)
-            console.log('index', index)
             if (index > -1) {
               this.form.synchChannels.push(item.channelTypeId)
-              console.log('this.form.synchChannels', this.form.synchChannels)
+              // console.log('this.form.synchChannels', this.form.synchChannels)
               this.activityChannels[index] = item.id
             }
           })
@@ -516,7 +513,6 @@ export default {
     extendFunc() {
       const { form: { receive, type }, activityList } = this
       let obj = {}
-      console.log('this.$refs[receiveForm].$data.form.department', this.$refs['receiveForm'].$data)
       const refData = this.$refs['receiveForm'].$data
       switch (receive) {
         case 2:
@@ -555,7 +551,7 @@ export default {
         const foo = { title, content, imgs }
         obj = Object.assign(obj, foo)
       }
-      console.log('obj', obj)
+      // console.log('obj', obj)
       return obj
     },
     restTypeData() {
@@ -569,11 +565,9 @@ export default {
       // 给type receive一个默认值
       this.form.type = this.labelList[0].type
       this.form.receive = this.receiveList[0].type
-      console.log('父组件的create')
     },
     // 拉取渠道信息
     async getTemplateUtil() {
-      console.log('拉取渠道信息')
       // 除了邀请入会只有短信1，其他都是三个渠道
       if (this.form.type === 4) {
         await this.selectTemplateListFunc(1)
@@ -592,7 +586,6 @@ export default {
 
     // 图片上传前校验
     beforeAvatarUpload(file, index) {
-      console.log('file', file)
       this.uploadIndex = index
       if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
         this.$message.error('上传图片只能是 JPG 或 PNG 格式!')

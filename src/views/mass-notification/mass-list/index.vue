@@ -146,7 +146,7 @@ export default {
     /** 请求 */
     // 拉取群发通知列表 and群发管理列表(总后台)
     async sendListFunc(val) {
-      console.log('val', val)
+      // console.log('val', val)
       const { ckey } = this
       let API = sendList
       let query = { ...this.query }
@@ -157,7 +157,7 @@ export default {
       } else {
         if (val) { query = Object.assign(query, val) }
       }
-      console.log('query', query)
+      // console.log('query', query)
       const { data } = await API(query)
       this.tableData = data.list
       this.total = data.totalRows
@@ -211,7 +211,7 @@ export default {
       const { activeSecondChannelTab: status, activeDialogChannelTab: channelTypeId, currentRow: { id: gsId }, dialog: { query } } = this
       // const { data } = sendDetailList({ channelTypeId, gsId, keyword })
       const { data } = await sendDetailList({ channelTypeId, gsId, ...query, status })
-      console.log('data', data)
+      // console.log('data', data)
       this.dialog.tableData = data.list.map(v => { return { ...v.receiverInfoVO.extend, readStatus: v.readStatus } })
       this.dialog.total = data.totalRows
     },
@@ -222,7 +222,7 @@ export default {
     },
     // 群发通知点击操作栏
     async operationClick(type = 1, row) {
-      console.log('row', type)
+      // console.log('row', type)
       this.currentRow = row
       this.currentType = type
       // 详情
@@ -230,7 +230,7 @@ export default {
         this.open()
         // 打开详情弹框
         // this.sendStatus = cloneDeep(sendStatusList)
-        console.log('sendStatusList', sendStatusList)
+        // console.log('sendStatusList', sendStatusList)
         await this.sendGetDetailFunc(row.id)
         // 初始化活跃tab
         this.activeDialogChannelTab = this.sendDetailChannelType[0].name
@@ -282,7 +282,7 @@ export default {
         this.dialog.columnConfig = cloneDeep(memberPageListConfig)
 
         await this.receiverListFunc(row.id, 2)
-        console.log('ref', this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.dialog.tableData))
+        // console.log('ref', this.$refs['receiveRef'].$refs['tableRef'].toggleSelection(this.dialog.tableData))
       } else if (type === 6) {
         // 接收人
         // 接收人弹框是否能够被查看
@@ -318,7 +318,6 @@ export default {
     },
     // 关闭弹框
     hide() {
-      console.log('关闭弹框')
       // 置空弹框分页内容 表单内容
       this.sendDetailChannelType = []
       this.sendStatus = []
@@ -335,13 +334,13 @@ export default {
     /** 父子组件交互 */
     // 子组件点击查询
     clickQuery(val) {
-      console.log('val', val)
+      // console.log('val', val)
       this.query = {
         ...val,
         page: 1,
         pageSize: 10
       }
-      console.log('this.query', this.query)
+      // console.log('this.query', this.query)
       // this.query.page = 1
       // this.query.pageSize = 10
       this.sendListFunc(val)
@@ -355,7 +354,6 @@ export default {
       if (val.pageNum) this.query.page = val.pageNum
       if (val.pageSize) this.query.pageSize = val.pageSize
       this.sendListFunc()
-      console.log('val', val)
     },
     // 弹框内分页的改变
     receiveChange(val) {
@@ -371,7 +369,7 @@ export default {
     },
     // 弹框内tab的改变
     handleClickChannel(val) {
-      console.log('弹框内tab的改变', val)
+      // console.log('弹框内tab的改变', val)
       this.activeDialogChannelTab = val
       this.handleTabChannelUtil(val)
 
@@ -395,7 +393,7 @@ export default {
       this.activeName = name
       this.tableConfigUtil()
       this.sendListFunc()
-      console.log('handleClick', name)
+      // console.log('handleClick', name)
     },
     /** 工具 */
     onExportExcel(val) {
@@ -519,7 +517,7 @@ export default {
         },
       ]
       // 群发管理
-      console.log('this.activeName', this.activeName)
+      // console.log('this.activeName', this.activeName)
       if (this.activeName === 'mass') {
         columnConfig.unshift({
           prop: 'chamberName',
