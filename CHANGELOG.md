@@ -1,5 +1,44 @@
 # CHANGELOG
 
+
+## [Released]
+## [2.28.0] - 2022-09-27
+### Added
+- 【群发通知】创建群发通知，功能组件[1055](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1055)
+- 【群发通知】创建群发通知，弹框组件[1054](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1054)
+- 【商会后台】群发管理列表[1053](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1053)
+- 【群发通知】批量创建模板组件[1052](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1052)
+- 【商会后台】前端权限管理[1051](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1051)
+- 【群发通知】模板管理，分配短信组件弹框[1049](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1049)
+- 【群发通知】创建群发通知[1048](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1048)
+- 【群发通知】模板管理弹框组件[1047](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1047)
+- 【群发通知】模板管理列表[1046](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1046)
+- 【群发通知】弹框详情[1045](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1045)
+- 【群发通知】群发通知管理列表[1044](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1044)
+
+- 【模板设置】通知详情[1043](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1043)
+- 【模板设置】弹框[1042](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1042)
+- 【模板设置】列表[1041](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1041)
+- 【模板设置】新增模板[1040](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1040)
+- 【模板库】模板库详情[1039](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1039)
+
+- 【模板库】申请模板
+[1038](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1038)
+- 【模板库】同步订阅模板[1037](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1037)
+- 【模板库】同步短信模板[1036](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1036)
+- 【模板库】短信通知、订阅消息、APP通知 列表[1035](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1035)
+### Fixed
+
+
+## [Released]
+## [2.27.1] - 2022-09-21
+### Added
+-   
+### Fixed
+- 【总后台】相册图片上限修改 和 活动名称字数上限修改 [1126](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1126)
+- 【总后台】新增账号重复提示 [1127](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1127)
+
+
 ## [Released]
 ## [2.27.0] - 2022-09-19
 ### Added
