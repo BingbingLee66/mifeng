@@ -392,6 +392,9 @@ export default {
       console.log(this.currentId)
     },
     async confirmReject() {
+      if (this.rejectReason === '') {
+        return this.$message.error('请选择拒绝理由')
+      }
       const params = {
         flag: 2,
         id: this.currentId,
