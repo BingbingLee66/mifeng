@@ -18,6 +18,7 @@
           </el-button>
           <div>已选 <span class="container-choice">{{ formObj.ckeys.length }}</span>个商协会</div>
         </div>
+        <div> <el-checkbox v-model="SelectAll" @change="onSelectAll">全选</el-checkbox></div>
         <!-- 商协会 -->
         <div class="business">
           <el-checkbox-group
@@ -77,7 +78,8 @@ export default {
       },
       name: '',
       originOpt: [], // 商协会
-      loading: false
+      loading: false,
+      SelectAll: false, // 全选
     }
   },
   computed: {
@@ -96,6 +98,15 @@ export default {
       if (!n) return
       this.query()
     },
+    'formObj.ckeys': {
+      handler(n) {
+        if (n.length === this.originOpt.length && this.originOpt.length > 0) {
+          this.SelectAll = true
+        } else {
+          this.SelectAll = false
+        }
+      },
+    },
   },
 
   methods: {
@@ -109,6 +120,7 @@ export default {
       this.maxNum = 0
       this.originOpt = []
       this.loading = false
+      this.SelectAll = false
       this.$emit('update:showAllocation', false)
     },
     // 确定
@@ -147,6 +159,17 @@ export default {
       }
       const res = await distributionChambers(parmas)
       this.originOpt = res.data
+    },
+
+    // 全选
+    onSelectAll() {
+      if (this.SelectAll) {
+        this.formObj.ckeys = this.originOpt.map(v => {
+          return v.ckey
+        })
+      } else {
+        this.formObj.ckeys = []
+      }
     }
   }
 }
