@@ -782,7 +782,7 @@ export default {
 
           const params = { ...this.formObj }
 
-          if (!(this.ruleCkeys.includes(this.ckey) || !this.ckey)) {
+          if (!(this.ruleCkeys.includes(this.ckey) || !this.ckey) || !this.formObj.link.trim()) {
             delete params.liveEntranceDisplayType
             delete params.liveEntranceCloseTime
           }

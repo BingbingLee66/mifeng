@@ -422,7 +422,7 @@
               </el-col>
             </el-row>
 
-            <el-row>
+            <el-row v-if="formObj.link.trim()">
               <el-col>
                 <el-form-item label="入口显示：" prop="liveEntranceCloseTime">
                   <div>
