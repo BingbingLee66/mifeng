@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <!-- eslint-disable vue/html-self-closing -->
 <template>
   <div>
@@ -34,7 +35,7 @@
           </el-button>
           <div>已选 <span class="container-choice">{{ formObj.ckeys.length }}</span>个商协会</div>
         </div>
-
+        <div> <el-checkbox v-model="SelectAll" @change="onSelectAll">全选</el-checkbox></div>
         <!-- 商协会 -->
         <div class="business">
           <el-checkbox-group
@@ -85,7 +86,8 @@ export default {
       name: '',
       originOpt: [], // 商协会
       stencil: [], // 模板
-      loading: false
+      loading: false,
+      SelectAll: false, // 全选
     }
   },
   watch: {
@@ -93,6 +95,16 @@ export default {
       if (!n) return
       this.onLibrary()
       this.query()
+    },
+    'formObj.ckeys': {
+      handler(n) {
+        if (n.length === this.originOpt.length && this.originOpt.length > 0) {
+          this.SelectAll = true
+        } else {
+        // eslint-disable-next-line no-undef
+          this.SelectAll = false
+        }
+      },
     },
 
   },
@@ -109,6 +121,7 @@ export default {
       this.originOpt = []
       this.stencil = []
       this.loading = false
+      this.SelectAll = false
       this.$emit('update:showConfiguration', false)
     },
     // 确定
@@ -137,6 +150,7 @@ export default {
         channelTypeId: this.formObj.channelTypeId,
       }
       const res = await selectTemplateListAdmin(parmas)
+
       this.stencil = res.data
     },
     // 查询
@@ -146,6 +160,17 @@ export default {
       }
       const res = await distributionChambers(parmas)
       this.originOpt = res.data
+    },
+
+    // 全选
+    onSelectAll() {
+      if (this.SelectAll) {
+        this.formObj.ckeys = this.originOpt.map(v => {
+          return v.ckey
+        })
+      } else {
+        this.formObj.ckeys = []
+      }
     }
   }
 }
@@ -163,6 +188,7 @@ export default {
   }
 }
 .business{
+  height: 350px;
   max-height: 350px;
   overflow-y: auto;
   width: 100%;
