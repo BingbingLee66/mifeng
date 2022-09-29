@@ -151,7 +151,7 @@ export default {
                 ? <div>
                   <el-button type="text" onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id } })}>编辑</el-button>
                   <el-button type="text" onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, type: this.query.queryType } })}>进入相册</el-button>
-                  <el-button type="text" onClick={() => this.hideAlbum(row)}>{+row.auditStatus === 1 ? '隐藏' : '公开'}</el-button>
+                  <el-button style="margin-left:0" type="text" onClick={() => this.hideAlbum(row)}>{+row.auditStatus === 1 ? '隐藏' : '公开'}</el-button>
                   <el-button type="text" onClick={() => this.delAlbum(row)}>删除</el-button>
                 </div>
                 : <div>
