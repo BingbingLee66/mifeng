@@ -156,13 +156,13 @@ export default {
       this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage
       const { currentpage, limit } = this.pageData
       console.log(limit, 'limit')
-      const { auditType, auditStatus, source, type, userId } = this.formData
+      const { auditType, auditStatus, source, type, userName } = this.formData
       const params = {
         auditType,
         auditStatus,
         source,
         type,
-        userId,
+        userName,
         page: currentpage,
         pageSize: limit
       }

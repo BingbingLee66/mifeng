@@ -10,7 +10,7 @@
         <el-row>
           <div class="title">申请信息</div>
           <el-col class="mb-10" :span="12">用户名：    {{ detail.uname }}</el-col>
-          <el-col class="mb-10" :span="12">用户ID：    {{ detail.userId }}</el-col>
+          <el-col class="mb-10" :span="12">用户账号：    {{ detail.userName }}</el-col>
           <el-col class="mb-10" :span="12">申请来源：  {{ detail.source === 1?'微信小程序':'app' }}</el-col>
           <el-col class="mb-10" :span="12">审核状态： {{ detail.auditStatus === 0?'审核中':detail.auditStatus === 1?'通过':'未通过' }}</el-col>
         </el-row>

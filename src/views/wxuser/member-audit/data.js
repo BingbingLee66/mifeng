@@ -1,3 +1,4 @@
+// 会员审核
 const formData = {
   // 商协会名称
   chamberName: '',
@@ -146,10 +147,13 @@ const tableColumn = [
     }
   }
 ]
+
+// 身份审核
+
 const identityFormData = {
 
-  // 用户id
-  userId: '',
+  // 用户名
+  userName: '',
   // 申请类型
   auditType: -1,
   // 申请来源
@@ -165,8 +169,8 @@ const identityFormData = {
 }
 const identityFormItem = [
   {
-    label: '用户ID',
-    prop: 'userId',
+    label: '用户账号',
+    prop: 'userName',
     type: 'input'
   },
   {
@@ -182,7 +186,6 @@ const identityFormItem = [
       { label: '工牌认证', value: 4 },
       { label: '邀请商协会认证', value: 5 }
     ],
-    clearable: true
   },
   {
     label: '申请来源',
@@ -232,8 +235,8 @@ const identityFormItem = [
 ]
 const identityTableColumn = [
   {
-    label: '用户ID',
-    prop: 'userId'
+    label: '用户账号',
+    prop: 'userName'
   },
   {
     label: '用户名',
