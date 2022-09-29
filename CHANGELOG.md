@@ -2,6 +2,15 @@
 
 
 ## [Released]
+## [2.29.0] - 2022-09-29
+### Added
+- 【人脉社交1.0】总后台-身份审核-通过驳回功能[1121](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1121)
+- 【人脉社交1.0】总后台-身份审核详情[1120](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1120)
+- 【人脉社交1.0】总后台-新增身份审核[1119](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1119)
+### Fixed
+
+
+## [Released]
 ## [2.28.0] - 2022-09-27
 ### Added
 - 【群发通知】创建群发通知，功能组件[1055](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1055)
