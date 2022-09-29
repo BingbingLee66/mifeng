@@ -154,8 +154,8 @@ export default {
     async show(row) {
       this.ckey = row.ckey
       await this.query()
-      await this.fetchData()
       this.dialogVisible = true
+      await this.fetchData()
     },
     // 取消
     handleClose() {
