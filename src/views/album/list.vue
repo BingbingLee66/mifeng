@@ -6,7 +6,7 @@
       <el-tab-pane label="用户" name="2" />
     </el-tabs>
     <div class="flex-x-start-center">
-      <el-input :value="query.albumName" class="input-item" :placeholder="`相册名称${isPlatform?'':'、商协会名称'}`" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
+      <el-input :value="query.albumName" class="input-item" :placeholder="isUser ? '相册名称、用户名、手机号' : `相册名称${isPlatform?'':'、商协会名称'}`" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
       <template v-if="!isPlatform">
         相册状态
         <el-select :value="query.status" class="input-item" @change="onQueryChange({status:$event,pageNum:1})">
