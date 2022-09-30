@@ -50,11 +50,11 @@ export default {
       return [
         {
           label: '举报人', width: 200,
-          render: ({ row }) => <div><div style='color:#66b1ff'>{row.reportId}</div>{row.reportName}</div>
+          render: ({ row }) => <div><div style="color:#66b1ff">{row.reportId}</div>{row.reportName}</div>
         },
         {
           label: '举报内容',
-          render: ({ row }) => <div>{row.reportContent}</div>
+          render: ({ row }) => <div>{row.configId === '4' ? row.reportContent : row.configValueInfo}</div>
         },
         { label: '举报时间', prop: 'reportTime' },
       ]
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     async fetchDetail() {
-      const { state, data } = await getReportById({ albumId: this.albumInfo.id, })
+      const { state, data } = await getReportById(this.albumInfo.albumId)
       if (!state) return
       this.tableData = data
     },

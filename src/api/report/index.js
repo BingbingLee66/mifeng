@@ -8,8 +8,8 @@ export const getReportList = params => request({
 })
 
 // 相册举报详情
-export const getReportById = params => request({
-  url: '/ec/report/album-reportInfo',
+export const getReportById = id => request({
+  url: `/ec/report/album-reportInfo?albumId=${id}`,
   method: 'get',
-  params
+
 })
