@@ -71,6 +71,12 @@ export default {
       const { state, data } = await getReportById(this.albumInfo.albumId)
       if (!state) return
       this.tableData = data
+      const dayjs = require('dayjs')
+      const arraySupport = require('dayjs/plugin/arraySupport')
+      dayjs.extend(arraySupport)
+      data.forEach(item => {
+        item.reportTime = dayjs(item.reportTime).format('YYYY-MM-DD hh:mm')
+      })
     },
 
     async onFreeze() {

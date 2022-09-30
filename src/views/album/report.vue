@@ -57,21 +57,21 @@ export default {
       return [
         {
           label: '举报相册', width: 200,
-          render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumId}</div>{row.albumName}</div>
+          render: ({ row }) => <div><div style="color:#66b1ff">{row.albumId}</div>{row.albumName}</div>
         },
         {
           label: '相册主体',
-          render: ({ row }) => <div><div style='color:#66b1ff'>{row.mainBodyId}</div>{row.mainBodyName}</div>
+          render: ({ row }) => <div><div style="color:#66b1ff">{row.mainBodyId}</div>{row.mainBodyName}</div>
         },
         { label: '举报次数', prop: 'reportCount' },
-        { label: '状态', render: ({ row }) => row.albumStatus ? <span style='color:#67c23a'>正常</span> : <span style='color:#f56c6c'>已冻结</span> },
+        { label: '状态', render: ({ row }) => row.albumStatus ? <span style="color:#67c23a">正常</span> : <span style="color:#f56c6c">已冻结</span> },
         { label: '处理时间', prop: 'freezeTime' },
         {
           label: '操作',
           fixed: 'right',
           width: '120',
           render: ({ row }) => <div>
-            <el-button type='text' onClick={() => this.showDetailDialog(row)}>详情</el-button>
+            <el-button type="text" onClick={() => this.showDetailDialog(row)}>详情</el-button>
           </div>
         },
       ]
@@ -100,7 +100,7 @@ export default {
           params.pageNum = 1
         }
 
-        const { data: { list, totalRows }} = await getReportList(params)
+        const { data: { list, totalRows } } = await getReportList(params)
         this.tableData = list
         this.total = totalRows
       } finally {
