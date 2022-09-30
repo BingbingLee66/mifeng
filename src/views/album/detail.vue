@@ -11,7 +11,7 @@
             <el-option value="" label="全部" />
             <el-option value="1" label="公开" />
             <el-option value="0" label="隐藏" />
-            <el-option value="3" label="冻结" />
+            <el-option value="3" label="已冻结" />
           </el-select>
         </div>
         <el-upload
@@ -95,7 +95,7 @@
         <template v-else>
           <el-button @click="toggleAlbumStatus">{{ albumDetail.status === 1 ? '冻结相册' : '解冻相册' }}</el-button>
           <el-button :disabled="handleFreezeDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 3)">冻结照片</el-button>
-          <el-button :disabled="handleFreezeDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 1)">解冻照片</el-button>
+          <el-button :disabled="handleOverFreezeDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 1)">解冻照片</el-button>
         </template>
         <el-button @click="downloadImgs">下载</el-button>
       </template>
@@ -159,7 +159,11 @@ export default {
     },
     handleFreezeDisabled() {
       const { selectedImgs } = this
-      return !selectedImgs.length || selectedImgs.some(v => v.status === 3)
+      return !selectedImgs.length || selectedImgs.some(v => v.status === 3) || !selectedImgs.some(v => v.status === 1)
+    },
+    handleOverFreezeDisabled() {
+      const { selectedImgs } = this
+      return !selectedImgs.length || selectedImgs.some(v => v.status === 1) || !selectedImgs.some(v => v.status === 3)
     },
     hasEditAuth() {
       const { editAuth } = this.$route.query
@@ -268,15 +272,22 @@ export default {
       }
     },
     async onDelImgs(imgIds) {
-      await this.$confirm('删除后无法恢复', '是否继续删除？', {
-        confirmButtonText: '确认删除',
-        cancelButtonText: '取消'
-      })
-      const { state } = await delAlbumImgs({ imgIds })
-      if (state === 1) {
-        this.imgList = this.imgList.filter(v => !imgIds.includes(v.id))
-        this.selectedImgs = []
-        this.albumDetail.imgCount = this.albumDetail.imgCount - imgIds.length
+      try {
+        await this.$confirm('删除后无法恢复', '是否继续删除？', {
+          confirmButtonText: '确认删除',
+          cancelButtonText: '取消'
+        })
+        const { state } = await delAlbumImgs({ imgIds })
+        if (state === 1) {
+          this.imgList = this.imgList.filter(v => !imgIds.includes(v.id))
+          this.selectedImgs = []
+          this.albumDetail.imgCount = this.albumDetail.imgCount - imgIds.length
+        }
+      } catch (err) {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       }
     },
     // 切换相册冻结状态
@@ -294,14 +305,27 @@ export default {
         }
       }[this.albumDetail.status]
 
-      await this.$confirm(freezeParams.content, freezeParams.title)
+      try {
+        await this.$confirm(freezeParams.content, freezeParams.title)
 
-      const { state, msg } = await changeAlbumFreezeStatus({ id: this.$route.query.id, status: freezeParams.status })
-      if (state) {
-        this.$message.success('操作成功')
-        this.queryAlbumDetail()
-      } else {
-        this.$message.error(msg)
+        const { state, msg } = await changeAlbumFreezeStatus({ id: this.$route.query.id, status: freezeParams.status })
+        if (state) {
+          this.$message.success('操作成功')
+          this.queryAlbumDetail()
+        } else {
+          this.$message.error(msg)
+        }
+      } catch (err) {
+        let msg = null
+        if (this.albumDetail.status === 0) {
+          msg = '已取消解冻'
+        } else {
+          msg = '已取消冻结'
+        }
+        this.$message({
+          type: 'info',
+          message: msg
+        })
       }
     },
     // 切换图片状态
@@ -318,14 +342,39 @@ export default {
     },
     // 切换冻结图片状态
     async toggleImgFrozeeStatus(imgIds, type) {
-      const { state } = await changeBatchAlbumFreezeStatus({ imgIds: imgIds.join(','), status: type })
-      if (state === 1) {
-        this.imgList.forEach(v => {
-          if (imgIds.includes(v.id)) {
-            this.$set(v, 'status', type)
-          }
+      const freezeParams = {
+        1: {
+          title: '是否解冻图片？',
+          content: '',
+        },
+        3: {
+          title: '冻结图片',
+          content: '冻结图片后前台无法显示该图片内容，是否冻结？',
+        }
+      }[type]
+      try {
+        await this.$confirm(freezeParams.content, freezeParams.title)
+        const { state } = await changeBatchAlbumFreezeStatus({ imgIds: imgIds.join(','), status: type })
+        if (state === 1) {
+          this.$message.success('操作成功')
+          this.imgList.forEach(v => {
+            if (imgIds.includes(v.id)) {
+              this.$set(v, 'status', type)
+            }
+          })
+          this.selectedImgs = []
+        }
+      } catch (err) {
+        let msg = null
+        if (type === 1) {
+          msg = '已取消解冻'
+        } else {
+          msg = '已取消冻结'
+        }
+        this.$message({
+          type: 'info',
+          message: msg
         })
-        this.selectedImgs = []
       }
     },
     async toggleRelevance() {
