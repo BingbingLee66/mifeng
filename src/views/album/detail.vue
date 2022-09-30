@@ -7,10 +7,11 @@
         <div class="flex-x-start-center">
           <el-input :value="query.fileName" class="input-item" placeholder="图片名称" prefix-icon="el-icon-search" @input="onQueryChange({fileName:$event,imgId:'',isFinished:false})" />
           展示状态
-          <el-select :value="query.auditStatus" class="input-item" @change="onQueryChange({auditStatus:$event,imgId:'',isFinished:false})">
+          <el-select v-model="queryStatus" class="input-item" @change="onQueryChange({auditStatus:$event,imgId:'',isFinished:false})">
             <el-option value="" label="全部" />
             <el-option value="1" label="公开" />
             <el-option value="0" label="隐藏" />
+            <el-option value="3" label="冻结" />
           </el-select>
         </div>
         <el-upload
@@ -130,9 +131,9 @@ export default {
       albumDetail: {
         imgCount: 0
       },
+      queryStatus: '',
       query: {
         pageSize: 20,
-        auditStatus: '',
         fileName: '',
         imgId: '',
         isFinished: false
@@ -157,7 +158,7 @@ export default {
       return !selectedImgs.length || selectedImgs.some(isCover)
     },
     hasEditAuth() {
-      const editAuth = this.$route.query.editAuth
+      const { editAuth } = this.$route.query
 
       if (typeof editAuth === 'number') return !!editAuth
       if (typeof editAuth === 'string') return !!Number(editAuth)
@@ -189,6 +190,14 @@ export default {
     },
     onQueryChange(e) {
       Object.assign(this.query, e)
+      if (e.auditStatus === '3') {
+        delete this.query.auditStatus
+        this.query.status = 3
+      } else {
+        delete this.query.status
+        this.query.auditStatus = e.auditStatus
+      }
+
       if (!e.imgId && this.selectedImgs.length) this.selectedImgs = []
       clearTimeout(this.timer)
       this.timer = setTimeout(() => this.fetchData(), 300)
@@ -199,11 +208,11 @@ export default {
       return Object.assign(img, { $date: `${dateStr} ${timeStr}:00 ~ ${+timeStr + 1}:00` })
     },
     async fetchData() {
-      const { query, loading, $route: { query: { id }}} = this
+      const { query, loading, $route: { query: { id } } } = this
       if (query.isFinished || loading) return
       this.loading = true
       try {
-        const { data: { list }} = await getAlbumImgList({
+        const { data: { list } } = await getAlbumImgList({
           ...query,
           albumId: id
         })
@@ -334,17 +343,21 @@ export default {
     // 生成标签
     generateTag(img) {
       if (this.isCover(img)) return { name: '封面', type: 'success' }
-      if (+img.auditStatus === 0) return { name: '隐藏', type: 'info' }
-      if (+img.auditStatus === 1) return { name: '公开' }
-      if (+img.status === 1) return { name: '正常' }
-      if (+img.status === 3) return { name: '已冻结' }
+
+      if (+img.status === 3) {
+        return { name: '已冻结', type: 'danger' }
+      } else if (+img.auditStatus === 0) {
+        return { name: '隐藏', type: 'info' }
+      } else {
+        return { name: '公开' }
+      }
     },
     // 是否为封面
     isCover(img) {
       return +img.useType === 1
     },
     // 上传前校验
-    beforeUpload(file, index) {
+    beforeUpload(file) {
       if (
         !['image/jpeg', 'image/jpg', 'image/png', 'image/bmp'].includes(file.type) ||
         !/(jpeg)|(jpg)|(png)|(bmp)$/i.test(file.name)
@@ -359,7 +372,7 @@ export default {
       }
     },
     // 超出1000张
-    onExceed(e) {
+    onExceed() {
       this.$message.error(`图片数量超过${this.albumDetail.maxImgCount}张`)
     },
     onUpload({ file }) {
