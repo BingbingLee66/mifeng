@@ -94,8 +94,8 @@
         </template>
         <template v-else>
           <el-button @click="toggleAlbumStatus">{{ albumDetail.status === 1 ? '冻结相册' : '解冻相册' }}</el-button>
-          <el-button :disabled="handleDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 3)">冻结照片</el-button>
-          <el-button :disabled="handleDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 1)">解冻照片</el-button>
+          <el-button :disabled="handleFreezeDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 3)">冻结照片</el-button>
+          <el-button :disabled="handleFreezeDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 1)">解冻照片</el-button>
         </template>
         <el-button @click="downloadImgs">下载</el-button>
       </template>
@@ -156,6 +156,10 @@ export default {
     handleDisabled() {
       const { selectedImgs, isCover } = this
       return !selectedImgs.length || selectedImgs.some(isCover)
+    },
+    handleFreezeDisabled() {
+      const { selectedImgs } = this
+      return !selectedImgs.length || selectedImgs.some(v => v.status === 3)
     },
     hasEditAuth() {
       const { editAuth } = this.$route.query
