@@ -591,8 +591,8 @@ export default {
         this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
         return false
       }
-      if (file.size > 1024 * 1024 * 2) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+      if (file.size > 1024 * 1024 * 20) {
+        this.$message.error('上传图片大小不能超过 20MB!')
         return false
       }
     },
