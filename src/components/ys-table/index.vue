@@ -25,7 +25,7 @@
       :data="tableData"
       :element-loading-text="tableConfig.loadingText || 'Loading'"
       :height="tableConfig.height || null"
-      :max-height="tableConfig.maxHeight || '600px'"
+      :max-height="tableConfig.maxHeight || '800px'"
       :size="tableConfig.size || 'medium'"
       :header-cell-style="
         tableConfig.headerCellStyle || {
@@ -371,7 +371,7 @@ export default {
       this.$emit('handleSligleChange', data)
     },
     handleSelection() {
-      let rows = this.update
+      const rows = this.update
       if (rows) {
         rows.forEach(row => {
           this.$refs['yyTable'].toggleRowSelection(row)
