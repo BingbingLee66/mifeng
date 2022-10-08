@@ -92,8 +92,7 @@ export default {
       }[this.albumInfo.albumStatus]
 
       await this.$confirm('', freezeParams.title)
-
-      const { state, msg } = await changeAlbumFreezeStatus({ id: this.$route.query.id, status: freezeParams.status })
+      const { state, msg } = await changeAlbumFreezeStatus({ id: this.albumInfo.albumId, status: freezeParams.status })
       if (state) {
         this.$message.success('操作成功')
         this.$emit('success')
