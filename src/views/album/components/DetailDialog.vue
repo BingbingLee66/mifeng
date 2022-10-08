@@ -13,7 +13,7 @@
     <KdTable v-loading="loading" style="margin-top:20px;" :columns="columns" :rows="tableData" />
 
     <div class="flex-x-end-center mt-20">
-      <el-button v-dbClick type="primary" @click.native="onFreeze">冻结</el-button>
+      <el-button v-dbClick type="primary" @click.native="onFreeze">{{ albumInfo.albumStatus==1? "冻结":"解冻" }}</el-button>
       <el-button v-dbClick @click.native="close">返回</el-button>
     </div>
   </el-dialog>
@@ -49,12 +49,12 @@ export default {
     columns() {
       return [
         {
-          label: '举报人', width: 200,
+          label: '举报人',
           render: ({ row }) => <div><div style="color:#66b1ff">{row.reportId}</div>{row.reportName}</div>
         },
         {
-          label: '举报内容',
-          render: ({ row }) => <div>{row.configId === '4' ? row.reportContent : row.configValueInfo}</div>
+          label: '举报内容', width: 200,
+          render: ({ row }) => <div>{row.configId === '4' ? '其他理由：' + row.reportContent : row.configValueInfo}</div>
         },
         { label: '举报时间', prop: 'reportTime' },
       ]
