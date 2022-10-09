@@ -1,8 +1,9 @@
-import {  uploadPortrait  } from '@/api/activity/activity'
+import { uploadPortrait } from '@/api/activity/activity'
 import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
 import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
-import { getFile2name,getInfoList,getActivitySaveV1,getEcActivity } from '@/api/attract'
+import WangEditor from '@/components/wangEditor/index'
+import { getFile2name, getInfoList, getActivitySaveV1, getEcActivity } from '@/api/attract'
 import MakeTagDialog from '@/views/zhaoshang/activity/create/component/make-tag-dialog'
 import TagFormDialog from '@/views/zhaoshang/activity/create/component/tag-form-dialog'
 import { ACTIVE_MODE, activeModeMap, stageMap, getMapDict } from '@/consts'
@@ -16,13 +17,14 @@ import getAreaList from '@/utils/get-area-list'
 export default {
   components: {
     Ckeditor,
+    WangEditor,
     MakeTagDialog,
     TagFormDialog,
     Treeselect,
     preview,
   },
   data() {
-    var checkSpace = (rule, value, callback) => {
+    const checkSpace = (rule, value, callback) => {
       if (!value.trim()) {
         return callback(new Error('不能为空'))
       } else {
@@ -104,12 +106,12 @@ export default {
         labels: [],
         applyMode: 3, // 活动模式
         attachment: [], // 上传文件 内容附件
-        province:'', // 省（招商地区）
-        provinceCode:'', // 省code（招商地区
+        province: '', // 省（招商地区）
+        provinceCode: '', // 省code（招商地区
         cityCode: '', // 	市code（招商地区）
         city: '', // 	市（招商地区）
         area: '', // 区（招商地区）
-        areaCode: "" , // 区code（招商地区）
+        areaCode: '', // 区code（招商地区）
       },
       roleIds: [], // 多选框 扩展功能
       addressList: [], // 搜索数组
@@ -126,7 +128,7 @@ export default {
       },
       isPresent: false,
       iscustom: false, // 自定义信息弹窗
-      modalKey:0,
+      modalKey: 0,
       // 活动地点选择
       provinceValue: '',
       cityValue: '',
@@ -148,25 +150,13 @@ export default {
         // listImage: [
         //   { required: true, message: '活动列表图不能为空', trigger: 'blur' }
         // ],
-        date: [
-          { required: true, message: '活动时间不能为空', trigger: 'blur' }
-        ],
-        applyDate: [
-          { required: true, message: '报名时间不能为空', trigger: 'blur' }
-        ],
+        date: [{ required: true, message: '活动时间不能为空', trigger: 'blur' }],
+        applyDate: [{ required: true, message: '报名时间不能为空', trigger: 'blur' }],
 
-        invesKey: [
-          { required: true, message: '招商办不能为空', trigger: 'change' }
-        ],
-        chamberAddress: [
-          { required: true, message: '招商地区不能为空', trigger: 'change' }
-        ],
-        labels: [
-          { required: true, message: '类型摘要不能为空', trigger: ['blur', 'change'] }
-        ],
-        applyMode: [
-          { required: true, message: '活动模式不能为空', trigger: 'blur' }
-        ],
+        invesKey: [{ required: true, message: '招商办不能为空', trigger: 'change' }],
+        chamberAddress: [{ required: true, message: '招商地区不能为空', trigger: 'change' }],
+        labels: [{ required: true, message: '类型摘要不能为空', trigger: ['blur', 'change'] }],
+        applyMode: [{ required: true, message: '活动模式不能为空', trigger: 'blur' }],
         // addressInfo: [
         //   { required: true, message: '活动地点不能为空', trigger: 'blur' },
         //   { validator: checkSpace, trigger: 'blur' }
@@ -186,6 +176,7 @@ export default {
       },
       areaOptions: [], // 招商地区
       chamberOptions: [], // 招商办来源信息
+      contentHtml: ''
     }
   },
   created() {
@@ -199,11 +190,12 @@ export default {
     await this.initMap() // 初始化地图
     this.handleArea()
     this.areaOptions = await getAreaList(3)
-    this.$refs.ckeditor1.init()
+    // this.$refs.ckeditor1.init()
     if (!this.activityId) {
-      setTimeout(() => {
-        this.$refs.ckeditor1.initHtml('')
-      }, 500)
+      this.contentHtml = ''
+      // setTimeout(() => {
+      //   this.$refs.ckeditor1.initHtml('')
+      // }, 500)
     } else {
       this.fetchData()
     }
@@ -216,7 +208,7 @@ export default {
 
     postSelectInit() {
       const params = {
-        'ckey': this.$store.getters.ckey,
+        ckey: this.$store.getters.ckey,
       }
       getListOfSelect(params).then(response => {
         console.log(response.data.data)
@@ -225,8 +217,8 @@ export default {
     },
     treeSelectInit() {
       const params = {
-        'ckey': this.$store.getters.ckey,
-        'parentId': 0
+        ckey: this.$store.getters.ckey,
+        parentId: 0
       }
       getDepartmentListTreeSelect(params).then(response => {
         console.log(response.data.data)
@@ -235,7 +227,7 @@ export default {
     },
     normalizer(node) {
       // 去掉children=[]的children属性
-      if (node.children == null || node.children == 'null' || node.children && !node.children.length) {
+      if (node.children === null || node.children === 'null' || node.children && !node.children.length) {
         delete node.children
       }
       return {
@@ -271,9 +263,9 @@ export default {
     // 新增
     add() {
       let completely = false
-      if (this.infoDate.info == 1) {
-        this.colData.selects.forEach((v) => {
-          if (v.value == '') completely = true
+      if (this.infoDate.info === 1) {
+        this.colData.selects.forEach(v => {
+          if (v.value === '') completely = true
         })
       }
       if (completely) return this.$message.error('请填写选项标题')
@@ -285,14 +277,14 @@ export default {
       //   });
       //   return
       // }
-      if (this.colData.lengthLimit != '' && this.infoDate.info == 0) {
+      if (this.colData.lengthLimit !== '' && this.infoDate.info === 0) {
         if (this.colData.lengthLimit < 0) {
           this.$message({
             message: '字数限制必须大于0',
             type: 'warning'
           })
           return
-        } else if (this.colData.lengthLimit > 200 && this.infoDate.info == 0) {
+        } else if (this.colData.lengthLimit > 200 && this.infoDate.info === 0) {
           this.$message({
             message: '字数限制必须小于200',
             type: 'warning'
@@ -300,16 +292,16 @@ export default {
           return
         }
       }
-      let key = []
+      const key = []
       if (this.colData.selects) {
-        this.colData.selects.forEach((v) => {
+        this.colData.selects.forEach(v => {
           key.push(v.value)
         })
       }
 
       this.colData.key = key.join(';')
 
-      this.$refs['f2'].validate((valid) => {
+      this.$refs['f2'].validate(valid => {
         if (valid) {
           this.colData.type = this.infoDate.info
 
@@ -347,7 +339,7 @@ export default {
       if (index === 0) {
         return
       } else {
-        let data = this.arrayData[index]
+        const data = this.arrayData[index]
         this.arrayData[index] = this.arrayData[index - 1]
         this.arrayData[index - 1] = data
         this.$forceUpdate()
@@ -358,7 +350,7 @@ export default {
       if (index === this.arrayData.length - 1) {
         return
       } else {
-        let data = this.arrayData[index]
+        const data = this.arrayData[index]
         this.arrayData[index] = this.arrayData[index + 1]
         this.arrayData[index + 1] = data
         this.$forceUpdate()
@@ -389,14 +381,14 @@ export default {
     // 获取活动详情
     fetchData() {
       getEcActivity({ id: this.activityId }).then(res => {
-        let resData = res.data
+        const resData = res.data
         this.status = resData.status
         this.formObj.activityName = resData.activityName
         this.formObj.headImage = resData.headImage
         this.formObj.listImage = resData.listImage
         this.formObj.applyMode = resData.applyMode
         // 活动时间回显
-        let activityTime = []
+        const activityTime = []
         if (resData.activityStartTime && resData.activityEndTime) {
           activityTime.push(resData.activityStartTime)
           activityTime.push(resData.activityEndTime)
@@ -404,16 +396,16 @@ export default {
         this.$set(this.formObj, 'date', activityTime)
 
         // 报名时间回显
-        let applyTime = []
+        const applyTime = []
         if (resData.applyStartTime && resData.applyEndTime) {
           applyTime.push(resData.applyStartTime)
           applyTime.push(resData.applyEndTime)
         }
         this.$set(this.formObj, 'applyDate', applyTime)
         //  扩展功能
-        if (resData.extraSignin == 1) this.roleIds.push(1)
-        if (resData.extraSignout == 1) this.roleIds.push(2)
-        if (resData.extraSeat == 1) this.roleIds.push(3)
+        if (resData.extraSignin === 1) this.roleIds.push(1)
+        if (resData.extraSignout === 1) this.roleIds.push(2)
+        if (resData.extraSeat === 1) this.roleIds.push(3)
 
         // 活动地点回显
         this.provinceValue = resData.province
@@ -434,10 +426,10 @@ export default {
         this.formObj.cityCode = resData.cityCode
         this.formObj.area = resData.area
         this.formObj.areaCode = resData.areaCode
-        
-        this.formObj.chamberAddress.push(resData.provinceCode,resData.cityCode,resData.areaCode)
+
+        this.formObj.chamberAddress.push(resData.provinceCode, resData.cityCode, resData.areaCode)
         this.modalKey++
-        
+
         // 参加人数回显
         if (resData.isLimit === 0) {
           this.applyCount.unlimit = true
@@ -457,15 +449,16 @@ export default {
         }
         this.formObj.auditStatus = resData.auditStatus
         this.formObj.zhiboAddress = resData.zhiboAddress
-     
 
         if (resData.longitude || resData.latitude) this.onselect()
 
         // 活动介绍回显
         // this.$refs.ckeditor1.init()
-        setTimeout(() => {
+        console.log('=== resData.introduce ===', resData.introduce)
+        this.contentHtml = resData.introduce ? resData.introduce : ''
+        /* setTimeout(() => {
           this.$refs.ckeditor1.initHtml(resData.introduce ? resData.introduce : '')
-        }, 500)
+        }, 500) */
         this.formObj.introduce = resData.introduce
 
         this.formObj.invesKey = resData.invesKey
@@ -473,12 +466,12 @@ export default {
         this.formObj.sort = resData.sort
         this.formObj.labels = resData.labels
 
-        if(resData.attachment.length > 0){
-          this.formObj.attachment = resData.attachment.map((v)=>{
+        if (resData.attachment && resData.attachment.length > 0) {
+          this.formObj.attachment = resData.attachment.map(v => {
             return {
-              fileName:v.fileName,
-              name:v.fileName,
-              ossUrl:v.ossUrl
+              fileName: v.fileName,
+              name: v.fileName,
+              ossUrl: v.ossUrl
             }
           })
         }
@@ -487,12 +480,12 @@ export default {
         // this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
 
         this.arrayData = resData.dtos.map(({ title, msgAlert, lengthLimit, check, type, selects, key }) => ({ title, msgAlert, lengthLimit, check, type, selects, key }))
-        this.arrayData.forEach((v) => {
+        this.arrayData.forEach(v => {
           //  0 : 输入框  1：下拉框
-          if (v.type == 1) {
+          if (v.type === 1) {
             v.msgAlert = ''
-            let key = []
-            v.selects.forEach((j) => {
+            const key = []
+            v.selects.forEach(j => {
               key.push(j.value)
             })
             v.key = key.join(';')
@@ -510,28 +503,27 @@ export default {
     },
     // 上传文件
     uploadFile(content) {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', content.file)
-      let folder = 'government'
-      getFile2name(formData,folder).then(res=>{
-        if(res.state == 1){
-          let obj = {
-            fileName:content.file.name,
-            name:content.file.name,
-            ossUrl:res.data
+      const folder = 'government'
+      getFile2name(formData, folder).then(res => {
+        if (res.state === 1) {
+          const obj = {
+            fileName: content.file.name,
+            name: content.file.name,
+            ossUrl: res.data
           }
           this.formObj.attachment.push(obj)
-        }else{
-          const idx = this.$refs.uploadFile.uploadFiles.findIndex(item => item.uid === file.file.uid)
+        } else {
+          const idx = this.$refs.uploadFile.uploadFiles.findIndex(item => item.uid === content.file.uid)
           this.$refs.uploadFile.uploadFiles.splice(idx, 1)
           return this.$message.error('上传失败,请重试')
         }
       })
     },
     // 删除上传文件
-    handleRemoveAttachment(file, fileList){
+    handleRemoveAttachment(file) {
       this.formObj.attachment = this.formObj.attachment.filter(item => item.uid !== file.uid)
-   
     },
 
     // 上传图片校验
@@ -549,7 +541,7 @@ export default {
     },
     // 上传活动头图
     uploadHeadImage(content) {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', content.file)
       uploadPortrait(formData).then(response => {
         this.formObj.headImage = response.data.filePath
@@ -557,7 +549,7 @@ export default {
     },
     // 上传活动列表图
     uploadListImage(content) {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', content.file)
       uploadPortrait(formData).then(response => {
         this.formObj.listImage = response.data.filePath
@@ -585,7 +577,7 @@ export default {
       this.countryValue = ''
       this.countryOptions = []
     },
-    provinceChange(e) {
+    provinceChange() {
       this.resetCityAndCountryData()
       for (const key in area[this.provinceValue]) {
         this.cityOptions.push({
@@ -677,13 +669,14 @@ export default {
 
     // 编辑活动介绍
     getHtml(htmlStr) {
+      // console.log('=== htmlStr ===', htmlStr)
       this.formObj.introduce = htmlStr
     },
     onnext() {
-      if (this.status == 2 || this.status == 3) {
+      if (this.status === 2 || this.status === 3) {
         this.activeName = '2'
       } else {
-        this.$refs['form'].validate((valid) => {
+        this.$refs['form'].validate(valid => {
           if (valid) {
             this.activeName = '2'
           }
@@ -692,13 +685,13 @@ export default {
     },
     save(e) {
       this.formObj.isPublish = e
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           // 扩展功能
-          this.roleIds.forEach((v) => {
-            if (v == 1) this.formObj.extraSignin = 1
-            if (v == 2) this.formObj.extraSignout = 1
-            if (v == 3) this.formObj.extraSeat = 1
+          this.roleIds.forEach(v => {
+            if (v === 1) this.formObj.extraSignin = 1
+            if (v === 2) this.formObj.extraSignout = 1
+            if (v === 3) this.formObj.extraSeat = 1
           })
           // if (!this.areaData) {
           //   return this.$message.error('请选择省份')
@@ -708,7 +701,7 @@ export default {
           if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
             return this.$message.error('请选择参加人数')
           } else if (this.formObj.isLimit === 1) {
-            let regexp = /^[1-9]\d*$/
+            const regexp = /^[1-9]\d*$/
             if (!regexp.test(this.formObj.activityCount)) {
               return this.$message.error('参加人数为大于0的正整数')
             }
@@ -724,12 +717,16 @@ export default {
           //   return this.$message.error('活动介绍不能为空')
           // }
           this.formObj.ckey = this.ckey
+          // eslint-disable-next-line prefer-destructuring
           this.formObj['activityStartTime'] = this.formObj['date'][0]
+          // eslint-disable-next-line prefer-destructuring
           this.formObj['activityEndTime'] = this.formObj['date'][1]
 
           // 报名时间
           if (this.formObj['applyDate'] && this.formObj['applyDate'].length > 0) {
+            // eslint-disable-next-line prefer-destructuring
             this.formObj['applyStartTime'] = this.formObj['applyDate'][0]
+            // eslint-disable-next-line prefer-destructuring
             this.formObj['applyEndTime'] = this.formObj['applyDate'][1]
           } else {
             this.formObj['applyStartTime'] = null
@@ -760,18 +757,18 @@ export default {
             this.formObj['applyIds'] = this.portValue.join(',')
           }
           // 如果选择了自定义报名 但是没有选择自定义报名信息 就返回提示
-          if (this.formObj.signType == 0 && !this.arrayData.length) return this.$message.error('自定义报名表需添加报名信息才可以发布活动，若无需自定义报名表，请选择【一键报名】')
+          if (this.formObj.signType === 0 && !this.arrayData.length) return this.$message.error('自定义报名表需添加报名信息才可以发布活动，若无需自定义报名表，请选择【一键报名】')
 
           if (this.arrayData.length > 0) {
             this.formObj['dtos'] = this.arrayData
           }
 
           // 如果地址没选则去除地址信息
-          if (this.formObj.addressInfo == '') {
+          if (this.formObj.addressInfo === '') {
             this.formObj.longitude = ''
             this.formObj.latitude = ''
           }
-        
+
           getActivitySaveV1(this.formObj).then(res => {
             if (res.state === 1) {
               this.$message.success(res.msg)
@@ -798,32 +795,38 @@ export default {
     },
     // 下拉框添加选项
     onOptions() {
-      let obj = {
+      const obj = {
         value: ''
       }
       if (this.colData.selects.length >= 10) return this.$message.error('最多只能添加10个')
       this.colData.selects.push(obj)
     },
     onInfoDate() {
-      if (this.infoDate.info == '') return this.$message.error('请选择类型')
-      if (this.infoDate.info == 0 || this.infoDate.info == 1) this.dialogFormVisible = true
+      if (this.infoDate.info === '') return this.$message.error('请选择类型')
+      if (this.infoDate.info === 0 || this.infoDate.info === 1) this.dialogFormVisible = true
       this.iscustom = false
     },
     // 选择招商地区
-    handleChange(){
-      let getCheckedNodes = this.$refs.cascader.getCheckedNodes()[0]
+    handleChange() {
+      const getCheckedNodes = this.$refs.cascader.getCheckedNodes()[0]
+      // eslint-disable-next-line prefer-destructuring
       this.formObj.province = getCheckedNodes.pathLabels[0] // 省
-      this.formObj.provinceCode	 = getCheckedNodes.path[0]
+      // eslint-disable-next-line prefer-destructuring
+      this.formObj.provinceCode = getCheckedNodes.path[0]
+      // eslint-disable-next-line prefer-destructuring
       this.formObj.city = getCheckedNodes.pathLabels[1] // 市
-      this.formObj.cityCode	 = getCheckedNodes.path[1]
+      // eslint-disable-next-line prefer-destructuring
+      this.formObj.cityCode = getCheckedNodes.path[1]
+      // eslint-disable-next-line prefer-destructuring
       this.formObj.area = getCheckedNodes.pathLabels[2] // 区
+      // eslint-disable-next-line prefer-destructuring
       this.formObj.areaCode	 = getCheckedNodes.path[2]
     },
 
     // 选择标签
-    onConfirm(e){
+    onConfirm(e) {
       this.formObj.labels = e
-      if(this.formObj.labels.length > 0) this.$refs.form.validateField('labels')
+      if (this.formObj.labels.length > 0) this.$refs.form.validateField('labels')
     },
     // 预览
     onpreview() {
@@ -864,14 +867,16 @@ export default {
             src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png', // 图片路径
           })
         },
-        geometries: [{
-          id: '1', // 点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
-          styleId: 'myStyle', // 指定样式id
-          position: myLatLng, // 点标记坐标位置
-          properties: {// 自定义属性
-            title: 'marker'
+        geometries: [
+          {
+            id: '1', // 点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
+            styleId: 'myStyle', // 指定样式id
+            position: myLatLng, // 点标记坐标位置
+            properties: {// 自定义属性
+              title: 'marker'
+            }
           }
-        }]
+        ]
       })
 
       this.addressList = []
@@ -908,7 +913,7 @@ export default {
         keyword: value,
         location: this.defaultParams.map.getCenter()
       })
-        .then((result) => {
+        .then(result => {
           this.addressList = result.data || []
         })
     },
@@ -917,8 +922,8 @@ export default {
     createZuoBiao(myLatitude, myLongitude) {
       return new TMap.LatLng(myLatitude, myLongitude)
     },
-    ongetInfoList(){
-      getInfoList({status:0}).then((res)=>{
+    ongetInfoList() {
+      getInfoList({ status: 0 }).then(res => {
         this.chamberOptions = res.data || []
       })
     },
