@@ -67,9 +67,9 @@
                       @coverChange="onCoverChange(img)"
                     >
                       <template v-if="hasEditAuth">
-                        <div v-show="selectedImgIds.includes(img.id)" class="img-overlay" />
+                        <div v-show="!isCover(img) && selectedImgIds.includes(img.id)" class="img-overlay" />
                         <i v-if="!isCover(img)" class="close-icon el-icon-error" @click.stop="onDelImgs([img.id])" />
-                        <i class="radio" :class="{selected:selectedImgIds.includes(img.id)}" />
+                        <i v-if="!isCover(img)" class="radio" :class="{selected:selectedImgIds.includes(img.id)}" />
                       </template>
                     </BaseImg>
                   </template>
@@ -263,6 +263,8 @@ export default {
       return res
     },
     toggleSelect(img) {
+      if (this.isCover(img)) return
+
       const { selectedImgs } = this
       const index = selectedImgs.findIndex(v => v.id === img.id)
       if (index > -1) { // 删除
