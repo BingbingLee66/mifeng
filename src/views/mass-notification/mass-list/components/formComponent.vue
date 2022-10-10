@@ -62,7 +62,7 @@
 
 <script>
 import { distributionChambers } from '@/api/mass-notification'
-import { massNotificationType, labelTypeForm } from '../../util/label'
+import { labelTypeForm } from '../../util/label'
 import cloneDeep from 'lodash/cloneDeep'
 export default {
   name: 'FormComponent',
@@ -93,19 +93,20 @@ export default {
     }
   },
   watch: {
-    activeName(newVal) {
-      if (newVal === 'mass') {
-        this.statusList = labelTypeForm
-      } else {
-        this.statusList = massNotificationType
-      }
+    activeName() {
+      // if (newVal === 'mass') {
+      //   this.statusList = labelTypeForm
+      // } else {
+      //   this.statusList = massNotificationType
+      // }
       // 清空表单内容
       this.$refs['form'].resetFields()
     }
   },
   created() {
     this.getChamberOptions()
-    this.statusList = this.activeName === 'mass' ? cloneDeep(labelTypeForm) : cloneDeep(massNotificationType)
+    // this.statusList = this.activeName === 'mass' ? cloneDeep(labelTypeForm) : cloneDeep(massNotificationType)
+    this.statusList = cloneDeep(labelTypeForm)
     this.statusList[0].id = ''
   },
   methods: {
