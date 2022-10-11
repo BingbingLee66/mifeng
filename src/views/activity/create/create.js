@@ -8,11 +8,18 @@ import Treeselect from '@riophae/vue-treeselect'
 // import the styles
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import preview from './component/preview'
+import CustomApplyDialog from './component/custom-apply-dialog'
+import ActiveTypeDialog from './component/active-type-dialog'
+import CustomSelect from './component/custom-select'
+
 export default {
   components: {
     Ckeditor,
     Treeselect,
     preview,
+    CustomApplyDialog,
+    ActiveTypeDialog,
+    CustomSelect,
   },
   data() {
     const checkSpace = (rule, value, callback) => {
@@ -40,6 +47,8 @@ export default {
       options: [],
       // 树形下拉框 end
       activeName: '1',
+      disabledApplyBtn: true,
+      disabledGuestBtn: true,
       activityId: null,
       type: null,
       ckey: '',
@@ -49,27 +58,8 @@ export default {
       // 下拉选择 begin
       // 活动报名表参数 begin
       arrayData: [],
-      colData: {
-        title: '', // 标题
-        msgAlert: '', // 输入框提示
-        lengthLimit: '', // 输入字数限制
-        check: 1, // 是否 必填 选填
-        // 下拉框
-        selects: [
-          {
-            value: '', // 选项1
-          }, {
-            value: '', // 选项2
-          }
-        ],
-        key: '', // 参数名称，下拉框情况下多个参数请;拼接
-        type: '' // 0: 输入框  1：下拉框
-      },
-      // 信息类型
-      infoDate: {
-        info: '',
-      },
 
+      activeVisible: false,
       dialogFormVisible: false,
       editCol: false, // 是否编辑
       editIndex: 0, // 编辑索引
@@ -105,6 +95,7 @@ export default {
         liveEntranceDisplayType: 1, // 直播间入口显示类型 0 报名成功后 1 活动开始后
         liveEntranceCloseTime: '', // 直播间入口关闭时间
         linkType: 1, // 直播链接类型 1 云会播小程序 2 H5链接
+        activeType: [],
       },
       isReleActivity: false,
       roleIds: [], // 多选框 扩展功能
@@ -168,6 +159,20 @@ export default {
 
     }
   },
+  watch: {
+    formObj: {
+      handler() {
+        if (this.activeName === '1') {
+          this.disabledApplyBtn = !this.validatorStepOne()
+        }
+
+        if (this.activeName === '2') {
+          this.disabledGuestBtn = +this.formObj.signType === 0 && !this.arrayData.length
+        }
+      },
+      deep: true
+    }
+  },
   created() {
     this.ckey = this.$store.getters.ckey
     this.activityId = this.$route.query.activityId
@@ -221,101 +226,20 @@ export default {
         children: node.children
       }
     },
-    // 动态表单
-    // 取消
-    cancel1() {
-      this.dialogFormVisible = false
-      this.colData = {
-        title: '',
-        msgAlert: '',
-        lengthLimit: '',
-        check: 1,
-        selects: [
-          {
-            value: '', // 选项1
-          }, {
-            value: '', // 选项2
-          }
-        ],
-      }
-      this.editCol = false
-      this.infoDate.info = ''
-      this.$refs['f2'].resetFields()
-    },
+
     test() {
       console.log(this.valueTree)
     },
-    // 新增
-    add() {
-      let completely = false
-      if (+this.infoDate.info === 1) {
-        this.colData.selects.forEach(v => {
-          if (v.value === '') completely = true
-        })
-      }
-      if (completely) return this.$message.error('请填写选项标题')
 
-      // if (this.arrayData.length >= 6) {
-      //   this.$message({
-      //     message: '报名信息请限制在 10 个以内',
-      //     type: 'warning'
-      //   });
-      //   return
-      // }
-      if (this.colData.lengthLimit !== '' && +this.infoDate.info === 0) {
-        if (this.colData.lengthLimit < 0) {
-          this.$message({
-            message: '字数限制必须大于0',
-            type: 'warning'
-          })
-          return
-        } else if (this.colData.lengthLimit > 200 && +this.infoDate.info === 0) {
-          this.$message({
-            message: '字数限制必须小于200',
-            type: 'warning'
-          })
-          return
-        }
-      }
-      const key = []
-      if (this.colData.selects) {
-        this.colData.selects.forEach(v => {
-          key.push(v.value)
-        })
-      }
-
-      this.colData.key = key.join(';')
-
-      this.$refs['f2'].validate(valid => {
-        if (valid) {
-          this.colData.type = this.infoDate.info
-
-          if (this.editCol) {
-            // 编辑
-            this.arrayData[this.editIndex] = { ...this.colData }
-          } else {
-            // 新增
-            this.arrayData.push(
-              { ...this.colData }
-            )
-          }
-          this.cancel1()
-          return
-        } else {
-          console.log('error submit!!')
-          return
-        }
-      })
-    },
     // 删除
     del(index) {
       this.arrayData.splice(index, 1)
     },
     // 修改
     edit(index, type) {
-      this.infoDate.info = type + ''
+      this.$refs.customDialogRef.infoDate.info = type + ''
+      this.$refs.customDialogRef.colData = { ...this.arrayData[index] }
       this.dialogFormVisible = true
-      this.colData = { ...this.arrayData[index] }
       this.editCol = true
       this.editIndex = index
     },
@@ -680,40 +604,63 @@ export default {
     getHtml(htmlStr) {
       this.formObj.introduce = htmlStr
     },
-    onnext() {
-      if (+this.status === 2 || +this.status === 3) {
-        this.activeName = '2'
-      } else {
-        this.$refs['form'].validate(valid => {
-          if (valid) {
-            this.activeName = '2'
-          }
-        })
+    onPrev() {
+      switch (this.activeName) {
+        case '3':
+          this.activeName = '2'
+          break
+        case '2':
+          this.activeName = '1'
+          break
+        default:
+          this.activeName = '1'
+          break
       }
     },
-    save(e) {
-      this.formObj.isPublish = e
+    onnext() {
+      switch (this.activeName) {
+        case '1':
+          if (this.validatorStepOne()) this.activeName = '2'
+          break
+        case '2':
+          // 如果选择了自定义报名 但是没有选择自定义报名信息 就返回提示
+          if (+this.formObj.signType === 0 && !this.arrayData.length) {
+            return this.$message.error('自定义报名表需添加报名信息才可以发布活动，若无需自定义报名表，请选择【一键报名】')
+          }
+          this.activeName = '3'
+          break
+        default:
+          this.activeName = '1'
+          break
+      }
+    },
+    validatorStepOne() {
+      let res = false
       this.$refs['form'].validate(valid => {
         if (valid) {
-          // 扩展功能
-          this.roleIds.forEach(v => {
-            if (+v === 1) this.formObj.extraSignin = 1
-            if (+v === 2) this.formObj.extraSignout = 1
-            if (+v === 3) this.formObj.extraSeat = 1
-          })
           // if (!this.areaData) {
           //   return this.$message.error('请选择省份')
           // } else if (!this.areaData.hasOwnProperty('city')) {
           //   return this.$message.error('请选择城市')
           // } else
           if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
-            return this.$message.error('请选择报名对象')
-          } else if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
-            return this.$message.error('请选择参加人数')
-          } else if (this.formObj.isLimit === 1) {
+            this.$message.error('请选择报名对象')
+            res = false
+            return
+          }
+
+          if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
+            this.$message.error('请选择参加人数')
+            res = false
+            return
+          }
+
+          if (this.formObj.isLimit === 1) {
             const regexp = /^[1-9]\d*$/
             if (!regexp.test(this.formObj.applyCount)) {
-              return this.$message.error('参加人数为大于0的正整数')
+              this.$message.error('参加人数为大于0的正整数')
+              res = false
+              return
             }
           }
           // } else if (!this.formObj.introduce) {
@@ -726,82 +673,91 @@ export default {
           //   this.activeName='2'
           //   return this.$message.error('活动介绍不能为空')
           // }
-          this.formObj.ckey = this.ckey
-          this.formObj['activityStartTime'] = this.formObj['date'][0]
-          this.formObj['activityEndTime'] = this.formObj['date'][1]
+          res = true
+        }
+      })
+      return res
+    },
+    save(e) {
+      this.formObj.isPublish = e
 
-          // 报名时间
-          if (this.formObj['applyDate'] && this.formObj['applyDate'].length > 0) {
-            this.formObj['applyStartTime'] = this.formObj['applyDate'][0]
-            this.formObj['applyEndTime'] = this.formObj['applyDate'][1]
-          } else {
-            this.formObj['applyStartTime'] = null
-            this.formObj['applyEndTime'] = null
-          }
+      // 扩展功能
+      this.roleIds.forEach(v => {
+        if (+v === 1) this.formObj.extraSignin = 1
+        if (+v === 2) this.formObj.extraSignout = 1
+        if (+v === 3) this.formObj.extraSeat = 1
+      })
 
-          // if (this.areaData) {
-          //   this.formObj.province = this.areaData.province.name
-          //   this.formObj.provinceCode = this.areaData.province.code
-          //   if (this.areaData.hasOwnProperty('city')) {
-          //     this.formObj.city = this.areaData.city.name
-          //     this.formObj.cityCode = this.areaData.city.code
-          //   }
-          //   if (this.areaData.hasOwnProperty('country')) {
-          //     this.formObj.area = this.areaData.country.name
-          //     this.formObj.areaCode = this.areaData.country.code
-          //   }
-          // }
+      this.formObj.ckey = this.ckey
+      this.formObj['activityStartTime'] = this.formObj['date'][0]
+      this.formObj['activityEndTime'] = this.formObj['date'][1]
 
-          if (this.activityId) {
-            this.formObj['id'] = this.activityId
-          }
+      // 报名时间
+      if (this.formObj['applyDate'] && this.formObj['applyDate'].length > 0) {
+        this.formObj['applyStartTime'] = this.formObj['applyDate'][0]
+        this.formObj['applyEndTime'] = this.formObj['applyDate'][1]
+      } else {
+        this.formObj['applyStartTime'] = null
+        this.formObj['applyEndTime'] = null
+      }
 
-          if (this.valueTree.length > 0) {
-            this.formObj['applyIds'] = this.valueTree.join(',')
-          }
-          if (this.portValue.length > 0) {
-            this.formObj['applyIds'] = this.portValue.join(',')
-          }
-          // 如果选择了自定义报名 但是没有选择自定义报名信息 就返回提示
-          if (+this.formObj.signType === 0 && !this.arrayData.length) return this.$message.error('自定义报名表需添加报名信息才可以发布活动，若无需自定义报名表，请选择【一键报名】')
+      // if (this.areaData) {
+      //   this.formObj.province = this.areaData.province.name
+      //   this.formObj.provinceCode = this.areaData.province.code
+      //   if (this.areaData.hasOwnProperty('city')) {
+      //     this.formObj.city = this.areaData.city.name
+      //     this.formObj.cityCode = this.areaData.city.code
+      //   }
+      //   if (this.areaData.hasOwnProperty('country')) {
+      //     this.formObj.area = this.areaData.country.name
+      //     this.formObj.areaCode = this.areaData.country.code
+      //   }
+      // }
 
-          if (this.arrayData.length > 0) {
-            this.formObj['dtos'] = this.arrayData
-          }
-          if (this.formObj.competence) {
-            this.formObj['competence'] = Number(this.formObj['competence'])
-          }
-          // 如果地址没选则去除地址信息
-          if (this.formObj.addressInfo === '') {
-            this.formObj.province = ''
-            this.formObj.city = ''
-            this.formObj.area = ''
-            this.formObj.longitude = ''
-            this.formObj.latitude = ''
-          }
+      if (this.activityId) {
+        this.formObj['id'] = this.activityId
+      }
 
-          const params = { ...this.formObj }
+      if (this.valueTree.length > 0) {
+        this.formObj['applyIds'] = this.valueTree.join(',')
+      }
+      if (this.portValue.length > 0) {
+        this.formObj['applyIds'] = this.portValue.join(',')
+      }
 
-          if (!(this.ruleCkeys.includes(this.ckey) || !this.ckey) || !this.formObj.link?.trim()) {
-            delete params.liveEntranceDisplayType
-            delete params.liveEntranceCloseTime
-          }
+      if (this.arrayData.length > 0) {
+        this.formObj['dtos'] = this.arrayData
+      }
+      if (this.formObj.competence) {
+        this.formObj['competence'] = Number(this.formObj['competence'])
+      }
+      // 如果地址没选则去除地址信息
+      if (this.formObj.addressInfo === '') {
+        this.formObj.province = ''
+        this.formObj.city = ''
+        this.formObj.area = ''
+        this.formObj.longitude = ''
+        this.formObj.latitude = ''
+      }
 
-          createActivity(params).then(res => {
-            if (res.state === 1) {
-              this.$message.success(res.msg)
-              this.$router.push({
-                name: '活动列表',
-                params: {
-                  type: this.activityId ? this.type : e
-                }
-              })
-            } else {
-              this.$message.error(res.msg)
+      const params = { ...this.formObj }
+
+      if (!(this.ruleCkeys.includes(this.ckey) || !this.ckey) || !this.formObj.link?.trim()) {
+        delete params.liveEntranceDisplayType
+        delete params.liveEntranceCloseTime
+      }
+
+      createActivity(params).then(res => {
+        if (res.state === 1) {
+          this.$message.success(res.msg)
+          this.$router.push({
+            name: '活动列表',
+            params: {
+              type: this.activityId ? this.type : e
             }
           })
         } else {
-          return false
+          this.$message.error(res.msg)
         }
       })
     },
@@ -812,23 +768,6 @@ export default {
           type: this.activityId ? this.type : 1
         }
       })
-    },
-    onCancelDate() {
-      this.infoDate.info = ''
-      this.iscustom = false
-    },
-    // 下拉框添加选项
-    onOptions() {
-      const obj = {
-        value: ''
-      }
-      if (this.colData.selects.length >= 10) return this.$message.error('最多只能添加10个')
-      this.colData.selects.push(obj)
-    },
-    onInfoDate() {
-      if (this.infoDate.info === '') return this.$message.error('请选择类型')
-      if (+this.infoDate.info === 0 || +this.infoDate.info === 1) this.dialogFormVisible = true
-      this.iscustom = false
     },
 
     // 预览

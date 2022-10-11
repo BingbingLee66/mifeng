@@ -1,25 +1,13 @@
 <template>
   <div class="app-container">
     <preview ref="preview" />
-    <!-- <el-tabs v-model="activeName">
-      <el-tab-pane
-        v-bind:label="activityId ? '编辑活动' : '创建活动'"
-        name="1"
-      ></el-tab-pane>
-      <el-tab-pane label="活动介绍" name="3"></el-tab-pane>
-      <el-tab-pane label="活动报名表" name="2"></el-tab-pane>
-    </el-tabs> -->
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="活动信息" name="1" />
+      <el-tab-pane :disabled="disabledApplyBtn" label="报名信息" name="2" />
+      <el-tab-pane :disabled="disabledGuestBtn" label="活动嘉宾" name="3" />
+    </el-tabs>
 
-    <div v-show="activeName == '1'">
-      <div class="active-top">
-        <div class="active-title">{{ activityId ? '编辑活动 (1/2)' : '创建活动 (1/2)' }}</div>
-        <div class="active-con">
-          <span class="active-bule">活动信息</span>
-          一一
-          <span>报名信息</span>
-        </div>
-      </div>
-      <!-- 内容 -->
+    <div v-show="activeName === '1'">
       <div class="create-container mydiv">
         <el-form
           ref="form"
@@ -53,7 +41,7 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                 />
               </el-form-item>
             </el-col>
@@ -70,7 +58,7 @@
                   range-separator="至"
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                 />
               </el-form-item>
             </el-col>
@@ -88,7 +76,7 @@
                     v-model="provinceValue"
                     placeholder="请选择省份"
                     @change="provinceChange"
-                    :disabled="status == 2 || status == 3"
+                    :disabled="status === 2 || status === 3"
                   >
                     <el-option
                       v-for="item in provinceOptions"
@@ -99,7 +87,7 @@
                     </el-option>
                   </el-select> -->
                   <div class="address-Obscuration">
-                    <el-input v-model="formObj.addressInfo" style="width:450px;" :disabled="status == 2 || status == 3" clearable placeholder="请输入地址" @input="addressChange">
+                    <el-input v-model="formObj.addressInfo" style="width:450px;" :disabled="status === 2 || status === 3" clearable placeholder="请输入地址" @input="addressChange">
                       <i
                         slot="suffix"
                         class="el-icon-location-information"
@@ -118,7 +106,7 @@
                   v-model="cityValue"
                   placeholder="请选择市"
                   @change="cityChange"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                 >
                   <el-option
                     v-for="item in cityOptions"
@@ -133,7 +121,7 @@
                   v-model="countryValue"
                   placeholder="请选择区"
                   @change="countryChange"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                 >
                   <el-option
                     v-for="item in countryOptions"
@@ -152,7 +140,7 @@
                   show-word-limit
                   maxlength="50"
                   placeholder="详细地址，限50字内"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                 ></el-input> -->
 
                 <!-- 腾讯地图 -->
@@ -166,12 +154,12 @@
               <el-form-item label="报名对象：" required>
                 <el-checkbox
                   v-model="applyObject.unlimit"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                   @change="handleCheckTarget($event, 0)"
                 >不限</el-checkbox>
                 <el-checkbox
                   v-model="applyObject.limit"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                   @change="handleCheckTarget($event, 1)"
                 >
                   {{ ckey ? "限本商会成员" : "限云商会成员" }}
@@ -179,7 +167,7 @@
                 <el-checkbox
                   v-if="ckey"
                   v-model="applyObject.port"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                   @change="handleCheckTarget($event, 2)"
                 >
                   限定本商会内指定职位
@@ -187,7 +175,7 @@
                 <el-checkbox
                   v-if="ckey"
                   v-model="applyObject.department"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                   @change="handleCheckTarget($event, 3)"
                 >
                   限本商会内指定部门
@@ -204,7 +192,7 @@
                   v-model="portValue"
                   multiple
                   placeholder="请选择"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                 >
                   <el-option
                     v-for="item in portSelect"
@@ -243,7 +231,7 @@
                     no-options-text="暂时没有部门"
                     no-results-text="没找到部门"
                     :default-expand-level="3"
-                    :disabled="status == 2 || status == 3"
+                    :disabled="status === 2 || status === 3"
                   />
                   <!-- <treeselect-value :value="valueTree" /> -->
                 </div>
@@ -256,12 +244,12 @@
               <el-form-item label="参加人数：" required>
                 <el-checkbox
                   v-model="applyCount.unlimit"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                   @change="handleCheckNum($event, 0)"
                 >不限</el-checkbox>
                 <el-checkbox
                   v-model="applyCount.limit"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                   @change="handleCheckNum($event, 1)"
                 >限</el-checkbox>
                 <el-input
@@ -270,7 +258,7 @@
                   style="width: 200px"
                   placeholder="大于0的整数"
                   maxlength="9"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                 >
                   <template slot="append">人</template>
                 </el-input>
@@ -282,12 +270,12 @@
               <el-form-item label="报名审核：" required>
                 <el-checkbox
                   v-model="auditStatus.unlimit"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                   @change="handleAuditStatus( 0)"
                 >无需审核</el-checkbox>
                 <el-checkbox
                   v-model="auditStatus.limit"
-                  :disabled="status == 2 || status == 3"
+                  :disabled="status === 2 || status === 3"
                   @change="handleAuditStatus( 1)"
                 >需审核</el-checkbox>
               </el-form-item>
@@ -299,9 +287,9 @@
             <el-col style="width: 700px; height: 40px;margin-top: -38px;">
               <el-form-item label="扩展功能：">
                 <el-checkbox-group v-model="roleIds">
-                  <el-checkbox :disabled="status == 2 || status == 3" :label="1">签到</el-checkbox>
-                  <el-checkbox :disabled="status == 2 || status == 3" :label="2">签退</el-checkbox>
-                  <el-checkbox :disabled="status == 2 || status == 3" :label="3">座位表</el-checkbox>
+                  <el-checkbox :disabled="status === 2 || status === 3" :label="1">签到</el-checkbox>
+                  <el-checkbox :disabled="status === 2 || status === 3" :label="2">签退</el-checkbox>
+                  <el-checkbox :disabled="status === 2 || status === 3" :label="3">座位表</el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
             </el-col>
@@ -324,6 +312,7 @@
                     v-if="formObj.headImage"
                     :src="formObj.headImage"
                     class="pic"
+                    alt=""
                   >
                   <i v-else class="el-icon-plus uploader-pic-icon" />
                 </el-upload>
@@ -351,6 +340,7 @@
                     v-if="formObj.listImage"
                     :src="formObj.listImage"
                     class="lpic"
+                    alt=""
                   >
                   <i v-else class="el-icon-plus uploader-lpic-icon" />
                 </el-upload>
@@ -359,6 +349,22 @@
                 </div>
               </el-form-item>
             </el-col>
+
+            <el-row>
+              <el-col>
+                <el-form-item
+                  label="活动类型："
+                  prop="activeType"
+                  class="upload-style"
+                >
+                  <CustomSelect
+                    v-model="formObj.activeType"
+                    @click.native="activeVisible = true"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
           </el-row>
 
           <el-row>
@@ -407,7 +413,7 @@
               </el-col>
               <div class="tips" style="width: 600px; padding-left: 120px">
                 <div>提示：</div>
-                <div style="margin: 5px 0px">若不输入链接，则不显示入口；</div>
+                <div style="margin: 5px 0">若不输入链接，则不显示入口；</div>
                 <div>在发布活动后，也可以修改链接。</div>
               </div>
             </el-row>
@@ -445,54 +451,34 @@
               </el-col>
             </el-row>
           </div>
-
-          <el-row>
-            <el-col style="width: 600px; padding-left: 120px">
-              <!-- <el-button type="primary" v-dbClick @click="save">保存</el-button>
-              <el-button @click="cancel">取消</el-button> -->
-              <el-button @click="onpreview">预览</el-button>
-              <el-button type="primary" @click="onnext">下一步</el-button>
-
-            </el-col>
-          </el-row>
         </el-form>
       </div>
     </div>
 
-    <div v-show="activeName == '2'">
-      <div>
-        <div class="active-top">
-          <div class="active-title">{{ activityId ? '编辑活动 (2/2)' : '创建活动 (2/2)' }}</div>
-          <div class="active-con">
-            <span>活动信息</span>
-            一一
-            <span class="active-bule">报名信息</span>
-          </div>
+    <div v-show="activeName === '2'">
+      <div class="sgin-up">
+        <div class="sgin-way">
+          <div class="sgin-left">报名方式：</div>
+          <el-radio-group v-model="formObj.signType">
+            <el-radio :disabled="status === 2 || status === 3" :label="0">自定义报名表</el-radio>
+            <el-radio :disabled="status === 2 || status === 3" :label="1">一键报名</el-radio>
+          </el-radio-group>
         </div>
-        <div class="sgin-up">
-          <div class="sgin-way">
-            <div class="sgin-left">报名方式：</div>
-            <el-radio-group v-model="formObj.signType">
-              <el-radio :disabled="status == 2 || status == 3" :label="0">自定义报名表</el-radio>
-              <el-radio :disabled="status == 2 || status == 3" :label="1">一键报名</el-radio>
-            </el-radio-group>
+        <div class="sgin-surface">报名表</div>
+        <div class="sgin-way">
+          <div class="sgin-left">到场人数
+            <span><i class="el-icon-question" @click="isPresent = true" /></span>
           </div>
-          <div class="sgin-surface">报名表</div>
-          <div class="sgin-way">
-            <div class="sgin-left">到场人数
-              <span><i class="el-icon-question" @click="isPresent = true" /></span>
-            </div>
-            <el-radio-group v-model="formObj.arriveType">
-              <el-radio :disabled="status == 2 || status == 3" :label="1">需填写</el-radio>
-              <el-radio :disabled="status == 2 || status == 3" :label="0">无需填写</el-radio>
-            </el-radio-group>
-          </div>
+          <el-radio-group v-model="formObj.arriveType">
+            <el-radio :disabled="status === 2 || status === 3" :label="1">需填写</el-radio>
+            <el-radio :disabled="status === 2 || status === 3" :label="0">无需填写</el-radio>
+          </el-radio-group>
         </div>
       </div>
 
       <div class="create-container mydiv">
         <el-form
-          v-show="formObj.signType == 0"
+          v-show="+formObj.signType === 0"
           ref="form1"
           :rules="rules"
           label-position="right"
@@ -554,7 +540,7 @@
             <el-form-item>
               <el-button
                 type="primary"
-                :disabled="arrayData.length >= 6 ||(status == 2 || status == 3)"
+                :disabled="arrayData.length >= 6 ||(status === 2 || status === 3)"
                 @click="iscustom = true"
               >+自定义报名信息</el-button>
             </el-form-item>
@@ -573,14 +559,14 @@
                   </div>
                   <div class="sign-con">
                     <el-input
-                      v-if="item.type == 0"
+                      v-if="+item.type === 0"
                       show-word-limit
                       :maxlength="item.lengthLimit"
                       :placeholder="item.msgAlert"
                       :disabled="true"
                     />
                     <el-input
-                      v-if="item.type == 1"
+                      v-if="+item.type === 1"
                       show-word-limit
                       :placeholder="item.selects[0].value"
                       :disabled="true"
@@ -602,147 +588,54 @@
           </div>
         </el-form>
       </div>
-      <!-- 自定义信息 -->
-      <el-dialog
-        :title="(editCol ? '编辑' : '新增') + '自定义信息'"
-        :visible.sync="dialogFormVisible"
-        width="500px"
-        :close-on-click-modal="false"
-        @close="cancel1"
-      >
-        <el-form ref="f2" :model="colData" label-width="120px">
-          <el-form-item label="信息类型:" :rules="[{ required: true }]">
-            <el-select v-model="infoDate.info" disabled placeholder="请选择">
-              <el-option label="输入框" value="0" />
-              <el-option label="下拉框" value="1" />
-            </el-select>
-          </el-form-item>
-          <!-- 输入框 -->
-          <div v-if="infoDate.info == 0">
-            <el-form-item
-              label="标题"
-              prop="title"
-              :rules="[{ required: true, message: '不能为空' }]"
-            >
-              <el-input
-                v-model="colData.title"
-                autocomplete="off"
-                placeholder="标题，15字内"
-                :maxlength="15"
-              />
-            </el-form-item>
-            <el-form-item
-              label="输入框提示"
-              prop="msgAlert"
-              :rules="[{ required: true, message: '不能为空' }]"
-            >
-              <el-input
-                v-model="colData.msgAlert"
-                autocomplete="off"
-                placeholder="输入框提示文字，15字内"
-                :maxlength="15"
-              />
-            </el-form-item>
-            <el-form-item label="输入字数限制" prop="lengthLimit">
-              <el-input
-                v-model="colData.lengthLimit"
-                autocomplete="off"
-                placeholder="不限制"
-                type="number"
-              />
-              <br>不填写，则默认不限制
-            </el-form-item>
-          </div>
-          <!-- 下拉框 -->
-          <div v-else>
-            <el-form-item
-              label="标题"
-              prop="title"
-              :rules="[{ required: true, message: '不能为空' }]"
-            >
-              <el-input
-                v-model="colData.title"
-                autocomplete="off"
-                placeholder="标题，15字内"
-                :maxlength="15"
-              />
-            </el-form-item>
-            <el-form-item
-              v-for="(item,index) in colData.selects"
-              :key="index"
-              :label="`选项${index + 1}`"
-              :rules="[{ required: true }]"
-            >
-              <el-input
-                v-model="item.value"
-                autocomplete="off"
-                placeholder="选项，10字内"
-                :maxlength="10"
-              />
-            </el-form-item>
-            <div class="add-option" @click="onOptions">+添加选项</div>
-          </div>
+    </div>
 
-          <el-form-item label="是否必填" prop="check">
-            <el-radio-group v-model="colData.check">
-              <el-radio :label="1">必填</el-radio>
-              <el-radio :label="0">选填</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="cancel1">取 消</el-button>
-          <el-button type="primary" @click="add">确 定</el-button>
-        </div>
-      </el-dialog>
+    <div v-show="activeName === '3'">活动嘉宾</div>
 
+    <div class="btn-group">
       <el-row>
-        <el-col style="width: 600px; padding-left: 30px;margin-top:20px;">
-          <!-- <el-button type="primary" v-dbClick @click="save">保存</el-button>
-          <el-button @click="cancel">取消</el-button> -->
-          <el-button @click="activeName = '1'">上一步</el-button>
-          <el-button @click="save(0)">保存，暂不发布</el-button>
-          <el-button type="primary" @click="save(1)">保存并发布</el-button>
+        <el-col style="width: 600px; padding-left: 120px">
+          <el-button v-if="activeName === '1'" @click="onpreview">预览</el-button>
+
+          <el-button v-if="activeName !== '1'" @click="onPrev">上一步</el-button>
+          <el-button v-if="activeName !== '3'" :disabled="activeName === '1' ? disabledApplyBtn : disabledGuestBtn" type="primary" @click="onnext">下一步</el-button>
+
+          <template v-if="activeName === '3'">
+            <el-button @click="save(0)">保存，暂不发布</el-button>
+            <el-button type="primary" @click="save(1)">保存并发布</el-button>
+          </template>
         </el-col>
       </el-row>
-      <!-- 新增自定义信息 -->
-      <el-dialog
-        title="新增自定义信息"
-        :visible.sync="iscustom"
-        width="25%"
-        center
-        :close-on-click-modal="false"
-        :before-close="onCancelDate"
-      >
-        <el-form :model="infoDate" label-width="100px">
-          <el-form-item label="信息类型:" :rules="[{ required: true }]">
-            <el-select v-model="infoDate.info" placeholder="请选择">
-              <el-option label="输入框" value="0" />
-              <el-option label="下拉框" value="1" />
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="onCancelDate">取 消</el-button>
-          <el-button type="primary" @click="onInfoDate">保存</el-button>
-
-        </span>
-      </el-dialog>
-      <!-- 到场人数提示 -->
-      <el-dialog
-        title="到场人数设置后，小程序显示"
-        :visible.sync="isPresent"
-        width="30%"
-        center
-      >
-        <div class="Present-img">
-          <img src="https://ysh-cdn.kaidicloud.com/prod/png/info.png" class="pic">
-        </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="isPresent = false">知道了</el-button>
-        </span>
-      </el-dialog>
     </div>
+
+    <!--  选择活动类型  -->
+    <ActiveTypeDialog :visible.sync="activeVisible" :active-type="formObj.activeType" @confirm="val => formObj.activeType = val" />
+
+    <!-- 自定义信息 -->
+    <CustomApplyDialog
+      ref="customDialogRef"
+      :edit-col.sync="editCol"
+      :dialog-form-visible.sync="dialogFormVisible"
+      :iscustom.sync="iscustom"
+      :array-data="arrayData"
+      @edit="val => arrayData[editIndex] = val"
+      @add="val => arrayData.push(val)"
+    />
+
+    <!-- 到场人数提示 -->
+    <el-dialog
+      title="到场人数设置后，小程序显示"
+      :visible.sync="isPresent"
+      width="30%"
+      center
+    >
+      <div class="Present-img">
+        <img src="https://ysh-cdn.kaidicloud.com/prod/png/info.png" class="pic" alt="">
+      </div>
+      <template slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="isPresent = false">知道了</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -879,21 +772,6 @@
   font-style: normal;
   color: #666666;
   font-size: 14px;
-}
-.active-top{
-  margin-top: 10px;
-  margin-left:30px;
-  .active-title{
-    font-size: 23px;
-    font-weight: 700;
-  }
-  .active-con{
-    margin-top: 20px;
-    font-weight: 700;
-    .active-bule{
-      color: #02a8f0;
-    }
-  }
 }
 .sgin-up{
   margin-top: 20px;
