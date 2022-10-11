@@ -1,3 +1,4 @@
+<!-- eslint-disable no-unused-vars -->
 <template>
   <div class="page">
     <el-row :gutter="20">
@@ -55,6 +56,20 @@
             <el-dialog :visible.sync="previewSeatDialogShow" width="40%">
               <img :src="activity.seating" style="width:100%">
             </el-dialog>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <el-row v-if="authAlbum===1">
+      <el-col :span="9">
+        <el-card class="activity-card" shadow="never">
+          <div class="board flex-x-between-center">
+            <div class="board-left">
+              <div class="board-title">会员图片</div>
+              <div class="desc"><span class="people-num">{{ albumNum }}</span>人关联了活动</div>
+              <el-button type="text" class="mt20" @click="$router.push({ path: '/activity/member-album', query: { id: activityId } })">查看会员相册列表</el-button>
+            </div>
           </div>
         </el-card>
       </el-col>
@@ -130,11 +145,16 @@ export default {
       },
       previewSeatDialogShow: false,
       imgLoading: false,
+      albumNum: 0,
+      authAlbum: 0
     }
   },
   computed: {
     activityId() {
       return +this.$route.query.activityId
+    },
+    ckey() {
+      return this.$store.getters.ckey
     }
   },
   created() {
@@ -144,10 +164,13 @@ export default {
     async getActivityInfo() {
       const { data } = await getChamberActivityInfoById(this.activityId)
       data.id = this.activityId
+      this.albumNum = data.numberOfAssociated || 0
       this.activity = data
+      this.authAlbum = data.authAlbum
     },
     formatDate,
     // 上传前校验
+    // eslint-disable-next-line no-unused-vars
     beforeUpload(file, index) {
       if (!['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type)) {
         this.$message.error('上传图片只能是 JPG 或 PNG 或 GIF格式!')
@@ -162,7 +185,7 @@ export default {
     async upload(content) {
       this.imgLoading = true
 
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('activityId', this.activityId)
       formData.append('multipartFile', content.file)
 
@@ -209,6 +232,14 @@ export default {
     font-weight: 700;
     margin-bottom: 25px;
     @include ellipsis(2);
+  }
+
+  .desc {
+    font-size: 16px;
+  }
+
+  .people-num {
+    font-size: 30px;
   }
 
   .board-item {

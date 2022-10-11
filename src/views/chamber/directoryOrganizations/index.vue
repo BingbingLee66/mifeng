@@ -183,7 +183,7 @@
       </el-table-column>
       <el-table-column label="入驻状态" width="120px">
         <template slot-scope="{ row }">
-          {{ row.auditStatus === 1 ? "已认证" : "待入驻" }}
+          {{ stateMap.get(row.auditStatus) }}
         </template>
       </el-table-column>
       <el-table-column label="主要人员" width="120px">

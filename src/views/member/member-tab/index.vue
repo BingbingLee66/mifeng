@@ -1,12 +1,12 @@
 <template>
   <div class="container">
     <ys-form
-      :formConfig="formConfig"
-      :formItem="formItem"
-      :formObj="formObj"
+      :form-config="formConfig"
+      :form-item="formItem"
+      :form-obj="formObj"
       @query="queryData"
       @reset="resetData"
-    ></ys-form>
+    />
     <el-row>
       <el-button
         icon="el-icon-folder-add"
@@ -19,10 +19,10 @@
       <span class="text-gray ml-10">给会员打标签后，可实现快速筛选</span>
     </el-row>
     <ys-table
-      :tableConfig="tableConfig"
-      :tableColumn="tableColumn"
-      :tableData="tableData"
-      :pageData="pageData"
+      :table-config="tableConfig"
+      :table-column="tableColumn"
+      :table-data="tableData"
+      :page-data="pageData"
       @handleCurrentChange="handleCurrentChange"
       @handleSizeChange="handleSizeChange"
     >
@@ -41,18 +41,18 @@
             v-if="row.data.memberLabelVOList.length > 3"
             class="text-blue"
             @click="handleMoreLabel(row.data)"
-            >查看更多</span
-          >
+          >查看更多</span>
         </div>
       </template>
       <template v-slot:operate="row">
         <span class="text-blue ml-10" @click="handleEdit(row.data)">
           编辑
         </span>
-        <span class="text-red-cur ml-10" @click="handleDel(row.data)"
-          >删除</span
-        >
-        <span class="text-gray" v-if="row.data.status === 2">平台冻结</span>
+        <span
+          class="text-red-cur ml-10"
+          @click="handleDel(row.data)"
+        >删除</span>
+        <span v-if="row.data.status === 2" class="text-gray">平台冻结</span>
         <el-tooltip
           v-if="row.data.status == 2"
           class="item"
@@ -60,7 +60,7 @@
           :content="row.data.frozenReasons"
           placement="top"
         >
-          <i class="el-icon-question"></i>
+          <i class="el-icon-question" />
         </el-tooltip>
       </template>
     </ys-table>
@@ -68,8 +68,8 @@
     <!-- 查看更多标签 -->
     <more-label
       :more-visible.sync="moreVisible"
-      :labelData="moreData"
-      :showGroupName="true"
+      :label-data="moreData"
+      :show-group-name="true"
       @close="handleCloseMore"
     />
     <!-- 新建标签组 -->
@@ -89,27 +89,27 @@
 </template>
 
 <script>
-import ysTable from "@/components/ys-table";
-import ysForm from "@/components/ys-form";
-import addLabelGroup from "@/components/Label/add-label-group";
-import editLabelGroup from "@/components/Label/edit-label-group";
-import moreLabel from "@/components/Label/more-label";
-import data from "./data";
-import Labels from "@/api/labels/labels";
+import ysTable from '@/components/ys-table'
+import ysForm from '@/components/ys-form'
+import addLabelGroup from '@/components/Label/add-label-group'
+import editLabelGroup from '@/components/Label/edit-label-group'
+import moreLabel from '@/components/Label/more-label'
+import data from './data'
+import Labels from '@/api/labels/labels'
 
 export default {
   components: {
-    "ys-table": ysTable,
-    "ys-form": ysForm,
-    "add-label-group": addLabelGroup,
-    "edit-label-group": editLabelGroup,
-    "more-label": moreLabel,
+    'ys-table': ysTable,
+    'ys-form': ysForm,
+    'add-label-group': addLabelGroup,
+    'edit-label-group': editLabelGroup,
+    'more-label': moreLabel,
   },
   data() {
     return {
       // 签到设置
       formConfig: {
-        type: "query",
+        type: 'query',
         inline: true,
       },
       formObj: data.formData,
@@ -127,7 +127,7 @@ export default {
       },
       labelVisible: false,
       labelData: {
-        name: "",
+        name: '',
         memberLabelVOList: [],
       },
       rowData: [],
@@ -135,49 +135,53 @@ export default {
       moreVisible: false,
       addVisible: false,
       editVisible: false,
-    };
+    }
+  },
+
+  created() {
+    this.fetchData(1)
   },
   methods: {
     async fetchData(e) {
-      this.tableConfig.loading = true;
-      const { labelGroupName, labelName } = this.formObj;
-      this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage;
-      const { currentpage, limit } = this.pageData;
+      this.tableConfig.loading = true
+      const { labelGroupName, labelName } = this.formObj
+      this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage
+      const { currentpage, limit } = this.pageData
       const params = {
         labelGroupName,
         labelName,
         pageNum: currentpage,
         pageSize: limit,
         selectType: 3,
-      };
-      let res = await Labels.getLabelGroupLst(params);
-      if (res.state !== 1) return;
-      this.tableData = res.data.list;
+      }
+      let res = await Labels.getLabelGroupLst(params)
+      if (res.state !== 1) return
+      this.tableData = res.data.list
       /*      this.tableData = this.tableData.forEach((item) => {
         item.memberLabelVOList = item.memberLabelVOList || [];
       }); */
-      this.pageData.total = res.data.totalRows;
-      this.tableConfig.loading = false;
+      this.pageData.total = res.data.totalRows
+      this.tableConfig.loading = false
     },
 
     queryData(data) {
-      this.formObj = { ...data };
-      this.fetchData(1);
+      this.formObj = { ...data }
+      this.fetchData(1)
     },
 
     resetData() {
-      this.formObj = { ...data.formData };
-      this.fetchData(1);
+      this.formObj = { ...data.formData }
+      this.fetchData(1)
     },
 
     handleSizeChange(val) {
-      this.pageData.limit = val;
-      this.fetchData(1);
+      this.pageData.limit = val
+      this.fetchData(1)
     },
 
     handleCurrentChange(val) {
-      this.pageData.currentpage = val;
-      this.fetchData();
+      this.pageData.currentpage = val
+      this.fetchData()
     },
 
     /** 查看更多标签 */
@@ -185,75 +189,71 @@ export default {
       let moreData = {
         name: rowData.name,
         labeList: [],
-      };
+      }
       moreData.labeList = rowData.memberLabelVOList.map((item) => {
         return {
           id: item.id,
           name: item.name,
-        };
-      });
-      this.moreData = moreData;
-      this.moreVisible = true;
+        }
+      })
+      this.moreData = moreData
+      this.moreVisible = true
     },
 
     handleCloseMore() {
-      this.moreVisible = false;
+      this.moreVisible = false
     },
 
     /** 新建标签组 */
     handleShowAdd() {
-      this.addVisible = true;
+      this.addVisible = true
     },
 
     handleCloseAdd() {
-      this.addVisible = false;
+      this.addVisible = false
     },
 
     handleConfirmAdd() {
-      this.addVisible = false;
-      this.fetchData(1);
+      this.addVisible = false
+      this.fetchData(1)
     },
 
     /** 编辑标签组 */
     handleEdit(rowData) {
-      this.$refs.eleEdit.setData(rowData);
-      this.editVisible = true;
+      this.$refs.eleEdit.setData(rowData)
+      this.editVisible = true
     },
 
     handleCloseEdit() {
-      this.editVisible = false;
+      this.editVisible = false
     },
 
     handleConfirmEdit() {
-      this.editVisible = false;
-      this.fetchData(1);
+      this.editVisible = false
+      this.fetchData(1)
     },
 
     handleDel(rowData) {
-      console.log(rowData);
+      console.log(rowData)
       this.$confirm(
-        "确定删除该标签组吗？删除后，会员将自动卸下标签；",
-        "删除标签组",
+        '确定删除该标签组吗？删除后，会员将自动卸下标签；',
+        '删除标签组',
         {
-          confirmButtonText: "确认",
-          cancelButtonText: "取消",
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
         }
       )
-        .then(async () => {
+        .then(async() => {
           const res = await Labels.delLabelGroup({
             ids: [rowData.id],
-          });
+          })
           if (res.state === 1) {
-            this.$message.success(res.msg);
-            this.fetchData(1);
+            this.$message.success(res.msg)
+            this.fetchData(1)
           }
         })
-        .catch(() => {});
+        .catch(() => {})
     },
   },
-
-  created() {
-    this.fetchData(1);
-  },
-};
+}
 </script>

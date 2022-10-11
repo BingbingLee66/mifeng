@@ -26,7 +26,7 @@
           :model="formObj"
           :rules="rules"
           label-position="right"
-          label-width="120px"
+          label-width="180px"
         >
           <el-row>
             <el-col style="width: 600px; height: 50px">
@@ -162,7 +162,7 @@
           </el-row>
 
           <el-row>
-            <el-col style="width: 700px; height: 20px">
+            <el-col style="height: 20px">
               <el-form-item label="报名对象：" required>
                 <el-checkbox
                   v-model="applyObject.unlimit"
@@ -369,6 +369,20 @@
             </el-col>
           </el-row>
 
+          <div class="album-row">
+            <el-row>
+              <el-col>
+                <el-form-item label="用户图片直播关联权限：">
+                  <el-radio-group v-model="formObj.authAlbum" @change="onReleChange">
+                    <el-radio :label="1">可关联</el-radio>
+                    <el-radio :label="0">不可关联</el-radio>
+                  </el-radio-group>
+                  <div class="tips">开启后，参与人员可将图片直播关联到 活动详情 的 会员图片 展示</div>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+
           <div v-if="ruleCkeys.includes(ckey) || (!ckey)">
             <el-row>
               <el-col>
@@ -404,6 +418,29 @@
                   <el-radio v-model="formObj.competence" label="0">不限</el-radio>
                   <el-radio v-if="ckey" v-model="formObj.competence" label="1">限本商会会员</el-radio>
                   <el-radio v-else v-model="formObj.competence" label="2">限云商会会员</el-radio>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row v-if="formObj.link && formObj.link.trim()">
+              <el-col>
+                <el-form-item label="入口显示：" prop="liveEntranceCloseTime">
+                  <div>
+                    入口开放时间：
+                    <el-radio-group v-model="formObj.liveEntranceDisplayType">
+                      <el-radio :label="0">报名成功后</el-radio>
+                      <el-radio :label="1">活动开始后</el-radio>
+                    </el-radio-group>
+                  </div>
+                  <div>
+                    <span style="color: #F56C6C;padding: 5px; font-size: 16px;">*</span>入口关闭时间：
+                    <el-date-picker
+                      v-model="formObj.liveEntranceCloseTime"
+                      format="yyyy-MM-dd HH:mm:ss"
+                      type="datetime"
+                      value-format="timestamp"
+                    />
+                  </div>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -567,7 +604,7 @@
       </div>
       <!-- 自定义信息 -->
       <el-dialog
-        :title="(this.editCol ? '编辑' : '新增') + '自定义信息'"
+        :title="(editCol ? '编辑' : '新增') + '自定义信息'"
         :visible.sync="dialogFormVisible"
         width="500px"
         :close-on-click-modal="false"

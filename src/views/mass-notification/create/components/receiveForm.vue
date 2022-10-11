@@ -111,7 +111,7 @@
               <el-input v-model="query.attr" class="search-input" :placeholder="placeholder" />
             </el-form-item>
 
-            <el-button @click="getNumberList(true)">查询</el-button>
+            <el-button @click="querySubmit()">查询</el-button>
           </el-form>
 
           <!-- <el-form-item :label="labelComputed" v-if="form.receive === -1">
@@ -357,6 +357,12 @@ export default {
       this.form.department.splice(this.form.department.indexOf(item => item.id === id), 1)
       // 手动设置tree树 setChecked(key/data, checked, deep) 接收三个参数，1. 勾选节点的 key 或者 data 2. boolean 类型，节点是否选中 3. boolean 类型，是否设置子节点 ，默认为 false
       this.$refs.tree.setChecked(id, false, true)
+    },
+    // 点击查询按钮
+    querySubmit() {
+      this.page = 1
+      this.pageSize = 10
+      this.getNumberList(true)
     },
     /** 请求 */
     // 拉取部门

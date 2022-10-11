@@ -2,6 +2,20 @@
 
 
 ## [Released]
+## [2.30.0] - 2022-10-10
+### Added
+- 【图片直播1.1】总后台-创建活动[1105](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1105)
+- 【图片直播1.1】总后台-图片直播列表[1106](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1106)
+- 【图片直播1.1】总后台-图片直播详情[1107](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1107)
+- 【图片直播1.1】总后台-活动审核详情[1108](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1108)
+- 【图片直播1.1】总后台-会员图片直播[1109](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1109)
+- 【图片直播1.1】总后台-举报列表[1110](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1110)
+- 【图片直播1.1】商会后台-图片直播列表[1111](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1111)
+- 【图片直播1.1】商会后台-图片直播详情[1112](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1112)
+- 【图片直播1.1】商会后台-活动审核详情-图片直播详情[1113](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1113)
+
+
+## [Released]
 ## [2.29.0] - 2022-09-29
 ### Added
 - 【人脉社交1.0】总后台-身份审核-通过驳回功能[1121](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1121)

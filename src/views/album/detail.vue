@@ -7,13 +7,15 @@
         <div class="flex-x-start-center">
           <el-input :value="query.fileName" class="input-item" placeholder="图片名称" prefix-icon="el-icon-search" @input="onQueryChange({fileName:$event,imgId:'',isFinished:false})" />
           展示状态
-          <el-select :value="query.auditStatus" class="input-item" @change="onQueryChange({auditStatus:$event,imgId:'',isFinished:false})">
+          <el-select v-model="queryStatus" class="input-item" @change="onQueryChange({auditStatus:$event,imgId:'',isFinished:false})">
             <el-option value="" label="全部" />
             <el-option value="1" label="公开" />
             <el-option value="0" label="隐藏" />
+            <el-option value="3" label="已冻结" />
           </el-select>
         </div>
         <el-upload
+          v-if="isFirstPerson"
           action="#"
           accept="image/jpg,image/png,image/jpeg,image/bmp"
           multiple
@@ -60,13 +62,15 @@
                       class="img-item"
                       :operations="!img.auditStatus||isCover(img)?['preview']:['preview', 'cover']"
                       :tag="generateTag(img)"
+                      :edit-auth="isFirstPerson || hasEditAuth"
                       @click="toggleSelect(img)"
-                      @tagClick="!isCover(img) && toggleImgStatus([img.id], +!img.auditStatus)"
                       @coverChange="onCoverChange(img)"
                     >
-                      <div v-show="selectedImgIds.includes(img.id)" class="img-overlay" />
-                      <i v-if="!isCover(img)" class="close-icon el-icon-error" @click.stop="onDelImgs([img.id])" />
-                      <i class="radio" :class="{selected:selectedImgIds.includes(img.id)}" />
+                      <template v-if="hasEditAuth">
+                        <div v-show="!isCover(img) && selectedImgIds.includes(img.id)" class="img-overlay" />
+                        <i v-if="!isCover(img)" class="close-icon el-icon-error" @click.stop="onDelImgs([img.id])" />
+                        <i v-if="!isCover(img)" class="radio" :class="{selected:selectedImgIds.includes(img.id)}" />
+                      </template>
                     </BaseImg>
                   </template>
 
@@ -81,11 +85,23 @@
       </div>
 
     </div>
-    <div class="footer flex-x-start-center">
-      <el-button :disabled="handleDisabled" :class="{red:!handleDisabled}" @click="onDelImgs(selectedImgIds)">删除</el-button>
-      <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 0)">隐藏</el-button>
-      <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 1)">公开</el-button>
-      <el-button @click="downloadImgs">下载</el-button>
+    <div class="footer flex-x-end-center">
+      <template v-if="hasEditAuth">
+        <template v-if="isFirstPerson">
+          <el-button :disabled="handleDisabled" :class="{red:!handleDisabled}" @click="onDelImgs(selectedImgIds)">删除</el-button>
+          <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 0)">隐藏</el-button>
+          <el-button :disabled="handleDisabled" @click="toggleImgStatus(selectedImgIds, 1)">公开</el-button>
+        </template>
+        <template v-else>
+          <el-button @click="toggleAlbumStatus">{{ albumDetail.status === 1 ? '冻结相册' : '解冻相册' }}</el-button>
+          <el-button :disabled="handleFreezeDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 3)">冻结照片</el-button>
+          <el-button :disabled="handleOverFreezeDisabled" @click="toggleImgFrozeeStatus(selectedImgIds, 1)">解冻照片</el-button>
+        </template>
+        <el-button @click="downloadImgs">下载</el-button>
+      </template>
+      <template v-else>
+        <el-button @click="toggleRelevance">取消关联</el-button>
+      </template>
     </div>
 
   </div>
@@ -93,7 +109,15 @@
 
 <script>
 import { formatDateTime } from '@/utils/date'
-import { getAlbumImgList, delAlbumImgs, changeAlbumImgStatus, getAlbumDetail } from '@/api/album'
+import {
+  getAlbumImgList,
+  delAlbumImgs,
+  changeAlbumImgStatus,
+  getAlbumDetail,
+  cancelReleAlbum,
+  changeBatchAlbumFreezeStatus,
+  changeAlbumFreezeStatus
+} from '@/api/album'
 import { downloadFile } from '@/utils'
 
 export default {
@@ -107,9 +131,9 @@ export default {
       albumDetail: {
         imgCount: 0
       },
+      queryStatus: '',
       query: {
         pageSize: 20,
-        auditStatus: '',
         fileName: '',
         imgId: '',
         isFinished: false
@@ -117,7 +141,7 @@ export default {
       loading: false,
       uploadingList: [],
       imgList: [],
-      selectedImgs: []
+      selectedImgs: [],
     }
   },
   computed: {
@@ -132,6 +156,31 @@ export default {
     handleDisabled() {
       const { selectedImgs, isCover } = this
       return !selectedImgs.length || selectedImgs.some(isCover)
+    },
+    handleFreezeDisabled() {
+      const { selectedImgs } = this
+      return !selectedImgs.length || selectedImgs.some(v => v.status === 3) || !selectedImgs.some(v => v.status === 1)
+    },
+    handleOverFreezeDisabled() {
+      const { selectedImgs } = this
+      return !selectedImgs.length || selectedImgs.some(v => v.status === 1) || !selectedImgs.some(v => v.status === 3)
+    },
+    hasEditAuth() {
+      const { editAuth } = this.$route.query
+
+      if (typeof editAuth === 'number') return !!editAuth
+      if (typeof editAuth === 'string') return !!Number(editAuth)
+
+      return true
+    },
+    queryType() {
+      return this.$route.query.type
+    },
+    isFirstPerson() {
+      return +this.queryType === 0
+    },
+    albumCkey() {
+      return this.$route.query.albumCkey || ''
     }
   },
   created() {
@@ -149,6 +198,14 @@ export default {
     },
     onQueryChange(e) {
       Object.assign(this.query, e)
+      if (e.auditStatus === '3') {
+        delete this.query.auditStatus
+        this.query.status = 3
+      } else {
+        delete this.query.status
+        this.query.auditStatus = e.auditStatus
+      }
+
       if (!e.imgId && this.selectedImgs.length) this.selectedImgs = []
       clearTimeout(this.timer)
       this.timer = setTimeout(() => this.fetchData(), 300)
@@ -159,11 +216,11 @@ export default {
       return Object.assign(img, { $date: `${dateStr} ${timeStr}:00 ~ ${+timeStr + 1}:00` })
     },
     async fetchData() {
-      const { query, loading, $route: { query: { id }}} = this
+      const { query, loading, $route: { query: { id } } } = this
       if (query.isFinished || loading) return
       this.loading = true
       try {
-        const { data: { list }} = await getAlbumImgList({
+        const { data: { list } } = await getAlbumImgList({
           ...query,
           albumId: id
         })
@@ -206,6 +263,8 @@ export default {
       return res
     },
     toggleSelect(img) {
+      if (this.isCover(img)) return
+
       const { selectedImgs } = this
       const index = selectedImgs.findIndex(v => v.id === img.id)
       if (index > -1) { // 删除
@@ -215,15 +274,60 @@ export default {
       }
     },
     async onDelImgs(imgIds) {
-      await this.$confirm('删除后无法恢复', '是否继续删除？', {
-        confirmButtonText: '确认删除',
-        cancelButtonText: '取消'
-      })
-      const { state } = await delAlbumImgs({ imgIds })
-      if (state === 1) {
-        this.imgList = this.imgList.filter(v => !imgIds.includes(v.id))
-        this.selectedImgs = []
-        this.albumDetail.imgCount = this.albumDetail.imgCount - imgIds.length
+      try {
+        await this.$confirm('删除后无法恢复', '是否继续删除？', {
+          confirmButtonText: '确认删除',
+          cancelButtonText: '取消'
+        })
+        const { state } = await delAlbumImgs({ imgIds })
+        if (state === 1) {
+          this.imgList = this.imgList.filter(v => !imgIds.includes(v.id))
+          this.selectedImgs = []
+          this.albumDetail.imgCount = this.albumDetail.imgCount - imgIds.length
+        }
+      } catch (err) {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      }
+    },
+    // 切换相册冻结状态
+    async toggleAlbumStatus() {
+      const freezeParams = {
+        0: {
+          title: '是否解冻相册？',
+          content: '',
+          status: 1,
+        },
+        1: {
+          title: '冻结相册',
+          content: '冻结相册后前台无法显示该相册内容，是否冻结？',
+          status: 0,
+        }
+      }[this.albumDetail.status]
+
+      try {
+        await this.$confirm(freezeParams.content, freezeParams.title)
+
+        const { state, msg } = await changeAlbumFreezeStatus({ id: this.$route.query.id, status: freezeParams.status })
+        if (state) {
+          this.$message.success('操作成功')
+          this.queryAlbumDetail()
+        } else {
+          this.$message.error(msg)
+        }
+      } catch (err) {
+        let msg = null
+        if (this.albumDetail.status === 0) {
+          msg = '已取消解冻'
+        } else {
+          msg = '已取消冻结'
+        }
+        this.$message({
+          type: 'info',
+          message: msg
+        })
       }
     },
     // 切换图片状态
@@ -238,18 +342,77 @@ export default {
         this.selectedImgs = []
       }
     },
+    // 切换冻结图片状态
+    async toggleImgFrozeeStatus(imgIds, type) {
+      const freezeParams = {
+        1: {
+          title: '是否解冻图片？',
+          content: '',
+        },
+        3: {
+          title: '冻结图片',
+          content: '冻结图片后前台无法显示该图片内容，是否冻结？',
+        }
+      }[type]
+      try {
+        await this.$confirm(freezeParams.content, freezeParams.title)
+        const { state } = await changeBatchAlbumFreezeStatus({ imgIds: imgIds.join(','), status: type })
+        if (state === 1) {
+          this.$message.success('操作成功')
+          this.imgList.forEach(v => {
+            if (imgIds.includes(v.id)) {
+              this.$set(v, 'status', type)
+            }
+          })
+          this.selectedImgs = []
+        }
+      } catch (err) {
+        let msg = null
+        if (type === 1) {
+          msg = '已取消解冻'
+        } else {
+          msg = '已取消冻结'
+        }
+        this.$message({
+          type: 'info',
+          message: msg
+        })
+      }
+    },
+    async toggleRelevance() {
+      await this.$confirm('', '确定取消关联？')
+
+      const { state, msg } = await cancelReleAlbum({
+        albumCkey: this.albumCkey,
+      })
+
+      if (state) {
+        this.$message.success('操作成功')
+        setTimeout(() => {
+          this.$router.go(-1)
+        }, 500)
+      } else {
+        this.$message.error(msg)
+      }
+    },
     // 生成标签
     generateTag(img) {
       if (this.isCover(img)) return { name: '封面', type: 'success' }
-      if (+img.auditStatus === 0) return { name: '公开' }
-      if (+img.auditStatus === 1) return { name: '取消公开', type: 'info' }
+
+      if (+img.status === 3) {
+        return { name: '已冻结', type: 'danger' }
+      } else if (+img.auditStatus === 0) {
+        return { name: '隐藏', type: 'info' }
+      } else {
+        return { name: '公开' }
+      }
     },
     // 是否为封面
     isCover(img) {
       return +img.useType === 1
     },
     // 上传前校验
-    beforeUpload(file, index) {
+    beforeUpload(file) {
       if (
         !['image/jpeg', 'image/jpg', 'image/png', 'image/bmp'].includes(file.type) ||
         !/(jpeg)|(jpg)|(png)|(bmp)$/i.test(file.name)
@@ -264,7 +427,7 @@ export default {
       }
     },
     // 超出1000张
-    onExceed(e) {
+    onExceed() {
       this.$message.error(`图片数量超过${this.albumDetail.maxImgCount}张`)
     },
     onUpload({ file }) {

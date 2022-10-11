@@ -19,11 +19,39 @@ export const getAlbumList = params => request({
   params
 })
 
+// 个人相册：置顶|取消置顶
+export const updateAlbumTop = data => request({
+  url: '/api/ec/ysh-stats-album/album-relation-top',
+  method: 'put',
+  data
+})
+
+// 个人相册：取消关联
+export const cancelReleAlbum = data => request({
+  url: '/api/ec/ysh-stats-album/album-disassociate',
+  method: 'put',
+  data
+})
+
 // 修改相册数据
 export const modifyAlbumData = data => request({
   url: '/api/ec/ysh-stats-album/album-data-update',
   method: 'post',
   data
+})
+
+// 相册 隐藏|公开
+export const auditAlbum = data => request({
+  url: '/api/ec/ysh-album/album-audit',
+  method: 'put',
+  data
+})
+
+// 相册删除
+export const deleteAlbum = params => request({
+  url: '/api/ec/ysh-album/album-delete',
+  method: 'delete',
+  params
 })
 
 // 相册冻结 | 解冻
@@ -49,6 +77,13 @@ export const delAlbumImgs = data => request({
 // 隐藏 | 公开图片
 export const changeAlbumImgStatus = data => request({
   url: '/api/ec/ysh-album/album-img-audit',
+  method: 'put',
+  data
+})
+
+// 相册下的图片批量 冻结|解冻
+export const changeBatchAlbumFreezeStatus = data => request({
+  url: '/api/ec/ysh-album/album-img-frozen',
   method: 'put',
   data
 })

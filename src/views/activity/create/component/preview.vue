@@ -1,78 +1,88 @@
 <template>
-  <div @click.stop="hide" class="preview-container flex-x-center-center" v-if="detailVisible">
+  <div v-if="detailVisible" class="preview-container flex-x-center-center" @click.stop="hide">
     <div class="right">
       <!-- 头部图片 -->
       <div class="right-out">活动详情</div>
-      <img src="@/assets/img/close.png" class="my-close" @click="hide"/>
-      <img class="right-bg" src="@/assets/img/phone.png" />
-      <div class="right-content ">
-        <div class="right-top">
-         <img
-            v-if="formObj.headImage"
-            :src="formObj.headImage"
-            class="pic"
-          />
-      </div>
-        <div class="content">
-        
-          <!-- 标题 -->
-          <div class="active-title"> 
-            <div class="title-left" >{{formObj.activityName}}</div>
-            <div class="title-right">
-              <div><i class="el-icon-share"></i></div>
-              <div style=" color: #c62134;font-size:12px;">分享</div>
-            </div>
+      <img src="@/assets/img/close.png" class="my-close" @click="hide">
+      <img class="right-bg" src="@/assets/img/phone.png">
+      <div class="container-wrapper">
+        <div class="right-content ">
+          <div class="right-top">
+            <img
+              v-if="formObj.headImage"
+              :src="formObj.headImage"
+              class="pic"
+            >
           </div>
-          <!-- 时间 -->
-          <div class="active-Date">
-            <div class="Date-info">
-              <div class="info-apply">
-                <div class="apply-dian">·</div>
-                报名时间:
-                </div>
-              <div v-show="applyDate.length">
-                <span>{{applyDate[0]}}</span>
-                <span>~</span>
-                <span>{{applyDate[1]}}</span>
-              </div>
-            </div>
-            <div class="Date-info">
-              <div class="info-apply">
-                 <div class="apply-dian" style="color:#bc822c">·</div>
-                活动时间:
-              </div>
-              <div v-show="date.length">
-                <span>{{date[0]}}</span>
-                <span>~</span>
-                <span>{{date[1]}}</span>
-              </div>
-            </div>
-            <div class="Date-info">
-              <div class="info-apply">
-                 <div class="apply-dian" style="color:#dc5015">·</div>
-                活动地点:
-              </div>
-              <div class="info-site">{{formObj.province + formObj.city +formObj.area + formObj.addressInfo}}</div>
-            </div>
-          </div>
-          <div class="active-middle">
-            <!-- 账户详情 -->
-            <div class="active-data">
-              <div class="active-left">
-                  <img class="active-avatar" :src="systemLogo ? systemLogo : imgUrl">
-              </div>
-              <div class="active-right">
-                <div class="right-cham">{{ chamberName ? chamberName : '凯迪云商会总后台管理系统' }}</div>
-                <div class="right-member">已入驻200名会员</div>
-              </div>
-            </div>
-             <img src="https://ysh-cdn.kaidicloud.com/prod/png/active.png" class="pic"  />
-          </div>
-          <div class="active-introduce">活动介绍</div>
+          <div class="content">
 
-           <div class="phone-article-content" id="my-phone-article-content" v-html="formObj.introduce"></div>
+            <!-- 标题 -->
+            <div class="active-title">
+              <div class="title-left">{{ formObj.activityName }}</div>
+              <div class="title-right">
+                <div><i class="el-icon-share" /></div>
+                <div style=" color: #c62134;font-size:12px;">分享</div>
+              </div>
+            </div>
+            <!-- 时间 -->
+            <div class="active-Date">
+              <div class="Date-info">
+                <div class="info-apply">
+                  <div class="apply-dian">·</div>
+                  报名时间:
+                </div>
+                <div v-show="applyDate.length">
+                  <span>{{ applyDate[0] }}</span>
+                  <span>~</span>
+                  <span>{{ applyDate[1] }}</span>
+                </div>
+              </div>
+              <div class="Date-info">
+                <div class="info-apply">
+                  <div class="apply-dian" style="color:#bc822c">·</div>
+                  活动时间:
+                </div>
+                <div v-show="date.length">
+                  <span>{{ date[0] }}</span>
+                  <span>~</span>
+                  <span>{{ date[1] }}</span>
+                </div>
+              </div>
+              <div class="Date-info">
+                <div class="info-apply">
+                  <div class="apply-dian" style="color:#dc5015">·</div>
+                  活动地点:
+                </div>
+                <div class="info-site">{{ formObj.province + formObj.city +formObj.area + formObj.addressInfo }}</div>
+              </div>
+            </div>
+            <div class="active-middle">
+              <!-- 账户详情 -->
+              <div class="active-data">
+                <div class="active-left">
+                  <img class="active-avatar" :src="systemLogo ? systemLogo : imgUrl">
+                </div>
+                <div class="active-right">
+                  <div class="right-cham">{{ chamberName ? chamberName : '凯迪云商会总后台管理系统' }}</div>
+                  <div class="right-member">已入驻200名会员</div>
+                </div>
+              </div>
+              <img src="https://ysh-cdn.kaidicloud.com/prod/png/active.png" class="pic">
+              <div class="coverLabel">
+                <div class="activeLabel-box">
+                  <div class="activeLabel">活动详情</div>
+                  <div class="line" />
+                </div>
+                <div v-if="formObj.authAlbum ==1" class="defaultLabel">会员图片</div>
+                <div class="defaultLabel">座位号</div>
+              </div>
+            </div>
+            <div class="active-introduce">活动介绍</div>
+
+            <div id="my-phone-article-content" class="phone-article-content" v-html="formObj.introduce" />
+          </div>
+
         </div>
-       
       </div>
     </div>
   </div>
@@ -86,61 +96,60 @@ export default {
   data() {
     return {
       detailVisible: false,
-      formObj:{},
-      activeName:'1',
-      applyDate:[], //报名时间：
-      date:[], //活动时间：
-      imgUrl:imgUrl,
-    };
+      formObj: {},
+      activeName: '1',
+      applyDate: [], // 报名时间：
+      date: [], // 活动时间：
+      imgUrl,
+    }
   },
   computed: {
     ...mapGetters(['chamberName', 'systemLogo'])
   },
   methods: {
-      async open(formObj){
-        this.applyDate = []
-        this.date = []
-        this.formObj = formObj
-        if(formObj.applyDate.length > 0){
-          this.applyDate.push(this.getYMDHMS(formObj.applyDate[0]))
-          this.applyDate.push(this.getYMDHMS(formObj.applyDate[1]))
-        }
-         
-        if(formObj.date.length > 0){
-          this.date.push(this.getYMDHMS(formObj.date[0]))
-          this.date.push(this.getYMDHMS(formObj.date[1]))
-        }
-        this.show()
-        
-      }, 
+    async open(formObj) {
+      this.applyDate = []
+      this.date = []
+      this.formObj = formObj
+      if (formObj.applyDate.length > 0) {
+        this.applyDate.push(this.getYMDHMS(formObj.applyDate[0]))
+        this.applyDate.push(this.getYMDHMS(formObj.applyDate[1]))
+      }
 
-      //时间戳转年月日时分秒
-      getYMDHMS (timestamp) {
-         timestamp = Number(timestamp)
-          let time = new Date(timestamp)
-          let year = time.getFullYear()
-          let month = time.getMonth() + 1
-          let date = time.getDate()
-          let hours = time.getHours()
-          let minute = time.getMinutes()
-          let second = time.getSeconds()
+      if (formObj.date.length > 0) {
+        this.date.push(this.getYMDHMS(formObj.date[0]))
+        this.date.push(this.getYMDHMS(formObj.date[1]))
+      }
+      this.show()
+    },
 
-          if (month < 10) { month = '0' + month }
-          if (date < 10) { date = '0' + date }
-          if (hours < 10) { hours = '0' + hours }
-          if (minute < 10) { minute = '0' + minute }
-          if (second < 10) { second = '0' + second }
-          return year + '-' + month + '-' + date + ' ' + hours + ':' + minute + ':' + second
-      },
-      show(){
-          this.detailVisible=true;
-      },
-      hide(){
-           this.detailVisible=false;
-      },
+    // 时间戳转年月日时分秒
+    getYMDHMS(timestamp) {
+      timestamp = Number(timestamp)
+      const time = new Date(timestamp)
+      const year = time.getFullYear()
+      let month = time.getMonth() + 1
+      let date = time.getDate()
+      let hours = time.getHours()
+      let minute = time.getMinutes()
+      let second = time.getSeconds()
+
+      if (month < 10) { month = '0' + month }
+      if (date < 10) { date = '0' + date }
+      if (hours < 10) { hours = '0' + hours }
+      if (minute < 10) { minute = '0' + minute }
+      if (second < 10) { second = '0' + second }
+      return year + '-' + month + '-' + date + ' ' + hours + ':' + minute + ':' + second
+    },
+    show() {
+      this.detailVisible = true
+    },
+    hide() {
+      this.detailVisible = false
+    },
 
   },
-};
+}
 </script>
 <style lang="scss" >
 
@@ -152,7 +161,6 @@ export default {
   top: 0;
   bottom: 0;
   z-index: 1001;
-
 
   .right-bg,
   .right-content,
@@ -183,6 +191,34 @@ export default {
     width: 100%;
     height: 100%;
   }
+  .coverLabel{
+    position:relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    font-weight: 550;
+    color: #323232;
+    background-color: #fff;
+    top: -136px;
+  }
+  .activeLabel{
+    font-size: 19px;
+    padding: 5px 0;
+    color: #c62134;
+    font-weight: 550;
+    transform:scale(0.70);
+  }
+  .defaultLabel{
+    transform:scale(0.70);
+  }
+  .line{
+    margin: 1px auto;
+    border: #c62134 1px solid;
+    background-color: #c62134;
+    border-radius: 4px;
+    width: 50%;
+  }
   .right-out{
     position: absolute;
     top: 8%;
@@ -199,11 +235,10 @@ export default {
   }
   .right-content {
       margin-top: 110px ;
-    //   padding: 0px 26px;
       height: 600px;
       overflow-y: scroll;
       overflow-x: visible;
-     z-index: 102;
+      z-index: 102;
     .content{
         padding: 0px 30px 0px 40px;
     }
@@ -220,7 +255,12 @@ export default {
         overflow: hidden;
     }
   }
-   
+   .container-wrapper{
+      overflow:hidden
+    }
+  .right-content::-webkit-scrollbar {
+      display:none
+    }
   .phone-article-content {
     width: 100%;
     position: relative;
@@ -231,7 +271,6 @@ export default {
     overflow: hidden;
     border: none !important;
   }
-
 
   #my-phone-article-content{
     width: 100%;
@@ -289,7 +328,7 @@ export default {
       // justify-content: space-between;
       color: #888;
       margin-bottom: 5px;
-   
+
       .info-apply{
         color: #323232;
         margin-right: 10px;
@@ -328,7 +367,7 @@ export default {
       .active-left{
         width: 40px;
         height: 40px;
-        
+
         .active-avatar{
           width: 100%;
           height: 100%;

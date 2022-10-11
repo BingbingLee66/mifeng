@@ -11,15 +11,15 @@
       >
         <el-form-item label="用户ID">
           <el-input
-            style="width: 199px"
             v-model="query.mulValue"
+            style="width: 199px"
             placeholder="请输入ID"
           />
         </el-form-item>
         <el-form-item label="用户名">
           <el-input
-            style="width: 199px"
             v-model="query.uname"
+            style="width: 199px"
             placeholder="请输入用户名"
           />
         </el-form-item>
@@ -59,7 +59,7 @@
             filterable
             clearable
             collapse-tags
-          ></el-cascader>
+          />
         </el-form-item>
         <el-form-item>
           <div slot="label">
@@ -76,7 +76,7 @@
             filterable
             clearable
             collapse-tags
-          ></el-cascader>
+          />
         </el-form-item>
         <el-form-item label="供需标签">
           <el-select
@@ -103,7 +103,7 @@
             :props="{ multiple: true }"
             :collapse-tags="true"
             clearable
-          ></el-cascader>
+          />
         </el-form-item>
         <el-form-item :span="12" label="状态">
           <el-select v-model="query.status" placeholder="请选择操作行为">
@@ -130,7 +130,7 @@
             type="primary"
             :actionid="getId('', '查询')"
             @click="fetchData($event)"
-            >查询
+          >查询
           </el-button>
         </el-form-item>
         <!-- <el-form-item label="">
@@ -201,8 +201,7 @@
               v-if="scope.row.platformTag.length > 3"
               class="text-blue"
               @click="handleMoreLabel(scope.row.platformTag)"
-              >查看更多</span
-            >
+            >查看更多</span>
           </div>
         </template>
       </el-table-column>
@@ -222,8 +221,7 @@
               v-if="scope.row.chamberTag.length > 3"
               class="text-blue"
               @click="handleMoreLabel(scope.row.chamberTag)"
-              >查看更多</span
-            >
+            >查看更多</span>
           </div>
         </template>
       </el-table-column>
@@ -243,8 +241,7 @@
               v-if="scope.row.bridgeLabels.length > 3"
               class="text-blue"
               @click="handleMorebridgeLabels(scope.row)"
-              >查看更多</span
-            >
+            >查看更多</span>
           </div>
         </template>
       </el-table-column>
@@ -264,8 +261,7 @@
               v-if="scope.row.tradeBridges.length > 3"
               class="text-blue"
               @click="handleMoretradeBridges(scope.row)"
-              >查看更多</span
-            >
+            >查看更多</span>
           </div>
         </template>
       </el-table-column>
@@ -330,9 +326,9 @@
     <!-- 查看更多标签 -->
     <more-label
       :more-visible.sync="moreVisible"
-      :labelData="moreData"
-      :showGroupName="false"
-      :showGroupType="moreType"
+      :label-data="moreData"
+      :show-group-name="false"
+      :show-group-type="moreType"
       @close="handleCloseMore"
       @remove="handleRemoveLabelConfirm"
     />
@@ -340,7 +336,7 @@
     <attach-label
       ref="eleAttach"
       :attach-visible.sync="attachVisible"
-      :isMember="false"
+      :is-member="false"
       @close="handleCloseAttach"
       @confirm="handleConfirmAttach"
     />

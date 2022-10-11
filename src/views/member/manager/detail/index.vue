@@ -35,8 +35,7 @@
               <span v-else-if="member.registerType == 2">商会邀请</span>
               <span
                 v-else-if="member.registerType == 3 || member.registerType == 4"
-                >会员邀请</span
-              >
+              >会员邀请</span>
               <span v-else>空</span>
             </el-col>
           </el-row>
@@ -70,8 +69,8 @@
             <tr align="center" height="45">
               <td width="24%" rowspan="15">
                 <div class="head_portrait">
-                  <img v-if="userInfo.uavatar" :src="userInfo.uavatar" />
-                  <img v-else src="@/assets/img/nologo.png" />
+                  <img v-if="userInfo.uavatar" :src="userInfo.uavatar">
+                  <img v-else src="@/assets/img/nologo.png">
                 </div>
               </td>
               <td width="8%">用户名</td>
@@ -82,17 +81,18 @@
             <tr align="center" height="45">
               <td width="8%">联系电话</td>
               <td width="30%" colspan="3">
-                <span v-for="(item, index) in telephones" :key="index"
-                  >{{ item.phone
-                  }}{{ index === telephones.length - 1 ? "" : "," }}</span
-                >
+                <span
+                  v-for="(item, index) in telephones"
+                  :key="index"
+                >{{ item.phone
+                }}{{ index === telephones.length - 1 ? "" : "," }}</span>
               </td>
             </tr>
             <tr
-              align="center"
-              height="45"
               v-for="(item, index) in contactAddress"
               :key="index"
+              align="center"
+              height="45"
             >
               <td width="8%">地址{{ index + 1 }}</td>
               <td width="30%" colspan="3">
@@ -129,8 +129,7 @@
                 <el-button
                   type="text"
                   @click="resumeDetail(userInfo.introduction)"
-                  >详情</el-button
-                >
+                >详情</el-button>
               </td>
             </tr>
             <!-- <tr align="center" height="45">
@@ -264,9 +263,10 @@
               <td width="20%">{{ member.joinedTs }}</td>
               <td width="8%">营业执照</td>
               <td width="20%">
-                <el-button type="text" @click="licenseDetail(member)"
-                  >详情</el-button
-                >
+                <el-button
+                  type="text"
+                  @click="licenseDetail(member)"
+                >详情</el-button>
               </td>
               <td width="8%">企业职位</td>
               <td width="20%" style="border: 1px solid #dcdfe6">
@@ -303,9 +303,10 @@
             class="d-btn-box"
           >
             <el-col :offset="10" :span="8">
-              <el-button type="primary" @click="approved(member)"
-                >通过</el-button
-              >
+              <el-button
+                type="primary"
+                @click="approved(member)"
+              >通过</el-button>
               <el-button @click="rejectRemark(member)">驳回</el-button>
             </el-col>
           </div>
@@ -313,10 +314,10 @@
       </el-tab-pane>
       <el-tab-pane label="会员标签" name="2">
         <ys-table
-          :tableConfig="{}"
-          :tableColumn="tableColumn"
-          :tableData="labelData"
-          :pageData="pageData"
+          :table-config="{}"
+          :table-column="tableColumn"
+          :table-data="labelData"
+          :page-data="pageData"
           @handleCurrentChange="handleMemberCurrentChange"
           @handleSizeChange="handlMembereSizeChange"
         >
@@ -329,49 +330,51 @@
       </el-tab-pane>
       <el-tab-pane label="供需标签" name="3">
         <ys-table
-          :tableConfig="{}"
-          :tableColumn="tableColumn1"
-          :tableData="supplyData"
-          :pageData="pageData1"
+          :table-config="{}"
+          :table-column="tableColumn1"
+          :table-data="supplyData"
+          :page-data="pageData1"
           @handleCurrentChange="handleSupplyCurrentChange"
           @handleSizeChange="handleSupplySizeChange"
-        >
-        </ys-table>
+        />
       </el-tab-pane>
       <el-tab-pane label="行业标签" name="4">
         <ys-table
-          :tableConfig="{}"
-          :tableColumn="tableColumn2"
-          :tableData="industryData"
-          :pageData="pageData2"
+          :table-config="{}"
+          :table-column="tableColumn2"
+          :table-data="industryData"
+          :page-data="pageData2"
           @handleCurrentChange="handleIndustryCurrentChange"
           @handleSizeChange="handleIndustrySizeChange"
-        >
-        </ys-table>
+        />
       </el-tab-pane>
     </el-tabs>
 
     <el-dialog title="身份证照" :visible.sync="idCardVisible" width="50%">
       <el-row>身份证头像面</el-row>
-      <el-row
-        ><img class="idcard-prv" :src="idCardImage.frontOfIdCard"
-      /></el-row>
+      <el-row><img
+        class="idcard-prv"
+        :src="idCardImage.frontOfIdCard"
+      ></el-row>
       <el-row>身份证国徽面</el-row>
-      <el-row
-        ><img class="idcard-prv" :src="idCardImage.backOfIdCard"
-      /></el-row>
+      <el-row><img
+        class="idcard-prv"
+        :src="idCardImage.backOfIdCard"
+      ></el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click.native="idCardVisible = false"
-          >确定</el-button
-        >
+        <el-button
+          type="primary"
+          @click.native="idCardVisible = false"
+        >确定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="营业执照" :visible.sync="licenseVisible" width="50%">
-      <el-row><img class="idcard-prv" :src="licenseImage" /></el-row>
+      <el-row><img class="idcard-prv" :src="licenseImage"></el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click.native="licenseVisible = false"
-          >确定</el-button
-        >
+        <el-button
+          type="primary"
+          @click.native="licenseVisible = false"
+        >确定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="个人履历" :visible.sync="resumeVisible" width="50%">
@@ -379,9 +382,10 @@
         <div class="text-detail">{{ resume }}</div>
       </el-row>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click.native="resumeVisible = false"
-          >确定</el-button
-        >
+        <el-button
+          type="primary"
+          @click.native="resumeVisible = false"
+        >确定</el-button>
       </span>
     </el-dialog>
     <el-dialog
@@ -396,8 +400,7 @@
         <el-button
           type="primary"
           @click.native="companyIntroductionVisible = false"
-          >确定</el-button
-        >
+        >确定</el-button>
       </span>
     </el-dialog>
     <el-dialog title="驳回理由" :visible.sync="rejectVisible" width="30%">

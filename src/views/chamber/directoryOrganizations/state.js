@@ -3,7 +3,7 @@
  * @param {*} data
  */
 function conversionObj(data) {
-  let obj = {}
+  const obj = {}
   if (Array.isArray(data)) {
     data.forEach(item => {
       if (item.value !== undefined || item.value !== null) {
@@ -24,9 +24,17 @@ export const inSource = [
 export const inSourceObj = conversionObj(inSource)
 // 入驻状态
 export const inState = [
+  { label: '待入驻', value: -1 },
+  { label: '待审核', value: 0 },
   { label: '已认证', value: 1 },
-  { label: '待入驻', value: 0 },
+  { label: '驳回', value: 2 },
 ]
+export const stateMap = new Map([
+  [-1, '待入驻'],
+  [0, '待审核'],
+  [1, '已认证'],
+  [2, '驳回'],
+])
 export const inStateObj = conversionObj(inState)
 // 数据来源
 export const dataSource = [

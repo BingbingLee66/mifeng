@@ -12,7 +12,8 @@ import {
   dataSource,
   dataSourceObj,
   organizationState,
-  codestatusOptions
+  codestatusOptions,
+  stateMap
 } from './state.js'
 import Weight from './components/Weight/index'
 import { batchUpdateOrganization } from '@/api/chamber/directoryOrganizations'
@@ -32,6 +33,7 @@ export default {
   },
   data() {
     return {
+      stateMap,
       loading: false,
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -95,7 +97,7 @@ export default {
         cities: cities.length > 0 ? cities[1] : ''
       }
       try {
-        let res = await getListInfo(params)
+        const res = await getListInfo(params)
         this.list = res.data.list
         this.total = res.data.totalRows
         console.log(res)
@@ -175,7 +177,7 @@ export default {
       })
     },
     delInfo() {
-      let ids = this.multipleSelection.map(item => item.id)
+      const ids = this.multipleSelection.map(item => item.id)
       delOrganization({
         ids
       }).then(res => {
@@ -196,12 +198,12 @@ export default {
     },
     async subConfirm(val) {
       console.log(val, 'asd')
-      let socialId = []
+      const socialId = []
       this.multipleSelection.forEach(item => {
         socialId.push(item.id)
       })
-      let weight = val.level
-      let params = {
+      const weight = val.level
+      const params = {
         weight,
         ids: socialId
       }

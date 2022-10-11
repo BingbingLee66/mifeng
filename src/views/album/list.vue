@@ -3,9 +3,10 @@
     <el-tabs v-if="!ckey" :value="query.queryType" @tab-click="onQueryChange({queryType:$event.name, albumName: '', pageNum: 1})">
       <el-tab-pane label="云商会" name="0" />
       <el-tab-pane label="商协会" name="1" />
+      <el-tab-pane label="用户" name="2" />
     </el-tabs>
     <div class="flex-x-start-center">
-      <el-input :value="query.albumName" class="input-item" :placeholder="`相册名称${isPlatform?'':'、商协会名称'}`" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
+      <el-input :value="query.albumName" class="input-item" :placeholder="isUser ? '相册名称、用户名、手机号' : `相册名称${isPlatform?'':'、商协会名称'}`" prefix-icon="el-icon-search" @input="onQueryChange({albumName:$event,pageNum:1})" />
       <template v-if="!isPlatform">
         相册状态
         <el-select :value="query.status" class="input-item" @change="onQueryChange({status:$event,pageNum:1})">
@@ -45,7 +46,7 @@
 </template>
 
 <script>
-import { getAlbumList, modifyAlbumData, changeAlbumFreezeStatus } from '@/api/album'
+import { getAlbumList, modifyAlbumData, changeAlbumFreezeStatus, deleteAlbum, auditAlbum } from '@/api/album'
 
 const generateDialog = () => ({
   visible: false,
@@ -70,7 +71,7 @@ export default {
   data() {
     return {
       query: {
-        queryType: '0', // 0-云商会  1-商协会
+        queryType: '0', // 0-云商会  1-商协会 2-用户
         pageNum: 1,
         pageSize: 10,
         albumName: '',
@@ -104,36 +105,61 @@ export default {
     isPlatform() {
       return this.query.queryType === '0'
     },
+    isUser() {
+      return this.query.queryType === '2'
+    },
     columns() {
-      const { ckey, isPlatform } = this
+      const { ckey, isPlatform, isUser } = this
       return [
         {
-          label: '图片直播信息', width: 200,
-          render: ({ row }) => <div><div style='color:#66b1ff'>{row.albumCkey}</div>{row.albumName}</div>
+          label: '相册信息', width: 200,
+          render: ({ row }) => <div><div style="color:#66b1ff">{row.albumCkey}</div>{row.albumName}</div>
         },
         {
           label: '关联业务', width: 200,
-          render: ({ row }) => +row.type === 2 ? <div>活动<div style='color:#66b1ff'>{row.businessId}</div>{row.businessName}</div> : '-'
+          hidden: isUser,
+          render: ({ row }) => +row.type === 2 ? <div>活动<div style="color:#66b1ff">{row.businessId}</div>{row.businessName}</div> : '-'
         },
-        { label: '商协会', hidden: isPlatform, prop: 'chamberName' },
+        { label: '商协会', hidden: isPlatform || isUser, prop: 'chamberName' },
+        { label: '用户信息', hidden: !isUser, render: ({ row }) =>
+          <div>
+            <img src={row.businessImg} alt="" width="50" height="50" />
+            <div>{row.businessName}</div>
+            <div>{row.number}</div>
+          </div>
+        },
         { label: '图片数', prop: 'imgNum' },
         { label: '浏览量', render: e => this.generateModifiedData(e, '0') },
         { label: '浏览人数', render: e => this.generateModifiedData(e, '1') },
         { label: '点赞数', prop: 'likeNum' },
         { label: '下载数', render: e => this.generateModifiedData(e, '2') },
         { label: '分享数', render: e => this.generateModifiedData(e, '3') },
-        { label: '相册状态', hidden: !ckey && isPlatform, render: ({ row }) => row.status ? <span style='color:#67c23a'>正常</span> : <span style='color:#f56c6c'>冻结</span> },
+        { label: '相册状态', render: ({ row }) => {
+          return row.status === 0
+            ? <span style="color:#f56c6c">冻结</span>
+            : row.auditStatus === 0
+              ? <span style="color:#f56c6c">隐藏</span>
+              : <span style="color:#67c23a">正常</span>
+        } },
         {
           label: '操作',
           fixed: 'right',
+          width: '120',
           render: ({ row }) => <div>
             {
-              isPlatform ? <div>
-                <el-button type='text' onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id }})}>编辑</el-button>
-                <el-button type='text' onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id }})}>进入相册</el-button>
-              </div> : <el-button type='text' onClick={() => this.toggleFreeze(row)}>{+row.status === 1 ? '冻结' : '解冻'}</el-button>
+              isPlatform
+                ? <div>
+                  <el-button type="text" onClick={() => this.goPage({ path: '/album/edit', query: { id: row.id } })}>编辑</el-button>
+                  <el-button type="text" onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, type: this.query.queryType } })}>进入相册</el-button>
+                  <el-button style="margin-left:0" type="text" onClick={() => this.hideAlbum(row)}>{+row.auditStatus === 1 ? '隐藏' : '公开'}</el-button>
+                  <el-button type="text" onClick={() => this.delAlbum(row)}>删除</el-button>
+                </div>
+                : <div>
+                  <el-button type="text" onClick={() => this.goPage({ path: '/album/detail', query: { id: row.id, type: this.query.queryType } })}>查看</el-button>
+                  <el-button type="text" onClick={() => this.toggleFreeze(row)}>{+row.status === 1 ? '冻结' : '解冻'}</el-button>
+                </div>
             }
-            {!ckey ? <el-button type='text' onClick={() => this.changeDialog({ visible: true, sourceData: row })}>修改数据</el-button> : ''}
+            {!ckey ? <el-button type="text" onClick={() => this.changeDialog({ visible: true, sourceData: row })}>修改数据</el-button> : ''}
           </div>
         },
       ]
@@ -152,6 +178,7 @@ export default {
   },
   methods: {
     onQueryChange(e) {
+      this.tableData = []
       Object.assign(this.query, e)
       clearTimeout(this.timer)
       this.timer = setTimeout(() => this.queryTableData(), 300)
@@ -159,22 +186,24 @@ export default {
     async queryTableData() {
       this.loading = true
       try {
-        const { data: { list, totalRows }} = await getAlbumList({
+        const params = {
           ...this.query,
           ckey: this.ckey,
           total: true
-        })
+        }
+        if (this.isPlatform) delete params.status
+        const { data: { list, totalRows } } = await getAlbumList(params)
         this.tableData = list
         this.total = totalRows
       } finally {
         this.loading = false
       }
     },
-    generateModifiedData({ row, column }, updateType) {
+    generateModifiedData({ row }, updateType) {
       const { realy, fake } = updateTypeOptions[updateType]
       if (row[realy] >= row[fake] || this.ckey) return row[fake]
       return <div>
-        <el-tooltip style='color:red;margin-right:8px;' effect='light' content={`${row[realy]}`} placement='top'>
+        <el-tooltip style="color:red;margin-right:8px;" effect="light" content={`${row[realy]}`} placement="top">
           <span>改</span>
         </el-tooltip>
         {row[fake]}
@@ -199,6 +228,28 @@ export default {
       if (state === 1) {
         this.changeDialog({ visible: false })
         this.$set(sourceData, updateTypeOptions[updateType].fake, num)
+      }
+    },
+    async hideAlbum(row) {
+      await this.$confirm('', row.auditStatus ? '是否隐藏？' : '是否公开？')
+
+      const { state, msg } = await auditAlbum({ albumId: row.id, type: row.auditStatus ? 0 : 1 })
+      if (state) {
+        this.$message.success('操作成功')
+        this.queryTableData()
+      } else {
+        this.$message.error(msg)
+      }
+    },
+    async delAlbum(row) {
+      await this.$confirm('', '删除相册会一并删除里面的图片，是否删除？')
+
+      const { state, msg } = await deleteAlbum({ albumId: row.id })
+      if (state) {
+        this.$message.success('操作成功')
+        this.queryTableData()
+      } else {
+        this.$message.error(msg)
       }
     },
     // 切换冻结状态
