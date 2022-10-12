@@ -11,6 +11,7 @@ import preview from './component/preview'
 import CustomApplyDialog from './component/custom-apply-dialog'
 import ActiveTypeDialog from './component/active-type-dialog'
 import CustomSelect from './component/custom-select'
+import ActiveGuest from './component/active-guest'
 
 export default {
   components: {
@@ -20,6 +21,7 @@ export default {
     CustomApplyDialog,
     ActiveTypeDialog,
     CustomSelect,
+    ActiveGuest,
   },
   data() {
     const checkSpace = (rule, value, callback) => {

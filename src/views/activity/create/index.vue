@@ -636,7 +636,9 @@
       </div>
     </div>
 
-    <div v-show="activeName === '3'">活动嘉宾</div>
+    <div v-show="activeName === '3'">
+      <ActiveGuest />
+    </div>
 
     <div class="btn-group">
       <el-row>
