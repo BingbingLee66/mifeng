@@ -68,7 +68,7 @@ export default {
     visible(val) {
       if (val) {
         this.fetchData()
-        this.checkList = this.activeType.map(v => `${v.value}:${v.label}`)
+        this.checkList = this.activeType.map(v => `${v.labelId}:${v.label}`)
       }
     },
     checkList(val) {
@@ -109,7 +109,7 @@ export default {
 
         return {
           label: itemArr[1],
-          value: itemArr[0],
+          labelId: itemArr[0],
         }
       }))
       this.onClose()

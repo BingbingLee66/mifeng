@@ -1,7 +1,7 @@
 <template>
   <div class="select-wrap">
     <div v-if="!value.length" class="no-data">请选择活动类型，最多5个</div>
-    <div v-for="(item, index) in value" :key="item.value" class="select-item">
+    <div v-for="(item, index) in value" :key="item.labelId" class="select-item">
       {{ item.label }}
       <i class="el-icon-error close" @click="onDel(index, $event)" />
     </div>

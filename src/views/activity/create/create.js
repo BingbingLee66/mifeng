@@ -97,11 +97,11 @@ export default {
         liveEntranceDisplayType: 1, // 直播间入口显示类型 0 报名成功后 1 活动开始后
         liveEntranceCloseTime: '', // 直播间入口关闭时间
         linkType: 1, // 直播链接类型 1 云会播小程序 2 H5链接
-        activeType: [],
-        signData: 0,
-        businessCardDisplay: 0,
-        businessCardDisplayType: 0,
-        businessCardInfo: 0,
+        labels: [],
+        signNeedCard: 1,
+        cardShow: 1,
+        cardShowType: 2,
+        cardInfoType: 0,
       },
       isReleActivity: false,
       roleIds: [], // 多选框 扩展功能
@@ -407,6 +407,12 @@ export default {
           this.$refs.ckeditor1.initHtml(resData.introduce ? resData.introduce : '')
         }, 500)
         this.formObj.introduce = resData.introduce
+
+        if (resData.cardShowType === 0) {
+          this.formObj.cardShow = 0
+        } else {
+          this.formObj.cardShow = 1
+        }
 
         // 动态字段回显
         // this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
@@ -770,6 +776,11 @@ export default {
         delete params.liveEntranceDisplayType
         delete params.liveEntranceCloseTime
       }
+
+      if (this.formObj.cardShow === 0) {
+        params.cardShowType = 0
+      }
+      delete params.cardShow
 
       createActivity(params).then(res => {
         if (res.state === 1) {

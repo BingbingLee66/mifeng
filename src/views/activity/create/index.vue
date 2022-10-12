@@ -354,11 +354,11 @@
               <el-col>
                 <el-form-item
                   label="活动类型："
-                  prop="activeType"
+                  prop="labels"
                   class="upload-style"
                 >
                   <CustomSelect
-                    v-model="formObj.activeType"
+                    v-model="formObj.labels"
                     @click.native="activeVisible = true"
                   />
                 </el-form-item>
@@ -467,42 +467,42 @@
 
         <div class="sgin-way mt-20">
           <div class="sgin-left">报名资料：</div>
-          <el-radio-group v-model="formObj.signData" :disabled="status === 2 || status === 3">
-            <el-radio :label="0">需上传IP名片</el-radio>
-            <el-radio :label="1">无需上传IP名片</el-radio>
+          <el-radio-group v-model="formObj.signNeedCard" :disabled="status === 2 || status === 3">
+            <el-radio :label="1">需上传IP名片</el-radio>
+            <el-radio :label="0">无需上传IP名片</el-radio>
           </el-radio-group>
         </div>
 
-        <div v-if="formObj.signData === 0" class="sgin-way mt-20">
+        <div v-if="formObj.signNeedCard === 1" class="sgin-way mt-20">
           <div class="sgin-left">参与人与名片墙可见性设置：</div>
 
           <div style="display: flex; flex-direction: column">
             <el-radio-group
-              v-model="formObj.businessCardDisplay"
+              v-model="formObj.cardShow"
               style="margin-bottom: 10px;"
               :disabled="status === 2 || status === 3"
             >
-              <el-radio :label="0">展示</el-radio>
-              <el-radio :label="1">隐藏</el-radio>
+              <el-radio :label="1">展示</el-radio>
+              <el-radio :label="0">隐藏</el-radio>
             </el-radio-group>
 
             <el-radio-group
-              v-if="formObj.businessCardDisplay === 0"
-              v-model="formObj.businessCardDisplayType"
+              v-if="formObj.cardShow === 1"
+              v-model="formObj.cardShowType"
               :disabled="status === 2 || status === 3"
             >
-              <el-radio :label="0">不限</el-radio>
+              <el-radio :label="2">不限</el-radio>
               <el-radio :label="1">限商会会员可见</el-radio>
-              <el-radio :label="2">限符合报名条件的用户可见</el-radio>
-              <el-radio :label="3">限报名成功的用户可见 (若需审核，指审核通过的用户)</el-radio>
+              <el-radio :label="3">限符合报名条件的用户可见</el-radio>
+              <el-radio :label="4">限报名成功的用户可见 (若需审核，指审核通过的用户)</el-radio>
             </el-radio-group>
           </div>
 
         </div>
 
-        <div v-if="formObj.signData === 0 && formObj.businessCardDisplay === 0" class="sgin-way mt-20">
+        <div v-if="formObj.signNeedCard === 1 && formObj.cardShow === 1" class="sgin-way mt-20">
           <div class="sgin-left">名片墙信息设置：</div>
-          <el-radio-group v-model="formObj.businessCardInfo" :disabled="status === 2 || status === 3">
+          <el-radio-group v-model="formObj.cardInfoType" :disabled="status === 2 || status === 3">
             <el-radio :label="0">不隐藏任何信息</el-radio>
             <el-radio :label="1">隐藏手机号、邮箱、地址</el-radio>
             <el-radio :label="2">隐藏手机号、邮箱</el-radio>
@@ -657,7 +657,7 @@
     </div>
 
     <!--  选择活动类型  -->
-    <ActiveTypeDialog :visible.sync="activeVisible" :active-type="formObj.activeType" @confirm="val => formObj.activeType = val" />
+    <ActiveTypeDialog :visible.sync="activeVisible" :active-type="formObj.labels" @confirm="val => formObj.labels = val" />
 
     <!-- 自定义信息 -->
     <CustomApplyDialog
