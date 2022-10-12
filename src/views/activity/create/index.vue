@@ -464,6 +464,52 @@
             <el-radio :disabled="status === 2 || status === 3" :label="1">一键报名</el-radio>
           </el-radio-group>
         </div>
+
+        <div class="sgin-way mt-20">
+          <div class="sgin-left">报名资料：</div>
+          <el-radio-group v-model="formObj.signData" :disabled="status === 2 || status === 3">
+            <el-radio :label="0">需上传IP名片</el-radio>
+            <el-radio :label="1">无需上传IP名片</el-radio>
+          </el-radio-group>
+        </div>
+
+        <div v-if="formObj.signData === 0" class="sgin-way mt-20">
+          <div class="sgin-left">参与人与名片墙可见性设置：</div>
+
+          <div style="display: flex; flex-direction: column">
+            <el-radio-group
+              v-model="formObj.businessCardDisplay"
+              style="margin-bottom: 10px;"
+              :disabled="status === 2 || status === 3"
+            >
+              <el-radio :label="0">展示</el-radio>
+              <el-radio :label="1">隐藏</el-radio>
+            </el-radio-group>
+
+            <el-radio-group
+              v-if="formObj.businessCardDisplay === 0"
+              v-model="formObj.businessCardDisplayType"
+              :disabled="status === 2 || status === 3"
+            >
+              <el-radio :label="0">不限</el-radio>
+              <el-radio :label="1">限商会会员可见</el-radio>
+              <el-radio :label="2">限符合报名条件的用户可见</el-radio>
+              <el-radio :label="3">限报名成功的用户可见 (若需审核，指审核通过的用户)</el-radio>
+            </el-radio-group>
+          </div>
+
+        </div>
+
+        <div v-if="formObj.signData === 0 && formObj.businessCardDisplay === 0" class="sgin-way mt-20">
+          <div class="sgin-left">名片墙信息设置：</div>
+          <el-radio-group v-model="formObj.businessCardInfo" :disabled="status === 2 || status === 3">
+            <el-radio :label="0">不隐藏任何信息</el-radio>
+            <el-radio :label="1">隐藏手机号、邮箱、地址</el-radio>
+            <el-radio :label="2">隐藏手机号、邮箱</el-radio>
+            <el-radio :label="3">隐藏手机号</el-radio>
+          </el-radio-group>
+        </div>
+
         <div class="sgin-surface">报名表</div>
         <div class="sgin-way">
           <div class="sgin-left">到场人数
@@ -778,7 +824,7 @@
   margin-left: 30px;
   .sgin-way{
     display: flex;
-    align-items: center;
+    //align-items: center;
     font-size: 14px;
     color: #606266;
     .sgin-left{

@@ -96,6 +96,10 @@ export default {
         liveEntranceCloseTime: '', // 直播间入口关闭时间
         linkType: 1, // 直播链接类型 1 云会播小程序 2 H5链接
         activeType: [],
+        signData: 0,
+        businessCardDisplay: 0,
+        businessCardDisplayType: 0,
+        businessCardInfo: 0,
       },
       isReleActivity: false,
       roleIds: [], // 多选框 扩展功能
@@ -163,7 +167,7 @@ export default {
     formObj: {
       handler() {
         if (this.activeName === '1') {
-          this.disabledApplyBtn = !this.validatorStepOne()
+          this.disabledApplyBtn = !this.validatorStepOne(false)
         }
 
         if (this.activeName === '2') {
@@ -417,6 +421,8 @@ export default {
             v.key = key.join(';')
           }
         })
+
+        this.disabledGuestBtn = +this.formObj.signType === 0 && !this.arrayData.length
       })
     },
 
@@ -634,48 +640,64 @@ export default {
           break
       }
     },
-    validatorStepOne() {
+    validatorStepOne(showError = true) {
       let res = false
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          // if (!this.areaData) {
-          //   return this.$message.error('请选择省份')
-          // } else if (!this.areaData.hasOwnProperty('city')) {
-          //   return this.$message.error('请选择城市')
-          // } else
-          if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
-            this.$message.error('请选择报名对象')
-            res = false
-            return
-          }
 
-          if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
-            this.$message.error('请选择参加人数')
-            res = false
-            return
-          }
-
-          if (this.formObj.isLimit === 1) {
-            const regexp = /^[1-9]\d*$/
-            if (!regexp.test(this.formObj.applyCount)) {
-              this.$message.error('参加人数为大于0的正整数')
-              res = false
-              return
-            }
-          }
-          // } else if (!this.formObj.introduce) {
-          //   this.activeName='2'
-          //   return this.$message.error('活动介绍不能为空')
-          // }
-          // let introHtml = this.formObj.introduce.replace(/<\/?p[^>]*>/gi, '')
-          // let introHtml2 = introHtml.replace(/&nbsp;/ig, '')
-          // if (introHtml2.match(/^\s+$/) || introHtml2.length === 0) {
-          //   this.activeName='2'
-          //   return this.$message.error('活动介绍不能为空')
-          // }
-          res = true
+      const validatorRes = () => {
+        // if (!this.areaData) {
+        //   return this.$message.error('请选择省份')
+        // } else if (!this.areaData.hasOwnProperty('city')) {
+        //   return this.$message.error('请选择城市')
+        // } else
+        if (!this.formObj.applyObject && this.formObj.applyObject !== 0) {
+          this.$message.error('请选择报名对象')
+          res = false
+          return
         }
-      })
+
+        if (!this.formObj.isLimit && this.formObj.isLimit !== 0) {
+          this.$message.error('请选择参加人数')
+          res = false
+          return
+        }
+
+        if (this.formObj.isLimit === 1) {
+          const regexp = /^[1-9]\d*$/
+          if (!regexp.test(this.formObj.applyCount)) {
+            this.$message.error('参加人数为大于0的正整数')
+            res = false
+            return
+          }
+        }
+        // } else if (!this.formObj.introduce) {
+        //   this.activeName='2'
+        //   return this.$message.error('活动介绍不能为空')
+        // }
+        // let introHtml = this.formObj.introduce.replace(/<\/?p[^>]*>/gi, '')
+        // let introHtml2 = introHtml.replace(/&nbsp;/ig, '')
+        // if (introHtml2.match(/^\s+$/) || introHtml2.length === 0) {
+        //   this.activeName='2'
+        //   return this.$message.error('活动介绍不能为空')
+        // }
+        res = true
+      }
+
+      if (showError) {
+        this.$refs['form'].validate(valid => {
+          if (valid) {
+            validatorRes()
+          }
+        })
+      } else {
+        if (!this.formObj.activityName || !this.formObj.date || !this.formObj.applyDate) {
+          res = false
+
+          return
+        }
+
+        validatorRes()
+      }
+
       return res
     },
     save(e) {
