@@ -3,13 +3,12 @@
     <div class="block">
       <el-row>
         <el-col :span="24">
-          <el-button type="primary" size="small" :actionid="getId('', '新增角色')" v-if="has('', '新增角色')" @click.native="add($event)">新增角色</el-button>
+          <el-button v-if="has('', '新增角色')" type="primary" size="small" :actionid="getId('', '新增角色')" @click.native="add($event)">新增角色</el-button>
         </el-col>
       </el-row>
     </div>
-    <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row>
-      <el-table-column type="index" label="序号" width="60px">
-      </el-table-column>
+    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
+      <el-table-column type="index" label="序号" width="60px" />
       <!-- <el-table-column label="ID">
         <template slot-scope="scope">
           {{scope.row.id}}
@@ -17,12 +16,12 @@
       </el-table-column> -->
       <el-table-column label="角色">
         <template slot-scope="scope">
-          {{scope.row.roleName}}
+          {{ scope.row.roleName }}
         </template>
       </el-table-column>
       <el-table-column label="更新时间">
         <template slot-scope="scope">
-          {{scope.row.updatedTs}}
+          {{ scope.row.updatedTs }}
         </template>
       </el-table-column>
       <el-table-column label="状态">
@@ -33,11 +32,16 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="text"  @click="setup($event, scope.row)" :actionid="getId('', '设置权限')" v-if="has('', '设置权限')">设置权限</el-button>
-          <el-button type="text" @click="edit($event, scope.row)" :actionid="getId('', '编辑角色')" v-if="has('', '编辑角色')">编辑角色</el-button>
-          <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '冻结')" v-if="has('', '冻结') && scope.row.status == 1">冻结</el-button>
-          <el-button type="text" @click="updateStatus($event, scope.row)" :actionid="getId('', '解冻')" v-if="has('', '解冻') && scope.row.status == 0">解冻</el-button>
-          <el-button type="text" @click="delRole($event, scope.row)" :actionid="getId('', '删除')" v-if="has('', '删除')">删除</el-button>
+          <div v-if="scope.row.roleName!=='专业委员会'">
+            <el-button v-if="has('', '设置权限')" type="text" :actionid="getId('', '设置权限')" @click="setup($event, scope.row)">设置权限</el-button>
+            <el-button v-if="has('', '编辑角色')" type="text" :actionid="getId('', '编辑角色')" @click="edit($event, scope.row)">编辑角色</el-button>
+            <el-button v-if="has('', '冻结') && scope.row.status == 1" type="text" :actionid="getId('', '冻结')" @click="updateStatus($event, scope.row)">冻结</el-button>
+            <el-button v-if="has('', '解冻') && scope.row.status == 0" type="text" :actionid="getId('', '解冻')" @click="updateStatus($event, scope.row)">解冻</el-button>
+            <el-button v-if="has('', '删除')" type="text" :actionid="getId('', '删除')" @click="delRole($event, scope.row)">删除</el-button>
+          </div>
+          <div v-else>
+            <el-button v-if="has('', '冻结') && scope.row.status == 1" type="text" :actionid="getId('', '冻结')" @click="updateStatus($event, scope.row)">冻结</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>
@@ -49,18 +53,19 @@
       :total="total"
       :current-page.sync="currentpage"
       @size-change="handleSizeChange"
-      @current-change="handleCurrentChange">
-    </el-pagination>
+      @current-change="handleCurrentChange"
+    />
 
     <el-dialog
       title="新增/编辑角色"
       :visible.sync="visible"
-      width="50%">
+      width="50%"
+    >
       <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="150px">
         <el-row>
           <el-col :offset="2" :span="20">
             <el-form-item label="角色：" prop="roleName">
-              <el-input v-model="formObj.roleName" maxLength="30"></el-input>
+              <el-input v-model="formObj.roleName" max-length="30" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -76,7 +81,7 @@
         </el-row> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" v-dbClick @click="save">确定</el-button>
+        <el-button v-dbClick type="primary" @click="save">确定</el-button>
         <el-button @click.native="visible = false">取消</el-button>
       </span>
     </el-dialog>

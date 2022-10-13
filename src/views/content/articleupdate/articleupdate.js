@@ -4,7 +4,6 @@ import {
   getContactUs,
   save,
   updateStatus,
-  updateChamberContentSort,
   getDetail,
   updateChamberTop,
   del
@@ -18,10 +17,10 @@ import addColumn from './editor/component/addColumn'
 import videoComponent from '@/components/video/index'
 export default {
   components: {
-    addColumn,videoComponent
+    addColumn, videoComponent
   },
   data() {
-    var checkNumber = (rule, value, callback) => {
+    const checkNumber = (rule, value, callback) => {
       if (!/^([0-9]{0,3})$/.test(value)) {
         return callback(new Error('必须是0-999的整数'))
       } else {
@@ -42,7 +41,7 @@ export default {
         contentColumnId: -1,
         status: -1,
         date: '',
-        column: "",
+        column: '',
         orderType: 1
       },
       detailObj: {
@@ -60,7 +59,8 @@ export default {
       },
 
       sortFormRules: {
-        sort: [{
+        sort: [
+          {
             required: true,
             message: '权重不能为空',
             trigger: 'blur'
@@ -76,7 +76,7 @@ export default {
   mounted() {},
   computed: {},
   created() {
-    let activename = window.localStorage.getItem('activename')
+    const activename = window.localStorage.getItem('activename')
     if (activename) {
       this.activeName = activename
     }
@@ -100,19 +100,19 @@ export default {
     handleSortChange(e) {
       // let sort = ''
 
-      console.log('e', e);
+      console.log('e', e)
       if (!e.prop) {
-        return;
+        return
       }
       this.query.column = e.prop
-      //有序
+      // 有序
       if (e.order) {
-        this.query.orderType = e.order === "ascending" ? 1 : -1
+        this.query.orderType = e.order === 'ascending' ? 1 : -1
       } else {
-        //无序
-        this.query.orderType = ""
+        // 无序
+        this.query.orderType = ''
       }
-      this.currentpage = 1;
+      this.currentpage = 1
       this.fetchData(1)
     },
     // 修改权重
@@ -122,9 +122,9 @@ export default {
       this.showSortDialog = true
     },
     updateSort(sortForm) {
-      this.$refs[sortForm].validate((valid) => {
+      this.$refs[sortForm].validate(valid => {
         if (valid) {
-          let params = {
+          const params = {
             ...this.sortForm,
             level: this.sortForm.sort
           }
@@ -179,37 +179,38 @@ export default {
       } else if (this.activeName === '6') {
         contentModuleId = 4
       }
-      let params = {
+      const params = {
         ckey: this.$store.getters.ckey,
-        contentModuleId: contentModuleId
+        contentModuleId
       }
       getContentColumnOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
         this.contentColumnOptions.unshift({
-          'label': '全部',
-          'value': -1
+          label: '全部',
+          value: -1
         })
       })
     },
-    fetchData(e, sort) {
+    fetchData(e) {
       if (e !== undefined && e !== 1) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
         this.currentpage = 1
       }
       this.listLoading = true
-      let params = {
+      const params = {
         // 'order': this.sortFalg,
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'ckey': this.$store.getters.ckey,
-        'title': this.query.title,
-        'contentModuleId': this.activeName,
-        'contentColumnId': this.query.contentColumnId,
-        'status': this.query.status,
-        'articleId': this.query.articleId,
-        'creator': this.query.creator,
-        'column': this.query.column,
-        'orderType': this.query.orderType,
+        pageSize: this.limit,
+        page: this.currentpage,
+        ckey: this.$store.getters.ckey,
+        title: this.query.title,
+        contentModuleId: this.activeName,
+        contentColumnId: this.query.contentColumnId,
+        status: this.query.status,
+        articleId: this.query.articleId,
+        creator: this.query.creator,
+        column: this.query.column,
+        orderType: this.query.orderType,
+        creatorId: ''
       }
       // if (sort) {
       //   params['order'] = sort
@@ -232,7 +233,7 @@ export default {
         })
       } else if (this.activeName === '8') {
         getContactUs(params).then(response => {
-          this.list = response.data;
+          this.list = response.data
           console.log('list', this.list)
           this.listLoading = false
         })
@@ -243,11 +244,11 @@ export default {
     },
     updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'id': row.id,
-        'action': row.status === 0 ? 'active' : 'notactive'
+      const params = {
+        id: row.id,
+        action: row.status === 0 ? 'active' : 'notactive'
       }
-      updateStatus(params).then(response => {
+      updateStatus(params).then(() => {
         if (row.status === 0) {
           this.$message({
             message: '解冻成功',
@@ -268,7 +269,7 @@ export default {
       this.$router.push({
         name: '添加/修改文章',
         params: {
-          'activeName': this.activeName
+          activeName: this.activeName
         }
       })
     },
@@ -278,20 +279,20 @@ export default {
       this.$router.push({
         name: '添加/修改文章',
         params: {
-          'activeName': this.activeName,
-          'articleId': row.id
+          activeName: this.activeName,
+          articleId: row.id
         }
       })
     },
     editColumn(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      window.localStorage.setItem('articleupdate', this.$route.path);
+      window.localStorage.setItem('articleupdate', this.$route.path)
       console.log('row', row)
       this.$router.push({
         name: '修改栏目内容',
         params: {
-          'activeName': this.activeName,
-          'articleObj': row
+          activeName: this.activeName,
+          articleObj: row
         }
       })
     },
@@ -300,11 +301,11 @@ export default {
       this.$router.push({ name: '文章详情', params: { 'articleId': row.id } })
     }, */
     save() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           this.formObj['ckey'] = this.$store.getters.ckey
           this.formObj['contentModuleId'] = this.activeName
-          save(this.formObj).then(response => {
+          save(this.formObj).then(() => {
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -324,44 +325,44 @@ export default {
       } else if (this.activeName === '6') {
         contentModuleId = 4
       }
-      this.$refs['addColumnRef'].open(contentModuleId).then(res => {
+      this.$refs['addColumnRef'].open(contentModuleId).then(() => {
         console.log('添加成功')
         this.fetchData()
       })
     },
     openDetail(row) {
-      let params = {
+      const params = {
         id: row.id
       }
       getDetail(params).then(response => {
         this.detailObj = response.data.dtl
-        if(this.detailObj.vid) this.$refs['videoRef'].show(this.detailObj.vid);
+        if (this.detailObj.vid) this.$refs['videoRef'].show(this.detailObj.vid)
       }).catch(() => {})
       this.detailVisible = true
     },
-    //去置顶管理页面
+    // 去置顶管理页面
     toStick() {
       router.push({
         path: '/content/article-stick'
       })
     },
-    //update置顶
+    // update置顶
     updateTop(row) {
-      console.log('row', row);
-      let params = {
+      console.log('row', row)
+      const params = {
         articleId: row.id,
         ckey: row.ckey,
         type: 1
         // type: row.istop ? 0 : 1
       }
       updateChamberTop(params).then(res => {
-        if(res.state===1){
+        if (res.state === 1) {
           this.$message({
             message: res.msg,
             type: 'success'
           })
           this.fetchData()
-        }else{
+        } else {
           this.$message({
             message: res.msg,
             type: 'error'
@@ -370,36 +371,36 @@ export default {
       })
     },
     // 删除文章
-    delArticle(row){
+    delArticle(row) {
       this.$confirm('确认删除该文章吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let params ={};
-        let articleIds = [];
-        articleIds.push(row.id +'');
-        params.articleIds=articleIds;
+        const params = {}
+        const articleIds = []
+        articleIds.push(row.id + '')
+        params.articleIds = articleIds
         del(params).then(response => {
           if (response.state === 1) {
             this.fetchData()
             this.$message({
               type: 'success',
               message: '删除成功!'
-            });
-          }else{
+            })
+          } else {
             this.$message({
               type: 'error',
               message: response.msg
-            });
+            })
           }
         })
       }).catch(() => {
         this.$message({
           type: 'info',
           message: '已取消删除'
-        });          
-      });
+        })
+      })
     }
   }
 }
