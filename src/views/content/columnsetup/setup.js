@@ -116,7 +116,11 @@ export default {
         pageSize: this.pageSize
       }
       getList(params).then(response => {
+        response.data.data.list.forEach(item => {
+          item.isSpecialCommitteeBol = item.isSpecialCommittee === 1
+        })
         this.list = response.data.data.list
+
         this.totalRows = response.data.data.totalRows
         this.listLoading = false
       })

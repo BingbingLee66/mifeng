@@ -93,7 +93,7 @@
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.isSpecialCommittee" @change="handleSpecialCommitteeChange($event,scope.row)" />
+            <el-switch v-model="scope.row.isSpecialCommitteeBol" @change="handleSpecialCommitteeChange($event,scope.row)" />
           </template>
         </el-table-column>
         <el-table-column label="操作">
