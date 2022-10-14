@@ -86,6 +86,8 @@ export default {
   },
   computed: {},
   created() {
+    const { roleName } = this.$store.getters.profile
+    if (roleName === '专业委员会') this.committee = true
   },
   methods: {
     addColumnFunc() {
@@ -162,7 +164,8 @@ export default {
       }
       const params = {
         ckey: this.$store.getters.ckey,
-        contentModuleId
+        contentModuleId,
+        isSpecialCommittee: this.committee === true ? 1 : 0
       }
       getContentColumnOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
@@ -229,6 +232,8 @@ export default {
           this.formObj['istop'] = false // 商会发布文章不开放置顶
           this.formObj['ckey'] = this.$store.getters.ckey
           this.formObj['contentModuleId'] = this.activeName
+          // 判断是否为商委会的
+          this.formObj['articleType'] = this.committee === true ? 1 : 0
           save(this.formObj).then(response => {
             if (response.state === 1) {
               this.$message({
