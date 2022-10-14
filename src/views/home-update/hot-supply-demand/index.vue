@@ -299,7 +299,7 @@ export default {
       if (!selectedData.length) {
         return this.$message({ message: '请勾选移除供需', type: 'warning' })
       }
-      this.handleDelete(selectedData.map((v) => v.id))
+      this.handleDelete(selectedData.map(v => v.id))
     },
 
     handleDelete(ids) {
