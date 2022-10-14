@@ -906,12 +906,12 @@ export default {
     addGuestList(val) {
       const tempVal = cloneDeep(val)
       tempVal.forEach(item => {
-        delete item.id
-        item.isChamber = item.isChamber ? 0 : 1
+        if (!this.activityId || typeof item.id === 'number') delete item.id
+        delete item.activityId
       })
       this.formObj = {
         ...this.formObj,
-        activityGuestsDTOList: tempVal
+        activityGuestsDTOList: tempVal || []
       }
     }
 

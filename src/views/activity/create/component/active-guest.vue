@@ -16,14 +16,15 @@
       :end-time="endTime"
       @add="addStaticData"
       @edit="editStaticData"
+      @fetchData="onQueryChange"
     />
-    <GuestBankDialog :visible.sync="guestBankVisible" :static-data="tableData" @edit="onBankEdit" />
-    <MemberBankDialog :visible.sync="memberBankVisible" />
+    <GuestBankDialog :visible.sync="guestBankVisible" :static-data="tableData" @edit="onBankEdit" @confirm="addStaticData" />
+    <MemberBankDialog :visible.sync="memberBankVisible" @confirm="addStaticData" />
   </div>
 </template>
 
 <script>
-import { delGuest, getGuestList } from '@/api/activity/activity-guest'
+import { getGuestList } from '@/api/activity/activity-guest'
 
 export default {
   name: 'ActiveGuest',
@@ -76,9 +77,9 @@ export default {
           label: '操作',
           fixed: 'right',
           width: '120',
-          render: ({ row, index }) => <div>
+          render: ({ row }) => <div>
             <el-button type="text" onClick={() => this.onEdit(row)}>编辑</el-button>
-            <el-button type="text" onClick={() => this.onDel(row, index)}>移除</el-button>
+            <el-button type="text" onClick={() => this.onDel(row)}>移除</el-button>
           </div>
         },
       ]
@@ -122,6 +123,7 @@ export default {
     },
     onAdd() {
       this.editId = ''
+      this.staticData = {}
       this.isBankEdit = false
       this.formVisible = true
     },
@@ -139,22 +141,22 @@ export default {
       this.formVisible = true
     },
 
-    async onDel(row, index) {
+    async onDel(row) {
       await this.$confirm('', '确定要删除吗？')
-      if (this.activityId) {
-        const { state } = await delGuest(row.id)
 
-        if (!state) return
-        this.$message.success('操作成功')
-        this.onQueryChange()
-      } else {
-        this.tableData.splice(index, 1)
-        this.$emit('guestList', this.tableData)
-      }
+      const index = this.tableData.findIndex(v => v.id === row.id)
+
+      this.tableData.splice(index, 1)
+      this.$emit('guestList', this.tableData)
     },
 
     addStaticData(val) {
-      this.tableData.unshift(val)
+      if (val.length) {
+        this.tableData = this.tableData.concat(val)
+      } else {
+        this.tableData.unshift(val)
+      }
+
       this.$emit('guestList', this.tableData)
     },
 

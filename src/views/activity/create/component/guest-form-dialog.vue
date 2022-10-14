@@ -84,9 +84,9 @@
   </el-dialog>
 </template>
 
-<script >
+<script>
 import { upload } from '@/api/chamber/manager'
-import { createGuest, updateChamberGuest, updateGuest } from '@/api/activity/activity-guest'
+import { updateChamberGuest } from '@/api/activity/activity-guest'
 import { cloneDeep } from 'lodash'
 
 export default {
@@ -148,9 +148,9 @@ export default {
   watch: {
     visible(val) {
       if (!val) return
-
-      if (this.isEdit && !this.activityId) {
-        this.formState = cloneDeep(this.staticData)
+      this.formState = {
+        ...cloneDeep(this.staticData),
+        isChamber: !this.staticData.isChamber
       }
     }
   },
@@ -164,63 +164,26 @@ export default {
     },
 
     createGuest() {
-      if (this.activityId) {
-        this.createGuestPromise()
-      } else {
-        this.$emit('add', {
-          id: String(Date.now()),
-          ...this.formState,
-          userId: this.userId,
-        })
-        this.$message.success('操作成功')
-        this.onClose()
-      }
+      this.$emit('add', {
+        id: Date.now(),
+        ...this.formState,
+        userId: this.userId,
+        isChamber: this.formState.isChamber ? 0 : 1
+      })
+      this.$message.success('操作成功')
+      this.onClose()
     },
 
     editGuest() {
-      if (this.activityId) {
-        this.showBank ? this.editGuestPromise() : this.editChamberGuestPromise()
-      } else {
-        this.$emit('edit', { ...this.formState })
+      if (!this.activityId || this.showBank) {
+        this.$emit('edit', { ...this.formState, isChamber: this.formState.isChamber ? 0 : 1 })
         this.$message.success('操作成功')
         this.onClose()
       }
-    },
 
-    async createGuestPromise() {
-      const params = {
-        activityId: this.activityId,
-        userId: this.userId,
-        activityEndTime: this.endTime,
-        ...this.formState,
-        isChamber: this.formState.isChamber ? 0 : 1,
+      if (this.activityId && !this.showBank) {
+        this.editChamberGuestPromise()
       }
-
-      if (this.activityId) params.activityId = this.activityId
-
-      const { state } = await createGuest(params)
-
-      if (!state) return
-
-      this.$message.success('操作成功')
-      this.onClose()
-    },
-
-    async editGuestPromise() {
-      const params = {
-        id: this.id,
-        activityId: this.activityId,
-        ...this.formState,
-        activityEndTime: this.endTime
-      }
-
-      delete params.isChamber
-
-      const { state } = await updateGuest(params)
-
-      if (!state) return
-      this.$message.success('操作成功')
-      this.onClose()
     },
 
     async editChamberGuestPromise() {
@@ -233,9 +196,9 @@ export default {
 
       delete params.isChamber
 
-      const { state } = await updateChamberGuest(params)
+      const { state, msg } = await updateChamberGuest(params)
 
-      if (!state) return
+      if (!state) return this.$message.error(msg)
       this.$message.success('操作成功')
       this.onClose()
     },

@@ -5,8 +5,8 @@
       <el-button class="ml-20" type="primary" @click="onQueryChange">查询</el-button>
     </div>
 
-    <KdTable v-loading="loading" style="margin-top:20px;" :columns="columns" :rows="tableData" />
-    <KdPagination v-if="activityId" :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
+    <KdTable v-loading="loading" style="margin-top:20px;" :columns="columns" :rows="tableData" @selection-change="onSelectChange" />
+    <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
     <div class="flex-x-center-center mt-20">
       <el-button @click="onClose">取消</el-button>
@@ -49,6 +49,7 @@ export default {
       },
       total: 0,
       timer: null,
+      selectData: []
     }
   },
   computed: {
@@ -98,7 +99,7 @@ export default {
   },
   methods: {
     onQueryChange() {
-      if (!this.activityId) return
+      // if (!this.activityId) return
 
       clearTimeout(this.timer)
       this.timer = setTimeout(() => this.queryTableData(), 300)
@@ -109,7 +110,7 @@ export default {
         const { query: { pageNum: page, pageSize, name } } = this
         const { data: { totalRows, list } } = await getChamberGuestList({
           name,
-          ckey: this.$store.getters.ckey || 'ysh',
+          cKey: this.$store.getters.ckey || 'ysh',
           page,
           pageSize,
         })
@@ -129,21 +130,26 @@ export default {
     },
 
     onConfirm() {
-      // TODO
+      this.$emit('confirm', this.selectData)
+      this.onClose()
     },
 
     async onDel(row, index) {
       await this.$confirm('不影响本次所选嘉宾，仅对嘉宾库进行移除', '确认从嘉宾库中移除该嘉宾？')
 
       if (this.activityId) {
-        const { state } = await delChamberGuest(row.id)
+        const { state, msg } = await delChamberGuest(row.id)
 
-        if (!state) return
+        if (!state) return this.$message.error(msg)
         this.$message.success('操作成功')
         this.onQueryChange()
       } else {
         this.tableData.splice(index, 1)
       }
+    },
+
+    onSelectChange(val) {
+      this.selectData = val
     }
   }
 }

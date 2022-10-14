@@ -5,7 +5,7 @@
       <el-button class="ml-20" type="primary" @click="onQueryChange">查询</el-button>
     </div>
 
-    <KdTable v-loading="loading" style="margin-top:20px;" :columns="columns" :rows="tableData" />
+    <KdTable v-loading="loading" style="margin-top:20px;" :columns="columns" :rows="tableData" @selection-change="onSelectChange" />
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
     <div class="flex-x-center-center mt-20">
@@ -45,6 +45,7 @@ export default {
       },
       total: 0,
       timer: null,
+      selectData: []
     }
   },
   computed: {
@@ -67,7 +68,13 @@ export default {
       return this.$store.getters.ckey || ''
     }
   },
-
+  watch: {
+    visible(val) {
+      if (val) {
+        this.onQueryChange()
+      }
+    },
+  },
   methods: {
     onQueryChange() {
       clearTimeout(this.timer)
@@ -80,6 +87,7 @@ export default {
         const api = this.ckey ? getMemberList : getWxUserList
         const { data: { totalRows, list } } = await api({
           name,
+          phone: '',
           page,
           pageSize,
         })
@@ -91,13 +99,17 @@ export default {
     },
 
     onConfirm() {
-      // TODO
+      this.$emit('confirm', this.selectData)
+      this.onClose()
     },
 
     onClose() {
       this.$emit('update:visible', false)
     },
 
+    onSelectChange(val) {
+      this.selectData = val
+    }
   }
 }
 </script>
