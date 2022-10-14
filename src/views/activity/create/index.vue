@@ -636,8 +636,8 @@
       </div>
     </div>
 
-    <div v-show="activeName === '3'">
-      <ActiveGuest />
+    <div v-if="activeName === '3'">
+      <ActiveGuest :end-time="formObj.date ? formObj.date[1] : ''" @guestList="addGuestList" />
     </div>
 
     <div class="btn-group">

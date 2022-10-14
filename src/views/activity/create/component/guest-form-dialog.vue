@@ -25,15 +25,15 @@
 
       <el-row>
         <el-col :offset="2" :span="20">
-          <el-form-item label="所在公司/组织：" prop="company">
-            <el-input v-model.trim="formState.company" placeholder="限40字内" max-length="40" />
+          <el-form-item label="所在公司/组织：" prop="unit">
+            <el-input v-model.trim="formState.unit" placeholder="限40字内" max-length="40" />
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :offset="2" :span="20">
-          <el-form-item label="嘉宾头像：" prop="avator">
+          <el-form-item label="嘉宾头像：" prop="portrait">
             <el-upload
               class="avator-uploader"
               action="/"
@@ -41,7 +41,7 @@
               :before-upload="beforeSystemLogoUpload"
               :http-request="uploadSystemLogo"
             >
-              <img v-if="formState.avator" :src="formState.avator" class="avator" alt="">
+              <img v-if="formState.portrait" :src="formState.portrait" class="avator" alt="">
               <i v-else class="el-icon-plus avator-uploader-icon" />
             </el-upload>
             <p style="margin: 0; padding: 0">
@@ -53,9 +53,9 @@
 
       <el-row>
         <el-col :offset="2" :span="20">
-          <el-form-item label="嘉宾介绍：" prop="president">
+          <el-form-item label="嘉宾介绍：" prop="introduction">
             <el-input
-              v-model.trim="formState.introduce"
+              v-model.trim="formState.introduction"
               type="textarea"
               :rows="6"
               placeholder="5000字内"
@@ -67,8 +67,8 @@
 
       <el-row v-if="showBank">
         <el-col :offset="2" :span="20">
-          <el-form-item label="保存至嘉宾库" prop="saveBank">
-            <el-checkbox v-model="formState.saveBank">同时添加至嘉宾库中，方便下次直接从嘉宾库选择，无需再次创建</el-checkbox>
+          <el-form-item label="保存至嘉宾库" prop="isChamber">
+            <el-checkbox v-model="formState.isChamber" :disabled="disabledChamber">同时添加至嘉宾库中，方便下次直接从嘉宾库选择，无需再次创建</el-checkbox>
           </el-form-item>
         </el-col>
       </el-row>
@@ -86,6 +86,8 @@
 
 <script >
 import { upload } from '@/api/chamber/manager'
+import { createGuest, updateChamberGuest, updateGuest } from '@/api/activity/activity-guest'
+import { cloneDeep } from 'lodash'
 
 export default {
   name: 'GuestFormDialog',
@@ -101,6 +103,14 @@ export default {
     showBank: {
       type: Boolean,
       default: false
+    },
+    staticData: {
+      type: Object,
+      default: () => {}
+    },
+    endTime: {
+      type: [String, Number],
+      default: ''
     }
   },
   data() {
@@ -108,35 +118,131 @@ export default {
       formState: {
         name: '',
         post: '',
-        company: '',
-        avator: '',
-        introduce: '',
-        saveBank: false
+        unit: '',
+        portrait: '',
+        introduction: '',
+        isChamber: false
       },
       rules: {
         name: [{ required: true, message: '请输入嘉宾姓名', trigger: 'blur' }],
         post: [{ required: true, message: '请输入职位/头衔', trigger: 'blur' }],
-        company: [{ required: true, message: '请输入所在公司/组织', trigger: 'blur' }],
-        avator: [{ required: true, message: '请上传嘉宾头像', trigger: 'change' }],
+        unit: [{ required: true, message: '请输入所在公司/组织', trigger: 'blur' }],
+        portrait: [{ required: true, message: '请上传嘉宾头像', trigger: 'change' }],
       }
     }
   },
   computed: {
     isEdit() {
       return !!this.id
+    },
+    activityId() {
+      return this.$route.query.activityId || ''
+    },
+    userId() {
+      return this.$store.getters.profile?.id || ''
+    },
+    disabledChamber() {
+      return this.isEdit && this.formState.isChamber
+    }
+  },
+  watch: {
+    visible(val) {
+      if (!val) return
+
+      if (this.isEdit && !this.activityId) {
+        this.formState = cloneDeep(this.staticData)
+      }
     }
   },
   methods: {
     onSave() {
       this.$refs['form'].validate(valid => {
         if (!valid) return
-        // TODO save
-        console.log('pass')
+
+        this.isEdit ? this.editGuest() : this.createGuest()
       })
+    },
+
+    createGuest() {
+      if (this.activityId) {
+        this.createGuestPromise()
+      } else {
+        this.$emit('add', {
+          id: String(Date.now()),
+          ...this.formState,
+          userId: this.userId,
+        })
+        this.$message.success('操作成功')
+        this.onClose()
+      }
+    },
+
+    editGuest() {
+      if (this.activityId) {
+        this.showBank ? this.editGuestPromise() : this.editChamberGuestPromise()
+      } else {
+        this.$emit('edit', { ...this.formState })
+        this.$message.success('操作成功')
+        this.onClose()
+      }
+    },
+
+    async createGuestPromise() {
+      const params = {
+        activityId: this.activityId,
+        userId: this.userId,
+        activityEndTime: this.endTime,
+        ...this.formState,
+        isChamber: this.formState.isChamber ? 0 : 1,
+      }
+
+      if (this.activityId) params.activityId = this.activityId
+
+      const { state } = await createGuest(params)
+
+      if (!state) return
+
+      this.$message.success('操作成功')
+      this.onClose()
+    },
+
+    async editGuestPromise() {
+      const params = {
+        id: this.id,
+        activityId: this.activityId,
+        ...this.formState,
+        activityEndTime: this.endTime
+      }
+
+      delete params.isChamber
+
+      const { state } = await updateGuest(params)
+
+      if (!state) return
+      this.$message.success('操作成功')
+      this.onClose()
+    },
+
+    async editChamberGuestPromise() {
+      const params = {
+        id: this.id,
+        ...this.formState,
+        ckey: this.$store.getters.ckey || 'ysh',
+        activityEndTime: this.endTime
+      }
+
+      delete params.isChamber
+
+      const { state } = await updateChamberGuest(params)
+
+      if (!state) return
+      this.$message.success('操作成功')
+      this.onClose()
     },
 
     onClose() {
       this.$emit('update:visible', false)
+      this.$refs['form'].resetFields()
     },
 
     beforeSystemLogoUpload(file) {
@@ -155,7 +261,7 @@ export default {
       const formData = new FormData()
       formData.append('file', content.file)
       upload(formData).then(response => {
-        this.formState.avator = response.data.filePath
+        this.formState.portrait = response.data.filePath
       })
     },
   }

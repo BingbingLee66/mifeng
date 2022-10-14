@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="从会员库选嘉宾" :visible="visible" width="800px" @close="onClose">
+  <el-dialog :title="`从${ckey ? '会员' : '用户'}库选嘉宾`" :visible="visible" width="800px" @close="onClose">
     <div class="search-wrap flex-x">
       <el-input v-model="query.name" placeholder="搜索姓名" style="width: 200px;" />
       <el-button class="ml-20" type="primary" @click="onQueryChange">查询</el-button>
@@ -16,6 +16,8 @@
 </template>
 
 <script >
+import { getMemberList, getWxUserList } from '@/api/activity/activity-guest'
+
 export default {
   name: 'GuestFormDialog',
   components: {
@@ -35,16 +37,7 @@ export default {
   data() {
     return {
       loading: false,
-      tableData: [
-        {
-          id: '1',
-          avator: 'https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF',
-          name: '诸葛亮',
-          post: '产品专员',
-          company: '广东省实力科技信息有限公司',
-          introduce: '热爱运动，喜欢旅游，性格开朗乐观，热情友好，能吃苦耐劳，学习能力强。三年的校园学习生活经历使我积累了较强的组织、协调沟通能力和团队合作精神。'
-        }
-      ],
+      tableData: [],
       query: {
         pageNum: 1,
         pageSize: 10,
@@ -61,15 +54,18 @@ export default {
         {
           label: '头像', render: ({ row }) =>
             <div>
-              <img src={row.avator} alt="" width="50" height="50" />
+              <img src={row.portrait} alt="" width="50" height="50" />
             </div>
         },
         { label: '姓名', prop: 'name' },
         { label: '职位/称谓', prop: 'post' },
-        { label: '所在公司/组织', prop: 'company' },
-        { label: '嘉宾介绍', prop: 'introduce' },
+        { label: '所在公司/组织', prop: 'unit' },
+        { label: '嘉宾介绍', prop: 'introduction' },
       ]
     },
+    ckey() {
+      return this.$store.getters.ckey || ''
+    }
   },
 
   methods: {
@@ -80,13 +76,23 @@ export default {
     async queryTableData() {
       this.loading = true
       try {
-        // TODO fetchData
+        const { query: { pageNum: page, pageSize, name } } = this
+        const api = this.ckey ? getMemberList : getWxUserList
+        const { data: { totalRows, list } } = await api({
+          name,
+          page,
+          pageSize,
+        })
+        this.total = totalRows
+        this.tableData = list
       } finally {
         this.loading = false
       }
     },
 
-    onConfirm() {},
+    onConfirm() {
+      // TODO
+    },
 
     onClose() {
       this.$emit('update:visible', false)

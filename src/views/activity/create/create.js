@@ -12,6 +12,7 @@ import CustomApplyDialog from './component/custom-apply-dialog'
 import ActiveTypeDialog from './component/active-type-dialog'
 import CustomSelect from './component/custom-select'
 import ActiveGuest from './component/active-guest'
+import { cloneDeep } from 'lodash'
 
 export default {
   components: {
@@ -901,6 +902,18 @@ export default {
     createZuoBiao(myLatitude, myLongitude) {
       return new TMap.LatLng(myLatitude, myLongitude)
     },
+
+    addGuestList(val) {
+      const tempVal = cloneDeep(val)
+      tempVal.forEach(item => {
+        delete item.id
+        item.isChamber = item.isChamber ? 0 : 1
+      })
+      this.formObj = {
+        ...this.formObj,
+        activityGuestsDTOList: tempVal
+      }
+    }
 
   }
 }
