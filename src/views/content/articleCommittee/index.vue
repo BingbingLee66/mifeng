@@ -203,7 +203,6 @@
           <el-button
             class="my-btn"
             type="text"
-            style="margin-left:10px;"
             @click="edit($event, scope.row)"
           >
             编辑
