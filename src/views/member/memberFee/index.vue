@@ -5,7 +5,7 @@
         <el-row>
           <el-col :span="4">
             <el-form-item label="用户名：" label-width="80px">
-              <el-input v-model="query.uname" />
+              <el-input v-model="query.uname" @keyup.native="query.uname=query.uname.replace(/^\s+|\s+$/gm,'')" />
             </el-form-item>
           </el-col>
           <el-col :span="5" style="margin-left:10px">
