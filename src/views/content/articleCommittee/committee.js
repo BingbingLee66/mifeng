@@ -255,7 +255,7 @@ export default {
       window.localStorage.setItem('articleupdate', this.$route.path)
       this.$router.push({
         name: '添加/修改文章',
-        params: {
+        query: {
           activeName: this.activeName,
           articleId: row.id,
           committee: true

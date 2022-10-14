@@ -66,15 +66,15 @@ export default {
   },
   mounted() {
     this.getContentColumnType()
-    if (this.$route.params.activeName) {
-      this.activeName = this.$route.params.activeName
+    if (this.$route.query.activeName) {
+      this.activeName = this.$route.query.activeName
     }
-    if (this.$route.params.committee) {
+    if (this.$route.query.committee) {
       this.committee = true
     }
-    if (this.$route.params.articleId) {
+    if (this.$route.query.articleId) {
       // console.log(this.$route.params.articleId)
-      this.articleId = this.$route.params.articleId
+      this.articleId = this.$route.query.articleId
       this.init()
     } else {
       // this.$refs.ueditor.setContent(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
