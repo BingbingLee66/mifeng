@@ -165,7 +165,7 @@ export default {
       const params = {
         ckey: this.$store.getters.ckey,
         contentModuleId,
-        isSpecialCommittee: this.committee === true ? 1 : 0
+        isSpecialCommittee: this.committee === true ? 1 : ''
       }
       getContentColumnOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
