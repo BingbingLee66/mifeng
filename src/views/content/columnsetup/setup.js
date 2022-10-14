@@ -192,6 +192,7 @@ export default {
     // 设置权重
     setLevel(row) {
       this.currentId = row.id
+      this.levelForm.level = row.level
       this.$refs['levelDialog'].show()
     },
     // 保存权重数据
