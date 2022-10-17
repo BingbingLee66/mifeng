@@ -41,6 +41,7 @@
           </div>
           <div v-else>
             <el-button v-if="has('', '冻结') && scope.row.status == 1" type="text" :actionid="getId('', '冻结')" @click="updateStatus($event, scope.row)">冻结</el-button>
+            <el-button v-if="has('', '解冻') && scope.row.status == 0" type="text" :actionid="getId('', '解冻')" @click="updateStatus($event, scope.row)">解冻</el-button>
           </div>
         </template>
       </el-table-column>
