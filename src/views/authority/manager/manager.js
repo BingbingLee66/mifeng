@@ -95,9 +95,13 @@ export default {
           type: 'success'
         })
         this.visible = false
-        this.$refs['form'].resetFields()
         this.fetchData()
       })
+    },
+    beforeClose() {
+      console.log('sdasdsa')
+      this.$refs['form'].clearValidate()
+      this.visible = false
     },
     updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))

@@ -61,6 +61,7 @@
       title="新增/编辑角色"
       :visible.sync="visible"
       width="50%"
+      :before-close="beforeClose"
     >
       <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="150px">
         <el-row>
@@ -83,7 +84,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button v-dbClick type="primary" @click="save">确定</el-button>
-        <el-button @click.native="visible = false">取消</el-button>
+        <el-button @click.native="beforeClose">取消</el-button>
       </span>
     </el-dialog>
   </div>
