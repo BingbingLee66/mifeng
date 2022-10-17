@@ -87,12 +87,15 @@ export default {
       this.visible = true
     },
     save() {
-      save(this.formObj).then(() => {
+      save(this.formObj).then(res => {
+        console.log(res, 'Res Res   Res   Res')
+        if (res.state === 0) return this.$message({ message: res.msg, type: 'error' })
         this.$message({
           message: '操作成功',
           type: 'success'
         })
         this.visible = false
+        this.$refs['form'].resetFields()
         this.fetchData()
       })
     },
