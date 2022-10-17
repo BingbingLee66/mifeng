@@ -272,6 +272,13 @@ export const constantRoutes = [
         meta: { title: '审核详情' }
       },
       {
+        name: '参与人与名片排序',
+        path: '/activity/ipSort',
+        component: () => import('@/views/activity/ip-sort/index.vue'),
+        hidden: true,
+        meta: { title: '参与人与名片排序' }
+      },
+      {
         path: '/activity/member-album',
         name: '会员图片直播',
         component: () => import('@/views/activity/member-album/index.vue'),

@@ -32,7 +32,16 @@
       </el-form-item>
     </el-form>
     <div v-if="status === '1'" class="flex-x-between-center">
-      <el-button type="text" @click="importVisible=true">导入</el-button>
+      <div>
+        <el-button type="text" @click="importVisible=true">导入</el-button>
+        <el-button
+          type="text"
+          @click="$router.push({
+            path: '/activity/ipSort', query: { activityId } })"
+        >
+          参与人与名片排序设置
+        </el-button>
+      </div>
       <!-- 导表 -->
       <el-button :loading="exportLoaing" type="primary" @click="onExportExcel">导表</el-button>
     </div>
@@ -138,6 +147,22 @@
       <el-button slot="footer" type="primary" @click="onSignin({id:singinDialog.signinId,num:singinDialog.num,status:1})">确定</el-button>
     </el-dialog>
 
+    <el-dialog :visible.sync="ipCardVisible" title="名片信息" center width="560px">
+      <div class="ip-card-wrap">
+        <div class="avator" :style="{backgroundImage: `url(${cardInfo.avator})`}" />
+        <div class="content">
+          <div class="name">{{ cardInfo.cardName }}</div>
+          <div class="post">{{ cardInfo.cardIdentityPost }}</div>
+          <div class="company">{{ cardInfo.cardIdentityUnit }}</div>
+          <div class="phone">{{ cardInfo.cardPhone }}</div>
+          <div class="email">{{ cardInfo.cardEmail }}</div>
+          <div class="address">{{ cardInfo.cardAddress }}</div>
+        </div>
+      </div>
+
+      <el-button slot="footer" type="primary" @click="ipCardVisible = false">我知道了</el-button>
+    </el-dialog>
+
   </el-card>
 </template>
 
@@ -157,7 +182,8 @@ import {
   getSigninStatusCount,
   resetSigninSeat,
   modifySeatStatus,
-  getActivityExcel
+  getActivityExcel,
+  getCardDetail
 } from '@/api/activity/activity-verify-new'
 
 export default {
@@ -213,6 +239,7 @@ export default {
       },
 
       subInfo: { },
+      cardInfo: {},
 
       seatDialog: {
         show: false,
@@ -234,6 +261,8 @@ export default {
         num: 0
       },
 
+      ipCardVisible: false,
+
       exportLoaing: false
     }
   },
@@ -253,7 +282,7 @@ export default {
           label: '用户信息',
           minWidth: 180,
           render: ({ row }) => (<div>
-            {row.uavatar ? <img style='width:50px;height:50px' src={row.uavatar} /> : ''}
+            {row.uavatar ? <img style="width:50px;height:50px" src={row.uavatar} /> : ''}
             <div>{row.userName}</div>
             <div>{row.phone}</div>
           </div>)
@@ -283,7 +312,7 @@ export default {
     },
     importVisible(newVal) {
       if (!newVal && this.fileList.length) this.fileList = []
-    }
+    },
   },
   created() {
     this.getStatusCount()
@@ -308,7 +337,7 @@ export default {
       this.tableLoading = true
       try {
         const { query: { pageNum: page, ...query }, activityId, status } = this
-        const { data: { totalRows, list }} = await getActivitySigninList(activityId, {
+        const { data: { totalRows, list } } = await getActivitySigninList(activityId, {
           page,
           status,
           ...query,
@@ -317,6 +346,17 @@ export default {
         this.tableData = list
       } catch (error) { /* console.log(error) */ }
       this.tableLoading = false
+    },
+
+    async getCardDetail(cardId) {
+      try {
+        this.ipCardVisible = true
+        const { data, state } = await getCardDetail(cardId)
+        if (!state) return
+        this.cardInfo = data
+      } catch (e) {
+        console.log(e)
+      }
     },
 
     async onRejectApply() {
@@ -404,7 +444,7 @@ export default {
         this.seatDialog.show = false
         return
       }
-      const { state, msg } = await resetSigninSeat(signinId, seats.map(({ status, ...v }) => v))
+      const { state, msg } = await resetSigninSeat(signinId, seats)
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.getTableData()
@@ -484,7 +524,13 @@ export default {
         label: '报名信息',
         minWidth: 200,
         render: ({ row }) => (<div>
-          {row.signs ? row.signs.map(v => <div>{v.key}：{v.value}</div>) : '-'}
+          {
+            row.signs
+              ? row.signs
+                .map(v => <div>{v.key}：{v.value}</div>)
+                .concat([<el-button type="text" onClick={() => this.getCardDetail(row.cardId)}>IP名片详情</el-button>])
+              : '-'
+          }
         </div>)
       }
     },
@@ -500,9 +546,9 @@ export default {
           fixed: 'right',
           minWidth: 80,
           render: ({ row }) => (<div>
-            <el-button type='text' onClick={() => this.modifySigninStatus({ id: row.id, status: 1 })}>通过</el-button>
+            <el-button type="text" onClick={() => this.modifySigninStatus({ id: row.id, status: 1 })}>通过</el-button>
             <br />
-            <el-button type='text' onClick={() => (this.rejectDialog = { show: true, value: '', signinId: row.id })}><div style='color:red;'>驳回</div></el-button>
+            <el-button type="text" onClick={() => (this.rejectDialog = { show: true, value: '', signinId: row.id })}><div style="color:red;">驳回</div></el-button>
           </div>)
         }
       ]
@@ -518,7 +564,7 @@ export default {
           render: ({ row }) => (<div>
             <div>{row.subUserName}</div>
             <div>{row.subUserPhone}</div>
-            <el-button type='text' onClick={() => this.initSubDialog(row)} >
+            <el-button type="text" onClick={() => this.initSubDialog(row)} >
               {row.subUserPhone ? '修改替补人员' : '设置替补人员'}
             </el-button>
           </div>)
@@ -541,8 +587,9 @@ export default {
           render: ({ row }) => (<div>
             {row.seats ? row.seats.map(v => {
               if (v.status === 0) return <div>{v.seatName}</div>
-              if (v.status === 1) return <div style='color:#409eff;'>{v.seatName}</div>
-              if (v.status === 2) return <div style='color:red;'>{v.seatName} 空座</div>
+              if (v.status === 1) return <div style="color:#409eff;">{v.seatName}</div>
+              if (v.status === 2) return <div style="color:red;">{v.seatName} 空座</div>
+              return <div></div>
             }) : '-'}
           </div>)
         },
@@ -577,7 +624,7 @@ export default {
           render: ({ row }) => (<div>
             <div>{row.remark}</div>
             <el-button
-              type='text'
+              type="text"
               onClick={() => (this.remarkDialog = { show: true, signinId: row.id, value: row.remark || '' })}
             >备注</el-button>
           </div>)
@@ -588,10 +635,10 @@ export default {
           minWidth: 100,
           render: ({ row }) => {
             return (<div>
-              <div><el-button type='text' onClick={() => this.initSeatDialog(row)}>设置座位号</el-button></div>
+              <div><el-button type="text" onClick={() => this.initSeatDialog(row)}>设置座位号</el-button></div>
               <div> { this.generateSigninButton(row) } </div>
               <div> { this.generateSignOutButton(row) } </div>
-              <div><el-button type='text' onClick={() => this.onDelSingin(row)}><div style='color:red;'>移除</div></el-button></div>
+              <div><el-button type="text" onClick={() => this.onDelSingin(row)}><div style="color:red;">移除</div></el-button></div>
             </div>)
           }
         },
@@ -603,10 +650,10 @@ export default {
       // 活动开始前1小时，才可以【签到】，直到已结束，其他时段不显示。
       if (now - start >= -1000 * 60 * 60 && now - end <= 0) {
         if (row.signStatus === 1) {
-          return <el-button type='text' onClick={() => this.onSignin({ id: row.id, num: 0, status: 2 })}>取消签到</el-button>
+          return <el-button type="text" onClick={() => this.onSignin({ id: row.id, num: 0, status: 2 })}>取消签到</el-button>
         } else {
           return <el-button
-            type='text'
+            type="text"
             onClick={
               () => (this.singinDialog = { show: true, maxNum: row.subscribeTotal, num: row.subscribeTotal, signinId: row.id })
             }>
@@ -621,8 +668,8 @@ export default {
       // 活动开始后和结束后一小时，才可以【签退】，其他时间不显示；
       if (now - start >= 0 && now - end <= 1000 * 60 * 60) {
         return row.signOutStatus === 1
-          ? <el-button type='text' onClick={() => this.onSignOut({ id: row.id, status: 2 })}>取消签退</el-button>
-          : <el-button type='text' onClick={() => this.onSignOut({ id: row.id, status: 1 })}>签退</el-button>
+          ? <el-button type="text" onClick={() => this.onSignOut({ id: row.id, status: 2 })}>取消签退</el-button>
+          : <el-button type="text" onClick={() => this.onSignOut({ id: row.id, status: 1 })}>签退</el-button>
       }
     },
     // 已驳回
@@ -644,7 +691,7 @@ export default {
           label: '操作',
           fixed: 'right',
           minWidth: 130,
-          render: ({ row }) => <el-button type='text' onClick={() => this.modifySigninStatus({ id: row.id, status: 4 })}>重新审核并通过</el-button>
+          render: ({ row }) => <el-button type="text" onClick={() => this.modifySigninStatus({ id: row.id, status: 4 })}>重新审核并通过</el-button>
         }
       ]
     },
@@ -687,7 +734,49 @@ export default {
 
   .import-upload-text {
     font-size: 20px;
-    color: 999;
+    color: #999;
+  }
+}
+
+.ip-card-wrap {
+  display: flex;
+  border: 1px solid #858585;
+  border-radius: 10px;
+  overflow: hidden;
+
+  .avator {
+    width: 180px;
+    height: 180px;
+    background-color: #ccc;
+    flex-shrink: 0;
+
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 20px
+  }
+
+  .name {
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .post, .company, .phone, .emial {
+    line-height: 26px;
+  }
+
+  .phone {
+    margin-top: 10px;
+  }
+
+  .address {
+    margin-top: 6px;
   }
 }
 

@@ -26,9 +26,22 @@ export const getActivitySigninList = (id, params) => request({
   params
 })
 
+// 名片详情查询接口
+export const getCardDetail = cardId => request({
+  url: `/api/ecservice/ec/card/card-detail?cardId=${cardId}`,
+  method: 'get',
+})
+
 // 导入活动报名数据
 export const uploadSigninData = data => request({
   url: '/api/ec/singin',
+  method: 'post',
+  data
+})
+
+// 导入excek
+export const uploadSignin = data => request({
+  url: '/api/ec/singin/import',
   method: 'post',
   data
 })
@@ -96,4 +109,18 @@ export const getActivityExcel = (id, params) => request({
   method: 'get',
   params,
   responseType: 'blob'
+})
+
+// 参与人与卡片-列表查询
+export const getIpCardList = (activityId, params) => request({
+  url: `/api/ec/singin/activity/card/${activityId}`,
+  method: 'get',
+  params,
+})
+
+// 参与人与名片设置-名片排序设置
+export const weightIpCardSort = data => request({
+  url: '/api/ec/singin/activity/card-sort',
+  method: 'put',
+  data,
 })
