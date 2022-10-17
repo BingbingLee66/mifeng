@@ -111,6 +111,13 @@ export const getActivityExcel = (id, params) => request({
   responseType: 'blob'
 })
 
+// 参与人员excel导出
+export const getCardExcel = id => request({
+  url: `/api/ec/singin/excel?activityId=${id}`,
+  method: 'get',
+  responseType: 'blob'
+})
+
 // 参与人与卡片-列表查询
 export const getIpCardList = (activityId, params) => request({
   url: `/api/ec/singin/activity/card/${activityId}`,

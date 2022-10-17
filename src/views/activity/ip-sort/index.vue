@@ -33,8 +33,13 @@
   </div>
 </template>
 
-<script >
-import { getIpCardList, uploadSignin, weightIpCardSort } from '@/api/activity/activity-verify-new'
+<script>
+import {
+  getCardExcel,
+  getIpCardList,
+  uploadSignin,
+  weightIpCardSort
+} from '@/api/activity/activity-verify-new'
 import { downloadFile } from '@/utils'
 
 export default {
@@ -137,15 +142,17 @@ export default {
       this.fileList = [e.file]
     },
 
-    onDownLoadSignin() {
+    async onDownLoadSignin() {
       const now = new Date()
       const year = now.getFullYear()
       const month = now.getMonth() + 1
       const date = now.getDate()
 
+      const blob = await getCardExcel(this.activityId)
+
       downloadFile({
         title: `${year}年-${month}月-${date}日参与人与名片排序.xlsx`,
-        url: `${process.env.VUE_APP_BASE_API}/api/ec/singin/excel?activityId=${this.activityId}`
+        url: window.URL.createObjectURL(blob)
       })
     },
 
