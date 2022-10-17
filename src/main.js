@@ -10,7 +10,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-import { reportSlsData, reportHashUrlData, reportClickData } from './api/statistics/tracker'
+
 import i18n from './lang' // Internationalization
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -45,33 +45,6 @@ import kdDialog from './components/common/kdDialog'
 
 Vue.component('kdDialog', kdDialog)
 
-/*
-*  页面hash路由上报
-*/
-router.afterEach((to, from) => {
-  const { ckey } = store.getters
-  if (!ckey) return
-  if (to.path !== from.path) { // 商会后台上报
-    try {
-      const user_only = store.getters.profile.userName
-      reportSlsData({ url: to.path, ckey, user_only, method: 'PAGE_CLICK', status: 200, params: '', extend: '' })
-    } catch (e) {
-      console.log('sls日志收集失败', e)
-    }
-    reportHashUrlData({ url: to.path, ckey })
-  }
-})
-
-/*
-* 点击上报方法封装
-*/
-
-Vue.prototype.$trackClick = function(buttonId) {
-  const { ckey } = this.$store.getters
-  if (!ckey) return
-  reportClickData({ buttonId, ckey })
-}
-
 new Vue({
   el: '#app',
   router,
@@ -85,13 +58,13 @@ window.ysh = {
 /**
  *时间戳过滤器
  */
-Vue.filter('dateFormat', (dataStr) => {
+Vue.filter('dateFormat', dataStr => {
   return dataStr === null ? '--' : formatDateTime(new Date(parseInt(dataStr)), 'yyyy-MM-dd hh:mm:ss')
 })
 /**
  *时间戳过滤器
  */
-Vue.filter('dateFormat2', (dataStr) => {
+Vue.filter('dateFormat2', dataStr => {
   return dataStr === null ? '--' : formatDate(new Date(dataStr), 'yyyy-MM-dd')
 })
 
@@ -122,77 +95,82 @@ Vue.mixin({
         defaultDefinition: 'LD',
         // cover: picUrl,
         controlBarVisibility: 'always',
-        components: [{
-          name: 'RateComponent',
-          type: AliPlayerComponent.RateComponent,
-        }],
+        components: [
+          {
+            name: 'RateComponent',
+            type: AliPlayerComponent.RateComponent,
+          }
+        ],
         // https://help.aliyun.com/document_detail/62948.html#-
-        skinLayout: [{
-          name: 'bigPlayButton',
-          align: 'blabs',
-          x: 'calc(50% - 32px)',
-          y: '50%'
-        },
-        {
-          name: 'H5Loading',
-          align: 'cc',
-        },
-        {
-          name: 'errorDisplay',
-          align: 'tlabs',
-          x: 0,
-          y: 0
-        },
-        {
-          name: 'infoDisplay'
-        },
-        {
-          name: 'tooltip',
-          align: 'blabs',
-          x: 0,
-          y: 56
-        }, // 悬浮在按钮上的提示
-        {
-          name: 'thumbnail'
-        },
-        {
-          name: 'controlBar',
-          align: 'blabs',
-          x: 0,
-          y: 0, // 控制视频的控件
-          children: [{
-            name: 'progress',
+        skinLayout: [
+          {
+            name: 'bigPlayButton',
+            align: 'blabs',
+            x: 'calc(50% - 32px)',
+            y: '50%'
+          },
+          {
+            name: 'H5Loading',
+            align: 'cc',
+          },
+          {
+            name: 'errorDisplay',
+            align: 'tlabs',
+            x: 0,
+            y: 0
+          },
+          {
+            name: 'infoDisplay'
+          },
+          {
+            name: 'tooltip',
             align: 'blabs',
             x: 0,
-            y: 44
-          }, // 进度
+            y: 56
+          }, // 悬浮在按钮上的提示
           {
-            name: 'playButton',
-            align: 'tl',
-            x: 15,
-            y: 12
-          }, // 播放按钮
+            name: 'thumbnail'
+          },
           {
-            name: 'timeDisplay',
-            align: 'tl',
-            x: 10,
-            y: 7
-          }, // 时间线
-          {
-            name: 'fullScreenButton',
-            align: 'tr',
-            x: 10,
-            y: 12
-          }, // 全屏按钮按钮
-          // {name:"subtitle", align:"tr",x:5, y:12},                // 字幕
-          // {name:"setting", align:"tr",x:15, y:12},                // 设置
-          {
-            name: 'volume',
-            align: 'tr',
-            x: 5,
-            y: 10
-          }],
-        },
+            name: 'controlBar',
+            align: 'blabs',
+            x: 0,
+            y: 0, // 控制视频的控件
+            children: [
+              {
+                name: 'progress',
+                align: 'blabs',
+                x: 0,
+                y: 44
+              }, // 进度
+              {
+                name: 'playButton',
+                align: 'tl',
+                x: 15,
+                y: 12
+              }, // 播放按钮
+              {
+                name: 'timeDisplay',
+                align: 'tl',
+                x: 10,
+                y: 7
+              }, // 时间线
+              {
+                name: 'fullScreenButton',
+                align: 'tr',
+                x: 10,
+                y: 12
+              }, // 全屏按钮按钮
+              // {name:"subtitle", align:"tr",x:5, y:12},                // 字幕
+              // {name:"setting", align:"tr",x:15, y:12},                // 设置
+              {
+                name: 'volume',
+                align: 'tr',
+                x: 5,
+                y: 10
+              }
+            ],
+          },
 
         ],
         // components: [{
@@ -213,11 +191,11 @@ Vue.mixin({
         }
         fileReader.readAsText(data)
       } else {
-        let blob = new Blob([data], {
+        const blob = new Blob([data], {
           type: 'application/vnd.ms-excel'
         })
-        let downLoadEle = document.createElement('a')
-        let href = URL.createObjectURL(blob)
+        const downLoadEle = document.createElement('a')
+        const href = URL.createObjectURL(blob)
         downLoadEle.href = href
         downLoadEle.download = name // 自定义文件名
         document.body.appendChild(downLoadEle)
@@ -228,11 +206,11 @@ Vue.mixin({
     },
     // 深拷贝
     $deepClone(obj) {
-      var newObj = obj instanceof Array ? [] : {}
+      const newObj = obj instanceof Array ? [] : {}
       if (typeof obj !== 'object') {
         return obj
       } else {
-        for (var i in obj) {
+        for (const i in obj) {
           newObj[i] = typeof obj[i] === 'object' ? this.$deepClone(obj[i]) : obj[i]
         }
       }
@@ -242,15 +220,14 @@ Vue.mixin({
     $accDivision(arg1, arg2) {
       let t1 = 0
       let t2 = 0
-      let r1; let r2
       try {
         t1 = arg1.toString().split('.')[1].length
       } catch (e) {}
       try {
         t2 = arg2.toString().split('.')[1].length
       } catch (e) {}
-      r1 = Number(arg1.toString().replace('.', ''))
-      r2 = Number(arg2.toString().replace('.', ''))
+      const r1 = Number(arg1.toString().replace('.', ''))
+      const r2 = Number(arg2.toString().replace('.', ''))
       return (r1 / r2) * Math.pow(10, t2 - t1)
     },
     $minHeight() {
