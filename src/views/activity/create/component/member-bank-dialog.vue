@@ -99,7 +99,20 @@ export default {
     },
 
     onConfirm() {
-      this.$emit('confirm', this.selectData)
+      this.$emit('confirm', this.selectData.map(v => {
+        delete v.ckey
+        delete v.nickname
+        delete v.resume
+        delete v.phone
+
+        return {
+          ...v,
+          isChamber: 1,
+          introduction: v.introduction || '',
+          post: v.post || '',
+          userId: this.$store.getters.profile?.id || ''
+        }
+      }))
       this.onClose()
     },
 

@@ -16,9 +16,10 @@
       :end-time="endTime"
       @add="addStaticData"
       @edit="editStaticData"
+      @editChamber="editChamberData"
       @fetchData="onQueryChange"
     />
-    <GuestBankDialog :visible.sync="guestBankVisible" :static-data="tableData" @edit="onBankEdit" @confirm="addStaticData" />
+    <GuestBankDialog ref="guestBankDialog" :visible.sync="guestBankVisible" :static-data="tableData" @edit="onBankEdit" @confirm="addStaticData" />
     <MemberBankDialog :visible.sync="memberBankVisible" @confirm="addStaticData" />
   </div>
 </template>
@@ -160,10 +161,17 @@ export default {
       this.$emit('guestList', this.tableData)
     },
 
-    editStaticData(val) {
-      const findIndex = this.tableData.findIndex(v => v.id === val.id)
+    editStaticData(val, type) {
+      const findIndex = this.tableData.findIndex(v => (type === 'chamber' ? v.chamberGuestsId : v.id) === val.id)
+
+      if (findIndex < 0) return
       this.tableData.splice(findIndex, 1, val)
       this.$emit('guestList', this.tableData)
+    },
+
+    editChamberData(val) {
+      this.$refs.guestBankDialog.onQueryChange()
+      this.editStaticData(val, 'chamber')
     }
   }
 }

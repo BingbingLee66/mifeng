@@ -93,7 +93,7 @@ export default {
   name: 'GuestFormDialog',
   props: {
     id: {
-      type: String,
+      type: [String, Number],
       default: ''
     },
     visible: {
@@ -148,9 +148,12 @@ export default {
   watch: {
     visible(val) {
       if (!val) return
+
+      const { chamberGuestsId } = this.staticData
+
       this.formState = {
         ...cloneDeep(this.staticData),
-        isChamber: !this.staticData.isChamber
+        isChamber: chamberGuestsId ? chamberGuestsId !== '0' : !this.staticData.isChamber
       }
     }
   },
@@ -168,20 +171,21 @@ export default {
         id: Date.now(),
         ...this.formState,
         userId: this.userId,
-        isChamber: this.formState.isChamber ? 0 : 1
+        isChamber: this.formState.isChamber ? 0 : 1,
+        isStatic: true
       })
       this.$message.success('操作成功')
       this.onClose()
     },
 
     editGuest() {
-      if (!this.activityId || this.showBank) {
+      if (this.formState.isStatic || this.showBank) {
         this.$emit('edit', { ...this.formState, isChamber: this.formState.isChamber ? 0 : 1 })
         this.$message.success('操作成功')
         this.onClose()
       }
 
-      if (this.activityId && !this.showBank) {
+      if (!this.formState.isStatic && !this.showBank) {
         this.editChamberGuestPromise()
       }
     },
@@ -200,6 +204,7 @@ export default {
 
       if (!state) return this.$message.error(msg)
       this.$message.success('操作成功')
+      this.$emit('editChamber', { ...this.formState, isChamber: this.formState.isChamber ? 0 : 1 })
       this.onClose()
     },
 

@@ -908,6 +908,11 @@ export default {
       tempVal.forEach(item => {
         if (!this.activityId || typeof item.id === 'number') delete item.id
         delete item.activityId
+        item.isChamber = item.chamberGuestsId
+          ? item.chamberGuestsId !== '0'
+            ? 0
+            : 1
+          : item.isChamber
       })
       this.formObj = {
         ...this.formObj,
