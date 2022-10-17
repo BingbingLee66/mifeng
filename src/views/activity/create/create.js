@@ -338,6 +338,10 @@ export default {
         this.formObj.district = resData.area
 
         this.formObj.signType = resData.signType
+        this.formObj.signNeedCard = resData.signNeedCard
+        this.formObj.cardShowType = resData.cardShowType
+        this.formObj.cardInfoType = resData.cardInfoType
+        this.formObj.labels = resData.labels
         this.formObj.arriveType = resData.arriveType
         this.formObj.linkType = resData.linkType || 1
         if (resData.longitude) this.formObj.longitude = resData.longitude
