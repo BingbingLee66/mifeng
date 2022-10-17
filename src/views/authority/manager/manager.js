@@ -99,7 +99,6 @@ export default {
       })
     },
     beforeClose() {
-      console.log('sdasdsa')
       this.$refs['form'].clearValidate()
       this.visible = false
     },
