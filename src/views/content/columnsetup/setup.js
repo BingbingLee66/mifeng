@@ -4,7 +4,8 @@ import {
   updateStatus,
   updateColumnLevel,
   delColumn,
-  updateSpecialCommittee
+  updateSpecialCommittee,
+  showSpecialCommittee
 } from '@/api/content/columnsetup'
 import kdDialog from '@/components/common/kdDialog'
 export default {
@@ -75,7 +76,8 @@ export default {
       currentId: null,
       page: 1,
       pageSize: 10,
-      totalRows: 1000
+      totalRows: 1000,
+      isSpecialCommitteeBolVisible: false,
     }
   },
   components: {
@@ -104,7 +106,12 @@ export default {
       console.log('this.page', this.page)
       this.fetchData()
     },
-    init() {
+    async init() {
+      // 是否展示是否给专委会使用列
+      const res = await showSpecialCommittee(this.$store.getters.ckey)
+      if (res && res.state === 1) {
+        this.isSpecialCommitteeBolVisible = res.data
+      }
       this.fetchData()
     },
     fetchData() {

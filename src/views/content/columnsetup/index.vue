@@ -85,7 +85,7 @@
             <div v-if="scope.row.status == 3">固定栏位</div>
           </template>
         </el-table-column>
-        <el-table-column label="">
+        <el-table-column v-if="isSpecialCommitteeBolVisible" label="">
           <template slot="header">
             <span>是否给专委会使用</span>
             <el-tooltip effect="dark" content="开启后，专委会可以发文到栏目下。" placement="top">

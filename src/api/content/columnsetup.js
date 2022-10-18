@@ -93,3 +93,10 @@ export function updateSpecialCommittee(data) {
   })
 }
 
+/** 是否展示专委会栏目 */
+export function showSpecialCommittee(ckey) {
+  return request({
+    url: `/ec/role/existSpecialCommittee/${ckey}`,
+    method: 'get',
+  })
+}
