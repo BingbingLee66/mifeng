@@ -151,7 +151,7 @@
       <div class="ip-card-wrap">
         <div class="avator" :style="{backgroundImage: `url(${cardInfo.avatar})`}" />
         <div class="content">
-          <div class="name">{{ cardInfo.cardName }}</div>
+          <div class="name">{{ cardInfo.userName || '-' }}</div>
           <div class="post">{{ cardInfo.cardIdentityPost }}</div>
           <div class="company">{{ cardInfo.cardIdentityUnit }}</div>
           <div class="phone">{{ cardInfo.cardPhone }}</div>
@@ -748,6 +748,7 @@ export default {
   overflow: hidden;
 
   .avator {
+    position: relative;
     width: 180px;
     height: 180px;
     background-color: #ccc;
@@ -756,13 +757,24 @@ export default {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    overflow: hidden;
+
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: -50px;
+      height: 100%;
+      border: 50px solid transparent;
+      border-bottom: 180px solid white;
+    }
   }
 
   .content {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 0 20px
+    padding: 0 20px 0 10px;
   }
 
   .name {
