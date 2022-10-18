@@ -143,7 +143,7 @@ export default {
     },
 
     async onDel(row) {
-      await this.$confirm('', '确定要删除吗？')
+      await this.$confirm('此次移除不影响嘉宾库数据', '确认移除该嘉宾？')
 
       const index = this.tableData.findIndex(v => v.id === row.id)
 
