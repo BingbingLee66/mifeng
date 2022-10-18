@@ -65,7 +65,8 @@ export default {
         { label: '姓名', prop: 'name' },
         { label: '职位/称谓', prop: 'post' },
         { label: '所在公司/组织', prop: 'unit' },
-        { label: '嘉宾介绍', prop: 'introduction' },
+        { label: '嘉宾介绍', prop: 'introduction', render: ({ row }) => <div>{row.introduction || '/'}</div>
+        },
         {
           label: '操作',
           fixed: 'right',

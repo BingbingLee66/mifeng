@@ -65,15 +65,15 @@ export default {
         {
           label: '头像', render: ({ row }) =>
             <div>
-              <img src={this.ckey ? row.portrait : row.avatar} alt="" width="50" height="50" />
+              <img src={row.portrait} alt="" width="50" height="50" />
             </div>
         },
-        { label: '姓名', prop: `${this.ckey ? 'name' : 'userName'}` },
+        { label: '姓名', prop: 'name' },
         { label: '职位/称谓', prop: 'post' },
         { label: '所在公司/组织', prop: 'unit' },
         { label: '嘉宾介绍', prop: 'introduction', render: ({ row }) => {
           return <div>
-            <div class="text-overflow">{row.introduction}</div>
+            <div class="text-overflow">{row.introduction || '/'}</div>
             { row.introduction && row.introduction.length >= 24
               ? <div>【<el-button type="text" onClick={() => this.showText(row.introduction)}>查看更多</el-button>】</div>
               : ''
@@ -117,7 +117,13 @@ export default {
           pageSize,
         })
         this.total = totalRows
-        this.tableData = list
+        this.tableData = list.map(v => {
+          return {
+            ...v,
+            portrait: this.ckey ? v.portrait : v.avatar,
+            name: this.ckey ? v.name : v.userName
+          }
+        })
       } finally {
         this.loading = false
       }
