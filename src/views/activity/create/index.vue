@@ -349,22 +349,21 @@
                 </div>
               </el-form-item>
             </el-col>
+          </el-row>
 
-            <el-row>
-              <el-col>
-                <el-form-item
-                  label="活动类型："
-                  prop="labels"
-                  class="upload-style"
-                >
-                  <CustomSelect
-                    v-model="formObj.labels"
-                    @click.native="activeVisible = true"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-
+          <el-row>
+            <el-col>
+              <el-form-item
+                label="活动类型："
+                prop="labels"
+                class="upload-style"
+              >
+                <CustomSelect
+                  v-model="formObj.labels"
+                  @click.native="activeVisible = true"
+                />
+              </el-form-item>
+            </el-col>
           </el-row>
 
           <el-row>

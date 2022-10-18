@@ -143,6 +143,9 @@ export default {
     },
     disabledChamber() {
       return this.isEdit && this.formState.isChamber
+    },
+    ckey() {
+      return this.$store.getters.ckey || ''
     }
   },
   watch: {
@@ -172,7 +175,8 @@ export default {
         ...this.formState,
         userId: this.userId,
         isChamber: this.formState.isChamber ? 0 : 1,
-        isStatic: true
+        isStatic: true,
+        ckey: this.ckey || 'ysh'
       })
       this.$message.success('操作成功')
       this.onClose()
