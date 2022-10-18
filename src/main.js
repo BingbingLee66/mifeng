@@ -10,7 +10,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-
+import './utils/tracker' // 注入埋点
 import i18n from './lang' // Internationalization
 import '@/icons' // icon
 import '@/permission' // permission control
