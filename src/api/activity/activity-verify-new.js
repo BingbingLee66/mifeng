@@ -28,7 +28,7 @@ export const getActivitySigninList = (id, params) => request({
 
 // 名片详情查询接口
 export const getCardDetail = cardId => request({
-  url: `/api/ecservice/ec/card/card-detail?cardId=${cardId}`,
+  url: `/ec/card/card-detail?cardId=${cardId}`,
   method: 'get',
 })
 

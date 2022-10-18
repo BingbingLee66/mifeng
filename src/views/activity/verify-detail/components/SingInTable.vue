@@ -149,7 +149,7 @@
 
     <el-dialog :visible.sync="ipCardVisible" title="名片信息" center width="560px">
       <div class="ip-card-wrap">
-        <div class="avator" :style="{backgroundImage: `url(${cardInfo.avator})`}" />
+        <div class="avator" :style="{backgroundImage: `url(${cardInfo.avatar})`}" />
         <div class="content">
           <div class="name">{{ cardInfo.cardName }}</div>
           <div class="post">{{ cardInfo.cardIdentityPost }}</div>
@@ -523,15 +523,18 @@ export default {
       return {
         label: '报名信息',
         minWidth: 200,
-        render: ({ row }) => (<div>
-          {
-            row.signs
-              ? row.signs
-                .map(v => <div>{v.key}：{v.value}</div>)
-                .concat([<el-button type="text" onClick={() => this.getCardDetail(row.cardId)}>IP名片详情</el-button>])
-              : '-'
+        render: ({ row }) => {
+          const { signs } = row
+          const dom = signs.map(v => <div>{v.key}：{v.value}</div>)
+          const cardItemIndex = signs.findIndex(v => v.key === 'card')
+
+          if (cardItemIndex) {
+            dom.splice(cardItemIndex, 1)
+            dom.push(<el-button type="text" onClick={() => this.getCardDetail(signs[cardItemIndex].value)}>IP名片详情</el-button>)
           }
-        </div>)
+
+          return <div>{signs ? dom : '-'}</div>
+        }
       }
     },
 
