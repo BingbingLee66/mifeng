@@ -63,7 +63,7 @@ export default {
         {
           label: '用户信息',
           render: ({ row }) => (<div>
-            {row.avatar ? <img style="width:50px;height:50px" src={row.avatar} alt="" /> : ''}
+            {row.uavatar ? <img style="width:50px;height:50px" src={row.uavatar} alt="" /> : ''}
             <div>{row.userName}</div>
             <div>{row.phone}</div>
           </div>)
@@ -74,8 +74,8 @@ export default {
         },
         {
           label: '参与人与名片排序',
-          prop: 'weight',
-          render: ({ row }) => <el-button type="text" onClick={() => this.updateWeight(row)}>{row.weight}</el-button>
+          prop: 'sort',
+          render: ({ row }) => <el-button type="text" onClick={() => this.updateWeight(row)}>{row.sort}</el-button>
         }
       ],
       importVisible: false,
@@ -125,7 +125,7 @@ export default {
 
     updateWeight(row) {
       this.$refs['weightKdDialog']
-        .open(row.id, row.weight, weightIpCardSort)
+        .open(row.activitySignValueId, row.sort, weightIpCardSort)
         .then(() => {
           this.getTableData()
         })
