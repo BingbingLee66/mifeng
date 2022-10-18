@@ -15,6 +15,9 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item :span="8" label="发布者姓名">
+          <el-input v-model="query.name" clearable placeholder="关键词" maxlength="40" />
+        </el-form-item>
         <el-form-item :span="8" label="供需状态">
           <el-select v-model="query.status">
             <el-option label="全部" :value="-1" />
@@ -370,7 +373,8 @@ export default {
         chatSort: 0, // 0:不排序 1:正序 -1:逆序
         isHot: -1,
         publishTime: -1,
-        selectSource: -1 // 来源 -1-全部 1-总后台 2-商会后台 3-小程序 4-爬虫采集
+        selectSource: -1, // 来源 -1-全部 1-总后台 2-商会后台 3-小程序 4-爬虫采集
+        name: ''
       },
       total: 0,
 
@@ -422,7 +426,7 @@ export default {
     async getChamberOptions() {
       const { data } = await getChamberOptions()
       this.chamberOptions = data.data
-      this.chamberOptions.unshift({ 'label': '全部商会', 'value': '' }
+      this.chamberOptions.unshift({ label: '全部商会', value: '' }
       // , { 'label': '凯迪云商会', 'value': 'kaidiyun' }
       )
     },
@@ -434,7 +438,7 @@ export default {
         if (value === '') delete params[key]
       })
       try {
-        const { data: { list, totalRows }} = await supplyDemandList(params)
+        const { data: { list, totalRows } } = await supplyDemandList(params)
         this.tableData = list
         this.total = totalRows
       } catch (error) { /*  */ }
@@ -460,14 +464,14 @@ export default {
     },
 
     getSortIconClass(sort) {
-      let className = 'el-icon-sort'
+      const className = 'el-icon-sort'
       if (sort === 1) return className + '-up'
       if (sort === -1) return className + '-down'
       return className
     },
 
     async showRepostInfo(row) {
-      const { data: { list = [] }} = await getReportList({ tarId: row.id, page: 1, pageSize: 100 })
+      const { data: { list = [] } } = await getReportList({ tarId: row.id, page: 1, pageSize: 100 })
 
       this.$confirm(`
         <div style="margin:-10px -15px;border-top:1px solid #eee;">
@@ -538,7 +542,7 @@ export default {
     async showDetail(row) {
       this.detailDialog = { visible: true, data: {}, loading: true }
       try {
-        const { data: { yshContentEditVO = {}}} = await getSupplyDemandDetail(row.id)
+        const { data: { yshContentEditVO = {} } } = await getSupplyDemandDetail(row.id)
         this.detailDialog.data = yshContentEditVO
         if (yshContentEditVO.vid) {
           await this.$nextTick()
@@ -549,11 +553,11 @@ export default {
     },
 
     async goToEdit(row) {
-      this.$router.push({ path: '/supply-and-demand/edit-supply-demand', query: { id: row.id }})
+      this.$router.push({ path: '/supply-and-demand/edit-supply-demand', query: { id: row.id } })
     },
 
     async handleChamberFreeze(row) {
-      await this.$confirm(`<div>您确定要冻结供需吗？ <span style="color:red;">(冻结后，该供需不会展示在商/协会主页)</span></div>`, '冻结', { dangerouslyUseHTMLString: true })
+      await this.$confirm('<div>您确定要冻结供需吗？ <span style="color:red;">(冻结后，该供需不会展示在商/协会主页)</span></div>', '冻结', { dangerouslyUseHTMLString: true })
       const { state, msg } = await freezeSupplyDemandByChamber(row.id)
       if (state === 1) {
         this.$message({ message: '冻结成功', type: 'success' })
@@ -565,7 +569,7 @@ export default {
       this.$message({ message: msg, type: 'error' })
     },
     async handleChamberUnFreeze(row) {
-      await this.$confirm(`<div>确认解冻该供需？ <span style="color:red;">(解冻后，该供需将恢复展示在用户端)</span></div>`, '冻结', { dangerouslyUseHTMLString: true })
+      await this.$confirm('<div>确认解冻该供需？ <span style="color:red;">(解冻后，该供需将恢复展示在用户端)</span></div>', '冻结', { dangerouslyUseHTMLString: true })
       const { state, msg } = await unFreezeSupplyDemandByChamber(row.id)
       if (state === 1) {
         this.$message({ message: '解冻成功', type: 'success' })
@@ -602,7 +606,7 @@ export default {
     goMemberDetail(row) {
       this.$router.push({
         name: '会员详情',
-        params: { memberDetail: { wxUserId: row.sourceInfo.userId, ckey: this.ckey }, 'querytype': '0' }
+        params: { memberDetail: { wxUserId: row.sourceInfo.userId, ckey: this.ckey }, querytype: '0' }
       })
     }
   },
