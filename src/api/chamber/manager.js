@@ -80,9 +80,16 @@ export const getClueList = params => request({
 })
 
 //  商会后台使用统计 全部导出
-export const listAllChamberStatsDataByCkeyDownload = (params) => request({
+export const listAllChamberStatsDataByCkeyDownload = params => request({
   url: '/ec/chamberStats/listAllChamberStatsDataByCkeyDownload',
   method: 'get',
   params,
   responseType: 'blob'
+})
+
+// 商会主页二维码或者入会专属二维码
+export const getChamberQrcode = params => request({
+  url: '/ec/chamber/getChamberQrCodeMsg',
+  method: 'get',
+  params
 })

@@ -1,13 +1,20 @@
 <template>
   <div class="qrcode-wrap ">
-    <div class="flex-x">
+    <div v-if="!ckey" class="flex-x-start-center">
+      <span style="line-height: 40px">请选择商协会</span>
+      <el-select v-model="chamber" placeholder="请选择" clearable filterable style="width: 300px; margin: 0 10px;">
+        <el-option v-for="item in chamberOptions" :key="item.ckey" :label="item.name" :value="item.ckey" />
+      </el-select>
+      <el-button @click="getQRCode">生成二维码</el-button>
+    </div>
+
+    <div v-if="JSON.stringify(chamberInfo) !== '{}'" class="flex-x">
       <div class="qrcode-content">
         <h2>二维码：</h2>
         <div id="postdiv" class="poster" style="background-image: url(https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF)">
           <img class="poster-logo" :src="chamberInfo.chamberLogo" alt="">
           <div class="poster-header">
-            <div class="poster-slogan">邀您加入</div>
-            <div class="poster-chamber">“{{ chamberInfo.chamberName }}”</div>
+            <div class="poster-chamber">{{ chamberInfo.chamberName }}</div>
           </div>
           <img class="poster-qrcode" :src="chamberInfo.qrCode" alt="">
         </div>
@@ -43,7 +50,7 @@
 </template>
 
 <script>
-import { getChamberQrcode } from '@/api/chamber/manager'
+import { getList, getChamberQrcode } from '@/api/chamber/manager'
 import { downloadFile } from '@/utils'
 import html2canvas from 'html2canvas'
 
@@ -52,6 +59,8 @@ export default {
 
   data() {
     return {
+      chamber: '',
+
       chamberOptions: [],
       chamberInfo: {},
       isLoading: false
@@ -65,17 +74,33 @@ export default {
   },
 
   mounted() {
-    this.getQRCode()
+    if (!this.ckey) {
+      this.getChamberList()
+    } else {
+      this.chamber = this.ckey
+      this.getQRCode()
+    }
   },
 
   methods: {
+    async getChamberList() {
+      const { data, state } = await getList({
+        page: 1,
+        pageSize: 999,
+        status: 1,
+      })
+
+      if (!state) return
+      this.chamberOptions = data.data.list.filter(v => v.level > 0)
+    },
 
     async getQRCode() {
+      if (!this.chamber) this.$message.error('请选择商协会')
       this.chamberInfo = {}
 
       const { data, state } = await getChamberQrcode({
-        ckey: this.ckey,
-        type: 1
+        ckey: this.chamber,
+        type: 2
       })
 
       if (!state) return
@@ -95,7 +120,7 @@ export default {
 
     downloadQrCode() {
       downloadFile({
-        title: '入会专属二维码.png',
+        title: '商会主页二维码.png',
         url: this.chamberInfo.qrCode
       })
     },
@@ -129,7 +154,7 @@ export default {
         })
         const imgUrl = _canvas.toDataURL('image/png')
         const a = document.createElement('a')
-        a.download = '商会二维码'
+        a.download = '商会主页二维码'
         a.href = imgUrl
         a.click()
         this.$trackClick(251)
@@ -150,7 +175,7 @@ export default {
     position: relative;
 
     .poster-header {
-      height: 300px;
+      height: 240px;
       display: flex;
       flex-direction: column;
       justify-content: center;
