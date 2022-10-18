@@ -10,7 +10,7 @@
       <el-row>
         <el-col :offset="2" :span="20">
           <el-form-item label="嘉宾姓名：" prop="name">
-            <el-input v-model.trim="formState.name" placeholder="限15字内" max-length="15" clearable />
+            <el-input v-model.trim="formState.name" placeholder="限15字内" maxlength="15" clearable />
           </el-form-item>
         </el-col>
       </el-row>
@@ -18,7 +18,7 @@
       <el-row>
         <el-col :offset="2" :span="20">
           <el-form-item label="职位/头衔：" prop="post">
-            <el-input v-model.trim="formState.post" placeholder="限20字内" max-length="20" clearable />
+            <el-input v-model.trim="formState.post" placeholder="限20字内" maxlength="20" clearable />
           </el-form-item>
         </el-col>
       </el-row>
@@ -26,7 +26,7 @@
       <el-row>
         <el-col :offset="2" :span="20">
           <el-form-item label="所在公司/组织：" prop="unit">
-            <el-input v-model.trim="formState.unit" placeholder="限40字内" max-length="40" clearable />
+            <el-input v-model.trim="formState.unit" placeholder="限40字内" maxlength="40" clearable />
           </el-form-item>
         </el-col>
       </el-row>
@@ -59,7 +59,7 @@
               type="textarea"
               :rows="6"
               placeholder="5000字内"
-              max-length="5000"
+              maxlength="5000"
             />
           </el-form-item>
         </el-col>
