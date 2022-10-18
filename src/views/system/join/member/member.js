@@ -53,7 +53,7 @@ export default {
       getPostUrl(posterDTO).then(res => {
         if (res.state === 1) {
           const ImgUrl = res.data.filePath.systemPosterUrl
-          var a = document.createElement('a')
+          const a = document.createElement('a')
           a.download = '商会二维码'
           a.href = ImgUrl
           a.click()
@@ -88,7 +88,6 @@ export default {
         a.download = '商会二维码'
         a.href = imgUrl
         a.click()
-        this.$trackClick(251)
       } catch (error) {
         // console.log(error)
       }

@@ -1,7 +1,4 @@
 import request from '@/utils/request'
-import sls from '@/utils/slsTracker'
-import { formatDateTime } from '@/utils/date'
-import { getNetworkIp } from '@/utils/ip'
 
 // 上报前端hash路由
 export const reportHashUrlData = data => request({
@@ -31,17 +28,17 @@ export const reportClickData = data => request({
  * params 请求参数
  * extend 扩展参数
  */
-export const reportSlsData = data => sls.send({
-  userAgent: navigator.userAgent.toLowerCase(),
-  ip: getNetworkIp(),
-  time: Date.now(),
-  date: formatDateTime(new Date(), 'yyyy-MM-dd hh:mm:ss'),
-  url: data.url,
-  ckey: data.ckey,
-  user_only: data.user_only,
-  method: data.method,
-  status: data.status,
-  params: data.params,
-  extend: data.extend
-})
+// export const reportSlsData = data => sls.send({
+//   userAgent: navigator.userAgent.toLowerCase(),
+//   ip: getNetworkIp(),
+//   time: Date.now(),
+//   date: formatDateTime(new Date(), 'yyyy-MM-dd hh:mm:ss'),
+//   url: data.url,
+//   ckey: data.ckey,
+//   user_only: data.user_only,
+//   method: data.method,
+//   status: data.status,
+//   params: data.params,
+//   extend: data.extend
+// })
 

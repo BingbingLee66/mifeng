@@ -28,7 +28,7 @@ import {
 
 export default {
   data() {
-    var checkPhone = (rule, value, callback) => {
+    const checkPhone = (rule, value, callback) => {
       if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(value)) {
         return callback(new Error('手机号码格式不正确'))
       } else {
@@ -74,24 +74,30 @@ export default {
       nativeOptions: [],
       type: 'add',
       rules: {
-        companyName: [{
-          required: true,
-          message: '企业名称不能为空',
-          trigger: 'blur'
-        }],
-        companyLogo: [{
-          required: true,
-          message: '公司logo必须上传',
-          trigger: 'blur'
-        }],
-        contactPhone: [{
-          required: true,
-          message: '联系方式不能为空',
-          trigger: 'blur'
-        }, {
-          validator: checkPhone,
-          trigger: 'blur'
-        }],
+        companyName: [
+          {
+            required: true,
+            message: '企业名称不能为空',
+            trigger: 'blur'
+          }
+        ],
+        companyLogo: [
+          {
+            required: true,
+            message: '公司logo必须上传',
+            trigger: 'blur'
+          }
+        ],
+        contactPhone: [
+          {
+            required: true,
+            message: '联系方式不能为空',
+            trigger: 'blur'
+          }, {
+            validator: checkPhone,
+            trigger: 'blur'
+          }
+        ],
         memberPostId: [
           {
             required: true,
@@ -106,19 +112,23 @@ export default {
             trigger: 'blur'
           }
         ],
-        name: [{
-          required: true,
-          message: '姓名不能为空',
-          trigger: 'blur'
-        }],
-        phone: [{
-          required: true,
-          message: '手机号码不能为空',
-          trigger: 'blur'
-        }, {
-          validator: checkPhone,
-          trigger: 'change'
-        }],
+        name: [
+          {
+            required: true,
+            message: '姓名不能为空',
+            trigger: 'blur'
+          }
+        ],
+        phone: [
+          {
+            required: true,
+            message: '手机号码不能为空',
+            trigger: 'blur'
+          }, {
+            validator: checkPhone,
+            trigger: 'change'
+          }
+        ],
       },
       companyRules: {
 
@@ -188,7 +198,7 @@ export default {
 
     fetchData() {
       const params = {
-        'memberId': this.memberId
+        memberId: this.memberId
       }
       memberMe(params).then(res => {
         this.formObj = res.data.data
@@ -215,8 +225,8 @@ export default {
     * */
     getdepartmentType() {
       const params = {
-        'ckey': this.$store.getters.ckey,
-        'parentId': 0
+        ckey: this.$store.getters.ckey,
+        parentId: 0
       }
       getDepartmentList(params).then(res => {
         if (res.state === 1) {
@@ -241,7 +251,7 @@ export default {
     /*
     * 递归遍历部门树结构，改变disabled属性
     * */
-    changeData(ids, treeDatas) {
+    changeData(ids) {
       this.ids = ids
     },
 
@@ -259,7 +269,7 @@ export default {
      * 递归找出当前item项
      */
     handleCurrentItemForEach(currentId, treeDatas) {
-      treeDatas.forEach((item, index) => {
+      treeDatas.forEach(item => {
         if (!currentId) {
           this.parentIds = []
           return
@@ -308,7 +318,7 @@ export default {
           ids.push(val)
         })
       }
-      treeDatas.forEach((item, index) => {
+      treeDatas.forEach(item => {
         if (!ids.includes(allParentIds)) {
           if (ids.includes(item.id)) {
             this.$set(item, 'disabled', true)
@@ -323,7 +333,7 @@ export default {
     },
 
     transNativePlace(obj) {
-      const nativePlace = obj.nativePlace
+      const { nativePlace } = obj
       const cas = []
       if (nativePlace !== '' && nativePlace !== undefined && nativePlace !== null) {
         const place = nativePlace.split('-')
@@ -370,12 +380,12 @@ export default {
       }
       const itemAry = [] // 分类树组件，每一项的value数组
       // 递归分类数据
-      const recursionCategory = (data) => {
+      const recursionCategory = data => {
         const len = data.length
         for (let i = 0; i < len; i++) { // 循环data参数，匹配回显的value
           itemAry.push(data[i].value) // 构建分类树数组项,入栈
           for (let j = 0; j < eachAry.length; j++) { // 遍历子节点分类value，拼凑成数组项value，并终止循环
-            if (eachAry[j] == data[i].value) { // 匹配到子节点value
+            if (eachAry[j] === data[i].value) { // 匹配到子节点value
               echoTreeArr.push(JSON.parse(JSON.stringify(itemAry))) // push进树分类数据
               eachAry.splice(j, 1) // 删除以匹配到的value
               break
@@ -393,7 +403,7 @@ export default {
       this.bindTradeIds = echoTreeArr
       // console.log(this.bindTradeIds, '处理后将要回显的数组')
     },
-    transTrade(obj) {
+    transTrade() {
       const trade = this.formObj['tradeId']
       const cas = []
       if (trade !== null && trade !== '') {
@@ -402,7 +412,7 @@ export default {
             cas.push(pTrade.value)
             break
           }
-          const children = pTrade.children
+          const { children } = pTrade
           let findFlag = false
           for (const cTrade of children) {
             if (trade === cTrade.value) {
@@ -537,7 +547,7 @@ export default {
           return this.$message.error('最多只能选择5个行业')
         }
         const ids = []
-        val.forEach((item) => {
+        val.forEach(item => {
           ids.push(item[item.length - 1])
         })
         this.formObj.tradeId = ids.join(',')
@@ -565,14 +575,12 @@ export default {
 
     save() {
       console.log('identityVOList', this.formObj)
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           if (this.type === 'add') {
             this.formObj['ckey'] = this.$store.getters.ckey
             add(this.formObj).then(response => {
               if (response.state === 1) {
-                this.$trackClick(216)
-
                 this.$message({
                   message: '操作成功',
                   type: 'success'
@@ -587,7 +595,7 @@ export default {
             })
           } else if (this.type === 'edit') {
             // console.log('修改后提交的参数：', this.formObj)
-            update(this.formObj).then(response => {
+            update(this.formObj).then(() => {
               this.$message({
                 message: '操作成功',
                 type: 'success'
