@@ -93,19 +93,19 @@
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            <el-switch v-model="scope.row.isSpecialCommitteeBol" @change="handleSpecialCommitteeChange($event,scope.row)" />
+            <el-switch v-model="scope.row.isSpecialCommitteeBol" :disabled="scope.row.columnName==='会员分享'" @change="handleSpecialCommitteeChange($event,scope.row)" />
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
-              v-if="scope.row.status != 3"
+              v-if="scope.row.status != 3 && scope.row.columnName!=='会员分享'"
               class="my-btn"
               type="text"
               @click="openVisible($event, scope.row)"
             >编辑</el-button>
             <el-button
-              v-if="scope.row.status == 3"
+              v-if="scope.row.status == 3 && scope.row.columnName!=='会员分享'"
               class="my-btn"
               type="text"
               disabled
@@ -124,6 +124,7 @@
               @click="updateStatus($event, scope.row)"
             >解冻</el-button>
             <el-button
+              v-if="scope.row.columnName!=='会员分享'"
               class="my-btn"
               type="text"
               @click="delColumn(scope.row)"
