@@ -195,7 +195,6 @@ export default {
         id: this.id,
         ...this.formState,
         ckey: this.$store.getters.ckey || 'ysh',
-        activityEndTime: this.endTime
       }
 
       delete params.isChamber

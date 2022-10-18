@@ -178,6 +178,14 @@ export default {
         }
       },
       deep: true
+    },
+    arrayData: {
+      handler(val) {
+        if (this.activeName === '2') {
+          this.disabledGuestBtn = !val.length
+        }
+      },
+      deep: true
     }
   },
   created() {
