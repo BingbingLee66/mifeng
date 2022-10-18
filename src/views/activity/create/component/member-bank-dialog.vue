@@ -65,10 +65,10 @@ export default {
         {
           label: '头像', render: ({ row }) =>
             <div>
-              <img src={row.portrait} alt="" width="50" height="50" />
+              <img src={this.ckey ? row.portrait : row.avatar} alt="" width="50" height="50" />
             </div>
         },
-        { label: '姓名', prop: 'name' },
+        { label: '姓名', prop: `${this.ckey ? 'name' : 'userName'}` },
         { label: '职位/称谓', prop: 'post' },
         { label: '所在公司/组织', prop: 'unit' },
         { label: '嘉宾介绍', prop: 'introduction', render: ({ row }) => {
