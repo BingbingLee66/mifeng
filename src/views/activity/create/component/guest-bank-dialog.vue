@@ -132,11 +132,11 @@ export default {
     onConfirm() {
       if (!this.selectData.length) return this.$message.error('请选择嘉宾')
 
-      this.$emit('confirm', this.selectData.map(v => {
+      this.$emit('confirm', this.selectData.map((v, i) => {
         delete v.ckey
         return {
           ...v,
-          id: Date.now(),
+          id: +`${Date.now()}${i}`,
           isChamber: 1
         }
       }))
