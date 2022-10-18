@@ -52,7 +52,7 @@ const tracker = new Tracker({
       time: Date.now(),
       date: dayjs().format('YYYY/MM/DD'),
       platform: 'web',
-      app_name: 'mfSCRM',
+      web_name: 'mfSCRM',
       current_url: currentRoute.path, // 当前页面
       from_url: prevRoute.path === '/' ? '' : prevRoute.path, // 当前页面之前的页面
     }
