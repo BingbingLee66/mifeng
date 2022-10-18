@@ -41,7 +41,7 @@ const tracker = new Tracker({
   time: 5,
   count: 10,
   topic: '',
-  source: 'YSH-ADMIN',
+  source: 'YSH-mfSCRM',
   createCommonParams() {
     const { id: user_only = '' } = store.state.user.profile || {}
     const { currentRoute, prevRoute } = router
