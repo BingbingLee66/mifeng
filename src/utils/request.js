@@ -3,20 +3,19 @@ import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import router from '@/router'
-import { reportSlsData } from '@/api/statistics/tracker'
 
 const AppCode = 'echamber'
 
 const validStates = [-1, 0, 1, 200, 605] // 有效state
 
-function handleHttpInterceptors(http, params) {
+function handleHttpInterceptors(http) {
   // request interceptor
   http.interceptors.request.use(
     config => {
       // do something before request is sent
-      var token = getToken()
-      var menuId = window.localStorage.getItem('menuId')
-      var actionId = window.localStorage.getItem('actionId')
+      const token = getToken()
+      const menuId = window.localStorage.getItem('menuId')
+      const actionId = window.localStorage.getItem('actionId')
       config.headers['appcode'] = AppCode
       if (token) {
         config.headers['access-token'] = token // 让每个请求携带自定义token 请根据实际情况自行修改
@@ -46,7 +45,6 @@ function handleHttpInterceptors(http, params) {
      */
     response => {
       // 上传阿里日志
-      reportRequestData(response)
       const res = response.data
       if (response.headers.token) {
         // 如果后台通过header返回token，说明token已经更新，则更新客户端本地token
@@ -103,44 +101,9 @@ const service = axios.create({
 
 // console.log('process', process.env)
 
-function reportRequestData(response) {
-  try {
-    const baseURL = response.config.baseURL
-    const url = response.config.url.replace(baseURL, '')
-    const method = response.config.method.toUpperCase()
-    const status = response.request.status
-    const { ckey } = store.getters
-    var params = ''
-    var user_only = ''
-    var ckeyStr = ''
-
-    if (ckey) {
-      ckeyStr = store.getters.ckey
-    } else if (!url.includes('/user/login') && !ckey) {
-      return
-    }
-    if (!response.config.hasOwnProperty('params') && response.config.hasOwnProperty('data')) {
-      params = response.config.data
-    } else {
-      params = response.config.params
-    }
-    if (params === 'undefined') {
-      params = ''
-    }
-    if (url.includes('/user/login')) {
-      user_only = params.username
-    } else {
-      user_only = store.getters.profile.userName
-    }
-    reportSlsData({ url: url, ckey: ckeyStr, user_only: user_only, method: method, status: status, params: params, extend: '' })
-  } catch (e) {
-    console.log('sls日志收集失败', e)
-  }
-}
-
 export default handleHttpInterceptors(service)
 
-export const setRequest = function(settings, params) {
+export const setRequest = function (settings, params) {
   const http = axios.create({
     baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
     withCredentials: false, // send cookies when cross-domain requests
