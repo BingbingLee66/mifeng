@@ -74,7 +74,7 @@ export default {
         { label: '嘉宾介绍', prop: 'introduction', render: ({ row }) => {
           return <div>
             <div class="text-overflow">{row.introduction || '/'}</div>
-            { row.introduction && row.introduction.length >= 24
+            { row.introduction && row.introduction.length >= 40
               ? <div>【<el-button type="text" onClick={() => this.showText(row.introduction)}>查看更多</el-button>】</div>
               : ''
             }
@@ -164,7 +164,7 @@ export default {
   overflow:hidden;
   text-overflow:ellipsis;
   display:-webkit-box;
-  -webkit-line-clamp:3;
+  -webkit-line-clamp:5;
   -webkit-box-orient:vertical;
 }
 </style>

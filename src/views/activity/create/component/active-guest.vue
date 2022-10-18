@@ -21,6 +21,10 @@
     />
     <GuestBankDialog ref="guestBankDialog" :visible.sync="guestBankVisible" @edit="onBankEdit" @confirm="addStaticData" />
     <MemberBankDialog :visible.sync="memberBankVisible" @confirm="addStaticData" />
+
+    <el-dialog title="嘉宾介绍" :visible="textVisible" width="800px" @close="textVisible = false">
+      <div>{{ introduction }}</div>
+    </el-dialog>
   </div>
 </template>
 
@@ -59,6 +63,9 @@ export default {
       memberBankVisible: false,
       editId: '',
       isBankEdit: false,
+      textVisible: false,
+      introduction: ''
+
     }
   },
 
@@ -73,8 +80,15 @@ export default {
         { label: '姓名', prop: 'name' },
         { label: '职位/称谓', prop: 'post' },
         { label: '所在公司/组织', prop: 'unit' },
-        { label: '嘉宾介绍', prop: 'introduction', render: ({ row }) => <div>{row.introduction || '/'}</div>
-        },
+        { label: '嘉宾介绍', prop: 'introduction', width: 200, render: ({ row }) => {
+          return <div>
+            <div class="text-overflow">{row.introduction || '/'}</div>
+            { row.introduction && row.introduction.length >= 60
+              ? <div>【<el-button type="text" onClick={() => this.showText(row.introduction)}>查看更多</el-button>】</div>
+              : ''
+            }
+          </div>
+        } },
         {
           label: '操作',
           fixed: 'right',
@@ -100,6 +114,10 @@ export default {
     clearTimeout(this.timer)
   },
   methods: {
+    showText(val) {
+      this.textVisible = true
+      this.introduction = val
+    },
     onQueryChange() {
       // 创建活动时候，活动嘉宾都是存在本地
       if (!this.activityId) return
@@ -178,6 +196,15 @@ export default {
 }
 </script>
 
+<style lang="scss">
+.text-overflow {
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-line-clamp:5;
+  -webkit-box-orient:vertical;
+}
+</style>
 <style scoped lang="scss">
 .guest-wrap {
   margin-bottom: 20px;

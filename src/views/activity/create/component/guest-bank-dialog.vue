@@ -1,18 +1,24 @@
 <template>
-  <el-dialog title="从嘉宾库选" :visible="visible" width="800px" @close="onClose">
-    <div class="search-wrap flex-x">
-      <el-input v-model="query.name" placeholder="搜索姓名" style="width: 200px;" />
-      <el-button class="ml-20" type="primary" @click="onQueryChange">查询</el-button>
-    </div>
+  <div>
+    <el-dialog title="从嘉宾库选" :visible="visible" width="800px" @close="onClose">
+      <div class="search-wrap flex-x">
+        <el-input v-model="query.name" placeholder="搜索姓名" style="width: 200px;" />
+        <el-button class="ml-20" type="primary" @click="onQueryChange">查询</el-button>
+      </div>
 
-    <KdTable v-loading="loading" style="margin-top:20px;" :columns="columns" :rows="tableData" @selection-change="onSelectChange" />
-    <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
+      <KdTable v-loading="loading" style="margin-top:20px;" :columns="columns" :rows="tableData" @selection-change="onSelectChange" />
+      <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
-    <div class="flex-x-center-center mt-20">
-      <el-button @click="onClose">取消</el-button>
-      <el-button type="primary" @click="onConfirm">确认</el-button>
-    </div>
-  </el-dialog>
+      <div class="flex-x-center-center mt-20">
+        <el-button @click="onClose">取消</el-button>
+        <el-button type="primary" @click="onConfirm">确认</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="嘉宾介绍" :visible="textVisible" width="800px" @close="textVisible = false">
+      <div>{{ introduction }}</div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -45,7 +51,10 @@ export default {
       },
       total: 0,
       timer: null,
-      selectData: []
+      selectData: [],
+      textVisible: false,
+      introduction: ''
+
     }
   },
   computed: {
@@ -61,8 +70,15 @@ export default {
         { label: '姓名', prop: 'name' },
         { label: '职位/称谓', prop: 'post' },
         { label: '所在公司/组织', prop: 'unit' },
-        { label: '嘉宾介绍', prop: 'introduction', render: ({ row }) => <div>{row.introduction || '/'}</div>
-        },
+        { label: '嘉宾介绍', prop: 'introduction', render: ({ row }) => {
+          return <div>
+            <div class="text-overflow">{row.introduction || '/'}</div>
+            { row.introduction && row.introduction.length >= 30
+              ? <div>【<el-button type="text" onClick={() => this.showText(row.introduction)}>查看更多</el-button>】</div>
+              : ''
+            }
+          </div>
+        } },
         {
           label: '操作',
           fixed: 'right',
@@ -83,6 +99,10 @@ export default {
     },
   },
   methods: {
+    showText(val) {
+      this.textVisible = true
+      this.introduction = val
+    },
     onQueryChange() {
       clearTimeout(this.timer)
       this.timer = setTimeout(() => this.queryTableData(), 300)
@@ -142,6 +162,3 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-
-</style>
