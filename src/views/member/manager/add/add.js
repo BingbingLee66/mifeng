@@ -14,14 +14,14 @@ import {
 export default {
 
   data() {
-    var checkPhone = (rule, value, callback) => {
+    const checkPhone = (rule, value, callback) => {
       if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(value)) {
         return callback(new Error('手机号码格式不正确'))
       } else {
         return callback()
       }
     }
-    var checkTel = (rule, value, callback) => {
+    const checkTel = (rule, value, callback) => {
       if (!(/^1[3456789]\d{9}$/.test(value))) {
         return callback(new Error('电话号码格式不正确'))
       } else {
@@ -47,47 +47,61 @@ export default {
       type: 'add',
       memberPostOptions: null,
       rules: {
-        companyName: [{
-          required: true,
-          message: '企业名称不能为空',
-          trigger: 'blur'
-        }],
-        companyLogo: [{
-          required: true,
-          message: '公司logo必须上传',
-          trigger: 'blur'
-        }],
-        contactPhone: [{
-          required: true,
-          message: '联系人电话不能为空',
-          trigger: 'blur'
-        }, {
-          validator: checkTel,
-          tigger: 'change'
-        }],
-        name: [{
-          required: true,
-          message: '姓名不能为空',
-          trigger: 'blur'
-        }],
-        phone: [{
-          required: true,
-          message: '手机号码不能为空',
-          trigger: 'blur'
-        }, {
-          validator: checkPhone,
-          trigger: 'change'
-        }],
-        contactName: [{
-          required: true,
-          message: '请输入联系人姓名',
-          trigger: 'blur'
-        }],
-        memberPostId: [{
-          required: true,
-          message: '请选择会内职位',
-          trigger: 'change'
-        }],
+        companyName: [
+          {
+            required: true,
+            message: '企业名称不能为空',
+            trigger: 'blur'
+          }
+        ],
+        companyLogo: [
+          {
+            required: true,
+            message: '公司logo必须上传',
+            trigger: 'blur'
+          }
+        ],
+        contactPhone: [
+          {
+            required: true,
+            message: '联系人电话不能为空',
+            trigger: 'blur'
+          }, {
+            validator: checkTel,
+            tigger: 'change'
+          }
+        ],
+        name: [
+          {
+            required: true,
+            message: '姓名不能为空',
+            trigger: 'blur'
+          }
+        ],
+        phone: [
+          {
+            required: true,
+            message: '手机号码不能为空',
+            trigger: 'blur'
+          }, {
+            validator: checkPhone,
+            trigger: 'change'
+          }
+        ],
+        contactName: [
+          {
+            required: true,
+            message: '请输入联系人姓名',
+            trigger: 'blur'
+          }
+        ],
+        memberPostId: [
+          {
+            required: true,
+            message: '请选择会内职位',
+            trigger: 'change'
+          }
+        ],
 
       },
       departmentOptions: [],
@@ -139,8 +153,8 @@ export default {
     * */
     getdepartmentType() {
       const params = {
-        'ckey': this.$store.getters.ckey,
-        'parentId': 0
+        ckey: this.$store.getters.ckey,
+        parentId: 0
       }
       getDepartmentList(params).then(res => {
         if (res.state === 1) {
@@ -165,7 +179,7 @@ export default {
     /*
     * 递归遍历部门树结构，改变disabled属性
     * */
-    changeData(ids, treeDatas) {
+    changeData(ids) {
       this.ids = ids
     },
 
@@ -184,7 +198,7 @@ export default {
      * 递归找出当前item项
      */
     handleCurrentItemForEach(currentId, treeDatas) {
-      treeDatas.forEach((item, index) => {
+      treeDatas.forEach(item => {
         if (!currentId) {
           this.parentIds = []
           return
@@ -233,7 +247,7 @@ export default {
           ids.push(val)
         })
       }
-      treeDatas.forEach((item, index) => {
+      treeDatas.forEach(item => {
         if (!ids.includes(allParentIds)) {
           if (ids.includes(item.id)) {
             this.$set(item, 'disabled', true)
@@ -250,7 +264,7 @@ export default {
     // 根据会员id查询会员信息
     fetchData() {
       const params = {
-        'memberId': this.memberId
+        memberId: this.memberId
       }
       memberMe(params).then(response => {
         this.formObj = response.data.data
@@ -282,7 +296,7 @@ export default {
     },
 
     save() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(valid => {
         if (this.formObj.type === 1) {
           this.formObj.phone = this.formObj.contactPhone
         }
@@ -292,9 +306,7 @@ export default {
             // 将会内职位数组变为字符串
             // console.log("this.formObj['memberPostId']", this.formObj['memberPostId'])
             this.formObj['ckey'] = this.$store.getters.ckey
-            add(this.formObj).then(response => {
-              this.$trackClick(233)
-
+            add(this.formObj).then(() => {
               this.$message({
                 message: '操作成功',
                 type: 'success'
@@ -309,7 +321,7 @@ export default {
               }
             })
           } else if (this.type === 'edit') {
-            update(this.formObj).then(response => {
+            update(this.formObj).then(() => {
               this.$message({
                 message: '操作成功',
                 type: 'success'
