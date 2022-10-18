@@ -228,7 +228,7 @@ export default {
       const formData = new FormData()
       formData.append('file', content.file)
       upload(formData).then(response => {
-        this.formState.portrait = response.data.filePath
+        this.$set(this.formState, 'portrait', response.data.filePath)
       })
     },
   }
