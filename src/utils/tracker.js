@@ -80,7 +80,7 @@ function proxy(target, key, fn) {
     // 上报跳转来源
     tracker.send({ event: 'EnterPage' })
   })
-  function reportToUrl({ path } = {}) {
+  function reportToUrl({ path = '' } = {}) {
     // 上报跳转去向
     tracker.send({ to_url: path, event: 'Click' })
   }
