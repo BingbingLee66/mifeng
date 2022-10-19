@@ -586,7 +586,7 @@
             <el-form-item>
               <el-button
                 type="primary"
-                :disabled="arrayData.length >= 6 ||(status === 2 || status === 3)"
+                :disabled="arrayData.length >= 20 ||(status === 2 || status === 3)"
                 @click="iscustom = true"
               >+自定义报名信息</el-button>
             </el-form-item>

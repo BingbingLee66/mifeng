@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <!-- 上传视频阿里云组件 -->
-    <videoUpLoad  :sourceType="1" :id="articleId === '' ? 0 : articleId"  ref="VideoUpLoad" @Succeed="onSucceed" @error="loading = false" />
-    <preview ref="preview"></preview>
+    <videoUpLoad :id="articleId === '' ? 0 : articleId" ref="VideoUpLoad" :source-type="1" @Succeed="onSucceed" @error="loading = false" />
+    <preview ref="preview" />
     <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
       <div class="hd">1、内容信息</div>
       <el-row>
         <el-col :span="24">
           <el-form-item label="文章标题：" prop="title">
-            <el-input v-model="formObj.title" maxlength="60" placeholder="限输入5-60个字的标题"></el-input>
+            <el-input v-model="formObj.title" maxlength="60" placeholder="限输入5-60个字的标题" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -17,29 +17,29 @@
           <el-col :span="8">
             <el-form-item label="对应栏目：" prop="contentColumnId">
               <el-select v-model="formObj.contentColumnId" placeholder="请选择对应栏目" style="display: inline-block">
-                <el-option v-for="cc in contentColumnOptions" :label="cc.label" :value="cc.value" :key="cc.value"></el-option>
+                <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label" :value="cc.value" />
               </el-select>
             </el-form-item>
           </el-col>
         </div>
-        <el-button @click="addColumnFunc" type="primary" style="margin-left:10px">添加栏目</el-button>
-          <el-button @click="showPreview" type="primary" style="margin-left:10px">实时预览</el-button>
-          <el-button @click="importArticle" type="primary" style="margin-left:10px">导入微信文章</el-button>
+        <el-button v-if="!committee" type="primary" style="margin-left:10px" @click="addColumnFunc">添加栏目</el-button>
+        <el-button type="primary" style="margin-left:10px" @click="showPreview">实时预览</el-button>
+        <el-button type="primary" style="margin-left:10px" @click="importArticle">导入微信文章</el-button>
       </el-row>
       <el-row>
         <el-col :span="20">
-             <!-- <el-col > -->
+          <!-- <el-col > -->
           <el-form-item label="文章内容：" class="ue-wrap">
             <!-- <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor> -->
             <!-- <UEditor ref="ueditor" /> -->
-            <editorElem :content="formObj.contentHtml" @addParentHtml="addParentHtml" ref="editorElem"></editorElem>
+            <editorElem ref="editorElem" :content="formObj.contentHtml" @addParentHtml="addParentHtml" />
           </el-form-item>
         </el-col>
         <!-- <el-col :span="4">
           <preview-ph :title="formObj.title" :htmlObj="formObj.contentHtml"></preview-ph>
         </el-col> -->
       </el-row>
-         <el-row>
+      <el-row>
         <el-col :span="6">
           <el-form-item v-loading="loading">
             <div class="vdo">视频</div>
@@ -69,7 +69,7 @@
 
         <el-col :span="6">
           <el-form-item>
-             <div class="vdo">视频封面</div>
+            <div class="vdo">视频封面</div>
             <el-upload
               v-if="!formObj.videoCoverURL"
               action="/"
@@ -80,7 +80,7 @@
             >
               <i class="el-icon-plus" />
             </el-upload>
-            
+
             <div v-else class="goods-pre">
               <i
                 class="el-icon-error"
@@ -131,11 +131,11 @@
           <el-form-item label="封面图片：" prop="coverImgs[0]" :rules="rules.coverImg1">
             <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 0) }" :http-request="upload">
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
-              <div class="tips">建议尺寸：176 x 176;支持格式：jpeg、png、jpg</div>
+            <div class="tips">建议尺寸：176 x 176;支持格式：jpeg、png、jpg</div>
           </el-form-item>
-        
+
         </el-col>
       </el-row>
       <el-row v-if="formObj.coverType == 2" style="margin-bottom:0px">
@@ -143,17 +143,17 @@
           <el-form-item label="封面图片：" prop="coverImgs[0]" :rules="rules.coverImg1">
             <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 0) }" :http-request="upload">
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
-            
+
           </el-form-item>
-            
+
         </el-col>
         <el-col :span="5">
           <el-form-item label="" prop="coverImgs[1]" :rules="rules.coverImg2">
             <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 1) }" :http-request="upload">
               <img v-if="formObj.coverImgs[1]" :src="formObj.coverImgs[1]" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
           </el-form-item>
         </el-col>
@@ -161,19 +161,19 @@
           <el-form-item label="" prop="coverImgs[2]" :rules="rules.coverImg3">
             <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 2) }" :http-request="upload">
               <img v-if="formObj.coverImgs[2]" :src="formObj.coverImgs[2]" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              <i v-else class="el-icon-plus avatar-uploader-icon" />
             </el-upload>
           </el-form-item>
         </el-col>
       </el-row>
-      <div style="margin:0px 0px 10px 100px" v-if="formObj.coverType == 2" class="tips">建议尺寸：220 x 220;支持格式：jpeg、png、jpg</div>
+      <div v-if="formObj.coverType == 2" style="margin:0px 0px 10px 100px" class="tips">建议尺寸：220 x 220;支持格式：jpeg、png、jpg</div>
 
       <div class="hd">3、文章分享设置 (选填)</div>
 
       <div style="margin-left:-84px">
         <el-form-item>
           <div class="vdo">分享标题</div>
-          <el-input placeholder="请输入分享标题" v-model="formObj.articleExtendDTO.shareTitle" maxlength="25" show-word-limit />
+          <el-input v-model="formObj.articleExtendDTO.shareTitle" placeholder="请输入分享标题" maxlength="25" show-word-limit />
         </el-form-item>
       </div>
       <div style="margin-left:-84px">
@@ -191,7 +191,7 @@
               >
                 <i class="el-icon-plus" />
               </el-upload>
-              
+
               <div v-else class="goods-pre">
                 <i
                   class="el-icon-error"
@@ -222,7 +222,7 @@
               >
                 <i class="el-icon-plus" />
               </el-upload>
-              
+
               <div v-else class="goods-pre">
                 <i
                   class="el-icon-error"
@@ -242,7 +242,6 @@
         </el-row>
       </div>
 
-
       <el-row>
         <el-col :span="8">
           <el-form-item label="发布时间：">
@@ -252,10 +251,9 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="formObj.status == 4">
+        <el-col v-if="formObj.status == 4" :span="8">
           <el-form-item label="" prop="publishTs" label-width="0">
-            <el-date-picker format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" v-model="formObj.publishTs" type="datetime" placeholder="选择日期时间">
-            </el-date-picker>
+            <el-date-picker v-model="formObj.publishTs" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -271,19 +269,19 @@
       </el-row> -->
       <el-form-item>
         <el-col :span="8">
-          <el-button type="primary" v-dbClick @click="save">确定</el-button>
+          <el-button v-dbClick type="primary" @click="save">确定</el-button>
           <el-button @click="closeTab">取消</el-button>
         </el-col>
       </el-form-item>
     </el-form>
-    <addColumn ref="addColumnRef"></addColumn>
+    <addColumn ref="addColumnRef" />
 
-    <kdDialog ref="kdDialog" dialogTitle="导入微信文章" @savePopupData="savePopupData">
+    <kdDialog ref="kdDialog" dialog-title="导入微信文章" @savePopupData="savePopupData">
       <div slot="content" class="content">
-        <el-input v-model="articleUrl"  placeholder="请输入微信文章链接地址" ></el-input>
+        <el-input v-model="articleUrl" placeholder="请输入微信文章链接地址" />
         <div class="case">支持导入微信公众号文章</div>
-        <div >注意：1.如需获得正式使用权，请自行联系版权所有者
-          <br/> <span v-for="item in 10" :key="item">&nbsp;</span>2.多次导入内容会进行覆盖
+        <div>注意：1.如需获得正式使用权，请自行联系版权所有者
+          <br> <span v-for="item in 10" :key="item">&nbsp;</span>2.多次导入内容会进行覆盖
         </div>
       </div>
     </kdDialog>
@@ -291,7 +289,7 @@
     <kdDialog ref="look-kdDialog" :show-footer="false" dialog-title="" dialog-width="60%">
       <div slot="content" style="text-align:center">
         <img :src="currentImg" style="max-width:90%">
-      </div> 
+      </div>
     </kdDialog>
   </div>
 
@@ -335,7 +333,7 @@
 font-family: '微软雅黑', sans-serif;
     font-weight: 400;
       font-size: 14px;
-    
+
 }
 .case{
   margin:8px 0px 10px 0px;

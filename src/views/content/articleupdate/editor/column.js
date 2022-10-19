@@ -18,15 +18,17 @@ export default {
       articleId: '',
       activeName: '',
       rules: {
-        columnContent: [
-          { required: true, message: '栏目名称不能为空', trigger: 'blur' }
-        ]
-      }
+        columnContent: [{ required: true, message: '栏目名称不能为空', trigger: 'blur' }]
+      },
+      committee: false
     }
   },
   mounted() {
     if (this.$route.params.activeName) {
       this.activeName = this.$route.params.activeName
+    }
+    if (this.$route.params.committee) {
+      this.committee = true
     }
     console.log('this.$route.params.articleObj', this.$route.params.articleObj)
     if (this.$route.params.articleObj !== undefined) {
@@ -49,9 +51,9 @@ export default {
   methods: {
     closeTab() {
       // 退出当前tab, 打开指定tab
-      let openPath = window.localStorage.getItem('articleupdate')
-      let tagsViews = this.$store.state.tagsView.visitedViews
-      for (let view of tagsViews) {
+      const openPath = window.localStorage.getItem('articleupdate')
+      const tagsViews = this.$store.state.tagsView.visitedViews
+      for (const view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
             this.$router.push({ path: openPath })
@@ -64,7 +66,7 @@ export default {
     //   this.$refs.ckeditor2.initHtml(this.formObj.contentHtml)
     // },
     save() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
           this.formObj['ckey'] = this.$store.getters.ckey
           this.formObj['contentModuleId'] = this.activeName

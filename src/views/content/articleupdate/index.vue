@@ -180,7 +180,7 @@
             <div
               v-if="
                 scope.row.status == 1 &&
-                (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
+                  (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
               "
             >
               已发布
@@ -188,7 +188,7 @@
             <div
               v-if="
                 scope.row.status == 0 &&
-                (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
+                  (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
               "
             >
               已冻结(商会)
@@ -196,7 +196,7 @@
             <div
               v-if="
                 scope.row.status == 3 &&
-                (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
+                  (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
               "
             >
               已冻结(平台)
@@ -204,7 +204,7 @@
             <div
               v-if="
                 scope.row.status == 4 &&
-                (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
+                  (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
               "
             >
               定时发布
@@ -217,24 +217,25 @@
           </template>
         </el-table-column>
         <el-table-column label="是否置顶" width="100px">
-        <template  slot-scope="scope">
-        {{scope.row.isChamberTop===1 ? '是' :'否'}}
-        </template> 
+          <template slot-scope="scope">
+            {{ scope.row.isChamberTop===1 ? '是' :'否' }}
+          </template>
         </el-table-column>
         <el-table-column label="操作" width="200px" fixed="right">
           <template slot-scope="scope">
-            <span  v-if="scope.row.isChamberTop===1" style="color:#c0c4cc">置顶</span>
+            <span v-if="scope.row.isChamberTop===1" style="color:#c0c4cc">置顶</span>
             <el-button
+              v-else
               class="my-btn"
               type="text"
               @click="updateTop(scope.row)"
-             v-else
             >
-             置顶
+              置顶
             </el-button>
+            <span v-if="scope.row.articleType===1" style="color:#c0c4cc">编辑</span>
             <el-button
+              v-else
               class="my-btn"
-              v-if="has('商会资讯', '编辑')"
               type="text"
               :actionid="getId('商会资讯', '编辑')"
               @click="edit($event, scope.row)"
@@ -243,11 +244,11 @@
             </el-button>
             <!-- <br/> -->
             <el-button
-              class="my-btn"
               v-if="
                 has('商会资讯', '冻结') &&
-                (scope.row.status == 1 || scope.row.status == 4)
+                  (scope.row.status == 1 || scope.row.status == 4)
               "
+              class="my-btn"
               type="text"
               :actionid="getId('商会资讯', '冻结')"
               @click="updateStatus($event, scope.row)"
@@ -255,8 +256,8 @@
               冻结
             </el-button>
             <el-button
-              class="my-btn"
               v-if="has('商会资讯', '解冻') && scope.row.status == 0"
+              class="my-btn"
               type="text"
               :actionid="getId('商会资讯', '解冻')"
               @click="updateStatus($event, scope.row)"
@@ -264,8 +265,8 @@
               解冻
             </el-button>
             <el-button
-              class="my-btn"
               v-if="has('商会资讯', '详情')"
+              class="my-btn"
               type="text"
               :actionid="getId('商会资讯', '详情')"
               @click="openDetail(scope.row)"
@@ -277,8 +278,7 @@
               class="my-btn"
               type="text"
               @click="delArticle(scope.row)"
-              >删除</el-button
-            >
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -295,9 +295,11 @@
     </div>
     <div v-if="activeName == '6'">
       <el-row>
-        <el-button type="primary" size="small" @click="addCloumn($event)"
-          >新增栏目</el-button
-        >
+        <el-button
+          type="primary"
+          size="small"
+          @click="addCloumn($event)"
+        >新增栏目</el-button>
       </el-row>
       <el-table
         id="out-table"
@@ -330,8 +332,6 @@
           </template>
         </el-table-column>
         <el-table-column label="权重" width="100px">
-
-
 
           <template slot-scope="scope">
             <span class="blue-label" @click="showSort(scope.row)">
@@ -366,7 +366,7 @@
             <div
               v-if="
                 scope.row.status == 0 &&
-                (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
+                  (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
               "
             >
               已冻结
@@ -374,7 +374,7 @@
             <div
               v-if="
                 scope.row.status == 1 &&
-                (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
+                  (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
               "
             >
               已发布
@@ -382,7 +382,7 @@
             <div
               v-if="
                 scope.row.status == 3 &&
-                (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
+                  (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
               "
             >
               已冻结(平台)
@@ -390,7 +390,7 @@
             <div
               v-if="
                 scope.row.status == 4 &&
-                (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
+                  (scope.row.auditStatus == 0 || scope.row.auditStatus == 1)
               "
             >
               定时发布
@@ -412,12 +412,14 @@
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
             <!-- <el-button type="text" @click="detail($event, scope.row)">详情</el-button> -->
-            <el-button class="my-btn" type="text" @click="openDetail(scope.row)"
-              >详情</el-button
-            >
             <el-button
               class="my-btn"
+              type="text"
+              @click="openDetail(scope.row)"
+            >详情</el-button>
+            <el-button
               v-if="has('关于商会', '编辑')"
+              class="my-btn"
               type="text"
               :actionid="getId('关于商会', '编辑')"
               @click="editColumn($event, scope.row)"
@@ -493,12 +495,14 @@
         </el-table-column> -->
         <el-table-column label="操作" fixed="right">
           <template slot-scope="scope">
-            <el-button class="my-btn" type="text" @click="openDetail(scope.row)"
-              >详情</el-button
-            >
             <el-button
               class="my-btn"
+              type="text"
+              @click="openDetail(scope.row)"
+            >详情</el-button>
+            <el-button
               v-if="has('关于商会', '编辑')"
+              class="my-btn"
               type="text"
               :actionid="getId('联系我们', '编辑')"
               @click="editColumn($event, scope.row)"
@@ -521,9 +525,9 @@
           <div class="u-preview-area">
             <div class="u-article-title">{{ detailObj.title }}</div>
             <div style="margin: 0 auto;width: 97%;">
-                <videoComponent ref="videoRef" v-show="detailObj.vid" :vid="detailObj.vid" height="530px"/>
+              <videoComponent v-show="detailObj.vid" ref="videoRef" :vid="detailObj.vid" height="530px" />
             </div>
-           
+
             <div class="u-article-content" v-html="detailObj.contentHtml" />
           </div>
         </div>
@@ -532,21 +536,22 @@
     <!-- 修改权重 -->
     <el-dialog title="权重" :visible.sync="showSortDialog" width="520px">
       <el-form
-        :model="sortForm"
         ref="sortForm"
+        :model="sortForm"
         label-width="100px"
         :rules="sortFormRules"
       >
         <el-form-item label="权重" prop="sort">
-          <el-input v-model="sortForm.sort" placeholder="请输入"></el-input>
+          <el-input v-model="sortForm.sort" placeholder="请输入" />
           <div style="line-height: 1.5; margin-top: 10px">
             权重请控制在0-999，权重为0不在前台展示，权重越大越靠前
           </div>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="updateSort('sortForm')"
-            >提交</el-button
-          >
+          <el-button
+            type="primary"
+            @click="updateSort('sortForm')"
+          >提交</el-button>
           <el-button @click="showSortDialog = false">取消</el-button>
         </el-form-item>
       </el-form>

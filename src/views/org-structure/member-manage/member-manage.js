@@ -48,8 +48,8 @@ export default {
      */
     getDepartmentList() {
       const params = {
-        'ckey': this.$store.getters.ckey,
-        'parentId': 0
+        ckey: this.$store.getters.ckey,
+        parentId: 0
       }
       getDepartmentList(params).then(res => {
         let newArry = []
@@ -72,16 +72,19 @@ export default {
     * */
     getMemberList() {
       const params = {
-        'ckey': this.$store.getters.ckey,
-        'departmentId': this.departmentId,
-        'memberName': this.searchValue,
-        'page': this.page,
-        'pageSize': this.pageSize
+        ckey: this.$store.getters.ckey,
+        departmentId: this.departmentId,
+        memberName: this.searchValue,
+        page: this.page,
+        pageSize: this.pageSize
       }
       getMemberList(params).then(res => {
         if (res.state === 1 && JSON.stringify(res.data) !== '{}') {
+          console.log(res, 'wuhuqifei')
           this.memberData = res.data.page.list
           this.totalPages = res.data.page.totalRows
+        } else {
+          this.totalPages = 0
         }
       })
     },
@@ -91,11 +94,11 @@ export default {
     * */
     getMemberLists() {
       const params = {
-        'ckey': this.$store.getters.ckey,
-        'departmentId': this.departmentId,
-        'memberName': '',
-        'page': this.page,
-        'pageSize': this.pageSize
+        ckey: this.$store.getters.ckey,
+        departmentId: this.departmentId,
+        memberName: '',
+        page: this.page,
+        pageSize: this.pageSize
       }
       getMemberList(params).then(res => {
         if (res.state === 1 && JSON.stringify(res.data) !== '{}') {
@@ -134,12 +137,12 @@ export default {
       this.memberData = []
       this.getMemberList()
     },
-    skipToDetail(row, column, event) {
+    skipToDetail(row) {
       this.$router.push({
         name: '会员详情',
         params: {
-          'memberDetail': row,
-          'querytype': '0'
+          memberDetail: row,
+          querytype: '0'
         }
       })
     },
@@ -166,17 +169,17 @@ export default {
         this.searchResult = []
       }
       const params = {
-        'ckey': this.$store.getters.ckey,
-        'departmentId': 0,
-        'memberName': this.searchValue,
-        'page': this.page,
-        'pageSize': this.searchPage
+        ckey: this.$store.getters.ckey,
+        departmentId: 0,
+        memberName: this.searchValue,
+        page: this.page,
+        pageSize: this.searchPage
       }
       getMemberList(params).then(res => {
         if (res.state === 1 && JSON.stringify(res.data) !== '{}') {
           console.log(res, 66666)
-          let listData = res.data.page
-          this.totalSearch = listData.totalPages
+          const listData = res.data.page
+          this.totalSearch = listData.totalPages || 0
           if (this.totalSearch === this.page) {
             this.showMore = false
           } else {
@@ -216,8 +219,8 @@ export default {
       this.$router.push({
         name: '会员详情',
         params: {
-          'memberDetail': memberDetail,
-          'querytype': '0'
+          memberDetail,
+          querytype: '0'
         }
       })
     },
@@ -269,9 +272,9 @@ export default {
     save() {
       // if(this.departmentId)
       const params = {
-        'finalDepartmentId': this.finalDepartmentId, // 调整后的部门
-        'firstDepartmentId': this.departmentId, // 调整前的部门
-        'memberIds': this.memberIds
+        finalDepartmentId: this.finalDepartmentId, // 调整后的部门
+        firstDepartmentId: this.departmentId, // 调整前的部门
+        memberIds: this.memberIds
       }
       updateDepartment(params).then(res => {
         if (res.state === 1) {

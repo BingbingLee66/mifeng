@@ -1,8 +1,5 @@
 import {
   getChamberContentList,
-  getAboutChamberList,
-  getContactUs,
-  save,
   updateStatus,
   getDetail,
   updateChamberTop,
@@ -13,11 +10,10 @@ import {
   updateColumnLevel
 } from '@/api/content/columnsetup'
 import router from '../../../router'
-import addColumn from './editor/component/addColumn'
 import videoComponent from '@/components/video/index'
 export default {
   components: {
-    addColumn, videoComponent
+    videoComponent
   },
   data() {
     const checkNumber = (rule, value, callback) => {
@@ -42,7 +38,8 @@ export default {
         status: -1,
         date: '',
         column: '',
-        orderType: 1
+        orderType: 1,
+        creatorId: ''
       },
       detailObj: {
         contentHtml: '',
@@ -73,13 +70,14 @@ export default {
       },
     }
   },
-  mounted() {},
-  computed: {},
   created() {
     const activename = window.localStorage.getItem('activename')
     if (activename) {
       this.activeName = activename
     }
+    const { id } = this.$store.getters.profile
+    this.creatorId = id
+    console.log(this.creatorId, 'creatorId 啊啊啊啊')
     this.getContentColumnType()
     this.init()
   },
@@ -154,34 +152,19 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    handleClick() {
-      this.total = 0
-      this.list = []
-      this.currentpage = 1
-      this.limit = 10
-      window.localStorage.setItem('activename', this.activeName)
-      this.fetchData()
-    },
     init() {
       this.total = 0
       this.list = []
       this.currentpage = 1
       this.limit = 10
-      // if (this.has('商会资讯', '查询')) {
-      //   this.fetchData()
-      // }
       this.fetchData()
     },
     getContentColumnType() {
-      let contentModuleId = 8
-      if (this.activeName === '5') {
-        contentModuleId = 3
-      } else if (this.activeName === '6') {
-        contentModuleId = 4
-      }
+      const contentModuleId = 3
       const params = {
         ckey: this.$store.getters.ckey,
-        contentModuleId
+        contentModuleId,
+        isSpecialCommittee: 1
       }
       getContentColumnOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
@@ -210,34 +193,27 @@ export default {
         creator: this.query.creator,
         column: this.query.column,
         orderType: this.query.orderType,
-        creatorId: ''
+        creatorId: this.creatorId
       }
       // if (sort) {
       //   params['order'] = sort
       // }
       if (this.query.date) {
+        // eslint-disable-next-line prefer-destructuring
         params['startTs'] = this.query.date[0]
+        // eslint-disable-next-line prefer-destructuring
         params['endTs'] = this.query.date[1]
       }
-      if (this.activeName === '5') {
-        getChamberContentList(params).then(response => {
+      getChamberContentList(params).then(response => {
+        try {
           this.list = response.data.data.list
           this.total = response.data.data.totalRows
           this.listLoading = false
-        })
-      } else if (this.activeName === '6') {
-        getAboutChamberList(params).then(response => {
-          this.list = response.data.data.list
-          this.total = response.data.data.totalRows
-          this.listLoading = false
-        })
-      } else if (this.activeName === '8') {
-        getContactUs(params).then(response => {
-          this.list = response.data
-          console.log('list', this.list)
-          this.listLoading = false
-        })
-      }
+        } catch (error) {
+          this.list = []
+          this.total = 0
+        }
+      })
     },
     openVisible(row) {
       this.formObj = row
@@ -269,7 +245,8 @@ export default {
       this.$router.push({
         name: '添加/修改文章',
         params: {
-          activeName: this.activeName
+          activeName: this.activeName,
+          committee: true
         }
       })
     },
@@ -280,7 +257,8 @@ export default {
         name: '添加/修改文章',
         query: {
           activeName: this.activeName,
-          articleId: row.id
+          articleId: row.id,
+          committee: true
         }
       })
     },
@@ -300,36 +278,6 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '文章详情', params: { 'articleId': row.id } })
     }, */
-    save() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          this.formObj['ckey'] = this.$store.getters.ckey
-          this.formObj['contentModuleId'] = this.activeName
-          save(this.formObj).then(() => {
-            this.$message({
-              message: '操作成功',
-              type: 'success'
-            })
-            this.fetchData()
-            this.visible = false
-          })
-        } else {
-          return false
-        }
-      })
-    },
-    addCloumn() {
-      let contentModuleId = 8
-      if (this.activeName === '5') {
-        contentModuleId = 3
-      } else if (this.activeName === '6') {
-        contentModuleId = 4
-      }
-      this.$refs['addColumnRef'].open(contentModuleId).then(() => {
-        console.log('添加成功')
-        this.fetchData()
-      })
-    },
     openDetail(row) {
       const params = {
         id: row.id

@@ -9,7 +9,6 @@ export function getList(params) {
 }
 
 export function getInfoColumnList(params) {
-  console.log('params',params)
   return request({
     url: '/ec/contentColumn/info-column-list',
     method: 'get',
@@ -82,5 +81,22 @@ export function delColumn(id) {
   return request({
     url: '/ec/contentColumn/delete?id=' + id,
     method: 'delete',
+  })
+}
+
+/** 修改栏目是否给专委会使用 */
+export function updateSpecialCommittee(data) {
+  return request({
+    url: '/ec/contentColumn/updateSpecialCommittee',
+    method: 'post',
+    data
+  })
+}
+
+/** 是否展示专委会栏目 */
+export function showSpecialCommittee(ckey) {
+  return request({
+    url: `/ec/role/existSpecialCommittee/${ckey}`,
+    method: 'get',
   })
 }

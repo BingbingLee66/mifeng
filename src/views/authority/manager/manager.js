@@ -1,8 +1,8 @@
 import { getList, updateStatus, save, delRole } from '@/api/authority/manager'
 
 export default {
-  data () {
-    var checkName = (rule, value, callback) => {
+  data() {
+    const checkName = (rule, value, callback) => {
       if (!/^\S{1,15}$/.test(value)) {
         return callback(new Error('角色长度为1-15个字！'))
       } else {
@@ -27,17 +27,17 @@ export default {
     }
   },
   computed: {},
-  created () {
+  created() {
     this.init()
   },
   methods: {
-    has (tabName, actionName) {
+    has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
     },
-    getId (tabName, actionName) {
+    getId(tabName, actionName) {
       return this.$store.getters.getId({ tabName, actionName })
     },
-    hasPermission (tabName, actionName) {
+    hasPermission(tabName, actionName) {
       this.$store.dispatch('permission/hasPermission', { tabName, actionName })
     },
     handleSizeChange(val) {
@@ -51,15 +51,15 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
-    init () {
+    init() {
       this.fetchData()
     },
-    fetchData () {
+    fetchData() {
       this.listLoading = true
-      let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'ckey': this.$store.getters.ckey === null ? '' : this.$store.getters.ckey
+      const params = {
+        pageSize: this.limit,
+        page: this.currentpage,
+        ckey: this.$store.getters.ckey === null ? '' : this.$store.getters.ckey
       }
       getList(params).then(response => {
         this.list = response.data.data.list
@@ -67,27 +67,29 @@ export default {
         this.listLoading = false
       })
     },
-    add (e) {
+    add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.formObj = {
-        'roleName': '',
-        'status': 1,
-        'ckey': this.$store.getters.ckey === null ? '' : this.$store.getters.ckey
+        roleName: '',
+        status: 1,
+        ckey: this.$store.getters.ckey === null ? '' : this.$store.getters.ckey
       }
       this.visible = true
     },
-    edit (e, row) {
+    edit(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.formObj = {
-        'id': row.id,
-        'roleName': row.roleName,
-        'status': row.status,
-        'ckey': row.ckey
+        id: row.id,
+        roleName: row.roleName,
+        status: row.status,
+        ckey: row.ckey
       }
       this.visible = true
     },
-    save (row) {
-      save(this.formObj).then(response => {
+    save() {
+      save(this.formObj).then(res => {
+        console.log(res, 'Res Res   Res   Res')
+        if (res.state === 0) return this.$message({ message: res.msg, type: 'error' })
         this.$message({
           message: '操作成功',
           type: 'success'
@@ -96,13 +98,17 @@ export default {
         this.fetchData()
       })
     },
-    updateStatus (e, row) {
+    beforeClose() {
+      this.$refs['form'].clearValidate()
+      this.visible = false
+    },
+    updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'id': row.id,
-        'action': row.status === 0 ? 'active' : 'notactive'
+      const params = {
+        id: row.id,
+        action: row.status === 0 ? 'active' : 'notactive'
       }
-      updateStatus(params).then(response => {
+      updateStatus(params).then(() => {
         if (row.status === 0) {
           this.$message({
             message: '解冻成功',
@@ -117,16 +123,16 @@ export default {
         this.fetchData()
       })
     },
-    delRole (e, row) {
+    delRole(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$confirm('', '确定删除？', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(() => {
-        let params = {
-          'id': row.id
+        const params = {
+          id: row.id
         }
-        delRole(params).then(response => {
+        delRole(params).then(() => {
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -140,10 +146,10 @@ export default {
         })
       })
     },
-    setup (e, row) {
+    setup(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('authority-manager', this.$route.path)
-      this.$router.push({ name: '权限设置', params: { 'roleId': row.id } })
+      this.$router.push({ name: '权限设置', params: { roleId: row.id } })
     }
   }
 }

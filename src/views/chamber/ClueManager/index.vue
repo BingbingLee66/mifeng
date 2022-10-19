@@ -79,10 +79,11 @@ export default {
   methods: {
     onQueryChange(e) {
       this.query = { ...this.query, ...e }
+      this.getTableData()
     },
     async getTableData() {
       const { pageNum: page, timeRanges, ...query } = this.query
-      const { data: { list, totalRows }} = await getClueList({
+      const { data: { list, totalRows } } = await getClueList({
         page,
         ...query,
         startTime: timeRanges && timeRanges[0] ? timeRanges[0].getTime() : '',
@@ -94,12 +95,12 @@ export default {
     },
     onSelectionChange(e) {
       this.selectedData = e.map(v => ({
-        '线索ID': v.id,
-        '社会组织名称': v.name,
-        '创建时间': formatDateTime(new Date(+v.createdTs), 'yyyy年MM月dd日 hh:mm:ss'),
-        '线索来源': v.source === 1 ? '小程序名录' : 'APP名录',
-        '联系人姓名': v.contactName,
-        '联系人电话': v.contactPhone,
+        线索ID: v.id,
+        社会组织名称: v.name,
+        创建时间: formatDateTime(new Date(+v.createdTs), 'yyyy年MM月dd日 hh:mm:ss'),
+        线索来源: v.source === 1 ? '小程序名录' : 'APP名录',
+        联系人姓名: v.contactName,
+        联系人电话: v.contactPhone,
       }))
     }
   },
