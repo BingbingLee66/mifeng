@@ -34,6 +34,7 @@
       </el-row>
       <el-table
         id="out-table"
+        :key="table3Ckey"
         v-loading="listLoading"
         :data="list"
         element-loading-text="Loading"

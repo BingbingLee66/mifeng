@@ -78,6 +78,7 @@ export default {
       pageSize: 10,
       totalRows: 1000,
       isSpecialCommitteeBolVisible: false,
+      table3Ckey: ''
     }
   },
   components: {
@@ -103,19 +104,19 @@ export default {
     handleClick() {
       this.page = 1
       this.list = []
-      console.log('this.page', this.page)
       this.fetchData()
     },
     async init() {
+      this.fetchData()
+    },
+    async fetchData() {
+      this.listLoading = true
       // 是否展示是否给专委会使用列
       const res = await showSpecialCommittee(this.$store.getters.ckey)
       if (res && res.state === 1) {
         this.isSpecialCommitteeBolVisible = res.data
+        this.table3Ckey = Math.random()
       }
-      this.fetchData()
-    },
-    fetchData() {
-      this.listLoading = true
       const params = {
         ckey: this.$store.getters.ckey,
         contentModuleId: this.activeName,
