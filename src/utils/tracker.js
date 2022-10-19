@@ -4,9 +4,10 @@ import store from '../store'
 import dayjs from 'dayjs'
 
 class Tracker extends SlsTracker {
-  constructor({ createCommonParams, ...options } = {}) {
+  constructor({ createCommonParams, useDelay = false, ...options } = {}) {
     super(options)
     if (createCommonParams) this.createCommonParams = createCommonParams
+    this.useDelay = useDelay // 是否启用延迟上报
   }
   async send(data = {}) {
     try {
@@ -30,18 +31,20 @@ class Tracker extends SlsTracker {
   }
   async beforeSend(data) {
     const commonParams = await Promise.resolve(this.createCommonParams())
-    const { web_name, app_name, platform } = commonParams
-    const source = `${web_name || app_name}-${platform}`
-    if (this.opt.source !== source) this.opt.source = source
     const log = Array.isArray(data) ? data.map(v => ({ ...commonParams, ...v })) : { ...commonParams, ...data }
-    // 未登录则延迟登录后上报
-    if (!log.user_only) {
-      this.delayLogs.push(log)
-      throw 'Delay log' // eslint-disable-line
-    } else if (this.delayLogs.length) { // 立即上报延时日志
-      const delayLogs = this.delayLogs.map(log => ({ ...log, ...commonParams }))
-      this.delayLogs.length = 0
-      super.sendBatchLogsImmediate(delayLogs)
+    if (this.useDelay) {
+      const { web_name, app_name, platform } = commonParams
+      const source = `${web_name || app_name}-${platform}`
+      if (this.opt.source !== source) this.opt.source = source
+      // 未登录则延迟登录后上报
+      if (!log.user_only) {
+        this.delayLogs.push(log)
+        throw 'Delay log' // eslint-disable-line
+      } else if (this.delayLogs.length) { // 立即上报延时日志
+        const delayLogs = this.delayLogs.map(log => ({ ...log, ...commonParams }))
+        this.delayLogs.length = 0
+        super.sendBatchLogsImmediate(delayLogs)
+      }
     }
     return log
   }
@@ -57,6 +60,7 @@ const tracker = new Tracker({
   count: 10,
   topic: '',
   source: 'mfSCRM-web',
+  useDelay: true, // 启用延时上报
   createCommonParams() {
     const { id: user_only = '', ckey = '' } = store.state.user.profile || {}
     const { currentRoute, prevRoute } = router
