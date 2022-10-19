@@ -219,8 +219,9 @@ export default {
     beforeSystemLogoUpload(file) {
       if (file.type !== 'image/jpeg' &&
         file.type !== 'image/jpg' &&
-        file.type !== 'image/png') {
-        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+        file.type !== 'image/png' &&
+        file.type !== 'image/gif') {
+        this.$message.error('上传图片只能是 JPG 、 PNG 或 GIF 格式!')
         return false
       }
       if (file.size > 1024 * 1024 * 2) {

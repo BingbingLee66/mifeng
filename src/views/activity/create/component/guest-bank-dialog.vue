@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="从嘉宾库选" :visible="visible" width="800px" @close="onClose">
-    <div v-if="activityId" class="search-wrap flex-x">
+    <div class="search-wrap flex-x">
       <el-input v-model="query.name" placeholder="搜索姓名" style="width: 200px;" />
       <el-button class="ml-20" type="primary" @click="onQueryChange">查询</el-button>
     </div>
@@ -33,10 +33,6 @@ export default {
       type: Boolean,
       default: false
     },
-    staticData: {
-      type: Array,
-      default: () => []
-    }
   },
   data() {
     return {
@@ -71,37 +67,23 @@ export default {
           label: '操作',
           fixed: 'right',
           width: '120',
-          render: ({ row, index }) => <div>
-            <el-button type="text" onClick={() => this.onDel(row, index)}>从嘉宾库移除</el-button>
+          render: ({ row }) => <div>
+            <el-button type="text" onClick={() => this.onDel(row)}>从嘉宾库移除</el-button>
             <el-button type="text" onClick={() => this.onEdit(row)}>编辑</el-button>
           </div>
         },
       ]
-    },
-    activityId() {
-      return this.$route.query.activityId || ''
     },
   },
   watch: {
     visible(val) {
       if (val) {
         this.onQueryChange()
-
-        if (!this.activityId) this.tableData = this.staticData.filter(v => v.isChamber)
       }
-    },
-    staticData: {
-      handler(val) {
-        if (!this.visible || this.activityId) return
-        this.tableData = val.filter(v => v.isChamber)
-      },
-      deep: true
     },
   },
   methods: {
     onQueryChange() {
-      // if (!this.activityId) return
-
       clearTimeout(this.timer)
       this.timer = setTimeout(() => this.queryTableData(), 300)
     },
@@ -144,18 +126,13 @@ export default {
       this.onClose()
     },
 
-    async onDel(row, index) {
+    async onDel(row) {
       await this.$confirm('不影响本次所选嘉宾，仅对嘉宾库进行移除', '确认从嘉宾库中移除该嘉宾？')
+      const { state, msg } = await delChamberGuest(row.id)
 
-      if (this.activityId) {
-        const { state, msg } = await delChamberGuest(row.id)
-
-        if (!state) return this.$message.error(msg)
-        this.$message.success('操作成功')
-        this.onQueryChange()
-      } else {
-        this.tableData.splice(index, 1)
-      }
+      if (!state) return this.$message.error(msg)
+      this.$message.success('操作成功')
+      this.onQueryChange()
     },
 
     onSelectChange(val) {

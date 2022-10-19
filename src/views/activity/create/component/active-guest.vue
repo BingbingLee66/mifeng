@@ -19,7 +19,7 @@
       @editChamber="editChamberData"
       @fetchData="onQueryChange"
     />
-    <GuestBankDialog ref="guestBankDialog" :visible.sync="guestBankVisible" :static-data="tableData" @edit="onBankEdit" @confirm="addStaticData" />
+    <GuestBankDialog ref="guestBankDialog" :visible.sync="guestBankVisible" @edit="onBankEdit" @confirm="addStaticData" />
     <MemberBankDialog :visible.sync="memberBankVisible" @confirm="addStaticData" />
   </div>
 </template>

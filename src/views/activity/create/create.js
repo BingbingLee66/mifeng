@@ -101,7 +101,7 @@ export default {
         labels: [],
         signNeedCard: 1,
         cardShow: 1,
-        cardShowType: 2,
+        cardShowType: 1,
         cardInfoType: 0,
       },
       isReleActivity: false,

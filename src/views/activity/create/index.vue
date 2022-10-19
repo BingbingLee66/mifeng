@@ -490,8 +490,8 @@
               v-model="formObj.cardShowType"
               :disabled="status === 2 || status === 3"
             >
-              <el-radio :label="2">不限</el-radio>
-              <el-radio :label="1">{{ ckey ? '限本商会会员可见' : '限商会会员可见' }}</el-radio>
+              <el-radio :label="1">不限</el-radio>
+              <el-radio :label="2">{{ ckey ? '限本商会会员可见' : '限商会会员可见' }}</el-radio>
               <el-radio :label="3">限符合报名条件的用户可见</el-radio>
               <el-radio :label="4">限报名成功的用户可见 (若需审核，指审核通过的用户)</el-radio>
             </el-radio-group>

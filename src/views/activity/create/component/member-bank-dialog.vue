@@ -121,7 +121,8 @@ export default {
           return {
             ...v,
             portrait: this.ckey ? v.portrait : v.avatar,
-            name: this.ckey ? v.name : v.userName
+            name: this.ckey ? v.name : v.userName,
+            introduction: this.ckey ? v.resume : v.introduction
           }
         })
       } finally {
