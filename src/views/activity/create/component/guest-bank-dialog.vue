@@ -160,9 +160,10 @@ export default {
           return {
             ...v,
             activityId: this.activityId,
-            isChamber: 1
+            isChamber: 1,
+            flag: true
           }
-        }), true)
+        }))
 
         if (!state) return false
       }

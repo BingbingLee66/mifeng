@@ -181,9 +181,10 @@ export default {
           {
             ...this.formState,
             activityId: this.activityId,
-            isChamber: this.formState.isChamber ? 0 : 1
+            isChamber: this.formState.isChamber ? 0 : 1,
+            flag: !this.isEdit
           }
-        ], !this.isEdit)
+        ])
 
         if (!state) return false
       }

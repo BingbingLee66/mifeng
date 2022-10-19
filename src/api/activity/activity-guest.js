@@ -80,9 +80,9 @@ export function getMemberList(params) {
 }
 
 // 创建活动嘉宾校验接口
-export function checkGuess(data, flag) {
+export function checkGuess(data) {
   return request({
-    url: `ec/activity-guests/check?flag=${flag}`,
+    url: 'ec/activity-guests/check',
     method: 'post',
     data
   })
