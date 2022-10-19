@@ -10,28 +10,43 @@ class Tracker extends SlsTracker {
   }
   async send(data = {}) {
     try {
-      const commonParams = await Promise.resolve(this.createCommonParams())
-      super.send({ ...commonParams, ...data })
+      super.send(await this.beforeSend(data))
     } catch { }
   }
   async sendImmediate(data = {}) {
     try {
-      const commonParams = await Promise.resolve(this.createCommonParams())
-      super.sendImmediate({ ...commonParams, ...data })
+      super.sendImmediate(await this.beforeSend(data))
     } catch { }
   }
-  async sendBatchLogs(arr = []) {
+  async sendBatchLogs(data = []) {
     try {
-      const commonParams = await Promise.resolve(this.createCommonParams())
-      super.sendBatchLogs(arr.map(v => ({ ...commonParams, ...v })))
+      super.sendBatchLogs(await this.beforeSend(data))
     } catch { }
   }
-  async sendBatchLogsImmediate(arr = []) {
+  async sendBatchLogsImmediate(data = []) {
     try {
-      const commonParams = await Promise.resolve(this.createCommonParams())
-      super.sendBatchLogsImmediate(arr.map(v => ({ ...commonParams, ...v })))
+      super.sendBatchLogsImmediate(await this.beforeSend(data))
     } catch { }
   }
+  async beforeSend(data) {
+    const commonParams = await Promise.resolve(this.createCommonParams())
+    const { web_name, app_name, platform } = commonParams
+    const source = `${web_name || app_name}-${platform}`
+    if (this.opt.source !== source) this.opt.source = source
+    const log = Array.isArray(data) ? data.map(v => ({ ...commonParams, ...v })) : { ...commonParams, ...data }
+    // 未登录则延迟登录后上报
+    if (!log.user_only) {
+      this.delayLogs.push(log)
+      throw 'Delay log' // eslint-disable-line
+    } else if (this.delayLogs.length) { // 立即上报延时日志
+      const delayLogs = this.delayLogs.map(log => ({ ...log, ...commonParams }))
+      this.delayLogs.length = 0
+      super.sendBatchLogsImmediate(delayLogs)
+    }
+    return log
+  }
+
+  delayLogs = [] // 延迟上报集
 }
 
 const tracker = new Tracker({
@@ -41,9 +56,9 @@ const tracker = new Tracker({
   time: 5,
   count: 10,
   topic: '',
-  source: 'YSH-mfSCRM',
+  source: 'mfSCRM-web',
   createCommonParams() {
-    const { id: user_only = '' } = store.state.user.profile || {}
+    const { id: user_only = '', ckey = '' } = store.state.user.profile || {}
     const { currentRoute, prevRoute } = router
     return {
       cookie: document.cookie,
@@ -52,7 +67,7 @@ const tracker = new Tracker({
       time: Date.now(),
       date: dayjs().format('YYYY/MM/DD'),
       platform: 'web',
-      web_name: 'mfSCRM',
+      web_name: ckey ? 'mfSCRM' : 'zhtSCRM',
       current_url: currentRoute.path, // 当前页面
       from_url: prevRoute.path === '/' ? '' : prevRoute.path, // 当前页面之前的页面
     }
