@@ -21,7 +21,8 @@
           <el-form-item label="权重：" prop="weight">
             <el-input
               v-model="formWeight.weight"
-              onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"
+              onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"
+              @input="onInput"
             />
           </el-form-item>
         </el-form>
@@ -136,6 +137,12 @@ export default {
         }
       })
     },
+
+    onInput() {
+      const { weight } = this.formWeight
+
+      if (+weight > 99999) this.formWeight.weight = 99999
+    }
   },
 }
 </script>
