@@ -11,6 +11,7 @@
     <GuestFormDialog
       :id="editId"
       :static-data="staticData"
+      :table-data="tableData"
       :visible.sync="formVisible"
       :show-bank="!isBankEdit"
       :end-time="endTime"
@@ -19,8 +20,8 @@
       @editChamber="editChamberData"
       @fetchData="onQueryChange"
     />
-    <GuestBankDialog ref="guestBankDialog" :visible.sync="guestBankVisible" @edit="onBankEdit" @confirm="addStaticData" />
-    <MemberBankDialog :visible.sync="memberBankVisible" @confirm="addStaticData" />
+    <GuestBankDialog ref="guestBankDialog" :static-data="tableData" :visible.sync="guestBankVisible" @edit="onBankEdit" @confirm="addStaticData" />
+    <MemberBankDialog :static-data="tableData" :visible.sync="memberBankVisible" @confirm="addStaticData" />
 
     <el-dialog title="嘉宾介绍" :visible="textVisible" width="800px" @close="textVisible = false">
       <div>{{ introduction }}</div>

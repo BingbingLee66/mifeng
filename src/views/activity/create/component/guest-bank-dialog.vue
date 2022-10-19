@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { delChamberGuest, getChamberGuestList } from '@/api/activity/activity-guest'
+import { checkGuess, delChamberGuest, getChamberGuestList } from '@/api/activity/activity-guest'
 
 export default {
   name: 'GuestFormDialog',
@@ -39,6 +39,10 @@ export default {
       type: Boolean,
       default: false
     },
+    staticData: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
     return {
@@ -54,7 +58,6 @@ export default {
       selectData: [],
       textVisible: false,
       introduction: ''
-
     }
   },
   computed: {
@@ -89,6 +92,9 @@ export default {
           </div>
         },
       ]
+    },
+    activityId() {
+      return this.$route.query.activityId || ''
     },
   },
   watch: {
@@ -132,8 +138,10 @@ export default {
       this.$emit('edit', row)
     },
 
-    onConfirm() {
+    async onConfirm() {
       if (!this.selectData.length) return this.$message.error('请选择嘉宾')
+
+      if (!await this.validateGuestRepeat()) return this.$message.error('存在重复数据，不可操作')
 
       this.$emit('confirm', this.selectData.map((v, i) => {
         delete v.ckey
@@ -144,6 +152,36 @@ export default {
         }
       }))
       this.onClose()
+    },
+
+    async validateGuestRepeat() {
+      if (this.activityId) {
+        const { state } = await checkGuess(this.selectData.map(v => {
+          return {
+            ...v,
+            activityId: this.activityId,
+            isChamber: 1
+          }
+        }), true)
+
+        if (!state) return false
+      } else {
+        for (let i = 0, len = this.staticData.length; i < len; i++) {
+          for (let j = 0, jLen = this.selectData.length; j < jLen; j++) {
+            const select = this.selectData[j]
+            const item = this.staticData[i]
+            if (
+              select.name === item.name &&
+              select.post === item.post &&
+              select.unit === item.unit &&
+              select.introduction === item.introduction
+            ) {
+              return false
+            }
+          }
+        }
+      }
+      return true
     },
 
     async onDel(row) {

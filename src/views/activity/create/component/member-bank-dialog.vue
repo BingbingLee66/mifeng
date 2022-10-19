@@ -23,7 +23,7 @@
 </template>
 
 <script >
-import { getMemberList, getWxUserList } from '@/api/activity/activity-guest'
+import { checkGuess, getMemberList, getWxUserList } from '@/api/activity/activity-guest'
 
 export default {
   name: 'GuestFormDialog',
@@ -39,6 +39,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    staticData: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -84,7 +88,10 @@ export default {
     },
     ckey() {
       return this.$store.getters.ckey || ''
-    }
+    },
+    activityId() {
+      return this.$route.query.activityId || ''
+    },
   },
   watch: {
     visible(val) {
@@ -92,6 +99,7 @@ export default {
         this.onQueryChange()
       }
     },
+
   },
   methods: {
     showText(val) {
@@ -122,7 +130,7 @@ export default {
             ...v,
             portrait: this.ckey ? v.portrait : v.avatar,
             name: this.ckey ? v.name : v.userName,
-            introduction: this.ckey ? v.resume : v.introduction
+            introduction: (this.ckey ? v.resume : v.introduction) || ''
           }
         })
       } finally {
@@ -130,7 +138,11 @@ export default {
       }
     },
 
-    onConfirm() {
+    async onConfirm() {
+      if (!this.selectData.length) return this.$message.error(`请选择${this.ckey ? '会员' : '用户'}`)
+
+      if (!await this.validateGuestRepeat()) return this.$message.error('存在重复数据，不可操作')
+
       this.$emit('confirm', this.selectData.map(v => {
         delete v.ckey
         delete v.nickname
@@ -146,6 +158,37 @@ export default {
         }
       }))
       this.onClose()
+    },
+
+    async validateGuestRepeat() {
+      if (this.activityId) {
+        const { state } = await checkGuess(this.selectData.map(v => {
+          return {
+            ...v,
+            activityId: this.activityId,
+            isChamber: 1
+          }
+        }), true)
+
+        if (!state) return false
+      } else {
+        for (let i = 0, len = this.staticData.length; i < len; i++) {
+          for (let j = 0, jLen = this.selectData.length; j < jLen; j++) {
+            const select = this.selectData[j]
+            const item = this.staticData[i]
+            if (
+              select.id === item.id &&
+              select.name === item.name &&
+              select.post === item.post &&
+              select.unit === item.unit &&
+              select.introduction === item.introduction
+            ) {
+              return false
+            }
+          }
+        }
+      }
+      return true
     },
 
     onClose() {

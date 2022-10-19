@@ -78,3 +78,13 @@ export function getMemberList(params) {
     params
   })
 }
+
+// 创建活动嘉宾校验接口
+export function checkGuess(data, flag) {
+  return request({
+    url: `ec/activity-guests/check?flag=${flag}`,
+    method: 'post',
+    data
+  })
+}
+

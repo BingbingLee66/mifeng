@@ -86,7 +86,7 @@
 
 <script>
 import { upload } from '@/api/chamber/manager'
-import { updateChamberGuest } from '@/api/activity/activity-guest'
+import { checkGuess, updateChamberGuest } from '@/api/activity/activity-guest'
 import { cloneDeep } from 'lodash'
 
 export default {
@@ -107,6 +107,10 @@ export default {
     staticData: {
       type: Object,
       default: () => {}
+    },
+    tableData: {
+      type: Array,
+      default: () => []
     },
     endTime: {
       type: [String, Number],
@@ -162,11 +166,41 @@ export default {
   },
   methods: {
     onSave() {
-      this.$refs['form'].validate(valid => {
+      this.$refs['form'].validate(async valid => {
         if (!valid) return
+
+        if (!await this.validateGuestRepeat()) return this.$message.error('存在重复数据，不可操作')
 
         this.isEdit ? this.editGuest() : this.createGuest()
       })
+    },
+
+    async validateGuestRepeat() {
+      if (this.activityId) {
+        const { state } = await checkGuess([
+          {
+            ...this.formState,
+            activityId: this.activityId,
+            isChamber: this.formState.isChamber ? 0 : 1
+          }
+        ], !this.isEdit)
+
+        if (!state) return false
+      } else {
+        for (let i = 0, len = this.tableData.length; i < len; i++) {
+          const item = this.tableData[i]
+          const select = this.formState
+          if (
+            select.name === item.name &&
+            select.post === item.post &&
+            select.unit === item.unit &&
+            select.introduction === item.introduction
+          ) {
+            return false
+          }
+        }
+      }
+      return true
     },
 
     createGuest() {
