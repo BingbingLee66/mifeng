@@ -929,6 +929,7 @@ export default {
             ? 0
             : 1
           : item.isChamber
+        if (item.chamberGuestsId === '1') delete item.chamberGuestsId
       })
       this.formObj = {
         ...this.formObj,
