@@ -171,20 +171,19 @@ export default {
         }), true)
 
         if (!state) return false
-      } else {
-        for (let i = 0, len = this.staticData.length; i < len; i++) {
-          for (let j = 0, jLen = this.selectData.length; j < jLen; j++) {
-            const select = this.selectData[j]
-            const item = this.staticData[i]
-            if (
-              select.id === item.id &&
-              select.name === item.name &&
-              select.post === item.post &&
-              select.unit === item.unit &&
-              select.introduction === item.introduction
-            ) {
-              return false
-            }
+      }
+      for (let i = 0, len = this.staticData.length; i < len; i++) {
+        for (let j = 0, jLen = this.selectData.length; j < jLen; j++) {
+          const select = this.selectData[j]
+          const item = this.staticData[i]
+          if (
+            select.id === item.id &&
+            select.name === item.name &&
+            select.post === item.post &&
+            select.unit === item.unit &&
+            select.introduction === item.introduction
+          ) {
+            return false
           }
         }
       }

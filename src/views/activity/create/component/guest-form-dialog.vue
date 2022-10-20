@@ -186,18 +186,18 @@ export default {
         ], !this.isEdit)
 
         if (!state) return false
-      } else {
-        for (let i = 0, len = this.tableData.length; i < len; i++) {
-          const item = this.tableData[i]
-          const select = this.formState
-          if (
-            select.name === item.name &&
-            select.post === item.post &&
-            select.unit === item.unit &&
-            select.introduction === item.introduction
-          ) {
-            return false
-          }
+      }
+
+      for (let i = 0, len = this.tableData.length; i < len; i++) {
+        const item = this.tableData[i]
+        const select = this.formState
+        if (
+          select.name === item.name &&
+          select.post === item.post &&
+          select.unit === item.unit &&
+          select.introduction === item.introduction
+        ) {
+          return false
         }
       }
       return true
