@@ -2,7 +2,7 @@
 
 
 ## [Released]
-## [2.31.0] - 2022-10-20
+## [2.32.0] - 2022-10-20
 ### Added
 - 【活动社交】创建活动-活动信息、报名信息[1191](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1191)
 - 【活动社交】创建活动-活动嘉宾[1192](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1192)
