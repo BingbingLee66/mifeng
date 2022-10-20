@@ -783,6 +783,10 @@ export default {
         this.formObj.latitude = ''
       }
 
+      if (!this.formObj.activityGuestsDTOList) {
+        this.formObj.activityGuestsDTOList = []
+      }
+
       const params = { ...this.formObj }
 
       if (!(this.ruleCkeys.includes(this.ckey) || !this.ckey) || !this.formObj.link?.trim()) {
