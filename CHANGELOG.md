@@ -2,6 +2,17 @@
 
 
 ## [Released]
+## [2.31.0] - 2022-10-20
+### Added
+- 【活动社交】创建活动-活动信息、报名信息[1191](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1191)
+- 【活动社交】创建活动-活动嘉宾[1192](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1192)
+- 【活动社交】报名审核-详情[1193](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1193)
+- 【商会主页二维码】商会主页二维码[1195](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1195)
+- 【商会主页二维码】商会专属二维码[1196](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1196)
+- 【供需】总后台/商会后台新增查询条件：发布者姓名[1212](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1212)
+
+
+## [Released]
 ## [2.30.0] - 2022-10-10
 ### Added
 - 【图片直播1.1】总后台-创建活动[1105](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1105)
