@@ -551,7 +551,7 @@
       </div>
       <!-- 自定义信息 -->
       <el-dialog
-        :title="(this.editCol ? '编辑' : '新增') + '自定义信息'"
+        :title="(editCol ? '编辑' : '新增') + '自定义信息'"
         :visible.sync="dialogFormVisible"
         width="500px"
         :close-on-click-modal="false"

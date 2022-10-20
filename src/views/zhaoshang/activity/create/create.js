@@ -803,7 +803,7 @@ export default {
     },
     onInfoDate() {
       if (this.infoDate.info === '') return this.$message.error('请选择类型')
-      if (this.infoDate.info === 0 || this.infoDate.info === 1) this.dialogFormVisible = true
+      if (+this.infoDate.info === 0 || +this.infoDate.info === 1) this.dialogFormVisible = true
       this.iscustom = false
     },
     // 选择招商地区
