@@ -11,8 +11,8 @@
     <div v-if="JSON.stringify(chamberInfo) !== '{}'" class="flex-x">
       <div class="qrcode-content">
         <h2>二维码：</h2>
-        <div id="postdiv" class="poster" style="background-image: url(https://t7.baidu.com/it/u=1595072465,3644073269&fm=193&f=GIF)">
-          <img class="poster-logo" :src="chamberInfo.chamberLogo" alt="">
+        <div id="postdiv" class="poster" style="background-image: url(./img/chamber_homepage.png)">
+          <!--          <img class="poster-logo" :src="chamberInfo.chamberLogo" alt="">-->
           <div class="poster-header">
             <div class="poster-chamber">{{ chamberInfo.chamberName }}</div>
           </div>
@@ -174,21 +174,25 @@ export default {
     position: relative;
 
     .poster-header {
-      height: 240px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      font-size: 21px;
-      font-weight: 500;
-      color: #4E3420;
+      position: absolute;
+      width: 100%;
+      top: 100px;
+      text-align: center;
+
+      .poster-chamber {
+        font-size: 36px;
+        font-weight: 600;
+        color: #F14A22;
+        line-height: 50px;
+        text-shadow: 0 2px 4px rgba(241,74,34,0.46), 0 2px 4px rgba(255,182,182,0.5);
+      }
     }
 
     .poster-qrcode {
       position: absolute;
-      width: 88px;
-      height: 88px;
-      bottom: 82px;
+      width: 230px;
+      height: 230px;
+      top: 260px;
       left: 50%;
       transform: translate(-50%);
       border-radius: 9px;
@@ -209,7 +213,7 @@ export default {
   .qrcode-content {
     .poster {
       width: 375px;
-      height: 667px;
+      height: 812px;
       background-position: center;
       background-size: cover;
     }
