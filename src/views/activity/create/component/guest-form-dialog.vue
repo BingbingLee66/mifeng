@@ -198,6 +198,9 @@ export default {
           select.unit === item.unit &&
           select.introduction === item.introduction
         ) {
+          if (this.showBank) {
+            return select.isChamber === !item.isChamber
+          }
           return false
         }
       }
@@ -219,7 +222,11 @@ export default {
 
     editGuest() {
       if (this.formState.isStatic || this.showBank) {
-        this.$emit('edit', { ...this.formState, isChamber: this.formState.isChamber ? 0 : 1 })
+        this.$emit('edit', {
+          ...this.formState,
+          isChamber: this.formState.isChamber ? 0 : 1,
+          chamberGuestsId: this.formState.isChamber ? '1' : '0'
+        })
         this.$message.success('操作成功')
         this.onClose()
       }
