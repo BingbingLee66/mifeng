@@ -930,6 +930,7 @@ export default {
             : 1
           : item.isChamber
         if (item.chamberGuestsId === '1') delete item.chamberGuestsId
+        item.ckey = this.$store.getters.ckey || ''
       })
       this.formObj = {
         ...this.formObj,
