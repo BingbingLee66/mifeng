@@ -153,7 +153,7 @@ export default {
       left: 50%;
       transform: translate(-50%, 0);
       margin: 0 auto;
-      width: 80%;
+      width: 100%;
       top: 100px;
       text-align: center;
 
@@ -170,10 +170,12 @@ export default {
         color: #f14a22;
         line-height: 50px;
         text-shadow: 0 2px 4px rgba(241, 74, 34, 0.46), 0 2px 4px rgba(255, 182, 182, 0.5);
+        padding: 0 25px;
       }
     }
     .poster-label{
       margin-top: 11px;
+      width: 121px;
     }
     .poster-qrcode {
       position: absolute;

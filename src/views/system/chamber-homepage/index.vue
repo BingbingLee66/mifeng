@@ -12,9 +12,10 @@
       <div class="qrcode-content">
         <h2>二维码：</h2>
         <div id="postdiv" class="poster" style="background-image: url(./img/chamber_homepage.png)">
-          <!--          <img class="poster-logo" :src="chamberInfo.chamberLogo" alt="">-->
+          <img class="poster-logo" :src="chamberInfo.chamberLogo" alt="">
           <div class="poster-header">
             <div class="poster-chamber">{{ chamberInfo.chamberName }}</div>
+            <img class="poster-label" src="../../../../public/img/chamber_label.png" alt="">
           </div>
           <img class="poster-qrcode" :src="chamberInfo.qrCode" alt="">
         </div>
@@ -180,11 +181,23 @@ export default {
       text-align: center;
 
       .poster-chamber {
+        display: -webkit-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        white-space: normal !important;
+        -webkit-line-clamp: 2; /*  行数*/
+        -webkit-box-orient: vertical;
         font-size: 36px;
         font-weight: 600;
         color: #F14A22;
         line-height: 50px;
         text-shadow: 0 2px 4px rgba(241,74,34,0.46), 0 2px 4px rgba(255,182,182,0.5);
+        padding: 0 25px;
+      }
+      .poster-label{
+        margin-top: 11px;
+        width: 121px;
       }
     }
 
@@ -192,7 +205,7 @@ export default {
       position: absolute;
       width: 230px;
       height: 230px;
-      top: 260px;
+      top: 300px;
       left: 50%;
       transform: translate(-50%);
       border-radius: 9px;
@@ -200,13 +213,14 @@ export default {
 
     .poster-logo {
       position: absolute;
-      width: 40px;
-      height: 40px;
-      top: 40px;
+      width: 104px;
+      height: 104px;
+      top: 363px;
       left: 50%;
       transform: translate(-50%);
       border-radius: 50%;
       background-color: #fff;
+      z-index: 99;
     }
   }
 
