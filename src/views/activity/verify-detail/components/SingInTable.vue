@@ -167,7 +167,7 @@
 </template>
 
 <script>
-import { downloadFile } from '@/utils/index'
+import { downloadFile } from '@/utils'
 import { formatDate } from '../util'
 
 import {
@@ -524,16 +524,16 @@ export default {
         label: '报名信息',
         minWidth: 200,
         render: ({ row }) => {
-          const { signs } = row
+          const signs = row.signs || []
           const dom = signs.map(v => <div>{v.key}：{v.value}</div>)
           const cardItemIndex = signs.findIndex(v => v.key === 'card')
 
-          if (cardItemIndex) {
+          if (cardItemIndex > -1) {
             dom.splice(cardItemIndex, 1)
             dom.push(<el-button type="text" onClick={() => this.getCardDetail(signs[cardItemIndex].value)}>IP名片详情</el-button>)
           }
 
-          return <div>{signs ? dom : '-'}</div>
+          return <div>{(signs && signs.length) ? dom : '-'}</div>
         }
       }
     },
