@@ -173,6 +173,7 @@ export default {
       width: 104px;
       height: 104px;
       border-radius: 50%;
+      background-color: #fff;
     }
   }
 
