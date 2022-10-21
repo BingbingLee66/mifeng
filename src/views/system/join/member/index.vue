@@ -107,12 +107,12 @@ export default {
       this.$router.go(0)
     },
 
-    async clickGeneratePicture() {
+    async clickGeneratePicture(domName) {
       this.isLoading = true
       try {
         await this.$nextTick()
         const canvas = document.createElement('canvas')
-        const shareContent = document.getElementById('postdiv')
+        const shareContent = document.getElementById(domName)
         const width = shareContent.offsetWidth // 获取dom 宽度
         const height = shareContent.offsetHeight // 获取dom 高度
         canvas.width = width * 2
