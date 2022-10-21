@@ -1,5 +1,5 @@
 <template>
-  <div class="qrcode-wrap ">
+  <div class="qrcode-wrap">
     <div class="flex-x">
       <div class="qrcode-content">
         <h2>二维码：</h2>
@@ -7,6 +7,7 @@
           <img class="poster-logo" :src="chamberInfo.chamberLogo" alt="">
           <div class="poster-header">
             <div class="poster-chamber">{{ chamberInfo.chamberName }}</div>
+            <img class="poster-label" src="../../../../../public/img/chamber_label.png" alt="">
           </div>
           <img class="poster-qrcode" :src="chamberInfo.qrCode" alt="">
         </div>
@@ -22,7 +23,7 @@
         <div class="link-wrap">
           <span style="line-height: 40px">链接1</span>
           <div style="margin: 0 10px">
-            <el-input ref="link1Ref" v-model="chamberInfo.pathUrl" style="width: 400px;" />
+            <el-input ref="link1Ref" v-model="chamberInfo.pathUrl" style="width: 400px" />
             <div style="margin-top: 10px">用于接入公众号或小程序路径</div>
           </div>
           <el-button @click="copy(1)">复制</el-button>
@@ -31,7 +32,7 @@
         <div class="link-wrap mt-20">
           <span style="line-height: 40px">链接2</span>
           <div style="margin: 0 10px">
-            <el-input ref="link2Ref" v-model="chamberInfo.promoteUrl" style="width: 400px;" />
+            <el-input ref="link2Ref" v-model="chamberInfo.promoteUrl" style="width: 400px" />
             <div style="margin-top: 10px">用于PC网站等推广</div>
           </div>
           <el-button @click="copy(2)">复制</el-button>
@@ -68,7 +69,6 @@ export default {
   },
 
   methods: {
-
     async getQRCode() {
       this.chamberInfo = {}
 
@@ -121,7 +121,8 @@ export default {
         const rect = shareContent.getBoundingClientRect() // 获取元素相对于视口的
         context.translate(-rect.left, -rect.top)
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop // 获取滚动轴滚动的长度
-        const _canvas = await html2canvas(shareContent, { // 转换为图片
+        const _canvas = await html2canvas(shareContent, {
+          // 转换为图片
           scrollY: -scrollTop,
           scrollX: 0,
           useCORS: true // 开启跨域
@@ -149,24 +150,36 @@ export default {
 
     .poster-header {
       position: absolute;
-      width: 100%;
+      left: 50%;
+      transform: translate(-50%, 0);
+      margin: 0 auto;
+      width: 80%;
       top: 100px;
       text-align: center;
 
       .poster-chamber {
+        display: -webkit-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        white-space: normal !important;
+        -webkit-line-clamp: 2; /*  行数*/
+        -webkit-box-orient: vertical;
         font-size: 36px;
         font-weight: 600;
-        color: #F14A22;
+        color: #f14a22;
         line-height: 50px;
-        text-shadow: 0 2px 4px rgba(241,74,34,0.46), 0 2px 4px rgba(255,182,182,0.5);
+        text-shadow: 0 2px 4px rgba(241, 74, 34, 0.46), 0 2px 4px rgba(255, 182, 182, 0.5);
       }
     }
-
+    .poster-label{
+      margin-top: 11px;
+    }
     .poster-qrcode {
       position: absolute;
       width: 230px;
       height: 230px;
-      top: 260px;
+      top: 300px;
       left: 50%;
       transform: translate(-50%);
       border-radius: 9px;
@@ -176,7 +189,7 @@ export default {
       position: absolute;
       width: 104px;
       height: 104px;
-      top: 323px;
+      top: 363px;
       left: 50%;
       transform: translate(-50%);
       border-radius: 50%;
@@ -203,5 +216,4 @@ export default {
     }
   }
 }
-
 </style>
