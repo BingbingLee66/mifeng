@@ -3,17 +3,25 @@
     <div class="flex-x">
       <div class="qrcode-content">
         <h2>二维码：</h2>
-        <div id="postdiv" class="poster" style="background-image: url(./img/chamber_homepage.png)">
-          <img class="poster-logo" :src="chamberInfo.chamberLogo" alt="">
-          <div class="poster-header">
-            <div class="poster-chamber">{{ chamberInfo.chamberName }}</div>
-            <img class="poster-label" src="../../../../../public/img/chamber_label.png" alt="">
+
+        <div class="poster-wrap">
+          <div id="postdiv" class="poster" style="background-image: url(./img/chamber_homepage.png)">
+            <img class="poster-logo" :src="chamberInfo.chamberLogo" alt="">
+            <div class="poster-header">
+              <div class="poster-chamber">{{ chamberInfo.chamberName }}</div>
+              <img class="poster-label" src="../../../../../public/img/chamber_label.png" alt="">
+            </div>
+            <img class="poster-qrcode" :src="chamberInfo.qrCode" alt="">
           </div>
-          <img class="poster-qrcode" :src="chamberInfo.qrCode" alt="">
+          <div id="qrcode-div" class="p-qrcode-wrap">
+            <img class="qrcode-download" :src="chamberInfo.qrCode" alt="">
+            <img class="logo-download" :src="chamberInfo.chamberLogo" alt="">
+          </div>
         </div>
+
         <div class="mt-20 flex-x-between">
           <el-button type="primary" @click="refreshQrCode">刷新二维码</el-button>
-          <el-button type="primary" :loading="isLoading" @click="clickGeneratePicture">下载海报</el-button>
+          <el-button type="primary" :loading="isLoading" @click="clickGeneratePicture('postdiv')">下载海报</el-button>
           <el-button type="primary" @click="downloadQrCode">下载二维码</el-button>
         </div>
       </div>
@@ -44,7 +52,6 @@
 
 <script>
 import { getChamberQrcode } from '@/api/chamber/manager'
-import { downloadFile } from '@/utils'
 import html2canvas from 'html2canvas'
 
 export default {
@@ -93,10 +100,7 @@ export default {
     },
 
     downloadQrCode() {
-      downloadFile({
-        title: '入会专属二维码.png',
-        url: this.chamberInfo.qrCode
-      })
+      this.clickGeneratePicture('qrcode-div')
     },
 
     refreshQrCode() {
@@ -129,7 +133,7 @@ export default {
         })
         const imgUrl = _canvas.toDataURL('image/png')
         const a = document.createElement('a')
-        a.download = '商会二维码'
+        a.download = '入会专属二维码'
         a.href = imgUrl
         a.click()
       } catch (error) {
@@ -144,6 +148,33 @@ export default {
 <style scoped lang="scss">
 .qrcode-wrap {
   padding: 20px;
+
+  .poster-wrap {
+    position: relative;
+  }
+
+  .p-qrcode-wrap {
+    top: 300px;
+    left: 50%;
+    transform: translate(-50%);
+    position: absolute;
+    width: 230px;
+
+    .qrcode-download {
+      width: 230px;
+      height: 230px;
+    }
+
+    .logo-download {
+      position: absolute;
+      left: 50%;
+      top: 62px;
+      transform: translateX(-50%);
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+    }
+  }
 
   .poster {
     position: relative;
