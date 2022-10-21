@@ -2,6 +2,15 @@
 
 
 ## [Released]
+## [2.32.1] - 2022-10-21
+### Added
+-   
+### Fixed
+-  调整商会主页二维码样式
+-  修复报名审核详情参与人员列表展示报错
+
+
+## [Released]
 ## [2.32.0] - 2022-10-20
 ### Added
 - 【活动社交】创建活动-活动信息、报名信息[1191](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1191)
