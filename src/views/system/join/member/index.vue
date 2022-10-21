@@ -4,7 +4,7 @@
       <div class="qrcode-content">
         <h2>二维码：</h2>
         <div id="postdiv" class="poster" style="background-image: url(./img/chamber_homepage.png)">
-          <!--          <img class="poster-logo" :src="chamberInfo.chamberLogo" alt="">-->
+          <img class="poster-logo" :src="chamberInfo.chamberLogo" alt="">
           <div class="poster-header">
             <div class="poster-chamber">{{ chamberInfo.chamberName }}</div>
           </div>
@@ -174,13 +174,14 @@ export default {
 
     .poster-logo {
       position: absolute;
-      width: 40px;
-      height: 40px;
-      top: 40px;
+      width: 104px;
+      height: 104px;
+      top: 323px;
       left: 50%;
       transform: translate(-50%);
       border-radius: 50%;
       background-color: #fff;
+      z-index: 99;
     }
   }
 
