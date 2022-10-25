@@ -28,21 +28,21 @@
 <script>
 export default {
   components: {
-    TagSetting: () => import("./components/TagSetting"),
-    UserCustom: () => import("./components/UserCustom"),
-    memberLabel: () => import("./member-label/member-label"),
+    TagSetting: () => import('./components/TagSetting'),
+    UserCustom: () => import('./components/UserCustom'),
+    memberLabel: () => import('./member-label/member-label'),
   },
   data() {
     return {
-      activieyTab: "supply",
-      activeName: "TagSetting",
+      activieyTab: 'supply',
+      activeName: 'TagSetting',
       tabList: [
-        { name: "TagSetting", label: "标签设置" },
-        { name: "UserCustom", label: "用户自定义" },
+        { name: 'TagSetting', label: '标签设置' },
+        { name: 'UserCustom', label: '用户自定义' },
       ],
-    };
+    }
   },
-};
+}
 </script>
 
 <style></style>
