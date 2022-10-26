@@ -154,7 +154,7 @@ export default {
           isChamber: 1,
           introduction: v.introduction || '',
           post: v.post || '',
-          userId: this.$store.getters.profile?.id || ''
+          userId: v.userId || null,
         }
       }))
       this.onClose()

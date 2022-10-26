@@ -142,9 +142,6 @@ export default {
     activityId() {
       return this.$route.query.activityId || ''
     },
-    userId() {
-      return this.$store.getters.profile?.id || ''
-    },
     disabledChamber() {
       return this.isEdit && this.formState.isChamber
     },
@@ -211,7 +208,7 @@ export default {
       this.$emit('add', {
         id: Date.now(),
         ...this.formState,
-        userId: this.userId,
+        userId: null,
         isChamber: this.formState.isChamber ? 0 : 1,
         isStatic: true,
         ckey: this.ckey || 'ysh'
