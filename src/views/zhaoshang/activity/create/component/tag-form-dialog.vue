@@ -94,7 +94,7 @@ export default {
   methods: {
 
     confirm() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs.ruleForm.validate(valid => {
         if (!valid) return
 
         this.$emit('confirm', this.formObj)

@@ -84,12 +84,27 @@
             </el-col>
           </el-row>
 
-          <el-row>
+          <!--  <el-row>
             <el-col style="width: 600px;">
               <el-form-item label="招商阶段：">
                 <el-select v-model="formObj.phaseStatus" :disabled="status == 2 || status == 3">
                   <el-option v-for="stage in getMapDict(stageMap)" :key="stage.value" :label="stage.label" :value="stage.value" />
                 </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row> -->
+          <el-row>
+            <el-col style="width: 600px;">
+              <el-form-item label="招商类型：" prop="investmentType">
+                <el-radio-group
+                  v-model="formObj.investmentType
+                  "
+                >
+                  <el-radio :disabled="status == 2 || status == 3" :label="1">默认类型</el-radio>
+                  <el-radio :disabled="status == 2 || status == 3" :label="2">土地招商</el-radio>
+                  <el-radio :disabled="status == 2 || status == 3" :label="3">园区招商</el-radio>
+                  <el-radio :disabled="status == 2 || status == 3" :label="4">楼宇招商</el-radio>
+                </el-radio-group>
               </el-form-item>
             </el-col>
           </el-row>
@@ -134,17 +149,17 @@
             </el-col>
           </el-row>
 
-          <!-- <el-row>
+          <el-row>
             <el-col style="width: 600px;">
               <el-form-item label="活动模式" prop="applyMode">
                 <el-radio-group v-model="formObj.applyMode">
-                    <el-radio   :disabled="status == 2 || status == 3" :label="1">线上活动</el-radio>
-                    <el-radio   :disabled="status == 2 || status == 3" :label="2">线下活动</el-radio>
-                    <el-radio   :disabled="status == 2 || status == 3" :label="3">线上线下活动</el-radio>
+                  <el-radio :disabled="status == 2 || status == 3" :label="1">线上活动</el-radio>
+                  <el-radio :disabled="status == 2 || status == 3" :label="2">线下活动</el-radio>
+                  <el-radio :disabled="status == 2 || status == 3" :label="3">线上线下活动</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
-          </el-row> -->
+          </el-row>
           <el-row v-show="formObj.activeMode !== ACTIVE_MODE.online">
             <el-col>
               <el-form-item
@@ -248,7 +263,7 @@
           </el-row>
 
           <!-- 扩展功能 -->
-          <!-- <el-row v-if="formObj.activeMode !== ACTIVE_MODE.online">
+          <el-row v-if="formObj.activeMode !== ACTIVE_MODE.online">
             <el-col style="width: 700px; height: 40px;margin-top: -38px;">
               <el-form-item label="扩展功能：">
                 <el-checkbox-group v-model="roleIds">
@@ -258,7 +273,7 @@
                 </el-checkbox-group>
               </el-form-item>
             </el-col>
-          </el-row> -->
+          </el-row>
 
           <el-row v-if="formObj.activeMode !== ACTIVE_MODE.online">
             <el-col style="width: 900px">
@@ -436,7 +451,6 @@
           </div>
         </div>
       </div>
-
       <div class="create-container mydiv">
         <el-form
           v-show="formObj.signType == 0"
@@ -496,17 +510,15 @@
               </el-form-item>
             </el-col>
           </el-row> -->
-
           <el-row style="margin-left:30px;">
             <el-form-item>
               <el-button
                 type="primary"
-                :disabled="arrayData.length >= 6 ||(status == 2 || status == 3)"
+                :disabled="arrayData.length >= 20 ||(status == 2 || status == 3)"
                 @click="iscustom = true"
               >+自定义报名信息</el-button>
             </el-form-item>
           </el-row>
-
           <div v-for="(item, index) in arrayData" :key="item.id" style="margin-left:30px;">
             <el-row>
               <el-col :span="12">
@@ -534,17 +546,27 @@
                     >
                       <i slot="suffix" class="el-icon-arrow-down" />
                     </el-input>
+                    <div v-if="item.type == 2" style="display:inline-block; ">
+                      <div>
+                        <p style="width:306px;margin-top:-10px;">(支持文件类型：PDF、Word、Excel、PPT、txt )</p>
+                        <el-upload
+                          class="avatar-uploader"
+                          action="/"
+                          :show-file-list="false"
+                          disabled
+                        >
+                          <i class="el-icon-plus uploader-pic-icon" />
+                        </el-upload>
+                      </div>
+                    </div>
                     <div class="sign-right">
                       <el-link type="primary" @click="edit(index,item.type)">编辑</el-link>
                       <el-link type="primary" @click="up(index)">上移</el-link>
                       <el-link type="primary" @click="down(index)">下移</el-link>
                       <el-link type="primary" @click="del(index)">删除</el-link>
                     </div>
-                  </div>
-
-                </el-form-item>
+                  </div></el-form-item>
               </el-col>
-
             </el-row>
           </div>
         </el-form>
@@ -562,6 +584,7 @@
             <el-select v-model="infoDate.info" disabled placeholder="请选择">
               <el-option label="输入框" value="0" />
               <el-option label="下拉框" value="1" />
+              <el-option label="文件上传" value="2" />
             </el-select>
           </el-form-item>
           <!-- 输入框 -->
@@ -601,7 +624,7 @@
             </el-form-item>
           </div>
           <!-- 下拉框 -->
-          <div v-else>
+          <div v-if="infoDate.info == 1">
             <el-form-item
               label="标题"
               prop="title"
@@ -629,7 +652,33 @@
             </el-form-item>
             <div class="add-option" @click="onOptions">+添加选项</div>
           </div>
-
+          <!--文件上传-->
+          <div v-if="infoDate.info == 2">
+            <el-form-item
+              label="标题"
+              prop="title"
+              :rules="[{ required: true, message: '不能为空' }]"
+            >
+              <el-input
+                v-model="colData.title"
+                autocomplete="off"
+                placeholder="标题，15字内"
+                :maxlength="15"
+              />
+            </el-form-item>
+            <div style="margin-left: 116px;">
+              <div>(支持文件类型：PDF、Word、Excel、PPT、txt )</div>
+              <div>大小限制30M</div>
+              <el-upload
+                class="avatar-uploader"
+                action="/"
+                :show-file-list="false"
+                disabled
+              >
+                <i class="el-icon-plus uploader-pic-icon" />
+              </el-upload>
+            </div>
+          </div>
           <el-form-item label="是否必填" prop="check">
             <el-radio-group v-model="colData.check">
               <el-radio :label="1">必填</el-radio>
@@ -666,6 +715,7 @@
             <el-select v-model="infoDate.info" placeholder="请选择">
               <el-option label="输入框" value="0" />
               <el-option label="下拉框" value="1" />
+              <el-option label="文件上传" value="2" />
             </el-select>
           </el-form-item>
         </el-form>
@@ -961,5 +1011,33 @@
     margin:0 8px 0px 0;
   }
 }
+.avatar-uploader .el-upload {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>
 
