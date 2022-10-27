@@ -1,7 +1,7 @@
 <template>
   <div class="statistics-wrap">
     <div class="title">广州南沙自贸区</div>
-    <CardBox :card-list="cardList" />
+    <CardBox :card-list="cardList" style="cursor: pointer;" @click.native="goToDetail" />
     <div class="block">
       <span style="color: #bbb;margin-right: 20px;">时间</span>
       <el-radio-group v-model="query.days" size="mini" @change="initDatePicker">
@@ -35,7 +35,7 @@
 <script>
 import 'echarts/lib/chart/line'
 import CardBox from '@/views/zhaoshang/information-publish/components/card-box'
-
+// import { getDataStatistics } from '@/api/zhaoshang/statistics/activity-statistics'
 export default {
   name: 'Statistics',
   components: { CardBox },
@@ -45,7 +45,6 @@ export default {
         { label: '曝光量', value: 20000 },
         { label: '累计阅读次数', value: 20000 },
         { label: '累计阅读人数', value: 20000 },
-        { label: '平均阅读时长', value: 5, unit: 'min' },
       ],
       query: {
         days: 7,
@@ -70,7 +69,8 @@ export default {
             areaStyle: {}
           },
         ]
-      }
+      },
+      // chamberId: ''
     }
   },
   computed: {
@@ -80,12 +80,16 @@ export default {
   },
   mounted() {
     console.log('chamberId', this.chamberId)
+    // getDataStatistics()
+    this.fetchData()
   },
   methods: {
-    fetchData() {
+    async fetchData() {
       // TODO 待完善
+      // const res = await getDataStatistics({ contentId: this.chamberId })
+      // console.log(res)
+      console.log(this.query.type)
     },
-
     initDatePicker() {
       const endDateNs = new Date()
       const startDateNs = new Date()
@@ -99,8 +103,14 @@ export default {
 
     typeDatePicker(val) {
       this.query.type = val
+      console.log(val)
       this.fetchData()
     },
+    goToDetail() {
+      this.$router.push({
+        path: `/zhaoshang/information-publish/${this.chamberId}/statisticsDetail`,
+      })
+    }
   }
 }
 </script>
