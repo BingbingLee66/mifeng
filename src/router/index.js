@@ -447,6 +447,13 @@ export const constantRoutes = [
         meta: { title: '数据统计' }
       },
       {
+        name: '数据详情',
+        path: '/zhaoshang/information-publish/:chamberId/statisticsDetail',
+        component: () => import('@/views/zhaoshang/information-publish/publish-detail/index.vue'),
+        hidden: true,
+        meta: { title: '数据详情' }
+      },
+      {
         name: '我收到的名片',
         path: '/zhaoshang/information-publish/:chamberId/:chamberkey/:type/card-list',
         component: () => import('@/views/zhaoshang/business-card/list/index.vue'),
