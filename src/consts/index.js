@@ -34,15 +34,17 @@ const activeStatusMap = new Map([
 
 // 招商阶段
 const STAGE = {
-  preparatory: 0, // 筹备阶段
-  planning: 1, // 拟策阶段
-  investment: 2, // 招商阶段
+  normal: 1, // 筹备阶段
+  land: 2, // 拟策阶段
+  park: 3, // 招商阶段
+  building: 4, // 招商阶段
 }
 
 const stageMap = new Map([
-  [STAGE.preparatory, '筹备阶段'],
-  [STAGE.planning, '拟策阶段'],
-  [STAGE.investment, '招商阶段'],
+  [STAGE.normal, '默认类型'],
+  [STAGE.land, '土地招商'],
+  [STAGE.park, '园区招商'],
+  [STAGE.building, '楼宇招商']
 ])
 
 // 信息发布状态

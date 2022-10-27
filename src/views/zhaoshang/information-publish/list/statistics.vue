@@ -1,6 +1,6 @@
 <template>
   <div class="statistics-wrap">
-    <div class="title">广州南沙自贸区</div>
+    <div class="title">{{ investmentName }}</div>
     <CardBox :card-list="cardList" style="cursor: pointer;" @click.native="goToDetail" />
     <div class="block">
       <span style="color: #bbb;margin-right: 20px;">时间</span>
@@ -27,7 +27,7 @@
         <el-radio-button :label="3">月</el-radio-button>
       </el-radio-group>
     </div>
-    <v-chart :options="chartOpt" style="width: 100%;" />
+    <v-chart :options="chartOpt" style="width: 105%;" />
 
   </div>
 </template>
@@ -35,7 +35,7 @@
 <script>
 import 'echarts/lib/chart/line'
 import CardBox from '@/views/zhaoshang/information-publish/components/card-box'
-// import { getDataStatistics } from '@/api/zhaoshang/statistics/activity-statistics'
+import { getDataStatistics, getReadTrendChart } from '@/api/zhaoshang/statistics/activity-statistics'
 export default {
   name: 'Statistics',
   components: { CardBox },
@@ -43,8 +43,8 @@ export default {
     return {
       cardList: [
         { label: '曝光量', value: 20000 },
-        { label: '累计阅读次数', value: 20000 },
-        { label: '累计阅读人数', value: 20000 },
+        { label: '当天阅读量', value: 20000 },
+        { label: '累计阅读量', value: 20000 },
       ],
       query: {
         days: 7,
@@ -64,7 +64,7 @@ export default {
         },
         series: [
           {
-            data: [150, 230, 224, 218, 135],
+            data: [],
             type: 'line',
             areaStyle: {}
           },
@@ -76,21 +76,51 @@ export default {
   computed: {
     chamberId() {
       return this.$route.params.chamberId || ''
+    },
+    investmentName() {
+      return this.$route.query.name || ''
     }
   },
   mounted() {
     console.log('chamberId', this.chamberId)
-    // getDataStatistics()
     this.fetchData()
+    this.DataPickStart()
+    this.fetchTrendChart()
   },
   methods: {
     async fetchData() {
       // TODO 待完善
-      // const res = await getDataStatistics({ contentId: this.chamberId })
-      // console.log(res)
-      console.log(this.query.type)
+      const res = await getDataStatistics({ contentId: this.chamberId })
+      if (res.state !== 1) return this.$message.error(res.msg)
+      const arrResult = ['exposureNum', 'theDayReadNum', 'totalReadNum']
+      this.cardList.forEach((item, index, arr) => {
+        arr[index].value = res.data[arrResult[index]]
+      })
+    },
+    async fetchTrendChart() {
+      const params = {
+        contentId: Number(this.chamberId),
+        startTime: this.query.date[0],
+        endTime: this.query.date[1],
+        type: this.query.type
+      }
+      console.log(params, 'chartParams')
+      const res = await getReadTrendChart(params)
+      if (res.state !== 1) return this.$message.error(res.msg)
+      const resultDate = res.data || []
+      this.chartOpt.xAxis.data = []
+      this.chartOpt.series[0].data = []
+      resultDate.forEach(item => {
+        this.chartOpt.xAxis.data.push(item.date)
+        this.chartOpt.series[0].data.push(item.readNum)
+      })
     },
     initDatePicker() {
+      this.DataPickStart()
+      console.log(this.query.date, 'querydate')
+      this.fetchTrendChart()
+    },
+    DataPickStart() {
       const endDateNs = new Date()
       const startDateNs = new Date()
       startDateNs.setTime(startDateNs.getTime() - 3600 * 1000 * 24 * this.query.days)
@@ -98,13 +128,11 @@ export default {
       const defaultStartTime = startDateNs.getFullYear() + '-' + ((startDateNs.getMonth() + 1) >= 10 ? (startDateNs.getMonth() + 1) : '0' + (startDateNs.getMonth() + 1)) + '-' + (startDateNs.getDate() >= 10 ? startDateNs.getDate() : '0' + startDateNs.getDate())
       const defaultEndTime = endDateNs.getFullYear() + '-' + ((endDateNs.getMonth() + 1) >= 10 ? (endDateNs.getMonth() + 1) : '0' + (endDateNs.getMonth() + 1)) + '-' + (endDateNs.getDate() >= 10 ? endDateNs.getDate() : '0' + endDateNs.getDate())
       this.query.date = [defaultStartTime, defaultEndTime]
-      this.fetchData()
     },
-
     typeDatePicker(val) {
       this.query.type = val
       console.log(val)
-      this.fetchData()
+      this.fetchTrendChart()
     },
     goToDetail() {
       this.$router.push({
