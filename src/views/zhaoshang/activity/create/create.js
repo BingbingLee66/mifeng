@@ -14,6 +14,7 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import preview from './component/preview'
 import getAreaList from '@/utils/get-area-list'
+// import { checkFile, uploadFile } from '@/api/content/article'
 export default {
   components: {
     Ckeditor,
@@ -68,7 +69,6 @@ export default {
       infoDate: {
         info: '',
       },
-
       makeTagDialogVisible: false,
       tagFormDialogVisible: false,
       dialogFormVisible: false,
@@ -101,11 +101,13 @@ export default {
         zhiboAddressType: 1, // 直播链接类型 1 云会播小程序 2 H5链接
         invesKey: '', // 关联招商办
         phaseStatus: null, // 招商阶段  0筹备阶段 1拟策阶段 2公开招商阶段
+        investmentType: 1, // 招商类型 1-默认类型 2-土地招商 3-园区招商 4-楼宇招商
         chamberAddress: [], // 招商地区
         sort: 0, // 权重
         labels: [],
         applyMode: 3, // 活动模式
-        attachment: [], // 上传文件 内容附件
+        attachment: [], // 上传文件 招商表格内容附件
+        buiness: [], // 招商附件
         province: '', // 省（招商地区）
         provinceCode: '', // 省code（招商地区
         cityCode: '', // 	市code（招商地区）
@@ -115,7 +117,7 @@ export default {
       },
       roleIds: [], // 多选框 扩展功能
       addressList: [], // 搜索数组
-
+      fileDataTitle: '',
       // 是否限制报名人数
       applyCount: {
         unlimit: true,
@@ -176,7 +178,7 @@ export default {
       },
       areaOptions: [], // 招商地区
       chamberOptions: [], // 招商办来源信息
-      contentHtml: ''
+      contentHtml: '',
     }
   },
   created() {
@@ -308,16 +310,24 @@ export default {
           if (this.editCol) {
             // 编辑
             this.arrayData[this.editIndex] = { ...this.colData }
+          } else if (this.infoDate.info === '2') {
+            // 文件上传啥也不做
+            console.log('sadasd')
+            this.arrayData.push(
+              { ...this.colData }
+            )
           } else {
             // 新增
             this.arrayData.push(
               { ...this.colData }
             )
           }
+          console.log(this.arrayData)
           this.cancel1()
           return
         } else {
           console.log('error submit!!')
+          this.$message.error('请输入对应参数')
           return
         }
       })
@@ -383,6 +393,7 @@ export default {
       getEcActivity({ id: this.activityId }).then(res => {
         const resData = res.data
         this.status = resData.status
+        console.log(resData, 'resData')
         this.formObj.activityName = resData.activityName
         this.formObj.headImage = resData.headImage
         this.formObj.listImage = resData.listImage
@@ -404,9 +415,12 @@ export default {
         this.$set(this.formObj, 'applyDate', applyTime)
         //  扩展功能
         if (resData.extraSignin === 1) this.roleIds.push(1)
-        if (resData.extraSignout === 1) this.roleIds.push(2)
-        if (resData.extraSeat === 1) this.roleIds.push(3)
+        if (resData.extraSignout === 1) this.roleIds.push(3)
+        if (resData.extraSeat === 1) this.roleIds.push(2)
 
+        // 招商类型回显
+        this.formObj.investmentType = resData.investmentType
+        this.formObj.district = resData.area
         // 活动地点回显
         this.provinceValue = resData.province
         this.cityValue = resData.city
@@ -496,8 +510,8 @@ export default {
 
     // 上传文件校验
     beforeUploadFile(file) {
-      if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt'].includes(file.name.split('.')[1])) {
-        this.$message.error('上传文件只能是 word、excel、pdf、ppt 格式!')
+      if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt', 'txt'].includes(file.name.split('.')[1])) {
+        this.$message.error('上传文件只能是 word、excel、pdf、ppt、txt 格式!')
         return false
       }
     },
@@ -688,6 +702,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           // 扩展功能
+          console.log(this.roleIds, 'this.roleIds')
           this.roleIds.forEach(v => {
             if (v === 1) this.formObj.extraSignin = 1
             if (v === 2) this.formObj.extraSignout = 1
@@ -768,7 +783,7 @@ export default {
             this.formObj.longitude = ''
             this.formObj.latitude = ''
           }
-
+          console.log(this.formObj, 'this.formObj')
           getActivitySaveV1(this.formObj).then(res => {
             if (res.state === 1) {
               this.$message.success(res.msg)
@@ -803,7 +818,7 @@ export default {
     },
     onInfoDate() {
       if (this.infoDate.info === '') return this.$message.error('请选择类型')
-      if (+this.infoDate.info === 0 || +this.infoDate.info === 1) this.dialogFormVisible = true
+      if (+this.infoDate.info === 0 || +this.infoDate.info === 1 || +this.infoDate.info === 2) this.dialogFormVisible = true
       this.iscustom = false
     },
     // 选择招商地区

@@ -1,7 +1,7 @@
 <!-- eslint-disable no-unused-vars -->
 <template>
   <div class="page">
-    <el-row :gutter="20">
+    <!--  <el-row :gutter="20">
       <el-col :span="15" style="max-width:530px">
         <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center ">
@@ -101,7 +101,7 @@
             </div>
           </div>
         </el-card>
-      </el-col></el-row>
+      </el-col></el-row> -->
 
     <SingInTable
       :activity="activity"
@@ -112,17 +112,17 @@
 </template>
 
 <script>
-import SaveImgDialog from './components/SaveImgDialog'
+/* import SaveImgDialog from './components/SaveImgDialog'
 import ActivityCode from './components/ActivityCode'
-import SignInCode from './components/SignInCode'
+import SignInCode from './components/SignInCode' */
 import { formatDate } from './util'
 import { getChamberActivityInfoById, uploadSeating, deleteSeating } from '@/api/activity/activity-verify-new'
 
 export default {
   components: {
-    SaveImgDialog,
+    /* SaveImgDialog,
     ActivityCode,
-    SignInCode,
+    SignInCode, */
     SingInTable: () => import('./components/SingInTable'),
   },
   props: {},
