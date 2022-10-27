@@ -154,7 +154,7 @@ export default {
         pageSize: limit,
         selectType: 3,
       }
-      let res = await Labels.getLabelGroupLst(params)
+      const res = await Labels.getLabelGroupLst(params)
       if (res.state !== 1) return
       this.tableData = res.data.list
       /*      this.tableData = this.tableData.forEach((item) => {
@@ -186,11 +186,11 @@ export default {
 
     /** 查看更多标签 */
     handleMoreLabel(rowData) {
-      let moreData = {
+      const moreData = {
         name: rowData.name,
         labeList: [],
       }
-      moreData.labeList = rowData.memberLabelVOList.map((item) => {
+      moreData.labeList = rowData.memberLabelVOList.map(item => {
         return {
           id: item.id,
           name: item.name,
@@ -243,7 +243,7 @@ export default {
           cancelButtonText: '取消',
         }
       )
-        .then(async() => {
+        .then(async () => {
           const res = await Labels.delLabelGroup({
             ids: [rowData.id],
           })
