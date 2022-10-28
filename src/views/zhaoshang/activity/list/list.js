@@ -160,22 +160,27 @@ export default {
       })
     },
     goTo(type, row) {
+      console.log(row)
       let path = ''
       switch (type) {
         case 'card':
-          path = `/zhaoshang/activity/${row.id}/${row.invesKey}/${2}/card-list`
+          path = { path: `/zhaoshang/activity/${row.id}/${row.invesKey}/${2}/card-list` }
           break
         case 'detail':
-          path = `/zhaoshang/activity/${row.id}/detail`
+          path = { path: `/zhaoshang/activity/${row.id}/detail` }
           break
         case 'verify':
-          path = '/zhaoshang/activity/activity-verify'
+          path = { path: '/zhaoshang/activity/verifyDetail',
+            query: {
+              activityId: row.id,
+              status: 0,
+            } }
           break
         case 'create':
-          path = '/zhaoshang/activity/create'
+          path = { path: '/zhaoshang/activity/create' }
           break
       }
-      this.$router.push({ path })
+      this.$router.push({ ...path })
     },
     // 删除活动
     showDel(row) {

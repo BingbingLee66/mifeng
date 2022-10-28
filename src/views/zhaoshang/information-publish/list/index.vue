@@ -261,7 +261,6 @@ export default {
         case 'statistics':
           this.$router.push({
             path: `/zhaoshang/information-publish/${item.id}/statistics`,
-            query: { name: item.investmentInfoVO.name }
           })
           break
         case 'card':

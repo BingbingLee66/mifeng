@@ -71,14 +71,12 @@ export default {
         ]
       },
       // chamberId: ''
+      investmentName: ''
     }
   },
   computed: {
     chamberId() {
       return this.$route.params.chamberId || ''
-    },
-    investmentName() {
-      return this.$route.query.name || ''
     }
   },
   mounted() {
@@ -96,6 +94,9 @@ export default {
       this.cardList.forEach((item, index, arr) => {
         arr[index].value = res.data[arrResult[index]]
       })
+      this.investmentName = res.data.investMentName
+      console.log(res.data.investMentName, ' investMentName')
+      console.log(this.investmentName)
     },
     async fetchTrendChart() {
       const params = {
@@ -104,7 +105,6 @@ export default {
         endTime: this.query.date[1],
         type: this.query.type
       }
-      console.log(params, 'chartParams')
       const res = await getReadTrendChart(params)
       if (res.state !== 1) return this.$message.error(res.msg)
       const resultDate = res.data || []
