@@ -388,6 +388,18 @@
             </el-row>
           </div>
 
+          <el-row>
+            <el-col>
+              <el-form-item label="报名人数：">
+                <el-radio-group v-model="formObj.applyCountShow">
+                  <el-radio :label="1">显示</el-radio>
+                  <el-radio :label="0">不显示</el-radio>
+                </el-radio-group>
+                <div class="tips">开启后，在开始报名时显示目前已报名人数</div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
           <div v-if="ruleCkeys.includes(ckey) || (!ckey)">
             <el-row>
               <el-col>
