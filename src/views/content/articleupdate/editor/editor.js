@@ -234,6 +234,9 @@ export default {
           this.formObj['contentModuleId'] = this.activeName
           // 判断是否为商委会的
           this.formObj['articleType'] = this.committee === true ? 1 : 0
+          // 判断是否输入全为空格
+          const isAllEmpty = this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4).split(' ').every(item => item === '&nbsp;')
+          if (isAllEmpty) return this.$message.error('不能提交全为空格的内容！')
           save(this.formObj).then(response => {
             if (response.state === 1) {
               this.$message({
