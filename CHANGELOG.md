@@ -2,6 +2,15 @@
 
 
 ## [Released]
+## [2.33.0] - 2022-10-31
+### Added
+-  活动优化[1233](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1233)
+
+### Fixed
+-  
+
+
+## [Released]
 ## [2.32.1] - 2022-10-21
 ### Added
 -   
