@@ -123,12 +123,11 @@ export default {
         pageSize: this.pageData.limit,
         page: e === 1 ? e : this.pageData.currentpage,
         platformTag: this.formObj.platformTag.join(','),
+        readOrderByType: this.readOrderByType
       }
       const res = await getReadDataDetail(params)
       this.tableData = res.data.list
-      this.pageData.total = res.data.totalPages
-      console.log(this.tableData)
-      console.log(res)
+      this.pageData.total = res.data.totalRows
     },
     queryData(data) {
       this.formObj = { ...data }
