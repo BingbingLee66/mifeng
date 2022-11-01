@@ -495,7 +495,6 @@
               </el-form-item>
             </el-col>
           </el-row> -->
-
           <!-- <el-row>
             <el-col style="width: 600px;height: 50px">
               <el-form-item label="邮箱：" prop="email">
@@ -668,14 +667,14 @@
             </el-form-item>
             <div style="margin-left: 116px;">
               <div>(支持文件类型：PDF、Word、Excel、PPT、txt )</div>
-              <div>大小限制30M</div>
+              <div style="margin-bottom:5px;">大小限制30M</div>
               <el-upload
                 class="avatar-uploader"
                 action="/"
                 :show-file-list="false"
                 disabled
               >
-                <i class="el-icon-plus uploader-pic-icon" />
+                <i class="el-icon-plus uploader-pic-icon" style="color:#d9d9d9;" />
               </el-upload>
             </div>
           </div>
@@ -1024,7 +1023,8 @@
     overflow: hidden;
   }
   .avatar-uploader .el-upload:hover {
-    border-color: #409EFF;
+    border-color: #d9d9d9;
+    cursor:no-drop;
   }
   .avatar-uploader-icon {
     font-size: 28px;
