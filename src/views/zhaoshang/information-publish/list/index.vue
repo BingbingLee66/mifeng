@@ -76,7 +76,7 @@
           {{ scope.row.publicStartTs | dateFormat }} 至 {{ scope.row.publicEndTs | dateFormat }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="招商阶段" width="150px">
+      <el-table-column align="center" label="招商类型" width="150px">
         <template slot-scope="scope">
           <div v-if="scope.row.investmentType == 1">默认类型</div>
           <div v-if="scope.row.investmentType == 2">土地招商</div>
