@@ -95,6 +95,7 @@ export default {
         extraSeat: 0, // 拓展功能座位 0否 1是
         isPublish: 0, // 是否发布 0否 1是
         authAlbum: 1, // 图片直播关联权限 1可关联 0不可关联
+        applyCountShow: 0, // 是否显示报名人数
         liveEntranceDisplayType: 1, // 直播间入口显示类型 0 报名成功后 1 活动开始后
         liveEntranceCloseTime: '', // 直播间入口关闭时间
         linkType: 1, // 直播链接类型 1 云会播小程序 2 H5链接
@@ -340,6 +341,7 @@ export default {
         this.formObj.addressInfo = resData.addressInfo
         this.formObj.title = resData.addressInfo
         this.formObj.authAlbum = resData.authAlbum
+        this.formObj.applyCountShow = resData.applyCountShow
         this.formObj.liveEntranceDisplayType = resData.liveEntranceDisplayType
         this.formObj.liveEntranceCloseTime = resData.liveEntranceCloseTime
 
