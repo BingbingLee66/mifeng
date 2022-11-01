@@ -25,10 +25,10 @@
         <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center">
             <div class="board-left">
-              <div class="board-title">座位表</div>
+              <div class="board-title" style="margin-bottom:5px">座位表</div>
               <div class="flex-x-center-center">
                 <el-upload
-                  style="width:109px;height:109px"
+
                   action="#"
                   class="image-upload"
                   list-type="picture-card"
@@ -427,7 +427,7 @@ export default {
 }
 
 .activity-card {
-  height: 200px;
+  height: 210px;
 }
 
 .image-upload {
@@ -436,6 +436,11 @@ export default {
     width: 80px;
     height: 80px;
   }
+}
+
+ /deep/ .el-upload .el-upload--picture-card{
+  width: 121px;
+  height: 121px;
 }
 
 .qr-code-desc {
