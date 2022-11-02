@@ -59,7 +59,7 @@
         </el-table-column>
         <el-table-column align="center" label="活动类型" width="120px">
           <template slot-scope="scope">
-            {{ scope.row.activeMode == 1 ? '线上活动' : scope.row.activeMode == 2 ? '线下活动' : '线上线下活动' }}
+            {{ scope.row.applyMode == 1 ? '线上活动' : scope.row.applyMode == 2 ? '线下活动' : '线上线下活动' }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="招商类型" width="100px">
