@@ -1,9 +1,9 @@
 
 // 活动类型枚举
 const ACTIVE_MODE = {
-  online: 0, // 线上活动
-  offline: 1, // 线下活动
-  onlineAndOffline: 2, // 线上线下活动
+  online: '1', // 线上活动
+  offline: '2', // 线下活动
+  onlineAndOffline: '3', // 线上线下活动
 }
 
 // 枚举映射

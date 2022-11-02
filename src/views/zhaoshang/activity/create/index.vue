@@ -160,7 +160,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row v-show="formObj.activeMode !== ACTIVE_MODE.online">
+          <el-row v-show="formObj.applyMode != ACTIVE_MODE.online">
             <el-col>
               <el-form-item
                 class="address-wrap"
@@ -263,7 +263,7 @@
           </el-row>
 
           <!-- 扩展功能 -->
-          <el-row v-if="formObj.activeMode !== ACTIVE_MODE.online">
+          <el-row v-if="formObj.applyMode != ACTIVE_MODE.online">
             <el-col style="width: 700px; height: 40px;margin-top: -38px;">
               <el-form-item label="扩展功能：">
                 <el-checkbox-group v-model="roleIds">
@@ -275,7 +275,7 @@
             </el-col>
           </el-row>
 
-          <el-row v-if="formObj.activeMode !== ACTIVE_MODE.online">
+          <el-row v-if="formObj.applyMode != ACTIVE_MODE.online">
             <el-col style="width: 900px">
               <el-form-item label="参加人数：" required>
                 <el-checkbox
@@ -377,7 +377,7 @@
             </el-col>
           </el-row>
 
-          <div v-if="ruleCkeys.includes(ckey) || (!ckey) || formObj.activeMode !== ACTIVE_MODE.offline">
+          <div v-if="ruleCkeys.includes(ckey) || (!ckey) || formObj.applyMode != ACTIVE_MODE.offline">
             <el-row>
               <el-col>
                 <el-form-item label="直播链接类型：">
