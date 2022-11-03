@@ -1,7 +1,7 @@
 <!-- eslint-disable no-unused-vars -->
 <template>
   <div class="page">
-    <!--  <el-row :gutter="20">
+    <el-row :gutter="20">
       <el-col :span="15" style="max-width:530px">
         <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center ">
@@ -101,7 +101,7 @@
             </div>
           </div>
         </el-card>
-      </el-col></el-row> -->
+      </el-col></el-row>
 
     <SingInTable
       :activity="activity"
