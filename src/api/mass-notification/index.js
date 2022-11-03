@@ -184,3 +184,10 @@ export const exportSendItem = gsId => request({ url: `/group-send-detail/export/
 // 编辑群发通知
 
 export const updateSendGetDetail = data => request({ url: '/ec/group-send/edit', method: 'put', data })
+
+// 用户接口查询
+export const GetuserAll = data => request({ url: '/ec/member/user-all', method: 'post', data })
+// 秘书处后台用户根据ckey查询admin_user ID和总数接口
+export const secretaryAdmin = data => request({ url: '/ec/member/secretary-admin', method: 'post', data })
+// 秘书处前台用户根据条件查询手机号和总数接口
+export const secretaryuser = data => request({ url: '/ec/member/secretary-user', method: 'post', data })

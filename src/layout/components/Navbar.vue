@@ -1,13 +1,13 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar"/>
+    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
-    <breadcrumb class="breadcrumb-container"/>
+    <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
           <img class="user-avatar" :src="systemLogo ? systemLogo : imgUrl">
-          <i class="el-icon-caret-bottom"/>
+          <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
           <!-- <router-link to="/account/profile">
@@ -23,9 +23,17 @@
       </el-dropdown>
     </div>
     <div class="login-name">
-      <img src="../../../public/img/chamber-icon.png" alt=""/>
+      <span class="inform">
+        <el-badge :value="200" :max="99">
+          <i class="el-icon-message-solid " @click="goMail" />
+        </el-badge>
+        <div class="inform-news">
+          <News :show="true" />
+        </div>
+      </span>
+      <img src="../../../public/img/chamber-icon.png" alt="">
       <span style="margin-right: 30px">{{ chamberName ? chamberName : '凯迪云商会总后台管理系统' }}</span>
-      <img src="../../../public/img/manager-icon.png" alt=""/> {{ name }}
+      <img src="../../../public/img/manager-icon.png" alt=""> {{ name }}
     </div>
   </div>
 </template>
@@ -35,21 +43,25 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import imgUrl from '@/assets/img/avatar.gif'
-
+import News from './News/index.vue'
 export default {
+  components: {
+    Breadcrumb,
+    Hamburger,
+    News
+  },
   data() {
     return {
       user: {},
-      imgUrl: imgUrl
+      imgUrl
       // systemLogo: !this.$store.getters.systemLogo ? imgUrl : this.$store.getters.systemLogo
     }
   },
-  components: {
-    Breadcrumb,
-    Hamburger
-  },
   computed: {
     ...mapGetters(['sidebar', 'avatar', 'name', 'systemLogo', 'chamberName', 'roles'])
+  },
+  mounted() {
+
   },
 
   methods: {
@@ -60,7 +72,11 @@ export default {
       await this.$store.dispatch('user/logout')
       // 退出时清除所有tab
       this.$store.dispatch('tagsView/delAllViews')
-      this.$router.push(`/login`)
+      this.$router.push('/login')
+    },
+    // 跳转站内信
+    goMail() {
+      this.$router.push('/sms/mail')
     }
   }
 }
@@ -73,11 +89,27 @@ export default {
   font-size: 16px;
   font-family: PingFangSC-Regular;
   color: #333333;
-
   img {
     width: 20px;
     height: 20px;
     vertical-align: middle;
+  }
+  .inform{
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    color: #1890ff;
+    margin-right: 40px;
+    position: relative;
+    /deep/ .el-badge__content.is-fixed{
+      top: 10px;
+    }
+    .inform-news{
+      position: absolute;
+      // bottom: -43px;
+      right: -128px;
+    }
   }
 }
 

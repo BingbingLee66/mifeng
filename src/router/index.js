@@ -487,6 +487,20 @@ export const constantRoutes = [
         component: () => import('@/views/mass-notification/templateSet/add-note/index.vue'),
         hidden: true,
         meta: { title: '新增模板' }
+      },
+      {
+        name: '站内信',
+        path: '/sms/mail',
+        component: () => import('@/views/sms/mail/index.vue'),
+        hidden: true,
+        meta: { title: '站内信' }
+      },
+      {
+        name: '站内信详情',
+        path: '/sms/mail-details',
+        component: () => import('@/views/sms/mail-details/index.vue'),
+        hidden: true,
+        meta: { title: '站内信详情' }
       }
     ]
   }

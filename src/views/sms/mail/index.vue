@@ -2,20 +2,23 @@
   <div class="app-container">
     <div class="mail-content">
       <!-- <div v-if="!list.length" class="mail-not">暂无数据~</div> -->
-      <div class="mail-box">
-        <!-- 未读标记 -->
-        <div class="mail-dot" />
-        <div class="box-left">
-          <img src="https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg" alt="">
-        </div>
-        <div class="box-right">
-          <div class="mail-top">
-            <div class="mail-title">您收到一条平台消息</div>
-            <div>{{ timeFormat(sendTs,'','2') }}</div>
+      <div>
+        <div class="mail-box" @click="goDetails">
+          <!-- 未读标记 -->
+          <div class="mail-dot" />
+          <div class="box-left">
+            <img src="https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg" alt="">
           </div>
-          <div class="mail-mat">广东省江西商会组织线上招商会议已准备启动 广东省江西商会组织线上</div>
+          <div class="box-right">
+            <div class="mail-top">
+              <div class="mail-title">您收到一条平台消息</div>
+              <div>{{ timeFormat(sendTs) }}</div>
+            </div>
+            <div class="mail-mat">广东省江西商会组织线上招商会议已准备启动 广东省江西商会组织线上</div>
+          </div>
         </div>
       </div>
+
     </div>
 
     <el-pagination
@@ -67,6 +70,15 @@ export default {
       this.currentpage = val
       this.fetchData()
     },
+    // 跳转站内信
+    goDetails() {
+      this.$router.push({
+        name: '站内信详情',
+        params: {
+          id: 1,
+        }
+      })
+    }
   },
 
 }
@@ -75,7 +87,7 @@ export default {
 <style lang="scss" scoped>
 .app-container{
   .mail-content{
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     .mail-not{
       margin: 100px auto;
       width: 200px;
@@ -88,6 +100,7 @@ export default {
       width: 900px;
       position: relative;
       overflow: hidden;
+      margin-bottom: 20px;
       .mail-dot{
         position: absolute;
         right: 7px;
