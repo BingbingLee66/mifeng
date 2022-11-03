@@ -2,7 +2,18 @@
   <div class="qrcode-wrap ">
     <div v-if="!ckey" class="flex-x-start-center">
       <span style="line-height: 40px">请选择商协会</span>
-      <el-select v-model="chamber" placeholder="请选择" clearable filterable style="width: 300px; margin: 0 10px;">
+      <el-select
+        v-model="chamber"
+        v-lazy-load="lazyOption"
+        placeholder="请选择"
+        filterable
+        remote
+        clearable
+        :remote-method="remoteMethod"
+        style="width: 300px; margin: 0 10px;"
+        @clear="remoteMethod"
+        @blur="onBlur"
+      >
         <el-option v-for="item in chamberOptions" :key="item.ckey" :label="item.name" :value="item.ckey" />
       </el-select>
       <el-button @click="getQRCode">生成二维码</el-button>
@@ -60,16 +71,32 @@
 
 <script>
 import { getList, getChamberQrcode } from '@/api/chamber/manager'
+import lazyLoad from '@/directive/lazy-load'
 import html2canvas from 'html2canvas'
 
 export default {
   name: 'ChamberHomepage',
+
+  directives: { lazyLoad },
 
   data() {
     return {
       chamber: '',
 
       chamberOptions: [],
+      lazyOption: {
+        loadData: this.getChamberList,
+        distance: 20,
+        scrollBody: '.el-scrollbar__wrap', // 为el-select 滚动容器的DOM元素的class选择器
+        callback: fn => {
+          // 这里是在组件销毁前, 移除监听事件.
+          this.$once('hook:beforeDestroy', () => fn())
+        },
+      },
+      query: '',
+      totalPages: 0,
+      page: 1,
+
       chamberInfo: {},
       isLoading: false
     }
@@ -91,15 +118,38 @@ export default {
   },
 
   methods: {
+    onBlur() {
+      if (!this.chamber) {
+        this.query = ''
+        this.remoteMethod()
+      }
+    },
+
+    remoteMethod(query) {
+      this.page = 1
+      this.query = query
+      this.getChamberList()
+    },
+
     async getChamberList() {
+      if (this.page > 1 && this.page > this.totalPages) return
+
       const { data, state } = await getList({
-        page: 1,
-        pageSize: 999,
+        page: this.page,
+        pageSize: 20,
         status: 1,
+        name: this.query
       })
 
       if (!state) return
-      this.chamberOptions = data.data.list.filter(v => v.level > 0)
+
+      this.totalPages = data.data.totalPages
+      if (this.page === 1) {
+        this.chamberOptions = data.data.list
+      } else {
+        this.chamberOptions = this.chamberOptions.concat(data.data.list)
+      }
+      this.page++
     },
 
     async getQRCode() {
