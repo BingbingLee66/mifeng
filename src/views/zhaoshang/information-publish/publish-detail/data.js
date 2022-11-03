@@ -87,7 +87,9 @@ const tableColumn = [
   },
   {
     label: '最后阅读时间',
-    prop: 'lastTime'
+    prop: 'lastTime',
+    type: 'time',
+    width: '155px'
   },
   {
     label: '是否交换名片',

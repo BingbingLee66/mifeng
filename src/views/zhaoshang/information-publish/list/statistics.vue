@@ -44,9 +44,9 @@ export default {
   data() {
     return {
       cardList: [
-        { label: '曝光量', value: 20000 },
-        { label: '当天阅读量', value: 20000 },
-        { label: '累计阅读量', value: 20000 },
+        { label: '曝光量', value: 0 },
+        { label: '当天阅读量', value: 0 },
+        { label: '累计阅读量', value: 0 },
       ],
       query: {
         days: 7,
@@ -68,11 +68,22 @@ export default {
           {
             data: [],
             type: 'line',
-            areaStyle: {}
+            areaStyle: {},
+            label: {
+              show: false,
+              position: 'top',
+              textStyle: {
+                fontSize: 20
+              }
+            },
+            emphasis: {
+              label: {
+                show: true
+              }
+            }
           },
         ]
       },
-      // chamberId: ''
       investmentName: ''
     }
   },
