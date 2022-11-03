@@ -112,17 +112,17 @@
 </template>
 
 <script>
-/* import SaveImgDialog from './components/SaveImgDialog'
+import SaveImgDialog from './components/SaveImgDialog'
 import ActivityCode from './components/ActivityCode'
-import SignInCode from './components/SignInCode' */
+import SignInCode from './components/SignInCode'
 import { formatDate } from './util'
 import { getChamberActivityInfoById, uploadSeating, deleteSeating } from '@/api/activity/activity-verify-new'
 
 export default {
   components: {
-    /* SaveImgDialog,
+    SaveImgDialog,
     ActivityCode,
-    SignInCode, */
+    SignInCode,
     SingInTable: () => import('./components/SingInTable'),
   },
   props: {},
