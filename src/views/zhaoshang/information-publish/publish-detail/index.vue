@@ -40,7 +40,7 @@
       </template>
       <template v-slot:cardExChangeStatus="row">
         <div>
-          <el-link type="primary" :underline="false">{{ row.data.cardExChangeStatus }}</el-link>
+          <el-link type="primary" :underline="false">{{ row.data.cardExChangeStatus == 1 ? "是" : "否" }}</el-link>
         </div>
       </template>
     </ys-table>
