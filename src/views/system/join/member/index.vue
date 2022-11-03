@@ -21,8 +21,8 @@
 
         <div class="mt-20 flex-x-between">
           <el-button type="primary" @click="refreshQrCode">刷新二维码</el-button>
-          <el-button type="primary" :loading="isLoading" @click="clickGeneratePicture('postdiv')">下载海报</el-button>
-          <el-button type="primary" @click="downloadQrCode">下载二维码</el-button>
+          <el-button type="primary" :loading="posterLoading" @click="clickGeneratePicture('postdiv')">下载海报</el-button>
+          <el-button type="primary" :loading="qrcodeLoading" @click="downloadQrCode">下载二维码</el-button>
         </div>
       </div>
 
@@ -61,7 +61,8 @@ export default {
     return {
       chamberOptions: [],
       chamberInfo: {},
-      isLoading: false
+      posterLoading: false,
+      qrcodeLoading: false
     }
   },
 
@@ -100,15 +101,15 @@ export default {
     },
 
     downloadQrCode() {
-      this.clickGeneratePicture('qrcode-div')
+      this.clickGeneratePicture('qrcode-div', 'qrcodeLoading')
     },
 
     refreshQrCode() {
       this.$router.go(0)
     },
 
-    async clickGeneratePicture(domName) {
-      this.isLoading = true
+    async clickGeneratePicture(domName, loadingKey = 'posterLoading') {
+      this[loadingKey] = true
       try {
         await this.$nextTick()
         const canvas = document.createElement('canvas')
@@ -139,7 +140,7 @@ export default {
       } catch (error) {
         // console.log(error)
       }
-      this.isLoading = false
+      this[loadingKey] = false
     }
   }
 }
@@ -168,7 +169,7 @@ export default {
     .logo-download {
       position: absolute;
       left: 50%;
-      top: 62px;
+      top: 63px;
       transform: translateX(-50%);
       width: 104px;
       height: 104px;
