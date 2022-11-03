@@ -19,7 +19,7 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         size="mini"
-        @change="fetchData"
+        @change="fetchTrendChart"
       />
       <el-radio-group v-model="query.type" size="mini" @change="typeDatePicker">
         <el-radio-button :label="1">日</el-radio-button>
@@ -27,7 +27,9 @@
         <el-radio-button :label="3">月</el-radio-button>
       </el-radio-group>
     </div>
-    <v-chart :options="chartOpt" style="width: 105%;" />
+    <div style="display:flex;">
+      <v-chart :options="chartOpt" style="width: 100%;" />
+    </div>
 
   </div>
 </template>
