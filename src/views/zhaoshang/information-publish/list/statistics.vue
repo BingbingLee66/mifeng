@@ -54,11 +54,22 @@ export default {
         type: 1
       },
       chartOpt: {
+        dataZoom: [
+          // 滑动条
+          {
+            show: true, // 是否显示滑动条
+            type: 'slider', // 这个 dataZoom 组件是 slider 型 dataZoom 组件
+            startValue: 0, // 从头开始。
+            endValue: 5, // 一次性展示6个。
+          },
+        ],
+        enableScroll: true,
         xAxis: {
           type: 'category',
           data: ['1月', '2月', '3月', '4月'],
           boundaryGap: false,
-          name: '时间'
+          name: '时间',
+
         },
         yAxis: {
           type: 'value',
@@ -68,7 +79,11 @@ export default {
           {
             data: [],
             type: 'line',
-            areaStyle: {},
+            areaStyle: {
+              color: '#bdd2fd'
+            },
+            color: '#6395f9',
+            smooth: true,
             label: {
               show: false,
               position: 'top',
@@ -82,7 +97,7 @@ export default {
               }
             }
           },
-        ]
+        ],
       },
       investmentName: ''
     }
