@@ -377,7 +377,7 @@
             </el-col>
           </el-row>
 
-          <div v-if="ruleCkeys.includes(ckey) || (!ckey) || formObj.applyMode != ACTIVE_MODE.offline">
+          <div v-if="ruleCkeys.includes(ckey) || (ckey) || formObj.applyMode != ACTIVE_MODE.online">
             <el-row>
               <el-col>
                 <el-form-item label="直播链接类型：">
