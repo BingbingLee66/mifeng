@@ -10,7 +10,6 @@ const formItem = [
     label: '用户属性',
     prop: 'memberStatus',
     type: 'select',
-    clearable: true,
     options: [
       { label: '全部', value: '-1' },
       { label: '商会会员', value: '1' },
