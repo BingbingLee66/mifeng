@@ -22,7 +22,6 @@ const formItem = [
     type: 'select',
     clearable: true,
     options: [],
-    multiple: true,
     filterable: true,
     collapseTags: true,
     placeholder: '请选择'
