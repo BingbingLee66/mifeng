@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="news-container">
+  <div v-if="isShow" class="news-container">
     <div class="arrow" />
     <div class="news-top">
       <div>您收到一条平台消息</div>
@@ -28,16 +28,23 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      isShow: this.show
+    }
   },
 
   methods: {
     hide() {
-      this.show = false
+      this.isShow = false
     },
     // 点击查看跳转
     examine() {
-      this.$router.push('/sms/mail-details')
+      this.$router.push({
+        name: '站内信详情',
+        params: {
+          id: 1,
+        }
+      })
       this.hide()
     }
   }

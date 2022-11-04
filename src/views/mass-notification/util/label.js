@@ -171,6 +171,7 @@ export const sendDetailChannelType = [
   { name: '3', label: 'app通知' },
   { name: '2', label: '订阅消息' },
   { name: '1', label: '短信' },
+  { name: '5', label: '站内信' },
 ]
 export const sendStatusList = [
   { name: '1', label: '发送成功', field: 'succNum', num: '0' },

@@ -231,6 +231,7 @@ export default {
         // 打开详情弹框
         // this.sendStatus = cloneDeep(sendStatusList)
         // console.log('sendStatusList', sendStatusList)
+
         await this.sendGetDetailFunc(row.id)
         // 初始化活跃tab
         this.activeDialogChannelTab = this.sendDetailChannelType[0].name
@@ -249,7 +250,7 @@ export default {
         //   unreadNum
         // this.sendDetailFunc(row.id)
 
-        this.detailConfigUtil()
+        this.detailConfigUtil(row.receiveTypeId)
         // 设置初始活跃name值
       } else if (type === 2) {
         // 编辑
@@ -578,29 +579,53 @@ export default {
       }
       this.columnConfig = columnConfig
     },
-    detailConfigUtil() {
-      this.dialog.columnConfig = [
-        { prop: 'id', label: 'ID', width: 180 },
-        {
-          prop: 'uname',
-          label: '姓名',
-        },
-        {
-          prop: 'phone',
-          label: '手机号',
-        },
-        {
-          prop: 'chamberNames',
-          label: '所属商协会',
-        },
-        {
-          prop: 'status',
-          label: '状态',
-          formatter: row => {
-            return row.readStatus === 1 ? '已读' : '未读'
-          }
-        },
-      ]
+    detailConfigUtil(receiveTypeId) {
+      if (receiveTypeId === 7) {
+        this.dialog.columnConfig = [
+          {
+            prop: 'uname',
+            label: '用户名',
+          },
+          {
+            prop: 'chamberNames',
+            label: '商协会名称',
+          },
+          {
+            prop: 'chamberNames',
+            label: '角色名称',
+          },
+          {
+            prop: 'status',
+            label: '状态',
+            formatter: row => {
+              return row.readStatus === 1 ? '已读' : '未读'
+            }
+          },
+        ]
+      } else {
+        this.dialog.columnConfig = [
+          { prop: 'id', label: 'ID', width: 180 },
+          {
+            prop: 'uname',
+            label: '姓名',
+          },
+          {
+            prop: 'phone',
+            label: '手机号',
+          },
+          {
+            prop: 'chamberNames',
+            label: '所属商协会',
+          },
+          {
+            prop: 'status',
+            label: '状态',
+            formatter: row => {
+              return row.readStatus === 1 ? '已读' : '未读'
+            }
+          },
+        ]
+      }
     },
     // 根据id查找对应的文本
     getTypeById(type, id) {
@@ -620,6 +645,7 @@ export default {
     // 根据弹框内部tab切换处理不同的数据
     handleTabChannelUtil(val) {
       const { groupSendStatMap, activeDialogChannelTab } = this
+
       // 只有短信才有已读未读 成功失败，其他只有已读和未读
       if (val === '1') {
         this.sendStatus = cloneDeep(sendStatusList)
@@ -628,6 +654,7 @@ export default {
       }
       if (Object.keys(groupSendStatMap).length < 1) { return }
       const currentTab = groupSendStatMap[activeDialogChannelTab]
+
       this.sendStatus.forEach(item => {
         item.num = currentTab[item.field]
         item.label = item.label + '(' + currentTab[item.field] + ')'

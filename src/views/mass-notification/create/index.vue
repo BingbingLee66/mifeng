@@ -7,7 +7,7 @@
         </el-radio-group>
       </el-form-item>
       <!-- 接收人 -->
-      <ReceiveForm :id="id" ref="receiveForm" :ckey="ckey" :activity-type="form.type" :receive="form.receive" :receive-list="receiveList" @receiveChange="receiveChange" />
+      <ReceiveForm :id="id" ref="receiveForm" :origin-opt="originOpt" :ckey="ckey" :activity-type="form.type" :receive="form.receive" :receive-list="receiveList" @receiveChange="receiveChange" />
       <!-- 关联活动详情  为活动通知或招商活动的时候显示-->
       <div v-if="form.type === 2 || form.type === 3" class="label-item">
         <div class="title-hd">关联活动详情 <span>（必填，配置会内通知"立即进入活动详情"跳转页）</span></div>
@@ -22,6 +22,13 @@
         >
           {{ tag.activityName }}
         </el-tag>
+        <el-image
+          v-if="qrCode.length && form.receive === 7"
+          style="width: 100px; height: 100px"
+          :src="qrCode[0]"
+          :preview-src-list="qrCode"
+          @click.stop="handleClickitem"
+        />
         <el-button size="small " type="primary " @click="selectActivity">选择活动</el-button>
       </div>
       <!-- 通知详情  为自定义通知的时候显示-->
@@ -83,7 +90,14 @@
 
       <!-- 同步渠道 -->
       <div class="title-hd">同步渠道 <span> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
-      <el-form-item label="">
+
+      <el-form v-if="form.receive == '7'" label-position="right" label-width="70px">
+        <el-form-item label="站内信" :required="true">
+          <WangEditor :content="contentHtml" @addParentHtml="getHtml" />
+        </el-form-item>
+      </el-form>
+
+      <el-form-item v-else label="">
         <!-- 为了解决el-checkbox 绑定对象不回显的问题，改为绑Number类型id，发请求时在组装对象 -->
         <el-checkbox-group v-model="form.synchChannels">
           <div class="synch-channels">
@@ -136,7 +150,6 @@
     </kdDialog>
     <!-- 选择活动dialog -->
     <activityDialog
-
       ref="activityDialogRef"
       :activity-list="activityList"
       :activity-type="form.type"
@@ -164,13 +177,14 @@
 <script>
 import { labelType, receiveType, ruleString } from '../util/label'
 import { uploadFile } from '@/api/content/article'
-import { selectTemplateList, updateSendGetDetail, sendDetail, getNoticeTemplateSetDetailById, selectTemplateListAdmin, sendMsg } from '@/api/mass-notification/index'
+import { selectTemplateList, updateSendGetDetail, sendDetail, getNoticeTemplateSetDetailById, selectTemplateListAdmin, sendMsg, distributionChambers } from '@/api/mass-notification/index'
 import ReceiveForm from './components/receiveForm.vue'
 import kdDialog from '@/components/common/kdDialog'
 import activityDialog from './components/activityDialog.vue'
+import WangEditor from '@/components/wangEditor/index'
 export default {
   name: 'Create',
-  components: { ReceiveForm, kdDialog, activityDialog,
+  components: { ReceiveForm, kdDialog, activityDialog, WangEditor,
     detailsApp: () => import('../templateLibrary/components/details-app'),
     detailsNote: () => import('../templateLibrary/components/details-note'),
     detailsSubscribe: () => import('../templateLibrary/components/details-subscribe'), },
@@ -198,7 +212,10 @@ export default {
         // 自定义通知相关
         title: '', // 消息标题
         content: '', // 消息内容
-        imgs: [] // 图片
+        imgs: [], // 图片
+
+        // 秘书处后台
+        introduce: '', // 站内信
       },
       synchChannels: [
         { label: '短信', templateList: [], id: 1 },
@@ -232,8 +249,11 @@ export default {
       // show 订阅消息
       showSubscribe: false,
       infoData: null,
-      ruleString
+      ruleString,
 
+      originOpt: [], // 商协会
+      contentHtml: '', // 编辑器
+      qrCode: [], // 活动二维码
     }
   },
   computed: {
@@ -252,6 +272,10 @@ export default {
       this.form.synchChannels = []
       // 重新请求同步渠道数据
       this.getTemplateUtil()
+    },
+    'activityList'(val) {
+      this.qrCode = []
+      if (val.length) { this.qrCode.push(val[0].qrCode) }
     }
   },
   created() {
@@ -261,8 +285,14 @@ export default {
     this.id = this.$route.query.id || null
     if (this.id) {
       this.sendDetail()
+    } else {
+      this.contentHtml = ''
     }
     this.getTemplateUtil()
+    this.getChamberOptions()
+  },
+  mounted() {
+
   },
   methods: {
     /** 请求 */
@@ -343,6 +373,15 @@ export default {
         ref.setSelectMemberList(extend.receiverList)
       } else if (receive === 6) {
         ref.setFormData('phones', extend.receiverList)
+      } else if (receive === 7) {
+        ref.setSelectMemberList(extend.receiverList, extend.selectMemberList)
+        this.qrCode = extend.imgs
+        this.$nextTick(() => {
+          this.form.introduce = extend.content
+          this.contentHtml = extend.content
+        })
+      } else if (receive === 8) {
+        ref.setSelectMemberList(extend.receiverList, extend.selectMemberList)
       }
       // 当通知类型为2时，{'associationId': 活动id},当通知类型为3时，{'associationId': 招商活动id}
       if (type === 2 || type === 3) {
@@ -445,7 +484,6 @@ export default {
               extend: self.extendFunc(),
               ckey, noticeTypeId, receiveTypeId, sendTs, sendType
             }
-            console.log('params', params)
             this.send(params)
           }).catch(() => {
 
@@ -464,14 +502,31 @@ export default {
     // 表单提交校验
     verify() {
       const {
-        form: { type, agreeRule, sendType, sendTs },
+        form: { type, agreeRule, sendType, sendTs, receive, introduce },
         activityList
       } = this
+      const refData = this.$refs['receiveForm'].$data
       // 当sendType为2时，需要填写sendTs
       if (parseInt(sendType) === 2 && sendTs.length === 0) {
         this.$message.error('请选择发送时间')
         return false
       }
+
+      if (receive === 7) {
+        if (introduce === '') {
+          this.$message.error('请输入站内信')
+          return false
+        }
+        if (!refData.secretaryList.length) {
+          this.$message.error('当前选择的秘书处人数为0')
+          return false
+        }
+      }
+      if (receive === 8 && !refData.secretaryList.length) {
+        this.$message.error('当前选择的秘书处人数为0')
+        return false
+      }
+
       // 渠道必填  现在为选填了
       // if (!synchChannels.length > 0) {
       //   this.$message.error('请选择同步渠道')
@@ -537,6 +592,19 @@ export default {
           // 手机号集合
           obj['receiverList'] = refData.form.phones.split('\n').map(v => { return { id: v } })
           break
+        case 7:
+          // 秘书处后台
+          obj['receiverList'] = refData.secretaryList
+          obj['selectMemberList'] = refData.selectMemberList
+          obj['imgs'] = this.qrCode
+          obj['title'] = ''
+          obj['content'] = this.form.introduce
+          break
+        case 8:
+          // 秘书处前台
+          obj['receiverList'] = refData.secretaryList
+          obj['selectMemberList'] = refData.selectMemberList
+          break
         default:
       }
       // 当通知类型为2时，{'associationId': 活动id},当通知类型为3时，{'associationId': 招商活动id}
@@ -551,7 +619,7 @@ export default {
         const foo = { title, content, imgs }
         obj = Object.assign(obj, foo)
       }
-      // console.log('obj', obj)
+      console.log('obj', obj)
       return obj
     },
     restTypeData() {
@@ -609,8 +677,31 @@ export default {
         }
       } catch (error) {}
     },
+    // 商协会
+    handleRemove() {},
+    async getChamberOptions() {
+      const res = await distributionChambers()
+      this.originOpt = res.data
+      this.originOpt.unshift(
+        { name: '全部', id: -1 },
+      )
+    },
 
-    handleRemove() {}
+    // 站内信
+    getHtml(htmlStr) {
+      this.form.introduce = htmlStr
+    },
+
+    // 关闭二维码蒙层
+    handleClickitem() {
+      this.$nextTick(() => {
+        const domlmageMask = document.querySelector('.el-image-viewer__mask')
+        if (!domlmageMask) return
+        domlmageMask.addEventListener('click', () => {
+          document.querySelector('.el-image-viewer__close').click()
+        })
+      })
+    }
   }
 }
 </script>
@@ -741,4 +832,5 @@ export default {
   font-size: 14px;
   margin-left: 8px;
 }
+
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div style="margin-bottom: 20px">
 
-    <el-dialog title="选择活动" :visible.sync="dialogVisible" width="75%" :before-close="handleClose">
+    <el-dialog title="选择活动" :visible.sync="dialogVisible" width="75%" :before-close="submit">
       <el-form :inline="true" :model="form">
         <el-form-item v-if="(!ckey && activityType===2) || activityType===3" label="活动来源" prop="chamberName">
           <el-select v-model="origin" clearable filterable class="select" placeholder="请选择">
@@ -37,7 +37,7 @@
         @change="onPageChange"
       />
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="submit">取 消</el-button>
         <el-button type="primary" @click="submit">确 定</el-button>
       </span>
     </el-dialog>
@@ -191,7 +191,7 @@ export default {
     submit() {
       const selectData = this.$refs['table'].getSelect()
       if (selectData.length > 1) {
-        this.$message.error('只能选一个')
+        this.$message.error('只能选一个活动')
       } else {
         this.dialogVisible = false
         this.$emit('addActivity', selectData)

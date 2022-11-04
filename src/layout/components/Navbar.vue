@@ -23,6 +23,7 @@
       </el-dropdown>
     </div>
     <div class="login-name">
+      <!-- 商会后台显示铃铛 -->
       <span class="inform">
         <el-badge :value="200" :max="99">
           <i class="el-icon-message-solid " @click="goMail" />
@@ -31,6 +32,7 @@
           <News :show="true" />
         </div>
       </span>
+
       <img src="../../../public/img/chamber-icon.png" alt="">
       <span style="margin-right: 30px">{{ chamberName ? chamberName : '凯迪云商会总后台管理系统' }}</span>
       <img src="../../../public/img/manager-icon.png" alt=""> {{ name }}
@@ -53,7 +55,8 @@ export default {
   data() {
     return {
       user: {},
-      imgUrl
+      imgUrl,
+      isShow: false, // 商会后台才显示
       // systemLogo: !this.$store.getters.systemLogo ? imgUrl : this.$store.getters.systemLogo
     }
   },
@@ -61,7 +64,7 @@ export default {
     ...mapGetters(['sidebar', 'avatar', 'name', 'systemLogo', 'chamberName', 'roles'])
   },
   mounted() {
-
+    if (this.$store.getters.ckey) this.isShow = true
   },
 
   methods: {
