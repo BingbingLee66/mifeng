@@ -2,7 +2,7 @@ const formData = {
   // 标签组名称
   memberStatus: '-1',
   // 标签名称
-  platformTag: []
+  platformTag: ''
 }
 
 const formItem = [

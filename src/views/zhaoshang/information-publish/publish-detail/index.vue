@@ -122,7 +122,7 @@ export default {
         memberStatus: this.formObj.memberStatus,
         pageSize: this.pageData.limit,
         page: e === 1 ? e : this.pageData.currentpage,
-        platformTag: this.formObj.platformTag.join(','),
+        platformTag: this.formObj.platformTag,
         readOrderByType: this.readOrderByType
       }
       const res = await getReadDataDetail(params)
