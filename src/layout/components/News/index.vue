@@ -7,9 +7,9 @@
     </div>
     <div class="news-bottom">
       <div class="news-characters">
-        广东省江西商会组织线上招商会议已准备启动 广东省江西商会组织线上招商会广东省江西商会组织线上招商会招
+        {{ info.title }}
       </div>
-      <div class="news-btn" @click="examine"><el-button size="mini" type="primary">查看</el-button></div>
+      <div class="news-btn" @click.stop="examine"><el-button size="mini" type="primary">查看</el-button></div>
     </div>
   </div>
 </template>
@@ -18,9 +18,10 @@
 
 export default {
   props: {
-    content: {
-      type: String,
-      default: ''
+    // eslint-disable-next-line vue/require-default-prop
+    info: {
+      type: Object,
+      value: () => {},
     },
     show: {
       type: Boolean,
@@ -42,7 +43,7 @@ export default {
       this.$router.push({
         name: '站内信详情',
         params: {
-          id: 1,
+          id: this.info.id,
         }
       })
       this.hide()

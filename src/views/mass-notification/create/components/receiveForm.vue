@@ -406,7 +406,8 @@ export default {
           this.showTree = true
         } else if (this.form.receive === 7 || this.form.receive === 8) {
           this.selectMemberList = selectMemberList
-          this.secretaryList = val
+          this.secretaryList = val.map(v => { return v.id })
+          this.selectData = selectMemberList
         }
       }, 500)
       // console.log('val', val)
@@ -597,6 +598,7 @@ export default {
     },
     // 已选表格
     tableSelect(val) {
+      console.log('selectData', val)
       // console.log('手动获取已选表格', this.$refs['receiveRef'].$refs['tableRef'].$refs['multipleTable'].selection)
       this.selectData = val
     },

@@ -164,6 +164,10 @@ export const channelTypeList = [
     id: 4,
     n: '应用内通知'
   },
+  {
+    id: 5,
+    n: '站内信'
+  },
 ]
 // 群发详情弹框用
 export const sendDetailChannelType = [

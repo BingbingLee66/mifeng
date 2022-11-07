@@ -3,7 +3,7 @@
     <el-form ref="indexFormRef" :rules="rules" :model="form">
       <el-form-item label="类型" prop="type">
         <el-radio-group v-model="form.type">
-          <el-radio v-for="(item, index) in labelList" :key="index" :label="item.type">{{ item.n }}</el-radio>
+          <el-radio v-for="(item, index) in labelList" :key="index" :disabled="form.receive == 7 && item.type == 5" :label="item.type">{{ item.n }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <!-- 接收人 -->
@@ -91,7 +91,17 @@
       <!-- 同步渠道 -->
       <div class="title-hd">同步渠道 <span> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
 
-      <el-form v-if="form.receive == '7'" label-position="right" label-width="70px">
+      <el-form v-if="form.receive == '7'" :rules="rules" :model="form" label-position="right" label-width="100px">
+        <el-form-item label="站内信标题" :required="true" style="margin-bottom:20px">
+          <el-input
+            v-model="form.introduceTitle"
+            placeholder="请输入站内信标题"
+            class="detail-input"
+            type="text"
+            maxlength="50"
+            show-word-limit
+          />
+        </el-form-item>
         <el-form-item label="站内信" :required="true">
           <WangEditor :content="contentHtml" @addParentHtml="getHtml" />
         </el-form-item>
@@ -216,6 +226,7 @@ export default {
 
         // 秘书处后台
         introduce: '', // 站内信
+        introduceTitle: '', // 站内信标题
       },
       synchChannels: [
         { label: '短信', templateList: [], id: 1 },
@@ -376,6 +387,7 @@ export default {
       } else if (receive === 7) {
         ref.setSelectMemberList(extend.receiverList, extend.selectMemberList)
         this.qrCode = extend.imgs
+        this.form.introduceTitle = extend.title
         this.$nextTick(() => {
           this.form.introduce = extend.content
           this.contentHtml = extend.content
@@ -497,12 +509,13 @@ export default {
     /** 父子组件交互 */
     receiveChange(val) {
       this.form.receive = val
+      if (val === 7 && this.form.type === 5) this.form.type = 2
     },
     /** 工具 */
     // 表单提交校验
     verify() {
       const {
-        form: { type, agreeRule, sendType, sendTs, receive, introduce },
+        form: { type, agreeRule, sendType, sendTs, receive, introduce, introduceTitle },
         activityList
       } = this
       const refData = this.$refs['receiveForm'].$data
@@ -513,12 +526,16 @@ export default {
       }
 
       if (receive === 7) {
-        if (introduce === '') {
-          this.$message.error('请输入站内信')
-          return false
-        }
         if (!refData.secretaryList.length) {
           this.$message.error('当前选择的秘书处人数为0')
+          return false
+        }
+        if (introduceTitle === '') {
+          this.$message.error('请输入站内信标题')
+          return false
+        }
+        if (introduce === '') {
+          this.$message.error('请输入站内信')
           return false
         }
       }
@@ -594,15 +611,15 @@ export default {
           break
         case 7:
           // 秘书处后台
-          obj['receiverList'] = refData.secretaryList
+          obj['receiverList'] = refData.secretaryList.map(v => { return { id: v } })
           obj['selectMemberList'] = refData.selectMemberList
           obj['imgs'] = this.qrCode
-          obj['title'] = ''
+          obj['title'] = this.form.introduceTitle
           obj['content'] = this.form.introduce
           break
         case 8:
           // 秘书处前台
-          obj['receiverList'] = refData.secretaryList
+          obj['receiverList'] = refData.secretaryList.map(v => { return { id: v } })
           obj['selectMemberList'] = refData.selectMemberList
           break
         default:

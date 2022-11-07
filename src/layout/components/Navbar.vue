@@ -24,12 +24,15 @@
     </div>
     <div class="login-name">
       <!-- 商会后台显示铃铛 -->
-      <span class="inform">
-        <el-badge :value="200" :max="99">
-          <i class="el-icon-message-solid " @click="goMail" />
-        </el-badge>
+      <span v-if="ckey" class="inform">
+        <span @click="goMail">
+          <el-badge :value="count" :hidden="hidden" :max="99">
+            <i class="el-icon-message-solid " />
+          </el-badge>
+        </span>
+
         <div class="inform-news">
-          <News :show="true" />
+          <News :show="isShow" />
         </div>
       </span>
 
@@ -46,6 +49,7 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import imgUrl from '@/assets/img/avatar.gif'
 import News from './News/index.vue'
+import { newNoRead, stationMailDing } from '@/api/mass-notification/index'
 export default {
   components: {
     Breadcrumb,
@@ -56,15 +60,26 @@ export default {
     return {
       user: {},
       imgUrl,
-      isShow: false, // 商会后台才显示
+      isShow: false, // 显示最新消息
+      timer: null, // 消息铃铛定时器
+      info: {}, // 消息
+      count: 0, // 消息通知数量
+      hidden: true, // count > 0 显示
       // systemLogo: !this.$store.getters.systemLogo ? imgUrl : this.$store.getters.systemLogo
     }
   },
   computed: {
-    ...mapGetters(['sidebar', 'avatar', 'name', 'systemLogo', 'chamberName', 'roles'])
+    ...mapGetters(['sidebar', 'avatar', 'name', 'systemLogo', 'chamberName', 'roles', 'ckey'])
   },
+  watch: {
+    'ckey'() {
+      this.fetchData()
+    }
+  },
+  // 页面销毁
   mounted() {
-    if (this.$store.getters.ckey) this.isShow = true
+    this.fetchData()
+    this.onDing()
   },
 
   methods: {
@@ -80,7 +95,26 @@ export default {
     // 跳转站内信
     goMail() {
       this.$router.push('/sms/mail')
-    }
+    },
+    fetchData() {
+      clearInterval(this.timer)
+      if (this.ckey) {
+        this.timer = setInterval(this.onNewNoRead, 30000)
+      }
+    },
+    // 显示铃铛数量
+    async onDing() {
+      const res = await stationMailDing()
+      this.count = res.data && res.data || 0
+      if (res.data && res.data.count > 0) this.hidden = true
+    },
+    // 站内信通知
+    async onNewNoRead() {
+      this.isShow = false
+      const res = await newNoRead()
+      this.info = res.data || {}
+      if (res.data && res.data.title) this.isShow = true
+    },
   }
 }
 </script>
