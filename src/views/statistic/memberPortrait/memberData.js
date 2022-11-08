@@ -6,7 +6,7 @@ import {
   getGenderBar,
   getYearsBar
 } from '@/api/statistics/memberStatistics'
-import ECharts from 'vue-echarts/components/ECharts'
+// import ECharts from 'vue-echarts/components/ECharts'
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/component/title'
 // import { mapGetters } from 'vuex'
@@ -52,17 +52,19 @@ export default {
         yAxis: {
           type: 'value'
         },
-        series: [{
-          data: [],
-          type: 'bar',
-          label: {
-            show: true,
-            position: 'top',
-            color: '#3D383A'
+        series: [
+          {
+            data: [],
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'top',
+              color: '#3D383A'
             // formatter: "￥{c}"
+            }
           }
-        }],
-        color: ["#64CDF0", "#F5686F"]
+        ],
+        color: ['#64CDF0', '#F5686F']
       },
       ageBarData: {
         title: {
@@ -83,17 +85,19 @@ export default {
         yAxis: {
           type: 'value'
         },
-        series: [{
-          data: [],
-          type: 'bar',
-          label: {
-            show: true,
-            position: 'top',
-            color: '#3D383A'
+        series: [
+          {
+            data: [],
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'top',
+              color: '#3D383A'
             // formatter: "￥{c}"
+            }
           }
-        }],
-        color: ["#64CDF0", "#F5686F"]
+        ],
+        color: ['#64CDF0', '#F5686F']
       },
       genderBarData: {
         title: {
@@ -114,17 +118,19 @@ export default {
         yAxis: {
           type: 'value'
         },
-        series: [{
-          data: [],
-          type: 'bar',
-          label: {
-            show: true,
-            position: 'top',
-            color: '#3D383A'
+        series: [
+          {
+            data: [],
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'top',
+              color: '#3D383A'
             // formatter: "￥{c}"
+            }
           }
-        }],
-        color: ["#64CDF0", "#F5686F"]
+        ],
+        color: ['#64CDF0', '#F5686F']
       },
       yearsBarData: {
         title: {
@@ -145,17 +151,19 @@ export default {
         yAxis: {
           type: 'value'
         },
-        series: [{
-          data: [],
-          type: 'bar',
-          label: {
-            show: true,
-            position: 'top',
-            color: '#3D383A'
+        series: [
+          {
+            data: [],
+            type: 'bar',
+            label: {
+              show: true,
+              position: 'top',
+              color: '#3D383A'
             // formatter: "￥{c}"
+            }
           }
-        }],
-        color: ["#64CDF0", "#F5686F"]
+        ],
+        color: ['#64CDF0', '#F5686F']
       }
     }
   },
@@ -164,7 +172,7 @@ export default {
   },
   created() {
     this.ckey = this.$store.getters.ckey
-    this.init();
+    this.init()
   },
   methods: {
     has(tabName, actionName) {
@@ -203,7 +211,7 @@ export default {
       this.fetchData()
     },
     getStatistics() {
-      let params = {}
+      const params = {}
       getStatistics(params).then(response => {
         this.pfStatistics.monthlyJoin = response.data.monthlyJoin
         this.pfStatistics.totalMembers = response.data.totalMembers
@@ -214,12 +222,12 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      let params = {
-        'startTime': this.query.date[0],
-        'endTime': this.query.date[1],
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'ckey':this.ckey
+      const params = {
+        startTime: this.query.date[0],
+        endTime: this.query.date[1],
+        pageSize: this.limit,
+        page: this.currentpage,
+        ckey: this.ckey
       }
       getDailyStatistics(params).then(response => {
         this.list = response.data.data.list
@@ -228,7 +236,7 @@ export default {
       })
     },
     getTradeBar() {
-      let params = {}
+      const params = {}
       getTradeBar(params).then(response => {
         this.tradeBarData.title.text = response.data.text
         this.tradeBarData.xAxis.data = response.data.xAxisData
@@ -236,7 +244,7 @@ export default {
       })
     },
     getAgeBar() {
-      let params = {}
+      const params = {}
       getAgeBar(params).then(response => {
         this.ageBarData.title.text = response.data.text
         this.ageBarData.xAxis.data = response.data.xAxisData
@@ -244,7 +252,7 @@ export default {
       })
     },
     getGenderBar() {
-      let params = {}
+      const params = {}
       getGenderBar(params).then(response => {
         this.genderBarData.title.text = response.data.text
         this.genderBarData.xAxis.data = response.data.xAxisData
@@ -252,7 +260,7 @@ export default {
       })
     },
     getYearsBar() {
-      let params = {}
+      const params = {}
       getYearsBar(params).then(response => {
         this.yearsBarData.title.text = response.data.text
         this.yearsBarData.xAxis.data = response.data.xAxisData

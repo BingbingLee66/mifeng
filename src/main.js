@@ -4,7 +4,11 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import ECharts from 'vue-echarts/components/ECharts.vue'
+// import ECharts from 'vue-echarts/components/ECharts.vue'
+import ECharts from 'vue-echarts'
+import 'echarts'
+// import ECharts modules manually to reduce bundle size
+
 import '@/styles/index.scss' // global css
 
 import App from './App'

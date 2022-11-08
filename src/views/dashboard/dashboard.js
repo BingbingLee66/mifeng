@@ -1,7 +1,7 @@
 import { getList } from '@/api/system/notice'
 import dashboardApi from '@/api/dashboard'
 import { mapGetters } from 'vuex'
-import ECharts from 'vue-echarts/components/ECharts'
+import ECharts from 'vue-echarts'
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/chart/pie'
@@ -16,9 +16,9 @@ import 'echarts/lib/component/legend'
 import 'echarts/lib/component/title'
 import 'echarts/lib/component/visualMap'
 import 'echarts/lib/component/dataset'
-import 'echarts/map/js/world'
+// import 'echarts/map/js/world'
 import 'zrender/lib/svg/svg'
-import elementResizeDetectorMaker from "element-resize-detector"
+// import elementResizeDetectorMaker from 'element-resize-detector'
 export default {
 
   name: 'dashboard',
@@ -33,9 +33,9 @@ export default {
       data.push([r, i])
     }
     return {
-      dashboard:{
-        orderCount:0,
-        userCount:0,
+      dashboard: {
+        orderCount: 0,
+        userCount: 0,
       },
 
       notice: [],
@@ -109,10 +109,12 @@ export default {
         yAxis: {
           type: 'value'
         },
-        series: [{
-          data: [120, 200, 150, 80, 70, 110, 130],
-          type: 'bar'
-        }]
+        series: [
+          {
+            data: [120, 200, 150, 80, 70, 110, 130],
+            type: 'bar'
+          }
+        ]
       },
       pieData: {
         title: {
@@ -152,35 +154,34 @@ export default {
           }
         ]
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      tableData: [
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄'
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄'
+        }
+      ]
     }
   },
   computed: {
-    ...mapGetters([
-      'name'
-
-    ])
+    ...mapGetters(['name'])
   },
   created() {
     // this.fetchData()
   },
-  mounted(){
+  mounted() {
     // //绑定echart图表跟随窗口大小自动缩放
     // let that = this
     // let erd = elementResizeDetectorMaker()
@@ -200,8 +201,8 @@ export default {
         this.dashboard = response.data
       })
       getList(self.listQuery).then(response => {
-        for (var i = 0; i < response.data.length; i++) {
-          var notice = response.data[i]
+        for (let i = 0; i < response.data.length; i++) {
+          const notice = response.data[i]
           self.$notify({
             title: notice.title,
             message: notice.content,

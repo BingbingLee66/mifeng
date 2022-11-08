@@ -1,7 +1,7 @@
 <template>
-  <div class="dashboard-container" style="background-color: #ffffff;" id="dashboard">
+  <div id="dashboard" class="dashboard-container" style="background-color: #ffffff;">
     <div class="dashboard-container-view">
-      <div class="dashboard-text">欢迎光临:{{name}} </div>
+      <div class="dashboard-text">欢迎光临:{{ name }} </div>
       <img class="dashboard-img" src="@/assets/img/home.png">
     </div>
     <!-- <el-row :gutter="20">
@@ -83,8 +83,6 @@
             <div><a href="https://www.aliyun.com/acts/alicomcloud/new-discount?userCode=alts44ap" target="_blank">点击查看详情</a> </div>
           </el-collapse-item>
 
-
-
         </el-collapse>
       </el-col>
 
@@ -120,7 +118,6 @@
     </el-row> -->
   </div>
 </template>
-
 
 <script src="./dashboard.js"></script>
 <style rel="stylesheet/scss" lang="scss" scoped>

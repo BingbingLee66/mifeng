@@ -27,15 +27,32 @@
         <el-radio-button :label="3">月</el-radio-button>
       </el-radio-group>
     </div>
-    <div style="display:flex;">
-      <v-chart :options="chartOpt" style="width: 100%;" />
-    </div>
+    <!-- <div style="display:flex;width:100vw;height:50vw"> -->
+    <v-chart :option="chartOpt" style="width: 2000px;height:500px" />
+    <!-- </div> -->
 
   </div>
 </template>
 
 <script>
-import 'echarts/lib/chart/line'
+// import 'echarts/lib/chart/line'
+import { use } from 'echarts/core'
+import {
+  CanvasRenderer
+} from 'echarts/renderers'
+import {
+  BarChart
+} from 'echarts/charts'
+import {
+  GridComponent,
+  TooltipComponent
+} from 'echarts/components'
+use([
+  CanvasRenderer,
+  BarChart,
+  GridComponent,
+  TooltipComponent
+])
 import CardBox from '@/views/zhaoshang/information-publish/components/card-box'
 import { getDataStatistics, getReadTrendChart } from '@/api/zhaoshang/statistics/activity-statistics'
 export default {
