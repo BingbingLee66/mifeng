@@ -12,15 +12,15 @@
     </el-row>
     <el-row>
       <el-col :span="12">
-        <v-chart :options="ageBarData" class="chart section" ref="barChart" style="width: 100%;"/>
+        <v-chart ref="barChart" :option="ageBarData" class="chart section" style="width: 100%;" />
       </el-col>
       <el-col :span="12">
-        <v-chart :options="genderBarData" class="chart section" ref="barChart" style="width: 100%;"/>
+        <v-chart ref="barChart" :option="genderBarData" class="chart section" style="width: 100%;" />
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="24">
-        <v-chart :options="yearsBarData" class="chart section" ref="barChart" style="width: 100%;"/>
+        <v-chart ref="barChart" :option="yearsBarData" class="chart section" style="width: 100%;" />
       </el-col>
     </el-row>
   </div>

@@ -6,10 +6,23 @@ import {
   getGenderBar,
   getYearsBar
 } from '@/api/statistics/memberStatistics'
-// import ECharts from 'vue-echarts/components/ECharts'
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/component/title'
-// import { mapGetters } from 'vuex'
+import { use } from 'echarts/core'
+import {
+  CanvasRenderer
+} from 'echarts/renderers'
+import {
+  BarChart
+} from 'echarts/charts'
+import {
+  GridComponent,
+  TooltipComponent
+} from 'echarts/components'
+use([
+  CanvasRenderer,
+  BarChart,
+  GridComponent,
+  TooltipComponent
+])
 
 export default {
   data() {
