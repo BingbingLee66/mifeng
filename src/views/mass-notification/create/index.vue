@@ -95,6 +95,7 @@
         <el-form-item label="站内信标题" :required="true" style="margin-bottom:20px">
           <el-input
             v-model="form.introduceTitle"
+            style="width: 800px;"
             placeholder="请输入站内信标题"
             class="detail-input"
             type="text"
@@ -188,6 +189,7 @@
 import { labelType, receiveType, ruleString } from '../util/label'
 import { uploadFile } from '@/api/content/article'
 import { selectTemplateList, updateSendGetDetail, sendDetail, getNoticeTemplateSetDetailById, selectTemplateListAdmin, sendMsg, distributionChambers } from '@/api/mass-notification/index'
+import { getChamberActivityInfoById } from '@/api/activity/activity-verify-new'
 import ReceiveForm from './components/receiveForm.vue'
 import kdDialog from '@/components/common/kdDialog'
 import activityDialog from './components/activityDialog.vue'
@@ -286,7 +288,10 @@ export default {
     },
     'activityList'(val) {
       this.qrCode = []
-      if (val.length) { this.qrCode.push(val[0].qrCode) }
+      if (val.length) {
+        if (this.form.type === 2) this.getActivityInfo(val[0])
+        else this.qrCode.push(val[0].qrCode)
+      }
     }
   },
   created() {
@@ -707,6 +712,12 @@ export default {
     // 站内信
     getHtml(htmlStr) {
       this.form.introduce = htmlStr
+    },
+
+    // 活动拿取二维码
+    async getActivityInfo(val) {
+      const { data } = await getChamberActivityInfoById(val.id)
+      this.qrCode.push(data.qrCode)
     },
 
     // 关闭二维码蒙层
