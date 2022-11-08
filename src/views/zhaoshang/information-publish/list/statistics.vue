@@ -27,9 +27,9 @@
         <el-radio-button :label="3">月</el-radio-button>
       </el-radio-group>
     </div>
-    <!-- <div style="display:flex;width:100vw;height:50vw"> -->
-    <v-chart :option="chartOpt" style="width: 2000px;height:500px" />
-    <!-- </div> -->
+    <div style="display:flex;width:90vw;height:30vh">
+      <v-chart :option="chartOpt" />
+    </div>
 
   </div>
 </template>
