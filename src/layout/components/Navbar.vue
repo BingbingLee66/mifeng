@@ -32,7 +32,7 @@
         </span>
 
         <div class="inform-news">
-          <News :show="isShow" />
+          <News :show="isShow" :info="info" />
         </div>
       </span>
 
@@ -115,6 +115,7 @@ export default {
       this.isShow = false
       const res = await newNoRead()
       this.info = res.data || {}
+
       if (res.data && res.data.title) this.isShow = true
     },
   }

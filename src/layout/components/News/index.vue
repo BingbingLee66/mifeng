@@ -30,7 +30,12 @@ export default {
   },
   data() {
     return {
-      isShow: this.show
+      isShow: false
+    }
+  },
+  watch: {
+    'show'(v) {
+      this.isShow = v
     }
   },
 
