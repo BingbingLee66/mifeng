@@ -74,6 +74,7 @@ export default {
   watch: {
     'ckey'() {
       this.fetchData()
+      this.onDing()
     }
   },
   // 页面销毁
@@ -104,9 +105,10 @@ export default {
     },
     // 显示铃铛数量
     async onDing() {
+      this.hidden = true
       const res = await stationMailDing()
-      this.count = res.data && res.data || 0
-      if (res.data && res.data.count > 0) this.hidden = true
+      this.count = res.data || 0
+      if (res.data && res.data > 0) this.hidden = false
     },
     // 站内信通知
     async onNewNoRead() {
