@@ -226,7 +226,7 @@ export const secretariatConfig = [
     label: '平台标记',
     type: 'general',
     formatter: row => {
-      return row.platformTag && row.platformTag.join('')
+      return row.platformTag && row.platformTag.map(v => v.tagName).join()
     },
   },
   {
@@ -234,7 +234,7 @@ export const secretariatConfig = [
     label: '商协会标记',
     type: 'general',
     formatter: row => {
-      return row.chamberTag && row.chamberTag.join('')
+      return row.chamberTag && row.chamberTag.map(v => v.tagName).join()
     },
   },
 

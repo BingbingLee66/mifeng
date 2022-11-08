@@ -76,7 +76,7 @@ export default {
     },
     // 跳转站内信
     async goDetails(row) {
-      if (row.readStatus === '2') await readStationMail({ id: Number(row.shrId) })
+      if (row.readStatus === '2') await readStationMail({ id: row.shrId })
       this.$router.push({
         name: '站内信详情',
         params: {
