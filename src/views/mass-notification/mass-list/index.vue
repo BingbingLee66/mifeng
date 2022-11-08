@@ -32,7 +32,7 @@
         <el-form v-if="currentType !== 5" :inline="true">
           <el-form-item label="搜索">
             <!-- <el-input class="search-input" v-model="query.chamberName" :placeholder="placeholder"></el-input> -->
-            <el-input v-model="dialog.query.keyword" class="search-input" :placeholder="placeholder" />
+            <el-input v-model="dialog.query.keyword" clearable class="search-input" :placeholder="placeholder" />
           </el-form-item>
           <el-button @click="receiverListFunc(currentRow.id)">查询</el-button>
         </el-form>
@@ -583,15 +583,19 @@ export default {
       if (receiveTypeId === 7) {
         this.dialog.columnConfig = [
           {
-            prop: 'uname',
-            label: '用户名',
+            prop: 'remark',
+            label: '姓名',
           },
           {
-            prop: 'chamberNames',
+            prop: 'username',
+            label: '账号',
+          },
+          {
+            prop: 'chamberName',
             label: '商协会名称',
           },
           {
-            prop: 'chamberNames',
+            prop: 'roleName',
             label: '角色名称',
           },
           {
