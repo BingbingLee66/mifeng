@@ -19,6 +19,7 @@
         start-placeholder="开始日期"
         end-placeholder="结束日期"
         size="mini"
+        :picker-options="pickerOptions"
         @change="fetchTrendChart"
       />
       <el-radio-group v-model="query.type" size="mini" @change="typeDatePicker">
@@ -27,7 +28,7 @@
         <el-radio-button :label="3">月</el-radio-button>
       </el-radio-group>
     </div>
-    <div style="display:flex;width:90vw;height:30vh">
+    <div style="display:flex;width:80vw;height:30vh">
       <v-chart :option="chartOpt" />
     </div>
 
@@ -116,12 +117,21 @@ export default {
           },
         ],
       },
-      investmentName: ''
+      investmentName: '',
+      createdTs: '',
     }
   },
   computed: {
     chamberId() {
       return this.$route.params.chamberId || ''
+    },
+    pickerOptions() {
+      const { createdTs } = this
+      return {
+        disabledDate(date) {
+          return date.getTime() < createdTs
+        }
+      }
     }
   },
   mounted() {
@@ -140,8 +150,10 @@ export default {
         arr[index].value = res.data[arrResult[index]]
       })
       this.investmentName = res.data.investMentName
-      console.log(res.data.investMentName, ' investMentName')
-      console.log(this.investmentName)
+      this.createdTs = Number(res.data.dateTime)
+      console.log(this.pickerOptions, 'pickerOptions')
+      // console.log(res.data.investMentName, ' investMentName')
+      // console.log(this.investmentName)
     },
     async fetchTrendChart() {
       const params = {
