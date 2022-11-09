@@ -63,8 +63,9 @@ export default {
       isShow: false, // 显示最新消息
       timer: null, // 消息铃铛定时器
       info: {}, // 消息
+      gsId: '', // 站内信最新数据id
       count: 0, // 消息通知数量
-      hidden: true, // count > 0 显示
+      hidden: true, // count > 0  false =显示
       // systemLogo: !this.$store.getters.systemLogo ? imgUrl : this.$store.getters.systemLogo
     }
   },
@@ -73,13 +74,12 @@ export default {
   },
   watch: {
     'ckey'() {
-      this.fetchData()
       this.onDing()
+      this.gsId = ''
     }
   },
   // 页面销毁
   mounted() {
-    this.fetchData()
     this.onDing()
   },
 
@@ -98,25 +98,30 @@ export default {
       this.$router.push('/sms/mail')
     },
     fetchData() {
-      clearInterval(this.timer)
-      if (this.ckey) {
-        this.timer = setInterval(this.onNewNoRead, 30000)
-      }
+
     },
     // 显示铃铛数量
     async onDing() {
-      this.hidden = true
+      clearInterval(this.timer)
+      if (!this.ckey) return
+      this.hidden = true // s是否展示铃铛数量  true = 不展示  false = 展示
+      this.isShow = false
       const res = await stationMailDing()
       this.count = res.data || 0
-      if (res.data && res.data > 0) this.hidden = false
+      this.timer = setTimeout(this.onDing, 30000)
+      if (res.data && res.data > 0) {
+        this.hidden = false
+        this.onNewNoRead()
+      }
     },
     // 站内信通知
     async onNewNoRead() {
-      this.isShow = false
       const res = await newNoRead()
       this.info = res.data || {}
-
-      if (res.data && res.data.title) this.isShow = true
+      if (res.data && res.data.title && res.data.gsId !== this.gsId) {
+        this.isShow = true
+        this.gsId = res.data.gsId
+      }
     },
   }
 }

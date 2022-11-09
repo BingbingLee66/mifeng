@@ -32,7 +32,7 @@
         <el-form v-if="currentType !== 5" :inline="true">
           <el-form-item label="搜索">
             <!-- <el-input class="search-input" v-model="query.chamberName" :placeholder="placeholder"></el-input> -->
-            <el-input v-model="dialog.query.keyword" clearable class="search-input" :placeholder="placeholder" />
+            <el-input v-model="dialog.query.keyword" clearable class="search-input" :placeholder="activeDialogChannelTab == 5 ? '姓名/商协会名称' : placeholder" />
           </el-form-item>
           <el-button @click="receiverListFunc(currentRow.id)">查询</el-button>
         </el-form>

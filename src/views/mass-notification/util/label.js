@@ -217,9 +217,12 @@ export const secretariatConfig = [
     type: 'general',
   },
   {
-    prop: 'companyName',
+    prop: 'companysName',
     label: '企业名称',
     type: 'general',
+    formatter: row => {
+      return row.companysName && row.companysName.join()
+    },
   },
   {
     prop: 'platformTag',

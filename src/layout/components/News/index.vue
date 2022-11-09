@@ -15,7 +15,7 @@
 </template>
 
 <script>
-
+import { readStationMail } from '@/api/mass-notification/index'
 export default {
   props: {
     // eslint-disable-next-line vue/require-default-prop
@@ -44,11 +44,12 @@ export default {
       this.isShow = false
     },
     // 点击查看跳转
-    examine() {
+    async examine() {
+      await readStationMail({ id: this.info.id })
       this.$router.push({
         name: '站内信详情',
         params: {
-          id: this.info.id,
+          id: this.info.gsId,
         }
       })
       this.hide()
