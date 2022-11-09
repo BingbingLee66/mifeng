@@ -129,7 +129,7 @@ export default {
       const { createdTs } = this
       return {
         disabledDate(date) {
-          return date.getTime() < createdTs
+          return date.getTime() < createdTs - 8.64e7
         }
       }
     }
