@@ -51,6 +51,11 @@ export default {
 
 <style lang="scss" scoped>
 .box{
-  width: 100%;
+  width: 70%;
+  max-width: 70%;
+  /deep/ img{
+    width: 100% !important;
+  }
 }
+
 </style>
