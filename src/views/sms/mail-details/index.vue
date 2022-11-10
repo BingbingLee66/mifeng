@@ -1,15 +1,18 @@
 <template>
   <div class="app-container">
-    <div>
-      <el-image
-        v-if="info.imgs && info.imgs.length"
-        style="width: 100px; height: 100px; margin-bottom: 20px;"
-        :src="info.imgs[0]"
-        :preview-src-list="info.imgs"
-        @click.stop="handleClickitem"
-      />
+    <div class="content">
+      <div class="box" v-html="info.content" />
+      <div style="margin-left:40px">
+        <el-image
+          v-if="info.imgs && info.imgs.length"
+          style="width: 150px; height: 150px;"
+          :src="info.imgs[0]"
+          :preview-src-list="info.imgs"
+          @click.stop="handleClickitem"
+        />
+      </div>
     </div>
-    <div class="box" v-html="info.content" />
+
   </div>
 </template>
 <script>
@@ -50,11 +53,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.box{
-  width: 70%;
-  max-width: 70%;
-  /deep/ img{
-    width: 100% !important;
+.content{
+  display: flex;
+
+  .box{
+    max-width: 70%;
+    /deep/ img{
+      width: 100% !important;
+    }
   }
 }
 
