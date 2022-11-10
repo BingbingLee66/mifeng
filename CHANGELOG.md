@@ -2,6 +2,27 @@
 
 
 ## [Released]
+## [2.34.0] - 2022-11-10
+### Added
+- 工作：【群发通知1.1】秘书处后台[1234](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1234)
+- 工作：【群发通知1.1】秘书处前台[1235](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1235)
+- 工作：【群发通知1.1】群发通知[1236](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1236)
+- 工作：【群发通知1.1】站内信详情[1238](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1238)
+- 工作：【群发通知1.1】站内信[1237](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1237)
+- 工作：【群发通知1.1】站内信通知[1239](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1239)
+- 工作：【群发通知1.1】编辑回显创建群发通知[1241](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1241)
+- 工作：【招商1.1】招商信息-新增招商信息数据统计详情页[1230](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1230)
+- 工作：【招商1.1】招商信息-新增招商信息数据统计页[1229](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1229)
+- 工作：【招商1.1】标签管理-会员标签新增招商办创建tab[1228](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1228)
+- 工作：【招商1.1】招商活动-活动详情页新增功能[1226](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1226)
+- 工作：【招商1.1】招商活动-创建活动新增功能[1225](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1225)
+- 工作：【招商1.1】招商活动-报名审核-详情页新增功能[1224](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1224)
+
+### Fixed
+-  
+
+
+## [Released]
 ## [2.33.0] - 2022-10-31
 ### Added
 -  活动优化[1233](https://gitlab.kd/yunshanghui/engineering/frontend/shanghui-admin/-/issues/1233)
