@@ -1,11 +1,12 @@
 <template>
   <div class="app-container">
     <div class="content">
-      <div class="box" v-html="info.content" />
-      <div style="margin-left:40px">
+      <div class="box-left" v-html="info.content" />
+      <div class="box-right">
+        <div>活动二维码</div>
         <el-image
           v-if="info.imgs && info.imgs.length"
-          style="width: 150px; height: 150px;"
+          style="width: 120px; height: 120px;margin-top: 10px;"
           :src="info.imgs[0]"
           :preview-src-list="info.imgs"
           @click.stop="handleClickitem"
@@ -56,11 +57,15 @@ export default {
 .content{
   display: flex;
 
-  .box{
+  .box-left{
     max-width: 70%;
     /deep/ img{
       width: 100% !important;
     }
+  }
+  .box-right{
+    margin-left: 40px;
+    text-align: center;
   }
 }
 
