@@ -2,10 +2,9 @@
   <div class="app-container">
     <div class="content">
       <div class="box-left" v-html="info.content" />
-      <div class="box-right">
+      <div v-if="info.imgs && info.imgs.length" class="box-right">
         <div>活动二维码</div>
         <el-image
-          v-if="info.imgs && info.imgs.length"
           style="width: 120px; height: 120px;margin-top: 10px;"
           :src="info.imgs[0]"
           :preview-src-list="info.imgs"
