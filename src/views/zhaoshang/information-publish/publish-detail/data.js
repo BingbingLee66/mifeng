@@ -81,7 +81,9 @@ const tableColumn = [
   {
     label: '阅读次数',
     prop: 'readNum',
-    type: 'sort'
+    type: 'sort',
+    align: 'center'
+
   },
   {
     label: '最后阅读时间',
@@ -91,15 +93,13 @@ const tableColumn = [
   },
   {
     label: '是否交换名片',
-    prop: 'cardExChangeStatus',
-    type: 'slot',
-    slotName: 'cardExChangeStatus'
+    align: 'center',
+    prop: 'cardExChangeStatus'
   },
   {
     label: '分享次数',
     prop: 'shareNum',
-    type: 'slot',
-    slotName: 'shareNum'
+    align: 'center'
   }
 ]
 
