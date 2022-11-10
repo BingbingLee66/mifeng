@@ -10,11 +10,12 @@ export const receiveType = [
   { n: '所有会员', type: -1, show: 1 },
   { n: '指定商会会员', type: 5, show: 1 },
   { n: '指定手机号', type: 6, show: 1 },
+  { n: '秘书处后台', type: 7, show: 1 },
+  { n: '秘书处前台', type: 8, show: 1 },
   { n: '本商会会员', type: 1, show: 2 },
   { n: '指定职位', type: 2, show: 2 },
   { n: '指定部门', type: 3, show: 2 },
   { n: '指定会员', type: 4, show: 2 },
-
 ]
 // form表单通知类型
 // 通知列表的通知类型
@@ -163,6 +164,10 @@ export const channelTypeList = [
     id: 4,
     n: '应用内通知'
   },
+  {
+    id: 5,
+    n: '站内信'
+  },
 ]
 // 群发详情弹框用
 export const sendDetailChannelType = [
@@ -170,6 +175,7 @@ export const sendDetailChannelType = [
   { name: '3', label: 'app通知' },
   { name: '2', label: '订阅消息' },
   { name: '1', label: '短信' },
+  { name: '5', label: '站内信' },
 ]
 export const sendStatusList = [
   { name: '1', label: '发送成功', field: 'succNum', num: '0' },
@@ -179,3 +185,60 @@ export const sendStatusList = [
 ]
 export const ruleString = '申明：遵守国家的有关法规和行政规章制度。不发送任何非法的、骚扰性、中伤他人的、辱骂性的、恐吓性的、伤害性的、挑衅的、庸俗的、淫秽等内容的信息。不发送任何教唆他人构成犯罪的信息。不发送涉及国家安全、国家机密的信息。如违反引起的法律纠纷和责任由（用户）您独立承担，因此给广州凯迪云信息科技有限公司（简称“云商会”）造成损失的，应当予以赔偿'
 
+// 秘书处 前/后 台
+export const secretariatConfig = [
+  { type: 'selection', reserveSelection: true },
+  {
+    prop: 'uname',
+    label: '用户名',
+    type: 'general',
+  },
+  {
+    prop: 'phone',
+    label: '手机号',
+    type: 'general',
+  },
+  {
+    prop: 'userType',
+    label: '用户属性',
+    type: 'general',
+    formatter: row => {
+      return row.userType === 1 ? '会员用户' : '普通用户'
+    },
+  },
+  {
+    prop: 'post',
+    label: '会内职位',
+    type: 'general',
+  },
+  {
+    prop: 'chamberName',
+    label: '所属商会',
+    type: 'general',
+  },
+  {
+    prop: 'companysName',
+    label: '企业名称',
+    type: 'general',
+    formatter: row => {
+      return row.companysName && row.companysName.join()
+    },
+  },
+  {
+    prop: 'platformTag',
+    label: '平台标记',
+    type: 'general',
+    formatter: row => {
+      return row.platformTag && row.platformTag.map(v => v.tagName).join()
+    },
+  },
+  {
+    prop: 'chamberTag',
+    label: '商协会标记',
+    type: 'general',
+    formatter: row => {
+      return row.chamberTag && row.chamberTag.map(v => v.tagName).join()
+    },
+  },
+
+]

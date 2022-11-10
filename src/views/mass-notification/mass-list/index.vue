@@ -32,9 +32,10 @@
         <el-form v-if="currentType !== 5" :inline="true">
           <el-form-item label="搜索">
             <!-- <el-input class="search-input" v-model="query.chamberName" :placeholder="placeholder"></el-input> -->
-            <el-input v-model="dialog.query.keyword" class="search-input" :placeholder="placeholder" />
+            <el-input v-model="dialog.query.keyword" clearable class="search-input" :placeholder="activeDialogChannelTab == 5 ? '姓名/商协会名称' : placeholder" />
           </el-form-item>
-          <el-button @click="receiverListFunc(currentRow.id)">查询</el-button>
+          <!-- <el-button @click="receiverListFunc(currentRow.id)">查询</el-button> -->
+          <el-button @click="sendDetailListFunc()">查询</el-button>
         </el-form>
       </div>
       <!-- 按钮栏 -->
@@ -231,6 +232,7 @@ export default {
         // 打开详情弹框
         // this.sendStatus = cloneDeep(sendStatusList)
         // console.log('sendStatusList', sendStatusList)
+
         await this.sendGetDetailFunc(row.id)
         // 初始化活跃tab
         this.activeDialogChannelTab = this.sendDetailChannelType[0].name
@@ -249,7 +251,7 @@ export default {
         //   unreadNum
         // this.sendDetailFunc(row.id)
 
-        this.detailConfigUtil()
+        this.detailConfigUtil(row.receiveTypeId)
         // 设置初始活跃name值
       } else if (type === 2) {
         // 编辑
@@ -578,29 +580,60 @@ export default {
       }
       this.columnConfig = columnConfig
     },
-    detailConfigUtil() {
-      this.dialog.columnConfig = [
-        { prop: 'id', label: 'ID', width: 180 },
-        {
-          prop: 'uname',
-          label: '姓名',
-        },
-        {
-          prop: 'phone',
-          label: '手机号',
-        },
-        {
-          prop: 'chamberNames',
-          label: '所属商协会',
-        },
-        {
-          prop: 'status',
-          label: '状态',
-          formatter: row => {
-            return row.readStatus === 1 ? '已读' : '未读'
-          }
-        },
-      ]
+    detailConfigUtil(receiveTypeId) {
+      if (receiveTypeId === 7) {
+        this.dialog.columnConfig = [
+          {
+            prop: 'remark',
+            label: '姓名',
+          },
+          {
+            prop: 'username',
+            label: '账号',
+          },
+          {
+            prop: 'chamberName',
+            label: '商协会名称',
+          },
+          {
+            prop: 'roleName',
+            label: '角色名称',
+          },
+          {
+            prop: 'status',
+            label: '状态',
+            formatter: row => {
+              return row.readStatus === 1 ? '已读' : '未读'
+            }
+          },
+        ]
+      } else {
+        this.dialog.columnConfig = [
+          { prop: 'id',
+            label: 'ID',
+            width: 180,
+          },
+          {
+            prop: 'uname',
+            label: '姓名',
+          },
+          {
+            prop: 'phone',
+            label: '手机号',
+          },
+          {
+            prop: 'chamberNames',
+            label: '所属商协会',
+          },
+          {
+            prop: 'status',
+            label: '状态',
+            formatter: row => {
+              return row.readStatus === 1 ? '已读' : '未读'
+            }
+          },
+        ]
+      }
     },
     // 根据id查找对应的文本
     getTypeById(type, id) {
@@ -620,6 +653,7 @@ export default {
     // 根据弹框内部tab切换处理不同的数据
     handleTabChannelUtil(val) {
       const { groupSendStatMap, activeDialogChannelTab } = this
+
       // 只有短信才有已读未读 成功失败，其他只有已读和未读
       if (val === '1') {
         this.sendStatus = cloneDeep(sendStatusList)
@@ -628,6 +662,7 @@ export default {
       }
       if (Object.keys(groupSendStatMap).length < 1) { return }
       const currentTab = groupSendStatMap[activeDialogChannelTab]
+
       this.sendStatus.forEach(item => {
         item.num = currentTab[item.field]
         item.label = item.label + '(' + currentTab[item.field] + ')'

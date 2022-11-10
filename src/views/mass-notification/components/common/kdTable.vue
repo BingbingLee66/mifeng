@@ -83,7 +83,7 @@ export default {
       return row.id
     },
     handleSelectionChange(val) {
-      console.log('val', val)
+      // console.log('val', val)
       this.$emit('tableSelect', val)
     },
     // 设置某一行选中
