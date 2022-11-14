@@ -14,16 +14,6 @@
   align-items: center;
   position: relative;
   padding-bottom: 20px;
-  // &:after {
-  //   content: '';
-  //   position: absolute;
-  //   left: -20px;
-  //   right: -20px;
-  //   bottom: 0;
-  //   height: 1px;
-  //   background: #e8e8e8;
-  // }
-
   .panel-title {
     font-size: 15px;
     line-height: 25px;

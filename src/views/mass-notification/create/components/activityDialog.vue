@@ -26,7 +26,7 @@
       </el-form>
       <!-- 表格 -->
       <div class="table">
-        <kdTable ref="table" :column-config="columnConfig" :table-data="tableData" v-on="$listeners" @tableSelect="tableSelect" />
+        <kdTable ref="table" :is-o-pen="true" :column-config="columnConfig" :table-data="tableData" v-on="$listeners" @tableSelect="tableSelect" />
       </div>
 
       <!-- 分页  前期先不做分页-->
@@ -37,7 +37,7 @@
         @change="onPageChange"
       />
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="handleClose">取 消</el-button>
         <el-button type="primary" @click="submit">确 定</el-button>
       </span>
     </el-dialog>
@@ -190,8 +190,9 @@ export default {
     // 关闭弹框
     submit() {
       const selectData = this.$refs['table'].getSelect()
+
       if (selectData.length > 1) {
-        this.$message.error('只能选一个')
+        this.$message.error('只能选一个活动')
       } else {
         this.dialogVisible = false
         this.$emit('addActivity', selectData)
@@ -296,7 +297,7 @@ export default {
           type: 'general',
 
           formatter: row => {
-            return row.status === 1 ? '未开始' : row.status === 2 ? '报名中' : '已结束'
+            return row.status === 1 ? '未开始' : row.status === 2 ? '报名中' : row.status === 4 ? '报名中' : '已结束'
           }
         }
       ]

@@ -447,6 +447,13 @@ export const constantRoutes = [
         meta: { title: '数据统计' }
       },
       {
+        name: '数据详情',
+        path: '/zhaoshang/information-publish/:chamberId/statisticsDetail',
+        component: () => import('@/views/zhaoshang/information-publish/publish-detail/index.vue'),
+        hidden: true,
+        meta: { title: '数据详情' }
+      },
+      {
         name: '我收到的名片',
         path: '/zhaoshang/information-publish/:chamberId/:chamberkey/:type/card-list',
         component: () => import('@/views/zhaoshang/business-card/list/index.vue'),
@@ -487,6 +494,20 @@ export const constantRoutes = [
         component: () => import('@/views/mass-notification/templateSet/add-note/index.vue'),
         hidden: true,
         meta: { title: '新增模板' }
+      },
+      {
+        name: '站内信',
+        path: '/sms/mail',
+        component: () => import('@/views/sms/mail/index.vue'),
+        hidden: true,
+        meta: { title: '站内信' }
+      },
+      {
+        name: '站内信详情',
+        path: '/sms/mail-details',
+        component: () => import('@/views/sms/mail-details/index.vue'),
+        hidden: true,
+        meta: { title: '站内信详情' }
       }
     ]
   }

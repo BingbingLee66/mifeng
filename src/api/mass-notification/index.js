@@ -184,3 +184,21 @@ export const exportSendItem = gsId => request({ url: `/group-send-detail/export/
 // 编辑群发通知
 
 export const updateSendGetDetail = data => request({ url: '/ec/group-send/edit', method: 'put', data })
+
+// 用户接口查询
+export const GetuserAll = data => request({ url: '/ec/member/user-all', method: 'post', data })
+// 秘书处后台用户根据ckey查询admin_user ID和总数接口
+export const secretaryAdmin = data => request({ url: '/ec/member/secretary-admin', method: 'post', data })
+// 秘书处前台用户根据条件查询手机号和总数接口
+export const secretaryuser = data => request({ url: '/ec/member/secretary-user', method: 'post', data })
+
+// 站内信通知最新一条未读站内信查询接口(30秒查一次的接口)
+export const newNoRead = params => request({ url: '/ec/station-mail/no-read-station-mail', method: 'get', params })
+// 站内信列表查询接口
+export const stationPageList = params => request({ url: '/ec/group-send/station-page-list', method: 'get', params })
+// 站内信详情查询接口
+export const stationMailDetail = params => request({ url: '/ec/station-mail/detail', method: 'get', params })
+// 站内信已读接口
+export const readStationMail = ({ id }) => request({ url: `/ec/station-mail/read-station-mail?id=${id}`, method: 'put' })
+// 铃铛接口
+export const stationMailDing = params => request({ url: '/ec/station-mail/ding', method: 'get', params })

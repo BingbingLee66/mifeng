@@ -5,30 +5,30 @@
     <!--      <el-tab-pane label="未发布" name="0" />-->
     <!--    </el-tabs>-->
     <div style="margin:20px 0">
-    
+
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item style="margin-right: 30px;" label="活动名称">
-          <el-input clearable  v-model="query.activityName" placeholder="请输入活动名称" />
+          <el-input v-model="query.activityName" clearable placeholder="请输入活动名称" />
         </el-form-item>
         <el-form-item style="margin-right: 30px;" label="活动ID">
-          <el-input clearable  v-model="query.activityId" placeholder="请输入活动ID" maxlength="9" @input="handleInput" />
+          <el-input v-model="query.activityId" clearable placeholder="请输入活动ID" maxlength="9" @input="handleInput" />
         </el-form-item>
-        <el-form-item label="招商阶段">
-          <el-select clearable v-model="query.phaseStatus" placeholder="请选择阶段">
+        <!--         <el-form-item label="招商类型">
+          <el-select v-model="query.investmentType" clearable placeholder="请选择阶段">
             <el-option v-for="item in getMapDict(stageMap)" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="活动状态">
           <el-select v-model="query.status" placeholder="请选择状态">
-            <el-option label="全部" :value="0"/>
-            <el-option label="未开始" :value="1"/>
-            <el-option label="进行中" :value="2"/>
-            <el-option label="已结束" :value="3"/>
-            <el-option label="报名中" :value="4"/>
+            <el-option label="全部" :value="0" />
+            <el-option label="未开始" :value="1" />
+            <el-option label="进行中" :value="2" />
+            <el-option label="已结束" :value="3" />
+            <el-option label="报名中" :value="4" />
           </el-select>
         </el-form-item>
-        <el-form-item  style="margin-right: 30px;" label="活动来源">
-          <el-select  v-model="query.invesKey" placeholder="请选择" clearable filterable>
+        <el-form-item style="margin-right: 30px;" label="活动来源">
+          <el-select v-model="query.invesKey" placeholder="请选择" clearable filterable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.invesKey" />
           </el-select>
         </el-form-item>
@@ -51,7 +51,7 @@
             <div> {{ scope.row.activityName }}</div>
           </template>
         </el-table-column>
-        <el-table-column align="center"  label="活动来源" width="100px">
+        <el-table-column align="center" label="活动来源" width="100px">
           <template slot-scope="scope">
             <span v-if="scope.row.invesName === null">凯迪云商会</span>
             <span v-if="scope.row.invesName !== null">{{ scope.row.invesName }}</span>
@@ -59,24 +59,24 @@
         </el-table-column>
         <el-table-column align="center" label="活动类型" width="120px">
           <template slot-scope="scope">
-            {{ scope.row.activeMode == 1 ? '线上活动' : scope.row.activeMode == 2 ? '线下活动' : '线上线下活动' }}
+            {{ scope.row.applyMode == 1 ? '线上活动' : scope.row.applyMode == 2 ? '线下活动' : '线上线下活动' }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="招商阶段" width="100px">
+        <el-table-column align="center" label="招商类型" width="100px">
           <template slot-scope="scope">
-            {{ stageMap.get(scope.row.phaseStatus) }}
+            {{ stageMap.get(scope.row.investmentType) }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="地区" width="100px"  >
-           <template slot-scope="scope">
-            {{scope.row.province}}{{ scope.row.city }}{{scope.row.area}}
+        <el-table-column align="center" label="地区" width="100px">
+          <template slot-scope="scope">
+            {{ scope.row.province }}{{ scope.row.city }}{{ scope.row.area }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="类型摘要" width="130px">
-          <template slot-scope="scope" >
-            <div class="tag-info" v-if="scope.row.labels.length > 0" >
-              <span  v-for="(item,index) in scope.row.labels" :key="index">
-                {{item.label}}
+          <template slot-scope="scope">
+            <div v-if="scope.row.labels.length > 0" class="tag-info">
+              <span v-for="(item,index) in scope.row.labels" :key="index">
+                {{ item.label }}
                 <span v-if="scope.row.labels.length -1 != index">,</span>
               </span>
             </div>
@@ -104,12 +104,12 @@
         </el-table-column>
         <el-table-column align="center" label="已报名人数" width="70px">
           <template slot-scope="scope">
-            <span >{{ scope.row.registeredCount || 0 }}</span>
+            <span>{{ scope.row.registeredCount || 0 }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="活动状态" width="100px">
           <template slot-scope="scope">
-            <div >{{ scope.row.status == 0 ? '全部' : scope.row.status == 1 ? '未开始' : scope.row.status  == 2 ? '进行中' : scope.row.status  == 3 ?  '已结束' : '报名中' }}</div>
+            <div>{{ scope.row.status == 0 ? '全部' : scope.row.status == 1 ? '未开始' : scope.row.status == 2 ? '进行中' : scope.row.status == 3 ? '已结束' : '报名中' }}</div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="创建人" width="100px">
@@ -124,7 +124,6 @@
             }} </span>
           </template>
         </el-table-column>
-
 
         <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope">
@@ -232,7 +231,7 @@
 	text-overflow: ellipsis;		//文本溢出部分用省略号表示
 	display: -webkit-box;			//特别显示模式
 	-webkit-line-clamp: 2;			//行数
-	line-clamp: 2;					
+	line-clamp: 2;
 	-webkit-box-orient: vertical;	//盒子中内容竖直排列
   width: 100%;
 }

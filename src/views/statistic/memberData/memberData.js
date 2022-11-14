@@ -2,13 +2,13 @@ import {
   getStatistics,
   getDailyStatistics,
   getTradeBar,
-  getAgeBar,
-  getGenderBar,
-  getYearsBar
+  // getAgeBar,
+  // getGenderBar,
+  // getYearsBar
 } from '@/api/statistics/memberStatistics'
-import ECharts from 'vue-echarts/components/ECharts'
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/component/title'
+// import ECharts from 'vue-echarts/components/ECharts'
+// import 'echarts/lib/chart/bar'
+// import 'echarts/lib/component/title'
 import { exportJson2Excel } from '@/utils/exportExcel'
 // import { mapGetters } from 'vuex'
 
@@ -38,7 +38,7 @@ export default {
       // 已选导表数据
       // selectionDatas: [],
       // 临时已选数据
-      tempSelectDatas:[]
+      tempSelectDatas: []
     }
   },
   created() {
@@ -84,7 +84,7 @@ export default {
       this.fetchData()
     },
     getStatistics() {
-      let params = {}
+      const params = {}
       getStatistics(params).then(response => {
         this.pfStatistics.monthlyJoin = response.data.monthlyJoin
         this.pfStatistics.totalMembers = response.data.totalMembers
@@ -95,13 +95,13 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      let params = {
-        'startTime': this.query.date[0],
-        'endTime': this.query.date[1],
-        'type': this.query.type,
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'ckey':this.ckey 
+      const params = {
+        startTime: this.query.date[0],
+        endTime: this.query.date[1],
+        type: this.query.type,
+        pageSize: this.limit,
+        page: this.currentpage,
+        ckey: this.ckey
       }
       getDailyStatistics(params).then(response => {
         console.log('responseresponseresponse----', response)
@@ -111,7 +111,7 @@ export default {
       })
     },
     getTradeBar() {
-      let params = {}
+      const params = {}
       getTradeBar(params).then(response => {
         this.tradeBarData.title.text = response.data.text
         this.tradeBarData.xAxis.data = response.data.xAxisData
@@ -119,19 +119,19 @@ export default {
       })
     },
     // 导表
-    exportExcel(){
-      if(this.tempSelectDatas.length<1){
+    exportExcel() {
+      if (this.tempSelectDatas.length < 1) {
         this.$message({
           showClose: true,
           message: '没有可选操作的记录',
           type: 'warning'
-        });
-        return;
+        })
+        return
       }
-      let selectionDatas=this.handleData(this.tempSelectDatas);
-      console.log('selectionDatas',selectionDatas);
-      let nowDate = new Date()
-      let date = {
+      const selectionDatas = this.handleData(this.tempSelectDatas)
+      console.log('selectionDatas', selectionDatas)
+      const nowDate = new Date()
+      const date = {
         year: nowDate.getFullYear(),
         month: nowDate.getMonth() + 1,
         date: nowDate.getDate()
@@ -140,26 +140,27 @@ export default {
       exportJson2Excel(date.year + '-' + date.month + '-' + date.date + '-' + this.chamberName + '-会员数据', selectionDatas)
     },
     // 表格选择时触发
-    handleSelectionChange(rows){
-      this.tempSelectDatas=rows;
+    handleSelectionChange(rows) {
+      this.tempSelectDatas = rows
     },
-    handleData(list){
-      let newData=[]
-      if(list.length<1){return;};
-      list.forEach(item=>{
-        let obj={
-          '日期':item.date,
-          '授权登录人数':item.activeWxUserTotal>0 ? item.activeWxUserTotal: "--",
-          '入会总人数':item.joinedTotal>0 ? item.joinedTotal: "--",
-          '商会邀请入会人数':item.chamberInvitationTotal >0 ? item.chamberInvitationTotal: "--",
-          '自己申请入会人数':item.myselfApplyTotal >0 ? item.myselfApplyTotal: "--",
-          '会员邀请入会人数':item.memberInvitationTotal >0 ? item.memberInvitationTotal: "--",
-          '商会后台添加入会人数':item.chamberBackstageAddTotal >0 ? item.chamberBackstageAddTotal: "--",
-          '个人会员':item.memberInvitationTotal >0 ? item.memberInvitationTotal: "--",
-          '会员邀请入会人数':item.personMemberTotal >0 ? item.personMemberTotal: "--",
-          '企业/团体':item.companyMemberTotal >0 ? item.companyMemberTotal: "--",
+    handleData(list) {
+      const newData = []
+      if (list.length < 1) { return }
+      list.forEach(item => {
+        const obj = {
+          日期: item.date,
+          授权登录人数: item.activeWxUserTotal > 0 ? item.activeWxUserTotal : '--',
+          入会总人数: item.joinedTotal > 0 ? item.joinedTotal : '--',
+          商会邀请入会人数: item.chamberInvitationTotal > 0 ? item.chamberInvitationTotal : '--',
+          自己申请入会人数: item.myselfApplyTotal > 0 ? item.myselfApplyTotal : '--',
+          会员邀请入会人数: item.memberInvitationTotal > 0 ? item.memberInvitationTotal : '--',
+          商会后台添加入会人数: item.chamberBackstageAddTotal > 0 ? item.chamberBackstageAddTotal : '--',
+          个人会员: item.memberInvitationTotal > 0 ? item.memberInvitationTotal : '--',
+          // eslint-disable-next-line no-dupe-keys
+          会员邀请入会人数: item.personMemberTotal > 0 ? item.personMemberTotal : '--',
+          '企业/团体': item.companyMemberTotal > 0 ? item.companyMemberTotal : '--',
 
-        };
+        }
         newData.push(obj)
       })
       return newData

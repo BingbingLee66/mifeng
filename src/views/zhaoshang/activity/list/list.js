@@ -1,15 +1,15 @@
-import {
+/* import {
   getActivitySource,
   getActivityList,
   publishActivity,
   updateActivitySort,
   delActivity
-} from '@/api/activity/activity'
+} from '@/api/activity/activity' */
 import { activeModeMap, stageMap, activeStatusMap, ACTIVE_STATUS, getMapDict } from '@/consts'
-import { getInfoList,getInvesActivityList,getUpdateActivitySort,getDeleteActivity,getUpdateActivityPublish } from '@/api/attract'
+import { getInfoList, getInvesActivityList, getUpdateActivitySort, getDeleteActivity, getUpdateActivityPublish } from '@/api/attract'
 export default {
   data() {
-    var checkNumber = (rule, value, callback) => {
+    const checkNumber = (rule, value, callback) => {
       if (!/^([0-9]{0,3})$/.test(value)) {
         return callback(new Error('必须是0-999的整数'))
       } else {
@@ -30,7 +30,8 @@ export default {
         invesKey: '', // 招商办标识
         activityId: '', // 活动ID
         activityName: '', // 活动名称
-        phaseStatus:null, // 状态 0筹备阶段 1拟策阶段 2公开招商阶段
+        phaseStatus: null, // 状态 0筹备阶段 1拟策阶段 2公开招商阶段
+        investmentType: '', // 1-默认类型 2-土地招商 3-园区招商 4-楼宇招商
         status: 0 //  活动状态 0.全部1.未开始2.报名中3.已结束,4:报名中
       },
       pageSizes: [10, 20, 50, 100, 500],
@@ -96,7 +97,7 @@ export default {
       this.previewUrl = url
     },
     handleInput(e) {
-      let regexp = /^[1-9]\d*$/
+      const regexp = /^[1-9]\d*$/
       if (!regexp.test(e)) {
         this.query.activityId = ''
       }
@@ -107,15 +108,15 @@ export default {
         this.currentpage = 1
       }
       this.listLoading = true
-      let params = {
+      const params = {
         id: this.query.activityId,
         activityName: this.query.activityName,
-        invesKey:this.query.invesKey,
+        invesKey: this.query.invesKey,
         status: this.query.status,
         pageSize: this.limit,
         pageNum: this.currentpage,
-        isInves:false,
-        phaseStatus:this.query.phaseStatus
+        isInves: false,
+        phaseStatus: this.query.phaseStatus
       }
       getInvesActivityList(params).then(res => {
         this.list = res.data.list
@@ -132,7 +133,7 @@ export default {
     },
     // TODO 改了状态，这块逻辑待定
     upadteActivity() {
-      let params = {
+      const params = {
         id: this.rowId,
         isPublish: this.isPublish
       }
@@ -142,7 +143,7 @@ export default {
           this.fetchData(1)
           this.showUpdateDialog = false
           this.$message.success('操作成功')
-        }else{
+        } else {
           this.$message.error(res.msg)
         }
       })
@@ -159,22 +160,27 @@ export default {
       })
     },
     goTo(type, row) {
+      console.log(row)
       let path = ''
       switch (type) {
         case 'card':
-          path = `/zhaoshang/activity/${row.id}/${row.invesKey}/${2}/card-list`
+          path = { path: `/zhaoshang/activity/${row.id}/${row.invesKey}/${2}/card-list` }
           break
         case 'detail':
-          path = `/zhaoshang/activity/${row.id}/detail`
+          path = { path: `/zhaoshang/activity/${row.id}/detail` }
           break
         case 'verify':
-          path = `/zhaoshang/activity/activity-verify`
+          path = { path: '/zhaoshang/activity/verifyDetail',
+            query: {
+              activityId: row.id,
+              status: 0,
+            } }
           break
         case 'create':
-          path = `/zhaoshang/activity/create`
+          path = { path: '/zhaoshang/activity/create' }
           break
       }
-      this.$router.push({ path })
+      this.$router.push({ ...path })
     },
     // 删除活动
     showDel(row) {
@@ -183,7 +189,7 @@ export default {
     },
     // 删除活动
     delActivity() {
-      let params = {
+      const params = {
         id: this.rowId
       }
       getDeleteActivity(params).then(res => {
@@ -201,7 +207,7 @@ export default {
       this.showSortDialog = true
     },
     updateSort(sortForm) {
-      this.$refs[sortForm].validate((valid) => {
+      this.$refs[sortForm].validate(valid => {
         if (valid) {
           getUpdateActivitySort(this.sortForm).then(response => {
             if (response.state === 1) {
@@ -211,7 +217,7 @@ export default {
               })
               this.fetchData()
               this.showSortDialog = false
-            }else{
+            } else {
               this.$message.error(response.msg)
             }
           })
@@ -220,8 +226,8 @@ export default {
         }
       })
     },
-    ongetInfoList(){
-      getInfoList({status:0}).then((res)=>{
+    ongetInfoList() {
+      getInfoList({ status: 0 }).then(res => {
         this.chamberOptions = res.data || []
       })
     },

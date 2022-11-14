@@ -15,6 +15,8 @@
       :reserve-selection="true"
       v-on="$listeners"
       @selection-change="handleSelectionChange"
+      @select="select"
+      @select-all="selectAll"
     >
 
       <template v-for="col in columnConfig">
@@ -69,6 +71,11 @@ export default {
       default() {
         return []
       }
+    },
+    // 是否开启单选
+    isOPen: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -83,7 +90,7 @@ export default {
       return row.id
     },
     handleSelectionChange(val) {
-      console.log('val', val)
+      // console.log('val', val)
       this.$emit('tableSelect', val)
     },
     // 设置某一行选中
@@ -109,6 +116,21 @@ export default {
     cancelSelect() {
       this.$refs['multipleTable'].clearSelection()
     },
+
+    // 复选框只能选中一个
+    select(selection) {
+      if (!this.isOPen) return
+      if (selection.length > 1) {
+        const del_row = selection.shift()
+        this.$refs.multipleTable.toggleRowSelection(del_row, false)
+      }
+    },
+    selectAll(selection) {
+      if (!this.isOPen) return
+      if (selection.length > 1) {
+        selection.length = 1
+      }
+    }
 
     // toggleSelection(rows) {
     //   console.log('rows', rows)

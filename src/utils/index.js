@@ -37,7 +37,7 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
     let value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
     if (result.length > 0 && value < 10) {
       value = '0' + value
     }
@@ -76,15 +76,10 @@ export function formatTime(time, option) {
     return parseTime(time, option)
   } else {
     return (
-      d.getMonth() +
-      1 +
-      '月' +
-      d.getDate() +
-      '日' +
-      d.getHours() +
-      '时' +
-      d.getMinutes() +
-      '分'
+      d.getMonth() + 1 + '月' +
+        d.getDate() + '日' +
+        d.getHours() + '时' +
+        d.getMinutes() + '分'
     )
   }
 }
@@ -124,4 +119,46 @@ export async function downloadFile({ url, title }) {
   }
   a.click()
   a = null
+}
+
+/**
+ * @param {number} time
+
+ */
+export function timeFormat(time) {
+  if (('' + time).length === 10) {
+    time = parseInt(time) * 1000
+  } else {
+    time = +time
+  }
+  const d = new Date(time)
+  const now = Date.now()
+
+  const diff = (now - d) / 1000
+
+  if (diff < 30) {
+    return '刚刚'
+  } else if (diff < 3600) {
+    // less 1 hour
+    return Math.ceil(diff / 60) + '分钟前'
+  } else if (diff < 3600 * 24) {
+    return Math.ceil(diff / 3600) + '小时前'
+  } else if (diff < 3600 * 24 * 2) {
+    return '昨天' + d.getHours() + ':' + d.getMinutes()
+  }
+
+  if (d.getFullYear() === new Date().getFullYear()) {
+    return (
+      d.getMonth() + 1 + '月' +
+      d.getDate() + '日' +
+      d.getHours() + ':' +
+      d.getMinutes()
+    )
+  } else {
+    return (
+      d.getFullYear() + '年' +
+      d.getMonth() + 1 + '月' +
+      d.getDate() + '日'
+    )
+  }
 }

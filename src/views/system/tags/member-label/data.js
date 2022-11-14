@@ -1,152 +1,200 @@
+// 平台推荐
 const formData = {
   // 标签组名称
-  labelGroupName: "",
+  labelGroupName: '',
   // 标签名称
-  labelName: "",
+  labelName: '',
   // 权重是否为0
-  weightZero: "-1"
-};
+  weightZero: '-1'
+}
 
 const formItem = [
   {
-    label: "标签组",
-    prop: "labelGroupName",
-    type: "input",
+    label: '标签组',
+    prop: 'labelGroupName',
+    type: 'input',
     clearable: true
   },
   {
-    label: "标签",
-    prop: "labelName",
-    type: "input",
+    label: '标签',
+    prop: 'labelName',
+    type: 'input',
     clearable: true
   },
   {
-    label: "权重是否为0",
-    prop: "weightZero",
-    type: "select",
+    label: '权重是否为0',
+    prop: 'weightZero',
+    type: 'select',
     options: [
-      { label: "全部", value: "-1" },
-      { label: "是", value: "1" },
-      { label: "否", value: "0" }
+      { label: '全部', value: '-1' },
+      { label: '是', value: '1' },
+      { label: '否', value: '0' }
     ]
   }
-];
+]
 
 const tableColumn = [
   {
-    label: "标签组",
-    prop: "name"
+    label: '标签组',
+    prop: 'name'
   },
   {
-    label: "标签",
-    prop: "labels",
-    type: "slot",
-    slotName: "labels"
+    label: '标签',
+    prop: 'labels',
+    type: 'slot',
+    slotName: 'labels'
   },
   {
-    label: "权重",
-    prop: "weight",
-    type: "level"
+    label: '权重',
+    prop: 'weight',
+    type: 'level'
   },
   {
-    label: "更新信息",
-    prop: "updateInfo",
-    type: "operator",
-    operatorName: "operatorName",
-    operatorTime: "updatedTs"
+    label: '更新信息',
+    prop: 'updateInfo',
+    type: 'operator',
+    operatorName: 'operatorName',
+    operatorTime: 'updatedTs'
   },
   {
-    label: "操作",
-    prop: "operate",
-    type: "slot",
-    slotName: "operate"
+    label: '操作',
+    prop: 'operate',
+    type: 'slot',
+    slotName: 'operate'
   }
-];
+]
 
+// 商协会创建
 const formData1 = {
   // 标签组名称
-  labelGroupName: "",
+  labelGroupName: '',
   // 标签名称
-  labelName: "",
+  labelName: '',
   // 所属商协会
   sourceCkeyList: -1,
   // 采集状态
-  collectStatus: "-1"
-};
+  collectStatus: '-1'
+}
 
 const formItem1 = [
   {
-    label: "标签组",
-    prop: "labelGroupName",
-    type: "input",
+    label: '标签组',
+    prop: 'labelGroupName',
+    type: 'input',
     clearable: true
   },
   {
-    label: "标签",
-    prop: "labelName",
-    type: "input",
+    label: '标签',
+    prop: 'labelName',
+    type: 'input',
     clearable: true
   },
   {
-    label: "所属商协会",
-    prop: "sourceCkeyList",
+    label: '所属商协会',
+    prop: 'sourceCkeyList',
     filterable: true,
-    type: "select",
+    type: 'select',
     options: []
   },
   {
-    label: "采集状态",
-    prop: "collectStatus",
-    type: "select",
+    label: '采集状态',
+    prop: 'collectStatus',
+    type: 'select',
     options: [
-      { label: "全部", value: "-1" },
-      { label: "已采集", value: "1" },
-      { label: "未采集", value: "0" }
+      { label: '全部', value: '-1' },
+      { label: '已采集', value: '1' },
+      { label: '未采集', value: '0' }
     ]
   }
-];
+]
 
 const tableColumn1 = [
   {
-    label: "标签组",
-    prop: "name"
+    label: '标签组',
+    prop: 'name'
   },
   {
-    label: "标签",
-    prop: "labels",
-    type: "slot",
-    slotName: "labels"
+    label: '标签',
+    prop: 'labels',
+    type: 'slot',
+    slotName: 'labels'
   },
   {
-    label: "所属商协会",
-    prop: "chamberName"
+    label: '所属商协会',
+    prop: 'chamberName'
   },
   {
-    label: "标签使用人数",
-    prop: "useNum",
-    type: "sort"
+    label: '标签使用人数',
+    prop: 'useNum',
+    type: 'sort'
   },
   {
-    label: "采集状态",
-    prop: "collectStatus",
-    type: "function",
+    label: '采集状态',
+    prop: 'collectStatus',
+    type: 'function',
     callback: row => {
-      if (row.collectStatus == 0) {
-        return "未采集";
-      } else if (row.collectStatus == 1) {
-        return "已采集";
+      if (row.collectStatus === 0) {
+        return '未采集'
+      } else if (row.collectStatus === 1) {
+        return '已采集'
       } else {
-        return "--";
+        return '--'
       }
     }
   },
   {
-    label: "操作",
-    prop: "operate",
-    type: "slot",
-    slotName: "operate"
+    label: '操作',
+    prop: 'operate',
+    type: 'slot',
+    slotName: 'operate'
   }
-];
+]
+
+// 招商办理创建
+const formData2 = {
+  // 标签组名称
+  labelGroupName: '',
+  // 标签名称
+  labelName: '',
+}
+
+const formItem2 = [
+  {
+    label: '标签组',
+    prop: 'labelGroupName',
+    type: 'input',
+    clearable: true
+  },
+  {
+    label: '标签',
+    prop: 'labelName',
+    type: 'input',
+    clearable: true
+  }
+]
+
+const tableColumn2 = [
+  {
+    label: '标签组',
+    prop: 'name'
+  },
+  {
+    label: '标签',
+    prop: 'labels',
+    type: 'slot',
+    slotName: 'labels'
+  },
+  {
+    label: '所属招商办',
+    prop: 'chamberName'
+  },
+  {
+    label: '操作',
+    prop: 'operate',
+    type: 'slot',
+    slotName: 'operate'
+  }
+]
 
 export default {
   formItem,
@@ -154,5 +202,8 @@ export default {
   tableColumn,
   formItem1,
   formData1,
-  tableColumn1
-};
+  tableColumn1,
+  formData2,
+  formItem2,
+  tableColumn2
+}

@@ -2,7 +2,7 @@
   <div>
     <kdDialog
       ref="kdDialog"
-      dialog-width="40%"
+      dialog-width="70%"
       :custom-footer="true"
       :center="true"
       :dialog-title="dialogTitle"
