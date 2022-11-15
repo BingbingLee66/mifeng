@@ -3,7 +3,8 @@
     <div v-for="card in cardList" :key="card.label" class="card-box">
       <div class="title">
         <div>{{ card.label }}</div>
-        <el-tooltip effect="dark" :content="card.label" placement="top">
+        <el-tooltip effect="dark" placement="top">
+          <p slot="content" style="white-space: pre-wrap; line-height: 25px">{{ card.tips }}</p>
           <div class="el-icon-warning-outline" />
         </el-tooltip>
       </div>
@@ -20,7 +21,7 @@
           <div>{{ card.contentLabelSecond }}</div>
           <div>{{ card.contentValSecond }}{{ card.unitSecond }}</div>
         </div>
-        <el-progress v-if="card.progress" :percentage="50" :stroke-width="13" />
+        <el-progress v-if="card.progress" :percentage="card.contentValSecond" :stroke-width="13" />
       </div>
       <div class="line mt10" />
       <div class="day-collect">

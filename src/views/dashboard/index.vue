@@ -1,7 +1,7 @@
 <template>
   <div>
-    <myTodo />
-    <cardList :card-list="cardList" />
+    <myTodo :message-list="messageList" />
+    <cardList v-if="ckey" :card-list="cardList" />
     <toolBar />
   </div>
 </template>
