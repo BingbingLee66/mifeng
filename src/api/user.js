@@ -5,8 +5,8 @@ export function login(data) {
     url: '/user/login',
     method: 'post',
     params: {
-      'username': data.username,
-      'password': data.password
+      username: data.username,
+      password: data.password
     }
   })
 }
@@ -18,13 +18,13 @@ export function getInfo() {
   })
 }
 
-export function logout(token) {
+export function logout() {
   return request({
     url: '/user/logout',
     method: 'post'
   })
 }
-//官方账号列表
+// 官方账号列表
 export function officialUserList(params) {
   return request({
     url: '/ec/official-user/officialUserList',
@@ -32,7 +32,7 @@ export function officialUserList(params) {
     params
   })
 }
-//筛选可添加为官方账号的用户账号
+// 筛选可添加为官方账号的用户账号
 export function availableWxUser(params) {
   return request({
     url: '/ec/official-user/availableWxUser',
@@ -40,7 +40,7 @@ export function availableWxUser(params) {
     params
   })
 }
-//添加官方账号
+// 添加官方账号
 export function addOfficial(data) {
   return request({
     url: '/ec/official-user/add',
@@ -48,22 +48,22 @@ export function addOfficial(data) {
     data
   })
 }
-//删除官方账号
+// 删除官方账号
 export function deleteOfficial(id) {
   return request({
     url: `/ec/official-user/delete/${id}`,
     method: 'delete',
   })
 }
-//分页查询发布者信息
+// 分页查询发布者信息
 let requestFlag = true
-let result;
+let result
 export function getPromulgator(params) {
   if (requestFlag) {
     requestFlag = false
     setTimeout(() => {
       requestFlag = true
-    }, 100);
+    }, 100)
     result = request({
       url: '/ec/dynamic-record/getPromulgator',
       method: 'get',
@@ -79,5 +79,23 @@ export function getAdminUserList(params) {
     url: '/ec/public/getAdminUserList',
     method: 'get',
     params
+  })
+}
+
+// 社会组织模糊查询
+export function getSocialOrg(params) {
+  return request({
+    url: '/ec/socialOrg/non-stationed/list',
+    method: 'get',
+    params
+  })
+}
+
+// 注册
+export function register(data) {
+  return request({
+    url: '/ec/user/register',
+    method: 'post',
+    data
   })
 }
