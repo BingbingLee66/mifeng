@@ -136,7 +136,7 @@ export default {
       countryOptions: [],
       areaData: null,
       // 直播活动ckey
-      ruleCkeys: ['nJ3VNk', 'Jtn1w3', '3cWTv8', 'fIk3Ay', 'EbOpOz', 'q7fiqR', 'bSQk8X', 'Ip2cCA', 'jrLpdn'],
+      ruleCkeys: ['nJ3VNk', 'Jtn1w3', '3cWTv8', 'fIk3Ay', 'EbOpOz', 'q7fiqR', 'bSQk8X', 'Ip2cCA', 'jrLpdn', 'ruvMTW'],
       rules: {
         activityName: [
           { required: true, message: '活动名称不能为空', trigger: 'blur' },
