@@ -174,6 +174,9 @@ export default {
             },
             {
               itemName: '缴费记录'
+            },
+            {
+              itemName: '缴费记录'
             }
           ]
         }
@@ -271,6 +274,12 @@ export default {
   .grid-item {
     padding: 20px;
     background-color: #ebebeb;
+    .content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+    }
     .el-icon-close {
       position: absolute;
       top: 10px;
@@ -282,11 +291,12 @@ export default {
       display: flex;
     }
     .item-body {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: 50px;
+      grid-row-gap: 50px;
       .body-item {
-        margin: 40px 10%;
+        text-align: center;
       }
     }
   }
