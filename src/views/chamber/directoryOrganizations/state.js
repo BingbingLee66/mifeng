@@ -20,6 +20,7 @@ export const inSource = [
   { label: '小程序名录', value: 3 },
   { label: 'app', value: 4 },
   { label: 'APP名录', value: 5 },
+  { label: '邀请码注册', value: 6 },
 ]
 export const inSourceObj = conversionObj(inSource)
 // 入驻状态
@@ -28,6 +29,7 @@ export const inState = [
   { label: '待审核', value: 0 },
   { label: '已认证', value: 1 },
   { label: '驳回', value: 2 },
+
 ]
 export const stateMap = new Map([
   [-1, '待入驻'],
@@ -41,6 +43,7 @@ export const dataSource = [
   { label: '页面录入', value: 1 },
   { label: '导入', value: 2 },
   { label: '抓取', value: 3 },
+  { label: '邀请码注册', value: 4 },
 ]
 export const dataSourceObj = conversionObj(dataSource)
 // 组织状态
