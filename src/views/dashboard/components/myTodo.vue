@@ -1,5 +1,5 @@
 <template>
-  <Panel class="org-count-wrap">
+  <Panel class="myTodo-wrap">
     <div class="panel-header">
       <div class="panel-title-box">
         <div class="panel-title">我的待办</div>

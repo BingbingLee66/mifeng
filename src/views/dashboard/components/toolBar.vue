@@ -32,8 +32,20 @@
         >
           <div class="content">
             <div v-if="isEdit" class="el-icon-close" @click="removeItem(item)" />
-            {{ item.i }}
+            <div class="item-header">
+              <div class="el-icon-edit" />
+              <div>{{ item.title }}</div>
+            </div>
+            <div class="item-body">
+              <div v-for="childItem in item.childList" :key="childItem.index" class="body-item">
+                {{ childItem.itemName }}
+              </div>
+            </div>
           </div>
+        </GridItem>
+        <GridItem :x="4" :y="2" :w="4" :h="2" class="grid-item wrap-add">
+          <div class="el-icon-plus icon-add" />
+          <div>添加工具箱</div>
         </GridItem>
       </GridLayout>
     </div>
@@ -55,9 +67,116 @@ export default {
     return {
       isEdit: false,
       layout: [
-        { x: 0, y: 0, w: 4, h: 2, i: 0 },
-        { x: 0, y: 0, w: 2, h: 2, i: 1 },
-        { x: 0, y: 0, w: 12, h: 2, i: 2 },
+        {
+          x: 0,
+          y: 0,
+          w: 4,
+          h: 2,
+          i: 0,
+          title: '入会审核',
+          childList: [
+            {
+              itemName: '添加会员'
+            },
+            {
+              itemName: '资料修改'
+            },
+            {
+              itemName: '添加会员'
+            },
+            {
+              itemName: '缴费记录'
+            }
+          ]
+        },
+        {
+          x: 4,
+          y: 0,
+          w: 4,
+          h: 2,
+          i: 1,
+          title: '入会审核',
+          childList: [
+            {
+              itemName: '添加会员'
+            },
+            {
+              itemName: '资料修改'
+            },
+            {
+              itemName: '添加会员'
+            },
+            {
+              itemName: '缴费记录'
+            }
+          ]
+        },
+        {
+          x: 8,
+          y: 0,
+          w: 4,
+          h: 2,
+          i: 2,
+          title: '入会审核',
+          childList: [
+            {
+              itemName: '添加会员'
+            },
+            {
+              itemName: '资料修改'
+            },
+            {
+              itemName: '添加会员'
+            },
+            {
+              itemName: '缴费记录'
+            }
+          ]
+        },
+        {
+          x: 0,
+          y: 0,
+          w: 2,
+          h: 2,
+          i: 3,
+          title: '入会审核',
+          childList: [
+            {
+              itemName: '添加会员'
+            },
+            {
+              itemName: '资料修改'
+            },
+            {
+              itemName: '添加会员'
+            },
+            {
+              itemName: '缴费记录'
+            }
+          ]
+        },
+        {
+          x: 0,
+          y: 0,
+          w: 12,
+          h: 2,
+          i: 4,
+          title: '入会审核',
+          childList: [
+            {
+              itemName: '添加会员'
+            },
+            {
+              itemName: '资料修改'
+            },
+            {
+              itemName: '添加会员'
+            },
+            {
+              itemName: '缴费记录'
+            }
+          ]
+        }
       ]
     }
   },
@@ -129,7 +248,6 @@ export default {
 
 <style lang="scss" scoped>
 .tool-bar-wrap {
-
   .panel-header {
     display: flex;
     justify-content: space-between;
@@ -150,11 +268,9 @@ export default {
     padding: 10px;
     cursor: pointer;
   }
-
   .grid-item {
-    position: relative;
-    background: #ccc;
-
+    padding: 20px;
+    background-color: #ebebeb;
     .el-icon-close {
       position: absolute;
       top: 10px;
@@ -162,7 +278,30 @@ export default {
       font-size: 20px;
       cursor: pointer;
     }
+    .item-header {
+      display: flex;
+    }
+    .item-body {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      .body-item {
+        margin: 40px 10%;
+      }
+    }
   }
-
+  .wrap-add {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fafafa;
+    color: #2c2c2c;
+    .icon-add {
+      font-size: 80px;
+      color: #b7b7b7;
+      margin-bottom: 10px;
+    }
+  }
 }
 </style>
