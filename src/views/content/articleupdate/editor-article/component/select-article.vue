@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-dialog title="请选择文章" :visible.sync="detailVisible" width="50%">
-      <el-form :inline="true" :model="formObj">
+      <el-form :inline="true">
         <el-form-item label="文章标题:">
           <el-input
-            v-model="formObj.title"
+            v-model="title"
             clearable
             style="width: 400px;"
           />
@@ -19,6 +19,7 @@
       </el-form>
 
       <el-table
+        :key="random"
         v-loading="listLoading"
         style="margin-top: 20px"
         :data="list"
@@ -32,13 +33,13 @@
           width="55"
         >
           <template slot-scope="scope">
-            <el-checkbox v-model="scope.row.checked" />
+            <el-checkbox v-model="scope.row.checked" @change="handleChange(scope.row)" />
           </template>
         </el-table-column>
-        <el-table-column prop="templateCode" label="文章ID" align="center" />
+        <el-table-column prop="id" width="100" label="文章ID" align="center" />
         <el-table-column label="文章标题" align="center">
           <template slot-scope="scope">
-            <div class="pre">{{ scope.row.content }}</div>
+            <div class="pre">{{ scope.row.title }}</div>
           </template>
         </el-table-column>
       </el-table>
@@ -56,46 +57,54 @@
       />
       <div class="btn">
         <el-button @click.native="close">取消</el-button>
-        <el-button v-dbClick type="primary" @click="save">保存</el-button>
+        <el-button v-dbClick type="primary" @click="confirm">保存</el-button>
       </div>
-    </el-dialog></div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
+import { officialAccountArticleList } from '@/api/content/officialAccount'
 export default {
-
   data() {
     return {
       detailVisible: false, // 开启表格
-      formObj: {
-        title: ''
-      },
+      title: '',
       listLoading: false,
       list: [],
       currentpage: 1,
       limit: 10,
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
+      tableData: [], // 选中文章数组
+      random: 1, // 动态改变table视图
     }
   },
   methods: {
     // 打开
     open(item) {
       console.log('item', item)
+      this.tableData = item
       this.show()
     },
-    save() {
-      this.$emit('save')
+    // 确定
+    confirm() {
+      console.log('this.tableData', this.tableData)
+      if (this.tableData.length > 8) return this.$message.error('最多只能选择7篇文章')
+      if (this.tableData.length <= 1) return this.$message.error('请至少选择一篇文章')
+      this.$emit('confirm', this.tableData)
     },
     // 展示
     show() {
       this.detailVisible = true
+      this.fetchData(true)
     },
     // 关闭
     close() {
       this.detailVisible = false
       this.limit = 10
       this.currentpage = 1
+      this.title = ''
       this.list = []
     },
     handleSizeChange(val) {
@@ -109,17 +118,33 @@ export default {
     // 查询表格
     async fetchData(reset) {
       if (reset) this.currentpage = 1
-      // this.listLoading = true
-      // const parmas = {
-      //   ckey: this.formobj.title,
-      //   pageSize: this.limit,
-      //   page: this.currentpage,
-      // }
-      // const res = await distributionTemplates(parmas)
-      // this.listLoading = false
-      // this.list = res.data.list || []
-      // this.total = res.data.totalRows || 0
+      this.listLoading = true
+      const parmas = {
+        pageSize: this.limit,
+        page: this.currentpage,
+        title: this.title
+      }
+      const res = await officialAccountArticleList(parmas)
+      this.listLoading = false
+      this.list = res.data.list || []
+      this.total = res.data.totalRows || 0
+      this.list.forEach(v => {
+        v.checked = false
+        this.tableData.forEach(j => {
+          if (j.id === v.id) v.checked = true
+        })
+      })
     },
+
+    // 选中表格
+    handleChange(row) {
+      console.log('e', row)
+      const index = this.list.findIndex(item => item.id === row.id)
+      this.$set(this.list[index], 'checked', row.checked)
+      this.$forceUpdate()
+      this.random = Math.random()
+      console.log('index', index, this.list)
+    }
 
   },
 }

@@ -105,12 +105,12 @@
               <el-radio-group v-model="formObj.type">
                 <el-radio :label="1">
                   <img class="cover-img" src="https://ysh-cdn.kaidicloud.com/prod/png/association.png">
-                  <span>云商会</span>
+                  <span style="margin-left: 5px;">云商会</span>
                 </el-radio>
 
                 <el-radio :label="2">
-                  <img class="cover-img" src="https://ysh-cdn.kaidicloud.com/prod/png/association.png">
-                  <span>公众号</span>
+                  <img class="cover-img" src="https://ysh-cdn.kaidicloud.com/prod/png/weixin.png">
+                  <span style="margin-left: 5px;">公众号</span>
                 </el-radio>
               </el-radio-group>
             </div>
@@ -323,15 +323,15 @@
                   </el-radio-group>
                 </div>
               </el-row>
-              <el-button type="primary" style="margin-left:10px" @click="onSelectArticle">选择更多文章</el-button>
+              <el-button type="primary" :disabled="formObj.tableData.length >= 8" style="margin-left:10px" @click="onSelectArticle">选择更多文章</el-button>
               <!-- 文章数组 -->
               <div class="article_news">
-                <div v-for="(item,index) in formObj.list" :key="index" class="article_news-boxes">
+                <div v-for="(item,index) in formObj.tableData" :key="index" class="article_news-boxes">
                   <div class="news-boxes-left">
                     <!-- 数组第一个数据 -->
                     <div v-if="index == 0" class="news-boxes-frist">
                       <div class="frist-essay">
-                        <img class="frist-essay-img" :src="item.accountUrl" alt="">
+                        <img class="frist-essay-img" :src="item.img || imgUrl" alt="">
                         <div class="frist-pre-btn">
                           {{ item.title || '暂无标题' }}
                         </div>
@@ -346,7 +346,7 @@
                     <!-- 后面7条文章数据 -->
                     <div v-else class="news-boxes-frist news-boxes-rear">
                       <div class="news-boxes-topic"> {{ item.title || '暂无标题' }}</div>
-                      <img class="boxes-rear-img" :src="item.accountUrl" alt="">
+                      <img class="boxes-rear-img" :src="item.img || imgUrl2" alt="">
                     </div>
                   </div>
                   <div class="news-boxes-right">
@@ -355,7 +355,7 @@
                     <!-- 删除 -->
                     <i class="el-icon-close" @click="down(index)" />
                     <!-- 下移 -->
-                    <i v-if="formObj.list.length - 1 != index" class="el-icon-bottom" @click="down(index)" />
+                    <i v-if="formObj.tableData.length - 1 != index" class="el-icon-bottom" @click="down(index)" />
                   </div>
                 </div>
               </div>
@@ -389,7 +389,7 @@
       </div>
     </kdDialog>
     <!-- 选择文章 -->
-    <selectArticle ref="selectArticle" />
+    <selectArticle ref="selectArticle" on-confirm-confirm="" />
   </div>
 
 </template>
@@ -563,10 +563,10 @@ font-family: '微软雅黑', sans-serif;
       justify-content: center;
       flex-direction: column;
       margin-left:20px;
-      font-size: 30px;
+      font-size: 25px;
     }
     .news-boxes-left{
-      width: 70%;
+      width: 450px;
       .news-boxes-frist{
         border: 1px dashed #d9d9d9;
         border-radius: 6px;
@@ -609,7 +609,7 @@ font-family: '微软雅黑', sans-serif;
         display: flex;
         align-items: end;
         justify-content: space-between;
-        height: 100px;
+        height: 110px;
         .news-boxes-topic{
           width: 70%;
           overflow: hidden;
@@ -621,7 +621,7 @@ font-family: '微软雅黑', sans-serif;
         }
         .boxes-rear-img{
           height: 100%;
-          width: 25%;
+          width: 88px;
         }
       }
     }

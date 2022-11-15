@@ -10,7 +10,6 @@ import selectArticle from './component/select-article'
 import kdDialog from '@/components/common/kdDialog'
 import videoComponent from '@/components/video/index'
 import videoUpLoad from '@/components/video/upLoad'
-import imgUrl from '@/assets/img/avatar.gif'
 export default {
   components: {
     Ckeditor,
@@ -51,11 +50,7 @@ export default {
           link: '', // 原文链接
           publish: 1, // 1.理解发布  2.暂不发布
         },
-        list: [
-          { title: '文章标题不能为空', accountUrl: '	https://ysh-cdn.kaidicloud.com/ysh-dev2/articleCoverImg/4e2b877f17b8439f8f42e5385d11ad9d.png' },
-          { title: '文章标题不能为空222222', accountUrl: '	https://ysh-cdn.kaidicloud.com/ysh-dev2/articleCoverImg/4e2b877f17b8439f8f42e5385d11ad9d.png' },
-          { title: '文章标题不能为空3333333333333333333', accountUrl: '	https://ysh-cdn.kaidicloud.com/ysh-dev2/articleCoverImg/4e2b877f17b8439f8f42e5385d11ad9d.png' }
-        ]
+        tableData: []
       },
       articleId: '',
       coverImgs: ['', '', ''],
@@ -78,7 +73,8 @@ export default {
       },
       articleUrl: '',
       committee: false,
-      imgUrl,
+      imgUrl: 'https://ysh-cdn.kaidicloud.com/prod/png/defauil_Accounts.png',
+      imgUrl2: 'https://ysh-cdn.kaidicloud.com/prod/png/defauil_Accounts2.png',
     }
   },
   mounted() {
@@ -89,16 +85,24 @@ export default {
     if (this.$route.query.committee) {
       this.committee = true
     }
+
     if (this.$route.query.articleId) {
       // console.log(this.$route.params.articleId)
       this.articleId = this.$route.query.articleId
       this.init()
     } else {
-      // this.$refs.ueditor.setContent(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      // this.$refs.ckeditor1.init()
-      // setTimeout(() => {
-      //   this.$refs.ckeditor1.initHtml(this.formObj.contentHtml === null ? '' : this.formObj.contentHtml)
-      // }, 500)
+      this.formObj.tableData.push({
+        title: '',
+        id: 0,
+        img: ''
+      })
+    }
+
+    // 如果有缓存则拿取缓存数据
+    const formObj = JSON.parse(window.localStorage.getItem('editor-article'))
+    if (formObj) {
+      console.log('formObj', formObj)
+      window.localStorage.removeItem('editor-article')
     }
   },
   computed: {},
@@ -109,13 +113,21 @@ export default {
   watch: {
     'formObj.title': {
       handler(newValue) {
-        console.log('title', newValue)
+        if (newValue) {
+          this.formObj.tableData.forEach(v => {
+            if (v.id === 0) v.title = newValue
+          })
+        }
       },
       // immediate: true,
     },
     'formObj.accountDTO.accountUrl': {
       handler(newValue) {
-        console.log('accountUrl', newValue)
+        if (newValue) {
+          this.formObj.tableData.forEach(v => {
+            if (v.id === 0) v.img = newValue
+          })
+        }
       },
     },
   },
@@ -249,6 +261,7 @@ export default {
     addParentHtml(html) {
       this.formObj.contentHtml = html
     },
+    // 发送
     save() {
       // 如果 编辑的情况下 有视频 但是没视频封面 提示
       if (this.articleId && this.formObj.vid && !this.formObj.videoCoverURL) return this.$message.error('请上传视频封面')
@@ -257,38 +270,55 @@ export default {
       // return;
       this.$refs['form'].validate(valid => {
         if (valid) {
-          if (this.formObj.coverType === 0) {
-            this.formObj.coverImgs = []
-          }
-          // this.formObj['contentHtml'] = this.$refs.ueditor.content
-          this.formObj['istop'] = false // 商会发布文章不开放置顶
-          this.formObj['ckey'] = this.$store.getters.ckey
-          this.formObj['contentModuleId'] = this.activeName
-          // 判断是否为商委会的
-          this.formObj['articleType'] = this.committee === true ? 1 : 0
-          // 判断是否输入全为空格
-          const isAllEmpty = this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4).replaceAll('&nbsp;', '').split('').every(item => item === ' ')
-          if (isAllEmpty) return this.$message.error('不能提交全为空格的内容！')
-          console.log(this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4))
-          save(this.formObj).then(response => {
-            if (response.state === 1) {
-              this.$message({
-                message: '操作成功',
-                type: 'success'
-              })
-              this.closeTab()
-            } else {
-              this.$message({
-                message: response.msg,
-                type: 'error'
-              })
-            }
-          })
+          this.emsCnpl()
         } else {
           return false
         }
       })
     },
+
+    // 接口参数提交
+    submit() {
+      if (this.formObj.coverType === 0) {
+        this.formObj.coverImgs = []
+      }
+      // this.formObj['contentHtml'] = this.$refs.ueditor.content
+      this.formObj['istop'] = false // 商会发布文章不开放置顶
+      this.formObj['ckey'] = this.$store.getters.ckey
+      this.formObj['contentModuleId'] = this.activeName
+      // 判断是否为商委会的
+      this.formObj['articleType'] = this.committee === true ? 1 : 0
+      // 判断是否输入全为空格
+      const isAllEmpty = this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4).replaceAll('&nbsp;', '').split('').every(item => item === ' ')
+      if (isAllEmpty) return this.$message.error('不能提交全为空格的内容！')
+      save(this.formObj).then(response => {
+        if (response.state === 1) {
+          this.$message({
+            message: '操作成功',
+            type: 'success'
+          })
+          this.closeTab()
+        } else {
+          this.$message({
+            message: response.msg,
+            type: 'error'
+          })
+        }
+      })
+    },
+    emsCnpl() {
+      this.$confirm('您未授权公众号，本次将只发布到云商会', '提示', {
+        confirmButtonText: '去授权',
+        cancelButtonText: '只发布到云商会',
+
+      }).then(() => {
+        console.log('11111111')
+        // window.location.href = this.skipPath
+      }).catch(() => {
+        this.submit()
+      })
+    },
+
     getHtml(htmlStr) {
       /* htmlStr = htmlStr.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, (match, capture) => {
         capture = capture.replace(/\s*!/g, '')
@@ -401,31 +431,36 @@ export default {
     },
     // 点击选择文章
     onSelectArticle() {
-      this.$refs['selectArticle'].open()
+      this.$refs['selectArticle'].open(this.formObj.tableData)
+    },
+    // 选择文章确定
+    onConfirm(e) {
+      console.log('e', e)
+      this.formObj.tableData = e
     },
     // 删除
     del(index) {
-      this.formObj.list.splice(index, 1)
+      this.formObj.tableData.splice(index, 1)
     },
     // 上移
     up(index) {
       if (index === 0) {
         return
       } else {
-        const data = this.formObj.list[index]
-        this.formObj.list[index] = this.formObj.list[index - 1]
-        this.formObj.list[index - 1] = data
+        const data = this.formObj.tableData[index]
+        this.formObj.tableData[index] = this.formObj.tableData[index - 1]
+        this.formObj.tableData[index - 1] = data
         this.$forceUpdate()
       }
     },
     // 下移
     down(index) {
-      if (index === this.formObj.list.length - 1) {
+      if (index === this.formObj.tableData.length - 1) {
         return
       } else {
-        const data = this.formObj.list[index]
-        this.formObj.list[index] = this.formObj.list[index + 1]
-        this.formObj.list[index + 1] = data
+        const data = this.formObj.tableData[index]
+        this.formObj.tableData[index] = this.formObj.tableData[index + 1]
+        this.formObj.tableData[index + 1] = data
         this.$forceUpdate()
       }
     },
