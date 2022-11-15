@@ -1,7 +1,7 @@
 import Panel from '../../components/panel'
 import myTodo from './components/myTodo'
 import cardList from './components/cardList'
-import toolBar from './components/toolBar'
+import ToolBar from './components/ToolBar'
 import {
   getPendingItems,
   getChamberMembers,
@@ -15,7 +15,7 @@ export default {
   components: {
     myTodo,
     cardList,
-    toolBar,
+    ToolBar,
     Panel
   },
   data() {
