@@ -5,7 +5,6 @@
       <el-tab-pane label="授权账号" name="2" />
     </el-tabs>
     <el-button v-if="type == 2 && list.length == 0" type="primary" @click="onBinding">授权公众号</el-button>
-    <!-- <el-button type="primary" @click="onRelieve">解除授权</el-button> -->
     <el-table
       :key="random"
       v-loading="listLoading"
@@ -130,6 +129,7 @@ export default {
   },
   created() {
     console.log('this.$route.query1111111111111', this.$route.query)
+    // 授权处理完 调起查询授权信息
     if (this.$route.query.auth_code) {
       this.type = '2'
       this.auth_code = this.$route.query.auth_code
@@ -185,7 +185,6 @@ export default {
       const parmas = {
         pageSize: this.limit,
         page: this.currentpage,
-        size: this.limit,
         ckey: this.type === '1' ? this.$store.getters.ckey : ''
       }
       const res = await APi(parmas)
@@ -202,7 +201,7 @@ export default {
         platformType: 0
       }
       await officialAccountAuthInfo(parmas)
-      this.fetchData()
+      this.fetchData(true)
     },
     // 点击授权
     onBinding() {
@@ -210,7 +209,6 @@ export default {
     },
     // 确定授权
     onSave() {
-      console.log('this.link', this.link)
       window.location.href = this.link
     },
 
@@ -222,7 +220,6 @@ export default {
       }).then(() => {
 
       }).catch(async () => {
-        console.log(111111111)
         const parmas = {
           id: row.id
         }

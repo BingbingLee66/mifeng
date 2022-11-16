@@ -267,7 +267,7 @@
           <!--  公众号内容 -->
           <div v-if="formObj.type == 2">
             <!-- <div class="impower">
-              您未授权公众号,  <el-link type="primary">立即授权</el-link>
+              您未授权公众号,  <el-link type="primary" @click="goHref" >立即授权</el-link>
             </div> -->
             <div>
               <div class="hd">1、封面设置</div>
@@ -367,8 +367,8 @@
     </div>
 
     <div class="article-btn">
-      <el-button @click="closeTab">取消</el-button>
-      <el-button v-dbClick type="primary" @click="save">发布</el-button>
+      <el-button :loading="btnLoading" @click="closeTab">取消</el-button>
+      <el-button v-dbClick type="primary" :loading="btnLoading" @click="save">发布</el-button>
     </div>
 
     <addColumn ref="addColumnRef" />

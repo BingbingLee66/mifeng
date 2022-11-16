@@ -1,4 +1,5 @@
 import { getUpdateDetail, uploadCoverImg, save, getWechatContent, queryVideo } from '@/api/content/article'
+import { officialAccountUrl } from '@/api/content/officialAccount'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
@@ -57,6 +58,7 @@ export default {
       uploadIndex: 0,
       activeName: '5',
       loading: false,
+      btnLoading: false, // 点击发送加载
       // 当前预览的图片
       currentImg: '',
       // 轮询定时器
@@ -75,6 +77,7 @@ export default {
       committee: false,
       imgUrl: 'https://ysh-cdn.kaidicloud.com/prod/png/defauil_Accounts.png',
       imgUrl2: 'https://ysh-cdn.kaidicloud.com/prod/png/defauil_Accounts2.png',
+      link: '', // 外部公众号跳转链接
     }
   },
   mounted() {
@@ -109,6 +112,7 @@ export default {
   created() {
     const { roleName } = this.$store.getters.profile
     if (roleName === '专业委员会') this.committee = true
+    this.externalLinks()
   },
   watch: {
     'formObj.title': {
@@ -224,6 +228,7 @@ export default {
           const dataObj = response.data.dtl
           // const htmlObj = dataObj.contentHtml
           this.formObj = {
+            type: 1,
             id: dataObj.id,
             title: dataObj.title,
             contentColumnId: dataObj.contentColumnId,
@@ -270,7 +275,9 @@ export default {
       // return;
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.btnLoading = true
           this.emsCnpl()
+          this.btnLoading = false
         } else {
           return false
         }
@@ -297,7 +304,22 @@ export default {
             message: '操作成功',
             type: 'success'
           })
-          this.closeTab()
+          // 退出当前tab, 打开指定tab
+          const tagsViews = this.$store.state.tagsView.visitedViews
+          // let selectView = null
+          for (const view of tagsViews) {
+            if (view.path === this.$route.path) {
+              this.$store.dispatch('tagsView/delView', view).then(() => {
+                this.$router.push({
+                  name: '公众号',
+                  query: {
+                    articleId: 8785
+                  }
+                })
+              })
+              break
+            }
+          }
         } else {
           this.$message({
             message: response.msg,
@@ -312,11 +334,14 @@ export default {
         cancelButtonText: '只发布到云商会',
 
       }).then(() => {
-        console.log('11111111')
-        // window.location.href = this.skipPath
+        this.goHref()
       }).catch(() => {
         this.submit()
       })
+    },
+    // 跳转公众号授权
+    goHref() {
+      window.location.href = this.link
     },
 
     getHtml(htmlStr) {
@@ -463,6 +488,16 @@ export default {
         this.formObj.tableData[index + 1] = data
         this.$forceUpdate()
       }
+    },
+    // 公众号外部链接
+    async externalLinks() {
+      const parmas = {
+        deviceType: 0, // 设备类型：0-PC, 1-H5
+        platformType: 0, // 平台类型： 0-微信公众号
+      }
+
+      const res = await officialAccountUrl(parmas)
+      this.link = res.data
     },
   }
 }
