@@ -1,9 +1,9 @@
 <template>
-  <Panel class="tool-bar-wrap">
+  <Panel class="tool-bar-wrap" :has-padding="false">
     <div class="panel-header">
       <div class="panel-title">快捷工具栏</div>
       <div>
-        <el-button v-if="isEdit" type="primary" @click="showModal = true">添加</el-button>
+        <el-button v-if="isEdit" type="text" @click="onAddItem"><i class="el-icon-plus ml-10" />添加</el-button>
         <div class="el-icon-edit-outline" @click="onEdit" />
       </div>
     </div>
@@ -16,6 +16,7 @@
         :is-resizable="false"
         :vertical-compact="true"
         :use-css-transforms="true"
+        :margin="[1, 1]"
       >
         <GridItem
           v-for="item in layout"
@@ -25,19 +26,21 @@
           :y="item.y"
           :w="item.w"
           :h="item.h"
-          :min-w="2"
+          :min-w="1"
           :min-h="2"
           :i="item.i"
-          :margin="[20, 20]"
           @moved="onMoved"
         >
           <div class="content">
             <div class="item-header">
+              <div class="icon">
+                <svg-icon width="50" height="50" :icon-class="item.icon" color="#fff" />
+              </div>
               <div>{{ item.menuName }}</div>
-              <div v-if="isEdit" class="el-icon-close" @click="removeItem(item)" />
+              <div v-if="isEdit" class="el-icon-close" @click.stop="removeItem(item)" />
             </div>
             <div class="item-body">
-              <div v-for="childItem in item.children" :key="childItem.index" class="body-item" @click="goTo(childItem.menuUrl)">
+              <div v-for="(childItem, index) in item.children" :key="index" class="body-item" @click="onClickItem(item, childItem)">
                 {{ childItem.menuName }}
               </div>
             </div>
@@ -46,7 +49,7 @@
       </GridLayout>
     </div>
 
-    <MaterialModal :visible.sync="showModal" :layout="layout" @success="fetchMenuList" />
+    <MaterialModal :visible.sync="showModal" :form="formModel" :layout="layout" @success="fetchMenuList" />
   </Panel>
 </template>
 
@@ -68,7 +71,11 @@ export default {
     return {
       showModal: false,
       isEdit: false,
-      layout: []
+      layout: [],
+      formModel: {
+        firstMenu: '',
+        secondMenu: [{ value: '' }]
+      }
     }
   },
   computed: {
@@ -82,7 +89,8 @@ export default {
   methods: {
     async initAddData() {
       try {
-        const initIds = this.allMenuList.filter(v => ['会员管理', '内容管理', '活动管理'].includes(v.name)).map(v => v.id)
+        const defaultMenu = ['会员管理', '内容管理', '活动管理']
+        const initIds = this.allMenuList.filter(v => defaultMenu.includes(v.name)).map(v => v.id)
         if (!initIds.length) return
 
         const { state } = await initAddToolBar(initIds)
@@ -112,6 +120,33 @@ export default {
       } catch (e) {
         console.error(e)
       }
+    },
+
+    onClickItem(item, childItem) {
+      if (!this.isEdit) {
+        this.$router.push({
+          path: childItem.menuUrl,
+        })
+        return
+      }
+
+      this.formModel.firstMenu = item.menuId
+      this.formModel.secondMenu = item.children.map((v, i) => {
+        return {
+          value: v.menuId,
+          key: i
+        }
+      })
+
+      this.showModal = true
+    },
+
+    onAddItem() {
+      this.formModel = {
+        firstMenu: '',
+        secondMenu: [{ value: '' }]
+      }
+      this.showModal = true
     },
 
     onEdit() {
@@ -167,12 +202,6 @@ export default {
       }
     },
 
-    goTo(url) {
-      this.$router.push({
-        path: url,
-      })
-    }
-
   }
 }
 </script>
@@ -183,15 +212,16 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: relative;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e8e8e8;
+    height: 55px;
+    padding: 0 24px;
+    box-sizing: border-box;
   }
 
   .panel-title {
-    padding: 0 20px;
-    display: flex;
-    align-items: center;
+    font-size: 16px;
+    font-weight: bolder;
+    color: rgba(0,0,0,0.85);
+    line-height: 24px;
   }
 
   .el-icon-edit-outline {
@@ -199,33 +229,57 @@ export default {
     padding: 10px;
     cursor: pointer;
   }
+
   .grid-item {
-    padding: 20px;
-    background-color: #ebebeb;
+    background-color: #fff;
+    border: 1px solid #E9E9E9;
+    box-sizing: content-box;
 
     .content {
       height: 100%;
     }
 
-    .el-icon-close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
     .item-header {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      font-size: 14px;
+      font-weight: bolder;
+      color: rgba(0,0,0,0.85);
+      line-height: 22px;
+
+      .icon {
+        background: #FFCF5B;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        margin-right: 8px;
+      }
+
+      .el-icon-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        cursor: pointer;
+      }
     }
 
     .item-body {
       display: grid;
       grid-template-columns: 1fr 1fr;
       grid-column-gap: 50px;
-      grid-row-gap: 50px;
+      grid-row-gap: 12px;
+
       .body-item {
         text-align: center;
         cursor: pointer;
+        font-size: 14px;
+        color: rgba(0,0,0,0.65);
+        line-height: 22px;
       }
     }
   }
