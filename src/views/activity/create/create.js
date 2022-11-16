@@ -13,11 +13,12 @@ import ActiveTypeDialog from './component/active-type-dialog'
 import CustomSelect from './component/custom-select'
 import ActiveGuest from './component/active-guest'
 import { cloneDeep } from 'lodash'
-
+import editorElem from '@/components/wangEditor/index'
 export default {
   components: {
     Ckeditor,
     Treeselect,
+    editorElem,
     preview,
     CustomApplyDialog,
     ActiveTypeDialog,
@@ -198,7 +199,7 @@ export default {
   async mounted() {
     await this.initMap() // 初始化地图
     this.handleArea()
-    this.$refs.ckeditor1.init()
+    // this.$refs.ckeditor1.init()
     if (!this.activityId) {
       setTimeout(() => {
         this.$refs.ckeditor1.initHtml('')
@@ -943,7 +944,10 @@ export default {
         ...this.formObj,
         activityGuestsDTOList: tempVal || []
       }
-    }
+    },
+    addParentHtml(html) {
+      this.formObj.introduce = html
+    },
 
   }
 }
