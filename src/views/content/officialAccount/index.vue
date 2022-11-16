@@ -4,7 +4,7 @@
       <el-tab-pane label="发布记录" name="1" />
       <el-tab-pane label="授权账号" name="2" />
     </el-tabs>
-    <el-button type="primary" @click="onBinding">授权</el-button>
+    <el-button v-if="type == 2 && list.length == 0" type="primary" @click="onBinding">授权公众号</el-button>
     <!-- <el-button type="primary" @click="onRelieve">解除授权</el-button> -->
     <el-table
       :key="random"
@@ -45,16 +45,9 @@
       <!-- 授权账号 -->
       <template v-if="type == 2">
         <el-table-column prop="officialAccountName" label="授权的公众号" align="center" />
-        <el-table-column label="公众号类型" align="center" width="100px">
-          <template slot-scope="scope">
-            {{ scope.row.officialAccountType == 1 ? '订阅号' :' 服务号' }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-        >
+        <el-table-column align="center" width="150px">
           <template slot="header">
-            <span>状态</span>
+            <span>公众号类型</span>
             <el-tooltip
               class="item"
               effect="dark"
@@ -65,10 +58,10 @@
             </el-tooltip>
           </template>
           <template slot-scope="scope">
-            {{ scope.row.authStatus == 1 ? '已授权' :' 未授权' }}
+            {{ scope.row.officialAccountType == 1 ? '订阅号' :' 服务号' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" width="100px">
+        <el-table-column label="操作" align="center" width="150px">
           <template slot-scope="scope">
             <div v-if="scope.row.authStatus == 2" @click="onBinding"> <el-link type="primary">授权</el-link></div>
             <div v-else @click="onRelieve(scope.row)"><el-link type="primary">解除授权</el-link></div>
@@ -136,7 +129,7 @@ export default {
     }
   },
   created() {
-    console.log('this.$route.query', this.$route.query)
+    console.log('this.$route.query1111111111111', this.$route.query)
     if (this.$route.query.auth_code) {
       this.type = '2'
       this.auth_code = this.$route.query.auth_code
