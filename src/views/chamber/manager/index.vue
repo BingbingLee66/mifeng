@@ -63,12 +63,12 @@
         </el-form-item>
         <el-form-item label="商务负责人">
           <el-select v-model="query.settledSource" placeholder="请选择">
-            <!-- <el-option v-for="item in businessArr" :key="id" label="全部" value="" /> -->
+            <el-option v-for="(item, index) in businessArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="运营负责人">
           <el-select v-model="query.settledSource" placeholder="请选择">
-            <!-- <el-option v-for="item in operatingArr" :key="id" label="全部" value="" /> -->
+            <el-option v-for="(item, index) in operatingArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="">
@@ -92,7 +92,7 @@
       </el-row>
       <template
         v-else
-      ><el-button type="primary" @click="openInvitationCode('invitationCodeRef')">生成邀请码</el-button>
+      ><el-button type="primary" @click="openDialog('invitationCodeRef')">生成邀请码</el-button>
         <el-button type="primary">导出表格</el-button></template>
     </div>
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
@@ -127,6 +127,12 @@
       </el-table-column>
       <el-table-column label="地区">
         <template slot-scope="scope"> {{ scope.row.province }}{{ scope.row.city }} </template>
+      </el-table-column>
+      <el-table-column label="负责人">
+        <template slot-scope="scope">
+          <div>【商务】{{ scope.row.business }}</div>
+          <div>【运营】{{ scope.row.operating }}</div>
+        </template>
       </el-table-column>
       <el-table-column label="入驻来源">
         <template slot-scope="{ row }">
@@ -192,7 +198,8 @@
           </el-button>
           <el-button
             v-if="activeName === 'signContract'"
-            @click="updateStatus($event, scope.row)"
+            type="text"
+            @click="openRemarks(scope.row)"
           >备注负责人
           </el-button>
         </template>
@@ -219,15 +226,29 @@
         <el-button type="primary" @click="registerCode">生成并下载</el-button>
       </div>
     </kd-dialog>
-    <kd-dialog ref="remarksRef" dialog-title="备注负责人" :custom-footer="true" @hide="hideDialog('remarksRef')" @savePopupData="saveRemarks">
+    <kd-dialog ref="remarksRef" dialog-title="备注负责人" @hide="hideDialog('remarksRef')" @savePopupData="saveRemarks">
       <div slot="content" class="code-content">
         <el-form ref="formRemarks" :model="remarksObj" :rules="remarksRules" label-width="150px">
+          <el-form-item label="商协会：" prop="name"> {{ row.name }}</el-form-item>
           <el-form-item label="商务负责人：" prop="business">
-            <!-- <el-option v-for="item in businessArr" :key="id" label="全部" value="" /> -->
+            <el-select v-model="remarksObj.business" placeholder="请选择">
+              <el-option
+                v-for="(item, index) in businessArr"
+                :key="index"
+                :label="item"
+                :value="item"
+              /></el-select>
           </el-form-item>
           <el-form-item label="运营负责人：" prop="operating">
-            <!-- <el-option v-for="item in operatingArr" :key="id" label="全部" value="" /> -->
-          </el-form-item></el-form>
+            <el-select v-model="remarksObj.operating" placeholder="请选择">
+              <el-option
+                v-for="(item, index) in operatingArr"
+                :key="index"
+                :label="item"
+                :value="item"
+              /></el-select>
+          </el-form-item>
+        </el-form>
       </div>
       <!-- <div slot="customFooter">
         <el-button @click="hideDialog('remarksRef')">取 消</el-button>

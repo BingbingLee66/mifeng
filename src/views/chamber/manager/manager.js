@@ -5,8 +5,8 @@ import {
   updateStatus,
   upload,
   registerCodeDownload,
-  // businessList,
-  // operatingLlist,
+  businessList,
+  operatingLlist,
   updateDirector
 } from '@/api/chamber/manager'
 import { getAreaTree } from '@/api/area'
@@ -119,7 +119,15 @@ export default {
       codeObj: {
         codeNum: ''
       },
-      remarksRules
+      remarksRules,
+      businessArr: [],
+      operatingArr: [],
+      // 当前操作的row
+      row: {},
+      remarksObj: {
+        business: '',
+        operating: ''
+      }
     }
   },
   components: {
@@ -128,12 +136,12 @@ export default {
   computed: {
     // ...mapGetters(['has'])
   },
-  created() {
+  async created() {
     this.init()
     this.getAreaList()
-    // const { businessArr, operatingArr } = useList()
-    // this.businessArr = businessArr
-    // this.operatingArr = operatingArr
+    const { businessArr, operatingArr } = await useList()
+    this.businessArr = businessArr
+    this.operatingArr = operatingArr
   },
   methods: {
     async getAreaList() {
@@ -382,7 +390,6 @@ export default {
     },
     // 修改权重
     updateLevel(row) {
-      console.log('row', row)
       this.$refs['levelDialog'].open(row.id, row.level).then(() => {
         this.fetchData()
       })
@@ -397,9 +404,34 @@ export default {
     hideDialog(_name) {
       this.$refs[_name].hide()
     },
+    // 打开备注负责人弹框
+    openRemarks(row) {
+      this.row = row
+      this.openDialog('remarksRef')
+    },
     // 备注负责人
-    async saveRemarks() {
-      await updateDirector()
+    saveRemarks() {
+      // ckey name
+      this.$refs['formRemarks'].validate(valid => {
+        if (valid) {
+          const { ckey } = this.row
+          updateDirector({ ckey, ...this.remarksObj }).then(res => {
+            if (res.state === 1) {
+              this.$message({
+                message: '备注成功',
+                type: 'success'
+              })
+              this.hideDialog('remarksRef')
+              this.fetchData()
+            } else {
+              this.$message({
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          })
+        }
+      })
     },
     // openInvitationCode() {
 
@@ -408,7 +440,6 @@ export default {
     //   this.$refs['invitationCodeRef'].hide()
     // },
     registerCode() {
-      console.log(' this.$refs[formCode]', this.$refs['formCode'])
       this.$refs['formCode'].validate(valid => {
         if (valid) {
           // 生成码并且下载
@@ -422,15 +453,15 @@ export default {
     }
   }
 }
-// function useList() {
-//   let businessArr = []
-//   let operatingArr = []
-//   const fetchData = async () => {
-//     // const { list } = await businessList()
-//     // const { list: data } = await operatingLlist()
-//     businessArr = ['111']
-//     operatingArr = ['222']
-//   }
-//   fetchData()
-//   return { businessArr, operatingArr }
-// }
+export const useList = async () => {
+  let businessArr = []
+  let operatingArr = []
+  const fetchData = async () => {
+    const { data: { business } } = await businessList()
+    const { data: { operating } } = await operatingLlist()
+    businessArr = business
+    operatingArr = operating
+  }
+  await fetchData()
+  return { businessArr, operatingArr }
+}
