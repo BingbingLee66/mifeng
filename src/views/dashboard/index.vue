@@ -16,10 +16,13 @@
   justify-content: space-between;
   align-items: center;
   position: relative;
-  padding-bottom: 20px;
+  padding: 15px 0;
+  border-bottom: 1px solid #e8e8e8;
   .panel-title {
-    font-size: 15px;
-    line-height: 25px;
+    font-size: 16px;
+    font-weight: bolder;
+    color: rgba(0, 0, 0, 0.85);
+    line-height: 24px;
   }
 }
 </style>

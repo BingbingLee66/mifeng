@@ -1,6 +1,6 @@
 <template>
   <div class="card-list">
-    <div v-for="card in cardList" :key="card.label" class="card-box">
+    <div v-for="(card, index) in cardList" :key="index" class="card-box">
       <div class="title">
         <div>{{ card.label }}</div>
         <el-tooltip effect="dark" placement="top">
@@ -8,20 +8,29 @@
           <div class="el-icon-warning-outline" />
         </el-tooltip>
       </div>
-      <div class="value">
-        {{ formatValue(card.value) }}
-        <span>{{ card.unit }}</span>
+      <div class="value-box">
+        <div class="value">{{ formatValue(card.value) }}</div>
+        <div class="value-unit">{{ card.unit }}</div>
       </div>
       <div class="card-warp">
         <div class="content">
           <div>{{ card.contentLabelFirst }}</div>
-          <div>{{ card.contentValFirst }}{{ card.unitFirst }}</div>
+          <div class="content-value">{{ card.contentValFirst }}{{ card.unitFirst }}</div>
         </div>
         <div class="content">
           <div>{{ card.contentLabelSecond }}</div>
-          <div>{{ card.contentValSecond }}{{ card.unitSecond }}</div>
+          <div class="content-value">{{ card.contentValSecond }}{{ card.unitSecond }}</div>
         </div>
-        <el-progress v-if="card.progress" :percentage="card.contentValSecond" :stroke-width="13" />
+      </div>
+      <div v-if="card.progress === 1" class="progress" progress>
+        <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
+        <el-progress stroke-width="8px" :show-text="false" :percentage="card.contentValSecond" />
+        <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
+      </div>
+      <div v-if="card.progress === 2" class="progress" progress>
+        <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
+        <el-progress stroke-width="8px" :show-text="false" :percentage="card.value" />
+        <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
       </div>
       <div class="line mt10" />
       <div class="day-collect">
@@ -66,34 +75,40 @@ export default {
   width: 100%;
   display: flex;
   flex-wrap: wrap; /* 换行 */
-  // margin-left: 20px;
-  padding: 20px 20px 0 20px;
+  padding: 26px 25px 0 25px;
+  display: grid;
+  grid-template-columns: repeat(4, 24%);
+  grid-gap: 23px;
+  grid-template-rows: 188px;
 
   .card-box {
-    padding: 27px 32px 13px;
-    // flex: 1;
-    margin: 5px 0.5% 5px 0.5%;
-    width: calc(96% / 4);
-    background: #fff;
-    border-radius: 4px;
-
-    &:last-child {
-      margin-right: 0;
-    }
+    padding: 24px 23px 9px;
+    // height: 188px;
+    // width: calc(95% / 4);
+    border-radius: 2px;
 
     .title {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      font-size: 19px;
-      color: rgba(0, 0, 0, 0.45);
-      line-height: 29px;
+      font-size: 14px;
+      line-height: 22px;
     }
-
-    .value {
-      margin-top: 5px;
-      font-size: 40px;
-      color: rgba(0, 0, 0, 0.85);
-      line-height: 51px;
+    .value-box {
+      margin-top: 4px;
+      display: flex;
+      align-items: baseline;
+      .value {
+        font-size: 30px;
+        color: #ffffff;
+        line-height: 38px;
+      }
+      .value-unit {
+        font-size: 14px;
+        font-weight: 400;
+        color: rgba(255, 255, 255, 0.85);
+        line-height: 22px;
+      }
     }
     .triangleLow {
       height: 0;
@@ -110,42 +125,127 @@ export default {
       border-bottom: 8px solid skyblue;
     }
     .card-warp {
-      color: #929292;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 22px;
       margin: 5px 0;
-      height: 75px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
       .content {
-        width: 70%;
         display: flex;
-        justify-content: space-between;
+        .content-value {
+          margin-left: 4px;
+        }
       }
     }
-
+    .progress {
+      position: relative;
+      margin: 14px 0 13px 0;
+      .progressLabelUp {
+        width: 2px;
+        height: 4px;
+        border-radius: 100px;
+        position: absolute;
+        top: -5px;
+        background-color: #fdbe04;
+      }
+      .progressLabelLow {
+        width: 2px;
+        height: 4px;
+        border-radius: 100px;
+        top: 9px;
+        position: absolute;
+        background-color: #fdbe04;
+      }
+      ::v-deep .el-progress-bar__inner {
+        border-radius: 1px;
+        background-image: linear-gradient(180deg, #ffd429 0%, #ffaf04 100%);
+      }
+      ::v-deep .el-progress-bar__outer {
+        border-radius: 1px;
+      }
+    }
     .line {
       height: 1px;
-      background: #e8e8e8;
+      background: rgba(255, 255, 255, 0.3);
     }
-
     .day-collect {
       display: flex;
-      align-items: center;
-      font-size: 19px;
-      margin-top: 12px;
-      line-height: 29px;
+      align-content: baseline;
+      margin: 9px 0;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 22px;
 
       .label {
-        color: rgba(0, 0, 0, 0.65);
+        color: rgba(255, 255, 255, 0.85);
       }
 
       .value {
-        color: rgba(0, 0, 0, 0.85);
-        font-size: inherit;
+        color: #ffffff;
         margin-left: 11px;
-        line-height: inherit;
-        margin-top: 0;
       }
+    }
+  }
+  .card-box:nth-of-type(1) {
+    box-shadow: 0px 1px 10px 0px rgba(229, 34, 34, 0.71);
+    background: linear-gradient(180deg, #ff9479 0%, #f46572 100%);
+    .title {
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .card-warp {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+  .card-box:nth-of-type(2) {
+    background: linear-gradient(180deg, #ffd15f 0%, #ffb12a 100%);
+    .title {
+      color: rgba(0, 0, 0, 0.45);
+    }
+    .value {
+      color: rgba(0, 0, 0, 0.85);
+    }
+    .value-unit {
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .card-warp {
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .label {
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .content:nth-of-type(2) {
+      margin: 5px 0 6px 0;
+    }
+  }
+  .card-box:nth-of-type(3) {
+    background: linear-gradient(180deg, #efefef 0%, #cacaca 100%);
+    .title {
+      color: rgba(0, 0, 0, 0.45);
+    }
+    .value {
+      color: rgba(0, 0, 0, 0.85);
+    }
+    .value-unit {
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .card-warp {
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .label {
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .content:nth-of-type(2) {
+      margin: 5px 0 6px 0;
+    }
+  }
+  .card-box:nth-of-type(4) {
+    background: linear-gradient(360deg, #5878e4 0%, #c1aff8 100%);
+    .title {
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .progress {
+      margin: 26px 0 23px 0;
     }
   }
 }

@@ -23,13 +23,13 @@ export default {
       {
         label: '会员数',
         value: 0,
-        contentLabelFirst: '激活会员数',
+        contentLabelFirst: '激活会员',
         contentValFirst: 0,
-        contentLabelSecond: '会员激活比',
+        contentLabelSecond: '激活率',
         contentValSecond: 0,
         bottomLabel: '本月新增会员',
         bottomValue: 0,
-        progress: true,
+        progress: 1,
         unit: '人',
         unitFirst: '人',
         unitSecond: '%',
@@ -71,7 +71,7 @@ export default {
         value: 0,
         bottomLabel: '环比上次',
         bottomValue: '--',
-        progress: true,
+        progress: 2,
         unit: '%',
         unitBottom: '%',
         showTriangle: true,
@@ -105,7 +105,7 @@ export default {
       if (state === 1) {
         this.cardList[0].value = data?.memberNum || 0
         this.cardList[0].contentValFirst = data?.activeMemberNum || 0
-        this.cardList[0].contentValSecond = data?.activeMemberRatio || 0
+        this.cardList[0].contentValSecond = data?.activeMemberRatio || 45
         this.cardList[0].bottomValue = data?.monthNewMemberNum || 0
       } else {
         this.$message({
@@ -145,7 +145,7 @@ export default {
     async getChamberNotices() {
       const { data, state, msg } = await getChamberNotices()
       if (state === 1) {
-        this.cardList[3].value = data?.noticeReadRatio || 0
+        this.cardList[3].value = data?.noticeReadRatio || 50
         this.cardList[3].bottomValue = data?.noticeReadSequential || '--'
       } else {
         this.$message({

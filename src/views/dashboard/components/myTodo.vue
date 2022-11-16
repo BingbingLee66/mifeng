@@ -9,8 +9,11 @@
     <div v-if="messageList.length !== 0" class="card-wrap">
       <div v-for="(item, index) in messageList" :key="index" class="card" @click="toResolve(item.type, item.count)">
         <div class="card-title">
-          <div class="el-icon-edit" />
-          <div>{{ item.title }}</div>
+          <img
+            class="card-title-icon"
+            :src="require(`../../../../public/img/dashboard-mytodo-icon-${index + 1}.png`)"
+          >
+          <div class="card-title-text">{{ item.title }}</div>
         </div>
         <div class="card-content">
           {{
@@ -24,7 +27,7 @@
         <div class="card-time">{{ changeTime(item.lastUpdateTime) }}</div>
       </div>
     </div>
-    <div v-else>
+    <div v-else class="entry">
       <img class="card-entry" src="../../../../public/img/dashboard-charm-entry.png">
     </div>
   </Panel>
@@ -72,7 +75,7 @@ export default {
       //     count: 6,
       //     lastUpdateTime: '1636259889000'
       //   }
-      //  ]
+      // ]
     }
   },
   methods: {
@@ -110,6 +113,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .panel.panel-padding {
+  padding: 0;
+}
 .panel-title-box {
   padding: 0 20px;
   display: flex;
@@ -123,32 +129,60 @@ export default {
   background-color: #eb2626;
 }
 .card-wrap {
-  display: flex;
   .card {
-    padding: 25px 35px;
-    width: 25%;
-    border: 1px solid #ebebeb;
+    margin: 24px;
     border-radius: 2px;
     .card-title {
-      margin: 10px 0;
       display: flex;
-      font-size: 15px;
-      font-weight: 600;
+      align-items: center;
+      font-size: 14px;
+      color: #000000;
+      line-height: 22px;
+      font-weight: bolder;
+      .card-title-icon {
+        border-radius: 50%;
+        padding: 5px;
+        width: 24px;
+        height: 24px;
+        margin-right: 12px;
+        background-color: #ff7682;
+      }
     }
     .card-content {
-      width: 245px;
-      font-size: 12px;
+      width: 290px;
+      margin-top: 14px;
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.75);
+      line-height: 22px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
     .card-time {
-      float: right;
+      margin: 8px 0 25px 0;
       font-size: 12px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.25);
+      line-height: 20px;
+    }
+  }
+  .card:nth-of-type(1) {
+    border-bottom: 1px solid #ebebeb;
+    .card-title-icon {
+      background-color: #40a9ff;
+    }
+  }
+  .card:nth-of-type(2) {
+    border-bottom: 1px solid #ebebeb;
+    .card-title-icon {
+      background-color: #a894f6;
     }
   }
 }
 .card-entry {
-  height: 170px;
+  width: auto;
+  position: relative;
+  top: 50px;
+  left: 20px;
 }
 </style>
