@@ -1,8 +1,10 @@
 <template>
   <div>
     <myTodo :message-list="messageList" />
-    <cardList v-if="permission" :card-list="cardList" />
-    <toolBar />
+    <div class="flex-x">
+      <toolBar style="flex: 2" />
+      <cardList v-if="permission" :card-list="cardList" style="flex: 1" />
+    </div>
   </div>
 </template>
 
