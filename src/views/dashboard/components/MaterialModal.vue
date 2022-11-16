@@ -9,7 +9,7 @@
         }"
       >
         <el-select v-model="formModel.firstMenu" filterable>
-          <el-option v-for="item of usableFirstMenuList" :key="item.id" :label="item.menuName" :value="item.id" />
+          <el-option v-for="item of usableFirstMenuList" :key="item.menuId" :label="item.menuName" :value="item.menuId" />
         </el-select>
       </el-form-item>
 
@@ -24,13 +24,13 @@
       >
         <div class="flex-x">
           <el-select v-model="menu.value" filterable>
-            <el-option v-for="item of usableSecondMenuList" :key="item.id" :label="item.menuName" :value="item.id" />
+            <el-option v-for="item of usableSecondMenuList" :key="item.menuId" :label="item.menuName" :value="item.menuId" />
           </el-select>
           <el-button v-if="index || menu.length" style="margin-left: 10px;" @click.prevent="removeSecondMenu(menu)">删除</el-button>
         </div>
       </el-form-item>
 
-      <el-form-item>
+      <el-form-item v-if="usableSecondMenuList.length">
         <el-button type="text" @click="addSecondMenu"> <i class="el-icon-plus" />添加二级菜单</el-button>
       </el-form-item>
     </el-form>
@@ -54,18 +54,31 @@ export default {
     }
   },
   data() {
-    return {
-      allMenuList: this.$store.state.menu.addRoutes.map(v => {
-        return {
-          ...v,
-          menuName: v.name,
-          menuId: v.id,
-          menuRank: 1,
-          status: 1,
-          menuUrl: v.path,
-          icon: v.meta.icon,
+    // 递归处理菜单树
+    const recursionHandleMenu = (menuList, level) => {
+      const tempMenuList = []
+
+      menuList.forEach(menu => {
+        if (menu.children && menu.children.length) {
+          menu.children = recursionHandleMenu(menu.children, 2)
         }
-      }) || [],
+
+        tempMenuList.push({
+          ...menu,
+          menuName: menu.name,
+          menuId: menu.id,
+          menuRank: level,
+          status: 1,
+          menuUrl: menu.path,
+          icon: menu.meta.icon,
+        })
+      })
+
+      return tempMenuList
+    }
+
+    return {
+      allMenuList: recursionHandleMenu(this.$store.state.menu.addRoutes, 1) || [],
       firstMenuList: [],
       secondMenuList: [],
       formModel: {
@@ -77,13 +90,13 @@ export default {
   },
   computed: {
     usableFirstMenuList() {
-      return this.allMenuList.filter(v => v.id !== this.formModel.firstMenu)
+      return this.allMenuList.filter(v => v.menuId !== this.formModel.firstMenu)
     },
     usableSecondMenuList() {
-      const index = this.allMenuList.findIndex(v => v.id === this.formModel.firstMenu)
+      const index = this.allMenuList.findIndex(v => v.menuId === this.formModel.firstMenu)
       const curSecondMenuList = this.allMenuList[index]?.children || []
       const disableSecMenuList = this.formModel.secondMenu.map(menu => menu.value)
-      return curSecondMenuList.filter(v => !disableSecMenuList.includes(v.id))
+      return curSecondMenuList.filter(v => !disableSecMenuList.includes(v.menuId))
     },
   },
   watch: {
@@ -110,9 +123,9 @@ export default {
       this.$refs.form.validate(async valid => {
         if (!valid) return false
 
-        this.firstMenuList = this.allMenuList.find(v => v.id === this.formModel.firstMenu)
+        this.firstMenuList = this.allMenuList.find(v => v.menuId === this.formModel.firstMenu)
         const tempMenuList = this.formModel.secondMenu.map(v => v.value)
-        this.secondMenuList = this.firstMenuList.children.filter(v => tempMenuList.includes(v.id))
+        this.secondMenuList = this.firstMenuList.children.filter(v => tempMenuList.includes(v.menuId))
 
         const params = {
           ...this.firstMenuList,
@@ -123,7 +136,7 @@ export default {
         this.secondMenuList.forEach(item => {
           params.children.push({
             ...item,
-            sort: tempMenuList.findIndex(v => v === item.id),
+            sort: tempMenuList.findIndex(v => v === item.menuId),
           })
         })
 
@@ -132,7 +145,6 @@ export default {
           if (!state) return
           this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
           this.onClose()
-          this.$refs.form.resetFields()
           this.$emit('success')
         } catch (e) {
           console.error(e)
@@ -142,6 +154,7 @@ export default {
 
     onClose() {
       this.$emit('update:visible', false)
+      this.$refs.form.resetFields()
     },
 
     addSecondMenu() {

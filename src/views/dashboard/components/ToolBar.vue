@@ -37,7 +37,7 @@
               <div v-if="isEdit" class="el-icon-close" @click="removeItem(item)" />
             </div>
             <div class="item-body">
-              <div v-for="childItem in item.children" :key="childItem.index" class="body-item">
+              <div v-for="childItem in item.children" :key="childItem.index" class="body-item" @click="goTo(childItem.menuUrl)">
                 {{ childItem.menuName }}
               </div>
             </div>
@@ -46,7 +46,7 @@
       </GridLayout>
     </div>
 
-    <MaterialModal :visible.sync="showModal" @success="fetchMenuList" />
+    <MaterialModal :visible.sync="showModal" :layout="layout" @success="fetchMenuList" />
   </Panel>
 </template>
 
@@ -85,7 +85,7 @@ export default {
         const initIds = this.allMenuList.filter(v => ['会员管理', '内容管理', '活动管理'].includes(v.name)).map(v => v.id)
         if (!initIds.length) return
 
-        const { state } = await initAddToolBar()
+        const { state } = await initAddToolBar(initIds)
         if (!state) return
         this.fetchMenuList()
       } catch (e) {
@@ -97,7 +97,7 @@ export default {
       try {
         const { state, data } = await getMenuList()
         if (!state) return
-        if (!data.length) return this.initAddData()
+        if (!data.length) this.initAddData()
 
         this.layout = data.map((v, i) => {
           return {
@@ -127,6 +127,7 @@ export default {
         const { state, msg } = await deleteMenuList(item.id)
         if (!state) return
         this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+        this.fetchMenuList()
       } catch (e) {
         console.error(e)
       }
@@ -165,6 +166,12 @@ export default {
         console.error(e)
       }
     },
+
+    goTo(url) {
+      this.$router.push({
+        path: url,
+      })
+    }
 
   }
 }
@@ -218,6 +225,7 @@ export default {
       grid-row-gap: 50px;
       .body-item {
         text-align: center;
+        cursor: pointer;
       }
     }
   }
