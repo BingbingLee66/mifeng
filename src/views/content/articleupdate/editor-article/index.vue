@@ -353,7 +353,7 @@
                     <!-- 上移 -->
                     <i v-if="index!= 0" class="el-icon-top" @click="up(index)" />
                     <!-- 删除 -->
-                    <i class="el-icon-close" @click="down(index)" />
+                    <i v-if="item.id != 0" class="el-icon-close" @click="del(index)" />
                     <!-- 下移 -->
                     <i v-if="formObj.tableData.length - 1 != index" class="el-icon-bottom" @click="down(index)" />
                   </div>
@@ -389,7 +389,7 @@
       </div>
     </kdDialog>
     <!-- 选择文章 -->
-    <selectArticle ref="selectArticle" on-confirm-confirm="" />
+    <selectArticle ref="selectArticle" @confirm="onConfirm" />
   </div>
 
 </template>

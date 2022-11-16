@@ -84,7 +84,7 @@ export default {
     // 打开
     open(item) {
       console.log('item', item)
-      this.tableData = item
+      this.tableData = JSON.parse(JSON.stringify(item))
       this.show()
     },
     // 确定
@@ -93,6 +93,7 @@ export default {
       if (this.tableData.length > 8) return this.$message.error('最多只能选择7篇文章')
       if (this.tableData.length <= 1) return this.$message.error('请至少选择一篇文章')
       this.$emit('confirm', this.tableData)
+      this.close()
     },
     // 展示
     show() {
@@ -138,12 +139,18 @@ export default {
 
     // 选中表格
     handleChange(row) {
-      console.log('e', row)
       const index = this.list.findIndex(item => item.id === row.id)
       this.$set(this.list[index], 'checked', row.checked)
+
+      // checked = tru 则放进数组  false则删除
+      if (row.checked) {
+        this.tableData.push(this.list[index])
+      } else {
+        const tableIndex = this.tableData.findIndex(item => item.id === this.list[index].id)
+        this.tableData.splice(tableIndex, 1)
+      }
       this.$forceUpdate()
       this.random = Math.random()
-      console.log('index', index, this.list)
     }
 
   },
@@ -153,7 +160,7 @@ export default {
 .btn{
   width: 100%;
   text-align: center;
-  margin: 50px 0 20px 0;
+  margin: 50px 0 0 0;
 }
 .pre{
   width: 100%;
@@ -162,6 +169,9 @@ export default {
   word-break: break-all;  /* break-all(允许在单词内换行。) */
   display: -webkit-box; /* 对象作为伸缩盒子模型显示 */
   -webkit-box-orient: vertical; /* 设置或检索伸缩盒对象的子元素的排列方式 */
-  -webkit-line-clamp: 1; /* 显示的行数 */
+  -webkit-line-clamp: 2; /* 显示的行数 */
+}
+/deep/.el-dialog{
+  margin-top: 2% !important;
 }
 </style>

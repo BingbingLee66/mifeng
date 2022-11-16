@@ -435,11 +435,11 @@ export default {
     },
     // 选择文章确定
     onConfirm(e) {
-      console.log('e', e)
-      this.formObj.tableData = e
+      this.formObj.tableData = JSON.parse(JSON.stringify(e))
     },
     // 删除
     del(index) {
+      console.log('删除', index)
       this.formObj.tableData.splice(index, 1)
     },
     // 上移

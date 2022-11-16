@@ -45,3 +45,20 @@ export function officialAccountUnbind(params) {
   })
 }
 
+// 文章分享二维码
+export function getArticleQRCode(params) {
+  return request({
+    url: '/ec/article/getArticleQRCode',
+    method: 'get',
+    params
+  })
+}
+
+// 公众号 - 文章发布记录
+export function getArticleSyncRecord(params) {
+  return request({
+    url: '/ec/article/getArticleSyncRecord',
+    method: 'post',
+    params
+  })
+}
