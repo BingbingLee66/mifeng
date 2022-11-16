@@ -3,11 +3,16 @@ import {
   getDetail,
   save,
   updateStatus,
-  upload
+  upload,
+  registerCodeDownload,
+  // businessList,
+  // operatingLlist,
+  updateDirector
 } from '@/api/chamber/manager'
 import { getAreaTree } from '@/api/area'
 // import { mapGetters } from 'vuex'
 import levelDialog from './component/levelDialog.vue'
+import { remarksRules, codeRules } from './util'
 export default {
   data() {
     return {
@@ -67,13 +72,15 @@ export default {
             trigger: 'change'
           }
         ],
-        area: [{
-          required: true, message: '地区不能为空', trigger: 'change',
-          validator: (rule, value, callback) => {
-            if (!value[0]) return callback(new Error(rule.message))
-            callback()
+        area: [
+          {
+            required: true, message: '地区不能为空', trigger: 'change',
+            validator: (rule, value, callback) => {
+              if (!value[0]) return callback(new Error(rule.message))
+              callback()
+            }
           }
-        }],
+        ],
         license: [{ required: true, message: '营业执照必须上传', trigger: 'change' }],
         password: [
           { required: true, message: '账号密码不能为空', trigger: 'blur' },
@@ -106,7 +113,13 @@ export default {
         //     }
         //   }, trigger: 'change' }
         // ]
-      }
+      },
+      activeName: 'signContract',
+      codeRules,
+      codeObj: {
+        codeNum: ''
+      },
+      remarksRules
     }
   },
   components: {
@@ -118,6 +131,9 @@ export default {
   created() {
     this.init()
     this.getAreaList()
+    // const { businessArr, operatingArr } = useList()
+    // this.businessArr = businessArr
+    // this.operatingArr = operatingArr
   },
   methods: {
     async getAreaList() {
@@ -215,7 +231,7 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      let {
+      const {
         name,
         status,
         userName,
@@ -223,9 +239,9 @@ export default {
         area,
         settledSource
       } = this.query
-      let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
+      const params = {
+        pageSize: this.limit,
+        page: this.currentpage,
         name,
         status,
         userName,
@@ -264,11 +280,11 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.type = 'edit'
       const params = {
-        'chamberId': row.id
+        chamberId: row.id
       }
-      const ckey = row.ckey
+      const { ckey } = row
       getDetail(params).then(response => {
-        const { dtl = {}} = response.data
+        const { dtl = {} } = response.data
         this.formObj = {
           ...dtl,
           password: '',
@@ -280,8 +296,8 @@ export default {
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'chamberId': row.id
+      const params = {
+        chamberId: row.id
       }
       getDetail(params).then(response => {
         this.detailObj = response.data.dtl
@@ -315,7 +331,7 @@ export default {
     updateStatus(e, row) {
       console.log('rew', row)
       const h = this.$createElement
-      let self = this
+      const self = this
       if (row.status === 1) {
         this.$msgbox({
           title: '冻结账号',
@@ -334,8 +350,6 @@ export default {
               done()
             }
           }
-        }).then(action => {
-
         })
       } else {
         this.updateStatusFunc(row)
@@ -343,11 +357,11 @@ export default {
     },
     updateStatusFunc(row) {
       // window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'chamberId': row.id,
-        'action': row.status === 0 ? 'active' : 'notactive'
+      const params = {
+        chamberId: row.id,
+        action: row.status === 0 ? 'active' : 'notactive'
       }
-      updateStatus(params).then(response => {
+      updateStatus(params).then(() => {
         if (row.status === 0) {
           this.$message({
             message: '解冻成功',
@@ -363,15 +377,60 @@ export default {
       })
     },
     enlarge(path) {
-      var newwin = window.open()
+      const newwin = window.open()
       newwin.document.write('<img src="' + path + '"/>')
     },
     // 修改权重
     updateLevel(row) {
       console.log('row', row)
-      this.$refs['levelDialog'].open(row.id,row.level).then(data => {
+      this.$refs['levelDialog'].open(row.id, row.level).then(() => {
         this.fetchData()
+      })
+    },
+    // 请求商务列表运营列表
+    handleClick(_tag) {
+      this.activeName = _tag.name
+    },
+    openDialog(_name) {
+      this.$refs[_name].show()
+    },
+    hideDialog(_name) {
+      this.$refs[_name].hide()
+    },
+    // 备注负责人
+    async saveRemarks() {
+      await updateDirector()
+    },
+    // openInvitationCode() {
+
+    // },
+    // hideInvitationCode() {
+    //   this.$refs['invitationCodeRef'].hide()
+    // },
+    registerCode() {
+      console.log(' this.$refs[formCode]', this.$refs['formCode'])
+      this.$refs['formCode'].validate(valid => {
+        if (valid) {
+          // 生成码并且下载
+          registerCodeDownload().then(res => {
+            if (res.state === 1) {
+              console.log(res)
+            }
+          })
+        }
       })
     }
   }
 }
+// function useList() {
+//   let businessArr = []
+//   let operatingArr = []
+//   const fetchData = async () => {
+//     // const { list } = await businessList()
+//     // const { list: data } = await operatingLlist()
+//     businessArr = ['111']
+//     operatingArr = ['222']
+//   }
+//   fetchData()
+//   return { businessArr, operatingArr }
+// }
