@@ -4,8 +4,10 @@
     <videoUpLoad :id="articleId === '' ? 0 : articleId" ref="VideoUpLoad" :source-type="1" @Succeed="onSucceed" @error="loading = false" />
     <preview ref="preview" />
     <div class="article-box">
-      <div class="article-box-left">
-        <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
+      <el-form ref="form" style="display: flex;" :model="formObj" :rules="rules" label-position="right" label-width="100px">
+
+        <div class="article-box-left">
+          <!-- <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px"> -->
           <el-row>
             <el-col :span="24">
               <el-form-item label="文章标题：" prop="title">
@@ -95,11 +97,11 @@
             </el-col>
 
           </el-row>
+          <!-- </el-form> -->
+        </div>
 
-        </el-form>
-      </div>
-      <div class="article-box-right">
-        <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px">
+        <div class="article-box-right">
+          <!-- <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px"> -->
           <el-row>
             <div class="cover-radio">
               <el-radio-group v-model="formObj.type">
@@ -266,10 +268,10 @@
           </div>
           <!--  公众号内容 -->
           <div v-if="formObj.type == 2">
-            <!-- <div class="impower">
-              您未授权公众号,  <el-link type="primary" @click="goHref" >立即授权</el-link>
-            </div> -->
-            <div>
+            <div v-if="!isImpower" class="impower">
+              您未授权公众号,  <el-link type="primary" @click="goHref">立即授权</el-link>
+            </div>
+            <div v-else>
               <div class="hd">1、封面设置</div>
               <el-row>
                 <el-col :span="18">
@@ -280,11 +282,11 @@
                         action="/"
                         :show-file-list="false"
                         :before-upload="function (file) { return beforeAvatarUpload(file, 0) }"
-                        :http-request="function (content) {return upload(content, 'accountUrl')}"
+                        :http-request="function (content) {return upload(content, 'wechatCover')}"
                       >
-                        <img v-if="formObj.accountDTO.accountUrl" :src="formObj.accountDTO.accountUrl" class="avatar">
+                        <img v-if="formObj.wechatCover" :src="formObj.wechatCover" class="avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon" />
-                        <i v-if="formObj.accountDTO.accountUrl" class="el-icon-edit-outline" />
+                        <i v-if="formObj.wechatCover" class="el-icon-edit-outline" />
                       </el-upload>
                       <div class="tips">建议尺寸：900*383px</div>
                     </div>
@@ -294,18 +296,18 @@
               </el-row>
 
               <el-form-item label="内容摘要：">
-                <el-input v-model="formObj.accountDTO.content" :autosize="{ minRows: 4, maxRows: 6}" placeholder="选填，摘要会在订阅号消息，转发链接等文章外的场景显露，帮助读者快速了解内容，如不填写则默认抓取正文前54字" type="textarea" maxlength="120" show-word-limit />
+                <el-input v-model="formObj.wechatAbstract" :autosize="{ minRows: 4, maxRows: 6}" placeholder="选填，摘要会在订阅号消息，转发链接等文章外的场景显露，帮助读者快速了解内容，如不填写则默认抓取正文前54字" type="textarea" maxlength="120" show-word-limit />
               </el-form-item>
 
               <el-form-item label="原文链接：">
-                <el-input v-model="formObj.accountDTO.link" />
+                <el-input v-model="formObj.articleLink" />
               </el-form-item>
 
               <div class="hd">2、发布设置</div>
 
               <el-row>
                 <div class="cover-radio">
-                  <el-radio-group v-model="formObj.accountDTO.publish">
+                  <el-radio-group v-model="formObj.publishSet">
                     <el-radio :label="1">立即发布到公众号</el-radio>
                     <el-radio :label="2">
                       <span>我还要写多篇文章，暂不发布到公众号</span>
@@ -337,9 +339,9 @@
                         </div>
                       </div>
                       <div class="frist-essay-button">
-                        <el-button type="primary">最新三篇</el-button>
-                        <el-button type="primary">最新五篇</el-button>
-                        <el-button type="primary">最新七篇</el-button>
+                        <el-button type="primary" @click="onNewest(3)">最新三篇</el-button>
+                        <el-button type="primary" @click="onNewest(5)">最新五篇</el-button>
+                        <el-button type="primary" @click="onNewest(7)">最新七篇</el-button>
                       </div>
                     </div>
 
@@ -362,8 +364,10 @@
             </div>
 
           </div>
-        </el-form>
-      </div>
+          <!-- </el-form> -->
+        </div>
+
+      </el-form>
     </div>
 
     <div class="article-btn">
@@ -500,7 +504,7 @@ font-family: '微软雅黑', sans-serif;
   display: none;
 }
 .article-box{
-  display: flex;
+
   .article-box-left{
     width: 57%;
     padding-right: 10px;

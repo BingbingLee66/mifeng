@@ -36,6 +36,15 @@ export function officialAccountAuthInfo(params) {
   })
 }
 
+// 查询商会是否授权公众号
+export function officialAccountAuthStatus(params) {
+  return request({
+    url: '/ec/officialAccount/authStatus',
+    method: 'get',
+    params
+  })
+}
+
 // 解绑
 export function officialAccountUnbind(params) {
   return request({
@@ -59,6 +68,6 @@ export function getArticleSyncRecord(params) {
   return request({
     url: '/ec/article/getArticleSyncRecord',
     method: 'post',
-    params
+    data: params
   })
 }

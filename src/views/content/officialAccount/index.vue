@@ -122,25 +122,24 @@ export default {
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
       isShow: false, // 文章二维码
-      qrCode: ['https://ysh-cdn.kaidicloud.com/ysh-test3/qrcode/e7d40535-8457-44f9-a73c-fbb9c3e9c6a8.jpg'], // 文章二维码
+      qrCode: [], // 文章二维码
       releaseStatusList: ['', '发布成功', '发布失败', '发布中', '未发布'],
       auth_code: '', // 授权码
     }
   },
   created() {
     console.log('this.$route.query1111111111111', this.$route.query)
+    //  获取公众号短链
+    this.externalLinks()
+    if (this.$route.query.articleId) this.QRCode(this.$route.query.articleId)
     // 授权处理完 调起查询授权信息
     if (this.$route.query.auth_code) {
       this.type = '2'
       this.auth_code = this.$route.query.auth_code
       this.onOfficialAccountAuthInfo()
+    } else {
+      this.fetchData(true)
     }
-
-    if (this.$route.query.articleId) this.QRCode(this.$route.query.articleId)
-
-    //  获取公众号短链
-    this.externalLinks()
-    this.fetchData(true)
   },
 
   methods: {
@@ -197,7 +196,7 @@ export default {
     // 查询授权信息
     async onOfficialAccountAuthInfo() {
       const parmas = {
-        authCode: this.auth_code, // 文章ID
+        authCode: this.auth_code, // 授权码
         platformType: 0
       }
       await officialAccountAuthInfo(parmas)
