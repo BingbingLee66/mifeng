@@ -122,3 +122,15 @@ export const updateDirector = data => request({
   method: 'post',
   data
 })
+// 标记已签约
+export const chamberSign = data => request({
+  url: '/ec/chamber/sign',
+  method: 'post',
+  data
+})
+// 延迟试用时间
+export const addTryTime = data => request({
+  url: '/ec/chamber/add-try-time',
+  method: 'post',
+  data
+})

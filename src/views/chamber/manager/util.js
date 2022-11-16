@@ -9,3 +9,15 @@ export const codeRules = {
   ],
 
 }
+export const beforeSystemLogoUploadUtil = file => {
+  if (file.type !== 'image/jpeg' &&
+    file.type !== 'image/jpg' &&
+    file.type !== 'image/png') {
+    this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+    return false
+  }
+  if (file.size > 1024 * 1024 * 2) {
+    this.$message.error('上传头像图片大小不能超过 2MB!')
+    return false
+  }
+}

@@ -7,12 +7,14 @@ import {
   registerCodeDownload,
   businessList,
   operatingLlist,
-  updateDirector
+  updateDirector,
+  addTryTime
 } from '@/api/chamber/manager'
 import { getAreaTree } from '@/api/area'
 // import { mapGetters } from 'vuex'
 import levelDialog from './component/levelDialog.vue'
-import { remarksRules, codeRules } from './util'
+import markSigned from './component/markSigned'
+import { remarksRules, codeRules, beforeSystemLogoUploadUtil } from './util'
 export default {
   data() {
     return {
@@ -127,11 +129,12 @@ export default {
       remarksObj: {
         business: '',
         operating: ''
-      }
+      },
+      addDay: null
     }
   },
   components: {
-    levelDialog
+    levelDialog, markSigned
   },
   computed: {
     // ...mapGetters(['has'])
@@ -216,16 +219,18 @@ export default {
     //   })
     // },
     beforeAvatarUpload(file) {
-      if (file.type !== 'image/jpeg' &&
-        file.type !== 'image/jpg' &&
-        file.type !== 'image/png') {
-        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
-        return false
-      }
-      if (file.size > 1024 * 1024 * 2) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-        return false
-      }
+      const flag = beforeSystemLogoUploadUtil(file)
+      return flag
+      // if (file.type !== 'image/jpeg' &&
+      //   file.type !== 'image/jpg' &&
+      //   file.type !== 'image/png') {
+      //   this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+      //   return false
+      // }
+      // if (file.size > 1024 * 1024 * 2) {
+      //   this.$message.error('上传头像图片大小不能超过 2MB!')
+      //   return false
+      // }
     },
     upload(content) {
       const formData = new FormData()
@@ -239,6 +244,7 @@ export default {
     },
     fetchData() {
       this.listLoading = true
+      // 已签约
       const {
         name,
         status,
@@ -265,6 +271,7 @@ export default {
         this.total = response.data.data.totalRows
         this.listLoading = false
       })
+      // 未签约
     },
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -405,9 +412,36 @@ export default {
       this.$refs[_name].hide()
     },
     // 打开备注负责人弹框
-    openRemarks(row) {
+    openRemarks(row, _name) {
       this.row = row
-      this.openDialog('remarksRef')
+      this.openDialog(_name)
+    },
+    // 打开标记已签约
+    openMarkSigned(row) {
+      this.$refs['markSignedRef'].open(row).then(() => { this.fetchData() })
+    },
+    // 延长试用天数
+    async addTryTimed() {
+      const { addDay, row: { ckey } } = this
+      if (parseInt(addDay) > 0) {
+        const res = await addTryTime({ addDay, ckey })
+        if (res.state === 1) {
+          this.$message({
+            message: '延长成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: res.msg,
+            type: 'error'
+          })
+        }
+      } else {
+        this.$message({
+          message: '延长天数大于0',
+          type: 'warning'
+        })
+      }
     },
     // 备注负责人
     saveRemarks() {
