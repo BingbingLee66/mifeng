@@ -18,6 +18,7 @@ import 'echarts/lib/component/visualMap'
 import 'echarts/lib/component/dataset'
 // import 'echarts/map/js/world'
 import 'zrender/lib/svg/svg'
+import dayjs from 'dayjs'
 // import elementResizeDetectorMaker from 'element-resize-detector'
 export default {
 
@@ -172,14 +173,24 @@ export default {
           name: '王小虎',
           address: '上海市普陀区金沙江路 1516 弄'
         }
-      ]
+      ],
+      str: '',
+      timer: null,
+      loading: true
     }
   },
   computed: {
-    ...mapGetters(['name'])
+    ...mapGetters(['name', 'expireTime', 'createTime', 'onTrial']),
+    endTime() {
+      return dayjs(parseInt(this.expireTime)).format('YYYY-MM-DD hh:mm')
+    }
   },
   created() {
     // this.fetchData()
+    this.countdown()
+  },
+  destroyed() {
+    clearInterval(this.timer)
   },
   mounted() {
     // //绑定echart图表跟随窗口大小自动缩放
@@ -211,6 +222,32 @@ export default {
         }
         self.listLoading = false
       })
+    },
+    countdown() {
+      if (this.timer) {
+        clearInterval(this.timer)
+      }
+      if (!this.onTrial) {
+        return
+      }
+      this.timer = setInterval(() => {
+        const now = new Date()
+        const start = parseInt(this.createTime)
+        const end = parseInt(this.expireTime)
+        const time = now - start
+        if (end < now) {
+          this.$store.commit('user/SET_ONTRIAL', false)
+          clearInterval(this.timer)
+          this.timer = null
+        } else {
+          const toDay = parseInt(time / 1000 / 60 / 60 / 24)
+          const toHours = parseInt(time / 1000 / 60 / 60 % 24)
+          const toMinutes = parseInt(time / 1000 / 60 % 60)
+          const toSeconds = parseInt(time / 1000 % 60)
+          this.str = `${toDay}天${toHours}时${toMinutes}分${toSeconds}秒`
+          this.loading = false
+        }
+      }, 1000)
     }
   }
 }

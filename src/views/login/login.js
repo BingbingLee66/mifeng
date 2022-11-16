@@ -1,9 +1,5 @@
 import { isvalidUsername } from '@/utils/validate'
-import { getSocialOrg } from '@/api/user'
-import { getAreaTree } from '@/api/area'
-import {
-  uploadLicense
-} from '@/api/member/manager'
+import { getSocialOrg, getAreaTree, uploadLogo } from '@/api/user'
 
 export default {
   name: 'login',
@@ -55,29 +51,11 @@ export default {
         inviteCode: '',
         contactPhone: '',
         contactName: '',
-        password: '',
+        password2: '',
         confirmPassword: '',
       },
       registerRules: {
-        socialCode: [
-          { required: true, message: '统一社会信用代码不能为空', trigger: 'blur' },
-          {
-            validator: (rule, value, callback) => {
-              // 调用后端api
-              getSocialOrg({ socialCode: value }).then(res => {
-                if (res.state) {
-                  const { chamberName, socialCode, provinceCode, CityCode } = res.data
-                  this.formObj.name = chamberName
-                  this.formObj.socialCode = socialCode
-                  this.formObj.area = [provinceCode, CityCode]
-                  callback()
-                } else {
-                  callback(new Error(res.msg))
-                }
-              })
-            }, trigger: 'blur'
-          }
-        ],
+        socialCode: [{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }],
         chamberName: [
           { required: true, message: '商/协会名称不能为空', trigger: 'blur' },
           { min: 1, max: 50, message: '商/协会名称1-50个字', trigger: 'change' }
@@ -112,7 +90,7 @@ export default {
           {
             validator: (rule, value, callback) => {
               if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(value)) return callback(new Error('6-16位，英文字母和数字的组合，英文字母区分大小写'))
-              if (value !== this.formObj.password) return callback(new Error('两次输入密码不一致!'))
+              if (value !== this.formObj.password2) return callback(new Error('两次输入密码不一致!'))
               callback() // 必须加上这个，不然一直塞在验证状态
             },
             trigger: 'blur'
@@ -155,13 +133,21 @@ export default {
         }
       })
     },
-    // todo
+    async checkCode() {
+      const res = await getSocialOrg({ socialCode: this.formObj.socialCode })
+      if (res.state && res.data) {
+        const { chamberName, provinceCode, cityCode } = res.data
+        this.formObj.chamberName = chamberName
+        this.formObj.area = [provinceCode || '0', cityCode || '0']
+      }
+    },
     async getAreaList() {
-      const { data } = await getAreaTree({ level: 2 })
-      console.log('data', data)
-      if (data) {
+      const { data } = await getAreaTree()
+      if (data.length) {
         data.forEach(p => {
-          p.children.forEach(c => (c.children = undefined))
+          p.children.forEach(c => {
+            c.children = undefined
+          })
         })
         this.areaOptions = data
       }
@@ -169,8 +155,7 @@ export default {
     uploadChamberLogo(content) {
       const formData = new FormData()
       formData.append('file', content.file)
-      uploadLicense(formData).then(response => {
-        console.log(response)
+      uploadLogo(formData).then(response => {
         this.formObj.chamberLogo = response.data.filePath
       })
     },
@@ -190,6 +175,9 @@ export default {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
           this.loading = true
+          this.formObj.province = this.formObj.area[0]
+          this.formObj.city = this.formObj.area[1]
+          this.formObj.password = this.formObj.password2
           this.$store.dispatch('user/register', this.formObj).then(() => {
             this.loading = false
             this.$router.push(this.redirect)

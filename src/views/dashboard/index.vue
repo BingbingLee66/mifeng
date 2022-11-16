@@ -3,7 +3,9 @@
     <div class="dashboard-container-view">
       <div class="dashboard-text">欢迎光临:{{ name }} </div>
       <img class="dashboard-img" src="@/assets/img/home.png">
+      <span v-if="onTrial" v-loading="loading">已试用{{ str }}，将于{{ endTime }}到期，如需延长期限，请与商务联系。</span>
     </div>
+
     <!-- <el-row :gutter="20">
       <el-col :span="6">
         <el-card class="box-card">

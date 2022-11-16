@@ -11,7 +11,10 @@ const state = {
   roles: [],
   ckey: '',
   chambername: '',
-  systemlogo: ''
+  systemlogo: '',
+  createtime: '',
+  expiretime: '',
+  ontrial: false
   // remark: ''
 }
 
@@ -39,6 +42,15 @@ const mutations = {
   },
   SET_SYSTEMLOGO: (state, systemlogo) => {
     state.systemlogo = systemlogo
+  },
+  SET_CREATETIME: (state, createtime) => {
+    state.createtime = createtime
+  },
+  SET_EXPIRETIME: (state, expiretime) => {
+    state.expiretime = expiretime
+  },
+  SET_ONTRIAL: (state, ontrial) => {
+    state.ontrial = ontrial
   }
   // SET_REMARK: (state, remark) => {
   //   state.remark = remark
@@ -70,17 +82,25 @@ const actions = {
   // user register
   register({ commit }, data) {
     return new Promise((resolve, reject) => {
-      register(data).then(response => {
-        Message({
-          message: '注册成功',
-          type: 'success',
-          duration: 1 * 1000
-        })
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-
-        resolve()
+      register(data).then(res => {
+        if (res.state) {
+          Message({
+            message: '注册成功',
+            type: 'success',
+            duration: 1 * 1000
+          })
+          const { data } = res
+          commit('SET_TOKEN', data)
+          setToken(data)
+          resolve()
+        } else {
+          Message({
+            message: res.msg,
+            type: 'error',
+            duration: 1 * 1000
+          })
+          reject(res)
+        }
       }).catch(error => {
         console.log('error1', error)
         reject(error)
@@ -115,7 +135,7 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { profile } = data
+        const { profile, createTime, expireTime, onTrial } = data
         const getroles = []
         getroles.push(profile.roleName)
         commit('SET_NAME', profile.remark)
@@ -124,6 +144,9 @@ const actions = {
         commit('SET_CKEY', profile.ckey)
         commit('SET_CHAMBERNAME', profile.chamberName)
         commit('SET_SYSTEMLOGO', profile.systemLogo)
+        commit('SET_CREATETIME', createTime)
+        commit('SET_EXPIRETIME', expireTime)
+        commit('SET_ONTRIAL', onTrial)
         // commit('SET_REMARK', profile.remark)
         resolve(data)
       }).catch(error => {
@@ -144,6 +167,9 @@ const actions = {
         commit('SET_CHAMBERNAME', '')
         commit('SET_SYSTEMLOGO', '')
         commit('SET_PERMISSIONS', [])
+        commit('SET_CREATETIME', null)
+        commit('SET_EXPIRETIME', null)
+        commit('SET_ONTRIAL', false)
         // commit('SET_REMARK', '')
         removeToken()
         resetRouter()

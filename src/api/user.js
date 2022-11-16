@@ -85,7 +85,7 @@ export function getAdminUserList(params) {
 // 社会组织模糊查询
 export function getSocialOrg(params) {
   return request({
-    url: '/ec/socialOrg/non-stationed/list',
+    url: '/ec/socialOrg/non-stationed/info',
     method: 'get',
     params
   })
@@ -95,6 +95,23 @@ export function getSocialOrg(params) {
 export function register(data) {
   return request({
     url: '/ec/user/register',
+    method: 'post',
+    data
+  })
+}
+
+// 查询省市区，树形数据 (无需token)
+export function getAreaTree() {
+  return request({
+    url: '/ec/ysh-area-code/no-auth/tree',
+    method: 'get'
+  })
+}
+
+// 上传商会Logo (无需token)
+export function uploadLogo(data) {
+  return request({
+    url: '/ec/upload/no-auth/system-logo',
     method: 'post',
     data
   })

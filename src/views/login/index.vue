@@ -77,7 +77,7 @@
       <el-form-item style="display: none" />
       <el-form-item style="display: none" />
       <el-form-item label="统一社会信用代码：" prop="socialCode">
-        <el-input v-model.trim="formObj.socialCode" max-length="100" />
+        <el-input v-model.trim="formObj.socialCode" max-length="100" @blur="checkCode" />
       </el-form-item>
       <el-form-item label="商/协会名称：" prop="chamberName">
         <el-input v-model.trim="formObj.chamberName" max-length="100" />
@@ -115,7 +115,7 @@
         <el-input v-model="formObj.contactPhone" minlength="1" placeholder="手机号码即商会后台登录账号" />
       </el-form-item>
       <el-form-item label="密码" prop="password2">
-        <el-input v-model="formObj.password" type="password" />
+        <el-input v-model="formObj.password2" type="password" />
       </el-form-item>
 
       <el-form-item label="确认密码" prop="confirmPassword">
