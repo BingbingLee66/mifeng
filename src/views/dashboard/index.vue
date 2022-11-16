@@ -1,8 +1,8 @@
 <template>
   <div>
     <myTodo :message-list="messageList" />
-    <cardList v-if="ckey" :card-list="cardList" />
-    <ToolBar />
+    <cardList v-if="permission" :card-list="cardList" />
+    <toolBar />
   </div>
 </template>
 

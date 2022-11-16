@@ -42,10 +42,9 @@ export const getChamberAlbums = params => {
   })
 }
 // 我的待办
-export const getPermission = params => {
+export const getPermission = () => {
   return request({
-    url: '/home-page/statistics/permission',
-    params,
+    url: '/api/ec/chamber/home-page/statistics/permission',
     method: 'get'
   })
 }

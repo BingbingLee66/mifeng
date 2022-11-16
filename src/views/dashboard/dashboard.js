@@ -70,17 +70,18 @@ export default {
         label: '群发通知阅读率',
         value: 0,
         bottomLabel: '环比上次',
-        bottomValue: 0,
+        bottomValue: '--',
         progress: true,
         unit: '%',
-        unitBottom: '%次',
+        unitBottom: '%',
+        showTriangle: true,
         tips: '群发通知阅读率数据口径：取最近一次群发通知的数据，若是从未发起过群发通知，设置默认值，默认值=100%。计算公式为：已读数/总接收人数*100%；\n环比上次数据口径：若是从未发起过群发通知，或是首次发起群发通知，没有上次的数据，则显示为：--；计算公式为：(本次通知的阅读率-上次通知的阅读率）/上次通知的阅读率 *100%。'
       }
     ]
 
     return {
       cardList,
-      ckey: null,
+      permission: null,
       messageList: []
     }
   },
@@ -90,10 +91,9 @@ export default {
   },
   methods: {
     async init() {
-      this.ckey = this.$store.getters.ckey
       await this.getPermission()
       await this.getPendingItems()
-      if (this.ckey) {
+      if (this.permission) {
         await this.getChamberMembers()
         await this.getChamberArticles()
         await this.getChamberAlbums()
@@ -146,7 +146,7 @@ export default {
       const { data, state, msg } = await getChamberNotices()
       if (state === 1) {
         this.cardList[3].value = data?.noticeReadRatio || 0
-        this.cardList[3].bottomValue = data?.noticeReadSequential || 0
+        this.cardList[3].bottomValue = data?.noticeReadSequential || '--'
       } else {
         this.$message({
           message: msg,
@@ -167,7 +167,7 @@ export default {
     },
     async getPermission() {
       const { data } = await getPermission()
-      console.log(data)
+      this.permission = data
     }
   }
 }

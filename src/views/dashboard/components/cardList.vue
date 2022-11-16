@@ -27,6 +27,7 @@
       <div class="day-collect">
         <div class="label">{{ card.bottomLabel }}</div>
         <div class="value">{{ formatValue(card.bottomValue) }}{{ card.unitBottom }}</div>
+        <div v-if="card.showTriangle" :class="upOrLow(card.bottomValue) ? 'triangleLow' : 'triangleUp'" />
       </div>
     </div>
   </div>
@@ -46,6 +47,15 @@ export default {
   data() {
     return {
       formatValue
+    }
+  },
+  methods: {
+    upOrLow(value) {
+      if (value === '--') {
+        return (this.cardList[3].showTriangle = false)
+      } else {
+        return Number(value) > 0
+      }
     }
   }
 }
@@ -84,6 +94,20 @@ export default {
       font-size: 40px;
       color: rgba(0, 0, 0, 0.85);
       line-height: 51px;
+    }
+    .triangleLow {
+      height: 0;
+      width: 0;
+      border-top: 6px solid skyblue;
+      border-right: 4px solid transparent;
+      border-left: 4px solid transparent;
+    }
+    .triangleUp {
+      height: 0;
+      width: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 8px solid skyblue;
     }
     .card-warp {
       color: #929292;
