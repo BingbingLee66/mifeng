@@ -16,7 +16,7 @@
         :is-resizable="false"
         :vertical-compact="true"
         :use-css-transforms="true"
-        :margin="[1, 1]"
+        :margin="[0, 0]"
       >
         <GridItem
           v-for="item in layout"
@@ -134,7 +134,8 @@ export default {
       this.formModel.secondMenu = item.children.map((v, i) => {
         return {
           value: v.menuId,
-          key: i
+          key: i,
+          id: v.id
         }
       })
 
@@ -273,13 +274,21 @@ export default {
       grid-template-columns: 1fr 1fr;
       grid-column-gap: 50px;
       grid-row-gap: 12px;
+      padding: 0 20px;
 
       .body-item {
         text-align: center;
         cursor: pointer;
         font-size: 14px;
         color: rgba(0,0,0,0.65);
-        line-height: 22px;
+        line-height: 30px;
+        height: 30px;
+        box-sizing: border-box;
+
+        &:hover {
+          background: linear-gradient(180deg, #FFE39B 0%, #FFB12A 100%);
+          border-radius: 4px;
+        }
       }
     }
   }

@@ -115,7 +115,6 @@ export default {
   },
   methods: {
     onDialogShow() {
-      console.log('show')
       this.formModel = cloneDeep(FORM_MODEL)
       if (this.isEdit) {
         this.formModel = cloneDeep(this.form)
@@ -158,22 +157,23 @@ export default {
           params.children.push({
             ...item,
             sort: tempMenuList.findIndex(v => v === item.menuId),
+            id: this.formModel.secondMenu.find(v => v.value === item.menuId)?.id
           })
         })
 
         try {
-          const editItem = this.layout.find(v => v.menuId === this.form.firstMenu) || {}
-          const editParams = [
-            {
-              ...params, id: editItem.id, sort: editItem.sort, userId: editItem.userId,
-              children: params.children.map(v => {
-                return {
-                  ...v,
-                  userId: editItem.userId
-                }
-              })
-            }
-          ]
+          let editItem = {}
+          let editParams = []
+
+          if (this.isEdit) {
+            editItem = this.layout.find(v => v.menuId === this.form.firstMenu) || {}
+            editParams = [
+              {
+                ...editItem,
+                children: params.children
+              }
+            ]
+          }
 
           const { state, msg } = this.isEdit
             ? await editToolBar(editParams)
