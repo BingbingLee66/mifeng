@@ -3,11 +3,18 @@ import {
   getDetail,
   save,
   updateStatus,
-  upload
+  upload,
+  registerCodeDownload,
+  businessList,
+  operatingLlist,
+  updateDirector,
+  addTryTime
 } from '@/api/chamber/manager'
 import { getAreaTree } from '@/api/area'
 // import { mapGetters } from 'vuex'
 import levelDialog from './component/levelDialog.vue'
+import markSigned from './component/markSigned'
+import { remarksRules, codeRules, beforeSystemLogoUploadUtil } from './util'
 export default {
   data() {
     return {
@@ -67,13 +74,15 @@ export default {
             trigger: 'change'
           }
         ],
-        area: [{
-          required: true, message: '地区不能为空', trigger: 'change',
-          validator: (rule, value, callback) => {
-            if (!value[0]) return callback(new Error(rule.message))
-            callback()
+        area: [
+          {
+            required: true, message: '地区不能为空', trigger: 'change',
+            validator: (rule, value, callback) => {
+              if (!value[0]) return callback(new Error(rule.message))
+              callback()
+            }
           }
-        }],
+        ],
         license: [{ required: true, message: '营业执照必须上传', trigger: 'change' }],
         password: [
           { required: true, message: '账号密码不能为空', trigger: 'blur' },
@@ -106,18 +115,36 @@ export default {
         //     }
         //   }, trigger: 'change' }
         // ]
-      }
+      },
+      activeName: 'signContract',
+      codeRules,
+      codeObj: {
+        codeNum: ''
+      },
+      remarksRules,
+      businessArr: [],
+      operatingArr: [],
+      // 当前操作的row
+      row: {},
+      remarksObj: {
+        business: '',
+        operating: ''
+      },
+      addDay: null
     }
   },
   components: {
-    levelDialog
+    levelDialog, markSigned
   },
   computed: {
     // ...mapGetters(['has'])
   },
-  created() {
+  async created() {
     this.init()
     this.getAreaList()
+    const { businessArr, operatingArr } = await useList()
+    this.businessArr = businessArr
+    this.operatingArr = operatingArr
   },
   methods: {
     async getAreaList() {
@@ -192,16 +219,18 @@ export default {
     //   })
     // },
     beforeAvatarUpload(file) {
-      if (file.type !== 'image/jpeg' &&
-        file.type !== 'image/jpg' &&
-        file.type !== 'image/png') {
-        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
-        return false
-      }
-      if (file.size > 1024 * 1024 * 2) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-        return false
-      }
+      const flag = beforeSystemLogoUploadUtil(file)
+      return flag
+      // if (file.type !== 'image/jpeg' &&
+      //   file.type !== 'image/jpg' &&
+      //   file.type !== 'image/png') {
+      //   this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+      //   return false
+      // }
+      // if (file.size > 1024 * 1024 * 2) {
+      //   this.$message.error('上传头像图片大小不能超过 2MB!')
+      //   return false
+      // }
     },
     upload(content) {
       const formData = new FormData()
@@ -215,7 +244,8 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      let {
+      // 已签约
+      const {
         name,
         status,
         userName,
@@ -223,9 +253,9 @@ export default {
         area,
         settledSource
       } = this.query
-      let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
+      const params = {
+        pageSize: this.limit,
+        page: this.currentpage,
         name,
         status,
         userName,
@@ -241,6 +271,7 @@ export default {
         this.total = response.data.data.totalRows
         this.listLoading = false
       })
+      // 未签约
     },
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -264,11 +295,11 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.type = 'edit'
       const params = {
-        'chamberId': row.id
+        chamberId: row.id
       }
-      const ckey = row.ckey
+      const { ckey } = row
       getDetail(params).then(response => {
-        const { dtl = {}} = response.data
+        const { dtl = {} } = response.data
         this.formObj = {
           ...dtl,
           password: '',
@@ -280,8 +311,8 @@ export default {
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'chamberId': row.id
+      const params = {
+        chamberId: row.id
       }
       getDetail(params).then(response => {
         this.detailObj = response.data.dtl
@@ -315,7 +346,7 @@ export default {
     updateStatus(e, row) {
       console.log('rew', row)
       const h = this.$createElement
-      let self = this
+      const self = this
       if (row.status === 1) {
         this.$msgbox({
           title: '冻结账号',
@@ -334,8 +365,6 @@ export default {
               done()
             }
           }
-        }).then(action => {
-
         })
       } else {
         this.updateStatusFunc(row)
@@ -343,11 +372,11 @@ export default {
     },
     updateStatusFunc(row) {
       // window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'chamberId': row.id,
-        'action': row.status === 0 ? 'active' : 'notactive'
+      const params = {
+        chamberId: row.id,
+        action: row.status === 0 ? 'active' : 'notactive'
       }
-      updateStatus(params).then(response => {
+      updateStatus(params).then(() => {
         if (row.status === 0) {
           this.$message({
             message: '解冻成功',
@@ -363,15 +392,110 @@ export default {
       })
     },
     enlarge(path) {
-      var newwin = window.open()
+      const newwin = window.open()
       newwin.document.write('<img src="' + path + '"/>')
     },
     // 修改权重
     updateLevel(row) {
-      console.log('row', row)
-      this.$refs['levelDialog'].open(row.id,row.level).then(data => {
+      this.$refs['levelDialog'].open(row.id, row.level).then(() => {
         this.fetchData()
+      })
+    },
+    // 请求商务列表运营列表
+    handleClick(_tag) {
+      this.activeName = _tag.name
+    },
+    openDialog(_name) {
+      this.$refs[_name].show()
+    },
+    hideDialog(_name) {
+      this.$refs[_name].hide()
+    },
+    // 打开备注负责人弹框
+    openRemarks(row, _name) {
+      this.row = row
+      this.openDialog(_name)
+    },
+    // 打开标记已签约
+    openMarkSigned(row) {
+      this.$refs['markSignedRef'].open(row).then(() => { this.fetchData() })
+    },
+    // 延长试用天数
+    async addTryTimed() {
+      const { addDay, row: { ckey } } = this
+      if (parseInt(addDay) > 0) {
+        const res = await addTryTime({ addDay, ckey })
+        if (res.state === 1) {
+          this.$message({
+            message: '延长成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: res.msg,
+            type: 'error'
+          })
+        }
+      } else {
+        this.$message({
+          message: '延长天数大于0',
+          type: 'warning'
+        })
+      }
+    },
+    // 备注负责人
+    saveRemarks() {
+      // ckey name
+      this.$refs['formRemarks'].validate(valid => {
+        if (valid) {
+          const { ckey } = this.row
+          updateDirector({ ckey, ...this.remarksObj }).then(res => {
+            if (res.state === 1) {
+              this.$message({
+                message: '备注成功',
+                type: 'success'
+              })
+              this.hideDialog('remarksRef')
+              this.fetchData()
+            } else {
+              this.$message({
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          })
+        }
+      })
+    },
+    // openInvitationCode() {
+
+    // },
+    // hideInvitationCode() {
+    //   this.$refs['invitationCodeRef'].hide()
+    // },
+    registerCode() {
+      this.$refs['formCode'].validate(valid => {
+        if (valid) {
+          // 生成码并且下载
+          registerCodeDownload().then(res => {
+            if (res.state === 1) {
+              console.log(res)
+            }
+          })
+        }
       })
     }
   }
+}
+export const useList = async () => {
+  let businessArr = []
+  let operatingArr = []
+  const fetchData = async () => {
+    const { data: { business } } = await businessList()
+    const { data: { operating } } = await operatingLlist()
+    businessArr = business
+    operatingArr = operating
+  }
+  await fetchData()
+  return { businessArr, operatingArr }
 }

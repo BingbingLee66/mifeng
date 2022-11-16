@@ -93,3 +93,44 @@ export const getChamberQrcode = params => request({
   method: 'get',
   params
 })
+// 生成二维码并下载
+
+export const registerCodeDownload = params => request({
+  url: '/ec/chamber/register-code-download',
+  method: 'get',
+  params
+})
+// 查询商务列表
+export const businessList = () => request({
+  url: '/ec/chamber/business-list',
+  method: 'get',
+})
+// 查询运营列表
+export const operatingLlist = () => request({
+  url: '/ec/chamber/operating-list',
+  method: 'get',
+})
+// 未签约商会导出表格
+export const unSignedExport = params => request({
+  url: '/ec/chamber/un-signed/export',
+  method: 'get',
+  params
+})
+// 备注负责人
+export const updateDirector = data => request({
+  url: '/ec/chamber/update-director',
+  method: 'post',
+  data
+})
+// 标记已签约
+export const chamberSign = data => request({
+  url: '/ec/chamber/sign',
+  method: 'post',
+  data
+})
+// 延迟试用时间
+export const addTryTime = data => request({
+  url: '/ec/chamber/add-try-time',
+  method: 'post',
+  data
+})
