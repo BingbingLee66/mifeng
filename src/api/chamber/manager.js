@@ -134,3 +134,11 @@ export const addTryTime = data => request({
   method: 'post',
   data
 })
+// 未签约商会查询接口
+export const unsignedlist = params => {
+  request({
+    url: '/ec/chamber/un-signed/list',
+    method: 'get',
+    params
+  })
+}

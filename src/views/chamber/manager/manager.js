@@ -8,7 +8,8 @@ import {
   businessList,
   operatingLlist,
   updateDirector,
-  addTryTime
+  addTryTime,
+  unsignedlist
 } from '@/api/chamber/manager'
 import { getAreaTree } from '@/api/area'
 // import { mapGetters } from 'vuex'
@@ -245,33 +246,40 @@ export default {
     fetchData() {
       this.listLoading = true
       // 已签约
-      const {
-        name,
-        status,
-        userName,
-        date,
-        area,
-        settledSource
-      } = this.query
-      const params = {
-        pageSize: this.limit,
-        page: this.currentpage,
-        name,
-        status,
-        userName,
-        startTime: date ? date[0] : '',
-        endTime: date ? date[1] : '',
-        // province: area.map(v => v[0]).join(','),
-        city: area.map(v => v[1]).join(','),
-        settledSource
+      if (this.activeName === 'signContract') {
+        const {
+          name,
+          status,
+          userName,
+          date,
+          area,
+          settledSource
+        } = this.query
+        const params = {
+          pageSize: this.limit,
+          page: this.currentpage,
+          name,
+          status,
+          userName,
+          startTime: date ? date[0] : '',
+          endTime: date ? date[1] : '',
+          // province: area.map(v => v[0]).join(','),
+          city: area.map(v => v[1]).join(','),
+          settledSource
+        }
+        getList(params).then(response => {
+          this.list = response.data.data.list
+          this.total = response.data.data.totalRows
+          this.listLoading = false
+        })
+      } else {
+        const { query, currentpage: page, limit: pageSize } = this
+        const param = { ...query, page, pageSize }
+        param.chamberName = query.name
+        delete param.area
+        console.log('param', param)
+        unsignedlist(param)
       }
-      console.log('query', this.query)
-      getList(params).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.totalRows
-        this.listLoading = false
-      })
-      // 未签约
     },
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -401,9 +409,9 @@ export default {
         this.fetchData()
       })
     },
-    // 请求商务列表运营列表
     handleClick(_tag) {
       this.activeName = _tag.name
+      this.fetchData()
     },
     openDialog(_name) {
       this.$refs[_name].show()

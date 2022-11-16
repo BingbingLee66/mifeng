@@ -11,7 +11,7 @@
         </el-form-item>
         <template v-if="activeName === 'unSignContract'">
           <el-form-item label="联系人手机号">
-            <el-input v-model.trim="query.name" clearable maxlength="16" />
+            <el-input v-model.trim="query.contactPhone" clearable maxlength="16" />
           </el-form-item>
           <el-form-item label="邀请码是否过期" label-width="110px">
             <el-select v-model="query.inviteCodePastDue" placeholder="请选择">
