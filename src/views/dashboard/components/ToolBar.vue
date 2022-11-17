@@ -3,7 +3,7 @@
     <div class="panel-header">
       <div class="panel-title">快捷工具栏</div>
       <div>
-        <el-button v-if="isEdit" type="text" @click="onAddItem"><i class="el-icon-plus ml-10" />添加</el-button>
+        <el-button v-if="isEdit && allMenuList.length >= layout.length" type="text" @click="onAddItem"><i class="el-icon-plus ml-10" />添加</el-button>
         <div class="el-icon-edit-outline" @click="onEdit" />
       </div>
     </div>
