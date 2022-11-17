@@ -7,7 +7,7 @@
       <el-form ref="form" style="display: flex;" :model="formObj" :rules="rules" label-position="right" label-width="100px">
 
         <div class="article-box-left">
-          <!-- <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px"> -->
+
           <el-row>
             <el-col :span="24">
               <el-form-item label="文章标题：" prop="title">
@@ -97,11 +97,11 @@
             </el-col>
 
           </el-row>
-          <!-- </el-form> -->
+
         </div>
 
         <div class="article-box-right">
-          <!-- <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="100px"> -->
+
           <el-row>
             <div class="cover-radio">
               <el-radio-group v-model="formObj.type">
@@ -364,7 +364,7 @@
             </div>
 
           </div>
-          <!-- </el-form> -->
+
         </div>
 
       </el-form>

@@ -1,5 +1,5 @@
 import { getUpdateDetail, uploadCoverImg, save, getWechatContent, queryVideo } from '@/api/content/article'
-import { officialAccountUrl } from '@/api/content/officialAccount'
+import { officialAccountUrl, officialAccountAuthStatus, officialAccountArticleList } from '@/api/content/officialAccount'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
@@ -45,13 +45,13 @@ export default {
         videoCoverURL: '', // 视频封面
 
         type: 1, // 1：云商会  2:公众号
-        accountDTO: {
-          accountUrl: '', // 公众号封面
-          content: '', // 内容摘要
-          link: '', // 原文链接
-          publish: 1, // 1.理解发布  2.暂不发布
-        },
-        tableData: []
+
+        wechatCover: '', // 公众号封面
+        wechatAbstract: '', // 内容摘要
+        articleLink: '', // 原文链接
+        publishSet: 1, // 1.立即发布  2.暂不发布
+
+        tableData: [] // 文章数组
       },
       articleId: '',
       coverImgs: ['', '', ''],
@@ -66,9 +66,9 @@ export default {
       rules: {
         title: [
           { required: true, message: '文章标题不能为空', trigger: 'blur' },
-          { min: 5, max: 60, message: '限输入5-60个字的标题', trigger: 'blur' }
+          { min: 5, max: 60, message: '限输入5-60个字的标题', trigger: 'change' }
         ],
-        contentColumnId: [{ required: true, message: '对应栏目不能为空', trigger: 'blur' }],
+        contentColumnId: [{ required: true, message: '对应栏目不能为空', trigger: 'change' }],
         coverImg1: [{ required: true, message: '封面图片必须上传', trigger: 'blur' }],
         coverImg2: [{ required: true, message: '封面图片必须上传', trigger: 'blur' }],
         coverImg3: [{ required: true, message: '封面图片必须上传', trigger: 'blur' }]
@@ -78,6 +78,7 @@ export default {
       imgUrl: 'https://ysh-cdn.kaidicloud.com/prod/png/defauil_Accounts.png',
       imgUrl2: 'https://ysh-cdn.kaidicloud.com/prod/png/defauil_Accounts2.png',
       link: '', // 外部公众号跳转链接
+      isImpower: false, // 查询商会是否授权公众号
     }
   },
   mounted() {
@@ -93,19 +94,19 @@ export default {
       // console.log(this.$route.params.articleId)
       this.articleId = this.$route.query.articleId
       this.init()
+      window.localStorage.removeItem('editor-article')
     } else {
       this.formObj.tableData.push({
         title: '',
         id: 0,
         img: ''
       })
-    }
-
-    // 如果有缓存则拿取缓存数据
-    const formObj = JSON.parse(window.localStorage.getItem('editor-article'))
-    if (formObj) {
-      console.log('formObj', formObj)
-      window.localStorage.removeItem('editor-article')
+      // 如果有缓存则拿取缓存数据
+      const formObj = JSON.parse(window.localStorage.getItem('editor-article'))
+      if (formObj) {
+        this.formObj = formObj
+        window.localStorage.removeItem('editor-article')
+      }
     }
   },
   computed: {},
@@ -113,6 +114,8 @@ export default {
     const { roleName } = this.$store.getters.profile
     if (roleName === '专业委员会') this.committee = true
     this.externalLinks()
+    // 查询商会是否授权公众号
+    this.onImpower()
   },
   watch: {
     'formObj.title': {
@@ -125,7 +128,7 @@ export default {
       },
       // immediate: true,
     },
-    'formObj.accountDTO.accountUrl': {
+    'formObj.wechatCover': {
       handler(newValue) {
         if (newValue) {
           this.formObj.tableData.forEach(v => {
@@ -190,7 +193,7 @@ export default {
           // 分享海报图
           if (type === 'sharePoster') this.formObj.articleExtendDTO.sharePoster = response.data.filePath
           // 公众号封面
-          if (type === 'accountUrl') this.formObj.accountDTO.accountUrl = response.data.filePath
+          if (type === 'wechatCover') this.formObj.wechatCover = response.data.filePath
         } else {
           this.formObj.coverImgs.splice(this.uploadIndex, 1, response.data.filePath)
         }
@@ -226,6 +229,16 @@ export default {
         }
         getUpdateDetail(params).then(response => {
           const dataObj = response.data.dtl
+          let tableData = []
+          if (dataObj.tableData) {
+            tableData = dataObj.tableData
+          } else {
+            tableData.push({
+              title: dataObj.title,
+              id: 0,
+              img: dataObj.wechatCover || ''
+            })
+          }
           // const htmlObj = dataObj.contentHtml
           this.formObj = {
             type: 1,
@@ -246,7 +259,12 @@ export default {
               shareFriendPicture: dataObj.articleExtendDTO ? dataObj.articleExtendDTO.shareFriendPicture : '',
               sharePoster: dataObj.articleExtendDTO ? dataObj.articleExtendDTO.sharePoster : '',
               shareTitle: dataObj.articleExtendDTO ? dataObj.articleExtendDTO.shareTitle : '',
-            }
+            },
+            wechatCover: dataObj.wechatCover || '',
+            wechatAbstract: dataObj.wechatAbstract || '',
+            articleLink: dataObj.articleLink || '',
+            publishSet: dataObj.publishSet || 1,
+            tableData
           }
           if (dataObj.vid) {
             this.$nextTick(() => {
@@ -272,11 +290,18 @@ export default {
       if (this.articleId && this.formObj.vid && !this.formObj.videoCoverURL) return this.$message.error('请上传视频封面')
       // 如果上传了视频封面没上传视频 提示
       if (this.formObj.videoCoverURL && !this.formObj.vid) return this.$message.error('请上传视频')
+
       // return;
       this.$refs['form'].validate(valid => {
         if (valid) {
+          if (this.isImpower && !this.formObj.wechatCover) return this.$message.error('请上传公众号文章封面图')
           this.btnLoading = true
-          this.emsCnpl()
+          if (!this.isImpower) {
+            this.emsCnpl()
+          } else {
+            // 公众号以授权直接调接口
+            this.submit()
+          }
           this.btnLoading = false
         } else {
           return false
@@ -295,9 +320,19 @@ export default {
       this.formObj['contentModuleId'] = this.activeName
       // 判断是否为商委会的
       this.formObj['articleType'] = this.committee === true ? 1 : 0
+
+      // 如果授权了公众号  并且选中了文章
+      if (this.formObj.tableData.length) {
+        const articleIdsList = JSON.parse(JSON.stringify(this.formObj.tableData))
+        const index = this.formObj.tableData.findIndex(item => item.id === 0)
+        articleIdsList.splice(index, 1)
+        this.formObj['articleIds'] = articleIdsList.map(v => v.id)
+      } else this.formObj['articleIds'] = []
+
       // 判断是否输入全为空格
       const isAllEmpty = this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4).replaceAll('&nbsp;', '').split('').every(item => item === ' ')
       if (isAllEmpty) return this.$message.error('不能提交全为空格的内容！')
+      console.log('this.formObj', this.formObj)
       save(this.formObj).then(response => {
         if (response.state === 1) {
           this.$message({
@@ -312,9 +347,6 @@ export default {
               this.$store.dispatch('tagsView/delView', view).then(() => {
                 this.$router.push({
                   name: '公众号',
-                  query: {
-                    articleId: 8785
-                  }
                 })
               })
               break
@@ -330,17 +362,18 @@ export default {
     },
     emsCnpl() {
       this.$confirm('您未授权公众号，本次将只发布到云商会', '提示', {
+        distinguishCancelAndClose: true,
         confirmButtonText: '去授权',
         cancelButtonText: '只发布到云商会',
-
       }).then(() => {
         this.goHref()
-      }).catch(() => {
-        this.submit()
+      }).catch(action => {
+        if (action === 'cancel') this.submit()
       })
     },
     // 跳转公众号授权
     goHref() {
+      window.localStorage.setItem('editor-article', JSON.stringify(this.formObj))
       window.location.href = this.link
     },
 
@@ -464,7 +497,6 @@ export default {
     },
     // 删除
     del(index) {
-      console.log('删除', index)
       this.formObj.tableData.splice(index, 1)
     },
     // 上移
@@ -489,6 +521,26 @@ export default {
         this.$forceUpdate()
       }
     },
+    // 拿取最新的文章
+    async onNewest(pageSize) {
+      const parmas = {
+        pageSize,
+        page: 1,
+        title: ''
+      }
+      const res = await officialAccountArticleList(parmas)
+      if (res.data.list.length === 0) {
+        return this.$message('没有符合条件的文章')
+      } else {
+        const Array = []
+        Array.push({
+          title: this.formObj.title,
+          id: 0,
+          img: this.formObj.wechatCover
+        })
+        this.formObj.tableData = Array.concat(res.data.list)
+      }
+    },
     // 公众号外部链接
     async externalLinks() {
       const parmas = {
@@ -499,5 +551,13 @@ export default {
       const res = await officialAccountUrl(parmas)
       this.link = res.data
     },
+
+    // 查询商会是否授权公众号
+    async onImpower() {
+      const res = await officialAccountAuthStatus()
+      if (res.state === 1) {
+        this.isImpower = res.data || false
+      }
+    }
   }
 }
