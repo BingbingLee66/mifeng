@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { addToolBar, editToolBar, getMenuNoList } from '@/api/admin-user-menu'
+import { addToolBar, editToolBar, getMenuNoList, deleteMenuList } from '@/api/admin-user-menu'
 import { cloneDeep, uniq } from 'lodash'
 
 // 递归处理菜单树
@@ -204,10 +204,18 @@ export default {
       })
     },
 
-    removeSecondMenu(item) {
+    async removeSecondMenu(item) {
       const index = this.formModel.secondMenu.indexOf(item)
-      if (index !== -1) {
-        this.formModel.secondMenu.splice(index, 1)
+      if (index === -1) return
+
+      this.formModel.secondMenu.splice(index, 1)
+      try {
+        const { state, msg } = await deleteMenuList(item.id)
+        if (!state) return
+        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+        this.$emit('success')
+      } catch (e) {
+        console.error(e)
       }
     }
   }
