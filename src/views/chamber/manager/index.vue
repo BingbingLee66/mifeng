@@ -267,7 +267,8 @@
     <kd-dialog ref="remarksRef" dialog-title="备注负责人" @hide="hideDialog('remarksRef')" @savePopupData="saveRemarks">
       <div slot="content" class="code-content">
         <el-form ref="formRemarks" :model="remarksObj" :rules="remarksRules" label-width="150px">
-          <el-form-item label="商协会：" prop="name"> {{ row.name }}</el-form-item>
+          <el-form-item label="商协会：" prop="name">
+            {{ activeName === 'signContract' ? row.name : row.chamberName }}</el-form-item>
           <el-form-item label="商务负责人：" prop="business">
             <el-select v-model="remarksObj.business" placeholder="请选择">
               <el-option

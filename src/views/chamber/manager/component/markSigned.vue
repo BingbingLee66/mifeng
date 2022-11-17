@@ -7,7 +7,9 @@
       @close="close"
     >
       <el-form ref="formName" label-width="160px" :model="formObj" :rules="rules">
-        <el-form-item label="商协会：" prop="level"> 名市公共体育服务研究会 </el-form-item>
+        <el-form-item label="商协会：" prop="level">
+          <span v-if="formObj">{{ formObj.chamberName }}</span>
+        </el-form-item>
         <el-form-item label-width="180px" label="社会团体法人登记证：" prop="license">
           <el-upload
             class="systemLogo_uploader"
@@ -43,7 +45,7 @@ export default {
       reject: null,
       reslove: null,
       detailVisible: false,
-      formObj: { name: null, license: null, address: null },
+      formObj: { license: null, address: null, ckey: null },
       rules: {
         address: [{ required: true, message: '不能为空', trigger: 'blur' }],
         license: [{ required: true, message: '不能为空', trigger: 'change' }]
@@ -54,7 +56,7 @@ export default {
     // 打开
     open(row) {
       return new Promise((reslove, reject) => {
-        this.formObj.name = row.name
+        this.formObj.chamberName = row.chamberName || ''
         this.formObj.ckey = row.ckey
         this.reslove = reslove
         this.reject = reject
@@ -71,7 +73,7 @@ export default {
       this.detailVisible = false
       this.reject = null
       this.reslove = null
-      this.form = null
+      this.formObj = { license: null, address: null, ckey: null }
     },
     beforeAvatarUpload(file) {
       const flag = beforeSystemLogoUploadUtil(file)

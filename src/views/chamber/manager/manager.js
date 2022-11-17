@@ -449,12 +449,15 @@ export default {
             message: '延长成功',
             type: 'success'
           })
+          this.hideDialog('addTryTimeRef')
         } else {
           this.$message({
             message: res.msg,
             type: 'error'
           })
         }
+      } else if (!/^[0-9]\d*$/.test(addDay)) {
+        this.$message.warning('只允许输入数字')
       } else {
         this.$message({
           message: '延长天数大于0',
@@ -493,6 +496,10 @@ export default {
     //   this.$refs['invitationCodeRef'].hide()
     // },
     registerCode() {
+      if (this.codeObj.codeNum > 999 || this.codeObj.codeNum < 1) {
+        this.$message.warning('单次生成邀请码的数量需大于0小于等于999')
+        return
+      }
       this.$refs['formCode'].validate(valid => {
         if (valid) {
           // 生成码并且下载  type:1 生成码下载 2：导表
