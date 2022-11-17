@@ -369,7 +369,8 @@
           <el-row>
             <el-col style="width: 900px">
               <el-form-item label="活动介绍：" class="upload-style">
-                <Ckeditor ref="ckeditor1" @getHtml="getHtml" />
+                <!-- <Ckeditor ref="ckeditor1" @getHtml="getHtml" /> -->
+                <editorElem ref="editorElem" :content="formObj.introduce" @addParentHtml="addParentHtml" />
               </el-form-item>
             </el-col>
           </el-row>

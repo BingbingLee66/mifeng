@@ -89,3 +89,11 @@ export function setLinkAndCompetence(params) {
     data: params
   })
 }
+
+// 获取设置直播间权限的商会ckey列表
+export function getLinkPowerChamberCkeys(params) {
+  return request({
+    url: '/api/ec/activity/hasLikAndCompetenceCkeys',
+    data: params
+  })
+}

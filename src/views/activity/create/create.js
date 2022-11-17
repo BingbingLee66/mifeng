@@ -1,4 +1,4 @@
-import { createActivity, uploadPortrait, getActivity, getAlbumRelevance } from '@/api/activity/activity'
+import { createActivity, uploadPortrait, getActivity, getAlbumRelevance, getLinkPowerChamberCkeys } from '@/api/activity/activity'
 import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
 import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
@@ -13,11 +13,12 @@ import ActiveTypeDialog from './component/active-type-dialog'
 import CustomSelect from './component/custom-select'
 import ActiveGuest from './component/active-guest'
 import { cloneDeep } from 'lodash'
-
+import editorElem from '@/components/wangEditor/index'
 export default {
   components: {
     Ckeditor,
     Treeselect,
+    editorElem,
     preview,
     CustomApplyDialog,
     ActiveTypeDialog,
@@ -193,11 +194,12 @@ export default {
     this.ckey = this.$store.getters.ckey
     this.activityId = this.$route.query.activityId
     this.type = this.$route.query.type
+    this.getRuleCkeys()
   },
   async mounted() {
     await this.initMap() // 初始化地图
     this.handleArea()
-    this.$refs.ckeditor1.init()
+    // this.$refs.ckeditor1.init()
     if (!this.activityId) {
       setTimeout(() => {
         this.$refs.ckeditor1.initHtml('')
@@ -212,12 +214,17 @@ export default {
     }
   },
   methods: {
+    async getRuleCkeys() {
+      const { data, state } = await getLinkPowerChamberCkeys()
+      if (state === 1) {
+        this.ruleCkeys = data
+      }
+    },
     postSelectInit() {
       const params = {
         ckey: this.$store.getters.ckey,
       }
       getListOfSelect(params).then(response => {
-        console.log(response.data.data)
         this.portSelect = response.data.data
       })
     },
@@ -227,7 +234,6 @@ export default {
         parentId: 0
       }
       getDepartmentListTreeSelect(params).then(response => {
-        console.log(response.data.data)
         this.options = response.data.data
       })
     },
@@ -244,7 +250,7 @@ export default {
     },
 
     test() {
-      console.log(this.valueTree)
+      // console.log(this.valueTree)
     },
 
     // 删除
@@ -938,7 +944,10 @@ export default {
         ...this.formObj,
         activityGuestsDTOList: tempVal || []
       }
-    }
+    },
+    addParentHtml(html) {
+      this.formObj.introduce = html
+    },
 
   }
 }
