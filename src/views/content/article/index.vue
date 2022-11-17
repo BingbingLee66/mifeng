@@ -23,7 +23,7 @@
       <div class="hd">1、内容信息</div>
       <el-row>
         <el-col :span="24">
-          <!-- 这里需要注意 注释掉会存在 文章原先就不存在标题 编辑就必须填写标题问题不然验证不通过 <el-form-item v-if="!(this.articleId && !this.formObj.title)" label="文章标题：" prop="title">-->
+          <!-- 这里需要注意 注释掉会存在 文章原先就不存在标题 编辑就必须填写标题问题不然验证不通过 <el-form-item v-if="!(articleId && !formObj.title)" label="文章标题：" prop="title">-->
           <el-form-item label="文章标题：" prop="title">
             <el-input v-model="formObj.title" maxlength="60" placeholder="限输入5-60个字的标题" />
           </el-form-item>
@@ -32,7 +32,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item
-            v-if="this.formObj.publishType != 1 && this.formObj.publishType != 2"
+            v-if="formObj.publishType !== 1 && formObj.publishType !== 2"
             label="文章来源："
             prop="sourceId"
           >
@@ -43,7 +43,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item
-            v-if="this.formObj.publishType != 2 && this.formObj.contentModuleId != 7"
+            v-if="formObj.publishType != 2 && formObj.contentModuleId != 7"
             label="对应栏目："
             prop="contentColumnId"
           >
@@ -83,11 +83,7 @@
               action="/"
               list-type="picture-card"
               :before-upload="beforeAvatarUploadVideo"
-              :http-request="
-                function (content) {
-                  return uploadVideoFunc(content)
-                }
-              "
+              :http-request="content => uploadVideoFunc(content)"
               :show-file-list="false"
             >
               <i class="el-icon-plus" />
@@ -109,16 +105,8 @@
               v-if="!formObj.videoCoverURL"
               action="/"
               list-type="picture-card"
-              :before-upload="
-                function (file) {
-                  return beforeAvatarUpload(file)
-                }
-              "
-              :http-request="
-                function (content) {
-                  return upload(content, 'videoCoverURL')
-                }
-              "
+              :before-upload="file => beforeAvatarUpload(file)"
+              :http-request="content => upload(content, 'videoCoverURL')"
               :show-file-list="false"
             >
               <i class="el-icon-plus" />
@@ -153,7 +141,7 @@
               class="avatar-uploader"
               action="/"
               :show-file-list="false"
-              :before-upload="function (file) { return beforeAvatarUpload(file, index) }"
+              :before-upload="file => beforeAvatarUpload(file, index)"
               :http-request="upload">
               <img v-if="img" :src="img" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -168,11 +156,7 @@
               class="avatar-uploader"
               action="/"
               :show-file-list="false"
-              :before-upload="
-                function (file) {
-                  return beforeAvatarUpload(file, 0)
-                }
-              "
+              :before-upload="file => beforeAvatarUpload(file, 0)"
               :http-request="upload"
             >
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
@@ -189,11 +173,7 @@
               class="avatar-uploader"
               action="/"
               :show-file-list="false"
-              :before-upload="
-                function (file) {
-                  return beforeAvatarUpload(file, 0)
-                }
-              "
+              :before-upload="file => beforeAvatarUpload(file, 0)"
               :http-request="upload"
             >
               <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
@@ -207,11 +187,7 @@
               class="avatar-uploader"
               action="/"
               :show-file-list="false"
-              :before-upload="
-                function (file) {
-                  return beforeAvatarUpload(file, 1)
-                }
-              "
+              :before-upload="file => beforeAvatarUpload(file, 1)"
               :http-request="upload"
             >
               <img v-if="formObj.coverImgs[1]" :src="formObj.coverImgs[1]" class="avatar">
@@ -225,11 +201,7 @@
               class="avatar-uploader"
               action="/"
               :show-file-list="false"
-              :before-upload="
-                function (file) {
-                  return beforeAvatarUpload(file, 2)
-                }
-              "
+              :before-upload="file => beforeAvatarUpload(file, 2)"
               :http-request="upload"
             >
               <img v-if="formObj.coverImgs[2]" :src="formObj.coverImgs[2]" class="avatar">
@@ -264,16 +236,8 @@
                 v-if="!formObj.articleExtendDTO.shareFriendPicture"
                 action="/"
                 list-type="picture-card"
-                :before-upload="
-                  function (file) {
-                    return beforeAvatarUpload(file)
-                  }
-                "
-                :http-request="
-                  function (content) {
-                    return upload(content, 'shareFriendPicture')
-                  }
-                "
+                :before-upload="file => beforeAvatarUpload(file)"
+                :http-request="content => upload(content, 'shareFriendPicture')"
                 :show-file-list="false"
               >
                 <i class="el-icon-plus" />
@@ -297,16 +261,8 @@
                 v-if="!formObj.articleExtendDTO.sharePoster"
                 action="/"
                 list-type="picture-card"
-                :before-upload="
-                  function (file) {
-                    return beforeAvatarUpload(file)
-                  }
-                "
-                :http-request="
-                  function (content) {
-                    return upload(content, 'sharePoster')
-                  }
-                "
+                :before-upload="file => beforeAvatarUpload(file)"
+                :http-request="content => upload(content, 'sharePoster')"
                 :show-file-list="false"
               >
                 <i class="el-icon-plus" />
