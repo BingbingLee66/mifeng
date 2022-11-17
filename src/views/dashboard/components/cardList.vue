@@ -36,7 +36,7 @@
       <div class="day-collect">
         <div class="label">{{ card.bottomLabel }}</div>
         <div class="value">{{ formatValue(card.bottomValue) }}{{ card.unitBottom }}</div>
-        <div v-if="card.showTriangle" :class="upOrLow(card.bottomValue) ? 'triangleLow' : 'triangleUp'" />
+        <div v-if="card.showTriangle" :class="upOrLow(card.bottomValue) ? 'triangleUp' : 'triangleLow'" />
       </div>
     </div>
   </div>
@@ -62,8 +62,10 @@ export default {
     upOrLow(value) {
       if (value === '--') {
         return (this.cardList[3].showTriangle = false)
+      } else if (value.split('')[0] === '-') {
+        return false
       } else {
-        return Number(value) > 0
+        return true
       }
     }
   }
@@ -111,18 +113,20 @@ export default {
       }
     }
     .triangleLow {
+      margin-left: 4px;
       height: 0;
       width: 0;
-      border-top: 6px solid skyblue;
+      border-top: 6px solid #52c41a;
       border-right: 4px solid transparent;
       border-left: 4px solid transparent;
     }
     .triangleUp {
+      margin-left: 4px;
       height: 0;
       width: 0;
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
-      border-bottom: 8px solid skyblue;
+      border-bottom: 6px solid #52c41a;
     }
     .card-warp {
       font-size: 14px;
@@ -152,7 +156,7 @@ export default {
         width: 2px;
         height: 4px;
         border-radius: 100px;
-        top: 9px;
+        top: 7px;
         position: absolute;
         background-color: #fdbe04;
       }
@@ -170,7 +174,7 @@ export default {
     }
     .day-collect {
       display: flex;
-      align-content: baseline;
+      align-items: center;
       margin: 9px 0;
       font-size: 14px;
       font-weight: 400;
@@ -187,10 +191,23 @@ export default {
     }
   }
   .card-box:nth-of-type(1) {
-    box-shadow: 0px 1px 10px 0px rgba(229, 34, 34, 0.71);
-    background: linear-gradient(180deg, #ff9479 0%, #f46572 100%);
+    background-image: url('../../../../public/img/dashboard-cardlist-bg-1.png');
+    background-repeat: no-repeat;
+    background-size: cover;
     .title {
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(0, 0, 0, 0.45);
+    }
+    .value {
+      color: rgba(0, 0, 0, 0.85);
+    }
+    .value-unit {
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .card-warp {
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .label {
+      color: rgba(0, 0, 0, 0.65);
     }
     .card-warp {
       display: flex;
@@ -198,7 +215,9 @@ export default {
     }
   }
   .card-box:nth-of-type(2) {
-    background: linear-gradient(180deg, #ffd15f 0%, #ffb12a 100%);
+    background-image: url('../../../../public/img/dashboard-cardlist-bg-2.png');
+    background-repeat: no-repeat;
+    background-size: cover;
     .title {
       color: rgba(0, 0, 0, 0.45);
     }
@@ -219,28 +238,20 @@ export default {
     }
   }
   .card-box:nth-of-type(3) {
-    background: linear-gradient(180deg, #efefef 0%, #cacaca 100%);
+    background-image: url('../../../../public/img/dashboard-cardlist-bg-3.png');
+    background-repeat: no-repeat;
+    background-size: cover;
     .title {
-      color: rgba(0, 0, 0, 0.45);
-    }
-    .value {
-      color: rgba(0, 0, 0, 0.85);
-    }
-    .value-unit {
-      color: rgba(0, 0, 0, 0.65);
-    }
-    .card-warp {
-      color: rgba(0, 0, 0, 0.65);
-    }
-    .label {
-      color: rgba(0, 0, 0, 0.65);
+      color: rgba(255, 255, 255, 0.85);
     }
     .content:nth-of-type(2) {
       margin: 5px 0 6px 0;
     }
   }
   .card-box:nth-of-type(4) {
-    background: linear-gradient(360deg, #5878e4 0%, #c1aff8 100%);
+    background-image: url('../../../../public/img/dashboard-cardlist-bg-4.png');
+    background-repeat: no-repeat;
+    background-size: cover;
     .title {
       color: rgba(255, 255, 255, 0.85);
     }

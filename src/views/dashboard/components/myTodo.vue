@@ -183,6 +183,5 @@ export default {
   width: auto;
   position: relative;
   top: 50px;
-  left: 20px;
 }
 </style>

@@ -105,7 +105,7 @@ export default {
       if (state === 1) {
         this.cardList[0].value = data?.memberNum || 0
         this.cardList[0].contentValFirst = data?.activeMemberNum || 0
-        this.cardList[0].contentValSecond = data?.activeMemberRatio || 45
+        this.cardList[0].contentValSecond = data?.activeMemberRatio || 0
         this.cardList[0].bottomValue = data?.monthNewMemberNum || 0
       } else {
         this.$message({
@@ -145,7 +145,7 @@ export default {
     async getChamberNotices() {
       const { data, state, msg } = await getChamberNotices()
       if (state === 1) {
-        this.cardList[3].value = data?.noticeReadRatio || 50
+        this.cardList[3].value = data?.noticeReadRatio || 0
         this.cardList[3].bottomValue = data?.noticeReadSequential || '--'
       } else {
         this.$message({
