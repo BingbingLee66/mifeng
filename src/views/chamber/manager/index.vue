@@ -98,88 +98,56 @@
       ><el-button type="primary" @click="openDialog('invitationCodeRef')">生成邀请码</el-button>
         <el-button type="primary" @click="exportExcelCode(2)">导出表格</el-button></template>
     </div>
-    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-      <template v-if="activeName === 'signContract'">
-        <!-- <el-table-column type="index" label="序号" width="60px" /> -->
-        <!-- <el-table-column label="ID">
+    <el-table
+      v-if="activeName === 'signContract'"
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+    >
+      <el-table-column label="商/协会logo">
         <template slot-scope="scope">
-          {{scope.row.id}}
+          <img
+            style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover"
+            :src="
+              scope.row.systemLogo
+                ? scope.row.systemLogo
+                : 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/default_avatar.png'
+            "
+            alt=""
+          >
         </template>
-      </el-table-column> -->
-        <!-- <el-table-column label="商/协会标识" width="100px">
-        <template slot-scope="scope">
-          {{ scope.row.ckey }}
-        </template>
-      </el-table-column> -->
-        <el-table-column label="商/协会logo">
-          <template slot-scope="scope">
-            <img
-              style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover"
-              :src="
-                scope.row.systemLogo
-                  ? scope.row.systemLogo
-                  : 'https://ysh-sh.oss-cn-shanghai.aliyuncs.com/prod/png/default_avatar.png'
-              "
-              alt=""
-            >
-          </template>
-        </el-table-column>
-      </template>
+      </el-table-column>
       <el-table-column label="商/协会名称">
         <template slot-scope="scope">
-          {{ activeName === 'signContract' ? scope.row.name : scope.row.chamberName }}
+          <div>{{ scope.row.name }}</div>
         </template>
       </el-table-column>
+      <el-table-column label="地区">
+        <template slot-scope="scope"> {{ scope.row.province }}{{ scope.row.city }} </template></el-table-column>
       <el-table-column label="负责人" width="120px">
         <template slot-scope="scope">
-          <div>【商务】{{ scope.row.business }}</div>
-          <div>【运营】{{ scope.row.operating }}</div>
+          <div>【商务】{{ scope.row.businessName }}</div>
+          <div>【运营】{{ scope.row.operatingName }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="入驻来源">
+        <template slot-scope="{ row }">
+          <template v-if="row.settledSource === 1">小程序</template>
+          <template v-if="row.settledSource === 2">后台录入</template>
+          <template v-if="row.settledSource === 3">小程序名录</template>
+          <template v-if="row.settledSource === 4">APP</template>
+          <template v-if="row.settledSource === 4">APP</template>
         </template>
       </el-table-column>
 
-      <template v-if="activeName === 'signContract'">
-        <el-table-column label="地区">
-          <template slot-scope="scope"> {{ scope.row.province }}{{ scope.row.city }} </template>
-        </el-table-column>
-        <el-table-column label="入驻来源">
-          <template slot-scope="{ row }">
-            <template v-if="row.settledSource === 1">小程序</template>
-            <template v-if="row.settledSource === 2">后台录入</template>
-            <template v-if="row.settledSource === 3">小程序名录</template>
-            <template v-if="row.settledSource === 4">APP</template>
-            <template v-if="row.settledSource === 5">APP名录</template>
-          </template>
-        </el-table-column>
-        <el-table-column label="账号">
-          <template slot-scope="scope">
-            {{ scope.row.userName }}
-          </template>
-        </el-table-column>
-      </template>
-      <template v-else>
-        <el-table-column label="联系人">
-          <template slot-scope="scope">
-            <div>{{ scope.row.contactName }}</div>
-            <div>{{ scope.row.contactPhone }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="注册时间">
-          <template slot-scope="scope">
-            <div>{{ scope.row.registerTime | dateFormat }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="邀请码">
-          <template slot-scope="scope">
-            <div>{{ scope.row.inviteCode }}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="邀请码是否过期">
-          <template slot-scope="scope">
-            <div>{{ scope.row.trialPassDue ? '未过期' : '已过期' }}</div>
-          </template>
-        </el-table-column>
-      </template>
-
+      <el-table-column label="账号">
+        <template slot-scope="scope">
+          <div>{{ scope.row.userName }}</div>
+        </template>
+      </el-table-column>
       <el-table-column label="权重">
         <template slot-scope="scope">
           <span style="color: #409eff; cursor: pointer" @click="updateLevel(scope.row)">{{
@@ -188,11 +156,117 @@
         </template>
       </el-table-column>
 
+      <el-table-column label="创建时间">
+        <template slot-scope="scope">
+          <div>{{ scope.row.createdTs }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态">
+        <template slot-scope="scope">
+          <div v-if="scope.row.status == 1">正常</div>
+          <div v-if="scope.row.status == 0">已冻结</div>
+          <div v-if="scope.row.status == 3">待邀请</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="120px">
+        <template slot-scope="scope">
+          <div class="operation-btns">
+            <template v-if="activeName === 'signContract'">
+              <el-button
+                v-if="has('', '详情')"
+                type="text"
+                :actionid="getId('', '详情')"
+                @click="detail($event, scope.row)"
+              >
+                详情
+              </el-button>
+              <el-button
+                v-if="has('', '编辑')"
+                type="text"
+                :actionid="getId('', '编辑')"
+                @click="edit($event, scope.row)"
+              >编辑
+              </el-button>
+              <el-button
+                v-if="has('', '冻结') && scope.row.status == 1"
+                type="text"
+                :actionid="getId('', '冻结')"
+                @click="updateStatus($event, scope.row)"
+              >冻结账号
+              </el-button>
+              <el-button
+                v-if="has('', '解冻') && scope.row.status == 0"
+                type="text"
+                :actionid="getId('', '解冻')"
+                @click="updateStatus($event, scope.row)"
+              >解冻账号
+              </el-button>
+            </template>
+            <el-button type="text" @click="openRemarks(scope.row, 'remarksRef')">备注负责人 </el-button>
+            <template v-if="activeName === 'unSignContract'">
+              <el-button type="text" @click="openMarkSigned(scope.row)">标记已签约 </el-button>
+              <el-button type="text" @click="openRemarks(scope.row, 'addTryTimeRef')">延长试用 </el-button>
+            </template>
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-table
+      v-else
+      v-loading="listLoading"
+      :data="list"
+      element-loading-text="Loading"
+      border
+      fit
+      highlight-current-row
+    >
+      <el-table-column label="商/协会名称">
+        <template slot-scope="scope">
+          <div>{{ scope.row.chamberName }}</div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="联系人">
+        <template slot-scope="scope">
+          <div>{{ scope.row.contactName }}</div>
+          <div>{{ scope.row.contactPhone }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="负责人" width="120px">
+        <template slot-scope="scope">
+          <div>【商务】{{ scope.row.businessName }}</div>
+          <div>【运营】{{ scope.row.operatingName }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="注册时间">
+        <template slot-scope="scope">
+          <div>{{ scope.row.registerTime | dateFormat }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="权重">
+        <template slot-scope="scope">
+          <span style="color: #409eff; cursor: pointer" @click="updateLevel(scope.row)">{{
+            activeName === 'signContract' ? scope.row.level : scope.row.weight
+          }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="邀请码">
+        <template slot-scope="scope">
+          <div>{{ scope.row.inviteCode }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="邀请码是否过期">
+        <template slot-scope="scope">
+          <div>{{ scope.row.trialPassDue ? '未过期' : '已过期' }}</div>
+        </template>
+      </el-table-column>
+
       <el-table-column :label="activeName === 'signContract' ? '创建时间' : '过期时间'" width="180px">
         <template slot-scope="scope">
           {{ activeName === 'signContract' ? scope.row.createdTs : scope.row.trialExpireTime | dateFormat }}
         </template>
       </el-table-column>
+
       <el-table-column label="状态">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 1">正常</div>

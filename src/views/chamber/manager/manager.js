@@ -429,6 +429,7 @@ export default {
     },
     hideDialog(_name) {
       this.$refs[_name].hide()
+      this.remarksObj = {}
     },
     // 打开备注负责人弹框
     openRemarks(row, _name) {
