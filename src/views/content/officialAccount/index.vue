@@ -4,7 +4,7 @@
       <el-tab-pane label="发布记录" name="1" />
       <el-tab-pane label="授权账号" name="2" />
     </el-tabs>
-    <el-button v-if="type == 2 && list.length == 0" type="primary" @click="onBinding">授权公众号</el-button>
+    <el-button v-if="type == 2" type="primary" @click="onBinding">授权公众号</el-button>
     <el-table
       :key="random"
       v-loading="listLoading"
@@ -23,17 +23,17 @@
             <div class="pre">{{ scope.row.content }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="发布平台" align="center" width="100px">
+        <el-table-column label="发布平台" align="center" width="150px">
           <template slot-scope="scope">
             {{ scope.row.releasePlatform == 1 ? '微信公众号' :' --' }}
           </template>
         </el-table-column>
-        <el-table-column label="发布时间" width="100px" align="center">
+        <el-table-column label="发布时间" width="150px" align="center">
           <template slot-scope="scope">
             {{ scope.row.releaseTime | dateFormat }}
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="100px" align="center">
+        <el-table-column label="状态" width="150px" align="center">
           <template slot-scope="scope">
             {{ releaseStatusList[scope.row.releaseStatus] }}
           </template>
