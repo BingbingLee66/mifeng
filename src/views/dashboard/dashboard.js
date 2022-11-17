@@ -182,7 +182,7 @@ export default {
   computed: {
     ...mapGetters(['name', 'expireTime', 'createTime', 'onTrial']),
     endTime() {
-      return dayjs(parseInt(this.expireTime)).format('YYYY-MM-DD hh:mm')
+      return dayjs(parseInt(this.expireTime)).format('YYYY-MM-DD HH:mm')
     }
   },
   created() {
