@@ -213,6 +213,16 @@ export default {
       display: flex;
       justify-content: space-between;
     }
+    .progressLabelUp {
+      background-color: #c1aff8;
+    }
+    .progressLabelLow {
+      background-color: #c1aff8;
+    }
+    ::v-deep .el-progress-bar__inner {
+      border-radius: 1px;
+      background-image: linear-gradient(360deg, #5878e4 0%, #c1aff8 100%);
+    }
   }
   .card-box:nth-of-type(2) {
     background-image: url('../../../../public/img/dashboard-cardlist-bg-2.png');
