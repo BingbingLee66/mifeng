@@ -76,9 +76,9 @@
       <!-- 要加两个无用的form-item 否则前两个form-item不会校验 -->
       <el-form-item style="display: none" />
       <el-form-item style="display: none" />
-      <el-form-item label="统一社会信用代码：" prop="socialCode">
+      <!-- <el-form-item label="统一社会信用代码：" prop="socialCode">
         <el-input v-model.trim="formObj.socialCode" max-length="100" @blur="checkCode" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="商/协会名称：" prop="chamberName">
         <el-input v-model.trim="formObj.chamberName" max-length="100" />
       </el-form-item>

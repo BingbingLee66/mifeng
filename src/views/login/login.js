@@ -1,5 +1,5 @@
 import { isvalidUsername } from '@/utils/validate'
-import { getSocialOrg, getAreaTree, uploadLogo } from '@/api/user'
+import { getAreaTree, uploadLogo } from '@/api/user'
 
 export default {
   name: 'login',
@@ -55,14 +55,18 @@ export default {
         confirmPassword: '',
       },
       registerRules: {
-        socialCode: [{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }],
+        // socialCode: [{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' },
+        // { pattern: /^[A-Za-z0-9]{2}[0-9]{6}[A-Za-z0-9]{10}$/, message: '统一社会信用代码格式有误', trigger: 'blur' }],
         chamberName: [
           { required: true, message: '商/协会名称不能为空', trigger: 'blur' },
           { min: 1, max: 50, message: '商/协会名称1-50个字', trigger: 'change' }
         ],
         chamberLogo: [{ required: true, message: '请上传商/协会logo', trigger: 'change' }],
         contactName: [{ required: true, message: '联系人姓名不能为空', trigger: 'blur' }],
-        inviteCode: [{ required: true, message: '邀请码不能为空', trigger: 'blur' }],
+        inviteCode: [
+          { required: true, message: '邀请码不能为空', trigger: 'blur' },
+          { pattern: /^[A-Za-z0-9]{8}$/, message: '邀请码格式有误', trigger: 'blur' }
+        ],
         contactPhone: [
           { required: true, message: '联系人手机号不能为空', trigger: 'blur' },
           {
@@ -133,14 +137,17 @@ export default {
         }
       })
     },
-    async checkCode() {
-      const res = await getSocialOrg({ socialCode: this.formObj.socialCode })
-      if (res.state && res.data) {
-        const { chamberName, provinceCode, cityCode } = res.data
-        this.formObj.chamberName = chamberName
-        this.formObj.area = [provinceCode || '0', cityCode || '0']
-      }
-    },
+    // async checkCode() {
+    //   if (!this.formObj.socialCode) return
+    //   const pattern = /^[A-Za-z0-9]{2}[0-9]{6}[A-Za-z0-9]{10}$/
+    //   if (!pattern.test(this.formObj.socialCode)) return
+    //   const res = await getSocialOrg({ socialCode: this.formObj.socialCode })
+    //   if (res.state && res.data) {
+    //     const { chamberName, provinceCode, cityCode } = res.data
+    //     this.formObj.chamberName = chamberName
+    //     this.formObj.area = [provinceCode || '0', cityCode || '0']
+    //   }
+    // },
     async getAreaList() {
       const { data } = await getAreaTree()
       if (data.length) {
