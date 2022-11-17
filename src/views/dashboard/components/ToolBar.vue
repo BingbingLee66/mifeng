@@ -2,10 +2,7 @@
   <Panel class="tool-bar-wrap" :has-padding="false">
     <div class="panel-header">
       <div class="panel-title">快捷工具栏</div>
-      <div>
-        <el-button v-if="isEdit && allMenuList.length >= layout.length" type="text" @click="onAddItem"><i class="el-icon-plus ml-10" />添加</el-button>
-        <div class="el-icon-edit-outline" @click="onEdit" />
-      </div>
+      <el-button @click="onEdit">{{ isEdit ? '完成' : '编辑' }}</el-button>
     </div>
 
     <div class="grid-wrap">
@@ -29,21 +26,40 @@
           :min-w="1"
           :min-h="2"
           :i="item.i"
+          :static="item.static"
           @moved="onMoved"
         >
-          <div class="content">
+          <div v-if="item.i === 'add'" class="content" @click="onAddItem">
+            <div
+              v-if="isEdit && allMenuList.length > layout.length"
+              class="content flex-x-center-center"
+              style="color: rgba(0,0,0,0.45); font-size: 16px; cursor: pointer"
+            >
+              <div class="el-icon-plus" style="margin-right: 10px" />
+              新增工具
+            </div>
+          </div>
+
+          <div v-else class="content">
             <div class="item-header">
               <div class="icon">
                 <svg-icon width="50" height="50" :icon-class="item.icon" color="#fff" />
               </div>
               <div>{{ item.menuName }}</div>
-              <div v-if="isEdit" class="el-icon-close" @click.stop="removeItem(item)" />
             </div>
             <div class="item-body">
-              <div v-for="(childItem, index) in item.children" :key="index" class="body-item" @click="onClickItem(item, childItem)">
+              <div
+                v-for="(childItem, index) in item.children"
+                :key="index"
+                :class="['body-item', isEdit ? 'body-item-edit' : 'body-item-hover']"
+                @click.stop="goTo(childItem)"
+              >
                 {{ childItem.menuName }}
+                <div v-if="isEdit" class="el-icon-close" @click.stop="removeItem(childItem, 'second', item)" />
               </div>
+              <div v-if="showAddSecondBtn(item)" class="body-item body-item-add" @click.stop="onAddSecondItem(item)"><i class="el-icon-plus" />添加</div>
             </div>
+            <div v-if="isEdit" class="item-footer" @click.stop="removeItem(item, 'first')">移除</div>
           </div>
         </GridItem>
       </GridLayout>
@@ -101,13 +117,27 @@ export default {
       }
     },
 
-    async fetchMenuList() {
-      try {
-        const { state, data } = await getMenuList()
-        if (!state) return
-        if (!data.length) this.initAddData()
+    handleMenuList(data, type) {
+      if (this.isEdit) {
+        const addItem = {
+          x: 0,
+          y: 0,
+          w: 1,
+          h: 2,
+          i: 'add',
+          static: true,
+          id: 'add',
+          children: []
+        }
 
-        this.layout = data.map((v, i) => {
+        type === 'edit' ? this.layout.unshift(addItem) : data.unshift(addItem)
+      } else {
+        this.layout.shift()
+      }
+
+      this.layout = data.map((v, i) => {
+        if (v.i === 'add') return { ...v }
+        else {
           return {
             ...v,
             x: i % 3,
@@ -116,20 +146,29 @@ export default {
             h: 2,
             i,
           }
-        })
+        }
+      })
+    },
+
+    async fetchMenuList() {
+      try {
+        const { state, data } = await getMenuList()
+        if (!state) return
+        if (!data.length) this.initAddData()
+
+        this.handleMenuList(data, 'fetch')
       } catch (e) {
         console.error(e)
       }
     },
 
-    onClickItem(item, childItem) {
-      if (!this.isEdit) {
-        this.$router.push({
-          path: childItem.menuUrl,
-        })
-        return
-      }
+    goTo(item) {
+      this.$router.push({
+        path: item.menuUrl,
+      })
+    },
 
+    onAddSecondItem(item) {
       this.formModel.firstMenu = item.menuId
       this.formModel.secondMenu = item.children.map((v, i) => {
         return {
@@ -142,7 +181,14 @@ export default {
       this.showModal = true
     },
 
+    showAddSecondBtn(item) {
+      const currMenu = this.allMenuList.find(v => v.id === item.menuId) || {}
+      return this.isEdit && currMenu.children?.length > item.children.length
+    },
+
     onAddItem() {
+      if (!this.isEdit) return
+
       this.formModel = {
         firstMenu: '',
         secondMenu: [{ value: '' }]
@@ -152,15 +198,18 @@ export default {
 
     onEdit() {
       this.isEdit = !this.isEdit
+      this.handleMenuList(this.layout, 'edit')
     },
 
-    /**
-     * 移除项
-     * @param  {Object} item 目标项
-     */
-    async removeItem(item) {
+    async removeItem(item, type, parentItem) {
       try {
         const { state, msg } = await deleteMenuList(item.id)
+
+        // 假如二级菜单只有一个的时候，同步要把父亲给删除
+        if (type === 'second' && parentItem.children.length === 1) {
+          await deleteMenuList(parentItem.id)
+        }
+
         if (!state) return
         this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
         this.fetchMenuList()
@@ -192,10 +241,10 @@ export default {
       }
 
       // eslint-disable-next-line no-return-assign
-      this.layout.forEach((v, i) => v.sort = i)
+      this.isEdit ? this.layout.slice(1).forEach((v, i) => v.sort = i) : this.layout.forEach((v, i) => v.sort = i)
 
       try {
-        const { state, msg } = await editToolBar(this.layout)
+        const { state, msg } = await editToolBar(this.isEdit ? this.layout.slice(1) : this.layout)
         if (!state) return
         this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       } catch (e) {
@@ -237,6 +286,7 @@ export default {
     box-sizing: content-box;
 
     .content {
+      position: relative;
       height: 100%;
     }
 
@@ -259,14 +309,6 @@ export default {
         border-radius: 4px;
         margin-right: 8px;
       }
-
-      .el-icon-close {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 20px;
-        cursor: pointer;
-      }
     }
 
     .item-body {
@@ -284,12 +326,48 @@ export default {
         line-height: 30px;
         height: 30px;
         box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-        &:hover {
+        &.body-item-hover:hover {
           background: linear-gradient(180deg, #FFE39B 0%, #FFB12A 100%);
           border-radius: 4px;
         }
+
+        &.body-item-edit {
+          border-radius: 4px;
+          border: 1px solid #d9d9d9;
+          background: #f3f3f3;
+
+          .el-icon-close {
+            margin-left: 10px;
+          }
+        }
+
+        &.body-item-add {
+          justify-content: center;
+          border: 1px dashed #2999ff;
+          color: #2999ff;
+
+          .el-icon-plus {
+            margin-right: 10px;
+          }
+        }
       }
+    }
+
+    .item-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      line-height: 32px;
+      background: #F7F9FA;
+      font-size: 14px;
+      color: rgba(0,0,0,0.45);
+      text-align: center;
+      cursor: pointer;
     }
   }
 

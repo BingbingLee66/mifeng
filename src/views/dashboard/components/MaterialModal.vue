@@ -149,7 +149,7 @@ export default {
 
         const params = {
           ...this.firstMenuList,
-          sort: this.layout.length,
+          sort: this.layout.length - 1,
           children: []
         }
 
