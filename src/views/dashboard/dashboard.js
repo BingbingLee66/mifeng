@@ -10,6 +10,7 @@ import {
   getChamberNotices,
   getPermission
 } from '@/api/dashboard'
+import { mapGetters } from 'vuex'
 export default {
   name: 'dashboard',
   components: {
@@ -85,9 +86,14 @@ export default {
       messageList: []
     }
   },
-  computed: {},
+  computed: {
+    ckey() {
+      return this.$store.getters.ckey || ''
+    },
+    ...mapGetters(['name'])
+  },
   created() {
-    this.init()
+    this.ckey && this.init()
   },
   methods: {
     async init() {
