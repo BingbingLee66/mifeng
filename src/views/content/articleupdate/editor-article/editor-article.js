@@ -347,6 +347,9 @@ export default {
               this.$store.dispatch('tagsView/delView', view).then(() => {
                 this.$router.push({
                   name: '公众号',
+                  // query: {
+                  //   articleId: 8785
+                  // }
                 })
               })
               break
@@ -554,10 +557,12 @@ export default {
 
     // 查询商会是否授权公众号
     async onImpower() {
+      console.log(1111111111111)
       const res = await officialAccountAuthStatus()
       if (res.state === 1) {
         this.isImpower = res.data || false
       }
+      console.log(2222222222, res)
     }
   }
 }
