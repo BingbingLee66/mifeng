@@ -4,7 +4,6 @@
       title="
 标记已签约"
       :visible.sync="detailVisible"
-      :width="width"
       @close="close"
     >
       <el-form ref="formName" label-width="160px" :model="formObj" :rules="rules">

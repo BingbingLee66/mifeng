@@ -64,7 +64,7 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="商务负责人">
+        <el-form-item label="商务负责人" label-width="100px">
           <el-select v-model="query.businessName" placeholder="请选择">
             <el-option v-for="(item, index) in businessArr" :key="index" :label="item" :value="item" />
           </el-select>
@@ -96,11 +96,11 @@
       <template
         v-else
       ><el-button type="primary" @click="openDialog('invitationCodeRef')">生成邀请码</el-button>
-        <el-button type="primary">导出表格</el-button></template>
+        <el-button type="primary" @click="exportExcelCode(2)">导出表格</el-button></template>
     </div>
     <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
       <template v-if="activeName === 'signContract'">
-        <el-table-column type="index" label="序号" width="60px" />
+        <!-- <el-table-column type="index" label="序号" width="60px" /> -->
         <!-- <el-table-column label="ID">
         <template slot-scope="scope">
           {{scope.row.id}}
@@ -126,7 +126,9 @@
         </el-table-column>
       </template>
       <el-table-column label="商/协会名称">
-        <template slot-scope="scope"> {{ scope.row }}---{{ scope.row.name }} </template>
+        <template slot-scope="scope">
+          {{ activeName === 'signContract' ? scope.row.name : scope.row.chamberName }}
+        </template>
       </el-table-column>
       <el-table-column label="负责人" width="120px">
         <template slot-scope="scope">
@@ -134,6 +136,7 @@
           <div>【运营】{{ scope.row.operating }}</div>
         </template>
       </el-table-column>
+
       <template v-if="activeName === 'signContract'">
         <el-table-column label="地区">
           <template slot-scope="scope"> {{ scope.row.province }}{{ scope.row.city }} </template>
@@ -153,14 +156,42 @@
           </template>
         </el-table-column>
       </template>
+      <template v-else>
+        <el-table-column label="联系人">
+          <template slot-scope="scope">
+            <div>{{ scope.row.contactName }}</div>
+            <div>{{ scope.row.contactPhone }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="注册时间">
+          <template slot-scope="scope">
+            <div>{{ scope.row.registerTime | dateFormat }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="邀请码">
+          <template slot-scope="scope">
+            <div>{{ scope.row.inviteCode }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="邀请码是否过期">
+          <template slot-scope="scope">
+            <div>{{ scope.row.trialPassDue ? '未过期' : '已过期' }}</div>
+          </template>
+        </el-table-column>
+      </template>
+
       <el-table-column label="权重">
         <template slot-scope="scope">
-          <span style="color: #409eff; cursor: pointer" @click="updateLevel(scope.row)">{{ scope.row.level }}</span>
+          <span style="color: #409eff; cursor: pointer" @click="updateLevel(scope.row)">{{
+            activeName === 'signContract' ? scope.row.level : scope.row.weight
+          }}</span>
         </template>
       </el-table-column>
 
       <el-table-column :label="activeName === 'signContract' ? '创建时间' : '过期时间'" width="180px">
-        <template slot-scope="scope"> {{ scope.row.createdTs }}未签约是过期时间 </template>
+        <template slot-scope="scope">
+          {{ activeName === 'signContract' ? scope.row.createdTs : scope.row.trialExpireTime | dateFormat }}
+        </template>
       </el-table-column>
       <el-table-column label="状态">
         <template slot-scope="scope">
@@ -550,11 +581,14 @@
 }
 .try-time {
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
 }
 .try-time-input {
   width: 100px;
   margin: 0px 8px;
+}
+.el-button + .el-button {
+  margin-left: 0;
 }
 </style>

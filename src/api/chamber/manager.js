@@ -98,7 +98,8 @@ export const getChamberQrcode = params => request({
 export const registerCodeDownload = params => request({
   url: '/ec/chamber/register-code-download',
   method: 'get',
-  params
+  params,
+  responseType: 'blob'
 })
 // 查询商务列表
 export const businessList = () => request({
@@ -135,10 +136,24 @@ export const addTryTime = data => request({
   data
 })
 // 未签约商会查询接口
-export const unsignedlist = params => {
+// export const unsignedData = params => {
+//   request({
+//     url: '/ec/chamber/un-signed/list',
+//     method: 'get',
+//     params,
+//   })
+// }
+export const unsignedData = params => request({
+  url: '/ec/chamber/un-signed/list',
+  method: 'get',
+  params
+})
+// 未签约商会导出表格
+export const exportUnSigned = data =>
   request({
-    url: '/ec/chamber/un-signed/list',
-    method: 'get',
-    params
+    url: '/ec/chamber/un-signed/export',
+    method: 'post',
+    data,
+    responseType: 'blob'
   })
-}
+

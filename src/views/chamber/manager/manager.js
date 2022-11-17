@@ -9,13 +9,15 @@ import {
   operatingLlist,
   updateDirector,
   addTryTime,
-  unsignedlist
+  unsignedData,
+  exportUnSigned
 } from '@/api/chamber/manager'
 import { getAreaTree } from '@/api/area'
 // import { mapGetters } from 'vuex'
 import levelDialog from './component/levelDialog.vue'
 import markSigned from './component/markSigned'
 import { remarksRules, codeRules, beforeSystemLogoUploadUtil } from './util'
+import { downloadFile } from '@/utils/index'
 export default {
   data() {
     return {
@@ -48,12 +50,13 @@ export default {
       areaOptions: [], // 地址选项
       // 搜索表单
       query: {
-        name: null,
-        userName: null,
+        name: '',
+        userName: '',
         area: [],
-        status: null,
-        date: null,
-        settledSource: ''
+        status: '',
+        date: '',
+        settledSource: '',
+        contactPhone: null
       },
       rules: {
         name: [
@@ -243,7 +246,7 @@ export default {
     init() {
       this.fetchData()
     },
-    fetchData() {
+    async fetchData() {
       this.listLoading = true
       // 已签约
       if (this.activeName === 'signContract') {
@@ -277,9 +280,15 @@ export default {
         const param = { ...query, page, pageSize }
         param.chamberName = query.name
         delete param.area
-        console.log('param', param)
-        unsignedlist(param)
+        this.unsignedDataFunc(param)
       }
+    },
+    // 拉取未签约商会查询接口
+    async unsignedDataFunc(params) {
+      const { data } = await unsignedData(params)
+      this.list = data.list
+      this.total = data.totalRows
+      this.listLoading = false
     },
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -411,6 +420,8 @@ export default {
     },
     handleClick(_tag) {
       this.activeName = _tag.name
+      this.limit = 10
+      this.currentpage = 1
       this.fetchData()
     },
     openDialog(_name) {
@@ -484,26 +495,48 @@ export default {
     registerCode() {
       this.$refs['formCode'].validate(valid => {
         if (valid) {
-          // 生成码并且下载
-          registerCodeDownload().then(res => {
-            if (res.state === 1) {
-              console.log(res)
-            }
-          })
+          // 生成码并且下载  type:1 生成码下载 2：导表
+          this.exportExcelCode(1)
         }
       })
-    }
+    },
+    // 生成码并且下载
+    async exportExcelCode(type = 1) {
+      console.log('生成码并且下载')
+      try {
+        let blob = null
+        if (type === 1) {
+          blob = await registerCodeDownload({ codeNum: this.codeObj.codeNum })
+        } else {
+          // 后端同个字段 不同的接口不一样的叫法很坑的
+          const params = { ...this.query }
+          params.chamberName = this.query.name
+          // const { name: chamberName, contactPhone, inviteCodePastDue = null, status, businessName = null, operatingName = null } = {...this.query}
+          blob = await exportUnSigned(params)
+        }
+        console.log('blob', blob)
+        downloadFile({
+          title: `【${type === 1 ? '生成邀请码' : '未签约商会列表'}】.xlsx`,
+          url: window.URL.createObjectURL(blob)
+        })
+        this.$message.success('成功')
+        type === 1 && this.hideDialog('invitationCodeRef')
+      } catch (error) {
+        this.$message.success(error.msg)
+        console.log('error', error)
+      }
+    },
   }
 }
 export const useList = async () => {
   let businessArr = []
   let operatingArr = []
-  const fetchData = async () => {
+  const fetchDataFunc = async () => {
     const { data: { business } } = await businessList()
     const { data: { operating } } = await operatingLlist()
     businessArr = business
     operatingArr = operating
   }
-  await fetchData()
+  await fetchDataFunc()
   return { businessArr, operatingArr }
 }

@@ -41,7 +41,7 @@ export default {
       this.chamberSearchListFunc()
     },
     chamberSearchListFunc() {
-      let param = {
+      const param = {
         name: ''
       }
       chamberSearchList(param).then(res => {
@@ -62,13 +62,14 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      let params = {
-        'startTime': this.query.date[0],
-        'endTime': this.query.date[1],
-        'pageNum': this.currentpage,
-        'pageSize': this.limit,
-        'ckey': this.query.ckey,
-        'moduleId': this.query.moduleId
+      const params = {
+        startTime: this.query.date[0],
+        endTime: this.query.date[1],
+        pageNum: this.currentpage,
+        pageSize: this.limit,
+        ckey: this.query.ckey,
+        moduleId: this.query.moduleId,
+        signStatus: this.query.signStatus
       }
       getAllChamberStatsDataByCkeyList(params).then(response => {
         if (response.state === 1) {
@@ -95,17 +96,18 @@ export default {
     async AllExportExcel() {
       this.exportLoaing = true
       try {
-        let params = {
-          'startTime': this.query.date[0],
-          'endTime': this.query.date[1],
-          'pageNum': 1,
-          'pageSize': 5000,
-          'ckey': this.query.ckey,
-          'moduleId': this.query.moduleId
+        const params = {
+          startTime: this.query.date[0],
+          endTime: this.query.date[1],
+          pageNum: 1,
+          pageSize: 5000,
+          ckey: this.query.ckey,
+          moduleId: this.query.moduleId
         }
         const blob = await listAllChamberStatsDataByCkeyDownload(params)
+        console.log('blob', blob)
         downloadFile({
-          title: `【商会后台使用统计】.xlsx`,
+          title: '【商会后台使用统计】.xlsx',
           url: window.URL.createObjectURL(blob)
         })
         this.$message.success('导出成功')
@@ -129,20 +131,21 @@ export default {
       this.fetchData()
     },
     handleSelectionChange(value) {
-      let datas = value
+      const datas = value
       this.selectionDatas = []
-      for (let data of datas) {
-        let new_data = {
-          '商协会名称': data.chamberName,
-          '登录次数': data.loginSum > 0 ? data.loginSum : '--',
-          '首页更新': data.homePageUpdateSum > 0 ? data.homePageUpdateSum : '--',
-          '供需管理': data.demandSum > 0 ? data.demandSum : '--',
-          '会员管理': data.memberSum > 0 ? data.memberSum : '--',
-          '组织架构': data.organizationSum > 0 ? data.organizationSum : '--',
-          '内容管理': data.contentSum > 0 ? data.contentSum : '--',
-          '活动管理': data.activitySum > 0 ? data.activitySum : '--',
-          '数据统计': data.dataSum > 0 ? data.dataSum : '--',
-          '系统设置': data.systemSum > 0 ? data.systemSum : '--'
+      for (const data of datas) {
+        const new_data = {
+          商协会名称: data.chamberName,
+          签约状态: data.signStatusStr,
+          登录次数: data.loginSum > 0 ? data.loginSum : '--',
+          首页更新: data.homePageUpdateSum > 0 ? data.homePageUpdateSum : '--',
+          供需管理: data.demandSum > 0 ? data.demandSum : '--',
+          会员管理: data.memberSum > 0 ? data.memberSum : '--',
+          组织架构: data.organizationSum > 0 ? data.organizationSum : '--',
+          内容管理: data.contentSum > 0 ? data.contentSum : '--',
+          活动管理: data.activitySum > 0 ? data.activitySum : '--',
+          数据统计: data.dataSum > 0 ? data.dataSum : '--',
+          系统设置: data.systemSum > 0 ? data.systemSum : '--'
         }
         this.selectionDatas.push(new_data)
       }
