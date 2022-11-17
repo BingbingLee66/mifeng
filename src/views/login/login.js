@@ -164,6 +164,8 @@ export default {
       formData.append('file', content.file)
       uploadLogo(formData).then(response => {
         this.formObj.chamberLogo = response.data.filePath
+        // 上传成功后，手动验证一次表单
+        this.$refs.registerForm.validateField('chamberLogo')
       })
     },
     beforeChamberLogoUpload(file) {
@@ -179,6 +181,7 @@ export default {
       }
     },
     handleRegister() {
+      if (this.loading) return
       this.$refs.registerForm.validate(valid => {
         if (valid) {
           this.loading = true
