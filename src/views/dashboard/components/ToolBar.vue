@@ -54,7 +54,7 @@
                 :class="['body-item', isEdit ? 'body-item-edit' : 'body-item-hover']"
                 @click.stop="goTo(childItem)"
               >
-                {{ childItem.menuName }}
+                <div class="item-name">{{ childItem.menuName }}</div>
                 <div v-if="isEdit" class="el-icon-close" @click.stop="removeItem(childItem, 'second', item)" />
               </div>
               <div v-if="showAddSecondBtn(item)" class="body-item body-item-add" @click.stop="onAddSecondItem(item)"><i class="el-icon-plus" />添加</div>
@@ -341,10 +341,6 @@ export default {
           border-radius: 4px;
           border: 1px solid #d9d9d9;
           background: #f3f3f3;
-
-          .el-icon-close {
-            margin-left: 10px;
-          }
         }
 
         &.body-item-add {
@@ -355,6 +351,13 @@ export default {
           .el-icon-plus {
             margin-right: 10px;
           }
+        }
+
+        .item-name {
+          width: 90px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
     }

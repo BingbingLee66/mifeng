@@ -60,7 +60,6 @@ const recursionHandleMenu = (menuList, level) => {
       menuName: menu.name || menu.menuName,
       menuId: menu.id || menu.menuId,
       menuRank: level,
-      status: 1,
       menuUrl: menu.path || menu.menuUrl,
       icon: menu.meta?.icon || menu.icon,
     })
@@ -211,6 +210,8 @@ export default {
       if (index === -1) return
 
       this.formModel.secondMenu.splice(index, 1)
+      if (!item.id) return
+
       try {
         const { state, msg } = await deleteMenuList(item.id)
         if (!state) return
