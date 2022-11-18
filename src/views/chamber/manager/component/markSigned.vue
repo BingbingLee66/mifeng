@@ -23,7 +23,7 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="办公地址：" prop="address">
-          <el-input v-model.trim="formObj.address" />
+          <el-input v-model.trim="formObj.address" maxlength="100" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
