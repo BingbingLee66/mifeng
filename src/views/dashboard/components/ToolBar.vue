@@ -341,6 +341,13 @@ export default {
           border-radius: 4px;
           border: 1px solid #d9d9d9;
           background: #f3f3f3;
+
+          .item-name {
+            width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
         }
 
         &.body-item-add {
@@ -351,13 +358,6 @@ export default {
           .el-icon-plus {
             margin-right: 10px;
           }
-        }
-
-        .item-name {
-          width: 90px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
         }
       }
     }
