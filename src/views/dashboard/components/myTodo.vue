@@ -7,7 +7,7 @@
       </div>
     </div>
     <div v-if="messageList.length !== 0" class="card-wrap">
-      <div v-for="(item, index) in messageList" :key="index" class="card" @click="toResolve(item.type, item.count)">
+      <div v-for="(item, index) in messageList" :key="index" class="card" @click="toResolve(item)">
         <div class="card-title">
           <img
             class="card-title-icon"
@@ -19,7 +19,7 @@
         <div class="card-content">
           {{
             item.type === 1
-              ? item.count === 1
+              ? +item.count === 1
                 ? `${item.targetName}发来${item.count} 条入会申请 `
                 : `收到${item.count}条入会申请`
               : item.type === 2
@@ -93,7 +93,9 @@ export default {
         return dayjs(val).fromNow()
       }
     },
-    toResolve(type, count) {
+    toResolve(item) {
+      const { type, count, targetId } = item
+
       switch (type) {
         case 1:
           this.$router.push('/member/audit')
@@ -105,7 +107,12 @@ export default {
           if (count > 1) {
             this.$router.push('/sms/mail')
           } else {
-            this.$router.push('/sms/mail-details')
+            this.$router.push({
+              name: '站内信详情',
+              params: {
+                id: targetId
+              }
+            })
           }
 
           break
