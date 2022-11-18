@@ -83,13 +83,11 @@ export default {
   methods: {
     // 打开
     open(item) {
-      console.log('item', item)
       this.tableData = JSON.parse(JSON.stringify(item))
       this.show()
     },
     // 确定
     confirm() {
-      console.log('this.tableData', this.tableData)
       if (this.tableData.length > 8) return this.$message.error('最多只能选择7篇文章')
       if (this.tableData.length <= 1) return this.$message.error('请至少选择一篇文章')
       this.$emit('confirm', this.tableData)

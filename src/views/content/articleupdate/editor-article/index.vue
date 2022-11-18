@@ -325,15 +325,20 @@
                   </el-radio-group>
                 </div>
               </el-row>
-              <el-button type="primary" :disabled="formObj.tableData.length >= 8" style="margin-left:10px" @click="onSelectArticle">选择更多文章</el-button>
+              <el-button type="primary" :disabled="formObj.wechatArticles.length >= 8" style="margin-left:10px" @click="onSelectArticle">选择更多文章</el-button>
               <!-- 文章数组 -->
               <div class="article_news">
-                <div v-for="(item,index) in formObj.tableData" :key="index" class="article_news-boxes">
+                <div v-for="(item,index) in formObj.wechatArticles" :key="index" class="article_news-boxes">
                   <div class="news-boxes-left">
                     <!-- 数组第一个数据 -->
                     <div v-if="index == 0" class="news-boxes-frist">
                       <div class="frist-essay">
-                        <img class="frist-essay-img" :src="item.img || imgUrl" alt="">
+                        <!-- <img class="frist-essay-img" :src="item.img || imgUrl" alt=""> -->
+                        <el-image
+                          style="width: 400px; height: 200px"
+                          :src="item.img || imgUrl"
+                          fit="cover"
+                        />
                         <div class="frist-pre-btn">
                           {{ item.title || '暂无标题' }}
                         </div>
@@ -348,7 +353,11 @@
                     <!-- 后面7条文章数据 -->
                     <div v-else class="news-boxes-frist news-boxes-rear">
                       <div class="news-boxes-topic"> {{ item.title || '暂无标题' }}</div>
-                      <img class="boxes-rear-img" :src="item.img || imgUrl2" alt="">
+                      <el-image
+                        style="width: 88px; height: 88px"
+                        :src="item.img || imgUrl"
+                        fit="cover"
+                      />
                     </div>
                   </div>
                   <div class="news-boxes-right">
@@ -357,7 +366,7 @@
                     <!-- 删除 -->
                     <i v-if="item.id != 0" class="el-icon-close" @click="del(index)" />
                     <!-- 下移 -->
-                    <i v-if="formObj.tableData.length - 1 != index" class="el-icon-bottom" @click="down(index)" />
+                    <i v-if="formObj.wechatArticles.length - 1 != index" class="el-icon-bottom" @click="down(index)" />
                   </div>
                 </div>
               </div>
@@ -577,7 +586,7 @@ font-family: '微软雅黑', sans-serif;
         padding: 10px;
         margin-bottom: 15px;
         .frist-essay{
-          width: 100%;
+          width: 400px;
           height: 200px;
           position: relative;
           .frist-essay-img{

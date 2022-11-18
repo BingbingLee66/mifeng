@@ -4,7 +4,7 @@
       <el-tab-pane label="发布记录" name="1" />
       <el-tab-pane label="授权账号" name="2" />
     </el-tabs>
-    <el-button v-if="type == 2" type="primary" @click="onBinding">授权公众号</el-button>
+    <el-button v-if="type == 2 && list.length < 1" type="primary" :disabled="list.length > 0" @click="onBinding">授权公众号</el-button>
     <el-table
       :key="random"
       v-loading="listLoading"
@@ -20,7 +20,7 @@
         <el-table-column prop="order" label="序号" align="center" width="55px" />
         <el-table-column label="文章标题" align="center">
           <template slot-scope="scope">
-            <div class="pre">{{ scope.row.content }}</div>
+            <div class="pre">{{ scope.row.title }}</div>
           </template>
         </el-table-column>
         <el-table-column label="发布平台" align="center" width="150px">
@@ -28,7 +28,7 @@
             {{ scope.row.releasePlatform == 1 ? '微信公众号' :' --' }}
           </template>
         </el-table-column>
-        <el-table-column label="发布时间" width="150px" align="center">
+        <el-table-column label="发布时间" width="200px" align="center">
           <template slot-scope="scope">
             {{ scope.row.releaseTime | dateFormat }}
           </template>
@@ -128,7 +128,6 @@ export default {
     }
   },
   created() {
-    console.log('this.$route.query1111111111111', this.$route.query)
     //  获取公众号短链
     this.externalLinks()
     if (this.$route.query.articleId) this.QRCode(this.$route.query.articleId)
