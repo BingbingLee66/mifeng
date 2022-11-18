@@ -105,7 +105,7 @@ export default {
           if (count > 1) {
             this.$router.push('/sms/mail')
           } else {
-            this.$router.push('/sms/mail-detail')
+            this.$router.push('/sms/mail-details')
           }
 
           break
