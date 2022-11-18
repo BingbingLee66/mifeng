@@ -30,7 +30,7 @@
         </div>
       </el-form-item>
 
-      <el-form-item v-if="usableSecondMenuList.length">
+      <el-form-item v-if="curSecondMenuList.length > formModel.secondMenu.length">
         <el-button type="text" @click="addSecondMenu"> <i class="el-icon-plus" />添加二级菜单</el-button>
       </el-form-item>
     </el-form>
@@ -101,11 +101,13 @@ export default {
     usableFirstMenuList() {
       return this.isEdit ? this.allMenuList : this.allMenuList.filter(v => v.menuId !== this.formModel.firstMenu)
     },
-    usableSecondMenuList() {
+    curSecondMenuList() {
       const index = this.allMenuList.findIndex(v => v.menuId === this.formModel.firstMenu)
-      const curSecondMenuList = this.allMenuList[index]?.children || []
+      return this.allMenuList[index]?.children || []
+    },
+    usableSecondMenuList() {
       const disableSecMenuList = this.formModel.secondMenu.map(menu => menu.value)
-      return this.isEdit ? curSecondMenuList : curSecondMenuList.filter(v => !disableSecMenuList.includes(v.menuId))
+      return this.isEdit ? this.curSecondMenuList : this.curSecondMenuList.filter(v => !disableSecMenuList.includes(v.menuId))
     },
   },
   watch: {
