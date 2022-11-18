@@ -12,6 +12,7 @@
           <img
             class="card-title-icon"
             :src="require(`../../../../public/img/dashboard-mytodo-icon-${index + 1}.png`)"
+            alt=""
           >
           <div class="card-title-text">{{ item.title }}</div>
         </div>
@@ -28,7 +29,7 @@
       </div>
     </div>
     <div v-else class="entry">
-      <img class="card-entry" src="../../../../public/img/dashboard-charm-entry.png">
+      <img class="card-entry" src="../../../../public/img/dashboard-charm-entry.png" alt="">
     </div>
   </Panel>
 </template>

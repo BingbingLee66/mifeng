@@ -22,14 +22,14 @@
           <div class="content-value">{{ card.contentValSecond }}{{ card.unitSecond }}</div>
         </div>
       </div>
-      <div v-if="card.progress === 1" class="progress" progress>
+      <div v-if="card.progress === 1" class="progress">
         <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
-        <el-progress stroke-width="8px" :show-text="false" :percentage="card.contentValSecond" />
+        <el-progress :stroke-width="8" :show-text="false" :percentage="card.contentValSecond" />
         <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
       </div>
-      <div v-if="card.progress === 2" class="progress" progress>
+      <div v-if="card.progress === 2" class="progress">
         <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
-        <el-progress stroke-width="8px" :show-text="false" :percentage="card.value" />
+        <el-progress :stroke-width="8" :show-text="false" :percentage="card.value" />
         <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
       </div>
       <div class="line mt10" />
@@ -62,11 +62,7 @@ export default {
     upOrLow(value) {
       if (value === '--') {
         return (this.cardList[3].showTriangle = false)
-      } else if (value.split('')[0] === '-') {
-        return false
-      } else {
-        return true
-      }
+      } else return value.split('')[0] !== '-'
     }
   }
 }
@@ -75,7 +71,6 @@ export default {
 <style scoped lang="scss">
 .card-list {
   width: 100%;
-  display: flex;
   flex-wrap: wrap; /* 换行 */
   padding: 26px 25px 0 25px;
   display: grid;

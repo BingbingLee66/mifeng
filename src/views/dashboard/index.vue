@@ -12,7 +12,7 @@
       <div id="dashboard" class="dashboard-container" style="background-color: #ffffff;">
         <div class="dashboard-container-view">
           <div class="dashboard-text">欢迎光临:{{ name }} </div>
-          <img class="dashboard-img" src="@/assets/img/home.png">
+          <img class="dashboard-img" src="@/assets/img/home.png" alt="">
         </div>
       </div></template>
 
