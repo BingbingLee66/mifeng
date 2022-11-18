@@ -1,9 +1,15 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
+    <div v-if="onTrial" class="countdown-tip">
+      <span><i class="el-icon-warning" style="color: #faad14" /> 已试用{{ str }}，将于{{
+        endTime
+      }}到期，如需延长期限，请与商务联系。</span>
+      <span class="close-icon"><i class="el-icon-close" @click="closeTip" /> </span>
+    </div>
+    <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
+    <sidebar class="sidebar-container" :class="{ onTrial: onTrial }" />
     <div class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
+      <div :class="{ 'fixed-header': fixedHeader }">
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
@@ -15,7 +21,8 @@
 <script>
 import { Navbar, Sidebar, AppMain, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
-
+import dayjs from 'dayjs'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Layout',
   components: {
@@ -25,7 +32,18 @@ export default {
     TagsView
   },
   mixins: [ResizeMixin],
+  data() {
+    return {
+      str: '',
+      timer: null,
+      loading: true
+    }
+  },
   computed: {
+    ...mapGetters(['expireTime', 'createTime', 'onTrial']),
+    endTime() {
+      return dayjs(parseInt(this.expireTime)).format('YYYY年MM月DD日 HH:mm')
+    },
     sidebar() {
       return this.$store.state.app.sidebar
     },
@@ -47,52 +65,101 @@ export default {
       }
     }
   },
+  created() {
+    this.countdown()
+  },
   methods: {
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
+    },
+    closeTip() {
+      clearInterval(this.timer)
+      this.$store.commit('user/SET_ONTRIAL', false)
+    },
+    countdown() {
+      if (!this.onTrial) {
+        return
+      }
+      this.timer = setInterval(() => {
+        const now = new Date()
+        const start = parseInt(this.createTime)
+        const end = parseInt(this.expireTime)
+        const time = now - start
+        if (end < now) {
+          this.$store.commit('user/SET_ONTRIAL', false)
+          clearInterval(this.timer)
+          this.timer = null
+        } else {
+          const toDay = parseInt(time / 1000 / 60 / 60 / 24)
+          const toHours = parseInt((time / 1000 / 60 / 60) % 24)
+          const toMinutes = parseInt((time / 1000 / 60) % 60)
+          const toSeconds = parseInt((time / 1000) % 60)
+          this.str = `${toDay}天${toHours}时${toMinutes}分${toSeconds}秒`
+          this.loading = false
+        }
+      }, 1000)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  @import "~@/styles/mixin.scss";
-  @import "~@/styles/variables.scss";
+@import '~@/styles/mixin.scss';
+@import '~@/styles/variables.scss';
 
-  .app-wrapper {
-    @include clearfix;
-    position: relative;
-    height: 100%;
-    width: 100%;
-    &.mobile.openSidebar{
-      position: fixed;
-      top: 0;
-    }
-  }
-  .drawer-bg {
-    background: #000;
-    opacity: 0.3;
-    width: 100%;
-    top: 0;
-    height: 100%;
-    position: absolute;
-    z-index: 999;
-  }
-
-  .fixed-header {
+.app-wrapper {
+  @include clearfix;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  &.mobile.openSidebar {
     position: fixed;
     top: 0;
-    right: 0;
-    z-index: 9;
-    width: calc(100% - #{$sideBarWidth});
-    transition: width 0.28s;
   }
+}
+.drawer-bg {
+  background: #000;
+  opacity: 0.3;
+  width: 100%;
+  top: 0;
+  height: 100%;
+  position: absolute;
+  z-index: 999;
+}
 
-  .hideSidebar .fixed-header {
-    width: calc(100% - 54px)
-  }
+.fixed-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9;
+  width: calc(100% - #{$sideBarWidth});
+  transition: width 0.28s;
+}
 
-  .mobile .fixed-header {
-    width: 100%;
+.hideSidebar .fixed-header {
+  width: calc(100% - 54px);
+}
+
+.mobile .fixed-header {
+  width: 100%;
+}
+.countdown-tip {
+  height: 30px;
+  background: #fffbe6;
+  border: 1px solid #ffe58f;
+  font-size: 14px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 30px;
+  padding-left: 100px;
+  position: relative;
+  .close-icon {
+    position: absolute;
+    right: 20px;
   }
+}
+.sidebar-container.onTrial {
+  top: 30px !important;
+}
 </style>
