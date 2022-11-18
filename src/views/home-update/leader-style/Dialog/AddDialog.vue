@@ -89,6 +89,15 @@ export default {
           ]
         },
         {
+          label: '其他身份：',
+          prop: 'post',
+          type: 'input',
+          width: '90%',
+          placeholder: '请输入，多个身份请用逗号隔开',
+          clearable: true,
+          value: '',
+        },
+        {
           label: '领导简介：',
           prop: 'url',
           type: 'textarea',

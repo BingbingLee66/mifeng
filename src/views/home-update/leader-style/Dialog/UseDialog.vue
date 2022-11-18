@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Kingkong from '@/api/home-config/Tab'
+import Home from '@/api/home-config/Home'
 export default {
   data() {
     return {
@@ -37,7 +37,7 @@ export default {
     },
 
     async submit() {
-      const res = await Kingkong.saveKingkong()
+      const res = await Home.saveKingkong()
       if (res.state !== 1) {
         this.$message.error(res.msg)
       } else {

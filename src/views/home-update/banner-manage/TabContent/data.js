@@ -12,26 +12,37 @@ const tableColumn = [
   },
   {
     label: '标题',
-    prop: 'name',
+    prop: 'title',
     align: 'center'
   },
   {
     label: '图片',
-    prop: 'image',
+    prop: 'img',
     type: 'image',
-    width: '130px',
+    width: '150px',
+    imgWidth: '120px',
+    imgHeight: '60px',
     align: 'center',
     url: row => {
-      return row.image
+      return row.img
     },
     urlList: row => {
-      return [row.image]
+      return [row.img]
     }
   },
   {
     label: '关联内容',
-    prop: 'url',
-    align: 'center'
+    prop: 'type',
+    align: 'center',
+    type: 'function',
+    callback: row => {
+      const typeMap = {
+        1: '文章',
+        2: '商品',
+        3: '邀请有礼',
+      }
+      return row.type ? typeMap[row.type] : '- -'
+    }
   },
   {
     label: '顺序',
@@ -41,28 +52,28 @@ const tableColumn = [
     align: 'center'
   },
   {
-    label: '设为首图',
-    prop: 'switch',
-    type: 'switch',
-    width: '100px',
-    align: 'center'
-  },
-  {
     label: '状态',
-    prop: 'labels',
+    prop: 'status',
     width: '100px',
-    align: 'center'
+    align: 'center',
+    type: 'function',
+    callback: row => {
+      const statusMap = {
+        1: '正常',
+        0: '冻结',
+      }
+      return row.status || row.status === 0 ? statusMap[row.status] : '- -'
+    }
   },
   {
     label: '更新时间',
     prop: 'createdTs',
-    type: 'time',
     width: '160px',
     align: 'center'
   },
   {
     label: '操作人',
-    prop: 'creatorName',
+    prop: 'operator',
     width: '160px',
     align: 'center'
   },
@@ -77,6 +88,6 @@ const tableColumn = [
   }
 ]
 
-export default {
+export {
   tableColumn
 }

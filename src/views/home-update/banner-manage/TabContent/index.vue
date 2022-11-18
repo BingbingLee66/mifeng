@@ -8,22 +8,44 @@
         size="medium"
         @click="handleEvent('add')"
       >新增banner图</el-button>
-      <el-button type="primary" size="medium" @click="handleEvent('rate')">切换频率</el-button>
+      <el-button
+        type="primary"
+        size="medium"
+        @click="handleEvent('rate')"
+      >切换频率</el-button>
     </el-row>
+
     <!-- 表格数据 -->
     <ysh-table
       :table-config="tableConfig"
       :table-column="tableColumn"
       :table-data="tableData"
       @handleOrder="handleOrder"
-      @handleSwitchChange="handleSwitchChange"
       @handleSelectionChange="handleSelectionChange"
     >
       <template v-slot:operate="row">
-        <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
-        <span class="text-blue cur ml-10" @click="handleEvent('use', row.data)">启用</span>
-        <span class="text-yellow cur ml-10" @click="handleEvent('frozen', row.data)">冻结</span>
-        <span class="text-red cur ml-10" @click="handleEvent('delete', row.data)">删除</span>
+        <span
+          class="text-blue cur ml-10"
+          @click="handleEvent('edit', row.data)"
+        >编辑</span>
+        <span
+          v-if="row.data.status === 0"
+          class="text-blue cur ml-10"
+          @click="handleEvent('use', row.data)"
+        >启用</span>
+        <span
+          v-if="row.data.status === 1"
+          class="text-blue cur ml-10"
+          @click="handleEvent('frozen', row.data)"
+        >冻结</span>
+        <span
+          class="text-blue cur ml-10"
+          @click="handleEvent('top', row.data)"
+        >置顶</span>
+        <span
+          class="text-red cur ml-10"
+          @click="handleEvent('delete', row.data)"
+        >删除</span>
       </template>
     </ysh-table>
 
@@ -37,10 +59,10 @@
 <script>
 import TableMixins from '@/mixins/yshTable'
 import { changeOrder } from '@/utils/utils'
-import Kingkong from '@/api/home-config/KingKong'
+import { tableColumn } from './data'
 import AddDialog from '../Dialog/AddDialog'
 import RateDialog from '../Dialog/RateDialog'
-import _data from './data'
+import Home from '@/api/home-config/Home'
 
 export default {
   components: { AddDialog, RateDialog },
@@ -53,13 +75,8 @@ export default {
         selection: false,
         maxHeight: window.innerHeight - 260 + 'px'
       },
-      tableColumn: _data.tableColumn,
+      tableColumn,
       tableData: []
-    }
-  },
-  computed: {
-    deleteDisable() {
-      return this.selectionData.length === 0
     }
   },
   created() {
@@ -71,17 +88,15 @@ export default {
       this.tableConfig.loading = true
       const params = {
         clientType: 0,
-        name: '',
-        creatorName: '',
-        createdTsBegin: '',
-        createdTsEnd: '',
+        type: 1,
         pageNum: 1,
         pageSize: 100
       }
-      const res = await Kingkong.getKingkongList(params)
+      const res = await Home.getBannerList(params)
       if (res.state !== 1) return
-      this.tableData = res.data.list
-      this.pageData.total = res.data.totalRows
+      const resData = res.data.data
+      this.tableData = resData.list
+      this.pageData.total = resData.totalRows
       this.tableConfig.loading = false
     },
 
@@ -89,72 +104,79 @@ export default {
     handleEvent(event, data) {
       switch (event) {
         case 'add':
-          // 新增banner图
           this.$refs.dialogRef1.$emit(event)
           break
         case 'edit':
-          // 编辑banner图
           this.$refs.dialogRef1.$emit(event, data)
           break
         case 'rate':
-          // 切换频率
           this.$refs.dialogRef2.$emit(event, data)
           break
         case 'delete':
-          // 删除
           this.handleDelete(data)
           break
         case 'frozen':
-          // 冻结
-          this.handleUse('frozen', data)
+          this.handleUse(event, data)
           break
         case 'use':
-          // 启用
-          this.handleUse('use', data)
+          this.handleUse(event, data)
+          break
+        case 'top':
+          this.handleTop(data)
           break
         default:
           break
       }
     },
 
-    /* 是否设为首图 */
-    handleSwitchChange(e, data) {
-      console.log('switch data', e, data)
+    /* 置顶 */
+    async handleTop(data) {
+      const res = await Home.topBanner({ id: data.id })
+      if (res.state === 1) {
+        this.$message.success(res.msg)
+        this.fetchData()
+      } else {
+        this.$message.error(res.msg)
+      }
     },
 
-    /** 启用/冻结金刚区 */
-    handleUse(event, data) {
+    /** 启用/冻结 */
+    async handleUse(event, data) {
       console.log(event, data)
+      const res = await Home.useBanner({ id: data.id })
+      if (res.state === 1) {
+        this.$message.success(res.msg)
+        this.fetchData()
+      } else {
+        this.$message.error(res.msg)
+      }
     },
 
-    /** 移除金刚区 */
-    handleDelete() {
-      this.$confirm('确认移除该banner图吗?', '提示', {
+    /** 删除 */
+    handleDelete(data) {
+      this.$confirm('确认删除该banner图吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(async () => {
-          const idsArr = this.selectionData.map(item => {
-            return item.id
-          })
-          const res = await Kingkong.deleteKingkong(idsArr)
+          const res = await Home.deleteBanner({ id: data.id })
           if (res.state === 1) {
-            this.$message.success(res.msg)
-            this.fetchData(1)
+            this.$message.success('删除成功')
+            this.fetchData()
           } else {
             this.$message.error(res.msg)
           }
         })
         .catch(() => {
-          this.$message.info('已取消移除')
+          this.$message.info('取消删除')
         })
     },
 
     /** 调整上下顺序 */
     handleOrder(event, data) {
       changeOrder(this.tableData, data.id, event)
-    },
+    }
   }
 }
 </script>

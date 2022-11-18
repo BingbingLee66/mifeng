@@ -1,12 +1,17 @@
 const tableColumn = [
   {
+    label: '序号',
+    prop: 'serialNumber',
+    type: 'serialNumber'
+  },
+  {
     label: 'ID',
     prop: 'id',
     align: 'center'
   },
   {
     label: '栏目名称',
-    prop: 'name',
+    prop: 'columnName',
     align: 'center'
   },
   {
@@ -24,18 +29,26 @@ const tableColumn = [
   {
     label: '状态',
     prop: 'labels',
-    align: 'center'
+    align: 'center',
+    width: '160px',
+    type: 'function',
+    callback: row => {
+      const statusMap = {
+        1: '正常',
+        0: '冻结'
+      }
+      return row.status || row.status === 0 ? statusMap[row.status] : ''
+    }
   },
   {
     label: '更新时间',
-    prop: 'createdTs',
-    type: 'time',
+    prop: 'updatedTs',
     width: '160px',
     align: 'center'
   },
   {
     label: '操作人',
-    prop: 'creatorName',
+    prop: 'updater',
     width: '160px',
     align: 'center'
   },

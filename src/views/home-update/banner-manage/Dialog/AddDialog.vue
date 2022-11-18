@@ -17,7 +17,7 @@
 
 <script>
 import { uploadFile } from '@/api/content/article'
-import Kingkong from '@/api/home-config/KingKong'
+import Home from '@/api/home-config/Home'
 
 export default {
   data() {
@@ -32,40 +32,39 @@ export default {
         size: 'medium'
       },
       formObj: {
-        name: '', // 入口名称
-        image: '', // 上传图片
-        url: '' // 关联内容
+        title: '', // 标题
+        type: '', // 关联内容
+        img: '' // 上传图片
       },
       formItem: [
         {
-          label: '入口名称：',
-          prop: 'name',
+          label: '标题：',
+          prop: 'title',
           type: 'input',
           width: '90%',
           showWordLimit: true,
-          maxlength: 6,
-          placeholder: '请输入入口名称，不超过6个字符',
+          maxlength: 20,
+          placeholder: '请输入banner标题，不超过20个字符',
           clearable: true,
           value: '',
           rules: [
-            { min: 1, max: 6, message: '只限6个字以内哦', trigger: 'blur' },
-            { required: true, message: '请输入入口名称', trigger: 'blur' }
+            { min: 1, max: 20, message: '只限20个字以内哦', trigger: 'blur' },
+            { required: true, message: '请输入标题', trigger: 'blur' }
           ]
         },
         {
           label: '关联内容：',
-          prop: 'url',
+          prop: 'type',
           type: 'textarea',
           width: '90%',
           rows: 5,
           placeholder: '请输入banner跳转链接或路径',
           clearable: true,
-          value: '',
-          rules: [{ required: true, message: '请输入关联内容', trigger: 'blur' }]
+          value: ''
         },
         {
           label: '上传图片：',
-          prop: 'image',
+          prop: 'img',
           type: 'upload',
           value: '',
           formTip: ['建议尺寸76*76px; 支持png、jpg、gif'],
@@ -80,7 +79,7 @@ export default {
             this.beforeUpload(file)
           },
           upload: content => {
-            this.uploadKingkongImage(content, 'image')
+            this.uploadKingkongImage(content, 'img')
           }
         }
       ]
@@ -103,23 +102,23 @@ export default {
 
     close() {
       this.formObj = {
-        name: '',
-        image: '',
-        url: ''
+        title: '', // 标题
+        type: '', // 关联内容
+        img: '' // 上传图片
       }
       this.$refs.formRef.resetFileds()
       this.dialogVisible = false
     },
 
     add() {
-      this.dialogTitle = '新增功能入口'
+      this.dialogTitle = '新增banner图'
       this.show()
     },
 
     edit(data) {
-      this.dialogTitle = '编辑功能入口'
-      const { name, image, url, id } = data
-      this.formObj = { name, image, url, id }
+      this.dialogTitle = '编辑banner图'
+      const { title, type, img, id } = data
+      this.formObj = { title, type, img, id }
       this.show()
     },
 
@@ -154,10 +153,12 @@ export default {
     },
 
     async submit(data) {
-      const res = await Kingkong.saveKingkong({
+      const res = await Home.saveBanner({
         ...data,
-        clientType: 0,
-        weight: 0
+        type: 1,
+        level: 0,
+        articleId: 12989,
+        ckey: ''
       })
       if (res.state !== 1) {
         this.$message.error(res.msg)
@@ -171,5 +172,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>
