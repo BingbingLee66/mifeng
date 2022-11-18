@@ -19,7 +19,9 @@
         <div class="card-content">
           {{
             item.type === 1
-              ? `${item.targetName}发来${item.count} 条入会申请 `
+              ? item.count === 1
+                ? `${item.targetName}发来${item.count} 条入会申请 `
+                : `收到${item.count}条入会申请`
               : item.type === 2
                 ? `${item.targetName}收到${item.count} 条报名审核 `
                 : `您收到${item.count}条站内信 `
