@@ -6,7 +6,7 @@ export function getApiUrl() {
 
 // 限制输入框输入大于零的正整数
 export function nmberInput(val) {
-  let regexp = /^[1-9]\d*$/
+  const regexp = /^[1-9]\d*$/
   if (!regexp.test(val)) {
     return ''
   } else {
@@ -25,7 +25,7 @@ export function spaceInput(val) {
 
 // 限制输入正整数
 export function intInput(val) {
-  let regexp = /^[1-9]\d*$/
+  const regexp = /^[1-9]\d*$/
   if (!regexp.test(val)) {
     return ''
   } else {
@@ -34,8 +34,8 @@ export function intInput(val) {
 }
 
 export function errorCaptured(promise) {
-  return promise.then((res) => [res, null])
-    .catch((err) => [null, err])
+  return promise.then(res => [res, null])
+    .catch(err => [null, err])
 }
 // 权重校验
 export const checkNumber = (rule, value, callback) => {
@@ -58,3 +58,28 @@ export const passwordValidator = (rule, value, callback) => {
   callback()
 }
 
+/**
+ * 调整数组中目标元素的上下位置
+ * @param {*} arr 目标数组
+ * @param {*} id 目标元素关键字
+ * @param {String} event up-上移 down-下移
+ * @returns
+ */
+export const changeOrder = (arr = [], id, event) => {
+  const idx = arr.findIndex(i => i.id === id)
+  const targetIdx = event === 'up' ? idx - 1 : idx + 1
+  arr[idx] = arr.splice(targetIdx, 1, arr[idx])[0]
+  return arr
+}
+
+/**
+ * 删除数组中目标元素
+ * @param {*} arr 目标数组
+ * @param {*} id 目标元素关键字
+ * @returns
+ */
+export const removeItem = (arr, id) => {
+  const idx1 = arr.findIndex(i => i.id === id)
+  arr.splice(idx1, 1)
+  return arr
+}

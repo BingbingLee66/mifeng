@@ -275,7 +275,7 @@
             </el-tag>
             <span
               v-if="scope.row.memberLabelList.length > 3"
-              class="text-blue"
+              class="text-blue cur"
               @click="handleMoreLabel(scope.row)"
             >查看更多</span>
           </template>
@@ -293,7 +293,7 @@
             </el-tag>
             <span
               v-if="scope.row.bridgeLabels.length > 3"
-              class="text-blue"
+              class="text-blue cur"
               @click="handleMorebridgeLabels(scope.row)"
             >查看更多</span>
           </template>
@@ -311,7 +311,7 @@
             </el-tag>
             <span
               v-if="scope.row.tradeBridges.length > 3"
-              class="text-blue"
+              class="text-blue cur"
               @click="handleMoretradeBridges(scope.row)"
             >查看更多</span>
           </template>

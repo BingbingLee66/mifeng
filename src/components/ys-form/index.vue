@@ -24,6 +24,7 @@
           :style="{ width: item.width || '165px' }"
           :placeholder="item.placeholder || ''"
           :maxlength="item.maxlength || ''"
+          :show-word-limit="item.showWordLimit || false"
           :clearable="item.clearable || false"
         />
         <!-- intInput整数 -->
@@ -33,6 +34,7 @@
           :style="{ width: item.width || '165px' }"
           :placeholder="item.placeholder || ''"
           :maxlength="item.maxlength || ''"
+          :show-word-limit="item.showWordLimit || false"
           :clearable="item.clearable || false"
           @input="(val) => checkInt(formData, item.prop, val)"
         />
@@ -43,6 +45,7 @@
           :style="{ width: item.width || '165px' }"
           :placeholder="item.placeholder || ''"
           :maxlength="item.maxlength || ''"
+          :show-word-limit="item.showWordLimit || false"
           :clearable="item.clearable || false"
           @input="(val) => checkPositive(formData, item.prop, val)"
         />
@@ -53,7 +56,7 @@
           type="textarea"
           :style="{ width: item.width || '165px' }"
           :rows="item.rows || 3"
-          :show-word-limit="item.showWordLimit"
+          :show-word-limit="item.showWordLimit || false"
           :placeholder="item.placeholder || ''"
           :maxlength="item.maxlength || ''"
           :clearable="item.clearable || false"
@@ -118,8 +121,7 @@
           >
           <i
             v-else
-            style="
-              width: 150px;
+            style="width: 150px;
               height: 150px;
               font-size: 28px;
               color: #8c939d;
@@ -130,7 +132,7 @@
           />
         </el-upload>
         <div v-if="item.formTip">
-          <div v-for="(tips, index) in item.formTip" :key="index">
+          <div v-for="(tips, index) in item.formTip" :key="index" style="color: #999;">
             {{ tips }}
           </div>
         </div>
@@ -148,11 +150,11 @@
           重置
         </el-button>
       </el-form-item>
-      <el-form-item v-if="formConfig.type === 'edit'" label="">
+      <el-form-item v-if="formConfig.type === 'submit'" label="" style="margin-top:40px;">
         <el-button v-dbClick type="primary" @click="submit">确定</el-button>
         <el-button @click="cancel">取消</el-button>
       </el-form-item>
-      <slot name="customConetent" />
+      <slot name="customConetent" :data="this.formData" />
     </el-form>
   </div>
 </template>

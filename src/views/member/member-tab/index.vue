@@ -39,17 +39,17 @@
           </el-tag>
           <span
             v-if="row.data.memberLabelVOList.length > 3"
-            class="text-blue"
+            class="text-blue cur"
             @click="handleMoreLabel(row.data)"
           >查看更多</span>
         </div>
       </template>
       <template v-slot:operate="row">
-        <span class="text-blue ml-10" @click="handleEdit(row.data)">
+        <span class="text-blue cur ml-10" @click="handleEdit(row.data)">
           编辑
         </span>
         <span
-          class="text-red-cur ml-10"
+          class="text-red cur ml-10"
           @click="handleDel(row.data)"
         >删除</span>
         <span v-if="row.data.status === 2" class="text-gray">平台冻结</span>

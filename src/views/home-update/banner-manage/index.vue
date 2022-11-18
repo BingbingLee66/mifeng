@@ -2,22 +2,20 @@
   <div class="container">
     <el-tabs v-model="clientType" type="border-card">
       <el-tab-pane label="小程序" name="wechat">
-        <wechat-tab v-if="clientType === 'wechat'" />
+        <tab-content v-if="clientType === 'wechat'" client-type="0" />
       </el-tab-pane>
       <el-tab-pane label="APP" name="app">
-        <app-tab v-if="clientType === 'app'" />
+        <h3 class="text-center">此功能暂未开放</h3>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
-import AppTab from './app/index'
-import WechatTab from './wechat/index'
+import TabContent from './TabContent/index'
 export default {
   components: {
-    AppTab,
-    WechatTab
+    TabContent
   },
   data() {
     return {

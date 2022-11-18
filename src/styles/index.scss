@@ -74,14 +74,12 @@ div:focus {
   color: #ff0000;
 }
 
-.text-red-cur {
-  color: #ff0000;
-  cursor: pointer;
+.text-yellow {
+  color: #e6a23c;
 }
 
-.text-green-cur {
+.text-green {
   color: #67C23A;
-  cursor: pointer;
 }
 
 .text-blue {
@@ -89,12 +87,7 @@ div:focus {
   cursor: pointer;
 }
 
-.text-yellow,
-.text-yellow-cur {
-  color: #e6a23c;
-}
-
-.warn-label-cur {
+.cur {
   cursor: pointer;
 }
 
