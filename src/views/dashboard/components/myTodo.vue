@@ -7,18 +7,21 @@
       </div>
     </div>
     <div v-if="messageList.length !== 0" class="card-wrap">
-      <div v-for="(item, index) in messageList" :key="index" class="card" @click="toResolve(item.type, item.count)">
+      <div v-for="(item, index) in messageList" :key="index" class="card" @click="toResolve(item)">
         <div class="card-title">
           <img
             class="card-title-icon"
             :src="require(`../../../../public/img/dashboard-mytodo-icon-${index + 1}.png`)"
+            alt=""
           >
           <div class="card-title-text">{{ item.title }}</div>
         </div>
         <div class="card-content">
           {{
             item.type === 1
-              ? `${item.targetName}发来${item.count} 条入会申请 `
+              ? +item.count === 1
+                ? `${item.targetName}发来${item.count} 条入会申请 `
+                : `收到${item.count}条入会申请`
               : item.type === 2
                 ? `${item.targetName}收到${item.count} 条报名审核 `
                 : `您收到${item.count}条站内信 `
@@ -28,7 +31,7 @@
       </div>
     </div>
     <div v-else class="entry">
-      <img class="card-entry" src="../../../../public/img/dashboard-charm-entry.png">
+      <img class="card-entry" src="../../../../public/img/dashboard-charm-entry.png" alt="">
     </div>
   </Panel>
 </template>
@@ -90,7 +93,9 @@ export default {
         return dayjs(val).fromNow()
       }
     },
-    toResolve(type, count) {
+    toResolve(item) {
+      const { type, count, source } = item
+
       switch (type) {
         case 1:
           this.$router.push('/member/audit')
@@ -102,7 +107,12 @@ export default {
           if (count > 1) {
             this.$router.push('/sms/mail')
           } else {
-            this.$router.push('/sms/mail-detail')
+            this.$router.push({
+              name: '站内信详情',
+              params: {
+                id: source
+              }
+            })
           }
 
           break

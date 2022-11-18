@@ -30,7 +30,7 @@
         </div>
       </el-form-item>
 
-      <el-form-item v-if="usableSecondMenuList.length">
+      <el-form-item v-if="curSecondMenuList.length > formModel.secondMenu.length">
         <el-button type="text" @click="addSecondMenu"> <i class="el-icon-plus" />添加二级菜单</el-button>
       </el-form-item>
     </el-form>
@@ -60,7 +60,6 @@ const recursionHandleMenu = (menuList, level) => {
       menuName: menu.name || menu.menuName,
       menuId: menu.id || menu.menuId,
       menuRank: level,
-      status: 1,
       menuUrl: menu.path || menu.menuUrl,
       icon: menu.meta?.icon || menu.icon,
     })
@@ -101,11 +100,13 @@ export default {
     usableFirstMenuList() {
       return this.isEdit ? this.allMenuList : this.allMenuList.filter(v => v.menuId !== this.formModel.firstMenu)
     },
-    usableSecondMenuList() {
+    curSecondMenuList() {
       const index = this.allMenuList.findIndex(v => v.menuId === this.formModel.firstMenu)
-      const curSecondMenuList = this.allMenuList[index]?.children || []
-      const disableSecMenuList = this.formModel.secondMenu.map(menu => menu.value)
-      return this.isEdit ? curSecondMenuList : curSecondMenuList.filter(v => !disableSecMenuList.includes(v.menuId))
+      return this.allMenuList[index]?.children || []
+    },
+    usableSecondMenuList() {
+      const disableSecMenuList = this.formModel.secondMenu.map(menu => typeof menu.value === 'number' ? menu.value : menu.label)
+      return this.curSecondMenuList.filter(v => !disableSecMenuList.includes(v.menuId))
     },
   },
   watch: {
@@ -142,7 +143,7 @@ export default {
         if (!valid) return false
 
         this.firstMenuList = this.allMenuList.find(v => v.menuId === this.formModel.firstMenu)
-        const tempMenuList = this.formModel.secondMenu.map(v => v.value)
+        const tempMenuList = this.formModel.secondMenu.map(v => typeof v.value === 'number' ? v.value : v.label)
         this.secondMenuList = this.firstMenuList.children.filter(v => tempMenuList.includes(v.menuId))
 
         if (this.hasDuplicates(tempMenuList)) return this.$message({ message: '二级菜单不能存在重复值', type: 'error' })
@@ -157,7 +158,7 @@ export default {
           params.children.push({
             ...item,
             sort: tempMenuList.findIndex(v => v === item.menuId),
-            id: this.formModel.secondMenu.find(v => v.value === item.menuId)?.id
+            id: this.formModel.secondMenu.find(v => (typeof v.value === 'number' ? v.value : v.label) === item.menuId)?.id
           })
         })
 
@@ -209,6 +210,8 @@ export default {
       if (index === -1) return
 
       this.formModel.secondMenu.splice(index, 1)
+      if (!item.id) return
+
       try {
         const { state, msg } = await deleteMenuList(item.id)
         if (!state) return

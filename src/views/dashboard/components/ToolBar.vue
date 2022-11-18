@@ -54,7 +54,7 @@
                 :class="['body-item', isEdit ? 'body-item-edit' : 'body-item-hover']"
                 @click.stop="goTo(childItem)"
               >
-                {{ childItem.menuName }}
+                <div class="item-name">{{ childItem.menuName }}</div>
                 <div v-if="isEdit" class="el-icon-close" @click.stop="removeItem(childItem, 'second', item)" />
               </div>
               <div v-if="showAddSecondBtn(item)" class="body-item body-item-add" @click.stop="onAddSecondItem(item)"><i class="el-icon-plus" />添加</div>
@@ -172,7 +172,9 @@ export default {
       this.formModel.firstMenu = item.menuId
       this.formModel.secondMenu = item.children.map((v, i) => {
         return {
-          value: v.menuId,
+          // 为了修复编辑时select不显示label名称，故把label和value调转了
+          value: v.menuName,
+          label: v.menuId,
           key: i,
           id: v.id
         }
@@ -340,8 +342,11 @@ export default {
           border: 1px solid #d9d9d9;
           background: #f3f3f3;
 
-          .el-icon-close {
-            margin-left: 10px;
+          .item-name {
+            width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
         }
 
