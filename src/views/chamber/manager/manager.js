@@ -414,7 +414,8 @@ export default {
     },
     // 修改权重
     updateLevel(row) {
-      this.$refs['levelDialog'].open(row.id, row.level).then(() => {
+      const id = this.activeName === 'signContract' ? row.id : row.chamberId
+      this.$refs['levelDialog'].open(id, row.level).then(() => {
         this.fetchData()
       })
     },
