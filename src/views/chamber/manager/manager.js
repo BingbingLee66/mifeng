@@ -3,11 +3,21 @@ import {
   getDetail,
   save,
   updateStatus,
-  upload
+  upload,
+  registerCodeDownload,
+  businessList,
+  operatingLlist,
+  updateDirector,
+  addTryTime,
+  unsignedData,
+  exportUnSigned
 } from '@/api/chamber/manager'
 import { getAreaTree } from '@/api/area'
 // import { mapGetters } from 'vuex'
 import levelDialog from './component/levelDialog.vue'
+import markSigned from './component/markSigned'
+import { remarksRules, codeRules, beforeSystemLogoUploadUtil } from './util'
+import { downloadFile } from '@/utils/index'
 export default {
   data() {
     return {
@@ -40,12 +50,13 @@ export default {
       areaOptions: [], // 地址选项
       // 搜索表单
       query: {
-        name: null,
-        userName: null,
+        name: '',
+        userName: '',
         area: [],
-        status: null,
-        date: null,
-        settledSource: ''
+        status: '',
+        date: '',
+        settledSource: '',
+        contactPhone: null
       },
       rules: {
         name: [
@@ -67,13 +78,15 @@ export default {
             trigger: 'change'
           }
         ],
-        area: [{
-          required: true, message: '地区不能为空', trigger: 'change',
-          validator: (rule, value, callback) => {
-            if (!value[0]) return callback(new Error(rule.message))
-            callback()
+        area: [
+          {
+            required: true, message: '地区不能为空', trigger: 'change',
+            validator: (rule, value, callback) => {
+              if (!value[0]) return callback(new Error(rule.message))
+              callback()
+            }
           }
-        }],
+        ],
         license: [{ required: true, message: '营业执照必须上传', trigger: 'change' }],
         password: [
           { required: true, message: '账号密码不能为空', trigger: 'blur' },
@@ -106,18 +119,36 @@ export default {
         //     }
         //   }, trigger: 'change' }
         // ]
-      }
+      },
+      activeName: 'signContract',
+      codeRules,
+      codeObj: {
+        codeNum: ''
+      },
+      remarksRules,
+      businessArr: [],
+      operatingArr: [],
+      // 当前操作的row
+      row: {},
+      remarksObj: {
+        business: '',
+        operating: ''
+      },
+      addDay: null
     }
   },
   components: {
-    levelDialog
+    levelDialog, markSigned
   },
   computed: {
     // ...mapGetters(['has'])
   },
-  created() {
+  async created() {
     this.init()
     this.getAreaList()
+    const { businessArr, operatingArr } = await useList()
+    this.businessArr = businessArr
+    this.operatingArr = operatingArr
   },
   methods: {
     async getAreaList() {
@@ -192,16 +223,18 @@ export default {
     //   })
     // },
     beforeAvatarUpload(file) {
-      if (file.type !== 'image/jpeg' &&
-        file.type !== 'image/jpg' &&
-        file.type !== 'image/png') {
-        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
-        return false
-      }
-      if (file.size > 1024 * 1024 * 2) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-        return false
-      }
+      const flag = beforeSystemLogoUploadUtil(file)
+      return flag
+      // if (file.type !== 'image/jpeg' &&
+      //   file.type !== 'image/jpg' &&
+      //   file.type !== 'image/png') {
+      //   this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+      //   return false
+      // }
+      // if (file.size > 1024 * 1024 * 2) {
+      //   this.$message.error('上传头像图片大小不能超过 2MB!')
+      //   return false
+      // }
     },
     upload(content) {
       const formData = new FormData()
@@ -213,34 +246,49 @@ export default {
     init() {
       this.fetchData()
     },
-    fetchData() {
+    async fetchData() {
       this.listLoading = true
-      let {
-        name,
-        status,
-        userName,
-        date,
-        area,
-        settledSource
-      } = this.query
-      let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        name,
-        status,
-        userName,
-        startTime: date ? date[0] : '',
-        endTime: date ? date[1] : '',
-        // province: area.map(v => v[0]).join(','),
-        city: area.map(v => v[1]).join(','),
-        settledSource
+      // 已签约
+      if (this.activeName === 'signContract') {
+        const {
+          name,
+          status,
+          userName,
+          date,
+          area,
+          settledSource
+        } = this.query
+        const params = {
+          pageSize: this.limit,
+          page: this.currentpage,
+          name,
+          status,
+          userName,
+          startTime: date ? date[0] : '',
+          endTime: date ? date[1] : '',
+          // province: area.map(v => v[0]).join(','),
+          city: area.map(v => v[1]).join(','),
+          settledSource
+        }
+        getList(params).then(response => {
+          this.list = response.data.data.list
+          this.total = response.data.data.totalRows
+          this.listLoading = false
+        })
+      } else {
+        const { query, currentpage: page, limit: pageSize } = this
+        const param = { ...query, page, pageSize }
+        param.chamberName = query.name
+        delete param.area
+        this.unsignedDataFunc(param)
       }
-      console.log('query', this.query)
-      getList(params).then(response => {
-        this.list = response.data.data.list
-        this.total = response.data.data.totalRows
-        this.listLoading = false
-      })
+    },
+    // 拉取未签约商会查询接口
+    async unsignedDataFunc(params) {
+      const { data } = await unsignedData(params)
+      this.list = data.list
+      this.total = data.totalRows
+      this.listLoading = false
     },
     add(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
@@ -264,11 +312,11 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.type = 'edit'
       const params = {
-        'chamberId': row.id
+        chamberId: row.id
       }
-      const ckey = row.ckey
+      const { ckey } = row
       getDetail(params).then(response => {
-        const { dtl = {}} = response.data
+        const { dtl = {} } = response.data
         this.formObj = {
           ...dtl,
           password: '',
@@ -280,8 +328,8 @@ export default {
     },
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'chamberId': row.id
+      const params = {
+        chamberId: row.id
       }
       getDetail(params).then(response => {
         this.detailObj = response.data.dtl
@@ -315,7 +363,7 @@ export default {
     updateStatus(e, row) {
       console.log('rew', row)
       const h = this.$createElement
-      let self = this
+      const self = this
       if (row.status === 1) {
         this.$msgbox({
           title: '冻结账号',
@@ -334,8 +382,6 @@ export default {
               done()
             }
           }
-        }).then(action => {
-
         })
       } else {
         this.updateStatusFunc(row)
@@ -343,11 +389,11 @@ export default {
     },
     updateStatusFunc(row) {
       // window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'chamberId': row.id,
-        'action': row.status === 0 ? 'active' : 'notactive'
+      const params = {
+        chamberId: row.id,
+        action: row.status === 0 ? 'active' : 'notactive'
       }
-      updateStatus(params).then(response => {
+      updateStatus(params).then(() => {
         if (row.status === 0) {
           this.$message({
             message: '解冻成功',
@@ -363,15 +409,146 @@ export default {
       })
     },
     enlarge(path) {
-      var newwin = window.open()
+      const newwin = window.open()
       newwin.document.write('<img src="' + path + '"/>')
     },
     // 修改权重
     updateLevel(row) {
-      console.log('row', row)
-      this.$refs['levelDialog'].open(row.id,row.level).then(data => {
+      this.$refs['levelDialog'].open(row.id, row.level).then(() => {
         this.fetchData()
       })
-    }
+    },
+    handleClick(_tag) {
+      this.activeName = _tag.name
+      this.limit = 10
+      this.currentpage = 1
+      this.fetchData()
+    },
+    openDialog(_name) {
+      this.$refs[_name].show()
+    },
+    hideDialog(_name) {
+      this.$refs[_name].hide()
+      this.remarksObj = {}
+    },
+    // 打开备注负责人弹框
+    openRemarks(row, _name) {
+      this.row = row
+      this.openDialog(_name)
+    },
+    // 打开标记已签约
+    openMarkSigned(row) {
+      this.$refs['markSignedRef'].open(row).then(() => { this.fetchData() })
+    },
+    // 延长试用天数
+    async addTryTimed() {
+      const { addDay, row: { ckey } } = this
+      if (parseInt(addDay) > 0) {
+        const res = await addTryTime({ addDay, ckey })
+        if (res.state === 1) {
+          this.$message({
+            message: '延长成功',
+            type: 'success'
+          })
+          this.hideDialog('addTryTimeRef')
+        } else {
+          this.$message({
+            message: res.msg,
+            type: 'error'
+          })
+        }
+      } else if (!/^[0-9]\d*$/.test(addDay)) {
+        this.$message.warning('只允许输入数字')
+      } else {
+        this.$message({
+          message: '延长天数大于0',
+          type: 'warning'
+        })
+      }
+    },
+    // 备注负责人
+    saveRemarks() {
+      // ckey name
+      this.$refs['formRemarks'].validate(valid => {
+        if (valid) {
+          const { ckey } = this.row
+          updateDirector({ ckey, ...this.remarksObj }).then(res => {
+            if (res.state === 1) {
+              this.$message({
+                message: '备注成功',
+                type: 'success'
+              })
+              this.hideDialog('remarksRef')
+              this.fetchData()
+            } else {
+              this.$message({
+                message: res.msg,
+                type: 'error'
+              })
+            }
+          })
+        }
+      })
+    },
+    // openInvitationCode() {
+
+    // },
+    // hideInvitationCode() {
+    //   this.$refs['invitationCodeRef'].hide()
+    // },
+    registerCode() {
+      if (!/^[0-9]\d*$/.test(this.codeObj.codeNum)) {
+        this.$message.warning('请输入正确的格式')
+        return
+      }
+      if (this.codeObj.codeNum > 999 || this.codeObj.codeNum < 1) {
+        this.$message.warning('单次生成邀请码的数量需大于0小于等于999')
+        return
+      }
+      this.$refs['formCode'].validate(valid => {
+        if (valid) {
+          // 生成码并且下载  type:1 生成码下载 2：导表
+          this.exportExcelCode(1)
+        }
+      })
+    },
+    // 生成码并且下载
+    async exportExcelCode(type = 1) {
+      console.log('生成码并且下载')
+      try {
+        let blob = null
+        if (type === 1) {
+          blob = await registerCodeDownload({ codeNum: this.codeObj.codeNum })
+        } else {
+          // 后端同个字段 不同的接口不一样的叫法很坑的
+          const params = { ...this.query }
+          params.chamberName = this.query.name
+          // const { name: chamberName, contactPhone, inviteCodePastDue = null, status, businessName = null, operatingName = null } = {...this.query}
+          blob = await exportUnSigned(params)
+        }
+        console.log('blob', blob)
+        downloadFile({
+          title: `【${type === 1 ? '生成邀请码' : '未签约商会列表'}】.xlsx`,
+          url: window.URL.createObjectURL(blob)
+        })
+        this.$message.success('成功')
+        type === 1 && this.hideDialog('invitationCodeRef')
+      } catch (error) {
+        this.$message.success(error.msg)
+        console.log('error', error)
+      }
+    },
   }
+}
+export const useList = async () => {
+  let businessArr = []
+  let operatingArr = []
+  const fetchDataFunc = async () => {
+    const { data: { business } } = await businessList()
+    const { data: { operating } } = await operatingLlist()
+    businessArr = business
+    operatingArr = operating
+  }
+  await fetchDataFunc()
+  return { businessArr, operatingArr }
 }
