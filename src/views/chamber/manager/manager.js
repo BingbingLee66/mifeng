@@ -497,6 +497,10 @@ export default {
     //   this.$refs['invitationCodeRef'].hide()
     // },
     registerCode() {
+      if (!/^[0-9]\d*$/.test(this.codeObj.codeNum)) {
+        this.$message.warning('请输入正确的格式')
+        return
+      }
       if (this.codeObj.codeNum > 999 || this.codeObj.codeNum < 1) {
         this.$message.warning('单次生成邀请码的数量需大于0小于等于999')
         return
