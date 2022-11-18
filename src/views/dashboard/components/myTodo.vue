@@ -94,7 +94,7 @@ export default {
       }
     },
     toResolve(item) {
-      const { type, count, targetId } = item
+      const { type, count, source } = item
 
       switch (type) {
         case 1:
@@ -110,7 +110,7 @@ export default {
             this.$router.push({
               name: '站内信详情',
               params: {
-                id: targetId
+                id: source
               }
             })
           }
