@@ -257,7 +257,7 @@
       </el-table-column>
       <el-table-column label="邀请码是否过期">
         <template slot-scope="scope">
-          <div>{{ scope.row.trialPassDue ? '未过期' : '已过期' }}</div>
+          <div>{{ scope.row.trialPassDue ? '已过期' : '未过期' }}</div>
         </template>
       </el-table-column>
 
