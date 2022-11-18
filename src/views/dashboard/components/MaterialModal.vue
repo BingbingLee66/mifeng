@@ -106,8 +106,8 @@ export default {
       return this.allMenuList[index]?.children || []
     },
     usableSecondMenuList() {
-      const disableSecMenuList = this.formModel.secondMenu.map(menu => menu.value)
-      return this.isEdit ? this.curSecondMenuList : this.curSecondMenuList.filter(v => !disableSecMenuList.includes(v.menuId))
+      const disableSecMenuList = this.formModel.secondMenu.map(menu => typeof menu.value === 'number' ? menu.value : menu.label)
+      return this.curSecondMenuList.filter(v => !disableSecMenuList.includes(v.menuId))
     },
   },
   watch: {
@@ -144,7 +144,7 @@ export default {
         if (!valid) return false
 
         this.firstMenuList = this.allMenuList.find(v => v.menuId === this.formModel.firstMenu)
-        const tempMenuList = this.formModel.secondMenu.map(v => v.value)
+        const tempMenuList = this.formModel.secondMenu.map(v => typeof v.value === 'number' ? v.value : v.label)
         this.secondMenuList = this.firstMenuList.children.filter(v => tempMenuList.includes(v.menuId))
 
         if (this.hasDuplicates(tempMenuList)) return this.$message({ message: '二级菜单不能存在重复值', type: 'error' })
@@ -159,7 +159,7 @@ export default {
           params.children.push({
             ...item,
             sort: tempMenuList.findIndex(v => v === item.menuId),
-            id: this.formModel.secondMenu.find(v => v.value === item.menuId)?.id
+            id: this.formModel.secondMenu.find(v => (typeof v.value === 'number' ? v.value : v.label) === item.menuId)?.id
           })
         })
 

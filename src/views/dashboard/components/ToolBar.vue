@@ -172,7 +172,9 @@ export default {
       this.formModel.firstMenu = item.menuId
       this.formModel.secondMenu = item.children.map((v, i) => {
         return {
-          value: v.menuId,
+          // 为了修复编辑时select不显示label名称，故把label和value调转了
+          value: v.menuName,
+          label: v.menuId,
           key: i,
           id: v.id
         }
