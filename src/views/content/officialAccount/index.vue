@@ -85,7 +85,7 @@
     <!-- 绑定公众号协议组件 -->
     <agreement ref="agreements" @save="onSave" />
     <!-- 文章二维码 -->
-    <el-dialog title="" :visible.sync="isShow" width="40%">
+    <el-dialog title="" :visible.sync="isShow" width="40%" :before-close="handleClose">
       <div class="box">
         <h3>已发布到云商会，扫码立即分享</h3>
         <el-image
@@ -96,7 +96,7 @@
         />
       </div>
       <div class="btn">
-        <el-button type="primary" @click="isShow=false">取消</el-button>
+        <el-button type="primary" @click="handleClose">取消</el-button>
       </div>
     </el-dialog>
 
@@ -125,12 +125,14 @@ export default {
       qrCode: [], // 文章二维码
       releaseStatusList: ['', '发布成功', '发布失败', '发布中', '未发布'],
       auth_code: '', // 授权码
+      articleId: '', // 文章id
     }
   },
   created() {
     //  获取公众号短链
     this.externalLinks()
     if (this.$route.query.articleId) this.QRCode(this.$route.query.articleId)
+
     // 授权处理完 调起查询授权信息
     if (this.$route.query.auth_code) {
       this.type = '2'
@@ -142,6 +144,7 @@ export default {
   },
 
   methods: {
+
     // 头部切换栏
     handleClick(e) {
       this.type = e.name
@@ -244,6 +247,11 @@ export default {
     handleCurrentChange(val) {
       this.currentpage = val
       this.fetchData()
+    },
+    // 关闭弹窗
+    handleClose() {
+      this.isShow = false
+      this.$router.push({ query: {} })
     },
     // 关闭二维码蒙层
     handleClickitem() {

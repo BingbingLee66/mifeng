@@ -235,16 +235,23 @@ export default {
           if (response.data.wechatArticles) {
             wechatArticles = response.data.wechatArticles.map(v => {
               if (v.title === dataObj.title) {
-                v.articleId = 0
                 wechatCover = v.cover || ''
                 wechatAbstract = v.digest || ''
                 articleLink = v.originalArticleUrl || ''
                 publishSet = v.releaseStatus === 4 ? 2 : 1
-              }
-              return {
-                img: v.cover,
-                title: v.title,
-                id: v.articleId
+                return {
+                  img: v.cover,
+                  title: v.title,
+                  id: 0, // 作为自己创建的标识
+                  ids: v.articleId
+                }
+              } else {
+                return {
+                  img: v.cover,
+                  title: v.title,
+                  id: v.articleId,
+                  ids: v.articleId
+                }
               }
             })
           } else {
@@ -258,7 +265,7 @@ export default {
 
           this.formObj = {
             type: 1,
-            id: dataObj.id,
+            id: dataObj.id, // 文章id
             title: dataObj.title,
             contentColumnId: dataObj.contentColumnId,
             contentHtml: dataObj.contentHtml,
@@ -319,7 +326,7 @@ export default {
             // 公众号以授权直接调接口
             this.submit()
           }
-          this.btnLoading = false
+          //
         } else {
           return false
         }
@@ -340,16 +347,14 @@ export default {
 
       // 如果授权了公众号  并且选中了文章
       if (this.formObj.wechatArticles.length) {
-        const articleIdsList = JSON.parse(JSON.stringify(this.formObj.wechatArticles))
-        const index = this.formObj.wechatArticles.findIndex(item => item.id === 0)
-        articleIdsList.splice(index, 1)
-        this.formObj['articleIds'] = articleIdsList.map(v => v.id)
+        // 编辑的时候传ids   新增的时候传id
+        if (this.articleId) this.formObj['articleIds'] = this.formObj.wechatArticles.map(v => v.ids)
+        else this.formObj['articleIds'] = this.formObj.wechatArticles.map(v => v.id)
       } else this.formObj['articleIds'] = []
 
       // 判断是否输入全为空格
       const isAllEmpty = this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4).replaceAll('&nbsp;', '').split('').every(item => item === ' ')
       if (isAllEmpty) return this.$message.error('不能提交全为空格的内容！')
-
       save(this.formObj).then(response => {
         if (response.state === 1) {
           this.$message({
@@ -378,6 +383,7 @@ export default {
             type: 'error'
           })
         }
+        this.btnLoading = false
       })
     },
     // 没公众号授权弹起
@@ -390,12 +396,14 @@ export default {
         this.goHref()
       }).catch(action => {
         if (action === 'cancel') this.submit()
+        this.btnLoading = false
       })
     },
     // 跳转公众号授权
     goHref() {
       window.localStorage.setItem('editor-article', JSON.stringify(this.formObj))
       window.location.href = this.link
+      this.btnLoading = false
     },
 
     getHtml(htmlStr) {

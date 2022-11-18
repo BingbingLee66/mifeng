@@ -532,8 +532,8 @@ font-family: '微软雅黑', sans-serif;
 .cover-radio{
   margin-left: 15px;
   .cover-img{
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
   }
 }
 .impower{
