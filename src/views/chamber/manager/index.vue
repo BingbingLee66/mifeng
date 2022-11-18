@@ -17,6 +17,7 @@
             <el-select v-model="query.inviteCodePastDue" placeholder="请选择">
               <el-option label="过期 " :value="1" />
               <el-option label="未过期" :value="0" />
+              <el-option label="全部" value="" />
             </el-select>
           </el-form-item>
         </template>
@@ -129,8 +130,8 @@
         <template slot-scope="scope"> {{ scope.row.province }}{{ scope.row.city }} </template></el-table-column>
       <el-table-column label="负责人" width="120px">
         <template slot-scope="scope">
-          <div>【商务】{{ scope.row.businessName }}</div>
-          <div>【运营】{{ scope.row.operatingName }}</div>
+          <div>【商务】{{ scope.row.operating }}</div>
+          <div>【运营】{{ scope.row.business }}</div>
         </template>
       </el-table-column>
       <el-table-column label="入驻来源">
@@ -234,8 +235,8 @@
       </el-table-column>
       <el-table-column label="负责人" width="120px">
         <template slot-scope="scope">
-          <div>【商务】{{ scope.row.businessName }}</div>
-          <div>【运营】{{ scope.row.operatingName }}</div>
+          <div>【商务】{{ scope.row.operating }}</div>
+          <div>【运营】{{ scope.row.business }}</div>
         </template>
       </el-table-column>
       <el-table-column label="注册时间">
