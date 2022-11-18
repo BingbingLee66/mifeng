@@ -32,7 +32,6 @@
 <script>
 import TableMixins from '@/mixins/yshTable'
 import { changeOrder } from '@/utils/utils'
-import { getInfoColumnList } from '@/api/content/columnsetup'
 import AddDialog from '../Dialog/AddDialog'
 import _data from './data'
 import Home from '@/api/home-config/Home'
@@ -41,6 +40,12 @@ export default {
   components: { AddDialog },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
+  props: {
+    clientType: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       tableConfig: {
@@ -59,16 +64,11 @@ export default {
     /** 获tab列表 */
     async fetchData() {
       this.tableConfig.loading = true
-      const params = {
-        page: 1,
-        pageSize: 100
-      }
-      const res = await getInfoColumnList(params)
-      if (res.state !== 1) return
-      const resData = res.data.data
-      resData.list.forEach((item, index) => {
-        item.switch = index === 0
+      const res = await Home.getTabList({
+        type: this.clientType
       })
+      if (res.state !== 1) return
+      const resData = res.data
       this.tableData = resData.list
       this.pageData.total = resData.totalRows
       this.tableConfig.loading = false
@@ -91,9 +91,9 @@ export default {
       console.log('event:', event)
       const params = {
         id: data.id,
-        action: data.status === 0 ? 'active' : 'notactive'
+        status: event === 'hide' ? 0 : 1
       }
-      const res = await Home.updateActive(params)
+      const res = await Home.showTab(params)
       if (res.state === 1) {
         this.$message.success(res.msg)
         this.fetchData()
@@ -107,9 +107,9 @@ export default {
       console.log('event:', event)
       const params = {
         id: data.id,
-        action: data.status === 0 ? 'active' : 'notactive'
+        status: event ? 0 : 1
       }
-      const res = await Home.updateActive(params)
+      const res = await Home.defaultTab(params)
       if (res.state === 1) {
         this.$message.success(res.msg)
         this.fetchData()
@@ -119,8 +119,22 @@ export default {
     },
 
     /** 调整上下顺序 */
-    handleOrder(event, data) {
-      changeOrder(this.tableData, data.id, event)
+    async handleOrder(event, data) {
+      const idx = this.tableData.findIndex(i => i.id === data.id)
+      const upId = this.tableData[idx - 1].id
+      const downId = this.tableData[idx + 1].id
+      const params = {
+        moveId: data.id,
+        bemoveid: event === 'up' ? upId : downId,
+        status: event === 'up' ? 0 : 1
+      }
+      const res = await Home.showTab(params)
+      if (res.state === 1) {
+        this.$message.success(res.msg)
+        changeOrder(this.tableData, data.id, event)
+      } else {
+        this.$message.error(res.msg)
+      }
     }
   }
 }

@@ -1,6 +1,51 @@
 import request from '@/utils/request'
 
 class Home {
+  /** 获取tab列表  */
+  static async getTabList(params) {
+    return await request({
+      url: '/ec/tab',
+      method: 'get',
+      params
+    })
+  }
+
+  /** 编辑tab  */
+  static async updateTab(data) {
+    return await request({
+      url: '/ec/tab',
+      method: 'put',
+      data
+    })
+  }
+
+  /** 默认选中tab  */
+  static async defaultTab(params) {
+    return await request({
+      url: '/ec/tab/defaultChange',
+      method: 'put',
+      params
+    })
+  }
+
+  /** 展示/隐藏tab  */
+  static async showTab(params) {
+    return await request({
+      url: '/ec/tab/editStatus',
+      method: 'put',
+      params
+    })
+  }
+
+  /** 展示/隐藏tab  */
+  static async sortTab(params) {
+    return await request({
+      url: '/ec/tab/sort',
+      method: 'put',
+      params
+    })
+  }
+
   /** 获取banner图列表  */
   static async getBannerList(params) {
     return await request({

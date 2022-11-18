@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import Kingkong from '@/api/home-config/KingKong'
+import Home from '@/api/home-config/Home'
 
 export default {
   data() {
@@ -31,7 +31,7 @@ export default {
         size: 'medium'
       },
       formObj: {
-        name: '' // 入口名称
+        name: '' // 栏目名称
       },
       formItem: [
         {
@@ -83,8 +83,8 @@ export default {
 
     edit(data) {
       this.dialogTitle = '编辑栏目'
-      const { name } = data
-      this.formObj = { name }
+      const { name, id } = data
+      this.formObj = { name, id }
       this.show()
     },
 
@@ -93,11 +93,7 @@ export default {
     },
 
     async submit(data) {
-      const res = await Kingkong.saveKingkong({
-        ...data,
-        clientType: 0,
-        weight: 0
-      })
+      const res = await Home.updateTab(data)
       if (res.state !== 1) {
         this.$message.error(res.msg)
       } else {
@@ -110,5 +106,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>

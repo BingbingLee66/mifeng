@@ -11,7 +11,7 @@ const tableColumn = [
   },
   {
     label: '栏目名称',
-    prop: 'columnName',
+    prop: 'name',
     align: 'center'
   },
   {
@@ -22,20 +22,21 @@ const tableColumn = [
   },
   {
     label: '默认选中',
-    prop: 'switch',
+    prop: 'changeStatus',
     type: 'switch',
     align: 'center'
   },
   {
     label: '状态',
-    prop: 'labels',
+    prop: 'status',
     align: 'center',
     width: '160px',
     type: 'function',
     callback: row => {
       const statusMap = {
+        0: '隐藏',
         1: '正常',
-        0: '冻结'
+        2: '删除',
       }
       return row.status || row.status === 0 ? statusMap[row.status] : ''
     }
@@ -48,7 +49,7 @@ const tableColumn = [
   },
   {
     label: '操作人',
-    prop: 'updater',
+    prop: 'operator',
     width: '160px',
     align: 'center'
   },
