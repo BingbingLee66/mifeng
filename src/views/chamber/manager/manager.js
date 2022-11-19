@@ -426,7 +426,12 @@ export default {
       this.activeName = _tag.name
       this.limit = 10
       this.currentpage = 1
-      this.fetchData()
+      // 兼容后端同个字段同个值代表的含义不一样
+      if (_tag.name === 'signContract') {
+        this.query.status = 0
+      } else {
+        this.query.status = ''
+      }
     },
     openDialog(_name) {
       this.$refs[_name].show()

@@ -48,9 +48,18 @@
         </template>
         <el-form-item label="冻结状态">
           <el-select v-model="query.status" placeholder="请选择">
-            <el-option label="全部" :value="0" />
-            <el-option label="正常" :value="1" />
-            <el-option label="已冻结" :value="2" />
+            <template v-if="activeName === 'signContract'">
+              <el-option label="全部" :value="0" />
+              <el-option label="正常" :value="1" />
+              <el-option
+                label="已冻结"
+                :value="2"
+              /></template>
+            <template v-else>
+              <el-option label="全部" value="" />
+              <el-option label="正常" :value="1" />
+              <el-option label="已冻结" :value="0" />
+            </template>
           </el-select>
         </el-form-item>
 
