@@ -149,7 +149,7 @@
           <template v-if="row.settledSource === 2">后台录入</template>
           <template v-if="row.settledSource === 3">小程序名录</template>
           <template v-if="row.settledSource === 4">APP</template>
-          <template v-if="row.settledSource === 4">APP</template>
+          <template v-if="row.settledSource === 6">邀请码注册</template>
         </template>
       </el-table-column>
 
