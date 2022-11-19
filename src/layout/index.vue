@@ -40,7 +40,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['expireTime', 'createTime', 'onTrial']),
+    ...mapGetters(['expireTime', 'createTime', 'onTrial', 'trialTime']),
     endTime() {
       return dayjs(parseInt(this.expireTime)).format('YYYY年MM月DD日 HH:mm')
     },
@@ -85,11 +85,11 @@ export default {
       if (!this.onTrial) {
         return
       }
+      let trialTime = parseInt(this.trialTime)
       this.timer = setInterval(() => {
         const now = new Date()
-        const start = parseInt(this.createTime)
         const end = parseInt(this.expireTime)
-        const time = now - start
+        const time = trialTime
         if (end < now) {
           this.$store.commit('user/SET_ONTRIAL', false)
           clearInterval(this.timer)
@@ -101,6 +101,7 @@ export default {
           const toSeconds = parseInt((time / 1000) % 60)
           this.str = `${toDay}天${toHours}时${toMinutes}分${toSeconds}秒`
           this.loading = false
+          trialTime += 1000
         }
       }, 1000)
     }

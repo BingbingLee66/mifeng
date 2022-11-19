@@ -12,6 +12,7 @@ const getters = {
   profile: state => state.user.profile,
   createTime: state => state.user.createtime,
   expireTime: state => state.user.expiretime,
+  trialTime: state => state.user.trialtime,
   onTrial: state => state.user.ontrial,
   has: state => { // getters只有一个参数state
     // 要额外接收参数，通过返回函数来接收

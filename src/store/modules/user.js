@@ -14,7 +14,8 @@ const state = {
   systemlogo: '',
   createtime: '',
   expiretime: '',
-  ontrial: false
+  ontrial: false,
+  trialtime: ''
   // remark: ''
 }
 
@@ -51,6 +52,9 @@ const mutations = {
   },
   SET_ONTRIAL: (state, ontrial) => {
     state.ontrial = ontrial
+  },
+  SET_TRIALTime: (state, trialtime) => {
+    state.trialtime = trialtime
   }
   // SET_REMARK: (state, remark) => {
   //   state.remark = remark
@@ -135,7 +139,7 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { profile, createTime, expireTime, onTrial } = data
+        const { profile, createTime, expireTime, onTrial, trialTime } = data
         const getroles = []
         getroles.push(profile.roleName)
         commit('SET_NAME', profile.remark)
@@ -147,6 +151,7 @@ const actions = {
         commit('SET_CREATETIME', createTime)
         commit('SET_EXPIRETIME', expireTime)
         commit('SET_ONTRIAL', onTrial)
+        commit('SET_TRIALTime', trialTime)
         // commit('SET_REMARK', profile.remark)
         resolve(data)
       }).catch(error => {
