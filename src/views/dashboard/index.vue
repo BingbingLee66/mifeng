@@ -4,7 +4,7 @@
       <cardList v-if="permission" :card-list="cardList" />
 
       <div class="flex-x">
-        <ToolBar style="flex: 2; margin-right: -24px" />
+        <ToolBar style="flex: 3; margin-right: -24px" />
         <myTodo :message-list="messageList" style="flex: 1; margin-right: -24px" />
       </div>
     </template>
