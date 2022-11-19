@@ -232,7 +232,7 @@ export default {
           let wechatCover = '' // 公众号封面
           let articleLink = '' // 原文链接
           let publishSet = 1 // 1.立即发布  2.暂不发布
-          if (response.data.wechatArticles) {
+          if (response.data.wechatArticles.length) {
             wechatArticles = response.data.wechatArticles.map(v => {
               if (v.title === dataObj.title) {
                 wechatCover = v.cover || ''
