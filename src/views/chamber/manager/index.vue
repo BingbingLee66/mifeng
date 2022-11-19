@@ -139,8 +139,8 @@
         <template slot-scope="scope"> {{ scope.row.province }}{{ scope.row.city }} </template></el-table-column>
       <el-table-column label="负责人" width="120px">
         <template slot-scope="scope">
-          <div>【商务】{{ scope.row.operating }}</div>
-          <div>【运营】{{ scope.row.business }}</div>
+          <div>【商务】{{ scope.row.business }}</div>
+          <div>【运营】{{ scope.row.operating }}</div>
         </template>
       </el-table-column>
       <el-table-column label="入驻来源">
@@ -244,8 +244,8 @@
       </el-table-column>
       <el-table-column label="负责人" width="120px">
         <template slot-scope="scope">
-          <div>【商务】{{ scope.row.operating }}</div>
-          <div>【运营】{{ scope.row.business }}</div>
+          <div>【商务】{{ scope.row.business }}</div>
+          <div>【运营】{{ scope.row.operating }}</div>
         </template>
       </el-table-column>
       <el-table-column label="注册时间">
