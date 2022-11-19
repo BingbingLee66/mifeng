@@ -100,7 +100,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="联系人手机号" prop="contactPhone">
-              <el-input v-model="formObj.contactPhone" minlength="1" placeholder="输入手机号" />
+              <el-input v-model="formObj.contactPhone" minlength="1" placeholder="手机号即为登录账号" />
             </el-form-item>
           </el-col>
         </el-row>
