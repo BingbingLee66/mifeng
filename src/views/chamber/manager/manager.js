@@ -56,7 +56,9 @@ export default {
         status: '',
         date: '',
         settledSource: '',
-        contactPhone: null
+        contactPhone: null,
+        operatingName: null,
+        businessName: null
       },
       rules: {
         name: [
@@ -283,6 +285,10 @@ export default {
         const param = { ...query, page, pageSize }
         param.chamberName = query.name
         delete param.area
+        param.date && delete param.date
+        delete param.settledSource
+
+        console.log('param', param)
         this.unsignedDataFunc(param)
       }
     },
@@ -432,6 +438,9 @@ export default {
       } else {
         this.query.status = ''
       }
+      this.query.name = ''
+      this.$refs['query'].resetFields()
+      this.fetchData()
     },
     openDialog(_name) {
       this.$refs[_name].show()
