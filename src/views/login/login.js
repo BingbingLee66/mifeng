@@ -26,7 +26,7 @@ export default {
       callback()
     }
     const validatePassword2 = (rule, value, callback) => {
-      if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(value)) return callback(new Error('6-16位，英文字母和数字的组合，英文字母区分大小写'))
+      if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(value)) return callback(new Error('6-16位英文字母和数字的组合'))
       callback() // 必须加上这个，不然一直塞在验证状态
     }
     return {
@@ -41,7 +41,6 @@ export default {
       loading: false,
       pwdType: 'password',
       redirect: '/',
-      // todo
       active: 1,
       formObj: {
         socialCode: '',
@@ -93,7 +92,7 @@ export default {
           { required: true, message: '确认密码不能为空', trigger: 'blur' },
           {
             validator: (rule, value, callback) => {
-              if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(value)) return callback(new Error('6-16位，英文字母和数字的组合，英文字母区分大小写'))
+              if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(value)) return callback(new Error('6-16位英文字母和数字的组合'))
               if (value !== this.formObj.password2) return callback(new Error('两次输入密码不一致!'))
               callback() // 必须加上这个，不然一直塞在验证状态
             },
@@ -137,17 +136,6 @@ export default {
         }
       })
     },
-    // async checkCode() {
-    //   if (!this.formObj.socialCode) return
-    //   const pattern = /^[A-Za-z0-9]{2}[0-9]{6}[A-Za-z0-9]{10}$/
-    //   if (!pattern.test(this.formObj.socialCode)) return
-    //   const res = await getSocialOrg({ socialCode: this.formObj.socialCode })
-    //   if (res.state && res.data) {
-    //     const { chamberName, provinceCode, cityCode } = res.data
-    //     this.formObj.chamberName = chamberName
-    //     this.formObj.area = [provinceCode || '0', cityCode || '0']
-    //   }
-    // },
     async getAreaList() {
       const { data } = await getAreaTree()
       if (data.length) {
