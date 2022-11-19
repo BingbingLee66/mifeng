@@ -65,8 +65,13 @@ export default {
       }
     }
   },
-  created() {
+  activated() {
     this.countdown()
+  },
+  deactivated() {
+    if (this.timer) {
+      clearInterval(this.timer)
+    }
   },
   methods: {
     handleClickOutside() {
@@ -152,7 +157,8 @@ export default {
   font-weight: 400;
   color: rgba(0, 0, 0, 0.65);
   line-height: 30px;
-  padding-left: 100px;
+  // padding-left: 100px;
+  text-align: center;
   position: relative;
   .close-icon {
     position: absolute;
