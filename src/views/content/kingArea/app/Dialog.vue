@@ -1,6 +1,11 @@
 <template>
   <div>
-    <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" width="600px" @closed="close">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogTitle"
+      width="600px"
+      @closed="close"
+    >
       <ysh-form
         ref="formRef"
         :form-config="formConfig"
@@ -17,12 +22,12 @@
 import { uploadFile } from '@/api/content/article'
 import { validateWeight } from '@/utils/validate'
 import Kingkong from '@/api/home-config/KingKong'
+
 export default {
   data() {
     return {
       dialogVisible: false,
       dialogTitle: '',
-      /** 提交表单 */
       formConfig: {
         type: 'submit',
         inline: false,
@@ -30,14 +35,10 @@ export default {
         size: 'medium'
       },
       formObj: {
-        // 金刚区名称
-        name: '',
-        // 金刚区图片
-        image: '',
-        // 跳转协议
-        jsonContext: '',
-        // 权重
-        weight: ''
+        name: '', // 金刚区名称
+        image: '', // 金刚区图片
+        jsonContext: '', // 跳转协议
+        weight: '' // 权重
       },
       formItem: [
         {
@@ -60,14 +61,8 @@ export default {
           prop: 'image',
           type: 'upload',
           value: '',
-          formTip: ['建议尺寸76*76px; 支持png、jpg、gif'],
-          rules: [
-            {
-              required: true,
-              message: '请上传金刚区图片',
-              trigger: ['blur', 'change']
-            }
-          ],
+          rules: [{ required: true, message: '请上传金刚区图片', trigger: 'change' }],
+          formTip: ['建议尺寸123*123px; 支持png、jpg、gif'],
           beforeUpload: file => {
             this.beforeUpload(file)
           },
@@ -113,31 +108,22 @@ export default {
     })
   },
   methods: {
-    show() {
-      this.dialogVisible = true
-    },
-
-    close() {
-      this.formObj = {
-        name: '',
-        image: '',
-        jsonContext: '',
-        weight: ''
-      }
-      this.$refs.formRef.resetFileds()
-      this.dialogVisible = false
-    },
-
     add() {
       this.dialogTitle = '新增金刚区'
-      this.show()
+      this.dialogVisible = true
     },
 
     edit(data) {
       this.dialogTitle = '编辑金刚区'
       const { name, image, jsonContext, weight, id } = data
       this.formObj = { name, image, jsonContext, weight, id }
-      this.show()
+      this.dialogVisible = true
+    },
+
+    close() {
+      this.formObj = { name: '', image: '', jsonContext: '', weight: '' }
+      this.$refs.formRef.resetFileds()
+      this.dialogVisible = false
     },
 
     async submit(data) {
@@ -150,7 +136,7 @@ export default {
       } else {
         this.$message.success(res.msg)
         this.close()
-        this.$emit('Refresh')
+        this.$emit('refresh')
       }
     },
 
@@ -182,6 +168,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

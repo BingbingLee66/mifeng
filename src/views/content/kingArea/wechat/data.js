@@ -21,6 +21,8 @@ const tableColumn = [
     type: 'image',
     width: '130px',
     align: 'center',
+    imgWidth: '76px',
+    imgHeight: '76px',
     url: row => {
       return row.image
     },
@@ -42,9 +44,17 @@ const tableColumn = [
   },
   {
     label: '状态',
-    prop: 'labels',
+    prop: 'status',
     width: '100px',
-    align: 'center'
+    align: 'center',
+    type: 'function',
+    callback: row => {
+      const statusMap = {
+        0: '冻结',
+        1: '使用中'
+      }
+      return row.status || row.status === 0 ? statusMap[row.status] : '--'
+    }
   },
   {
     label: '更新时间',
@@ -62,7 +72,7 @@ const tableColumn = [
   {
     label: '操作',
     prop: 'operate',
-    width: '250px',
+    width: '200px',
     type: 'slot',
     slotName: 'operate',
     fixed: 'right',

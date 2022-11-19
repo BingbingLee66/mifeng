@@ -1,7 +1,18 @@
 <template>
   <div>
-    <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" width="600px" @closed="close">
-      <ysh-form ref="formRef" :form-config="formConfig" :form-item="formItem" :form-obj="formObj" @submit="submit">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogTitle"
+      width="600px"
+      @closed="close"
+    >
+      <ysh-form
+        ref="formRef"
+        :form-config="formConfig"
+        :form-item="formItem"
+        :form-obj="formObj"
+        @submit="submit"
+      >
         <template v-slot:customConetent>
           <div class="text-center mt-40">
             <el-button class="mr-20" @click="close">取消</el-button>
@@ -17,12 +28,12 @@
 <script>
 import { uploadFile } from '@/api/content/article'
 import Kingkong from '@/api/home-config/KingKong'
+
 export default {
   data() {
     return {
       dialogVisible: false,
       dialogTitle: '',
-      /** 提交表单 */
       formConfig: {
         type: 'custom',
         inline: false,
@@ -66,7 +77,7 @@ export default {
           prop: 'image',
           type: 'upload',
           value: '',
-          formTip: ['建议尺寸76*76px; 支持png、jpg、gif'],
+          formTip: ['建议尺寸123*123px; 支持jpg、png'],
           rules: [
             {
               required: true,
@@ -95,30 +106,22 @@ export default {
     })
   },
   methods: {
-    show() {
-      this.dialogVisible = true
-    },
-
-    close() {
-      this.formObj = {
-        name: '',
-        image: '',
-        url: ''
-      }
-      this.$refs.formRef.resetFileds()
-      this.dialogVisible = false
-    },
-
     add() {
       this.dialogTitle = '新增功能入口'
-      this.show()
+      this.dialogVisible = true
     },
 
     edit(data) {
       this.dialogTitle = '编辑功能入口'
       const { name, image, url, id } = data
       this.formObj = { name, image, url, id }
-      this.show()
+      this.dialogVisible = true
+    },
+
+    close() {
+      this.formObj = { name: '', image: '', url: '' }
+      this.$refs.formRef.resetFileds()
+      this.dialogVisible = false
     },
 
     handleSubmit() {
@@ -136,7 +139,7 @@ export default {
       } else {
         this.$message.success(res.msg)
         this.close()
-        this.$emit('Refresh')
+        this.$emit('refresh')
       }
     },
 
@@ -168,6 +171,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

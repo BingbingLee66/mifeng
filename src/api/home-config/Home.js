@@ -37,7 +37,7 @@ class Home {
     })
   }
 
-  /** 展示/隐藏tab  */
+  /** tab排序  */
   static async sortTab(params) {
     return await request({
       url: '/ec/tab/sort',
@@ -100,19 +100,19 @@ class Home {
     })
   }
 
-  /** 更新Tab状态 */
-  static async updateStatus(params) {
+  /** 获取推荐位配置列表  */
+  static async getRecommendList(params) {
     return await request({
-      url: '/ec/contentColumn/update-status',
-      method: 'put',
+      url: '',
+      method: 'get',
       params
     })
   }
 
-  /** 默认选中Tab  */
-  static async updateActive(params) {
+  /** 显示/隐藏推荐位  */
+  static async showRecommend(params) {
     return await request({
-      url: '/ec/contentColumn/update-status',
+      url: '',
       method: 'put',
       params
     })

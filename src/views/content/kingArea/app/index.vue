@@ -16,8 +16,7 @@
         type="primary"
         size="medium"
         @click="handleEvent('add')"
-      >添加金刚区
-      </el-button>
+      >添加金刚区</el-button>
     </el-row>
 
     <!-- 表格数据 -->
@@ -34,19 +33,16 @@
         <span
           class="text-blue cur ml-10"
           @click="handleEvent('edit', row.data)"
-        >编辑
-        </span>
+        >编辑</span>
         <span
           class="text-blue cur ml-10"
           @click="handleEvent('delete', row.data)"
-        >移除
-        </span>
+        >移除</span>
       </template>
     </ysh-table>
 
     <!-- 新增/编辑金刚区弹窗 -->
-    <Dialog ref="dialogRef" @Refresh="fetchData" />
-
+    <Dialog ref="dialogRef" @refresh="fetchData" />
   </div>
 </template>
 
@@ -57,9 +53,7 @@ import _data from './data'
 import Kingkong from '@/api/home-config/KingKong'
 
 export default {
-  components: {
-    Dialog
-  },
+  components: { Dialog },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
   data() {
@@ -77,7 +71,7 @@ export default {
       /** 表格数据 */
       tableConfig: {
         loading: false,
-        maxHeight: window.innerHeight - 400 + 'px'
+        maxHeight: window.innerHeight - 380 + 'px'
       },
       tableColumn: _data.tableColumn,
       tableData: []
@@ -103,9 +97,12 @@ export default {
         pageNum: e === 1 ? 1 : currentpage,
         pageSize: limit
       }
+      if (createdTime) {
+        params.createdTsBegin = Date.parse(new Date(params.createdTsBegin))
+        params.createdTsEnd = Date.parse(new Date(params.createdTsEnd)) + 24 * 60 * 60 * 1000 - 1
+      }
       const res = await Kingkong.getKingkongList(params)
       if (res.state !== 1) return
-      console.log('app 金刚区列表数据', res)
       this.tableData = res.data.list
       this.pageData.total = res.data.totalRows
       this.tableConfig.loading = false
@@ -115,10 +112,10 @@ export default {
     handleEvent(event, data) {
       switch (event) {
         case 'add':
-          this.handleDialog('add')
+          this.$refs.dialogRef.$emit(event, data)
           break
         case 'edit':
-          this.handleDialog('edit', data)
+          this.$refs.dialogRef.$emit(event, data)
           break
         case 'delete':
           this.handleDelete(data)
@@ -126,11 +123,6 @@ export default {
         default:
           break
       }
-    },
-
-    /** 打开新增/编辑金刚区弹窗 */
-    handleDialog(event, data) {
-      this.$refs.dialogRef.$emit(event, data)
     },
 
     /** 修改金刚区权重 */
@@ -168,22 +160,6 @@ export default {
           this.$message.info('已取消移除')
         })
     }
-    /* formatRequestData() {
-      let params = JSON.parse(JSON.stringify(this.formKingKong))
-      if (this.formKingKong.createdTime) {
-        //解决日期选择器，只能选到某天凌晨
-        //eg:如果选5号到6号，组件库给的是5号凌晨到6号凌晨，所以结束时间手动加上23.59.59
-        params.createdTsEnd = this.formKingKong.createdTime[1] + 24 * 60 * 60 * 1000 - 1
-        params.createdTsBegin = this.formKingKong.createdTime[0]
-      }
-      params.clientType = this.clientType
-      params.pageNum = this.currentPage
-      params.pageSize = this.pageSize
-      return params
-    } */
   }
 }
 </script>
-
-<style>
-</style>

@@ -1,29 +1,42 @@
 <template>
   <div>
-    <ysh-table :table-config="tableConfig" :table-column="tableColumn" :table-data="tableData">
+    <ysh-table
+      :table-config="tableConfig"
+      :table-column="tableColumn"
+      :table-data="tableData"
+    >
       <template v-slot:operate="row">
-        <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
-        <span class="text-blue cur ml-10" @click="handleEvent('show', row.data)">显示</span>
-        <span class="text-yellow cur ml-10" @click="handleEvent('hide', row.data)">隐藏</span>
+        <span
+          class="text-blue cur ml-10"
+          @click="handleEvent('edit', row.data)"
+        >编辑</span>
+        <span
+          class="text-blue cur ml-10"
+          @click="handleEvent('show', row.data)"
+        >显示</span>
+        <span
+          class="text-yellow cur ml-10"
+          @click="handleEvent('hide', row.data)"
+        >隐藏</span>
       </template>
     </ysh-table>
+
     <!-- 编辑轮播推荐 -->
-    <carousel-recommend ref="dialogRef1" @Refresh="fetchData" />
+    <carousel-recommend ref="dialogRef1" @refresh="fetchData" />
     <!-- 编辑内容推荐 -->
-    <content-recommend ref="dialogRef2" @Refresh="fetchData" />
+    <content-recommend ref="dialogRef2" @refresh="fetchData" />
     <!-- 编辑内容推荐卡片 -->
-    <card-recommend ref="dialogRef3" @Refresh="fetchData" />
+    <card-recommend ref="dialogRef3" @refresh="fetchData" />
   </div>
 </template>
 
 <script>
-
 import TableMixins from '@/mixins/yshTable'
-import Kingkong from '@/api/home-config/KingKong'
 import CarouselRecommend from '../Dialog/CarouselRecommend'
 import ContentRecommend from '../Dialog/ContentRecommend'
 import CardRecommend from '../Dialog/CardRecommend'
 import _data from './data'
+import Home from '@/api/home-config/Home'
 
 export default {
   components: {
@@ -68,29 +81,16 @@ export default {
     }
   },
   created() {
-    this.fetchData()
+    // this.fetchData()
   },
   methods: {
     /** 获取推荐位列表数据 */
     async fetchData() {
       this.tableConfig.loading = true
-      const params = {
-        clientType: 0,
-        name: '',
-        creatorName: '',
-        createdTsBegin: '',
-        createdTsEnd: '',
-        pageNum: 1,
-        pageSize: 100
-      }
-      const res = await Kingkong.getKingkongList(params)
+      const res = await Home.getRecommendList()
       if (res.state !== 1) return
-      res.data.list.forEach((item, index) => {
-        item.serialNumber = index + 1
-      })
+      // this.tableData = res.data
       this.tableConfig.loading = false
-      // this.tableData = res.data.list
-      // this.pageData.total = res.data.totalRows
     },
 
     /** 推荐位|编辑|隐藏|显示 */
@@ -126,9 +126,19 @@ export default {
       }
     },
 
-    /** 启用/冻结金刚区 */
-    handleShow(event, data) {
-      console.log(event, data)
+    /** 显示/隐藏 */
+    async handleShow(event, data) {
+      console.log('event:', event)
+      const res = await Home.showRecommend({
+        id: data.id,
+        status: event === 'hide' ? 0 : 1
+      })
+      if (res.state === 1) {
+        this.$message.success(res.msg)
+        this.fetchData()
+      } else {
+        this.$message.error(res.msg)
+      }
     }
   }
 }

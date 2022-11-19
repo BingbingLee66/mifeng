@@ -39,6 +39,7 @@
           @click="handleEvent('frozen', row.data)"
         >冻结</span>
         <span
+          v-if="row.$index !== 0"
           class="text-blue cur ml-10"
           @click="handleEvent('top', row.data)"
         >置顶</span>
@@ -50,9 +51,9 @@
     </ysh-table>
 
     <!-- 新增/编辑banner弹窗 -->
-    <add-dialog ref="dialogRef1" @Refresh="fetchData" />
+    <add-dialog ref="dialogRef1" @refresh="fetchData" />
     <!-- 切换频率弹窗 -->
-    <rate-dialog ref="dialogRef2" @Refresh="fetchData" />
+    <rate-dialog ref="dialogRef2" @refresh="fetchData" />
   </div>
 </template>
 

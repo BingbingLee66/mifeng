@@ -9,6 +9,7 @@
         @click="handleEvent('add')"
       >新增功能入口</el-button>
     </el-row>
+
     <!-- 表格数据 -->
     <ysh-table
       :table-config="tableConfig"
@@ -23,14 +24,17 @@
           @click="handleEvent('edit', row.data)"
         >编辑</span>
         <span
+          v-if="row.data.use === 0"
           class="text-blue cur ml-10"
           @click="handleEvent('use', row.data)"
         >启用</span>
         <span
+          v-if="row.data.use === 1"
           class="text-yellow cur ml-10"
           @click="handleEvent('frozen', row.data)"
         >冻结</span>
         <span
+          v-if="row.data.status !== 1"
           class="text-red cur ml-10"
           @click="handleEvent('delete', row.data)"
         >删除</span>
@@ -38,7 +42,7 @@
     </ysh-table>
 
     <!-- 新增/编辑功能入口弹窗 -->
-    <Dialog ref="dialogRef" @Refresh="fetchData" />
+    <Dialog ref="dialogRef" @refresh="fetchData" />
   </div>
 </template>
 
@@ -64,11 +68,6 @@ export default {
       tableData: []
     }
   },
-  computed: {
-    deleteDisable() {
-      return this.selectionData.length === 0
-    }
-  },
   created() {
     this.fetchData()
   },
@@ -85,8 +84,12 @@ export default {
         pageNum: 1,
         pageSize: 100
       }
-      const res = await Kingkong.getKingkongList(params)
+      const res = await Kingkong.getKingkongListV1(params)
       if (res.state !== 1) return
+      res.data.list.forEach(i => {
+        i.status = 1
+        i.use = 1
+      })
       this.tableData = res.data.list
       this.pageData.total = res.data.totalRows
       this.tableConfig.loading = false
@@ -96,23 +99,18 @@ export default {
     handleEvent(event, data) {
       switch (event) {
         case 'add':
-          // 新增
-          this.handleDialog('add')
+          this.$refs.dialogRef.$emit(event, data)
           break
         case 'edit':
-          // 编辑
-          this.handleDialog('edit', data)
+          this.$refs.dialogRef.$emit(event, data)
           break
         case 'delete':
-          // 删除
           this.handleDelete(data)
           break
         case 'frozen':
-          // 冻结
           this.handleUse('frozen', data)
           break
         case 'use':
-          // 启用
           this.handleUse('use', data)
           break
         default:
@@ -120,28 +118,30 @@ export default {
       }
     },
 
-    /** 新增/编辑金刚区 */
-    handleDialog(event, data) {
-      this.$refs.dialogRef.$emit(event, data)
-    },
-
     /** 启用/冻结金刚区 */
-    handleUse(event, data) {
+    async handleUse(event, data) {
       console.log(event, data)
+      const res = await Kingkong.useKingkong({
+        id: data.id,
+        use: event === 'use' ? 1 : 0
+      })
+      if (res.state === 1) {
+        this.$message.success(res.msg)
+        changeOrder(this.tableData, data.id, event)
+      } else {
+        this.$message.error(res.msg)
+      }
     },
 
     /** 移除金刚区 */
-    handleDelete() {
+    handleDelete(data) {
       this.$confirm('确认移除该金刚区吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(async () => {
-          const idsArr = this.selectionData.map(item => {
-            return item.id
-          })
-          const res = await Kingkong.deleteKingkong(idsArr)
+          const res = await Kingkong.deleteKingkongV1([data.id])
           if (res.state === 1) {
             this.$message.success(res.msg)
             this.fetchData(1)
@@ -155,12 +155,23 @@ export default {
     },
 
     /** 调整上下顺序 */
-    handleOrder(event, data) {
-      changeOrder(this.tableData, data.id, event)
+    async handleOrder(event, data) {
+      const idx = this.tableData.findIndex(i => i.id === data.id)
+      const upId = this.tableData[idx - 1].id
+      const downId = this.tableData[idx + 1].id
+      const params = {
+        moveId: data.id,
+        bemoveid: event === 'up' ? upId : downId,
+        status: event === 'up' ? 0 : 1
+      }
+      const res = await Kingkong.changeKingkongOrder(params)
+      if (res.state === 1) {
+        this.$message.success(res.msg)
+        changeOrder(this.tableData, data.id, event)
+      } else {
+        this.$message.error(res.msg)
+      }
     },
   }
 }
 </script>
-
-<style>
-</style>

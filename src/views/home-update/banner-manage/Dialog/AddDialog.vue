@@ -1,8 +1,19 @@
 <template>
   <div>
     <!-- 新增/编辑banner图 -->
-    <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" width="600px" @closed="close">
-      <ysh-form ref="formRef" :form-config="formConfig" :form-item="formItem" :form-obj="formObj" @submit="submit">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogTitle"
+      width="600px"
+      @closed="close"
+    >
+      <ysh-form
+        ref="formRef"
+        :form-config="formConfig"
+        :form-item="formItem"
+        :form-obj="formObj"
+        @submit="submit"
+      >
         <template v-slot:customConetent>
           <div class="text-center mt-40">
             <el-button class="mr-20" @click="close">取消</el-button>
@@ -24,7 +35,6 @@ export default {
     return {
       dialogVisible: false,
       dialogTitle: '',
-      /** 提交表单 */
       formConfig: {
         type: 'custom',
         inline: false,
@@ -67,14 +77,8 @@ export default {
           prop: 'img',
           type: 'upload',
           value: '',
+          rules: [{ required: true, message: '请上传图片', trigger: 'change' }],
           formTip: ['建议尺寸76*76px; 支持png、jpg、gif'],
-          rules: [
-            {
-              required: true,
-              message: '请上传图片',
-              trigger: ['blur', 'change']
-            }
-          ],
           beforeUpload: file => {
             this.beforeUpload(file)
           },
@@ -96,30 +100,22 @@ export default {
     })
   },
   methods: {
-    show() {
-      this.dialogVisible = true
-    },
-
-    close() {
-      this.formObj = {
-        title: '', // 标题
-        type: '', // 关联内容
-        img: '' // 上传图片
-      }
-      this.$refs.formRef.resetFileds()
-      this.dialogVisible = false
-    },
-
     add() {
       this.dialogTitle = '新增banner图'
-      this.show()
+      this.dialogVisible = true
     },
 
     edit(data) {
       this.dialogTitle = '编辑banner图'
       const { title, type, img, id } = data
       this.formObj = { title, type, img, id }
-      this.show()
+      this.dialogVisible = true
+    },
+
+    close() {
+      this.formObj = { title: '', type: '', img: '' }
+      this.$refs.formRef.resetFileds()
+      this.dialogVisible = false
     },
 
     /** 上传金刚区图片校验 */
@@ -165,7 +161,7 @@ export default {
       } else {
         this.$message.success(res.msg)
         this.close()
-        this.$emit('Refresh')
+        this.$emit('refresh')
       }
     }
   }

@@ -1,13 +1,23 @@
 <template>
   <div>
     <!-- 新增/编辑栏目名称 -->
-    <el-dialog :visible.sync="dialogVisible" :title="dialogTitle" width="600px" @closed="close">
-      <ysh-form ref="formRef" :form-config="formConfig" :form-item="formItem" :form-obj="formObj" @submit="submit">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :title="dialogTitle"
+      width="600px"
+      @closed="close"
+    >
+      <ysh-form
+        ref="formRef"
+        :form-config="formConfig"
+        :form-item="formItem"
+        :form-obj="formObj"
+        @submit="submit"
+      >
         <template v-slot:customConetent>
           <div class="text-center mt-40">
             <el-button class="mr-20" @click="close">取消</el-button>
             <el-button class="mr-20" @click="handleSubmit">保存</el-button>
-            <el-button type="primary" @click="handleSubmit">发布</el-button>
           </div>
         </template>
       </ysh-form>
@@ -23,7 +33,6 @@ export default {
     return {
       dialogVisible: false,
       dialogTitle: '',
-      /** 提交表单 */
       formConfig: {
         type: 'custom',
         inline: false,
@@ -63,29 +72,22 @@ export default {
     })
   },
   methods: {
-    // -------------------------------------------------------------------------------- 新增/编辑banner图 --------------------------------------------------------------------------------
-    show() {
-      this.dialogVisible = true
-    },
-
-    close() {
-      this.formObj = {
-        name: ''
-      }
-      this.$refs.formRef.resetFileds()
-      this.dialogVisible = false
-    },
-
     add() {
       this.dialogTitle = '新增栏目'
-      this.show()
+      this.dialogVisible = true
     },
 
     edit(data) {
       this.dialogTitle = '编辑栏目'
       const { name, id } = data
       this.formObj = { name, id }
-      this.show()
+      this.dialogVisible = true
+    },
+
+    close() {
+      this.formObj = { name: '' }
+      this.$refs.formRef.resetFileds()
+      this.dialogVisible = false
     },
 
     handleSubmit() {
@@ -99,7 +101,7 @@ export default {
       } else {
         this.$message.success(res.msg)
         this.close()
-        this.$emit('Refresh')
+        this.$emit('refresh')
       }
     }
   }

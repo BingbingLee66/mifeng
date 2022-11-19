@@ -40,6 +40,8 @@ const tableColumn = [
     label: '金刚区图片',
     prop: 'image',
     type: 'image',
+    imgWidth: '80px',
+    imgHeight: '80px',
     url: row => {
       return row.image
     },

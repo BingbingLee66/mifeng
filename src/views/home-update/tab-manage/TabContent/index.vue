@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- 表格数据 -->
     <ysh-table
       :table-config="tableConfig"
       :table-column="tableColumn"
@@ -10,7 +9,10 @@
       @handleSelectionChange="handleSelectionChange"
     >
       <template v-slot:operate="row">
-        <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
+        <span
+          class="text-blue cur ml-10"
+          @click="handleEvent('edit', row.data)"
+        >编辑</span>
         <span
           v-if="row.data.status === 0"
           class="text-blue cur ml-10"
@@ -25,7 +27,7 @@
     </ysh-table>
 
     <!-- 新增/编辑栏目弹窗 -->
-    <add-dialog ref="dialogRef" @Refresh="fetchData" />
+    <add-dialog ref="dialogRef" @refresh="fetchData" />
   </div>
 </template>
 
@@ -68,9 +70,7 @@ export default {
         type: this.clientType
       })
       if (res.state !== 1) return
-      const resData = res.data
-      this.tableData = resData.list
-      this.pageData.total = resData.totalRows
+      this.tableData = res.data
       this.tableConfig.loading = false
     },
 
@@ -139,5 +139,3 @@ export default {
   }
 }
 </script>
-
-<style></style>
