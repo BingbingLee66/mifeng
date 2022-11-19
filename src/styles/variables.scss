@@ -1,13 +1,14 @@
 // sidebar
-$menuText:#bfcbd9;
-$menuActiveText:#409EFF;
-$subMenuActiveText:#f4f4f5; //https://github.com/ElemeFE/element/issues/12951
+$menuText:rgba(35, 24, 21, .65);
+$menuActiveText:#231815;
+$subMenuActiveText:#231815; //https://github.com/ElemeFE/element/issues/12951
 
-$menuBg:#304156;
-$menuHover:#263445;
+$menuBg:#fff;
+$menuHover:#FFCA00;
 
-$subMenuBg:#1f2d3d;
-$subMenuHover:#001528;
+$subMenuBg:#fff;
+$subMenuHover:rgba(255, 202, 0, .2);
+$subMenuBefore:#FFCA00;
 
 $sideBarWidth: 210px;
 

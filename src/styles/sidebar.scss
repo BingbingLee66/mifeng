@@ -80,7 +80,21 @@
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
-     
+
+      &.is-active {
+        position: relative;
+        background-color: $subMenuHover!important;
+
+        &:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 4px;
+          height: 100%;
+          background: $subMenuBefore;
+        }
+      }
 
       &:hover {
         background-color: $subMenuHover !important;
