@@ -55,7 +55,7 @@
                 @click.stop="goTo(childItem)"
               >
                 <div class="item-name">{{ childItem.menuName }}</div>
-                <div v-if="isEdit" class="el-icon-close" @click.stop="removeItem(childItem, 'second', item)" />
+                <div v-if="isEdit" class="el-icon-close" style="margin-right: 6px;" @click.stop="removeItem(childItem, 'second', item)" />
               </div>
               <div v-if="showAddSecondBtn(item)" class="body-item body-item-add" @click.stop="onAddSecondItem(item)"><i class="el-icon-plus" />添加</div>
             </div>
@@ -314,23 +314,26 @@ export default {
     }
 
     .item-body {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-column-gap: 50px;
-      grid-row-gap: 12px;
+      //display: grid;
+      //grid-template-columns: 1fr 1fr;
+      //grid-column-gap: 10px;
+      //grid-row-gap: 12px;
+      display: flex;
+      flex-wrap: wrap;
       padding: 0 20px;
 
       .body-item {
         text-align: center;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 12px;
         color: rgba(0,0,0,0.65);
-        line-height: 30px;
-        height: 30px;
+        line-height: 12px;
         box-sizing: border-box;
         display: flex;
         justify-content: center;
-        align-items: center;
+        align-items: start;
+        padding: 10px;
+        margin: 0 10px 10px 0;
 
         &.body-item-hover:hover {
           background: linear-gradient(180deg, #FFE39B 0%, #FFB12A 100%);
@@ -341,12 +344,12 @@ export default {
           border-radius: 4px;
           border: 1px solid #d9d9d9;
           background: #f3f3f3;
+          align-items: center;
+          min-height: 30px;
+          padding: 0;
 
           .item-name {
-            width: 90px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            padding: 0 10px;
           }
         }
 

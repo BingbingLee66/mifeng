@@ -10,11 +10,12 @@
           <el-input v-model.trim="query.name" clearable maxlength="16" />
         </el-form-item>
         <template v-if="activeName === 'unSignContract'">
-          <el-form-item label="联系人手机号">
+          <el-form-item label="联系人手机号" prop="contactPhone">
             <el-input v-model.trim="query.contactPhone" clearable maxlength="16" />
           </el-form-item>
           <el-form-item label="邀请码是否过期" label-width="110px">
             <el-select v-model="query.inviteCodePastDue" placeholder="请选择">
+              <el-option label="全部" value="" />
               <el-option label="过期 " :value="1" />
               <el-option label="未过期" :value="0" />
             </el-select>
@@ -34,7 +35,7 @@
             <el-input v-model="query.userName" clearable oninput="value=value.replace(/[^\d]/g,'')" maxlength="11" />
           </el-form-item>
 
-          <el-form-item label="申请来源">
+          <el-form-item label="入驻来源">
             <el-select v-model="query.settledSource" placeholder="请选择">
               <el-option label="全部" value="" />
               <el-option label="小程序" :value="1" />
@@ -42,14 +43,24 @@
               <el-option label="小程序名录" :value="3" />
               <el-option label="APP" :value="4" />
               <el-option label="APP名录" :value="5" />
+              <el-option label="邀请码注册" :value="6" />
             </el-select>
           </el-form-item>
         </template>
         <el-form-item label="冻结状态">
           <el-select v-model="query.status" placeholder="请选择">
-            <el-option label="全部" :value="0" />
-            <el-option label="正常" :value="1" />
-            <el-option label="已冻结" :value="2" />
+            <template v-if="activeName === 'signContract'">
+              <el-option label="全部" :value="0" />
+              <el-option label="正常" :value="1" />
+              <el-option
+                label="已冻结"
+                :value="2"
+              /></template>
+            <template v-else>
+              <el-option label="全部" value="" />
+              <el-option label="正常" :value="1" />
+              <el-option label="已冻结" :value="0" />
+            </template>
           </el-select>
         </el-form-item>
 
@@ -64,13 +75,13 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="商务负责人" label-width="100px">
-          <el-select v-model="query.businessName" placeholder="请选择">
+        <el-form-item label="商务负责人" label-width="100px" prop="businessName">
+          <el-select v-model="query.businessName" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in businessArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
-        <el-form-item label="运营负责人">
-          <el-select v-model="query.operatingName" placeholder="请选择">
+        <el-form-item label="运营负责人" prop="operatingName">
+          <el-select v-model="query.operatingName" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in operatingArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
@@ -129,8 +140,8 @@
         <template slot-scope="scope"> {{ scope.row.province }}{{ scope.row.city }} </template></el-table-column>
       <el-table-column label="负责人" width="120px">
         <template slot-scope="scope">
-          <div>【商务】{{ scope.row.businessName }}</div>
-          <div>【运营】{{ scope.row.operatingName }}</div>
+          <div>【商务】{{ scope.row.business }}</div>
+          <div>【运营】{{ scope.row.operating }}</div>
         </template>
       </el-table-column>
       <el-table-column label="入驻来源">
@@ -139,7 +150,7 @@
           <template v-if="row.settledSource === 2">后台录入</template>
           <template v-if="row.settledSource === 3">小程序名录</template>
           <template v-if="row.settledSource === 4">APP</template>
-          <template v-if="row.settledSource === 4">APP</template>
+          <template v-if="row.settledSource === 6">邀请码注册</template>
         </template>
       </el-table-column>
 
@@ -234,8 +245,8 @@
       </el-table-column>
       <el-table-column label="负责人" width="120px">
         <template slot-scope="scope">
-          <div>【商务】{{ scope.row.businessName }}</div>
-          <div>【运营】{{ scope.row.operatingName }}</div>
+          <div>【商务】{{ scope.row.business }}</div>
+          <div>【运营】{{ scope.row.operating }}</div>
         </template>
       </el-table-column>
       <el-table-column label="注册时间">
@@ -344,7 +355,7 @@
           <el-form-item label="商协会：" prop="name">
             {{ activeName === 'signContract' ? row.name : row.chamberName }}</el-form-item>
           <el-form-item label="商务负责人：" prop="business">
-            <el-select v-model="remarksObj.business" placeholder="请选择">
+            <el-select v-model="remarksObj.business" filterable placeholder="请选择">
               <el-option
                 v-for="(item, index) in businessArr"
                 :key="index"
@@ -353,7 +364,7 @@
               /></el-select>
           </el-form-item>
           <el-form-item label="运营负责人：" prop="operating">
-            <el-select v-model="remarksObj.operating" placeholder="请选择">
+            <el-select v-model="remarksObj.operating" filterable placeholder="请选择">
               <el-option
                 v-for="(item, index) in operatingArr"
                 :key="index"

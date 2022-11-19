@@ -4,8 +4,8 @@
       <cardList v-if="permission" :card-list="cardList" />
 
       <div class="flex-x">
-        <ToolBar style="flex: 2; margin-right: -24px" />
-        <myTodo :message-list="messageList" style="flex: 1" />
+        <ToolBar style="flex: 3; margin-right: -24px" />
+        <myTodo :message-list="messageList" style="flex: 1; margin-right: -24px" />
       </div>
     </template>
     <template v-else>
@@ -13,7 +13,9 @@
         <div class="dashboard-container-view">
           <div class="dashboard-text">欢迎光临:{{ name }}</div>
           <img class="dashboard-img" src="@/assets/img/home.png" alt="">
-        </div></div></template>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 

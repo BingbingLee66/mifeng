@@ -50,7 +50,7 @@ export default {
         unitFirst: '人/次',
         unitSecond: '篇',
         unitBottom: '次',
-        tips: '发布文章数据口径：统计历史以来，系统中存在的该商协会发布的，有效的文章的数据。剔除冻结或者已删除无效文章;\n累计阅读量数据口径：统计该商协会发布的所有文章的累计阅读人次，即所有文章的打开加载次数，包括游客和会员的阅读次数;\n人均阅读量数据口径：计算公式为：累计阅读量/累计阅读人数（含游客和会员）;\n会员分享次数：统计历史以来，系统中该商协会发布的，有效的文章数据，不需要剔除冻结或删除的文章，所有文章的被转发的次数。'
+        tips: '发布文章数据口径：统计历史以来，系统中存在的该商协会发布的，有效的文章的数据。剔除冻结或者已删除无效文章;\n累计阅读量数据口径：统计该商协会发布的所有文章的累计阅读人次，即所有文章的打开加载次数，包括游客和会员的阅读次数;\n人均阅读量数据口径：计算公式为：累计阅读量/文章数（含游客和会员）;\n会员分享次数：统计历史以来，系统中该商协会发布的，有效的文章数据，不需要剔除冻结或删除的文章，所有文章的被转发的次数。'
       },
       {
         label: '图片直播数',
@@ -69,7 +69,7 @@ export default {
       },
       {
         label: '群发通知阅读率',
-        value: 0,
+        value: 100,
         bottomLabel: '环比上次',
         bottomValue: '--',
         progress: 2,
@@ -151,7 +151,7 @@ export default {
     async getChamberNotices() {
       const { data, state, msg } = await getChamberNotices()
       if (state === 1) {
-        this.cardList[3].value = data?.noticeReadRatio || 0
+        this.cardList[3].value = data?.noticeReadRatio || 100
         this.cardList[3].bottomValue = data?.noticeReadSequential || '--'
       } else {
         this.$message({
