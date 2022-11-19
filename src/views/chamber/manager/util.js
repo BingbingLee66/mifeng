@@ -1,6 +1,6 @@
 export const remarksRules = {
-  business: [{ required: true, message: '不能为空', trigger: 'change' }, ],
-  operating: [{ required: true, message: '不能为空', trigger: 'change' }, ],
+  business: [{ required: true, message: '选择商务负责人', trigger: 'change' }, ],
+  operating: [{ required: true, message: '选择运营负责人', trigger: 'change' }, ],
 }
 export const codeRules = {
   codeNum: [
