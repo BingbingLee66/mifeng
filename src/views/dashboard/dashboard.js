@@ -69,7 +69,7 @@ export default {
       },
       {
         label: '群发通知阅读率',
-        value: 0,
+        value: 100,
         bottomLabel: '环比上次',
         bottomValue: '--',
         progress: 2,
@@ -151,7 +151,7 @@ export default {
     async getChamberNotices() {
       const { data, state, msg } = await getChamberNotices()
       if (state === 1) {
-        this.cardList[3].value = data?.noticeReadRatio || 0
+        this.cardList[3].value = data?.noticeReadRatio || 100
         this.cardList[3].bottomValue = data?.noticeReadSequential || '--'
       } else {
         this.$message({
