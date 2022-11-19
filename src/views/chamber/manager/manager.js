@@ -432,6 +432,7 @@ export default {
       } else {
         this.query.status = ''
       }
+      this.fetchData()
     },
     openDialog(_name) {
       this.$refs[_name].show()

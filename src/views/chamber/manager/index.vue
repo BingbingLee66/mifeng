@@ -75,12 +75,12 @@
           />
         </el-form-item>
         <el-form-item label="商务负责人" label-width="100px">
-          <el-select v-model="query.businessName" clearable placeholder="请选择">
+          <el-select v-model="query.businessName" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in businessArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="运营负责人">
-          <el-select v-model="query.operatingName" clearable placeholder="请选择">
+          <el-select v-model="query.operatingName" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in operatingArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
@@ -354,7 +354,7 @@
           <el-form-item label="商协会：" prop="name">
             {{ activeName === 'signContract' ? row.name : row.chamberName }}</el-form-item>
           <el-form-item label="商务负责人：" prop="business">
-            <el-select v-model="remarksObj.business" placeholder="请选择">
+            <el-select v-model="remarksObj.business" filterable placeholder="请选择">
               <el-option
                 v-for="(item, index) in businessArr"
                 :key="index"
@@ -363,7 +363,7 @@
               /></el-select>
           </el-form-item>
           <el-form-item label="运营负责人：" prop="operating">
-            <el-select v-model="remarksObj.operating" placeholder="请选择">
+            <el-select v-model="remarksObj.operating" filterable placeholder="请选择">
               <el-option
                 v-for="(item, index) in operatingArr"
                 :key="index"
