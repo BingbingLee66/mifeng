@@ -192,8 +192,21 @@ export default {
     },
     changeTab(index) {
       this.active = index
-      this.formObj = {}
-      this.loginForm = {}
+      this.formObj = {
+        socialCode: '',
+        chamberName: '',
+        chamberLogo: '',
+        area: [],
+        inviteCode: '',
+        contactPhone: '',
+        contactName: '',
+        password2: '',
+        confirmPassword: '',
+      }
+      this.loginForm = {
+        username: '',
+        password: ''
+      }
     }
     // handleLogin() {
     //   this.$refs.loginForm.validate(valid => {
