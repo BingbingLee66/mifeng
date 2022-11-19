@@ -13,7 +13,7 @@
           <el-form-item label="联系人手机号" prop="contactPhone">
             <el-input v-model.trim="query.contactPhone" clearable maxlength="16" />
           </el-form-item>
-          <el-form-item label="邀请码是否过期" label-width="110px">
+          <el-form-item label="是否已过试用期" label-width="110px">
             <el-select v-model="query.inviteCodePastDue" placeholder="请选择">
               <el-option label="全部" value="" />
               <el-option label="过期 " :value="1" />
@@ -266,7 +266,7 @@
           <div>{{ scope.row.inviteCode }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="邀请码是否过期">
+      <el-table-column label="是否已过试用期">
         <template slot-scope="scope">
           <div>{{ scope.row.trialPassDue ? '已过期' : '未过期' }}</div>
         </template>
