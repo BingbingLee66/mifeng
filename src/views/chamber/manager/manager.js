@@ -455,6 +455,7 @@ export default {
             type: 'success'
           })
           this.hideDialog('addTryTimeRef')
+          this.fetchData()
         } else {
           this.$message({
             message: res.msg,
