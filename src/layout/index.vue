@@ -1,11 +1,14 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="onTrial" class="countdown-tip">
-      <span><i class="el-icon-warning" style="color: #faad14" /> 已试用{{ str }}，将于{{
-        endTime
-      }}到期，如需延长期限，请与商务联系。</span>
-      <span class="close-icon"><i class="el-icon-close" @click="closeTip" /> </span>
+    <div v-if="onTrial" class="countdown-wrapper">
+      <div class="countdown-tip">
+        <span><i class="el-icon-warning" style="color: #faad14" /> 已试用{{ str }}，将于{{
+          endTime
+        }}到期，如需延长期限，请与商务联系。</span>
+        <span class="close-icon"><i class="el-icon-close" @click="closeTip" /> </span>
+      </div>
     </div>
+
     <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" :class="{ onTrial: onTrial }" />
     <div class="main-container">
@@ -149,8 +152,12 @@ export default {
 .mobile .fixed-header {
   width: 100%;
 }
+.countdown-wrapper{
+ height: 30px;
+ position: relative;
+}
 .countdown-tip {
-  height: 30px;
+  width: 100%;
   background: #fffbe6;
   border: 1px solid #ffe58f;
   font-size: 14px;
@@ -158,9 +165,9 @@ export default {
   font-weight: 400;
   color: rgba(0, 0, 0, 0.65);
   line-height: 30px;
-  // padding-left: 100px;
+  z-index: 100;
   text-align: center;
-  position: relative;
+  position: fixed;
   .close-icon {
     position: absolute;
     right: 20px;
