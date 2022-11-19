@@ -43,6 +43,7 @@
               <el-option label="小程序名录" :value="3" />
               <el-option label="APP" :value="4" />
               <el-option label="APP名录" :value="5" />
+              <el-option label="邀请码注册" :value="6" />
             </el-select>
           </el-form-item>
         </template>
