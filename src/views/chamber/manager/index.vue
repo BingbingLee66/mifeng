@@ -66,12 +66,12 @@
           />
         </el-form-item>
         <el-form-item label="商务负责人" label-width="100px">
-          <el-select v-model="query.businessName" placeholder="请选择">
+          <el-select v-model="query.businessName" clearable placeholder="请选择">
             <el-option v-for="(item, index) in businessArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="运营负责人">
-          <el-select v-model="query.operatingName" placeholder="请选择">
+          <el-select v-model="query.operatingName" clearable placeholder="请选择">
             <el-option v-for="(item, index) in operatingArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>

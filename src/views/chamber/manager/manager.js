@@ -256,7 +256,9 @@ export default {
           userName,
           date,
           area,
-          settledSource
+          settledSource,
+          businessName,
+          operatingName,
         } = this.query
         const params = {
           pageSize: this.limit,
@@ -268,7 +270,8 @@ export default {
           endTime: date ? date[1] : '',
           // province: area.map(v => v[0]).join(','),
           city: area.map(v => v[1]).join(','),
-          settledSource
+          settledSource, businessName,
+          operatingName,
         }
         getList(params).then(response => {
           this.list = response.data.data.list
