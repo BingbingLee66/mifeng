@@ -1,11 +1,14 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="onTrial" class="countdown-tip">
-      <span><i class="el-icon-warning" style="color: #faad14" /> 已试用{{ str }}，将于{{
-        endTime
-      }}到期，如需延长期限，请与商务联系。</span>
-      <span class="close-icon"><i class="el-icon-close" @click="closeTip" /> </span>
+    <div v-if="onTrial" class="countdown-wrapper">
+      <div class="countdown-tip">
+        <span><i class="el-icon-warning" style="color: #faad14" /> 已试用{{ str }}，将于{{
+          endTime
+        }}到期，如需延长期限，请与商务联系。</span>
+        <span class="close-icon"><i class="el-icon-close" @click="closeTip" /> </span>
+      </div>
     </div>
+
     <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
     <sidebar class="sidebar-container" :class="{ onTrial: onTrial }" />
     <div class="main-container">
@@ -40,7 +43,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['expireTime', 'createTime', 'onTrial']),
+    ...mapGetters(['expireTime', 'createTime', 'onTrial', 'trialTime']),
     endTime() {
       return dayjs(parseInt(this.expireTime)).format('YYYY年MM月DD日 HH:mm')
     },
@@ -85,11 +88,11 @@ export default {
       if (!this.onTrial) {
         return
       }
+      let trialTime = parseInt(this.trialTime)
       this.timer = setInterval(() => {
         const now = new Date()
-        const start = parseInt(this.createTime)
         const end = parseInt(this.expireTime)
-        const time = now - start
+        const time = trialTime
         if (end < now) {
           this.$store.commit('user/SET_ONTRIAL', false)
           clearInterval(this.timer)
@@ -101,6 +104,7 @@ export default {
           const toSeconds = parseInt((time / 1000) % 60)
           this.str = `${toDay}天${toHours}时${toMinutes}分${toSeconds}秒`
           this.loading = false
+          trialTime += 1000
         }
       }, 1000)
     }
@@ -148,8 +152,12 @@ export default {
 .mobile .fixed-header {
   width: 100%;
 }
+.countdown-wrapper{
+ height: 30px;
+ position: relative;
+}
 .countdown-tip {
-  height: 30px;
+  width: 100%;
   background: #fffbe6;
   border: 1px solid #ffe58f;
   font-size: 14px;
@@ -157,9 +165,9 @@ export default {
   font-weight: 400;
   color: rgba(0, 0, 0, 0.65);
   line-height: 30px;
-  // padding-left: 100px;
+  z-index: 100;
   text-align: center;
-  position: relative;
+  position: fixed;
   .close-icon {
     position: absolute;
     right: 20px;

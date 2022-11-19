@@ -151,7 +151,8 @@ export default {
       const formData = new FormData()
       formData.append('file', content.file)
       uploadLogo(formData).then(response => {
-        this.formObj.chamberLogo = response.data.filePath
+        // this.formObj.chamberLogo = response.data.filePath
+        this.$set(this.formObj, 'chamberLogo', response.data.filePath)
         // 上传成功后，手动验证一次表单
         this.$refs.registerForm.validateField('chamberLogo')
       })
@@ -191,8 +192,21 @@ export default {
     },
     changeTab(index) {
       this.active = index
-      this.formObj = {}
-      this.loginForm = {}
+      this.formObj = {
+        socialCode: '',
+        chamberName: '',
+        chamberLogo: '',
+        area: [],
+        inviteCode: '',
+        contactPhone: '',
+        contactName: '',
+        password2: '',
+        confirmPassword: '',
+      }
+      this.loginForm = {
+        username: '',
+        password: ''
+      }
     }
     // handleLogin() {
     //   this.$refs.loginForm.validate(valid => {
