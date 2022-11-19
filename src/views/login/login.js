@@ -179,6 +179,8 @@ export default {
           this.$store.dispatch('user/register', this.formObj).then(() => {
             this.loading = false
             this.$router.push(this.redirect)
+            this.formObj = {}
+            this.active = 1
           }).catch(() => {
             this.loading = false
           })
@@ -187,6 +189,11 @@ export default {
         }
       })
     },
+    changeTab(index) {
+      this.active = index
+      this.formObj = {}
+      this.loginForm = {}
+    }
     // handleLogin() {
     //   this.$refs.loginForm.validate(valid => {
     //     if (valid) {

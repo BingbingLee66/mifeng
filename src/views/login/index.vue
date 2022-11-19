@@ -43,13 +43,13 @@
           style="width: 100%; background: #ffb800; color: #fff"
           @click.native.prevent="handleLogin"
         >登录</el-button>
-        <div class="tips-text">还没有账号，<span class="link" @click="active = 0">立即注册</span></div>
+        <div class="tips-text">还没有账号，<span class="link" @click="changeTab(0)">立即注册</span></div>
       </el-form>
     </div>
     <div v-else class="form-wrapper">
       <div class="register-title">
         <div class="title">注册</div>
-        <div class="link" @click="active=1">登录></div>
+        <div class="link" @click="changeTab(1)">登录></div>
       </div>
       <el-form ref="registerForm" :model="formObj" :rules="registerRules" class="register-form">
         <el-row class="row">
