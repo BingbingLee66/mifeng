@@ -174,6 +174,6 @@ export default {
   }
 }
 .sidebar-container.onTrial {
-  top: 30px !important;
+  top: 32px !important;
 }
 </style>
