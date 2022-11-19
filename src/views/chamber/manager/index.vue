@@ -35,7 +35,7 @@
             <el-input v-model="query.userName" clearable oninput="value=value.replace(/[^\d]/g,'')" maxlength="11" />
           </el-form-item>
 
-          <el-form-item label="申请来源">
+          <el-form-item label="入驻来源">
             <el-select v-model="query.settledSource" placeholder="请选择">
               <el-option label="全部" value="" />
               <el-option label="小程序" :value="1" />
