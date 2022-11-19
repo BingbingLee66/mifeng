@@ -10,14 +10,14 @@
           <el-input v-model.trim="query.name" clearable maxlength="16" />
         </el-form-item>
         <template v-if="activeName === 'unSignContract'">
-          <el-form-item label="联系人手机号">
+          <el-form-item label="联系人手机号" prop="contactPhone">
             <el-input v-model.trim="query.contactPhone" clearable maxlength="16" />
           </el-form-item>
           <el-form-item label="邀请码是否过期" label-width="110px">
             <el-select v-model="query.inviteCodePastDue" placeholder="请选择">
+              <el-option label="全部" value="" />
               <el-option label="过期 " :value="1" />
               <el-option label="未过期" :value="0" />
-              <el-option label="全部" value="" />
             </el-select>
           </el-form-item>
         </template>
@@ -74,12 +74,12 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="商务负责人" label-width="100px">
+        <el-form-item label="商务负责人" label-width="100px" prop="businessName">
           <el-select v-model="query.businessName" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in businessArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
-        <el-form-item label="运营负责人">
+        <el-form-item label="运营负责人" prop="operatingName">
           <el-select v-model="query.operatingName" filterable clearable placeholder="请选择">
             <el-option v-for="(item, index) in operatingArr" :key="index" :label="item" :value="item" />
           </el-select>
