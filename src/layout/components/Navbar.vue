@@ -3,19 +3,21 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb class="breadcrumb-container" />
-    <!-- 商会后台显示铃铛 -->
-    <div v-if="ckey" class="inform">
-      <span @click="goMail">
-        <el-badge :value="count" :hidden="hidden" :max="99">
-          <i class="el-icon-message-solid" />
-        </el-badge>
-      </span>
 
-      <div class="inform-news">
-        <News :show="isShow" :info="info" />
-      </div>
-    </div>
     <div class="login-name flex-x">
+      <!-- 商会后台显示铃铛 -->
+      <div v-if="ckey" class="inform">
+        <span @click="goMail">
+          <el-badge :value="count" :hidden="hidden" :max="99">
+            <i class="el-icon-message-solid" />
+          </el-badge>
+        </span>
+
+        <div class="inform-news">
+          <News :show="isShow" :info="info" />
+        </div>
+      </div>
+
       <img src="../../../public/img/chamber-icon.png" alt="">
       <span class="info-name">{{ chamberName ? chamberName : '凯迪云商会总后台管理系统' }}</span>
       <img src="../../../public/img/manager-icon.png" alt="">
@@ -129,7 +131,6 @@ export default {
 .inform {
   font-size: 20px;
   width: 20px;
-  height: 20px;
   vertical-align: middle;
   color: #1890ff;
   margin-right: 40px;
