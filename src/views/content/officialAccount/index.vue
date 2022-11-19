@@ -4,7 +4,10 @@
       <el-tab-pane label="发布记录" name="1" />
       <el-tab-pane label="授权账号" name="2" />
     </el-tabs>
-    <el-button v-if="type == 2 && list.length < 1" type="primary" :disabled="list.length > 0" @click="onBinding">授权公众号</el-button>
+    <div style="height: 35px;">
+      <el-button v-if="type == 2 && list.length < 1" type="primary" :disabled="list.length > 0" @click="onBinding">授权公众号</el-button>
+    </div>
+
     <el-table
       :key="random"
       v-loading="listLoading"
@@ -227,7 +230,7 @@ export default {
         const res = await officialAccountUnbind(parmas)
         if (res.state === 1) {
           this.$message({
-            message: '解绑成功成功',
+            message: '解绑成功',
             type: 'success'
           })
           this.fetchData()
