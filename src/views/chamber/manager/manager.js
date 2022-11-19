@@ -256,7 +256,9 @@ export default {
           userName,
           date,
           area,
-          settledSource
+          settledSource,
+          businessName,
+          operatingName,
         } = this.query
         const params = {
           pageSize: this.limit,
@@ -268,7 +270,8 @@ export default {
           endTime: date ? date[1] : '',
           // province: area.map(v => v[0]).join(','),
           city: area.map(v => v[1]).join(','),
-          settledSource
+          settledSource, businessName,
+          operatingName,
         }
         getList(params).then(response => {
           this.list = response.data.data.list
@@ -423,7 +426,12 @@ export default {
       this.activeName = _tag.name
       this.limit = 10
       this.currentpage = 1
-      this.fetchData()
+      // 兼容后端同个字段同个值代表的含义不一样
+      if (_tag.name === 'signContract') {
+        this.query.status = 0
+      } else {
+        this.query.status = ''
+      }
     },
     openDialog(_name) {
       this.$refs[_name].show()
@@ -452,6 +460,7 @@ export default {
             type: 'success'
           })
           this.hideDialog('addTryTimeRef')
+          this.fetchData()
         } else {
           this.$message({
             message: res.msg,

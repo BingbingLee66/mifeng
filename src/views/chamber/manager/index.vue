@@ -17,6 +17,7 @@
             <el-select v-model="query.inviteCodePastDue" placeholder="请选择">
               <el-option label="过期 " :value="1" />
               <el-option label="未过期" :value="0" />
+              <el-option label="全部" value="" />
             </el-select>
           </el-form-item>
         </template>
@@ -47,9 +48,18 @@
         </template>
         <el-form-item label="冻结状态">
           <el-select v-model="query.status" placeholder="请选择">
-            <el-option label="全部" :value="0" />
-            <el-option label="正常" :value="1" />
-            <el-option label="已冻结" :value="2" />
+            <template v-if="activeName === 'signContract'">
+              <el-option label="全部" :value="0" />
+              <el-option label="正常" :value="1" />
+              <el-option
+                label="已冻结"
+                :value="2"
+              /></template>
+            <template v-else>
+              <el-option label="全部" value="" />
+              <el-option label="正常" :value="1" />
+              <el-option label="已冻结" :value="0" />
+            </template>
           </el-select>
         </el-form-item>
 
@@ -65,12 +75,12 @@
           />
         </el-form-item>
         <el-form-item label="商务负责人" label-width="100px">
-          <el-select v-model="query.businessName" placeholder="请选择">
+          <el-select v-model="query.businessName" clearable placeholder="请选择">
             <el-option v-for="(item, index) in businessArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="运营负责人">
-          <el-select v-model="query.operatingName" placeholder="请选择">
+          <el-select v-model="query.operatingName" clearable placeholder="请选择">
             <el-option v-for="(item, index) in operatingArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
@@ -129,8 +139,8 @@
         <template slot-scope="scope"> {{ scope.row.province }}{{ scope.row.city }} </template></el-table-column>
       <el-table-column label="负责人" width="120px">
         <template slot-scope="scope">
-          <div>【商务】{{ scope.row.businessName }}</div>
-          <div>【运营】{{ scope.row.operatingName }}</div>
+          <div>【商务】{{ scope.row.operating }}</div>
+          <div>【运营】{{ scope.row.business }}</div>
         </template>
       </el-table-column>
       <el-table-column label="入驻来源">
@@ -234,8 +244,8 @@
       </el-table-column>
       <el-table-column label="负责人" width="120px">
         <template slot-scope="scope">
-          <div>【商务】{{ scope.row.businessName }}</div>
-          <div>【运营】{{ scope.row.operatingName }}</div>
+          <div>【商务】{{ scope.row.operating }}</div>
+          <div>【运营】{{ scope.row.business }}</div>
         </template>
       </el-table-column>
       <el-table-column label="注册时间">
