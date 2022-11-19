@@ -20,7 +20,7 @@
           {{
             item.type === 1
               ? +item.count === 1
-                ? `${item.targetName}发来${item.count} 条入会申请 `
+                ? `${item.source}发来${item.count} 条入会申请 `
                 : `收到${item.count}条入会申请`
               : item.type === 2
                 ? `${item.targetName}收到${item.count} 条报名审核 `
@@ -40,6 +40,7 @@
 import Panel from '../../../components/panel'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { readStationMail } from '@/api/mass-notification/index'
 import ZC from 'dayjs/locale/zh-cn'
 dayjs.locale(ZC)
 dayjs.extend(relativeTime)
@@ -56,29 +57,6 @@ export default {
   },
   data() {
     return {
-      // messageList: [
-      //   {
-      //     title: '入会审核',
-      //     targetName: '色能目型理可鉴赏课十九点回',
-      //     type: 1,
-      //     count: 2,
-      //     lastUpdateTime: '1668055089000'
-      //   },
-      //   {
-      //     title: '活动报名审核',
-      //     targetName: '全展组定步',
-      //     type: 2,
-      //     count: 3,
-      //     lastUpdateTime: '1667277489000'
-      //   },
-      //   {
-      //     title: '站内信',
-      //     targetName: '全展阿斯弗步',
-      //     type: 3,
-      //     count: 6,
-      //     lastUpdateTime: '1636259889000'
-      //   }
-      // ]
     }
   },
   methods: {
@@ -93,8 +71,8 @@ export default {
         return dayjs(val).fromNow()
       }
     },
-    toResolve(item) {
-      const { type, count, source } = item
+    async toResolve(item) {
+      const { type, count, source, businessId } = item
 
       switch (type) {
         case 1:
@@ -107,6 +85,8 @@ export default {
           if (count > 1) {
             this.$router.push('/sms/mail')
           } else {
+            await readStationMail({ id: businessId })
+
             this.$router.push({
               name: '站内信详情',
               params: {
