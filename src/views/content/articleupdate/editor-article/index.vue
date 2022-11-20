@@ -122,10 +122,10 @@
             <div class="hd">1、文章封面设置</div>
             <el-row>
               <div class="cover-radio">
-                <el-radio-group v-model="formObj.coverType" @change="resetCoverImgs(formObj.coverType)">
-                  <el-radio :label="0">自动（使用文章图片，无图片不显示）</el-radio>
-                  <el-radio :label="1">自定义（单图）</el-radio>
-                  <el-radio :label="2">自定义（3图）</el-radio>
+                <el-radio-group v-model="formObj.coverType" style="display: flex;flex-direction: column;" @change="resetCoverImgs(formObj.coverType)">
+                  <el-radio style="margin-bottom: 10px;" :label="0">自动（使用文章图片，无图片不显示）</el-radio>
+                  <el-radio style="margin-bottom: 10px;" :label="1">自定义（单图）</el-radio>
+                  <el-radio style="margin-bottom: 10px;" :label="2">自定义（3图）</el-radio>
                 </el-radio-group>
               </div>
             </el-row>
@@ -211,7 +211,8 @@
                         预览
                       </div>
                     </div>
-                    <div class="tips">建议尺寸：750 x 600; 支持格式:png、jpg</div>
+                    <div class="tips">建议尺寸：750 x 600</div>
+                    <div class="tips"> 支持格式:png、jpg</div>
                   </el-form-item>
                 </el-col>
 
@@ -242,24 +243,25 @@
                         预览
                       </div>
                     </div>
-                    <div class="tips">建议尺寸：600 x 446; 支持格式:png、jpg</div>
+                    <div class="tips">建议尺寸：600 x 446;</div>
+                    <div class="tips"> 支持格式:png、jpg</div>
                   </el-form-item>
                 </el-col>
               </el-row>
             </div>
 
             <el-row>
-              <el-col :span="11">
+              <el-col :span="7">
                 <el-form-item label="发布时间：">
-                  <el-radio-group v-model="formObj.status">
-                    <el-radio :label="1">立即发布</el-radio>
-                    <el-radio :label="4">定时发布</el-radio>
+                  <el-radio-group v-model="formObj.status" style="display: flex;flex-direction: column;margin-top: 12px;">
+                    <el-radio style="margin-bottom: 15px;" :label="1">立即发布</el-radio>
+                    <el-radio style="margin-bottom: 15px;" :label="4">定时发布</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
               <el-col v-if="formObj.status == 4" :span="8">
                 <el-form-item label="" prop="publishTs" label-width="0">
-                  <el-date-picker v-model="formObj.publishTs" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间" />
+                  <el-date-picker v-model="formObj.publishTs" style="margin-top: 30px;" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间" />
                 </el-form-item>
               </el-col>
             </el-row>
