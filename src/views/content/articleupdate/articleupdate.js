@@ -267,7 +267,7 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('articleupdate', this.$route.path)
       this.$router.push({
-        name: '添加/修改文章',
+        name: '添加/编辑文章',
         params: {
           activeName: this.activeName
         }
@@ -277,7 +277,7 @@ export default {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       window.localStorage.setItem('articleupdate', this.$route.path)
       this.$router.push({
-        name: '添加/修改文章',
+        name: '添加/编辑文章',
         query: {
           activeName: this.activeName,
           articleId: row.id
