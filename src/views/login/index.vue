@@ -2,7 +2,7 @@
   <div class="login-container" style="background-image: url(img/bg.png); background-size: 100% 100%">
     <div v-if="active" class="form-wrapper">
       <div class="login-bar">
-        <div class="login-bar-icon"><img src="img/login-logo-1.png" alt=""> |<img src="img/login-logo-2.png" alt=""><span>秘锋</span></div>
+        <div class="login-bar-icon"><img src="img/login-logo-1-svg.svg" alt=""> |<img src="img/login-logo-2-svg.svg" alt=""><span>秘锋</span></div>
         <div class="login-title">云商会旗下商协会数字管理系统</div>
       </div>
       <div class="form-title">账号密码登录</div>
