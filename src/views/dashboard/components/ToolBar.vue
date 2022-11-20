@@ -376,6 +376,10 @@ export default {
       color: rgba(0,0,0,0.45);
       text-align: center;
       cursor: pointer;
+
+      &:hover {
+        color: #2D8DFD;
+      }
     }
   }
 
