@@ -6,6 +6,8 @@
 - 工作：【首页工作台】我的待办[2544023](https://project.feishu.cn/solink/universal_task/detail/2544023?parentUrl=%2Fsolink%2FworkObjectView%2Funiversal_task%2FGYSrHTvVg)
 - 工作：【首页工作台】数据统计[2544086](https://project.feishu.cn/solink/universal_task/detail/2544086?parentUrl=%2Fsolink%2FworkObjectView%2Funiversal_task%2FGYSrHTvVg)
 - 工作：【首页工作台】快捷工具栏[2544118](https://project.feishu.cn/solink/universal_task/detail/2544118?parentUrl=%2Fsolink%2FworkObjectView%2Funiversal_task%2FGYSrHTvVg)
+- 工作：【秘锋后台重构-会员管理优化】[2390347](https://project.feishu.cn/solink/user_story/detail/2390347?parentUrl=%2Fsolink%2FworkObjectView%2Fscrum_epic%2F5M3yeUS4R#detail)
+- 工作：【秘锋后台重构-整合供需和行业标签】[2469398](https://project.feishu.cn/solink/user_story/detail/2469398?parentUrl=%2Fsolink%2FworkObjectView%2Fscrum_epic%2F5M3yeUS4R)
 
 
 ### Fixed
