@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '云商会管理后台',
+  title: '秘锋商协会数字管理系统',
 
   /**
    * @type {boolean} true | false
