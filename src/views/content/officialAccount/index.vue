@@ -19,7 +19,6 @@
     >
       <!--发布记录  -->
       <template v-if="type == 1">
-        <el-table-column prop="order" label="序号" align="center" width="55px" />
         <el-table-column label="文章标题" align="center">
           <template slot-scope="scope">
             <div class="pre">{{ scope.row.title }}</div>
