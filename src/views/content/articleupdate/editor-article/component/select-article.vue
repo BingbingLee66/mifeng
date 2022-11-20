@@ -65,7 +65,14 @@
 
 <script>
 import { officialAccountArticleList } from '@/api/content/officialAccount'
+
 export default {
+  props: {
+    articleId: { // 编辑的文章id
+      type: Number,
+      default: null
+    },
+  },
   data() {
     return {
       detailVisible: false, // 开启表格
@@ -118,11 +125,22 @@ export default {
     async fetchData(reset) {
       if (reset) this.currentpage = 1
       this.listLoading = true
-      const parmas = {
-        pageSize: this.limit,
-        page: this.currentpage,
-        title: this.title
+      let parmas = {}
+      if (this.articleId) {
+        parmas = {
+          pageSize: this.limit,
+          page: this.currentpage,
+          title: this.title,
+          articleId: this.articleId
+        }
+      } else {
+        parmas = {
+          pageSize: this.limit,
+          page: this.currentpage,
+          title: this.title
+        }
       }
+
       const res = await officialAccountArticleList(parmas)
       this.listLoading = false
       this.list = res.data.list || []

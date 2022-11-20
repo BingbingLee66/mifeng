@@ -556,11 +556,22 @@ export default {
     },
     // 拿取最新的文章
     async onNewest(pageSize) {
-      const parmas = {
-        pageSize,
-        page: 1,
-        title: ''
+      let parmas = {}
+      if (this.articleId) {
+        parmas = {
+          pageSize,
+          page: 1,
+          title: '',
+          articleId: this.articleId
+        }
+      } else {
+        parmas = {
+          pageSize,
+          page: 1,
+          title: ''
+        }
       }
+
       const res = await officialAccountArticleList(parmas)
       if (res.data.list.length === 0) {
         return this.$message('没有符合条件的文章')
@@ -589,7 +600,6 @@ export default {
         }
 
         this.formObj.wechatArticles = Array.concat(res.data.list)
-        console.log('this.formObj.wechatArticles', this.formObj.wechatArticles)
       }
     },
     // 公众号外部链接

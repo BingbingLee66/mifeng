@@ -128,7 +128,7 @@
             </el-row>
 
             <el-row v-if="formObj.coverType == 1">
-              <el-col :span="18">
+              <el-col :span="24">
                 <el-form-item label="封面图片：" prop="coverImgs[0]" :rules="rules.coverImg1">
                   <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 0) }" :http-request="upload">
                     <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
@@ -140,17 +140,17 @@
               </el-col>
             </el-row>
             <el-row v-if="formObj.coverType == 2" style="margin-bottom:0px">
-              <!-- <div v-if="formObj.coverType == 2" style="display: flex;flex-wrap: wrap;"> -->
               <el-col :span="7">
                 <el-form-item label="封面图片：" prop="coverImgs[0]" :rules="rules.coverImg1">
                   <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 0) }" :http-request="upload">
                     <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
                     <i v-else class="el-icon-plus avatar-uploader-icon" />
                   </el-upload>
-
                 </el-form-item>
-
               </el-col>
+
+            </el-row>
+            <el-row v-if="formObj.coverType == 2" style="margin-bottom:0px">
               <el-col :span="7">
                 <el-form-item label="" prop="coverImgs[1]" :rules="rules.coverImg2">
                   <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 1) }" :http-request="upload">
@@ -159,6 +159,9 @@
                   </el-upload>
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row v-if="formObj.coverType == 2" style="margin-bottom:0px">
               <el-col :span="7">
                 <el-form-item label="" prop="coverImgs[2]" :rules="rules.coverImg3">
                   <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 2) }" :http-request="upload">
@@ -167,7 +170,6 @@
                   </el-upload>
                 </el-form-item>
               </el-col>
-              <!-- </div> -->
             </el-row>
 
             <div v-if="formObj.coverType == 2" style="margin:0px 0px 10px 100px" class="tips">建议尺寸：220 x 220;支持格式：jpeg、png、jpg</div>
@@ -248,7 +250,7 @@
             </div>
 
             <el-row>
-              <el-col :span="7">
+              <el-col :span="11">
                 <el-form-item label="发布时间：">
                   <el-radio-group v-model="formObj.status" style="display: flex;flex-direction: column;margin-top: 12px;">
                     <el-radio style="margin-bottom: 15px;" :label="1">立即发布</el-radio>
@@ -258,7 +260,7 @@
               </el-col>
               <el-col v-if="formObj.status == 4" :span="8">
                 <el-form-item label="" prop="publishTs" label-width="0">
-                  <el-date-picker v-model="formObj.publishTs" style="margin-top: 30px;" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间" />
+                  <el-date-picker v-model="formObj.publishTs" style="width: 205px;margin-top: 30px;" format="yyyy-MM-dd HH:mm:ss" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择日期时间" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -401,7 +403,7 @@
       </div>
     </kdDialog>
     <!-- 选择文章 -->
-    <selectArticle ref="selectArticle" @confirm="onConfirm" />
+    <selectArticle ref="selectArticle" :article-id="articleId || null" @confirm="onConfirm" />
   </div>
 
 </template>
