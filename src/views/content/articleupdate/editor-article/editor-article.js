@@ -258,7 +258,8 @@ export default {
             wechatArticles.push({
               title: dataObj.title,
               id: 0,
-              img: dataObj.wechatCover || ''
+              img: dataObj.wechatCover || '',
+              ids: 0,
             })
           }
           // const htmlObj = dataObj.contentHtml
