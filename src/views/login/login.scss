@@ -4,9 +4,10 @@ $dark_gray: #494d50;
 $light_gray: #818181;
 
 .login-container {
+  background-repeat: no-repeat;
+  background-position: center;
   min-height: 100%;
   width: 100%;
-  font-family: PingFangSC-Regular, PingFang SC;
   display: flex;
   justify-content: flex-end;
   align-items: center;

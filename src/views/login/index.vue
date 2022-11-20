@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container" style="background-image: url(img/bg.png); background-size: 100% 100%">
+  <div class="login-container" style="background-image: url(/img/bg.png); background-size: cover;">
     <div v-if="active" class="form-wrapper">
       <div class="login-bar">
         <div class="login-bar-icon">
