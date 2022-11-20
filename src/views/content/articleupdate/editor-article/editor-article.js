@@ -404,8 +404,19 @@ export default {
         this.btnLoading = false
       })
     },
+    // 手动添加mate标签
+    addMeta(name, content) {
+      const meta = document.createElement('meta')
+      meta.content = content
+      meta.name = name
+      document.getElementsByTagName('head')[0].appendChild(meta)
+    },
     // 跳转公众号授权
     goHref() {
+      this.addMeta(
+        'referrer',
+        'origin-when-cross-origin',
+      )
       window.localStorage.setItem('editor-article', JSON.stringify(this.formObj))
       window.location.href = this.link
       this.btnLoading = false
