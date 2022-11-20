@@ -10,7 +10,15 @@
     </div>
 
     <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" :class="{ onTrial: onTrial }" />
+    <div class="sidebar-wrap">
+      <div v-if="sidebar.opened" class="logo-big" @click="goHome">
+        <img class="logo-bg" src="@/assets/img/logo-bg-big.png" alt="">
+        <img class="logo" src="@/assets/img/logo@2x.png" alt="">
+      </div>
+      <div v-else class="logo-mini" @click="goHome"> <svg-icon width="50" height="50" icon-class="logo-mini" color="#fff" /></div>
+
+      <sidebar class="sidebar-container" :class="[sidebar.opened ? 'top164' : 'top50', { onTrial: onTrial }]" />
+    </div>
     <div class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
         <navbar />
@@ -66,7 +74,7 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       }
-    }
+    },
   },
   activated() {
     this.countdown()
@@ -77,6 +85,9 @@ export default {
     }
   },
   methods: {
+    goHome() {
+      this.$router.push('/dashboard')
+    },
     handleClickOutside() {
       this.$store.dispatch('app/closeSideBar', { withoutAnimation: false })
     },
@@ -173,7 +184,52 @@ export default {
     cursor: pointer;
   }
 }
-.sidebar-container.onTrial {
-  top: 32px !important;
+.sidebar-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  .logo-big {
+    cursor: pointer;
+    width: 210px;
+    height: 164px;
+
+    .logo-bg, .logo {
+      position: absolute;
+    }
+
+    .logo-bg {
+      width: 210px;
+    }
+
+    .logo {
+      left: 50%;
+      transform: translateX(-50%);
+      width: 63px;
+      top: 19px;
+    }
+  }
+
+  .logo-mini {
+    cursor: pointer;
+    width: 54px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-container.onTrial {
+    top: 196px !important;
+  }
+
+  .top164 {
+    top: 164px!important;
+  }
+
+  .top50 {
+    top: 50px!important;
+  }
 }
+
 </style>

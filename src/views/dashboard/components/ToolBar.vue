@@ -310,6 +310,7 @@ export default {
         justify-content: center;
         border-radius: 4px;
         margin-right: 8px;
+        color: #fff;
       }
     }
 
