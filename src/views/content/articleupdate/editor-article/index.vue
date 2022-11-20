@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="containers">
     <!-- 上传视频阿里云组件 -->
     <videoUpLoad :id="articleId === '' ? 0 : articleId" ref="VideoUpLoad" :source-type="1" @Succeed="onSucceed" @error="loading = false" />
     <preview ref="preview" />
@@ -412,9 +412,7 @@
 @import 'src/styles/common.scss';
 </style>
 <style lang="scss">
-.app-container{
-  padding: 0;
-}
+
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
