@@ -129,6 +129,7 @@ export default {
       this.total = res.data.totalRows || 0
       this.list.forEach(v => {
         v.checked = false
+        v.ids = v.id
         this.tableData.forEach(j => {
           if (j.id === v.id) v.checked = true
         })
