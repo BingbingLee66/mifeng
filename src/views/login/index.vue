@@ -2,7 +2,9 @@
   <div class="login-container" style="background-image: url(img/bg.png); background-size: 100% 100%">
     <div v-if="active" class="form-wrapper">
       <div class="login-bar">
-        <div class="login-bar-icon"><img src="img/login-logo-1-svg.svg" alt=""> |<img src="img/login-logo-2-svg.svg" alt=""><span>秘锋</span></div>
+        <div class="login-bar-icon">
+          <img src="img/login-logo-1-svg.svg" alt=""> |<img src="img/login-logo-2-svg.svg" alt=""><span>秘锋</span>
+        </div>
         <div class="login-title">云商会旗下商协会数字管理系统</div>
       </div>
       <div class="form-title">账号密码登录</div>
@@ -15,16 +17,18 @@
         label-position="left"
       >
         <el-form-item prop="username">
-          <span class="svg-container">
+          <img src="img/login-logo-user.png" alt="">
+          <!-- <span class="svg-container">
             <svg-icon icon-class="user" />
-          </span>
+          </span> -->
           <el-input v-model="loginForm.username" placeholder="账号" name="username" type="text" auto-complete="on" />
         </el-form-item>
 
         <el-form-item prop="password">
-          <span class="svg-container">
+          <img src="img/login-logo-password.png" alt="">
+          <!-- <span class="svg-container">
             <svg-icon icon-class="password" />
-          </span>
+          </span> -->
           <el-input
             v-model="loginForm.password"
             :type="pwdType"
@@ -40,7 +44,7 @@
 
         <el-button
           :loading="loading"
-          style="width: 100%; background: #ffb800; color: #fff"
+          style="width: 100%; background: #ffb800; color: #fff; margin-bottom: 12px"
           @click.native.prevent="handleLogin"
         >登录</el-button>
         <div class="tips-text">还没有账号，<span class="link" @click="changeTab(0)">立即注册</span></div>
@@ -70,7 +74,7 @@
               <i v-else class="el-icon-plus systemLogo_uploader_icon" />
             </el-upload>
             <div class="logo-tips">
-              <p> 建议尺寸:88*88px</p>
+              <p>建议尺寸:88*88px</p>
               <p>格式:png/jpeg/jpg</p>
             </div>
           </el-form-item>
@@ -120,7 +124,7 @@
       <el-button
         v-show="!active"
         :loading="loading"
-        style="width: 100%; background: #ffb800; color: #fff; margin: 20px 0 "
+        style="width: 100%; background: #ffb800; color: #fff; margin: 20px 0"
         @click.native.prevent="handleRegister"
       >注册</el-button>
     </div>
