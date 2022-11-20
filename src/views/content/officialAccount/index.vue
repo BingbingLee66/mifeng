@@ -4,9 +4,8 @@
       <el-tab-pane label="发布记录" name="1" />
       <el-tab-pane label="授权账号" name="2" />
     </el-tabs>
-    <div style="height: 35px;">
-      <el-button v-if="type == 2 && list.length < 1" type="primary" :disabled="list.length > 0" @click="onBinding">授权公众号</el-button>
-    </div>
+
+    <el-button v-if="type == 2 && list.length < 1" type="primary" :disabled="list.length > 0" @click="onBinding">授权公众号</el-button>
 
     <el-table
       :key="random"
@@ -74,6 +73,7 @@
     </el-table>
 
     <el-pagination
+      v-if="type == 1"
       style="margin-top: 20px"
       background
       layout="total, sizes, prev, pager, next, jumper"
