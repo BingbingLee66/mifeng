@@ -94,8 +94,7 @@ export default {
 }
 /deep/ .el-dialog__header {
   border-bottom: 1px solid #e6e6e6;
-  margin: 0 20px;
-  // padding: 20px 0 !important;
+  padding: 20px !important;
 }
 
 .center{

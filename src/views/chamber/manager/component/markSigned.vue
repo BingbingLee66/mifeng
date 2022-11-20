@@ -1,8 +1,7 @@
 <template>
   <div>
     <el-dialog
-      title="
-标记已签约"
+      title="标记已签约"
       :visible.sync="detailVisible"
       @close="close"
     >
@@ -12,14 +11,14 @@
         </el-form-item>
         <el-form-item label-width="180px" label="社会团体法人登记证：" prop="license">
           <el-upload
-            class="systemLogo_uploader"
+            class="avatar-uploader"
             action="/"
             :show-file-list="false"
             :before-upload="beforeAvatarUpload"
             :http-request="uploadSystemLogo"
           >
             <img v-if="formObj.license" :src="formObj.license" class="system_logo">
-            <i v-else class="el-icon-plus systemLogo_uploader_icon" />
+            <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
         <el-form-item label="办公地址：" prop="address">
@@ -131,8 +130,7 @@ export default {
 
 /deep/ .el-dialog__header {
   border-bottom: 1px solid #e6e6e6;
-  margin: 0 30px;
-  padding: 20px 0 !important;
+  padding: 20px 30px !important;
 }
 
 .header-title {
