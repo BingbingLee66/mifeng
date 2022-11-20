@@ -412,6 +412,9 @@
 @import 'src/styles/common.scss';
 </style>
 <style lang="scss">
+.app-container{
+  padding: 0;
+}
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -515,14 +518,12 @@ font-family: '微软雅黑', sans-serif;
 
   .article-box-left{
     width: 57%;
-    padding-right: 10px;
-    background: #f2f2f2;
-    padding-top: 10px;
+    padding: 20px;
+    background: #f5f6fa;
   }
   .article-box-right{
     width: 43%;
-    padding-left: 10px;
-    padding-top: 10px;
+    padding: 20px;
     background: #fff;
   }
 }
