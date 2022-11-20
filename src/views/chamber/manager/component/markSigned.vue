@@ -17,7 +17,7 @@
             :before-upload="beforeAvatarUpload"
             :http-request="uploadSystemLogo"
           >
-            <img v-if="formObj.license" :src="formObj.license" class="system_logo">
+            <img v-if="formObj.license" :src="formObj.license" class="avatar">
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
