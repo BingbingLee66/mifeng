@@ -161,16 +161,16 @@ export default {
   background: #fffbe6;
   border: 1px solid #ffe58f;
   font-size: 14px;
-  font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
   color: rgba(0, 0, 0, 0.65);
   line-height: 30px;
-  z-index: 100;
-  text-align: center;
+  text-align: left;
   position: fixed;
+  z-index: 99999;
   .close-icon {
     position: absolute;
     right: 20px;
+    cursor: pointer;
   }
 }
 .sidebar-container.onTrial {

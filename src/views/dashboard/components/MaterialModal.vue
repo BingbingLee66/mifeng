@@ -23,7 +23,7 @@
         }"
       >
         <div class="flex-x">
-          <el-select v-model="menu.value" filterable>
+          <el-select v-model="menu.value" filterable style="width: 50%;">
             <el-option v-for="item of usableSecondMenuList" :key="item.menuId" :label="item.menuName" :value="item.menuId" />
           </el-select>
           <el-button v-if="index || menu.length" style="margin-left: 10px;" @click.prevent="removeSecondMenu(menu)">删除</el-button>
@@ -31,7 +31,7 @@
       </el-form-item>
 
       <el-form-item v-if="curSecondMenuList.length > formModel.secondMenu.length">
-        <el-button type="text" @click="addSecondMenu"> <i class="el-icon-plus" />添加二级菜单</el-button>
+        <div class="btn-add-second" @click="addSecondMenu"> <i class="el-icon-plus" />添加二级菜单</div>
       </el-form-item>
     </el-form>
 
@@ -226,5 +226,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
+.btn-add-second {
+  color: #1890FF;
+  cursor: pointer;
+}
 </style>
