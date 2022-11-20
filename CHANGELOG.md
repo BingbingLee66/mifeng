@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## [Released]
+## [2.35.0] - 2022-11-20
+### Added
+- 工作：【首页工作台】我的待办[2544023](https://project.feishu.cn/solink/universal_task/detail/2544023?parentUrl=%2Fsolink%2FworkObjectView%2Funiversal_task%2FGYSrHTvVg)
+- 工作：【首页工作台】数据统计[2544086](https://project.feishu.cn/solink/universal_task/detail/2544086?parentUrl=%2Fsolink%2FworkObjectView%2Funiversal_task%2FGYSrHTvVg)
+- 工作：【首页工作台】快捷工具栏[2544118](https://project.feishu.cn/solink/universal_task/detail/2544118?parentUrl=%2Fsolink%2FworkObjectView%2Funiversal_task%2FGYSrHTvVg)
+
+
+### Fixed
+-  
+
 
 ## [Released]
 ## [2.34.0] - 2022-11-10
