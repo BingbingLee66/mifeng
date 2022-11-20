@@ -566,12 +566,30 @@ export default {
         return this.$message('没有符合条件的文章')
       } else {
         const Array = []
-        Array.push({
-          title: this.formObj.title,
-          id: 0,
-          img: this.formObj.wechatCover
+        res.data.list.forEach(v => {
+          v.ids = v.id
         })
+        if (this.articleId) {
+          this.formObj.wechatArticles.forEach(v => {
+            if (v.title === this.formObj.title) {
+              Array.push({
+                title: v.title,
+                id: 0, // 作为自己创建的标识
+                img: v.img,
+                ids: v.ids
+              })
+            }
+          })
+        } else {
+          Array.push({
+            title: this.formObj.title,
+            id: 0,
+            img: this.formObj.wechatCover,
+          })
+        }
+
         this.formObj.wechatArticles = Array.concat(res.data.list)
+        console.log('this.formObj.wechatArticles', this.formObj.wechatArticles)
       }
     },
     // 公众号外部链接

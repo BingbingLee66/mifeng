@@ -103,18 +103,15 @@
         <div class="article-box-right">
 
           <el-row>
-            <div class="cover-radio">
-              <el-radio-group v-model="formObj.type">
-                <el-radio :label="1">
-                  <img class="cover-img" src="https://ysh-cdn.kaidicloud.com/prod/png/association.png">
-                  <span style="margin-left: 5px;">云商会</span>
-                </el-radio>
-
-                <el-radio :label="2">
-                  <img class="cover-img" src="https://ysh-cdn.kaidicloud.com/prod/png/weixin.png">
-                  <span style="margin-left: 5px;">公众号</span>
-                </el-radio>
-              </el-radio-group>
+            <div class="cover-radio-df">
+              <div class="df-box" @click="formObj.type = 1">
+                <img class="cover-img" src="https://ysh-cdn.kaidicloud.com/prod/png/association.png">
+                <span :class="formObj.type == 1 ?'site':''" style="margin-left: 5px;">云商会</span>
+              </div>
+              <div class="df-box" @click="formObj.type = 2">
+                <img class="cover-img" src="https://ysh-cdn.kaidicloud.com/prod/png/weixin.png">
+                <span :class="formObj.type == 2 ?'site':''" style="margin-left: 5px;">公众号</span>
+              </div>
             </div>
           </el-row>
           <!-- 商协会内容 -->
@@ -382,7 +379,7 @@
     </div>
 
     <div class="article-btn">
-      <el-button :loading="btnLoading" @click="closeTab">取消</el-button>
+      <el-button @click="closeTab">取消</el-button>
       <el-button v-dbClick type="primary" :loading="btnLoading" @click="save">发布</el-button>
     </div>
 
@@ -461,7 +458,7 @@ font-family: '微软雅黑', sans-serif;
 .hd{
   padding: 12px 14px;
   color: #333333;
-  background: #f2f2f2;
+  // background: #f2f2f2;
   font-family: "Arial Negreta", "Arial Normal", "Arial", sans-serif;
   font-weight: 700;
   font-style: normal;
@@ -519,10 +516,14 @@ font-family: '微软雅黑', sans-serif;
   .article-box-left{
     width: 57%;
     padding-right: 10px;
+    background: #f2f2f2;
+    padding-top: 10px;
   }
   .article-box-right{
     width: 43%;
-
+    padding-left: 10px;
+    padding-top: 10px;
+    background: #fff;
   }
 }
 .ue-wrap{
@@ -537,6 +538,25 @@ font-family: '微软雅黑', sans-serif;
     width: 25px;
     height: 25px;
   }
+}
+.cover-radio-df{
+  display: flex;
+  align-items: center;
+  margin-left: 15px;
+  .df-box{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-right: 30px;
+    .cover-img{
+      width: 25px;
+      height: 25px;
+    }
+    .site{
+      color: #409eff;
+    }
+  }
+
 }
 .impower{
   width: 100%;
