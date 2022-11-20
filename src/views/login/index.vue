@@ -124,7 +124,7 @@
       <el-button
         v-show="!active"
         :loading="loading"
-        style="width: 100%; background: #ffb800; color: #fff; margin: 20px 0"
+        style="width: 100%; background: #ffb800; color: #fff; margin: 24px 0 33px 0"
         @click.native.prevent="handleRegister"
       >注册</el-button>
     </div>
