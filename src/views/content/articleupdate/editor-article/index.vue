@@ -17,7 +17,7 @@
           </el-row>
           <el-row>
             <div>
-              <el-col :span="8">
+              <el-col :span="12">
                 <el-form-item label="对应栏目：" prop="contentColumnId">
                   <el-select v-model="formObj.contentColumnId" placeholder="请选择对应栏目" style="display: inline-block">
                     <el-option v-for="cc in contentColumnOptions" :key="cc.value" :label="cc.label" :value="cc.value" />
@@ -211,7 +211,7 @@
                       </div>
                     </div>
                     <div class="tips">建议尺寸：750 x 600</div>
-                    <div class="tips"> 支持格式:png、jpg</div>
+                    <div class="tips"> 支持格式：png、jpg</div>
                   </el-form-item>
                 </el-col>
 
@@ -242,8 +242,8 @@
                         预览
                       </div>
                     </div>
-                    <div class="tips">建议尺寸：600 x 446;</div>
-                    <div class="tips"> 支持格式:png、jpg</div>
+                    <div class="tips">建议尺寸：600 x 446</div>
+                    <div class="tips"> 支持格式：png、jpg</div>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -326,7 +326,7 @@
                   </el-radio-group>
                 </div>
               </el-row>
-              <el-button type="primary" :disabled="formObj.wechatArticles.length >= 8" style="margin-left:10px" @click="onSelectArticle">选择更多文章</el-button>
+              <el-button type="primary" plain :disabled="formObj.wechatArticles.length >= 8" style="margin-left:10px" @click="onSelectArticle">选择更多文章</el-button>
               <!-- 文章数组 -->
               <div class="article_news">
                 <div v-for="(item,index) in formObj.wechatArticles" :key="index" class="article_news-boxes">
@@ -345,9 +345,9 @@
                         </div>
                       </div>
                       <div class="frist-essay-button">
-                        <el-button type="primary" @click="onNewest(3)">最新三篇</el-button>
-                        <el-button type="primary" @click="onNewest(5)">最新五篇</el-button>
-                        <el-button type="primary" @click="onNewest(7)">最新七篇</el-button>
+                        <el-button type="primary" plain @click="onNewest(3)">最新三篇</el-button>
+                        <el-button type="primary" plain @click="onNewest(5)">最新五篇</el-button>
+                        <el-button type="primary" plain @click="onNewest(7)">最新七篇</el-button>
                       </div>
                     </div>
 
@@ -643,7 +643,7 @@ font-family: '微软雅黑', sans-serif;
       }
       .news-boxes-rear{
         display: flex;
-        align-items: end;
+        align-items: flex-start;
         justify-content: space-between;
         height: 110px;
         .news-boxes-topic{

@@ -21,7 +21,7 @@
       <el-table
         :key="random"
         v-loading="listLoading"
-        style="margin-top: 20px"
+        style="max-height: 480px;overflow-y: auto;"
         :data="list"
         element-loading-text="Loading"
         border
