@@ -210,8 +210,19 @@ export default {
     onBinding() {
       this.$refs.agreements.open()
     },
+    // 手动添加mate标签
+    addMeta(name, content) {
+      const meta = document.createElement('meta')
+      meta.content = content
+      meta.name = name
+      document.getElementsByTagName('head')[0].appendChild(meta)
+    },
     // 确定授权
     onSave() {
+      this.addMeta(
+        'referrer',
+        'origin-when-cross-origin',
+      )
       window.location.href = this.link
     },
 
