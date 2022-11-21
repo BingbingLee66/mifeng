@@ -1,14 +1,22 @@
 <template>
   <div class="app-container">
+    <el-tabs v-model="type" @tab-click="handleClick">
+      <el-tab-pane label="快速入驻线索" name="快速入驻线索" />
+      <el-tab-pane label="转介绍线索" name="转介绍线索" />
+    </el-tabs>
     <el-form inline>
       <el-form-item label="社会组织名称">
         <el-input v-model.trim="query.name" placeholder="请输入内容" clearable />
       </el-form-item>
       <el-form-item label="线索来源">
-        <el-select v-model="query.source" placeholder="请选择">
+        <el-select v-if="type ==='快速入驻线索'" v-model="query.source" placeholder="请选择">
           <el-option label="全部" :value="-1" />
-          <el-option label="小程序名录" :value="1" />
-          <el-option label="APP名录" :value="2" />
+          <el-option label="小程序名录" value="1" />
+          <el-option label="APP名录" value="2" />
+        </el-select>
+        <el-select v-else v-model="query.putSource" placeholder="请选择">
+          <el-option label="全部" value="" />
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
@@ -26,7 +34,7 @@
     </el-form>
 
     <el-row>
-      <ExportTable :data="selectedData" title="线索" err-msg="请选择导出的线索">导出线索</ExportTable>
+      <ExportTable :data="selectedData" :title="type" err-msg="请选择导出的线索">导出线索</ExportTable>
     </el-row>
 
     <KdTable :rows="tableData" :columns="tableList" @selection-change="onSelectionChange" />
@@ -35,7 +43,7 @@
 </template>
 
 <script>
-import { getClueList } from '@/api/chamber/manager'
+import { getClueList, getPutSource } from '@/api/chamber/manager'
 import { formatDateTime } from '@/utils/date'
 export default {
   components: {
@@ -49,28 +57,35 @@ export default {
       query: {
         name: '',
         source: -1,
+        putSource: '',
         timeRanges: [],
         pageSize: 10,
         pageNum: 1
       },
 
       total: 0,
-
+      type: '快速入驻线索',
       tableData: [],
-      selectedData: []
+      selectedData: [],
+      options: []
     }
   },
   computed: {
     tableList() {
-      return [
+      const columnsArr = [
         { type: 'selection', width: 55 },
         { label: '线索ID', prop: 'id' },
         { label: '社会组织名称', prop: 'name' },
         { label: '创建时间', render: ({ row }) => formatDateTime(new Date(+row.createdTs), 'yyyy年MM月dd日 hh:mm:ss') },
-        { label: '线索来源', render: ({ row }) => row.source === 1 ? '小程序名录' : 'APP名录' },
         { label: '联系人姓名', prop: 'contactName' },
         { label: '联系人电话', prop: 'contactPhone' },
       ]
+      if (this.type === '快速入驻线索') {
+        columnsArr.splice(4, 0, { label: '线索来源', render: ({ row }) => row.source === 1 ? '小程序名录' : 'APP名录' })
+      } else {
+        columnsArr.splice(4, 0, { label: '线索来源', prop: 'putSource' })
+      }
+      return columnsArr
     }
   },
   created() {
@@ -82,6 +97,9 @@ export default {
       this.getTableData()
     },
     async getTableData() {
+      this.query.type = this.type === '快速入驻线索' ? 1 : 2
+      console.log('this query', this.query)
+
       const { pageNum: page, timeRanges, ...query } = this.query
       const { data: { list, totalRows } } = await getClueList({
         page,
@@ -89,6 +107,8 @@ export default {
         startTime: timeRanges && timeRanges[0] ? timeRanges[0].getTime() : '',
         endTime: timeRanges && timeRanges[1] ? timeRanges[1].getTime() : '',
       })
+      console.log('list', list)
+
       this.tableData = list || []
       this.total = totalRows || 0
       this.selectedData = []
@@ -102,6 +122,23 @@ export default {
         联系人姓名: v.contactName,
         联系人电话: v.contactPhone,
       }))
+    },
+    handleClick(tab) {
+      console.log('tab', tab.name)
+      this.type = tab.name
+      this.query = {
+        name: '',
+        source: -1,
+        putSource: '',
+        timeRanges: [],
+        pageSize: 10,
+        pageNum: 1
+      }
+      if (this.type === '转介绍线索') {
+        const { data } = getPutSource()
+        console.log('options data', data)
+      }
+      this.getTableData()
     }
   },
 }
