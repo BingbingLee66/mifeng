@@ -52,7 +52,7 @@
                   <i class="el-icon-plus" />
                 </el-upload>
 
-                <div v-else class="goods-pre">
+                <div v-else class="goods-pres">
                   <videoComponent v-if="formObj.vid" ref="videoRef" :vid="formObj.vid" height="148px" />
                   <i
                     class="el-icon-error"
@@ -79,7 +79,7 @@
                   <i class="el-icon-plus" />
                 </el-upload>
 
-                <div v-else class="goods-pre">
+                <div v-else class="goods-pres">
                   <i
                     class="el-icon-error"
                     @click="deleteCurrentImg('videoCoverURL')"
@@ -88,7 +88,7 @@
                     :src="formObj.videoCoverURL"
                     class="goods-avatar"
                   />
-                  <div class="goods-pre-btn" @click="openPreviewModal(formObj.videoCoverURL)">
+                  <div class="goods-pres-btn" @click="openPreviewModal(formObj.videoCoverURL)">
                     预览
                   </div>
                 </div>
@@ -130,9 +130,9 @@
             <el-row v-if="formObj.coverType == 1">
               <el-col :span="24">
                 <el-form-item label="封面图片：" prop="coverImgs[0]" :rules="rules.coverImg1">
-                  <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 0) }" :http-request="upload">
+                  <el-upload class="avatar-uploaders" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 0) }" :http-request="upload">
                     <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon" />
+                    <i v-else class="el-icon-plus avatar-uploader-icons" />
                   </el-upload>
                   <div class="tips">建议尺寸：176 x 176;支持格式：jpeg、png、jpg</div>
                 </el-form-item>
@@ -142,9 +142,9 @@
             <el-row v-if="formObj.coverType == 2" style="margin-bottom:0px">
               <el-col :span="7">
                 <el-form-item label="封面图片：" prop="coverImgs[0]" :rules="rules.coverImg1">
-                  <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 0) }" :http-request="upload">
+                  <el-upload class="avatar-uploaders" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 0) }" :http-request="upload">
                     <img v-if="formObj.coverImgs[0]" :src="formObj.coverImgs[0]" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon" />
+                    <i v-else class="el-icon-plus avatar-uploader-icons" />
                   </el-upload>
                 </el-form-item>
               </el-col>
@@ -153,9 +153,9 @@
             <el-row v-if="formObj.coverType == 2" style="margin-bottom:0px">
               <el-col :span="7">
                 <el-form-item label="" prop="coverImgs[1]" :rules="rules.coverImg2">
-                  <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 1) }" :http-request="upload">
+                  <el-upload class="avatar-uploaders" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 1) }" :http-request="upload">
                     <img v-if="formObj.coverImgs[1]" :src="formObj.coverImgs[1]" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon" />
+                    <i v-else class="el-icon-plus avatar-uploader-icons" />
                   </el-upload>
                 </el-form-item>
               </el-col>
@@ -164,9 +164,9 @@
             <el-row v-if="formObj.coverType == 2" style="margin-bottom:0px">
               <el-col :span="7">
                 <el-form-item label="" prop="coverImgs[2]" :rules="rules.coverImg3">
-                  <el-upload class="avatar-uploader" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 2) }" :http-request="upload">
+                  <el-upload class="avatar-uploaders" action="/" :show-file-list="false" :before-upload="function (file) { return beforeAvatarUpload(file, 2) }" :http-request="upload">
                     <img v-if="formObj.coverImgs[2]" :src="formObj.coverImgs[2]" class="avatar">
-                    <i v-else class="el-icon-plus avatar-uploader-icon" />
+                    <i v-else class="el-icon-plus avatar-uploader-icons" />
                   </el-upload>
                 </el-form-item>
               </el-col>
@@ -197,7 +197,7 @@
                       <i class="el-icon-plus" />
                     </el-upload>
 
-                    <div v-else class="goods-pre">
+                    <div v-else class="goods-pres">
                       <i
                         class="el-icon-error"
                         @click="deleteCurrentImg('shareFriendPicture')"
@@ -206,7 +206,7 @@
                         :src="formObj.articleExtendDTO.shareFriendPicture"
                         class="goods-avatar"
                       />
-                      <div class="goods-pre-btn" @click="openPreviewModal(formObj.articleExtendDTO.shareFriendPicture)">
+                      <div class="goods-pres-btn" @click="openPreviewModal(formObj.articleExtendDTO.shareFriendPicture)">
                         预览
                       </div>
                     </div>
@@ -229,7 +229,7 @@
                       <i class="el-icon-plus" />
                     </el-upload>
 
-                    <div v-else class="goods-pre">
+                    <div v-else class="goods-pres">
                       <i
                         class="el-icon-error"
                         @click="deleteCurrentImg('sharePoster')"
@@ -238,7 +238,7 @@
                         :src="formObj.articleExtendDTO.sharePoster"
                         class="goods-avatar"
                       />
-                      <div class="goods-pre-btn" @click="openPreviewModal(formObj.articleExtendDTO.sharePoster)">
+                      <div class="goods-pres-btn" @click="openPreviewModal(formObj.articleExtendDTO.sharePoster)">
                         预览
                       </div>
                     </div>
@@ -279,14 +279,14 @@
                   <el-form-item label="封面图片：" :required="true">
                     <div class="cover-pre">
                       <el-upload
-                        class="avatar-uploader"
+                        class="avatar-uploaders"
                         action="/"
                         :show-file-list="false"
                         :before-upload="function (file) { return beforeAvatarUpload(file, 0) }"
                         :http-request="function (content) {return upload(content, 'wechatCover')}"
                       >
                         <img v-if="formObj.wechatCover" :src="formObj.wechatCover" class="avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon" />
+                        <i v-else class="el-icon-plus avatar-uploader-icons" />
                         <i v-if="formObj.wechatCover" class="el-icon-edit-outline" />
                       </el-upload>
                       <div class="tips">建议尺寸：900*383px</div>
@@ -413,19 +413,22 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import 'src/styles/common.scss';
 </style>
-<style lang="scss">
+<style lang="scss" scoped>
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
+.avatar-uploaders {
+  /deep/ .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    width: 180px !important;
+  }
 }
-.avatar-uploader .el-upload:hover {
+.avatar-uploaders .el-upload:hover {
   border-color: #409eff;
 }
-.avatar-uploader-icon {
+.avatar-uploader-icons {
   font-size: 28px;
   color: #8c939d;
   width: 180px;
@@ -438,7 +441,10 @@
   height: 100px;
   display: block;
 }
-.ue-wrap {
+.editor-wrap{
+  /deep/ .editor{
+    width: 100% !important;
+  }
   .el-form-item__content {
     line-height: 1;
   }
@@ -473,7 +479,7 @@ font-family: '微软雅黑', sans-serif;
   color: #606266;
   font-weight: 700;
 }
-.goods-pre {
+.goods-pres {
   border-radius: 6px;
   position: relative;
   width: 148px;
@@ -484,15 +490,15 @@ font-family: '微软雅黑', sans-serif;
   width: 148px;
   height: 148px;
 }
-.goods-pre:hover .goods-pre-btn {
+.goods-pres:hover .goods-pres-btn {
   display: block;
 }
 
-.goods-pre:hover .el-icon-error {
+.goods-pres:hover .el-icon-error {
   display: block;
 }
 
-.goods-pre .el-icon-error {
+.goods-pres .el-icon-error {
   right: 3px;
   top: 3px;
   cursor: pointer;
@@ -501,7 +507,7 @@ font-family: '微软雅黑', sans-serif;
   display: none;
 }
 
-.goods-pre-btn {
+.goods-pres-btn {
   width: 100%;
   height: 30px;
   line-height: 30px;
@@ -513,6 +519,7 @@ font-family: '微软雅黑', sans-serif;
   z-index: 10;
   background-color: rgba(0, 0, 0, 0.6);
   display: none;
+  bottom: 0;
 }
 .article-box{
 
