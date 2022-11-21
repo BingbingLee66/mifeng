@@ -17,7 +17,7 @@
         <template v-slot:customConetent>
           <div class="text-center mt-40">
             <el-button class="mr-20" @click="close">取消</el-button>
-            <el-button class="mr-20" @click="handleSubmit">保存</el-button>
+            <el-button type="primary" @click="handleSubmit">保存</el-button>
           </div>
         </template>
       </ysh-form>

@@ -49,6 +49,7 @@ class Home {
   /** 获取banner图列表  */
   static async getBannerList(params) {
     return await request({
+      // /ec/banner/list
       url: '/ec/bannerImg/getBannerImgList',
       method: 'get',
       params
@@ -56,38 +57,44 @@ class Home {
   }
 
   /** 新增/编辑banner图  */
-  static async saveBanner(params) {
+  static async saveBanner(data) {
     return request({
-      url: '',
-      method: '',
-      data: params
+      url: '/ec/banner',
+      method: data.id ? 'put' : 'post',
+      data
     })
   }
 
-  /** 启用banner图  */
-  static async useBanner(params) {
+  /** 启用/冻结banner图  */
+  static async changeBannerStatus(params) {
     return request({
-      url: '/',
-      method: '',
-      data: params
+      url: `/ec/banner/status/${params.bannerId}/${params.status}`,
+      method: 'put'
     })
   }
 
   /** 删除banner图  */
-  static async deleteBanner(params) {
+  static async deleteBanner(data) {
     return request({
-      url: '',
-      method: '',
-      params
+      url: '/ec/banner',
+      method: 'delete',
+      data
+    })
+  }
+
+  /** 修改banner图顺序  */
+  static async changeBannerOrder(data) {
+    return request({
+      url: `/ec/banner/location/${data.bannerId}/${data.num}`,
+      method: 'put'
     })
   }
 
   /** 置顶banner图  */
-  static async topBanner(params) {
+  static async topBanner(bannerId) {
     return await request({
-      url: '/',
-      method: '',
-      params
+      url: `/ec/banner/top/${bannerId}`,
+      method: 'put'
     })
   }
 

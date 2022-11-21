@@ -35,10 +35,14 @@ const tableColumn = [
     callback: row => {
       const statusMap = {
         0: '隐藏',
-        1: '正常',
+        1: '使用中',
         2: '删除',
       }
-      return row.status || row.status === 0 ? statusMap[row.status] : ''
+      if (row.changeStatus) {
+        return '默认选中'
+      } else {
+        return row.status ? statusMap[row.status] : '- -'
+      }
     }
   },
   {

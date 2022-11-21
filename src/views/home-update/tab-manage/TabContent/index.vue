@@ -14,12 +14,12 @@
           @click="handleEvent('edit', row.data)"
         >编辑</span>
         <span
-          v-if="row.data.status === 0"
+          v-if="row.data.status === '0'"
           class="text-blue cur ml-10"
           @click="handleEvent('show', row.data)"
         >展示</span>
         <span
-          v-if="row.data.status === 1"
+          v-if="row.data.status === '1' && !row.data.changeStatus"
           class="text-yellow cur ml-10"
           @click="handleEvent('hide', row.data)"
         >隐藏</span>
@@ -70,7 +70,11 @@ export default {
         type: this.clientType
       })
       if (res.state !== 1) return
+      res.data.forEach(item => {
+        item.changeStatus = item.changeStatus === '1'
+      })
       this.tableData = res.data
+
       this.tableConfig.loading = false
     },
 
@@ -107,7 +111,7 @@ export default {
       console.log('event:', event)
       const params = {
         id: data.id,
-        status: event ? 0 : 1
+        status: event ? 1 : 0
       }
       const res = await Home.defaultTab(params)
       if (res.state === 1) {
@@ -121,16 +125,13 @@ export default {
     /** 调整上下顺序 */
     async handleOrder(event, data) {
       const idx = this.tableData.findIndex(i => i.id === data.id)
-      const upId = this.tableData[idx - 1].id
-      const downId = this.tableData[idx + 1].id
       const params = {
-        moveId: data.id,
-        bemoveid: event === 'up' ? upId : downId,
+        moveid: data.id,
+        bemoveid: event === 'up' ? this.tableData[idx - 1].id : this.tableData[idx + 1].id,
         status: event === 'up' ? 0 : 1
       }
-      const res = await Home.showTab(params)
+      const res = await Home.sortTab(params)
       if (res.state === 1) {
-        this.$message.success(res.msg)
         changeOrder(this.tableData, data.id, event)
       } else {
         this.$message.error(res.msg)
