@@ -1,6 +1,14 @@
 # CHANGELOG
 
 ## [Released]
+## [2.35.3] - 2022-11-21
+### Added
+-
+### Fixed
+- 修复新加菜单栏logo之后导致菜单栏内容被遮挡
+- 【秘锋】文章编辑页，图片组件显示异常
+
+## [Released]
 ## [2.35.0] - 2022-11-20
 ### Added
 - 工作：【首页工作台】我的待办[2544023](https://project.feishu.cn/solink/universal_task/detail/2544023?parentUrl=%2Fsolink%2FworkObjectView%2Funiversal_task%2FGYSrHTvVg)
