@@ -17,7 +17,7 @@
       </div>
       <div v-else class="logo-mini" @click="goHome"> <svg-icon width="50" height="50" icon-class="logo-mini" color="#fff" /></div>
 
-      <sidebar class="sidebar-container" :class="[sidebar.opened ? 'top164' : 'top50', { onTrial: onTrial }]" />
+      <sidebar class="sidebar-container" :style="sidebarStyle" />
     </div>
     <div class="main-container">
       <div :class="{ 'fixed-header': fixedHeader }">
@@ -75,6 +75,23 @@ export default {
         mobile: this.device === 'mobile'
       }
     },
+
+    sidebarStyle() {
+      const { opened } = this.sidebar
+
+      let top = 0
+
+      // 大logo高164，小logo高50，试用提示高32
+      if (opened) {
+        if (this.onTrial) top = 196
+        else top = 164
+      } else {
+        if (this.onTrial) top = 82
+        else top = 50
+      }
+
+      return { top: `${top}px`, height: `calc(100% - ${top}px)` }
+    }
   },
   activated() {
     this.countdown()
@@ -217,18 +234,6 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .sidebar-container.onTrial {
-    top: 196px !important;
-  }
-
-  .top164 {
-    top: 164px!important;
-  }
-
-  .top50 {
-    top: 50px!important;
   }
 }
 
