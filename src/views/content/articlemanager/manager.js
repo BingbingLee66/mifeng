@@ -12,7 +12,7 @@ import {
 } from '@/api/content/article'
 import { getOptionsWithCkey } from '@/api/content/columnsetup'
 import { getChamberOptions } from '@/api/finance/finance'
-import { getSts } from '@/api/vod/vod';
+import { getSts } from '@/api/vod/vod'
 import videoComponent from '@/components/video/index'
 export default {
   data() {
@@ -26,9 +26,9 @@ export default {
         contentColumnId: '',
         publishTimeType: 3,
         contentModuleId: 1,
-        dynamicType:"0",
+        dynamicType: '0',
         // 0 否 1 是 '' 全部
-        backgroundRelease:''
+        backgroundRelease: ''
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -57,48 +57,49 @@ export default {
       contentColumnOptions: [],
       chamberOptions: [],
       // 会员分享冻结/解冻相关
-      freezeVisible:false,
-      freezeOperationRow:{},
-      freezeOperationList:[],
-      freezeSelectedList:[],
-      unFreezeVisible:false,
-      unFreezeOperationRow:{},
-      unFreezeOperationList:[],
-      unFreezeSelectedList:[],
-      //展示视频组件
-      showVideo:false,
-         //动态类型数组
-         dynamicTypeList: [{
+      freezeVisible: false,
+      freezeOperationRow: {},
+      freezeOperationList: [],
+      freezeSelectedList: [],
+      unFreezeVisible: false,
+      unFreezeOperationRow: {},
+      unFreezeOperationList: [],
+      unFreezeSelectedList: [],
+      // 展示视频组件
+      showVideo: false,
+      // 动态类型数组
+      dynamicTypeList: [
+        {
           label: '全部',
-          value: "0",
+          value: '0',
         },
         {
           label: '图文动态',
-          value: "1",
+          value: '1',
         },
         {
           label: '视频动态',
-          value: "2",
+          value: '2',
         }
       ],
-      //后台发布类型
-      backstageList:[
+      // 后台发布类型
+      backstageList: [
         {
           label: '全部',
-          value: "",
+          value: '',
         },
         {
           label: '否',
-          value: "0",
+          value: '0',
         },
         {
           label: '是',
-          value: "1",
+          value: '1',
         },
       ]
     }
   },
-  components:{
+  components: {
     videoComponent
   },
   computed: {},
@@ -115,7 +116,6 @@ export default {
     },
     // 浏览量排序
     handleSortChange(e) {
-      // let sort = ''
       this.currentpage = 1
       if (e.prop) {
         if (e.order === 'descending') {
@@ -127,9 +127,9 @@ export default {
       }
     },
     selectionChange() {
-      let params = {
-        'ckey': this.query.ckey,
-        'contentModuleId': 3
+      const params = {
+        ckey: this.query.ckey,
+        contentModuleId: 3
       }
 
       // 判断当商会来源是全部时 清空栏目选中值
@@ -140,7 +140,7 @@ export default {
       // 指定模块下商会全部栏目
       getOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
-        this.contentColumnOptions.unshift({ 'label': '全部', 'value': '' })
+        this.contentColumnOptions.unshift({ label: '全部', value: '' })
       })
     },
     handleSizeChange(val) {
@@ -160,19 +160,19 @@ export default {
       }
     },
     getContentColumnType() {
-      let params = {
-        'ckey': this.query.ckey,
-        'contentModuleId': this.query.contentModuleId
+      const params = {
+        ckey: this.query.ckey,
+        contentModuleId: this.query.contentModuleId
       }
       // 指定模块下商会全部列表
       getChamberOptions().then(response => {
         this.chamberOptions = response.data.data
-        this.chamberOptions.unshift({ 'label': '全部', 'value': '' }, { 'label': '凯迪云商会', 'value': 'kaidiyun' })
+        this.chamberOptions.unshift({ label: '全部', value: '' }, { label: '凯迪云商会', value: 'kaidiyun' })
       })
       // 指定模块下商会全部栏目
       getOptionsWithCkey(params).then(response => {
         this.contentColumnOptions = response.data.data
-        this.contentColumnOptions.unshift({ 'label': '全部', 'value': '' })
+        this.contentColumnOptions.unshift({ label: '全部', value: '' })
       })
     },
     queryData(e) {
@@ -190,26 +190,18 @@ export default {
     // 获取视频凭证
     getVideoSts() {
       getSts().then(response => {
-        // let { data: res } = response
         if (response.code !== 200) return this.$message.error('获取视频凭证失败')
         this.videoKey = response.data
         console.log('videoKey' + this.videoKey)
-        // storage.setJson('videosts', this.videoKey)
       })
     },
 
     // 关闭视频播放弹窗
     closeDia() {
-      // if ((this.activeName === '1' || this.activeName === '2' || this.activeName === '3') && this.detailObj.contentType === 2) {
-      //   console.log('this.$refs[videoRef]关闭',this.$refs['videoRef'])
-      //   this.$refs['videoRef'].closeDia();
-      //   this.showVideo=false;
-      // }
-      // console.log('进父销毁')
-      if(this.detailObj.vid){
-        this.$refs['videoRef'].closeDia();
+      if (this.detailObj.vid) {
+        this.$refs['videoRef'].closeDia()
       }
-      
+
       this.visible = false
     },
     /**
@@ -219,38 +211,31 @@ export default {
       getSts().then(response => {
         this.videoKey = response.data
         // 存在视频必须看完视频后才能点击审核
-        this.vabled = true;
+        this.vabled = true
         const videoPlayer = this.$createPlayer('videoContent', this.videoKey.accessKeyId, this.videoKey.accessKeySecret, this.videoKey.securityToken, this.videoKey.region, this.detailObj.vid, '535px')
-        videoPlayer.on('ended', (e) => {
+        videoPlayer.on('ended', () => {
           this.vabled = false
         })
-        // this.videoPlayer = this.$createPlayer('videoContent', this.videoKey.accessKeyId, this.videoKey.accessKeySecret, this.videoKey.securityToken, this.videoKey.region, this.detailObj.vid, '535px')
-        // this.videoPlayer.on('ended', (e) => {
-        //   this.vabled = false
-        // })
       })
     },
-    fetchData(e, sort) {
+    fetchData(e) {
       if (e !== undefined && e !== 1) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       this.listLoading = true
-      let params = {
-        'order': this.sortFlag,
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'title': this.query.title,
-        'ckey': this.query.ckey,
-        'contentColumn': this.query.contentColumnId,
-        'status': this.query.status,
-        'contentModuleId': this.query.contentModuleId,
-        'publishTimeType': this.query.publishTimeType,
-        'dynamicType':this.query.dynamicType,
-        'backgroundRelease':this.query.backgroundRelease
+      const params = {
+        order: this.sortFlag,
+        pageSize: this.limit,
+        page: this.currentpage,
+        title: this.query.title,
+        ckey: this.query.ckey,
+        contentColumn: this.query.contentColumnId,
+        status: this.query.status,
+        contentModuleId: this.query.contentModuleId,
+        publishTimeType: this.query.publishTimeType,
+        dynamicType: this.query.dynamicType,
+        backgroundRelease: this.query.backgroundRelease
       }
-      // if (sort) {
-      //   params['order'] = sort
-      // }
       getManagerList(params).then(response => {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
@@ -260,7 +245,7 @@ export default {
     detail(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.selectId = row.id
-      let params = {
+      const params = {
         id: this.selectId
       }
       this.visible = true
@@ -268,28 +253,24 @@ export default {
         this.detailObj = response.data.dtl
         // 视频是否存在 渲染操作
         if (this.detailObj.contentType === 2 || this.detailObj.contentType === 3) {
-           this.$nextTick(() => {
+          this.$nextTick(() => {
             this.$refs['videoRef'].show(this.detailObj.vid)
           })
         }
-        if (this.detailObj.contentType === 1 && (this.detailObj.publishType === 3 || this.detailObj.publishType === 1) &&this.detailObj.vid) {
+        if (this.detailObj.contentType === 1 && (this.detailObj.publishType === 3 || this.detailObj.publishType === 1) && this.detailObj.vid) {
           this.$nextTick(() => {
             this.$refs['videoRef'].show(this.detailObj.vid)
           })
         }
       })
-      // .catch(error => {
-      //   reject(error)
-      // })
-      
     },
     handlerChange(value) {
       this.query.tradeType = value[value.length - 1]
     },
     handleSelectionChange(value) {
-      let datas = value
+      const datas = value
       this.selectionDatas = []
-      for (let data of datas) {
+      for (const data of datas) {
         this.selectionDatas.push(data.id)
       }
     },
@@ -299,12 +280,12 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(() => {
-        let ids = []
+        const ids = []
         ids.push(row.id)
-        let params = {
-          'articleIds': ids
+        const params = {
+          articleIds: ids
         }
-        del(params).then(response => {
+        del(params).then(() => {
           this.$message({
             message: '删除成功',
             type: 'success'
@@ -330,17 +311,17 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(() => {
-        let params = {
-          'articleIds': this.selectionDatas
+        const params = {
+          articleIds: this.selectionDatas
         }
-        del(params).then(response => {
+        del(params).then(() => {
           this.$message({
             message: '删除成功',
             type: 'success'
           })
           this.fetchData()
         })
-      }).catch((err) => {
+      }).catch(err => {
         console.log(err)
         this.$message({
           type: 'info',
@@ -350,13 +331,13 @@ export default {
     },
     updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let ids = []
+      const ids = []
       ids.push(row.id)
-      let params = {
-        'articleIds': ids,
-        'action': row.status === 3 ? 'active' : 'notactive'
+      const params = {
+        articleIds: ids,
+        action: row.status === 3 ? 'active' : 'notactive'
       }
-      updateStatusPlatform(params).then(response => {
+      updateStatusPlatform(params).then(() => {
         if (row.status === 3) {
           this.$message({
             message: '解冻成功',
@@ -379,11 +360,11 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let params = {
-        'articleIds': this.selectionDatas,
-        'action': 'notactive'
+      const params = {
+        articleIds: this.selectionDatas,
+        action: 'notactive'
       }
-      updateStatusPlatform(params).then(response => {
+      updateStatusPlatform(params).then(() => {
         this.$message({
           message: '冻结成功',
           type: 'success'
@@ -394,7 +375,7 @@ export default {
     top(e, row) {
       const actionId = e.currentTarget.getAttribute('actionid')
       countTop().then(response => {
-        const count = response.data.count
+        const { count } = response.data
         if (count >= 3) {
           this.$alert('3个置顶位已有内容，请到【置顶管理】页面调整后再置顶', {
             confirmButtonText: '确定'
@@ -402,8 +383,8 @@ export default {
         } else {
           console.log(actionId)
           window.localStorage.setItem('actionId', actionId)
-          let params = {
-            'id': row.id
+          const params = {
+            id: row.id
           }
           setTop(params).then(response => {
             if (response.state === 1) {
@@ -424,47 +405,47 @@ export default {
     },
     edit(row) {
       window.localStorage.setItem('articleeditor', this.$route.path)
-      this.$router.push({ name: '添加或编辑文章', params: { 'articleId': row.id }})
+      this.$router.push({ name: '添加或编辑文章', params: { articleId: row.id } })
     },
     goSettop(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({ name: '置顶管理' })
     },
     // 会员分享 冻结/解冻相关
-    freezeClose(){
-      this.freezeVisible=false;
-      this.freezeOperationRow={};
-      this.freezeOperationList=[];
-      this.freezeSelectedList=[];
+    freezeClose() {
+      this.freezeVisible = false
+      this.freezeOperationRow = {}
+      this.freezeOperationList = []
+      this.freezeSelectedList = []
     },
-    unFreezeClose(){
-      this.unFreezeVisible=false;
-      this.unFreezeOperationRow={};
-      this.unFreezeOperationList=[];
-      this.unFreezeSelectedList=[];
+    unFreezeClose() {
+      this.unFreezeVisible = false
+      this.unFreezeOperationRow = {}
+      this.unFreezeOperationList = []
+      this.unFreezeSelectedList = []
     },
-    openFreeze(row){
-      this.freezeOperationRow=row;
-      this.freezeVisible=true;
+    openFreeze(row) {
+      this.freezeOperationRow = row
+      this.freezeVisible = true
       freezeList(row.id).then(response => {
-        this.freezeOperationList = response.data;
+        this.freezeOperationList = response.data
       })
     },
-    openUnFreeze(row){
-      this.unFreezeOperationRow=row;
-      this.unFreezeVisible=true;
+    openUnFreeze(row) {
+      this.unFreezeOperationRow = row
+      this.unFreezeVisible = true
       unFreezeList(row.id).then(response => {
-        this.unFreezeOperationList = response.data;
+        this.unFreezeOperationList = response.data
       })
     },
-    commitFreeze(){
-      let params = {};
-      params.freezeTargets=this.freezeSelectedList;
-      freeze(this.freezeOperationRow.id,params).then(response => {
-      this.freezeVisible=false;
-      this.freezeOperationRow={};
-      this.freezeOperationList=[];
-      this.freezeSelectedList=[];
+    commitFreeze() {
+      const params = {}
+      params.freezeTargets = this.freezeSelectedList
+      freeze(this.freezeOperationRow.id, params).then(response => {
+        this.freezeVisible = false
+        this.freezeOperationRow = {}
+        this.freezeOperationList = []
+        this.freezeSelectedList = []
         if (response.state === 1) {
           this.$message({
             message: '冻结成功',
@@ -479,14 +460,14 @@ export default {
         }
       })
     },
-    commitUnFreeze(){
-      let params = {};
-      params.freezeTargets=this.unFreezeSelectedList;
-      unFreeze(this.unFreezeOperationRow.id,params).then(response => {
-        this.unFreezeVisible=false;
-        this.unFreezeOperationRow={};
-        this.unFreezeOperationList=[];
-        this.unFreezeSelectedList=[];
+    commitUnFreeze() {
+      const params = {}
+      params.freezeTargets = this.unFreezeSelectedList
+      unFreeze(this.unFreezeOperationRow.id, params).then(response => {
+        this.unFreezeVisible = false
+        this.unFreezeOperationRow = {}
+        this.unFreezeOperationList = []
+        this.unFreezeSelectedList = []
         if (response.state === 1) {
           this.$message({
             message: '解冻成功',
