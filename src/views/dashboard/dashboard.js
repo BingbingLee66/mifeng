@@ -1,216 +1,179 @@
-import { getList } from '@/api/system/notice'
-import dashboardApi from '@/api/dashboard'
+import Panel from '../../components/panel'
+import myTodo from './components/myTodo'
+import cardList from './components/cardList'
+import ToolBar from './components/ToolBar'
+import {
+  getPendingItems,
+  getChamberMembers,
+  getChamberArticles,
+  getChamberAlbums,
+  getChamberNotices,
+  getPermission
+} from '@/api/dashboard'
 import { mapGetters } from 'vuex'
-import ECharts from 'vue-echarts'
-import 'echarts/lib/chart/bar'
-import 'echarts/lib/chart/line'
-import 'echarts/lib/chart/pie'
-import 'echarts/lib/chart/map'
-import 'echarts/lib/chart/radar'
-import 'echarts/lib/chart/scatter'
-import 'echarts/lib/chart/effectScatter'
-import 'echarts/lib/component/tooltip'
-import 'echarts/lib/component/polar'
-import 'echarts/lib/component/geo'
-import 'echarts/lib/component/legend'
-import 'echarts/lib/component/title'
-import 'echarts/lib/component/visualMap'
-import 'echarts/lib/component/dataset'
-// import 'echarts/map/js/world'
-import 'zrender/lib/svg/svg'
-// import elementResizeDetectorMaker from 'element-resize-detector'
 export default {
-
   name: 'dashboard',
   components: {
-    chart: ECharts
+    myTodo,
+    cardList,
+    ToolBar,
+    Panel
   },
   data() {
-    const data = []
-    for (let i = 0; i <= 360; i++) {
-      const t = i / 180 * Math.PI
-      const r = Math.sin(2 * t) * Math.cos(2 * t)
-      data.push([r, i])
-    }
-    return {
-      dashboard: {
-        orderCount: 0,
-        userCount: 0,
+    const cardList = [
+      {
+        label: '会员数',
+        value: 0,
+        contentLabelFirst: '激活会员',
+        contentValFirst: 0,
+        contentLabelSecond: '激活率',
+        contentValSecond: 0,
+        bottomLabel: '本月新增会员',
+        bottomValue: 0,
+        progress: 1,
+        unit: '人',
+        unitFirst: '人',
+        unitSecond: '%',
+        unitBottom: '人',
+        tips: '会员人数数据口径：统计历史以来，系统中存在的有效的、唯一能标识会员身份的，商协会下企业会员或者个人会员的去重的账号的总数。剔除已删除，已冻结无效用户;\n激活会员数据口径：统计历史以来，有登录行为的所有有效会员数。剔除已删除，已冻结无效用户;\n会员激活比数据口径：计算公式为：激活会员数/会员数;\n本月新增会员数据口径：统计账号创建时间点在本自然月内，系统中有效的、唯一能标识会员身份的，商协会下企业会员或者个人会员的去重的账号的合计。不计类型，指剔除无效的即可。'
       },
+      {
+        label: '发布文章数',
+        value: 0,
+        contentLabelFirst: '累计阅读量',
+        contentValFirst: 0,
+        contentLabelSecond: '人均阅读量',
+        contentValSecond: 0,
+        bottomLabel: '会员分享次数 ',
+        bottomValue: 0,
+        unit: '篇',
+        unitFirst: '人/次',
+        unitSecond: '篇',
+        unitBottom: '次',
+        tips: '发布文章数据口径：统计历史以来，系统中存在的该商协会发布的，有效的文章的数据。剔除冻结或者已删除无效文章;\n累计阅读量数据口径：统计该商协会发布的所有文章的累计阅读人次，即所有文章的打开加载次数，包括游客和会员的阅读次数;\n人均阅读量数据口径：计算公式为：累计阅读量/文章数（含游客和会员）;\n会员分享次数：统计历史以来，系统中该商协会发布的，有效的文章数据，不需要剔除冻结或删除的文章，所有文章的被转发的次数。'
+      },
+      {
+        label: '图片直播数',
+        value: 0,
+        contentLabelFirst: '图片直播曝光量',
+        contentValFirst: 0,
+        contentLabelSecond: '最高曝光量',
+        contentValSecond: 0,
+        bottomLabel: '会员分享次数',
+        bottomValue: 0,
+        unit: '次',
+        unitFirst: '次',
+        unitSecond: '次',
+        unitBottom: '次',
+        tips: '图片直播数数据口径：统计历史以来，系统中存在有效的图片直播，剔除冻结或者已删除的无效图片直播;\n图片直播曝光量数据口径：统计历史以来，该商协会发起的有效的图片直播的累计曝光人次。剔除暂停或者已删除等无效数据;\n最高曝光量数据口径：统计历史以来，该商协会发起的图片直播中，曝光人次最高的那次的图片直播的曝光人次;\n分享次数数据口径：对图片直播的分享按钮或者链接埋点，统计所有有效图片直播被分享的次数的总和。'
+      },
+      {
+        label: '群发通知阅读率',
+        value: 100,
+        bottomLabel: '环比上次',
+        bottomValue: '--',
+        progress: 2,
+        unit: '%',
+        unitBottom: '%',
+        showTriangle: true,
+        tips: '群发通知阅读率数据口径：取最近一次群发通知的数据，若是从未发起过群发通知，设置默认值，默认值=100%。计算公式为：已读数/总接收人数*100%；\n环比上次数据口径：若是从未发起过群发通知，或是首次发起群发通知，没有上次的数据，则显示为：--；计算公式为：(本次通知的阅读率-上次通知的阅读率）/上次通知的阅读率 *100%。'
+      }
+    ]
 
-      notice: [],
-      lineData: {
-        title: {
-          text: ''
-        },
-        tooltip: {
-          trigger: 'axis'
-        },
-        legend: {
-          data: [this.$t('dashboard.email'), this.$t('dashboard.ad'), this.$t('dashboard.vedio'), this.$t('dashboard.direct'), this.$t('dashboard.searchEngine')]
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {}
-          }
-        },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: [this.$t('common.week.mon'), this.$t('common.week.tue'), this.$t('common.week.wed'), this.$t('common.week.thu'), this.$t('common.week.fri'), this.$t('common.week.sat'), this.$t('common.week.sun')]
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            name: this.$t('dashboard.email'),
-            type: 'line',
-            stack: '总量',
-            data: [120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-            name: this.$t('dashboard.ad'),
-            type: 'line',
-            stack: '总量',
-            data: [220, 182, 191, 234, 290, 330, 310]
-          },
-          {
-            name: this.$t('dashboard.vedio'),
-            type: 'line',
-            stack: '总量',
-            data: [150, 232, 201, 154, 190, 330, 410]
-          },
-          {
-            name: this.$t('dashboard.direct'),
-            type: 'line',
-            stack: '总量',
-            data: [320, 332, 301, 334, 390, 330, 320]
-          },
-          {
-            name: this.$t('dashboard.searchEngine'),
-            type: 'line',
-            stack: '总量',
-            data: [820, 932, 901, 934, 1290, 1330, 1320]
-          }
-        ]
-      },
-      barData: {
-        xAxis: {
-          type: 'category',
-          data: [this.$t('common.week.mon'), this.$t('common.week.tue'), this.$t('common.week.wed'), this.$t('common.week.thu'), this.$t('common.week.fri'), this.$t('common.week.sat'), this.$t('common.week.sun')]
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            data: [120, 200, 150, 80, 70, 110, 130],
-            type: 'bar'
-          }
-        ]
-      },
-      pieData: {
-        title: {
-          text: this.$t('dashboard.userFrom'),
-          subtext: '纯属虚构',
-          x: 'center'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
-        },
-        legend: {
-          orient: 'vertical',
-          left: 'left',
-          data: [this.$t('dashboard.email'), this.$t('dashboard.ad'), this.$t('dashboard.vedio'), this.$t('dashboard.direct'), this.$t('dashboard.searchEngine')]
-        },
-        series: [
-          {
-            name: 'from',
-            type: 'pie',
-            radius: '55%',
-            center: ['50%', '60%'],
-            data: [
-              { value: 335, name: this.$t('dashboard.direct') },
-              { value: 310, name: this.$t('dashboard.email') },
-              { value: 234, name: this.$t('dashboard.ad') },
-              { value: 135, name: this.$t('dashboard.vedio') },
-              { value: 1548, name: this.$t('dashboard.searchEngine') }
-            ],
-            itemStyle: {
-              emphasis: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              }
-            }
-          }
-        ]
-      },
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ]
+    return {
+      cardList,
+      permission: null,
+      messageList: []
     }
   },
   computed: {
+    ckey() {
+      return this.$store.getters.ckey || ''
+    },
     ...mapGetters(['name'])
   },
   created() {
-    // this.fetchData()
-  },
-  mounted() {
-    // //绑定echart图表跟随窗口大小自动缩放
-    // let that = this
-    // let erd = elementResizeDetectorMaker()
-    // erd.listenTo(document.getElementById("dashboard"),(element)=>{
-    //   that.$nextTick(()=>{
-    //     that.$refs.lineChart.resize()
-    //     that.$refs.barChart.resize()
-    //     that.$refs.pieChart.resize()
-    //   })
-    // })
+    this.ckey && this.init()
   },
   methods: {
-    fetchData() {
-      this.listLoading = true
-      const self = this
-      dashboardApi.get().then(response => {
-        this.dashboard = response.data
-      })
-      getList(self.listQuery).then(response => {
-        for (let i = 0; i < response.data.length; i++) {
-          const notice = response.data[i]
-          self.$notify({
-            title: notice.title,
-            message: notice.content,
-            duration: 3000
-          })
-        }
-        self.listLoading = false
-      })
+    async init() {
+      await this.getPermission()
+      await this.getPendingItems()
+      if (this.permission) {
+        await this.getChamberMembers()
+        await this.getChamberArticles()
+        await this.getChamberAlbums()
+        await this.getChamberNotices()
+      }
+    },
+    async getChamberMembers() {
+      const { data, state, msg } = await getChamberMembers()
+      if (state === 1) {
+        this.cardList[0].value = data?.memberNum || 0
+        this.cardList[0].contentValFirst = data?.activeMemberNum || 0
+        this.cardList[0].contentValSecond = data?.activeMemberRatio || 0
+        this.cardList[0].bottomValue = data?.monthNewMemberNum || 0
+      } else {
+        this.$message({
+          message: msg,
+          type: 'error'
+        })
+      }
+    },
+    async getChamberArticles() {
+      const { data, state, msg } = await getChamberArticles()
+      if (state === 1) {
+        this.cardList[1].value = data?.articleNum || 0
+        this.cardList[1].contentValFirst = data?.readNum || 0
+        this.cardList[1].contentValSecond = data?.avgReadNum || 0
+        this.cardList[1].bottomValue = data?.memberShareNum || 0
+      } else {
+        this.$message({
+          message: msg,
+          type: 'error'
+        })
+      }
+    },
+    async getChamberAlbums() {
+      const { data, state, msg } = await getChamberAlbums()
+      if (state === 1) {
+        this.cardList[2].value = data?.albumNum || 0
+        this.cardList[2].contentValFirst = data?.exposureNum || 0
+        this.cardList[2].contentValSecond = data?.maxExposureNum || 0
+        this.cardList[2].bottomValue = data?.memberShareNum || 0
+      } else {
+        this.$message({
+          message: msg,
+          type: 'error'
+        })
+      }
+    },
+    async getChamberNotices() {
+      const { data, state, msg } = await getChamberNotices()
+      if (state === 1) {
+        this.cardList[3].value = data?.noticeReadRatio || 100
+        this.cardList[3].bottomValue = data?.noticeReadSequential || '--'
+      } else {
+        this.$message({
+          message: msg,
+          type: 'error'
+        })
+      }
+    },
+    async getPendingItems() {
+      const { data, state, msg } = await getPendingItems()
+      if (state === 1) {
+        this.messageList = data
+      } else {
+        this.$message({
+          message: msg,
+          type: 'error'
+        })
+      }
+    },
+    async getPermission() {
+      const { data } = await getPermission()
+      this.permission = data
     }
   }
 }

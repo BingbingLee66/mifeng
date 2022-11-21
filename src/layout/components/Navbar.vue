@@ -1,8 +1,28 @@
 <template>
-  <div class="navbar">
+  <div class="navbar flex-x">
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb class="breadcrumb-container" />
+
+    <div class="login-name flex-x">
+      <!-- 商会后台显示铃铛 -->
+      <div v-if="ckey" class="inform">
+        <span @click="goMail">
+          <el-badge :value="count" :hidden="hidden" :max="99">
+            <i class="el-icon-message-solid" />
+          </el-badge>
+        </span>
+
+        <div class="inform-news">
+          <News :show="isShow" :info="info" />
+        </div>
+      </div>
+
+      <img src="../../../public/img/chamber-icon.png" alt="">
+      <span class="info-name">{{ chamberName ? chamberName : '凯迪云商会总后台管理系统' }}</span>
+      <img src="../../../public/img/manager-icon.png" alt="">
+      <span class="info-name">{{ name }}</span>
+    </div>
     <div class="right-menu">
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
@@ -17,28 +37,10 @@
             <el-dropdown-item>修改密码</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">退出登录</span>
+            <span style="display: block" @click="logout">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-    </div>
-    <div class="login-name">
-      <!-- 商会后台显示铃铛 -->
-      <span v-if="ckey" class="inform">
-        <span @click="goMail">
-          <el-badge :value="count" :hidden="hidden" :max="99">
-            <i class="el-icon-message-solid " />
-          </el-badge>
-        </span>
-
-        <div class="inform-news">
-          <News :show="isShow" :info="info" />
-        </div>
-      </span>
-
-      <img src="../../../public/img/chamber-icon.png" alt="">
-      <span style="margin-right: 30px">{{ chamberName ? chamberName : '凯迪云商会总后台管理系统' }}</span>
-      <img src="../../../public/img/manager-icon.png" alt=""> {{ name }}
     </div>
   </div>
 </template>
@@ -65,7 +67,7 @@ export default {
       info: {}, // 消息
       gsId: '', // 站内信最新数据id
       count: 0, // 消息通知数量
-      hidden: true, // count > 0  false =显示
+      hidden: true // count > 0  false =显示
       // systemLogo: !this.$store.getters.systemLogo ? imgUrl : this.$store.getters.systemLogo
     }
   },
@@ -73,7 +75,7 @@ export default {
     ...mapGetters(['sidebar', 'avatar', 'name', 'systemLogo', 'chamberName', 'roles', 'ckey'])
   },
   watch: {
-    'ckey'() {
+    ckey() {
       this.onDing()
       this.gsId = ''
     }
@@ -97,9 +99,7 @@ export default {
     goMail() {
       this.$router.push('/sms/mail')
     },
-    fetchData() {
-
-    },
+    fetchData() {},
     // 显示铃铛数量
     async onDing() {
       clearInterval(this.timer)
@@ -122,38 +122,52 @@ export default {
         this.isShow = true
         this.gsId = res.data.gsId
       }
-    },
+    }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
+.inform {
+  font-size: 20px;
+  width: 20px;
+  vertical-align: middle;
+  color: #1890ff;
+  margin-right: 40px;
+  position: relative;
+  flex-shrink: 0;
+  /deep/ .el-badge__content.is-fixed {
+    top: 10px;
+  }
+  .inform-news {
+    position: absolute;
+    // bottom: -43px;
+    right: -128px;
+  }
+}
+
 .login-name {
-  float: right;
+  flex: 1;
   margin-right: 20px;
   font-size: 16px;
   font-family: PingFangSC-Regular;
   color: #333333;
+  justify-content: end;
+  align-items: center;
+
   img {
     width: 20px;
     height: 20px;
     vertical-align: middle;
   }
-  .inform{
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-    vertical-align: middle;
-    color: #1890ff;
-    margin-right: 40px;
-    position: relative;
-    /deep/ .el-badge__content.is-fixed{
-      top: 10px;
-    }
-    .inform-news{
-      position: absolute;
-      // bottom: -43px;
-      right: -128px;
+
+  .info-name {
+    max-width: 80%;
+    @include ellipsis(1);
+    margin-right: 30px;
+
+    &:last-child {
+      margin-right: 0;
     }
   }
 }
@@ -162,16 +176,15 @@ export default {
   height: 50px;
   line-height: 50px;
   border-radius: 0px !important;
+  overflow: hidden;
 
   .hamburger-container {
-    line-height: 58px;
-    height: 50px;
-    float: left;
     padding: 0 10px;
+    flex-shrink: 0;
   }
 
   .breadcrumb-container {
-    float: left;
+    flex-shrink: 0;
   }
 
   .errLog-container {
@@ -180,7 +193,7 @@ export default {
   }
 
   .right-menu {
-    float: right;
+    flex-shrink: 0;
     height: 100%;
 
     &:focus {
@@ -231,4 +244,3 @@ export default {
   }
 }
 </style>
-

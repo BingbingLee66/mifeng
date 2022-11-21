@@ -1,5 +1,5 @@
 import { isvalidUsername } from '@/utils/validate'
-import { login, logout, getInfo } from '@/api/user'
+import { getAreaTree, uploadLogo } from '@/api/user'
 
 export default {
   name: 'login',
@@ -19,6 +19,16 @@ export default {
         callback()
       }
     }
+    const validatePhone = (rule, value, callback) => {
+      if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(value)) {
+        return callback(new Error('号码格式不正确'))
+      }
+      callback()
+    }
+    const validatePassword2 = (rule, value, callback) => {
+      if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(value)) return callback(new Error('6-16位英文字母和数字的组合'))
+      callback() // 必须加上这个，不然一直塞在验证状态
+    }
     return {
       loginForm: {
         username: '',
@@ -30,7 +40,67 @@ export default {
       },
       loading: false,
       pwdType: 'password',
-      redirect: '/'
+      redirect: '/',
+      active: 1,
+      formObj: {
+        socialCode: '',
+        chamberName: '',
+        chamberLogo: '',
+        area: [],
+        inviteCode: '',
+        contactPhone: '',
+        contactName: '',
+        password2: '',
+        confirmPassword: '',
+      },
+      registerRules: {
+        // socialCode: [{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' },
+        // { pattern: /^[A-Za-z0-9]{2}[0-9]{6}[A-Za-z0-9]{10}$/, message: '统一社会信用代码格式有误', trigger: 'blur' }],
+        chamberName: [
+          { required: true, message: '商/协会名称不能为空', trigger: 'blur' },
+          { min: 1, max: 50, message: '商/协会名称1-50个字', trigger: 'change' }
+        ],
+        chamberLogo: [{ required: true, message: '请上传商/协会logo', trigger: 'change' }],
+        contactName: [{ required: true, message: '联系人姓名不能为空', trigger: 'blur' }],
+        inviteCode: [
+          { required: true, message: '邀请码不能为空', trigger: 'blur' },
+          { pattern: /^[A-Za-z0-9]{8}$/, message: '邀请码格式有误', trigger: 'blur' }
+        ],
+        contactPhone: [
+          { required: true, message: '联系人手机号不能为空', trigger: 'blur' },
+          {
+            validator: validatePhone, trigger: 'blur'
+          }
+        ],
+        area: [
+          {
+            required: true, message: '地区不能为空', trigger: 'change',
+            validator: (rule, value, callback) => {
+              if (!value[0]) return callback(new Error(rule.message))
+              callback()
+            }
+          }
+        ],
+        password2: [
+          { required: true, message: '账号密码不能为空', trigger: 'blur' },
+          {
+            validator: validatePassword2,
+            trigger: 'blur'
+          }
+        ],
+        confirmPassword: [
+          { required: true, message: '确认密码不能为空', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,16}$/.test(value)) return callback(new Error('6-16位英文字母和数字的组合'))
+              if (value !== this.formObj.password2) return callback(new Error('两次输入密码不一致!'))
+              callback() // 必须加上这个，不然一直塞在验证状态
+            },
+            trigger: 'blur'
+          }
+        ],
+      },
+      areaOptions: []
     }
   },
   mounted() {
@@ -38,10 +108,11 @@ export default {
   },
   methods: {
     init() {
-      let redirect = this.$route.query.redirect
+      const { redirect } = this.$route.query
       if (redirect) {
         this.redirect = redirect
       }
+      this.getAreaList()
     },
     showPwd() {
       if (this.pwdType === 'password') {
@@ -57,15 +128,85 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.loading = false
             this.$router.push(this.redirect)
-
-          }).catch((err) => {
-
+          }).catch(() => {
             this.loading = false
           })
         } else {
           return false
         }
       })
+    },
+    async getAreaList() {
+      const { data } = await getAreaTree()
+      if (data.length) {
+        data.forEach(p => {
+          p.children.forEach(c => {
+            c.children = undefined
+          })
+        })
+        this.areaOptions = data
+      }
+    },
+    uploadChamberLogo(content) {
+      const formData = new FormData()
+      formData.append('file', content.file)
+      uploadLogo(formData).then(response => {
+        // this.formObj.chamberLogo = response.data.filePath
+        this.$set(this.formObj, 'chamberLogo', response.data.filePath)
+        // 上传成功后，手动验证一次表单
+        this.$refs.registerForm.validateField('chamberLogo')
+      })
+    },
+    beforeChamberLogoUpload(file) {
+      if (file.type !== 'image/jpeg' &&
+        file.type !== 'image/jpg' &&
+        file.type !== 'image/png') {
+        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+        return false
+      }
+      if (file.size > 1024 * 1024 * 2) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+        return false
+      }
+    },
+    handleRegister() {
+      if (this.loading) return
+      this.$refs.registerForm.validate(valid => {
+        if (valid) {
+          this.loading = true
+          this.formObj.province = this.formObj.area[0]
+          this.formObj.city = this.formObj.area[1]
+          this.formObj.password = this.formObj.password2
+          this.$store.dispatch('user/register', this.formObj).then(() => {
+            this.loading = false
+            this.$router.push(this.redirect)
+            this.formObj = {}
+            this.active = 1
+          }).catch(() => {
+            this.loading = false
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    changeTab(index) {
+      this.active = index
+      this.formObj = {
+        socialCode: '',
+        chamberName: '',
+        chamberLogo: '',
+        area: [],
+        inviteCode: '',
+        contactPhone: '',
+        contactName: '',
+        password2: '',
+        confirmPassword: '',
+      }
+      this.loginForm = {
+        username: '',
+        password: ''
+      }
     }
     // handleLogin() {
     //   this.$refs.loginForm.validate(valid => {
@@ -82,7 +223,7 @@ export default {
     //             this.loading = false
     //           })
     //         } else { // 匹配到多个用户
-              
+
     //         }
     //       }).catch((err) => {
 

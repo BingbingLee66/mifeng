@@ -1,13 +1,13 @@
 <template>
   <section class="app-main">
-    <transition  name="fade-transform" mode="out-in">
+    <transition name="fade-transform" mode="out-in">
       <div class="app-transition">
         <keep-alive :include="cachedViews">
           <router-view :key="key" />
         </keep-alive>
       </div>
     </transition>
-    <div class="operation" v-if="hadGuide" @click="onSkip">
+    <div v-if="hadGuide" class="operation" @click="onSkip">
       <i class="el-icon-s-management" />
       <div class="operation-con">操作指引</div>
     </div>
@@ -15,76 +15,76 @@
 </template>
 
 <script>
-  export default {
-    name: "AppMain",
-    data() {
-      return {
-        data:[],
-        router:'',
-        menu1Id:'',
-        menu2Id:'',
-        guideId:null,  // ==  null ：有多个视频   否则只有一个视频  
-        hadGuide:false,  // 是否显示操作指引
-      };
+export default {
+  name: 'AppMain',
+  data() {
+    return {
+      data: [],
+      router: '',
+      menu1Id: '',
+      menu2Id: '',
+      guideId: null, // ==  null ：有多个视频   否则只有一个视频
+      hadGuide: false, // 是否显示操作指引
+    }
+  },
+  computed: {
+    cachedViews() {
+      return this.$store.state.tagsView.cachedViews
     },
-    computed: {
-      cachedViews() {
-        return this.$store.state.tagsView.cachedViews;
+    key() {
+      return this.$route.fullPath
+    },
+  },
+  watch: {
+    key: {
+      handler(newVal, oldVal) {
+        this.router = this.$route
+        this.traversal()
       },
-      key() {
-        return this.$route.fullPath;
-      },
+      deep: true
     },
-    watch: {
-      key:{
-        handler:function (newVal, oldVal) {
-          this.router = this.$route
-          this.traversal()
-        },
-        deep:true
-      },
-    },
-    mounted() {
-      this.data = this.$store.state.menu.addRoutes
-      this.router = this.$route
-      this.traversal()
-    },
-    methods: {
-      traversal(){
-        this.hadGuide = false;
-        this.data.forEach((v)=>{
-          v.children.forEach((j)=>{
-              if(j.path == this.router.path && j.hadGuide == true){
-                this.menu1Id = v.id,
-                this.menu2Id = j.id,
-                this.hadGuide = true
-                this.guideId = j.guideId
-                return 
-              }
-          })
+  },
+  mounted() {
+    this.data = this.$store.state.menu.addRoutes
+    this.router = this.$route
+    this.traversal()
+  },
+  methods: {
+    traversal() {
+      this.hadGuide = false
+      this.data.forEach(v => {
+        v.children.forEach(j => {
+          if (j.path == this.router.path && j.hadGuide == true) {
+            this.menu1Id = v.id,
+            this.menu2Id = j.id,
+            this.hadGuide = true
+            this.guideId = j.guideId
+            return
+          }
         })
-      },
-      // 点击操作指引
-      onSkip(){
-        if( this.guideId == null) {
-          this.$router.push({
-            path: '/guide/chamberGuide',
-            query: {
-              'menu1Id':this.menu1Id,
-              'menu2Id':this.menu2Id,
-            }
-          })
-        } else {
-          this.$router.push({
-            name: '操作指引详情',
-            params: {
-              'detailsId':this.guideId 
-            }
-          })
-        }
+      })
+    },
+    // 点击操作指引
+    onSkip() {
+      if (this.guideId == null) {
+        this.$router.push({
+          path: '/guide/chamberGuide',
+          query: {
+            menu1Id: this.menu1Id,
+            menu2Id: this.menu2Id,
+          }
+        })
+      } else {
+        this.$router.push({
+          name: '操作指引详情',
+          params: {
+            detailsId: this.guideId
+          }
+        })
       }
     }
-  };
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -95,6 +95,7 @@
     position: relative;
     overflow: hidden;
     display: flex;
+    background: #F5F6FA;
   }
   .app-transition{
     width: 97%;

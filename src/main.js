@@ -2,7 +2,8 @@ import Vue from 'vue'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+// import 'element-ui/lib/theme-chalk/index.css'
+import './theme/element/index.css'
 
 // import ECharts from 'vue-echarts/components/ECharts.vue'
 import ECharts from 'vue-echarts'

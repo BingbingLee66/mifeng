@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## [Released]
+## [2.35.0] - 2022-11-20
+### Added
+- 工作：【首页工作台】我的待办[2544023](https://project.feishu.cn/solink/universal_task/detail/2544023?parentUrl=%2Fsolink%2FworkObjectView%2Funiversal_task%2FGYSrHTvVg)
+- 工作：【首页工作台】数据统计[2544086](https://project.feishu.cn/solink/universal_task/detail/2544086?parentUrl=%2Fsolink%2FworkObjectView%2Funiversal_task%2FGYSrHTvVg)
+- 工作：【首页工作台】快捷工具栏[2544118](https://project.feishu.cn/solink/universal_task/detail/2544118?parentUrl=%2Fsolink%2FworkObjectView%2Funiversal_task%2FGYSrHTvVg)
+- 工作：【秘锋后台重构-会员管理优化】[2390347](https://project.feishu.cn/solink/user_story/detail/2390347?parentUrl=%2Fsolink%2FworkObjectView%2Fscrum_epic%2F5M3yeUS4R#detail)
+- 工作：【秘锋后台重构-整合供需和行业标签】[2469398](https://project.feishu.cn/solink/user_story/detail/2469398?parentUrl=%2Fsolink%2FworkObjectView%2Fscrum_epic%2F5M3yeUS4R)
+- 【一键x网】 发文后引导分享[2527476](https://project.feishu.cn/solink/universal_task/detail/2527476?parentUrl=%2Fsolink%2FworkObjectView%2Fuser_story%2FnJCwjUIVg)
+- 【一键x网】 公众号 - 发布记录 接口联调[2529885](https://project.feishu.cn/solink/universal_task/detail/2529885?parentUrl=%2Fsolink%2FworkObjectView%2Fuser_story%2FnJCwjUIVg)
+- 【一键x网】 公众号 - 发布记录[2528031](https://project.feishu.cn/solink/universal_task/detail/2528031?parentUrl=%2Fsolink%2FworkObjectView%2Fuser_story%2FnJCwjUIVg)
+- 【一键x网】 添加/修改文章 接口联调[2529867](https://project.feishu.cn/solink/universal_task/detail/2529867?parentUrl=%2Fsolink%2FworkObjectView%2Fuser_story%2FnJCwjUIVg)
+- 【一键x网】 编辑文章回显[2528927](https://project.feishu.cn/solink/universal_task/detail/2528927?parentUrl=%2Fsolink%2FworkObjectView%2Fuser_story%2FnJCwjUIVg)
+- 【一键x网】 选择文章表格[2528742](https://project.feishu.cn/solink/universal_task/detail/2528742?parentUrl=%2Fsolink%2FworkObjectView%2Fuser_story%2FnJCwjUIVg)
+- 【一键x网】 添加/修改文章[2528401](https://project.feishu.cn/solink/universal_task/detail/2528401?parentUrl=%2Fsolink%2FworkObjectView%2Fuser_story%2FnJCwjUIVg)
+- 【一键x网】 公众号 - 跳转微信公众号平台授权及回调处理[2529878](https://project.feishu.cn/solink/universal_task/detail/2529878?parentUrl=%2Fsolink%2FworkObjectView%2Fuser_story%2FnJCwjUIVg)
+- 【一键x网】 公众号 - 授权账号[2529217](https://project.feishu.cn/solink/universal_task/detail/2529217?parentUrl=%2Fsolink%2FworkObjectView%2Fuser_story%2FnJCwjUIVg)
+
+### Fixed
+-  
+
 
 ## [Released]
 ## [2.34.0] - 2022-11-10
