@@ -39,11 +39,10 @@ class Kingkong {
   }
 
   /** 启用/冻结金刚区 */
-  static async useKingkong(data) {
+  static async changeKingkongStatus(kingkongId, status) {
     return await request({
-      method: 'put',
-      url: '',
-      data
+      url: `/ec/king-kong/status/${kingkongId}/${status}`,
+      method: 'put'
     })
   }
 

@@ -169,7 +169,7 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          const res = await Home.deleteBanner([+data.bannerId ])
+          const res = await Home.deleteBanner([ data.bannerId ])
           if (res.state === 1) {
             this.$message.success('删除成功')
             this.fetchData()

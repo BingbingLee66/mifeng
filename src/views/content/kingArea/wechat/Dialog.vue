@@ -3,6 +3,7 @@
     <el-dialog
       :visible.sync="dialogVisible"
       :title="dialogTitle"
+      :close-on-click-modal="false"
       width="600px"
       @closed="close"
     >
@@ -16,8 +17,8 @@
         <template v-slot:customConetent>
           <div class="text-center mt-40">
             <el-button class="mr-20" @click="close">取消</el-button>
-            <el-button class="mr-20" @click="handleSubmit">保存</el-button>
-            <el-button type="primary" @click="handleSubmit">发布</el-button>
+            <el-button class="mr-20" @click="handleSubmit(2)">保存</el-button>
+            <el-button type="primary" @click="handleSubmit(1)">发布</el-button>
           </div>
         </template>
       </ysh-form>
@@ -41,14 +42,14 @@ export default {
         size: 'medium'
       },
       formObj: {
-        name: '', // 入口名称
-        image: '', // 上传图片
-        url: '' // 关联内容
+        title: '', // 入口名称
+        icon: '', // 上传图片
+        content: '' // 关联内容
       },
       formItem: [
         {
           label: '入口名称：',
-          prop: 'name',
+          prop: 'title',
           type: 'input',
           width: '90%',
           showWordLimit: true,
@@ -63,7 +64,7 @@ export default {
         },
         {
           label: '关联内容：',
-          prop: 'url',
+          prop: 'content',
           type: 'textarea',
           width: '90%',
           rows: 5,
@@ -74,7 +75,7 @@ export default {
         },
         {
           label: '上传图片：',
-          prop: 'image',
+          prop: 'icon',
           type: 'upload',
           value: '',
           formTip: ['建议尺寸123*123px; 支持jpg、png'],
@@ -89,10 +90,11 @@ export default {
             this.beforeUpload(file)
           },
           upload: content => {
-            this.uploadKingkongImage(content, 'image')
+            this.uploadKingkongImage(content, 'icon')
           }
         }
-      ]
+      ],
+      submitStatus: 1, // 1-发布 2-保存
     }
   },
   mounted() {
@@ -113,26 +115,27 @@ export default {
 
     edit(data) {
       this.dialogTitle = '编辑功能入口'
-      const { name, image, url, id } = data
-      this.formObj = { name, image, url, id }
+      const { title, icon, content, kingKongId } = data
+      this.formObj = { title, icon, content, kingKongId }
       this.dialogVisible = true
     },
 
     close() {
-      this.formObj = { name: '', image: '', url: '' }
+      this.formObj = { title: '', icon: '', content: '' }
       this.$refs.formRef.resetFileds()
       this.dialogVisible = false
     },
 
-    handleSubmit() {
+    handleSubmit(status) {
+      this.submitStatus = status
       this.$refs.formRef.submit()
     },
 
     async submit(data) {
-      const res = await Kingkong.saveKingkong({
+      const res = await Kingkong.saveKingkongV1({
         ...data,
         clientType: 0,
-        weight: 0
+        status: this.submitStatus,
       })
       if (res.state !== 1) {
         this.$message.error(res.msg)

@@ -24,14 +24,14 @@
           @click="handleEvent('edit', row.data)"
         >编辑</span>
         <span
-          v-if="row.data.use === 0"
+          v-if="row.data.status === 2"
           class="text-blue cur ml-10"
-          @click="handleEvent('use', row.data)"
+          @click="handleEvent('status', row.data)"
         >启用</span>
         <span
-          v-if="row.data.use === 1"
+          v-if="row.data.status === 1"
           class="text-yellow cur ml-10"
-          @click="handleEvent('frozen', row.data)"
+          @click="handleEvent('status', row.data)"
         >冻结</span>
         <span
           v-if="row.data.status !== 1"
@@ -57,6 +57,12 @@ export default {
   components: { Dialog },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
+  props: {
+    clientType: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       tableConfig: {
@@ -76,21 +82,16 @@ export default {
     async fetchData() {
       this.tableConfig.loading = true
       const params = {
-        clientType: 0,
-        name: '',
-        creatorName: '',
-        createdTsBegin: '',
-        createdTsEnd: '',
+        clientType: this.clientType,
         pageNum: 1,
         pageSize: 100
       }
       const res = await Kingkong.getKingkongListV1(params)
       if (res.state !== 1) return
-      res.data.list.forEach(i => {
-        i.status = 1
-        i.use = 1
-      })
       this.tableData = res.data.list
+      this.tableData.forEach(i => {
+        i.id = i.kingKongId
+      })
       this.pageData.total = res.data.totalRows
       this.tableConfig.loading = false
     },
@@ -107,11 +108,8 @@ export default {
         case 'delete':
           this.handleDelete(data)
           break
-        case 'frozen':
-          this.handleUse('frozen', data)
-          break
-        case 'use':
-          this.handleUse('use', data)
+        case 'status':
+          this.handleStatus(data)
           break
         default:
           break
@@ -119,15 +117,12 @@ export default {
     },
 
     /** 启用/冻结金刚区 */
-    async handleUse(event, data) {
-      console.log(event, data)
-      const res = await Kingkong.useKingkong({
-        id: data.id,
-        use: event === 'use' ? 1 : 0
-      })
+    async handleStatus(data) {
+      const status = data.status === 1 ? 2 : 1
+      const res = await Kingkong.changeKingkongStatus(data.id, status)
       if (res.state === 1) {
         this.$message.success(res.msg)
-        changeOrder(this.tableData, data.id, event)
+        this.fetchData(1)
       } else {
         this.$message.error(res.msg)
       }
@@ -156,15 +151,9 @@ export default {
 
     /** 调整上下顺序 */
     async handleOrder(event, data) {
-      const idx = this.tableData.findIndex(i => i.id === data.id)
-      const upId = this.tableData[idx - 1].id
-      const downId = this.tableData[idx + 1].id
-      const params = {
-        moveId: data.id,
-        bemoveid: event === 'up' ? upId : downId,
-        status: event === 'up' ? 0 : 1
-      }
-      const res = await Kingkong.changeKingkongOrder(params)
+      console.log(' order data ', data)
+      const num = event === 'up' ? data.num - 1 : data.num + 1
+      const res = await Kingkong.changeKingkongOrder(data.id, num)
       if (res.state === 1) {
         this.$message.success(res.msg)
         changeOrder(this.tableData, data.id, event)
