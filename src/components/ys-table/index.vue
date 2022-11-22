@@ -85,7 +85,11 @@
           :width="item.width || ''"
           :min-width="item.minWidth || ''"
           :align="item.align || 'left'"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row[item.prop] ? scope.row[item.prop] : '- -' }}
+          </template>
+        </el-table-column>
         <!-- 图片渲染 -->
         <el-table-column
           v-if="item.type === 'image'"
@@ -280,6 +284,7 @@
               style="font-size: 26px;cursor: pointer;"
               @click="handleOrder('down', scope.row)"
             />
+            <span v-if="tableData.length===1">- -</span>
           </template>
         </el-table-column>
         <!-- 开关 -->

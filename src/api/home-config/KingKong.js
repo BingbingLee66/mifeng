@@ -4,18 +4,18 @@ class Kingkong {
   // =========================================================== wechat ==========================================================
 
   /** 获取金刚区列表 */
-  static async getKingkongListV1(data) {
+  static async getKingkongListV1(params) {
     return await request({
-      url: '/ec/king-kong-area/list',
-      method: 'post',
-      data
+      url: '/ec/king-kong/list',
+      method: 'get',
+      params
     })
   }
 
   /** 删除金刚区  */
   static async deleteKingkongV1(data) {
     return await request({
-      url: '',
+      url: '/ec/king-kong',
       method: 'delete',
       data
     })
@@ -24,18 +24,17 @@ class Kingkong {
   /** 新增/编辑金刚区 */
   static async saveKingkongV1(data) {
     return await request({
-      url: '',
-      method: 'post',
+      url: '/ec/king-kong',
+      method: data.kingKongId ? 'put' : 'post',
       data
     })
   }
 
   /** 调整金刚区顺序 */
-  static async changeKingkongOrder(data) {
+  static async changeKingkongOrder(kingkongId, num) {
     return await request({
-      method: 'put',
-      url: '',
-      data
+      url: `/ec/king-kong/location/${kingkongId}/${num}`,
+      method: 'put'
     })
   }
 

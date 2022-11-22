@@ -9,6 +9,7 @@
         @click="handleEvent('add')"
       >新增banner图</el-button>
       <el-button
+        v-if="this.tableData.length > 0"
         type="primary"
         size="medium"
         @click="handleEvent('rate')"
@@ -29,21 +30,22 @@
           @click="handleEvent('edit', row.data)"
         >编辑</span>
         <span
-          v-if="row.data.status === 0"
+          v-if="row.data.status === 2"
           class="text-blue cur ml-10"
-          @click="handleEvent('use', row.data)"
+          @click="handleEvent('status', row.data)"
         >启用</span>
         <span
           v-if="row.data.status === 1"
           class="text-blue cur ml-10"
-          @click="handleEvent('frozen', row.data)"
+          @click="handleEvent('status', row.data)"
         >冻结</span>
         <span
-          v-if="row.$index !== 0"
+          v-if="row.data.num !== 1 && row.data.status !== 2"
           class="text-blue cur ml-10"
           @click="handleEvent('top', row.data)"
         >置顶</span>
         <span
+          v-if="row.data.status === 2"
           class="text-red cur ml-10"
           @click="handleEvent('delete', row.data)"
         >删除</span>
@@ -51,7 +53,7 @@
     </ysh-table>
 
     <!-- 新增/编辑banner弹窗 -->
-    <add-dialog ref="dialogRef1" @refresh="fetchData" />
+    <add-dialog ref="dialogRef1" :client-type="clientType" @refresh="fetchData" />
     <!-- 切换频率弹窗 -->
     <rate-dialog ref="dialogRef2" @refresh="fetchData" />
   </div>
@@ -69,6 +71,12 @@ export default {
   components: { AddDialog, RateDialog },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
+  props: {
+    clientType: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       tableConfig: {
@@ -87,16 +95,17 @@ export default {
     /** 获取banner图列表数据 */
     async fetchData() {
       this.tableConfig.loading = true
-      const params = {
-        clientType: 0,
-        type: 1,
+      const res = await Home.getBannerList({
+        clientType: this.clientType,
         pageNum: 1,
         pageSize: 100
-      }
-      const res = await Home.getBannerList(params)
+      })
       if (res.state !== 1) return
-      const resData = res.data.data
+      const resData = res.data
       this.tableData = resData.list
+      this.tableData.forEach(i => {
+        i.id = i.bannerId
+      })
       this.pageData.total = resData.totalRows
       this.tableConfig.loading = false
     },
@@ -111,16 +120,13 @@ export default {
           this.$refs.dialogRef1.$emit(event, data)
           break
         case 'rate':
-          this.$refs.dialogRef2.$emit(event, data)
+          this.$refs.dialogRef2.$emit(event, this.tableData[0].switchFrequence)
           break
         case 'delete':
           this.handleDelete(data)
           break
-        case 'frozen':
-          this.handleUse(event, data)
-          break
-        case 'use':
-          this.handleUse(event, data)
+        case 'status':
+          this.handleStatus(data)
           break
         case 'top':
           this.handleTop(data)
@@ -132,7 +138,7 @@ export default {
 
     /* 置顶 */
     async handleTop(data) {
-      const res = await Home.topBanner({ id: data.id })
+      const res = await Home.topBanner(data.bannerId)
       if (res.state === 1) {
         this.$message.success(res.msg)
         this.fetchData()
@@ -142,9 +148,11 @@ export default {
     },
 
     /** 启用/冻结 */
-    async handleUse(event, data) {
-      console.log(event, data)
-      const res = await Home.useBanner({ id: data.id })
+    async handleStatus(data) {
+      const res = await Home.changeBannerStatus({
+        bannerId: data.bannerId,
+        status: data.status === 1 ? 2 : 1
+      })
       if (res.state === 1) {
         this.$message.success(res.msg)
         this.fetchData()
@@ -161,7 +169,7 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          const res = await Home.deleteBanner({ id: data.id })
+          const res = await Home.deleteBanner([+data.bannerId ])
           if (res.state === 1) {
             this.$message.success('删除成功')
             this.fetchData()
@@ -175,8 +183,16 @@ export default {
     },
 
     /** 调整上下顺序 */
-    handleOrder(event, data) {
-      changeOrder(this.tableData, data.id, event)
+    async handleOrder(event, data) {
+      const res = await Home.changeBannerOrder({
+        bannerId: data.bannerId,
+        num: event === 'up' ? data.num - 1 : data.num + 1
+      })
+      if (res.state === 1) {
+        changeOrder(this.tableData, data.id, event)
+      } else {
+        this.$message.error(res.msg)
+      }
     }
   }
 }

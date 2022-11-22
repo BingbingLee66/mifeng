@@ -49,8 +49,7 @@ class Home {
   /** 获取banner图列表  */
   static async getBannerList(params) {
     return await request({
-      // /ec/banner/list
-      url: '/ec/bannerImg/getBannerImgList',
+      url: '/ec/banner/list',
       method: 'get',
       params
     })
@@ -60,7 +59,7 @@ class Home {
   static async saveBanner(data) {
     return request({
       url: '/ec/banner',
-      method: data.id ? 'put' : 'post',
+      method: data.bannerId ? 'put' : 'post',
       data
     })
   }
@@ -99,10 +98,10 @@ class Home {
   }
 
   /** banner图切换频率  */
-  static async changeRateBanner(params) {
+  static async changeBannerRate(params) {
     return await request({
-      url: '',
-      method: '',
+      url: '/ec/banner/switch/frequency',
+      method: 'put',
       params
     })
   }
@@ -110,18 +109,45 @@ class Home {
   /** 获取推荐位配置列表  */
   static async getRecommendList(params) {
     return await request({
-      url: '',
+      url: '/ec/recommend-pos/page-recommend-pos',
       method: 'get',
       params
     })
   }
 
   /** 显示/隐藏推荐位  */
-  static async showRecommend(params) {
+  static async changeRecommendStatus(data) {
     return await request({
-      url: '',
-      method: 'put',
+      url: '/ec/recommend-pos/update-status',
+      method: 'post',
+      data
+    })
+  }
+
+  /** 根据推荐内容类型获取内容列表  */
+  static async getContentList(params) {
+    return await request({
+      url: '/ec/recommend-pos/get-content-select',
+      method: 'get',
       params
+    })
+  }
+
+  /** 获取推荐内容 */
+  static async getRecommendContent(params) {
+    return await request({
+      url: '/ec/recommend-pos/get-content',
+      method: 'get',
+      params
+    })
+  }
+
+  /** 编辑推荐内容 */
+  static async updateRecommendContent(data) {
+    return await request({
+      url: '/ec/recommend-pos/edit-content',
+      method: 'post',
+      data
     })
   }
 }

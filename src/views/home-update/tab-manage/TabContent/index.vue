@@ -84,20 +84,18 @@ export default {
         case 'edit':
           this.$refs.dialogRef.$emit(event, data)
           break
-        default:
-          this.handleShow(event, data)
+        case 'status':
+          this.handleStatus(data)
           break
       }
     },
 
     /** 展示|隐藏 */
-    async handleShow(event, data) {
-      console.log('event:', event)
-      const params = {
+    async handleStatus(data) {
+      const res = await Home.showTab({
         id: data.id,
-        status: event === 'hide' ? 0 : 1
-      }
-      const res = await Home.showTab(params)
+        status: data.status === '1' ? 0 : 1
+      })
       if (res.state === 1) {
         this.$message.success(res.msg)
         this.fetchData()
@@ -108,12 +106,10 @@ export default {
 
     /** 默认选中 */
     async handleSwitchChange(event, data) {
-      console.log('event:', event)
-      const params = {
+      const res = await Home.defaultTab({
         id: data.id,
         status: event ? 1 : 0
-      }
-      const res = await Home.defaultTab(params)
+      })
       if (res.state === 1) {
         this.$message.success(res.msg)
         this.fetchData()
@@ -125,12 +121,17 @@ export default {
     /** 调整上下顺序 */
     async handleOrder(event, data) {
       const idx = this.tableData.findIndex(i => i.id === data.id)
-      const params = {
-        moveid: data.id,
-        bemoveid: event === 'up' ? this.tableData[idx - 1].id : this.tableData[idx + 1].id,
-        status: event === 'up' ? 0 : 1
+      let bemoveid, status, moveid
+      if (event === 'up') {
+        moveid = data.id
+        bemoveid = this.tableData[idx - 1].id
+        status = 0
+      } else {
+        moveid = data.id
+        bemoveid = this.tableData[idx + 1].id
+        status = 1
       }
-      const res = await Home.sortTab(params)
+      const res = await Home.sortTab({ moveid, bemoveid, status })
       if (res.state === 1) {
         changeOrder(this.tableData, data.id, event)
       } else {

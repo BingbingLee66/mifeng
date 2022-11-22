@@ -4,6 +4,7 @@
     <el-dialog
       :visible.sync="dialogVisible"
       :title="dialogTitle"
+      :close-on-click-modal="false"
       width="600px"
       @closed="close"
     >
@@ -17,8 +18,8 @@
         <template v-slot:customConetent>
           <div class="text-center mt-40">
             <el-button class="mr-20" @click="close">取消</el-button>
-            <el-button class="mr-20" @click="handleSubmit">保存</el-button>
-            <el-button type="primary" @click="handleSubmit">发布</el-button>
+            <el-button class="mr-20" @click="handleSubmit(2)">保存</el-button>
+            <el-button type="primary" @click="handleSubmit(1)">发布</el-button>
           </div>
         </template>
       </ysh-form>
@@ -31,6 +32,12 @@ import { uploadFile } from '@/api/content/article'
 import Home from '@/api/home-config/Home'
 
 export default {
+  props: {
+    clientType: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       dialogVisible: false,
@@ -43,9 +50,10 @@ export default {
       },
       formObj: {
         title: '', // 标题
-        type: '', // 关联内容
-        img: '' // 上传图片
+        content: '', // 关联内容
+        img: '', // 上传图片
       },
+      submitStatus: 1, // 1-发布 2-保存
       formItem: [
         {
           label: '标题：',
@@ -64,7 +72,7 @@ export default {
         },
         {
           label: '关联内容：',
-          prop: 'type',
+          prop: 'content',
           type: 'textarea',
           width: '90%',
           rows: 5,
@@ -78,7 +86,7 @@ export default {
           type: 'upload',
           value: '',
           rules: [{ required: true, message: '请上传图片', trigger: 'change' }],
-          formTip: ['建议尺寸76*76px; 支持png、jpg、gif'],
+          formTip: ['建议尺寸1234*1234px; 支持png、jpg'],
           beforeUpload: file => {
             this.beforeUpload(file)
           },
@@ -107,26 +115,25 @@ export default {
 
     edit(data) {
       this.dialogTitle = '编辑banner图'
-      const { title, type, img, id } = data
-      this.formObj = { title, type, img, id }
+      const { title, content, img, bannerId } = data
+      this.formObj = { title, content, img, bannerId }
       this.dialogVisible = true
     },
 
     close() {
-      this.formObj = { title: '', type: '', img: '' }
+      this.formObj = { title: '', content: '', img: '' }
       this.$refs.formRef.resetFileds()
       this.dialogVisible = false
     },
 
-    /** 上传金刚区图片校验 */
+    /** 上传图片校验 */
     beforeUpload(file) {
       if (
         file.type !== 'image/jpeg' &&
         file.type !== 'image/jpg' &&
-        file.type !== 'image/gif' &&
         file.type !== 'image/png'
       ) {
-        this.$message.error('上传图片只能是 JPG 或 PNG 或 gif 格式!')
+        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
         return false
       }
       if (file.size > 1024 * 1024 * 2) {
@@ -135,7 +142,7 @@ export default {
       }
     },
 
-    /** 上传金刚区图片 */
+    /** 上传图片 */
     uploadKingkongImage(content, prop) {
       const formData = new FormData()
       formData.append('file', content.file)
@@ -144,17 +151,16 @@ export default {
       })
     },
 
-    handleSubmit() {
+    handleSubmit(status) {
+      this.submitStatus = status
       this.$refs.formRef.submit()
     },
 
     async submit(data) {
       const res = await Home.saveBanner({
-        ...data,
-        type: 1,
-        level: 0,
-        articleId: 12989,
-        ckey: ''
+        clientType: +this.clientType,
+        status: this.submitStatus,
+        ...data
       })
       if (res.state !== 1) {
         this.$message.error(res.msg)

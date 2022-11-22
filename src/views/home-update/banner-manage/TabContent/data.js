@@ -6,7 +6,7 @@ const tableColumn = [
   },
   {
     label: 'id',
-    prop: 'id',
+    prop: 'bannerId',
     width: '100px',
     align: 'center'
   },
@@ -19,9 +19,9 @@ const tableColumn = [
     label: '图片',
     prop: 'img',
     type: 'image',
-    width: '150px',
+    width: '160px',
     imgWidth: '120px',
-    imgHeight: '60px',
+    imgHeight: '80px',
     align: 'center',
     url: row => {
       return row.img
@@ -32,24 +32,25 @@ const tableColumn = [
   },
   {
     label: '关联内容',
-    prop: 'type',
-    align: 'center',
-    type: 'function',
-    callback: row => {
-      const typeMap = {
-        1: '文章',
-        2: '商品',
-        3: '邀请有礼',
-      }
-      return row.type ? typeMap[row.type] : '- -'
-    }
+    prop: 'content',
+    align: 'center'
   },
   {
-    label: '顺序',
+    label: '轮播顺序',
     prop: 'order',
     width: '100px',
     type: 'order',
     align: 'center'
+  },
+  {
+    label: '切换频率',
+    prop: 'switchFrequence',
+    width: '100px',
+    align: 'center',
+    type: 'function',
+    callback: row => {
+      return row.switchFrequence + 'ms'
+    }
   },
   {
     label: '状态',
@@ -59,21 +60,22 @@ const tableColumn = [
     type: 'function',
     callback: row => {
       const statusMap = {
-        1: '正常',
-        0: '冻结',
+        0: '删除',
+        1: '使用中',
+        2: '冻结',
       }
       return row.status || row.status === 0 ? statusMap[row.status] : '- -'
     }
   },
   {
     label: '更新时间',
-    prop: 'createdTs',
+    prop: 'updateTs',
     width: '160px',
     align: 'center'
   },
   {
     label: '操作人',
-    prop: 'operator',
+    prop: 'updaterName',
     width: '160px',
     align: 'center'
   },
