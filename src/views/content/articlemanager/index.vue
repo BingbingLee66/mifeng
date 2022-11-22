@@ -215,6 +215,13 @@
             {{ scope.row.commentNums ? scope.row.commentNums : "--" }}
           </template>
         </el-table-column>
+        <el-table-column label="关联词条" width="120px" prop="commentNums">
+          <template slot-scope="scope">
+            <el-button type="text" @click="editEntryHandler(scope.row)">
+              {{ scope.row.entry ? '编辑词条' : '添加词条' }}
+            </el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="来源" width="180px">
           <template slot-scope="scope">
             <div v-if="scope.row.publishType == 1">--</div>
@@ -821,6 +828,7 @@
         </el-dialog>
       </div>
     </div>
+    <entry-dialog :visible.sync="entryVisible" title="添加词条" />
   </div>
 </template>
 

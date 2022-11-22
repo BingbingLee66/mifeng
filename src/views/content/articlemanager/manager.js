@@ -14,6 +14,7 @@ import { getOptionsWithCkey } from '@/api/content/columnsetup'
 import { getChamberOptions } from '@/api/finance/finance'
 import { getSts } from '@/api/vod/vod'
 import videoComponent from '@/components/video/index'
+import EntryDialog from '@/components/entryDialog'
 export default {
   data() {
     return {
@@ -96,11 +97,13 @@ export default {
           label: '是',
           value: '1',
         },
-      ]
+      ],
+      entryVisible: false
     }
   },
   components: {
-    videoComponent
+    videoComponent,
+    EntryDialog
   },
   computed: {},
   created() {
@@ -481,6 +484,10 @@ export default {
           })
         }
       })
+    },
+    editEntryHandler(row) {
+      this.entryVisible = true
+      console.log(row)
     }
   }
 }
