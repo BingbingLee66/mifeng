@@ -88,6 +88,14 @@ export default {
       return columnsArr
     }
   },
+  watch: {
+    query: {
+      handler() {
+        this.query.page = 1
+      },
+      deep: true
+    }
+  },
   created() {
     this.getTableData()
   },
