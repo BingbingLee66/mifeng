@@ -16,7 +16,7 @@
         </el-select>
         <el-select v-else v-model="query.putSource" placeholder="请选择">
           <el-option label="全部" value="" />
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option v-for="item in options" :key="item" :label="item" :value="item" />
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
@@ -98,17 +98,14 @@ export default {
     },
     async getTableData() {
       this.query.type = this.type === '快速入驻线索' ? 1 : 2
-      console.log('this query', this.query)
-
       const { pageNum: page, timeRanges, ...query } = this.query
+
       const { data: { list, totalRows } } = await getClueList({
         page,
         ...query,
         startTime: timeRanges && timeRanges[0] ? timeRanges[0].getTime() : '',
         endTime: timeRanges && timeRanges[1] ? timeRanges[1].getTime() : '',
       })
-      console.log('list', list)
-
       this.tableData = list || []
       this.total = totalRows || 0
       this.selectedData = []
@@ -123,8 +120,7 @@ export default {
         联系人电话: v.contactPhone,
       }))
     },
-    handleClick(tab) {
-      console.log('tab', tab.name)
+    async handleClick(tab) {
       this.type = tab.name
       this.query = {
         name: '',
@@ -135,8 +131,8 @@ export default {
         pageNum: 1
       }
       if (this.type === '转介绍线索') {
-        const { data } = getPutSource()
-        console.log('options data', data)
+        const { data } = await getPutSource()
+        this.options = data
       }
       this.getTableData()
     }
