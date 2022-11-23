@@ -29,7 +29,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="getTableData">查询</el-button>
+        <el-button type="primary" @click="searchData">查询</el-button>
       </el-form-item>
     </el-form>
 
@@ -38,7 +38,7 @@
     </el-row>
 
     <KdTable :rows="tableData" :columns="tableList" @selection-change="onSelectionChange" />
-    <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
+    <KdPagination :page-size="pageSize" :current-page="pageNum" :total="total" @change="onQueryChange" />
   </div>
 </template>
 
@@ -59,10 +59,10 @@ export default {
         source: -1,
         putSource: '',
         timeRanges: [],
-        pageSize: 10,
-        pageNum: 1
       },
 
+      pageSize: 10,
+      pageNum: 1,
       total: 0,
       type: '快速入驻线索',
       tableData: [],
@@ -91,7 +91,7 @@ export default {
   watch: {
     query: {
       handler() {
-        this.query.page = 1
+        this.pageNum = 1
       },
       deep: true
     }
@@ -99,17 +99,26 @@ export default {
   created() {
     this.getTableData()
   },
+
   methods: {
     onQueryChange(e) {
-      this.query = { ...this.query, ...e }
+      this.pageNum = e.pageNum || this.pageNum
+      this.pageSize = e.pageSize || this.pageSize
       this.getTableData()
     },
+
+    searchData() {
+      this.selectedData = []
+      this.getTableData()
+    },
+
     async getTableData() {
       this.query.type = this.type === '快速入驻线索' ? 1 : 2
-      const { pageNum: page, timeRanges, ...query } = this.query
+      const { timeRanges, ...query } = this.query
 
       const params = {
-        page,
+        page: this.pageNum,
+        pageSize: this.pageSize,
         ...query,
         startTime: timeRanges && timeRanges[0] ? timeRanges[0].getTime() : '',
         endTime: timeRanges && timeRanges[1] ? timeRanges[1].getTime() + 86399999 : '',
@@ -117,14 +126,17 @@ export default {
       const { data: { list, totalRows } } = await getClueList(params)
       this.tableData = list || []
       this.total = totalRows || 0
-      this.selectedData = []
     },
     onSelectionChange(e) {
+      let flag
+      if (e.length && e[0].source) {
+        flag = 1
+      }
       this.selectedData = e.map(v => ({
         线索ID: v.id,
         社会组织名称: v.name,
         创建时间: formatDateTime(new Date(+v.createdTs), 'yyyy年MM月dd日 hh:mm:ss'),
-        线索来源: v.source === 1 ? '小程序名录' : 'APP名录',
+        线索来源: flag ? (v.source === 1 ? '小程序名录' : 'APP名录') : v.putSource,
         联系人姓名: v.contactName,
         联系人电话: v.contactPhone,
       }))
@@ -143,6 +155,7 @@ export default {
         const { data } = await getPutSource()
         this.options = data
       }
+      this.selectedData = []
       this.getTableData()
     }
   },
