@@ -1,4 +1,5 @@
 import { createActivity, uploadPortrait, getActivity, getAlbumRelevance, getLinkPowerChamberCkeys } from '@/api/activity/activity'
+import { uploadFile } from '@/api/content/article'
 import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
 import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
@@ -105,6 +106,7 @@ export default {
         cardShow: 1,
         cardShowType: 1,
         cardInfoType: 0,
+        attachment: []
       },
       isReleActivity: false,
       roleIds: [], // 多选框 扩展功能
@@ -806,7 +808,6 @@ export default {
         params.cardShowType = 0
       }
       delete params.cardShow
-
       createActivity(params).then(res => {
         if (res.state === 1) {
           this.$message.success(res.msg)
@@ -948,6 +949,34 @@ export default {
     addParentHtml(html) {
       this.formObj.introduce = html
     },
-
+    // 上传文件校验
+    beforeUploadFile(file) {
+      if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt', 'txt'].includes(file.name.split('.')[1])) {
+        this.$message.error('上传文件只能是 word、excel、pdf、ppt、txt 格式!')
+        return false
+      }
+    },
+    // 上传文件
+    uploadFile(content) {
+      const formData = new FormData()
+      formData.append('file', content.file)
+      uploadFile(formData, 'activityAttachment').then(res => {
+        if (res.state === 1) {
+          this.formObj.attachment.push({
+            fileName: content.file.name,
+            name: content.file.name,
+            ossUrl: res.data
+          })
+        } else {
+          const idx = this.$refs.uploadFile.uploadFiles.findIndex(item => item.uid === content.file.uid)
+          this.$refs.uploadFile.uploadFiles.splice(idx, 1)
+          return this.$message.error('上传失败,请重试')
+        }
+      })
+    },
+    // 删除上传文件
+    handleRemoveAttachment(file) {
+      this.formObj.attachment = this.formObj.attachment.filter(item => item.uid !== file.uid)
+    },
   }
 }
