@@ -6,28 +6,27 @@ const tableColumn = [
   },
   {
     label: '推荐位',
-    prop: 'name',
-    align: 'center'
-  },
-  {
-    label: '可推荐内容类型',
-    prop: 'type',
-    align: 'center',
-
-  },
-  {
-    label: '当前使用内容',
-    prop: 'content',
+    prop: 'position',
     align: 'center',
     type: 'function',
     callback(row) {
-      const contentMap = {
-        1: '活动',
-        2: '供需',
-        3: '资讯'
+      const positionMap = {
+        1: '轮播推荐',
+        2: '内容推荐',
+        3: '内容推荐卡片'
       }
-      return contentMap[row.content]
+      return positionMap[row.position]
     }
+  },
+  {
+    label: '可推荐内容类型',
+    prop: 'optionalType',
+    align: 'center'
+  },
+  {
+    label: '当前使用内容',
+    prop: 'contentStr',
+    align: 'center'
   },
   {
     label: '状态',
@@ -36,23 +35,22 @@ const tableColumn = [
     type: 'function',
     callback(row) {
       const statusMap = {
+        0: '隐藏',
         1: '使用中',
-        2: '隐藏',
-        3: '使用中'
+        2: '冻结'
       }
-      return statusMap[row.status]
+      return row.status || row.status === 0 ? statusMap[row.status] : '- -'
     }
   },
   {
     label: '更新时间',
     prop: 'updateTs',
-    type: 'time',
     width: '160px',
     align: 'center'
   },
   {
     label: '操作人',
-    prop: 'updateName',
+    prop: 'operatorStr',
     width: '160px',
     align: 'center'
   },

@@ -2,26 +2,34 @@
   <div>
     <!-- 编辑轮播推荐 -->
     <el-dialog
+      v-if="dialogVisible"
       :visible.sync="dialogVisible"
       title="编辑轮播推荐"
       width="800px"
       :close-on-click-modal="false"
-      @closed="handleClose"
+      @closed="close"
     >
       <div v-loading="dialogLoading">
         <el-form ref="formObj" :model="formObj" :rules="rules" label-width="100px">
-          <el-form-item style="width: 50%" label="活动类型：" prop="type">
-            <el-select v-model="formObj.type" placeholder="请选择活动类型">
+          <el-form-item style="width: 50%" label="活动类型：" prop="contentType">
+            <el-select v-model="formObj.contentType" placeholder="请选择活动类型" @change="handleTypeChange">
               <el-option label="平台活动" value="1" />
               <el-option label="招商活动" value="2" />
             </el-select>
           </el-form-item>
-          <el-form-item style="width: 50%" label="活动内容：" prop="activityIds">
-            <el-select v-model="formObj.activityIds" multiple collapse-tags placeholder="请选择" @change="handleChange">
-              <el-option v-for="item in activityOptions" :key="item.id" :label="item.label" :value="item.id" />
+          <el-form-item style="width: 50%" label="活动内容：" prop="contentIds">
+            <el-select
+              v-model="formObj.contentIds"
+              :disabled="isDisable"
+              multiple
+              collapse-tags
+              placeholder="请选择"
+              @change="handleChange"
+            >
+              <el-option v-for="item in options" :key="item.contentId" :label="item.label" :value="item.contentId" />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="formObj.activityIds.length > 0" label="">
+          <el-form-item v-if="formObj.contentIds.length > 0" label="">
             <ysh-table
               :table-config="tableConfig"
               :table-column="tableColumn"
@@ -33,17 +41,17 @@
               </template>
             </ysh-table>
           </el-form-item>
-          <el-form-item label="切换频率：" prop="switch">
-            <el-switch v-model="formObj.switch" />
+          <el-form-item label="切换频率：" prop="shuffling">
+            <el-switch v-model="formObj.shuffling" />
           </el-form-item>
-          <el-form-item v-if="formObj.switch" label="" prop="rate">
-            <el-input v-model="formObj.rate" style="width: 200px" placeholder="">
+          <el-form-item v-if="formObj.shuffling" label="" prop="shufflingSpeed">
+            <el-input v-model="formObj.shufflingSpeed" style="width: 200px" placeholder="">
               <template slot="append">毫秒</template>
             </el-input>
           </el-form-item>
           <el-form-item label="">
             <div class="mt-20">
-              <el-button class="mr-20" @click="handleClose">取消</el-button>
+              <el-button class="mr-20" @click="close">取消</el-button>
               <el-button type="primary" @click="submit">保存</el-button>
             </div>
           </el-form-item>
@@ -56,33 +64,27 @@
 <script>
 import { validateInt } from '@/utils/validate'
 import { changeOrder, removeItem } from '@/utils/utils'
-import { getActivityList } from '@/api/activity/activity'
-import { getInvesActivityList } from '@/api/attract'
-import Kingkong from '@/api/home-config/KingKong'
 import { tableColumn } from './data'
+import Home from '@/api/home-config/Home'
 
 export default {
   data() {
     return {
       dialogVisible: false,
       dialogLoading: true,
-      /** 平台活动列表 */
-      activityList: [],
-      /** 招商活动列表 */
-      investActivityList: [],
       /** 提交表单 */
       formObj: {
-        type: '',
-        switch: false,
-        rate: '',
-        activityIds: []
+        contentType: '', // 推荐位内容类型
+        shuffling: false, // 是否开启轮播，1开启，0关闭
+        shufflingSpeed: '', // 轮播频率，单位毫秒
+        contentIds: []
       },
       /** 校验规则 */
       rules: {
-        type: [{ required: true, message: '请选择活动类型', trigger: 'change' }],
-        activityIds: [{ required: true, message: '请选择活动内容', trigger: 'change' }],
-        switch: [{ required: true }],
-        rate: [
+        contentType: [{ required: true, message: '请选择活动类型', trigger: 'blur' }],
+        contentIds: [{ required: true, message: '请选择活动内容', trigger: 'blur' }],
+        shuffling: [{ required: true }],
+        shufflingSpeed: [
           { required: true, message: '请输入切换频率' },
           { validator: validateInt, trigger: 'blur' }
         ]
@@ -94,83 +96,126 @@ export default {
         maxHeight: window.innerHeight - 600 + 'px'
       },
       tableColumn,
-      tableData: []
+      tableData: [],
+      options: [],
+      rowData: []
     }
   },
   computed: {
-    activityOptions() {
-      return this.formObj.type === '1' ? this.activityList : this.investActivityList
+    isDisable() {
+      return this.formObj.contentType === ''
     }
   },
   mounted() {
     this.$nextTick(() => {
       this.$on('edit', data => {
-        this.handleEdit(data)
+        this.rowData = data
+        this.edit(data)
       })
     })
   },
   methods: {
-    /** 获取活动列表  */
-    async fetchData(data) {
-      const pageData = { pageSize: 100, page: 1 }
-      const [res1, res2] = await Promise.all([
-        getActivityList({ isPublish: 1, ...pageData }),
-        getInvesActivityList({ isInves: false, ...pageData })
-      ])
-      const fn = arr => {
-        return arr.map((item, index) => {
-          item.label = item.id + ' ' + item.activityName
-          item.serialNumber = index + 1
-          return item
-        })
-      }
-      this.activityList = fn(res1.data.list)
-      this.investActivityList = fn(res2.data.list)
-      this.formObj.type = data.content + ''
+    /** 打开编辑弹窗 */
+    async edit(data) {
+      this.dialogVisible = true
+      await this.getContent(data.position)
+      await this.getOptions(data.contentType)
+      this.formObj.contentType = data.contentType + ''
       this.dialogLoading = false
     },
 
-    /** 打开编辑弹窗 */
-    handleEdit(data) {
-      this.dialogVisible = true
-      this.fetchData(data)
+    /** 关闭编辑弹窗 */
+    close() {
+      this.formObj = {
+        contentType: '',
+        shuffling: false,
+        shufflingSpeed: '',
+        contentIds: []
+      }
+      this.$refs['formObj'].clearValidate()
+      this.dialogVisible = false
     },
 
-    /** 关闭编辑弹窗 */
-    handleClose() {
-      this.dialogVisible = false
+    /** 获取推荐位展示内容 */
+    async getContent(recommendPosId) {
+      const { data: content } = await Home.getRecommendContent({ recommendPosId })
+      if (content && content.length > 0) {
+        this.formObj.contentIds = content.map(i => i.contentId)
+        this.formObj.shuffling = content[0].shuffling === 1
+        this.formObj.shufflingSpeed = content[0].shufflingSpeed
+        this.tableData = content
+        this.tableData.forEach(i => {
+          i.id = i.contentId
+          i.label = i.contentId + ' ' + i.contentTitle
+        })
+      }
+      console.log('content data', content)
+    },
+
+    /** 获取推荐内容选择列表（根据类容类型） */
+    async getOptions(contentType) {
+      console.log('contentType', contentType)
+      const { data: list } = await Home.getContentList({ contentType })
+      console.log('options data', list)
+      if (list && list.length > 0) {
+        list.forEach(i => {
+          i.id = i.contentId
+          i.label = i.contentId + ' ' + i.contentTitle
+        })
+        this.options = list
+      }
+    },
+
+    /** 选择推荐内容类型 */
+    handleTypeChange(contentType) {
+      this.formObj.contentIds = []
+      this.tableData = []
+      this.options = []
+      this.getOptions(contentType)
     },
 
     /** 选择活动内容 */
     handleChange(data) {
-      const result = this.activityOptions.filter(item => {
-        return data.includes(item.id)
+      const result = this.options.filter(item => {
+        return data.includes(item.contentId)
       })
       this.tableData = result
     },
 
     /** 移除活动内容 */
     handleRemove(data) {
-      removeItem(this.tableData, data.id)
-      removeItem(this.formObj.activityIds, data.id)
+      removeItem(this.tableData, data.contentId)
+      removeItem(this.formObj.contentIds, data.contentId)
     },
 
     /** 调整上下顺序 */
     handleOrder(event, data) {
-      changeOrder(this.tableData, data.id, event)
+      changeOrder(this.tableData, data.contentId, event)
     },
 
     async submit() {
       this.$refs['formObj'].validate(async valid => {
         if (valid) {
-          console.log('通过检验=>', this.formObj)
-          const res = await Kingkong.saveKingkong()
+          const params = this.tableData.map(item => {
+            return {
+              recommendId: this.rowData.position, // 推荐位id
+              id: this.rowData.id, // 推荐位内容id
+              type: this.formObj.contentType, // 推荐位内容类型
+              contentId: item.contentId, // 活动内容id
+              contentImg: item.contentImg, // 活动内容图片
+              contentTitle: item.contentTitle, // 活动内容标题
+              shuffling: this.formObj.shuffling ? 1 : 0, // 是否开启轮播 1开启，0关闭
+              shufflingSpeed: this.formObj.shufflingSpeed // 轮播频率，
+            }
+          })
+          console.log('submit params', params)
+          const res = await Home.updateRecommendContent(params)
           if (res.state !== 1) {
             this.$message.error(res.msg)
           } else {
             this.$message.success(res.msg)
             this.close()
-            this.$emit('Refresh')
+            this.$emit('refresh')
           }
         } else {
           console.log('error submit!!')
@@ -186,5 +231,9 @@ export default {
 /deep/ .el-dialog {
   margin-top: 8vh !important;
   min-height: 60vh !important;
+}
+
+/deep/ .el-select__tags .el-tag--info:nth-child(1) {
+  width: 80% !important;
 }
 </style>

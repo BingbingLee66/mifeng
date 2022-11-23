@@ -1,22 +1,21 @@
 const tableColumn = [
   {
     label: '活动ID/名称',
-    prop: 'label',
-    align: 'center'
+    prop: 'label'
   },
   {
     label: '活动列表图',
-    prop: 'listImage',
+    prop: 'contentImg',
     align: 'center',
     type: 'image',
     width: '156px',
     imgWidth: '130px',
     imgHeight: '60px',
     url: row => {
-      return row.listImage
+      return row.contentImg
     },
     urlList: row => {
-      return [row.listImage]
+      return [row.contentImg]
     }
   },
   {

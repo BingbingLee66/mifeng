@@ -154,7 +154,7 @@
         <el-button v-dbClick type="primary" @click="submit">确定</el-button>
         <el-button @click="cancel">取消</el-button>
       </el-form-item>
-      <slot name="customConetent" :data="this.formData" />
+      <slot name="customConetent" :data="formData" />
     </el-form>
   </div>
 </template>
@@ -194,7 +194,7 @@ export default {
           this.formData = JSON.parse(JSON.stringify(this.formObj))
         }
       },
-      immediate: true,
+      immediate: true
     },
   },
 

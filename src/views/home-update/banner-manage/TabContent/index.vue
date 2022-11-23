@@ -61,7 +61,6 @@
 
 <script>
 import TableMixins from '@/mixins/yshTable'
-import { changeOrder } from '@/utils/utils'
 import { tableColumn } from './data'
 import AddDialog from '../Dialog/AddDialog'
 import RateDialog from '../Dialog/RateDialog'
@@ -189,7 +188,7 @@ export default {
         num: event === 'up' ? data.num - 1 : data.num + 1
       })
       if (res.state === 1) {
-        changeOrder(this.tableData, data.id, event)
+        this.fetchData()
       } else {
         this.$message.error(res.msg)
       }

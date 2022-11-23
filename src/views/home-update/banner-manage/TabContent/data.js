@@ -70,6 +70,7 @@ const tableColumn = [
   {
     label: '更新时间',
     prop: 'updateTs',
+    type: 'time',
     width: '160px',
     align: 'center'
   },

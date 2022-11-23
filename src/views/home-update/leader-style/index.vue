@@ -17,26 +17,38 @@
     >
       <template v-slot:operate="row">
         <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
-        <span class="text-blue cur ml-10" @click="handleEvent('show', row.data)">展示</span>
-        <span class="text-yellow cur ml-10" @click="handleEvent('hide', row.data)">隐藏</span>
-        <span class="text-red cur ml-10" @click="handleEvent('delete', row.data)">删除</span>
+        <span
+          v-if="row.data.showStatus === 0"
+          class="text-blue cur ml-10"
+          @click="handleEvent('status', row.data)"
+        >展示</span>
+        <span
+          v-if="row.data.showStatus === 1"
+          class="text-yellow cur ml-10"
+          @click="handleEvent('status', row.data)"
+        >隐藏</span>
+        <span
+          v-if="row.data.showStatus === 0"
+          class="text-red cur ml-10"
+          @click="handleEvent('delete', row.data)"
+        >删除</span>
       </template>
     </ysh-table>
 
     <!-- 新增/编辑banner弹窗 -->
-    <add-dialog ref="dialogRef1" @Refresh="fetchData" />
-    <!-- 切换频率弹窗 -->
-    <use-dialog ref="dialogRef2" @Refresh="fetchData" />
+    <add-dialog ref="dialogRef1" @refresh="fetchData" />
+    <!-- 功能开关弹窗 -->
+    <use-dialog ref="dialogRef2" @refresh="fetchData" />
   </div>
 </template>
 
 <script>
 import TableMixins from '@/mixins/yshTable'
 import { changeOrder } from '@/utils/utils'
-import Kingkong from '@/api/home-config/KingKong'
 import AddDialog from './Dialog/AddDialog'
 import UseDialog from './Dialog/UseDialog'
 import _data from './data'
+import Home from '@/api/home-config/Home'
 
 export default {
   components: { AddDialog, UseDialog },
@@ -66,15 +78,10 @@ export default {
     async fetchData() {
       this.tableConfig.loading = true
       const params = {
-        clientType: 0,
-        name: '',
-        creatorName: '',
-        createdTsBegin: '',
-        createdTsEnd: '',
         pageNum: 1,
         pageSize: 100
       }
-      const res = await Kingkong.getKingkongList(params)
+      const res = await Home.getLeaderList(params)
       if (res.state !== 1) return
       this.tableData = res.data.list
       this.pageData.total = res.data.totalRows
@@ -96,13 +103,8 @@ export default {
         case 'delete':
           this.handleDelete(data)
           break
-        case 'show':
-          this.handleShow(event, data)
-          break
-        case 'hide':
-          this.handleShow(event, data)
-          break
-        default:
+        case 'status':
+          this.handleStatus(data)
           break
       }
     },
@@ -113,32 +115,36 @@ export default {
     },
 
     /* 展示/隐藏 */
-    handleShow(event, data) {
-      console.log('show data', event, data)
+    async handleStatus(data) {
+      const res = await Home.changeLeaderStatus({
+        id: data.id,
+        type: data.showStatus === 1 ? 0 : 1
+      })
+      if (res.state === 1) {
+        this.$message.success(res.msg)
+        this.fetchData()
+      } else {
+        this.$message.error(res.msg)
+      }
     },
 
     /** 删除 */
-    handleDelete() {
-      this.$confirm('确认移除该banner图吗?', '提示', {
+    handleDelete(data) {
+      this.$confirm('确认移除吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(async () => {
-          const idsArr = this.selectionData.map(item => {
-            return item.id
-          })
-          const res = await Kingkong.deleteKingkong(idsArr)
+          const res = await Home.deleteLeader(data.id)
           if (res.state === 1) {
             this.$message.success(res.msg)
-            this.fetchData(1)
+            this.fetchData()
           } else {
             this.$message.error(res.msg)
           }
         })
-        .catch(() => {
-          this.$message.info('已取消移除')
-        })
+        .catch(() => {})
     }
   }
 }

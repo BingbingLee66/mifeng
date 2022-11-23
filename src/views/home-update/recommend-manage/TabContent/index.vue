@@ -11,12 +11,14 @@
           @click="handleEvent('edit', row.data)"
         >编辑</span>
         <span
+          v-if="row.data.status === 0"
           class="text-blue cur ml-10"
-          @click="handleEvent('show', row.data)"
+          @click="handleEvent('status', row.data)"
         >显示</span>
         <span
+          v-if="row.data.status === 1"
           class="text-yellow cur ml-10"
-          @click="handleEvent('hide', row.data)"
+          @click="handleEvent('status', row.data)"
         >隐藏</span>
       </template>
     </ysh-table>
@@ -46,50 +48,33 @@ export default {
   },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
+  props: {
+    clientType: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       tableColumn: _data.tableColumn,
-      tableData: [
-        {
-          id: 1,
-          name: '轮播推荐',
-          type: '活动、招商活动',
-          content: 1,
-          status: 1,
-          updateTs: '1651809772790',
-          updateName: 'caiweihai'
-        },
-        {
-          id: 2,
-          name: '内容推荐',
-          type: '供需、资讯、招商资讯',
-          content: 2,
-          status: 2,
-          updateTs: '1651809772790',
-          updateName: 'caiweihai'
-        },
-        {
-          id: 3,
-          name: '内容推荐卡片',
-          type: '平台资讯、招商资讯',
-          content: 3,
-          status: 3,
-          updateTs: '1651809772790',
-          updateName: 'caiweihai'
-        }
-      ]
+      tableData: []
     }
   },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
     /** 获取推荐位列表数据 */
     async fetchData() {
       this.tableConfig.loading = true
-      const res = await Home.getRecommendList()
+      const res = await Home.getRecommendList({
+        platform: this.clientType,
+        pageNum: 1,
+        pageSize: 100,
+      })
       if (res.state !== 1) return
-      // this.tableData = res.data
+      const resData = res.data
+      this.tableData = resData.list
       this.tableConfig.loading = false
     },
 
@@ -99,45 +84,38 @@ export default {
         case 'edit':
           this.handleDialog('edit', data)
           break
-        case 'hide':
-          this.handleShow('hide', data)
-          break
-        case 'show':
-          this.handleShow('show', data)
-          break
-        default:
-          break
-      }
-    },
-
-    /** 编辑推荐位 */
-    handleDialog(event, data) {
-      const { name } = data
-      switch (name) {
-        case '轮播推荐':
-          this.$refs.dialogRef1.$emit(event, data)
-          break
-        case '内容推荐':
-          this.$refs.dialogRef2.$emit(event, data)
-          break
-        case '内容推荐卡片':
-          this.$refs.dialogRef3.$emit(event, data)
+        case 'status':
+          this.handleStatus(data)
           break
       }
     },
 
     /** 显示/隐藏 */
-    async handleShow(event, data) {
-      console.log('event:', event)
-      const res = await Home.showRecommend({
+    async handleStatus(data) {
+      const res = await Home.changeRecommendStatus({
         id: data.id,
-        status: event === 'hide' ? 0 : 1
+        status: data.status === 1 ? 0 : 1
       })
       if (res.state === 1) {
         this.$message.success(res.msg)
         this.fetchData()
       } else {
         this.$message.error(res.msg)
+      }
+    },
+
+    /** 编辑推荐位 */
+    handleDialog(event, data) {
+      switch (data.position) {
+        case 1:
+          this.$refs.dialogRef1.$emit(event, data)
+          break
+        case 2:
+          this.$refs.dialogRef2.$emit(event, data)
+          break
+        case 3:
+          this.$refs.dialogRef3.$emit(event, data)
+          break
       }
     }
   }

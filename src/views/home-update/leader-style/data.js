@@ -11,12 +11,12 @@ const tableColumn = [
   },
   {
     label: '领导名称',
-    prop: 'name',
+    prop: 'leaderName',
     align: 'center'
   },
   {
     label: '会内职务',
-    prop: 'url',
+    prop: 'postName',
     align: 'center'
   },
   {
@@ -27,8 +27,16 @@ const tableColumn = [
   },
   {
     label: '状态',
-    prop: 'labels',
-    align: 'center'
+    prop: 'showStatus',
+    align: 'center',
+    type: 'function',
+    callback: row => {
+      const statusMap = {
+        0: '隐藏',
+        1: '展示',
+      }
+      return row.showStatus || row.showStatus === 0 ? statusMap[row.showStatus] : '- -'
+    }
   },
   {
     label: '操作',

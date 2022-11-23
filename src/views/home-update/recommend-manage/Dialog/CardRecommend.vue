@@ -2,17 +2,18 @@
   <div>
     <!-- 编辑内容推荐卡片 -->
     <el-dialog
+      v-if="dialogVisible"
       :visible.sync="dialogVisible"
       title="编辑内容推荐"
       width="800px"
       :close-on-click-modal="false"
-      @closed="handleClose"
+      @closed="close"
     >
       <div v-loading="dialogLoading">
         <el-form ref="formObj" :model="formObj" :rules="rules" label-width="120px">
-          <el-form-item label="卡片名称：" prop="name">
+          <el-form-item label="卡片名称：" prop="title">
             <el-input
-              v-model.trim="formObj.name"
+              v-model.trim="formObj.title"
               style="width: 50%"
               placeholder="不多于6个字符"
               maxlength="6"
@@ -20,20 +21,20 @@
               clearable
             />
           </el-form-item>
-          <el-form-item label="内容类型：" prop="type">
+          <el-form-item label="内容类型：" prop="contentType">
             <el-select
-              v-model="formObj.type"
+              v-model="formObj.contentType"
               style="width: 50%"
               placeholder="请选择内容类型"
               @change="handleTypeChange"
             >
-              <el-option label="招商资讯" value="2" />
-              <el-option label="平台资讯" value="3" />
+              <el-option label="招商资讯" value="5" />
+              <el-option label="平台资讯" value="4" />
             </el-select>
           </el-form-item>
-          <el-form-item label="推荐内容：" prop="ids">
+          <el-form-item label="推荐内容：" prop="contentIds">
             <el-select
-              v-model="formObj.ids"
+              v-model="formObj.contentIds"
               style="width: 50%"
               placeholder="请选择"
               :disabled="isDisable"
@@ -44,7 +45,7 @@
           </el-form-item>
           <el-form-item label="">
             <div class="mt-20">
-              <el-button class="mr-20" @click="handleClose">取消</el-button>
+              <el-button class="mr-20" @click="close">取消</el-button>
               <el-button type="primary" @click="submit">保存</el-button>
             </div>
           </el-form-item>
@@ -56,26 +57,18 @@
 
 <script>
 import { validateInt } from '@/utils/validate'
-import { getManagerList } from '@/api/content/article'
-import { getinvesInfoList } from '@/api/attract'
-import Kingkong from '@/api/home-config/KingKong'
-import { tableColumn2, tableColumn3 } from './data'
+import Home from '@/api/home-config/Home'
+
 export default {
   data() {
     return {
       dialogVisible: false,
       dialogLoading: true,
-      /** 平台资讯列表 */
-      articleList: [],
-      /** 招商资讯列表 */
-      investList: [],
       /** 提交表单 */
       formObj: {
-        name: '',
-        type: '',
-        switch: false,
-        rate: '',
-        ids: ''
+        title: '', // 推荐位名称
+        contentType: '', // 推荐位内容类型
+        contentIds: []
       },
       /** 校验规则 */
       rules: {
@@ -87,94 +80,110 @@ export default {
           { required: true, message: '请输入切换频率' },
           { validator: validateInt, trigger: 'blur' }
         ]
-      }
+      },
+      options: [],
+      rowData: []
     }
   },
   computed: {
-    options() {
-      const { type } = this.formObj
-      if (type === '1') {
-        return this.supplyList
-      } else if (type === '2') {
-        return this.investList
-      } else if (type === '3') {
-        return this.articleList
-      } else {
-        return []
-      }
-    },
-    tableColumn() {
-      return this.formObj.type === '1' ? tableColumn2 : tableColumn3
-    },
     isDisable() {
-      return this.formObj.type === ''
+      return this.formObj.contentType === ''
     }
   },
   mounted() {
     this.$nextTick(() => {
       this.$on('edit', data => {
-        this.handleEdit(data)
+        this.rowData = data
+        this.edit(data)
       })
     })
   },
   methods: {
-    /** 获取内容列表  */
-    async fetchData() {
-      const pageData = { pageSize: 100, page: 1 }
-      const [res1, res2] = await Promise.all([
-        getManagerList({
-          status: 1,
-          contentModuleId: 1,
-          publishTimeType: 0,
-          title: '',
-          ckey: '',
-          contentColumn: '',
-          order: '',
-          ...pageData
-        }),
-        getinvesInfoList({ ...pageData })
-      ])
-      const fn = arr => {
-        return arr.map(item => {
-          item.label = item.id + ' ' + item.title
-          return item
-        })
-      }
-      this.articleList = fn(res1.data.data.list)
-      this.investList = fn(res2.data.list)
-      this.formObj.type = ''
+    /** 打开编辑弹窗 */
+    async edit(data) {
+      this.dialogVisible = true
+      await this.getContent(data.position)
+      await this.getOptions(data.contentType)
+      this.formObj.contentType = data.contentType + ''
       this.dialogLoading = false
     },
 
-    /** 打开编辑弹窗 */
-    handleEdit(data) {
-      this.dialogVisible = true
-      this.fetchData(data)
-    },
-
     /** 关闭编辑弹窗 */
-    handleClose() {
+    close() {
+      this.formObj = {
+        title: '',
+        contentType: '',
+        contentIds: []
+      }
+      this.$refs['formObj'].clearValidate()
       this.dialogVisible = false
     },
 
-    /** 选择推荐内容 */
-    handleTypeChange() {
-      this.formObj.ids = ''
+    /** 获取推荐位展示内容 */
+    async getContent(recommendPosId) {
+      const { data: content } = await Home.getRecommendContent({ recommendPosId })
+      console.log('content data', content)
+      if (content && content.length > 0) {
+        this.formObj.contentIds = content.map(i => i.contentId)
+        this.formObj.title = content[0].title
+        this.tableData = content
+        this.tableData.forEach(i => {
+          i.id = i.contentId
+          i.label = i.contentId + ' ' + i.contentTitle
+        })
+      }
     },
 
-    handleChange() {},
+    /** 获取推荐内容选择列表（根据类容类型） */
+    async getOptions(contentType) {
+      console.log('contentType', contentType)
+      const { data: list } = await Home.getContentList({ contentType })
+      console.log('options data', list)
+      if (list && list.length > 0) {
+        list.forEach(i => {
+          i.id = i.contentId
+          i.label = i.contentId + ' ' + i.contentTitle
+        })
+        this.options = list
+      }
+    },
+
+    /** 选择推荐内容 */
+    handleTypeChange(contentType) {
+      this.formObj.contentIds = []
+      this.tableData = []
+      this.getOptions(contentType)
+    },
+
+    handleChange(data) {
+      const result = this.options.filter(item => {
+        return data.includes(item.id)
+      })
+      this.tableData = result
+    },
 
     async submit() {
       this.$refs['formObj'].validate(async valid => {
         if (valid) {
-          console.log('通过检验=>', this.formObj)
-          const res = await Kingkong.saveKingkong()
+          const params = this.tableData.map(item => {
+            return {
+              recommendId: this.rowData.position, // 推荐位id
+              id: this.rowData.id, // 推荐位内容id
+              type: this.formObj.contentType, // 推荐位内容类型
+              contentId: item.contentId, // 活动内容id
+              contentImg: item.contentImg, // 活动内容图片
+              contentTitle: item.contentTitle, // 活动内容标题
+              title: this.formObj.title, // 推荐位名称
+            }
+          })
+          console.log('submit params', params)
+          const res = await Home.updateRecommendContent(params)
           if (res.state !== 1) {
             this.$message.error(res.msg)
           } else {
             this.$message.success(res.msg)
             this.close()
-            this.$emit('Refresh')
+            this.$emit('refresh')
           }
         } else {
           console.log('error submit!!')
