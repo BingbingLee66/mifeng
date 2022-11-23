@@ -100,12 +100,13 @@ export default {
       this.query.type = this.type === '快速入驻线索' ? 1 : 2
       const { pageNum: page, timeRanges, ...query } = this.query
 
-      const { data: { list, totalRows } } = await getClueList({
+      const params = {
         page,
         ...query,
         startTime: timeRanges && timeRanges[0] ? timeRanges[0].getTime() : '',
-        endTime: timeRanges && timeRanges[1] ? timeRanges[1].getTime() : '',
-      })
+        endTime: timeRanges && timeRanges[1] ? timeRanges[1].getTime() + 86399999 : '',
+      }
+      const { data: { list, totalRows } } = await getClueList(params)
       this.tableData = list || []
       this.total = totalRows || 0
       this.selectedData = []
