@@ -68,6 +68,7 @@
 
 <script>
 import SelectRecommend from './SelcetRecommend'
+import { removeItem } from '@/utils/utils'
 import { tableColumn4 } from './data'
 import Home from '@/api/home-config/Home'
 
@@ -173,6 +174,12 @@ export default {
         this.tableData = data
       }
       this.$refs.formObj.validateField('contentIds')
+    },
+
+    /** 移除活动内容 */
+    handleRemove(data) {
+      removeItem(this.tableData, data.id)
+      removeItem(this.formObj.contentIds, data.id)
     },
 
     async submit() {

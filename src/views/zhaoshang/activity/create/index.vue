@@ -1024,7 +1024,7 @@
   }
   .avatar-uploader .el-upload:hover {
     border-color: #d9d9d9;
-    cursor:no-drop;
+    // cursor:no-drop;
   }
   .avatar-uploader-icon {
     font-size: 28px;

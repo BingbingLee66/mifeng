@@ -41,3 +41,16 @@ export const validateInt = (rule, value, callback) => {
     callback()
   }
 }
+
+// 检验切换频率
+export const validateRate = (rule, value, callback) => {
+  if (!(/^[0-9]\d*$/.test(value))) {
+    callback(new Error('请输入正整数'))
+  } else if (value <= 0) {
+    callback(new Error('请输入正整数'))
+  } else if (+value > 300000) {
+    callback(new Error('不能大于300000ms'))
+  } else {
+    callback()
+  }
+}

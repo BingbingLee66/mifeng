@@ -65,7 +65,7 @@ const tableColumn2 = [
   },
   {
     label: '供需标题',
-    prop: 'title',
+    prop: 'contentTitle',
     align: 'center',
   },
   {
@@ -94,7 +94,7 @@ const tableColumn3 = [
   },
   {
     label: '文章标题',
-    prop: 'title',
+    prop: 'contentTitle',
     align: 'center',
   },
   {

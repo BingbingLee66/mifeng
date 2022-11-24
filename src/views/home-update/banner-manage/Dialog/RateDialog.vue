@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { validateInt } from '@/utils/validate'
+import { validateRate } from '@/utils/validate'
 import Home from '@/api/home-config/Home'
 
 export default {
@@ -31,14 +31,14 @@ export default {
     return {
       dialogVisible: false,
       formObj: {
-        status: true,
+        status: false,
         time: '3000'
       },
       rules: {
         status: [{ required: true, message: '请选择活动资源', trigger: 'change' }],
         time: [
           { required: true, message: '请输入切换频率' },
-          { validator: validateInt, trigger: 'blur' }
+          { validator: validateRate, trigger: 'blur' }
         ]
       }
     }
@@ -46,6 +46,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.$on('rate', data => {
+        this.formObj.status = !!data
         this.formObj.time = data || '3000'
         this.dialogVisible = true
       })
