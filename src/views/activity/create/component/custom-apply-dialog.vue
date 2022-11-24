@@ -12,27 +12,15 @@
           <el-select v-model="infoDate.info" disabled placeholder="请选择">
             <el-option label="输入框" value="0" />
             <el-option label="下拉框" value="1" />
+            <el-option label="文件上传" value="2" />
           </el-select>
         </el-form-item>
         <!-- 输入框 -->
         <div v-if="+infoDate.info === 0">
-          <el-form-item
-            label="标题"
-            prop="title"
-            :rules="[{ required: true, message: '不能为空' }]"
-          >
-            <el-input
-              v-model="colData.title"
-              autocomplete="off"
-              placeholder="标题，15字内"
-              :maxlength="15"
-            />
+          <el-form-item label="标题" prop="title" :rules="[{ required: true, message: '不能为空' }]">
+            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15" />
           </el-form-item>
-          <el-form-item
-            label="输入框提示"
-            prop="msgAlert"
-            :rules="[{ required: true, message: '不能为空' }]"
-          >
+          <el-form-item label="输入框提示" prop="msgAlert" :rules="[{ required: true, message: '不能为空' }]">
             <el-input
               v-model="colData.msgAlert"
               autocomplete="off"
@@ -41,41 +29,35 @@
             />
           </el-form-item>
           <el-form-item label="输入字数限制" prop="lengthLimit">
-            <el-input
-              v-model="colData.lengthLimit"
-              autocomplete="off"
-              placeholder="不限制"
-              type="number"
-            />
+            <el-input v-model="colData.lengthLimit" autocomplete="off" placeholder="不限制" type="number" />
             <br>不填写，则默认不限制
           </el-form-item>
         </div>
+        <!-- 文件上传 -->
+        <div v-else-if="+infoDate.info === 2">
+          <el-form-item label="标题" prop="title" :rules="[{ required: true, message: '不能为空' }]">
+            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15" />
+          </el-form-item>
+          <div style="margin-left: 116px">
+            (支持文件类型：PDF、Word、Excel、PPT、txt )大小限制30M
+
+            <el-upload class="avatar-uploader" action="/" :show-file-list="false" disabled>
+              <i class="el-icon-plus uploader-pic-icon" style="color: #d9d9d9" />
+            </el-upload>
+          </div>
+        </div>
         <!-- 下拉框 -->
         <div v-else>
-          <el-form-item
-            label="标题"
-            prop="title"
-            :rules="[{ required: true, message: '不能为空' }]"
-          >
-            <el-input
-              v-model="colData.title"
-              autocomplete="off"
-              placeholder="标题，15字内"
-              :maxlength="15"
-            />
+          <el-form-item label="标题" prop="title" :rules="[{ required: true, message: '不能为空' }]">
+            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15" />
           </el-form-item>
           <el-form-item
-            v-for="(item,index) in colData.selects"
+            v-for="(item, index) in colData.selects"
             :key="index"
             :label="`选项${index + 1}`"
             :rules="[{ required: true }]"
           >
-            <el-input
-              v-model="item.value"
-              autocomplete="off"
-              placeholder="选项，10字内"
-              :maxlength="10"
-            />
+            <el-input v-model="item.value" autocomplete="off" placeholder="选项，10字内" :maxlength="10" />
           </el-form-item>
           <div class="add-option" @click="onOptions">+添加选项</div>
         </div>
@@ -106,6 +88,7 @@
           <el-select v-model="infoDate.info" placeholder="请选择">
             <el-option label="输入框" value="0" />
             <el-option label="下拉框" value="1" />
+            <el-option label="文件上传" value="2" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -117,7 +100,7 @@
   </div>
 </template>
 
-<script >
+<script>
 export default {
   name: 'CustomApplyDialog',
   props: {
@@ -138,7 +121,7 @@ export default {
     return {
       // 信息类型
       infoDate: {
-        info: '',
+        info: ''
       },
       colData: {
         title: '', // 标题
@@ -148,14 +131,15 @@ export default {
         // 下拉框
         selects: [
           {
-            value: '', // 选项1
-          }, {
-            value: '', // 选项2
+            value: '' // 选项1
+          },
+          {
+            value: '' // 选项2
           }
         ],
         key: '', // 参数名称，下拉框情况下多个参数请;拼接
         type: '' // 0: 输入框  1：下拉框
-      },
+      }
     }
   },
 
@@ -167,10 +151,7 @@ export default {
         msgAlert: '',
         lengthLimit: '',
         check: 1,
-        selects: [
-          { value: '' },
-          { value: '' }
-        ],
+        selects: [{ value: '' }, { value: '' }]
       }
       this.$emit('update:editCol', false)
       this.infoDate.info = ''
@@ -244,15 +225,22 @@ export default {
 
     onInfoDate() {
       if (this.infoDate.info === '') return this.$message.error('请选择类型')
-      if (+this.infoDate.info === 0 || +this.infoDate.info === 1) this.$emit('update:dialogFormVisible', true)
+      if (+this.infoDate.info === 0 || +this.infoDate.info === 1 || +this.infoDate.info === 2) { this.$emit('update:dialogFormVisible', true) }
 
       this.$emit('update:iscustom', false)
-    },
-
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
-
+.avatar-uploader {
+  width: 100px;
+  height: 100px;
+  display: block;
+  border: 1px solid #ededed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 </style>
