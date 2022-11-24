@@ -91,20 +91,23 @@ export default {
     /** 获取推荐内容列表（根据类容类型） */
     async fetchData(page) {
       const { currentpage, limit } = this.pageData
-      const { data: list } = await Home.getContentList({
+      const res = await Home.getContentList({
         contentType: this.contentType,
         pageNum: page === 1 ? 1 : currentpage,
         pageSize: limit
       })
-      if (list && list.length > 0) {
-        list.forEach(i => {
-          i.id = i.contentId
-          i.label = i.contentId + ' ' + i.contentTitle
-        })
+      if (res.state === 1) {
+        const resData = res.data
+        if (resData.list && resData.list.length > 0) {
+          resData.list.forEach(i => {
+            i.id = i.contentId
+            i.label = i.contentId + ' ' + i.contentTitle
+          })
+        }
+        this.tableData = resData.list
+        this.pageData.total = resData.totalRows
+        this.tableConfig.loading = false
       }
-      this.tableData = list
-      this.pageData.total = list.totalRows || 100
-      this.tableConfig.loading = false
     },
     close() {
       this.pageData.currentpage = 1
