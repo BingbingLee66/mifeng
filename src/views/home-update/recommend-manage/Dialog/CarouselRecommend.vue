@@ -18,16 +18,9 @@
             </el-select>
           </el-form-item>
           <el-form-item style="width: 50%" label="活动内容：" prop="contentIds">
-            <el-select
-              v-model="formObj.contentIds"
-              :disabled="isDisable"
-              multiple
-              collapse-tags
-              placeholder="请选择"
-              @change="handleChange"
-            >
-              <el-option v-for="item in options" :key="item.contentId" :label="item.label" :value="item.contentId" />
-            </el-select>
+            <el-row>
+              <span class="text-blue cur" @click="handleSelect">请选择</span>
+            </el-row>
           </el-form-item>
           <el-form-item v-if="formObj.contentIds.length > 0" label="">
             <ysh-table
@@ -58,16 +51,19 @@
         </el-form>
       </div>
     </el-dialog>
+    <select-recommend ref="selectRef" :content-type="formObj.contentType" @confirm="handleConfirm" />
   </div>
 </template>
 
 <script>
 import { validateInt } from '@/utils/validate'
 import { changeOrder, removeItem } from '@/utils/utils'
+import SelectRecommend from './SelcetRecommend'
 import { tableColumn } from './data'
 import Home from '@/api/home-config/Home'
 
 export default {
+  components: { SelectRecommend },
   data() {
     return {
       dialogVisible: false,
@@ -97,8 +93,8 @@ export default {
       },
       tableColumn,
       tableData: [],
-      options: [],
-      rowData: []
+      rowData: [],
+      position: null,
     }
   },
   computed: {
@@ -116,12 +112,11 @@ export default {
   },
   methods: {
     /** 打开编辑弹窗 */
-    async edit(data) {
+    edit(data) {
       this.dialogVisible = true
-      await this.getContent(data.position)
-      await this.getOptions(data.contentType)
+      this.position = data.position
       this.formObj.contentType = data.contentType + ''
-      this.dialogLoading = false
+      this.getContent(data.position)
     },
 
     /** 关闭编辑弹窗 */
@@ -149,37 +144,25 @@ export default {
           i.label = i.contentId + ' ' + i.contentTitle
         })
       }
-      console.log('content data', content)
-    },
-
-    /** 获取推荐内容选择列表（根据类容类型） */
-    async getOptions(contentType) {
-      console.log('contentType', contentType)
-      const { data: list } = await Home.getContentList({ contentType })
-      console.log('options data', list)
-      if (list && list.length > 0) {
-        list.forEach(i => {
-          i.id = i.contentId
-          i.label = i.contentId + ' ' + i.contentTitle
-        })
-        this.options = list
-      }
+      this.dialogLoading = false
     },
 
     /** 选择推荐内容类型 */
-    handleTypeChange(contentType) {
+    handleTypeChange() {
       this.formObj.contentIds = []
       this.tableData = []
-      this.options = []
-      this.getOptions(contentType)
     },
 
-    /** 选择活动内容 */
-    handleChange(data) {
-      const result = this.options.filter(item => {
-        return data.includes(item.contentId)
-      })
-      this.tableData = result
+    handleSelect() {
+      this.$refs.selectRef.$emit('select', this.position)
+    },
+
+    handleConfirm(data) {
+      if (data) {
+        this.formObj.contentIds = data.map(i => i.contentId)
+        this.tableData = data
+      }
+      this.$refs.formObj.validateField('contentIds')
     },
 
     /** 移除活动内容 */
@@ -208,7 +191,6 @@ export default {
               shufflingSpeed: this.formObj.shufflingSpeed // 轮播频率，
             }
           })
-          console.log('submit params', params)
           const res = await Home.updateRecommendContent(params)
           if (res.state !== 1) {
             this.$message.error(res.msg)
@@ -217,9 +199,6 @@ export default {
             this.close()
             this.$emit('refresh')
           }
-        } else {
-          console.log('error submit!!')
-          return false
         }
       })
     }

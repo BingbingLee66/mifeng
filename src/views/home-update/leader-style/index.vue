@@ -44,7 +44,6 @@
 
 <script>
 import TableMixins from '@/mixins/yshTable'
-import { changeOrder } from '@/utils/utils'
 import AddDialog from './Dialog/AddDialog'
 import UseDialog from './Dialog/UseDialog'
 import _data from './data'
@@ -110,8 +109,22 @@ export default {
     },
 
     /** 调整上下顺序 */
-    handleOrder(event, data) {
-      changeOrder(this.tableData, data.id, event)
+    async handleOrder(event, data) {
+      const idx = this.tableData.findIndex(i => i.id === data.id)
+      let sourceId, targetId
+      if (event === 'up') {
+        sourceId = data.id
+        targetId = this.tableData[idx - 1].id
+      } else {
+        sourceId = data.id
+        targetId = this.tableData[idx + 1].id
+      }
+      const res = await Home.sortLeader({ sourceId, targetId })
+      if (res.state === 1) {
+        this.fetchData()
+      } else {
+        this.$message.error(res.msg)
+      }
     },
 
     /* 展示/隐藏 */

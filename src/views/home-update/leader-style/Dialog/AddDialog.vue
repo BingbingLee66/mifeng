@@ -6,7 +6,7 @@
       :visible.sync="dialogVisible"
       :title="dialogTitle"
       :close-on-click-modal="false"
-      width="600px"
+      width="800px"
       @close="close"
     >
       <div v-loading="dialogLoading">
@@ -29,16 +29,16 @@
                 @click.stop="previewImg"
               />
               <i v-if="formObj.leaderImg" class="el-icon-circle-close close-icon" @click.stop="deleteImg" />
-              <!-- :src="formObj.leaderImg"
-              :preview-src-list="[formObj.leaderImg]" -->
-              <!--  <img v-if="formObj.leaderImg" style="width: 150px; height: 150px" :src="formObj.leaderImg" /> -->
               <i v-else class="el-icon-plus" />
             </el-upload>
+            <div style="color: #999;">
+              建议尺寸：210x210px; 支持jpg、png
+            </div>
           </el-form-item>
           <el-form-item label="领导名字：" prop="leaderName">
             <el-input
               v-model.trim="formObj.leaderName"
-              style="width: 90%"
+              style="width: 60%"
               placeholder="请输入领导名字，不超过50个字符"
               maxlength="50"
               show-word-limit
@@ -48,7 +48,7 @@
           <el-form-item label="会内职务：" prop="postName">
             <el-input
               v-model.trim="formObj.postName"
-              style="width: 90%"
+              style="width: 60%"
               placeholder="请输入会内职务，不超过15个字符"
               maxlength="15"
               show-word-limit
@@ -58,8 +58,8 @@
           <el-form-item label="其他身份：" prop="otherIdentities">
             <el-input
               v-model.trim="formObj.otherIdentities"
-              style="width: 90%"
-              placeholder="请输入，多个身份请用逗号隔"
+              style="width: 60%"
+              placeholder="请输入，多个身份请用英文逗号隔开"
               clearable
             />
           </el-form-item>
@@ -68,29 +68,39 @@
               v-model.trim="formObj.leaderIntroduce"
               type="textarea"
               style="width: 90%"
-              placeholder="请输入，多个身份请用逗号隔"
-              rows="6"
+              placeholder="请输入"
+              rows="4"
               resize="none"
               clearable
               show-word-limit
               maxlength="2000"
             />
           </el-form-item>
-          <el-form-item label="相关报道" prop="leaderStyleRelationIdsDTOS">
-            <el-select
+          <el-form-item label="相关报道">
+            <!-- <el-select
               v-model="formObj.leaderStyleRelationIdsDTOS"
               style="width: 90%"
               multiple
               collapse-tags
               placeholder="请选择"
             >
-              <el-option v-for="item in optionsData" :key="item.id" :label="item.title" :value="item.id" />
-            </el-select>
+              <el-option v-for="item in optionsData" :key="item.id" :label="item.label" :value="item.id" />
+            </el-select> -->
+            <el-row>
+              <span class="text-blue cur" @click="handleSelect">请选择</span>
+              <div style="max-height: 100px; overflow: auto;">
+                <div v-for="article in articleList" :key="article.id" style="line-height:20px;">
+                  <el-tag closable effect="plain" type="info" @close="remove(article.id)">
+                    {{ article.id }} {{ article.title }}
+                  </el-tag>
+                </div>
+              </div>
+            </el-row>
           </el-form-item>
           <el-form-item label="">
             <div class="mt-20">
               <el-button class="mr-20" @click="close">取消</el-button>
-              <el-button type="primary" @click="submit">保存</el-button>
+              <el-button v-dbClick type="primary" @click="submit">保存</el-button>
             </div>
           </el-form-item>
         </el-form>
@@ -102,21 +112,22 @@
         :url-list="[formObj.leaderImg]"
       />
     </el-dialog>
+    <selcet-dialog ref="selectRef" @confirm="handleConfirm" />
   </div>
 </template>
 
 <script>
 import { uploadFile } from '@/api/content/article'
-import { getChamberContentList } from '@/api/content/article'
 import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
+import SelcetDialog from './SelcetDialog'
 import Home from '@/api/home-config/Home'
 
 export default {
-  components: { ElImageViewer },
+  components: { ElImageViewer, SelcetDialog },
   data() {
     return {
       dialogVisible: false,
-      dialogLoading: true,
+      dialogLoading: false,
       dialogTitle: '',
       optionsData: [],
       formObj: {
@@ -125,7 +136,6 @@ export default {
         postName: '', // 会内职务
         otherIdentities: '', // 其他身份
         leaderIntroduce: '', // 领导简介
-        leaderStyleRelationIdsDTOS: '' // 相关报道
       },
       rules: {
         leaderImg: [{ required: true, message: '请上传图片', trigger: 'blur' }],
@@ -138,80 +148,75 @@ export default {
           { required: true, message: '请输入会内职务', trigger: 'blur' }
         ]
       },
-      showViewer: false
+      showViewer: false,
+      articleList: []
     }
   },
   watch: {},
   mounted() {
     this.$nextTick(() => {
       this.$on('add', () => {
-        this.getOptions()
         this.add()
       })
       this.$on('edit', data => {
-        this.getOptions()
         this.edit(data)
       })
     })
   },
   methods: {
     /** 打开新增弹窗 */
-    async add() {
+    add() {
       this.dialogTitle = '新增领导'
       this.dialogVisible = true
-      await this.getOptions()
-      this.dialogLoading = false
     },
 
     /** 打开编辑弹窗 */
-    async edit(data) {
+    edit(data) {
       this.dialogTitle = '编辑领导'
-      this.dialogVisible = true
-      await this.getOptions()
-      const { leaderImg, leaderName, postName, otherIdentities, leaderIntroduce, leaderStyleRelationIdsDTOS, id } = data
+      const { leaderImg, leaderName, postName, otherIdentities, leaderIntroduce, yshLeaderStyleRelationVOList, id } = data
+      if (yshLeaderStyleRelationVOList) {
+        this.articleList = yshLeaderStyleRelationVOList.map(i => {
+          return {
+            id: i.businessId,
+            title: i.businessName
+          }
+        })
+      }
       this.formObj = {
         leaderImg,
         leaderName,
         postName,
         otherIdentities,
         leaderIntroduce,
-        leaderStyleRelationIdsDTOS,
         id
       }
-      this.dialogLoading = false
+      this.dialogVisible = true
     },
 
     /** 关闭弹窗 */
     close() {
-      console.log('close')
       this.formObj = {
         leaderImg: '', // 领导照片
         leaderName: '', // 领导名字
         postName: '', // 会内职务
         otherIdentities: '', // 其他身份
         leaderIntroduce: '', // 领导简介
-        leaderStyleRelationIdsDTOS: '' // 相关报道
       }
+      this.articleList = []
       this.$refs['formObj'].clearValidate()
-      console.log('this.formObj', this.formObj)
       this.dialogVisible = false
     },
 
-    /** 获取推荐位展示内容 */
-    async getOptions() {
-      const res = await getChamberContentList({
-        pageSize: 100,
-        page: 1,
-        ckey: this.$store.getters.ckey,
-        title: '',
-        contentModuleId: 5,
-        contentColumnId: -1,
-        status: 1,
-        column: '',
-        orderType: 1
-      })
-      this.optionsData = res.data.data.list
-      console.log('options data', this.options)
+    handleSelect() {
+      this.$refs.selectRef.$emit('select')
+    },
+
+    handleConfirm(data) {
+      if (data) {
+        this.articleList = data.map(i => {
+          return { id: i.id, title: i.title }
+        })
+      }
     },
 
     /** 上传金刚区图片校验 */
@@ -237,6 +242,7 @@ export default {
       formData.append('file', content.file)
       uploadFile(formData, 'demand').then(res => {
         this.formObj.leaderImg = res.data
+        this.$refs.formObj.validateField('leaderImg')
       })
     },
 
@@ -252,13 +258,18 @@ export default {
       this.showViewer = false
     },
 
+    remove(id) {
+      const idx = this.articleList.findIndex(i => i.id === id)
+      this.articleList.splice(idx, 1)
+    },
+
     async submit() {
       this.$refs['formObj'].validate(async valid => {
         if (valid) {
-          console.log('formObj data', this.formObj)
+          const relationIds = this.articleList.map(i => i.id)
           const res = await Home.saveLeader({
             ...this.formObj,
-            leaderStyleRelationIdsDTOS: [{ relationIds: this.formObj.leaderStyleRelationIdsDTOS, type: 2 }],
+            leaderStyleRelationIdsDTOS: [{ relationIds, type: 2 }],
             ckey: this.$store.getters.ckey || ''
           })
           if (res.state !== 1) {
@@ -269,7 +280,6 @@ export default {
             this.$emit('refresh')
           }
         } else {
-          console.log('error submit!!')
           return false
         }
       })
@@ -280,7 +290,7 @@ export default {
 
 <style lang="scss" scoped>
 /deep/ .el-dialog {
-  margin-top: 10vh !important;
+  margin-top: 3vh !important;
   min-height: 60vh !important;
 }
 
@@ -305,5 +315,11 @@ export default {
   top: 0;
   right: 0;
   color: #FFCA00;
+}
+
+/deep/ .el-tag--plain.el-tag--info {
+  border: 0;
+  padding: 0;
+  height: 25px;
 }
 </style>

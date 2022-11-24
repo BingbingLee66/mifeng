@@ -71,7 +71,7 @@ export default {
       /** 表格数据 */
       tableConfig: {
         loading: false,
-        maxHeight: window.innerHeight - 380 + 'px'
+        maxHeight: window.innerHeight - 400 + 'px'
       },
       tableColumn: _data.tableColumn,
       tableData: []

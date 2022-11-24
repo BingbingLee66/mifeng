@@ -86,7 +86,7 @@ export default {
           type: 'upload',
           value: '',
           rules: [{ required: true, message: '请上传图片', trigger: 'change' }],
-          formTip: ['建议尺寸1234*1234px; 支持png、jpg'],
+          formTip: ['建议尺寸400x750px; 支持png、jpg'],
           beforeUpload: file => {
             this.beforeUpload(file)
           },

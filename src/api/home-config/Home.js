@@ -203,6 +203,15 @@ class Home {
       method: 'get'
     })
   }
+
+  /** 领导风采排序 */
+  static async sortLeader(params) {
+    return await request({
+      url: '/api/ec/leaderStyle/sort',
+      method: 'put',
+      params
+    })
+  }
 }
 
 export default Home

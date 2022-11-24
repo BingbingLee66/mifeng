@@ -114,11 +114,18 @@
           :before-upload="item.beforeUpload"
           :http-request="item.upload"
         >
-          <img
+          <el-image
             v-if="formData[item.prop]"
             style="width: 150px; height: 150px"
             :src="formData[item.prop]"
-          >
+            @click.stop="previewImg(formData[item.prop])"
+          />
+          <!-- <img
+            v-if="formData[item.prop]"
+            style="width: 150px; height: 150px"
+            :src="formData[item.prop]"
+          > -->
+          <i v-if="formData[item.prop]" class="el-icon-circle-close close-icon" @click.stop="formData[item.prop] = ''" />
           <i
             v-else
             style="width: 150px;
@@ -156,13 +163,20 @@
       </el-form-item>
       <slot name="customConetent" :data="formData" />
     </el-form>
+    <el-image-viewer
+      v-if="showViewer"
+      style="z-index: 99999"
+      :on-close="closeViewer"
+      :url-list="[viewerImage]"
+    />
   </div>
 </template>
 
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 export default {
   name: 'YyForm',
-
+  components: { ElImageViewer },
   props: {
     // eslint-disable-next-line vue/require-default-prop
     formConfig: {
@@ -184,6 +198,8 @@ export default {
   data() {
     return {
       formData: {},
+      showViewer: false,
+      viewerImage: ''
     }
   },
 
@@ -244,6 +260,15 @@ export default {
     handleSelectChange(e) {
       this.$emit('selectChange', e)
     },
+
+    previewImg(val) {
+      this.viewerImage = val
+      this.showViewer = true
+    },
+
+    closeViewer() {
+      this.showViewer = false
+    },
   },
 }
 </script>
@@ -258,5 +283,12 @@ export default {
 }
 .uploader-card /deep/.el-upload:hover {
   border-color: #409eff;
+}
+.close-icon {
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #FFCA00;
 }
 </style>

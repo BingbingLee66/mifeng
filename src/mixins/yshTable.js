@@ -48,5 +48,9 @@ export default {
     handleSelectionChange(val) {
       this.selectionData = val
     },
+
+    handleSligleChange(val) {
+      this.selectionData = [val]
+    }
   }
 }

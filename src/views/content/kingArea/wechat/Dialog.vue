@@ -78,7 +78,7 @@ export default {
           prop: 'icon',
           type: 'upload',
           value: '',
-          formTip: ['建议尺寸123*123px; 支持jpg、png'],
+          formTip: ['建议尺寸100*100px; 支持jpg、png'],
           rules: [
             {
               required: true,

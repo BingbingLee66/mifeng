@@ -16,12 +16,12 @@
         <span
           v-if="row.data.status === '0'"
           class="text-blue cur ml-10"
-          @click="handleEvent('show', row.data)"
+          @click="handleEvent('status', row.data)"
         >展示</span>
         <span
           v-if="row.data.status === '1' && !row.data.changeStatus"
           class="text-yellow cur ml-10"
-          @click="handleEvent('hide', row.data)"
+          @click="handleEvent('status', row.data)"
         >隐藏</span>
       </template>
     </ysh-table>
@@ -111,7 +111,7 @@ export default {
         status: event ? 1 : 0
       })
       if (res.state === 1) {
-        this.$message.success(res.msg)
+        if (event) this.$message.success(res.msg)
         this.fetchData()
       } else {
         this.$message.error(res.msg)

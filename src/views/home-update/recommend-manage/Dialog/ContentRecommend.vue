@@ -34,17 +34,9 @@
             </el-select>
           </el-form-item>
           <el-form-item label="推荐内容：" prop="contentIds">
-            <el-select
-              v-model="formObj.contentIds"
-              style="width: 50%"
-              multiple
-              collapse-tags
-              placeholder="请选择"
-              :disabled="isDisable"
-              @change="handleChange"
-            >
-              <el-option v-for="item in options" :key="item.id" :label="item.label" :value="item.id" />
-            </el-select>
+            <el-row>
+              <span class="text-blue cur" @click="handleSelect">请选择</span>
+            </el-row>
           </el-form-item>
           <el-form-item v-if="formObj.contentIds.length > 0" label="">
             <ysh-table
@@ -67,15 +59,18 @@
         </el-form>
       </div>
     </el-dialog>
+    <select-recommend ref="selectRef" :content-type="formObj.contentType" @confirm="handleConfirm" />
   </div>
 </template>
 
 <script>
+import SelectRecommend from './SelcetRecommend'
 import { changeOrder, removeItem } from '@/utils/utils'
 import { tableColumn2, tableColumn3 } from './data'
 import Home from '@/api/home-config/Home'
 
 export default {
+  components: { SelectRecommend },
   data() {
     return {
       dialogVisible: false,
@@ -89,8 +84,8 @@ export default {
       /** 校验规则 */
       rules: {
         title: [{ required: true, message: '请输入推荐位名称', trigger: 'blur' }],
-        contentType: [{ required: true, message: '请选择活动类型', trigger: 'change' }],
-        contentIds: [{ required: true, message: '请选择活动内容', trigger: 'change' }]
+        contentType: [{ required: true, message: '请选择内容分类型', trigger: 'change' }],
+        contentIds: [{ required: true, message: '请选择推荐内容', trigger: 'change' }]
       },
       /** 表格配置 */
       tableConfig: {
@@ -98,8 +93,8 @@ export default {
         headerCellStyle: { padding: 0 },
         maxHeight: window.innerHeight - 600 + 'px'
       },
-      options: [],
-      rowData: []
+      rowData: [],
+      position: null,
     }
   },
   computed: {
@@ -120,12 +115,11 @@ export default {
   },
   methods: {
     /** 打开编辑弹窗 */
-    async edit(data) {
+    edit(data) {
       this.dialogVisible = true
-      await this.getContent(data.position)
-      await this.getOptions(data.contentType)
+      this.position = data.position
       this.formObj.contentType = data.contentType + ''
-      this.dialogLoading = false
+      this.getContent(data.position)
     },
 
     /** 关闭编辑弹窗 */
@@ -142,7 +136,6 @@ export default {
     /** 获取推荐位展示内容 */
     async getContent(recommendPosId) {
       const { data: content } = await Home.getRecommendContent({ recommendPosId })
-      console.log('content data', content)
       if (content && content.length > 0) {
         this.formObj.contentIds = content.map(i => i.contentId)
         this.formObj.title = content[0].title
@@ -152,34 +145,25 @@ export default {
           i.label = i.contentId + ' ' + i.contentTitle
         })
       }
-    },
-
-    /** 获取推荐内容选择列表（根据类容类型） */
-    async getOptions(contentType) {
-      console.log('contentType', contentType)
-      const { data: list } = await Home.getContentList({ contentType })
-      console.log('options data', list)
-      if (list && list.length > 0) {
-        list.forEach(i => {
-          i.id = i.contentId
-          i.label = i.contentId + ' ' + i.contentTitle
-        })
-        this.options = list
-      }
+      this.dialogLoading = false
     },
 
     /** 选择推荐内容类型 */
-    handleTypeChange(contentType) {
+    handleTypeChange() {
       this.formObj.contentIds = []
       this.tableData = []
-      this.getOptions(contentType)
     },
 
-    handleChange(data) {
-      const result = this.options.filter(item => {
-        return data.includes(item.id)
-      })
-      this.tableData = result
+    handleSelect() {
+      this.$refs.selectRef.$emit('select', this.position)
+    },
+
+    handleConfirm(data) {
+      if (data) {
+        this.formObj.contentIds = data.map(i => i.contentId)
+        this.tableData = data
+      }
+      this.$refs.formObj.validateField('contentIds')
     },
 
     /** 移除活动内容 */
@@ -207,7 +191,6 @@ export default {
               title: this.formObj.title, // 推荐位名称
             }
           })
-          console.log('submit params', params)
           const res = await Home.updateRecommendContent(params)
           if (res.state !== 1) {
             this.$message.error(res.msg)
@@ -216,9 +199,6 @@ export default {
             this.close()
             this.$emit('refresh')
           }
-        } else {
-          console.log('error submit!!')
-          return false
         }
       })
     }
