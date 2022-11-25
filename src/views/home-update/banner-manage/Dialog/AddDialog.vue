@@ -78,7 +78,7 @@ export default {
           rows: 5,
           placeholder: '请输入banner跳转链接或路径',
           // showWordLimit: true,
-          maxlength: 300,
+          maxlength: 1000,
           clearable: true,
           value: ''
         },

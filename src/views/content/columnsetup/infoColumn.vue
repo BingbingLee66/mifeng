@@ -139,7 +139,7 @@
         <el-checkbox-group v-model="typeUrl">
           <el-checkbox label="1">标签聚合页</el-checkbox>
           <el-checkbox label="2">合作商会</el-checkbox>
-          <el-checkbox label="3">tab栏</el-checkbox>
+          <el-checkbox label="4">tab栏</el-checkbox>
         </el-checkbox-group>
       </div>
       <div style="margin:10px 50px;color:#7F7F7F">提示：该栏目在前台展示的位置</div>
