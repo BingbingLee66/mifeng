@@ -91,7 +91,7 @@ export default {
       tableConfig: {
         loading: false,
         headerCellStyle: { padding: 0 },
-        maxHeight: window.innerHeight - 600 + 'px'
+        maxHeight: '400px'
       },
       rowData: [],
       position: null,

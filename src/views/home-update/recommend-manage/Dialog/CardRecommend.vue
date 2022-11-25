@@ -94,7 +94,7 @@ export default {
       tableConfig: {
         loading: false,
         headerCellStyle: { padding: 0 },
-        maxHeight: window.innerHeight - 400 + 'px'
+        maxHeight: '600px'
       },
       tableColumn: tableColumn4,
       tableData: [],
