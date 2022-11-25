@@ -952,8 +952,8 @@ export default {
     },
     // 上传文件校验
     beforeUploadFile(file) {
-      if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt', 'txt'].includes(file.name.split('.')[1])) {
-        this.$message.error('上传文件只能是 word、excel、pdf、ppt、txt 格式!')
+      if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt', 'txt', 'bmp', 'jpg', 'png', 'jpeg'].includes(file.name.split('.')[1])) {
+        this.$message.error('上传文件只能是 word、excel、pdf、ppt、txt 、bmp、jpg、png、jpeg格式!')
         return false
       }
       // 大小限制30M
