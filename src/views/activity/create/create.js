@@ -951,11 +951,12 @@ export default {
     },
     // 上传文件校验
     beforeUploadFile(file) {
-      // todo 大小限30M
       if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt', 'txt'].includes(file.name.split('.')[1])) {
         this.$message.error('上传文件只能是 word、excel、pdf、ppt、txt 格式!')
         return false
       }
+      // 大小限制30M
+      if (file.size / 1024 / 1024 > 30) { this.$message.error('上传文件大于30M！'); return false }
     },
     // 上传文件
     uploadFile(content) {
