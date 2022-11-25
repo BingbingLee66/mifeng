@@ -8,7 +8,7 @@ import {
 
 export default {
   data() {
-    var checkNumber = (rule, value, callback) => {
+    const checkNumber = (rule, value, callback) => {
       if (!/^([0-9]{0,3})$/.test(value)) {
         return callback(new Error('必须是0-999的整数'))
       } else {
@@ -95,7 +95,7 @@ export default {
       this.previewUrl = url
     },
     handleInput(e) {
-      let regexp = /^[1-9]\d*$/
+      const regexp = /^[1-9]\d*$/
       if (!regexp.test(e)) {
         this.query.id = ''
       }
@@ -106,14 +106,14 @@ export default {
         this.currentpage = 1
       }
       this.listLoading = true
-      let params = {
-        'isPublish': this.type,
-        'ckey': this.ckey ? this.ckey : this.query.ckey,
-        'id': this.query.id,
-        'activityName': this.query.activityName,
-        'status': this.query.status,
-        'pageSize': this.limit,
-        'page': this.currentpage,
+      const params = {
+        isPublish: this.type,
+        ckey: this.ckey ? this.ckey : this.query.ckey,
+        id: this.query.id,
+        activityName: this.query.activityName,
+        status: this.query.status,
+        pageSize: this.limit,
+        page: this.currentpage,
       }
       getActivityList(params).then(res => {
         this.list = res.data.list
@@ -128,7 +128,7 @@ export default {
       this.showUpdateDialog = true
     },
     upadteActivity() {
-      let params = {
+      const params = {
         id: this.rowId,
         isPublish: this.isPublish
       }
@@ -157,13 +157,17 @@ export default {
         }
       })
     },
+    // 活动详情
+    detail(row) {
+      this.$router.push({ path: `/activity/${row.id}/detail` })
+    },
     // 删除活动
     showDel(row) {
       this.rowId = row.id
       this.showDelDialog = true
     },
     delActivity() {
-      let params = {
+      const params = {
         id: this.rowId
       }
       delActivity(params).then(res => {
@@ -181,7 +185,7 @@ export default {
       this.showSortDialog = true
     },
     updateSort(sortForm) {
-      this.$refs[sortForm].validate((valid) => {
+      this.$refs[sortForm].validate(valid => {
         if (valid) {
           updateActivitySort(this.sortForm).then(response => {
             if (response.state === 1) {

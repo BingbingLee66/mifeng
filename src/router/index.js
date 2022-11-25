@@ -427,8 +427,15 @@ export const constantRoutes = [
       },
       {
         name: '活动详情',
-        path: '/zhaoshang/activity/:activeId/detail',
+        path: '/zhaoshang/activity/:activity/detail',
         component: () => import('@/views/zhaoshang/activity/detail/index.vue'),
+        hidden: true,
+        meta: { title: '活动详情' }
+      },
+      {
+        name: '活动详情',
+        path: '/activity/:activeId/detail',
+        component: () => import('@/views/activity/detail/index.vue'),
         hidden: true,
         meta: { title: '活动详情' }
       },
