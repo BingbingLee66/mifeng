@@ -808,6 +808,7 @@ export default {
         params.cardShowType = 0
       }
       delete params.cardShow
+      console.log('params', params)
       createActivity(params).then(res => {
         if (res.state === 1) {
           this.$message.success(res.msg)
@@ -958,6 +959,9 @@ export default {
       // 大小限制30M
       if (file.size / 1024 / 1024 > 30) { this.$message.error('上传文件大于30M！'); return false }
     },
+    onExceed() {
+      this.$message.error('不能大于9个文件')
+    },
     // 上传文件
     uploadFile(content) {
       const formData = new FormData()
@@ -967,7 +971,8 @@ export default {
           this.formObj.attachment.push({
             fileName: content.file.name,
             name: content.file.name,
-            ossUrl: res.data
+
+            attachment: res.data
           })
         } else {
           const idx = this.$refs.uploadFile.uploadFiles.findIndex(item => item.uid === content.file.uid)
