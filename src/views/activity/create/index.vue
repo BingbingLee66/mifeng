@@ -323,6 +323,7 @@
                   :limit="9"
                   :before-upload="beforeUploadFile"
                   :http-request="uploadFile"
+                  :on-exceed="onExceed"
                 >
                   <el-button type="primary" size="small">点击上传</el-button>
                   <div slot="tip" style="color: #999">上传格式限制word、excel、pdf、ppt</div>
