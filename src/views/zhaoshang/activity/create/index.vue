@@ -672,6 +672,7 @@
                 class="avatar-uploader"
                 action="/"
                 :show-file-list="false"
+                disabled
               >
                 <i class="el-icon-plus uploader-pic-icon" style="color:#d9d9d9;" />
               </el-upload>
@@ -1023,7 +1024,7 @@
   }
   .avatar-uploader .el-upload:hover {
     border-color: #d9d9d9;
-    // cursor:no-drop;
+    cursor:no-drop;
   }
   .avatar-uploader-icon {
     font-size: 28px;
