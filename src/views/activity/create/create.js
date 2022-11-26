@@ -362,6 +362,9 @@ export default {
         this.formObj.labels = resData.labels
         this.formObj.arriveType = resData.arriveType
         this.formObj.linkType = resData.linkType || 1
+        this.formObj.attachment = resData.attachment.map(m => {
+          return { name: m.fileName, attachment: m.attachment, fileName: m.fileName }
+        })
         if (resData.longitude) this.formObj.longitude = resData.longitude
         if (resData.latitude) this.formObj.latitude = resData.latitude
 
