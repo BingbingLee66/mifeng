@@ -326,7 +326,9 @@
                   :on-exceed="onExceed"
                 >
                   <el-button type="primary" size="small">点击上传</el-button>
-                  <div slot="tip" style="color: #999">上传格式限制word、excel、pdf、ppt、bmp、jpg、png、jpeg</div>
+                  <div slot="tip" style="color: #999">
+                    上传格式限制word、excel、pdf、ppt、bmp、jpg、png、jpeg 大小限30M，限9个
+                  </div>
                 </el-upload>
               </el-form-item>
             </el-col>
