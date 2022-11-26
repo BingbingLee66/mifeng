@@ -218,7 +218,7 @@
         <el-table-column label="关联词条" width="120px" prop="commentNums">
           <template slot-scope="scope">
             <el-button type="text" @click="editEntryHandler(scope.row)">
-              {{ scope.row.entry ? '编辑词条' : '添加词条' }}
+              {{ scope.row.existEntry ? '修改词条' : '添加词条' }}
             </el-button>
           </template>
         </el-table-column>
@@ -828,7 +828,18 @@
         </el-dialog>
       </div>
     </div>
-    <entry-dialog :visible.sync="entryVisible" title="添加词条" />
+    <entry-dialog
+      :visible.sync="entryVisible"
+      title="添加词条"
+      :entry-info="entryInfo"
+      @sure-handler="sureHandler"
+    />
+    <selection-dialog
+      :visible.sync="selectionVisible"
+      :entry-info="entryInfo"
+      @sure-handler="sureHandler"
+      @add-entry="addEntryHandler"
+    />
   </div>
 </template>
 

@@ -10,11 +10,14 @@ import {
   unFreeze,
   freeze
 } from '@/api/content/article'
+import { bindContentWithEntry } from '@/api/bossin/index'
+
 import { getOptionsWithCkey } from '@/api/content/columnsetup'
 import { getChamberOptions } from '@/api/finance/finance'
 import { getSts } from '@/api/vod/vod'
 import videoComponent from '@/components/video/index'
-import EntryDialog from '@/components/entryDialog'
+import EntryDialog from '@/components/entryDialog/index'
+import SelectionDialog from '@/components/entryDialog/selection'
 export default {
   data() {
     return {
@@ -98,12 +101,15 @@ export default {
           value: '1',
         },
       ],
-      entryVisible: false
+      entryVisible: false,
+      selectionVisible: false,
+      entryInfo: {}
     }
   },
   components: {
     videoComponent,
-    EntryDialog
+    EntryDialog,
+    SelectionDialog
   },
   computed: {},
   created() {
@@ -486,8 +492,30 @@ export default {
       })
     },
     editEntryHandler(row) {
+      this.entryInfo = { ...row, selectionData: [] }
+      if (this.entryInfo.existEntry) {
+        this.selectionVisible = true
+      } else {
+        this.entryVisible = true
+      }
+    },
+    addEntryHandler(data) {
+      this.entryInfo.selectionData = data
       this.entryVisible = true
-      console.log(row)
+    },
+    async sureHandler(encyclopediaIds) {
+      try {
+        const result = await bindContentWithEntry({
+          ckey: this.entryInfo.ckey,
+          contentId: this.entryInfo.id,
+          contentType: this.entryInfo.contentType,
+          encyclopediaIds
+        })
+        this.$message.success(result.msg || '操作成功')
+        this.entryVisible = false
+      } catch (error) {
+        this.$message.error('操作失败')
+      }
     }
   }
 }

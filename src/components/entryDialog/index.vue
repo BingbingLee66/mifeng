@@ -1,39 +1,78 @@
 <template>
   <el-dialog :visible.sync="entryVisible" :title="title">
-    <el-input placeholder="请输入关键字" />
+    <el-input v-model="keywordFilter.encyclopediaName" placeholder="请输入关键字" @input="inputHandler" />
     <h2>最近推荐</h2>
-    <div class="c-recent-list">
-      <div v-for="item in lists" :key="item.id" class="c-recent-item">
-        <el-checkbox v-model="item.check" class="c-recent-item__checkbox" />
-        <el-tag type="info" class="c-recent-item__tag">mignzi </el-tag>
+    <div class="c-entry-list">
+      <div v-for="item in recommendList" :key="item.id" class="c-entry-list__item">
+        <div class="c-eli__relative">
+          <el-checkbox
+            v-model="item.check"
+            class="c-eli__checkbox"
+            @change="(value) => checkboxChange(value, item.encyclopediaId)"
+          />
+          <el-image
+            style="width: 80px; height: 80px"
+            :src="item.coverUrl"
+            fit="cover"
+          />
+        </div>
+        <div>{{ item.encyclopediaName }}</div>
       </div>
+      <div v-if="!recommendList.length">暂无相关推荐</div>
     </div>
     <div>
       <h2>商会相关</h2>
       <div class="c-entry-list">
-        <div v-for="item in lists" :key="item.id" class="c-entry-list__item">
+        <div v-for="item in chamberList" :key="item.id" class="c-entry-list__item">
           <div class="c-eli__relative">
-            <el-checkbox v-model="item.check" class="c-eli__checkbox" />
-            <img
-              class="img"
-              src="https://cdn.9kd.com/kdnet/f0978298c60545a595da45d4bbf5358b.jpg"
-              width="80"
-              height="80"
-              alt=""
-            >
+            <el-checkbox
+              v-model="item.check"
+              class="c-eli__checkbox"
+              @change="(value) => checkboxChange(value, item.encyclopediaId)"
+            />
+            <el-image
+              style="width: 80px; height: 80px"
+              :src="item.coverUrl"
+              fit="cover"
+            />
           </div>
-          <div>citiaomingzicitiaomingzicitiaomingzicitiaomingzi</div>
+          <div>{{ item.encyclopediaName }}</div>
+        </div>
+        <div v-if="!chamberList.length">暂无商会相关数据</div>
+      </div>
+    </div>
+    <el-button v-if="chamberList.length" type="text" class="m-auto">点击展开更多</el-button>
+    <div v-if="otherList.length">
+      <h2>其他</h2>
+      <div class="c-entry-list">
+        <div v-for="item in otherList" :key="item.id" class="c-entry-list__item">
+          <div class="c-eli__relative">
+            <el-checkbox
+              v-model="item.check"
+              class="c-eli__checkbox"
+              @change="(value) => checkboxChange(value, item.encyclopediaId)"
+            />
+            <el-image
+              style="width: 80px; height: 80px"
+              :src="item.coverUrl"
+              fit="cover"
+            />
+          </div>
+          <div>{{ item.encyclopediaName }}</div>
         </div>
       </div>
     </div>
-    <el-button type="text" class="m-auto">点击展开更多</el-button>
+    <el-button v-if="otherList.length && otherTotal > otherList.length" type="text" class="m-auto" @click="loadMore">
+      点击展开更多
+    </el-button>
     <div class="c-entry-button">
-      <el-button type="primary">确认</el-button>
-      <el-button>取消</el-button>
+      <el-button type="primary" @click="sureHandler()">确认</el-button>
+      <el-button @click="closeHandler()">取消</el-button>
     </div>
   </el-dialog>
 </template>
 <script>
+import { recommendLexicalRecently, queryChamberLexical, queryEntryList } from '@/api/bossin'
 export default {
   props: {
     visible: {
@@ -43,19 +82,29 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    entryInfo: {
+      type: Object,
+      default: () => { }
     }
   },
   data() {
     return {
-      lists: [
-        {
-          check: true
-        }, {
-          check: false
-        }, {
-          check: true
-        }
-      ]
+      recommendList: [],
+      chamberList: [],
+      otherList: [],
+      recommendFilter: {
+        ckey: '',
+        limit: 10,
+        page: 1
+      },
+      keywordFilter: {
+        encyclopediaName: '',
+        limit: 10,
+        page: 1
+      },
+      otherTotal: 0,
+      selectionKey: {}
     }
   },
   computed: {
@@ -66,6 +115,89 @@ export default {
       set(val) {
         this.$emit('update:visible', val)
       }
+    }
+  },
+  watch: {
+    entryVisible(val) {
+      if (val) {
+        if (this.entryInfo.selectionData.length) this.setSelectionMap()
+        this.recommendList = []
+        this.chamberList = []
+        this.otherList = []
+        this.queryRecommendList()
+        this.queryChamberList()
+        this.inputHandler()
+      }
+    }
+  },
+  methods: {
+    setSelectionMap() {
+      this.entryInfo.selectionData.forEach(item => {
+        this.selectionKey[item.encyclopediaId] = true
+      })
+    },
+    async queryRecommendList() {
+      const { data } = await recommendLexicalRecently({
+        ...this.recommendFilter,
+        ckey: this.entryInfo.ckey
+      })
+      this.recommendList = data.records.map(item => {
+        return {
+          ...item,
+          check: !!this.selectionKey[item.encyclopediaId]
+        }
+      })
+    },
+    async queryChamberList() {
+      const { data } = await queryChamberLexical({
+        ...this.recommendFilter,
+        ckey: this.entryInfo.ckey
+      })
+      if (data.chamberEntry) {
+        this.chamberList = [data.chamberEntry]
+      }
+      this.chamberList = this.chamberList.concat(data.memberEntry.records)
+      this.chamberList = this.chamberList.map(item => {
+        return {
+          ...item,
+          check: !!this.selectionKey[item.encyclopediaId]
+        }
+      })
+    },
+    async inputHandler() {
+      this.keywordFilter.page = 1
+      this.searchList()
+    },
+    async searchList() {
+      const { data } = await queryEntryList(this.keywordFilter)
+      this.otherTotal = data.total
+      const checkData = data.records.map(item => {
+        return { ...item, check: !!this.selectionKey[item.encyclopediaId] }
+      })
+      if (this.keywordFilter <= 1) {
+        this.otherList = checkData
+      } else {
+        this.otherList = this.otherList.concat(checkData)
+      }
+    },
+    loadMore() {
+      this.keywordFilter.page++
+      this.searchList()
+    },
+    closeHandler() {
+      this.visible = false
+    },
+    sureHandler() {
+      const encyclopediaIds = []
+      for (const key in this.selectionKey) {
+        if (this.selectionKey[key]) {
+          encyclopediaIds.push(key)
+        }
+      }
+      this.$emit('sure-handler', encyclopediaIds)
+    },
+    checkboxChange(value, encyclopediaId) {
+      this.selectionKey[encyclopediaId] = value
     }
   }
 }

@@ -9,6 +9,8 @@ import preview from './component/preview'
 import kdDialog from '@/components/common/kdDialog'
 import videoComponent from '@/components/video/index'
 import videoUpLoad from '@/components/video/upLoad'
+import EntryDialog from '@/components/entryDialog/index'
+import RelatedRecommend from '@/components/entryDialog/RelatedRecommend'
 export default {
   components: {
     Ckeditor,
@@ -18,7 +20,9 @@ export default {
     editorElem,
     preview,
     kdDialog, videoComponent,
-    videoUpLoad
+    videoUpLoad,
+    EntryDialog,
+    RelatedRecommend
   },
   data() {
     return {
@@ -39,7 +43,8 @@ export default {
           sharePoster: '', // 分享海报图片
         },
         vid: '', // 上传视频Id
-        videoCoverURL: '', // 视频封面
+        videoCoverURL: '', // 视频封面,
+        encyclopediaIds: []
       },
       articleId: '',
       coverImgs: ['', '', ''],
@@ -62,6 +67,9 @@ export default {
       },
       articleUrl: '',
       committee: false,
+      entryList: [],
+      entryVisible: false,
+      entryInfo: {}
     }
   },
   mounted() {
@@ -363,5 +371,18 @@ export default {
       this.$refs['look-kdDialog'].show()
       this.currentImg = val
     },
+    removeHandler() {
+
+    },
+    addEntry() {
+      this.entryInfo = {
+        ckey: '',
+        selectionData: this.entryList
+      }
+      this.entryVisible = true
+    },
+    sureHandler() {
+
+    }
   }
 }
