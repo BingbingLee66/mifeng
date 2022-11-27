@@ -39,7 +39,7 @@
             <el-input v-model="colData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15" />
           </el-form-item>
           <div style="margin-left: 116px">
-            (支持文件类型：PDF、Word、Excel、PPT、txt )大小限制30M
+            (支持文件类型：PDF、Word、Excel、PPT )大小限制30M
 
             <el-upload class="avatar-uploader" action="/" :show-file-list="false" disabled>
               <i class="el-icon-plus uploader-pic-icon" style="color: #d9d9d9" />
@@ -225,7 +225,9 @@ export default {
 
     onInfoDate() {
       if (this.infoDate.info === '') return this.$message.error('请选择类型')
-      if (+this.infoDate.info === 0 || +this.infoDate.info === 1 || +this.infoDate.info === 2) { this.$emit('update:dialogFormVisible', true) }
+      if (+this.infoDate.info === 0 || +this.infoDate.info === 1 || +this.infoDate.info === 2) {
+        this.$emit('update:dialogFormVisible', true)
+      }
 
       this.$emit('update:iscustom', false)
     }
