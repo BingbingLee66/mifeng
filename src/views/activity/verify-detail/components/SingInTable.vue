@@ -341,11 +341,13 @@ export default {
           // prop: 'attachment',
           render: ({ row }) => {
             const arr = []
-            row.attachment.forEach(element => {
-              element.signValue.forEach(e => {
-                arr.push({ filename: e.filename, url: e.url, type: e.type })
+            row.attachment &&
+              row.attachment.forEach(element => {
+                element.signValue &&
+                  element.signValue.forEach(e => {
+                    arr.push({ filename: e.filename, url: e.url, type: e.type })
+                  })
               })
-            })
             return arr.map(m => {
               return (
                 <div onClick={() => this.downloadFileAttach(m)} class="attachment">
@@ -549,7 +551,9 @@ export default {
     async setSubUser() {
       const { phone, signinId } = this.subDialog
       if (!phone) return this.$message({ message: '请输入替补人员手机号', type: 'warning' })
-      if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(phone)) { return this.$message({ message: '手机号格式错误', type: 'warning' }) }
+      if (!/^$|^1[0-9]{10}$|^([0-9]{3}[-])([1-9][0-9]{8})$|^([0-9]{4}[-])([1-9][0-9]{7})$/.test(phone)) {
+        return this.$message({ message: '手机号格式错误', type: 'warning' })
+      }
       const { state, msg } = await setSubUser({ phone, id: signinId })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
@@ -569,7 +573,9 @@ export default {
 
     async saveSeatsSettings() {
       const { seats, signinId } = this.seatDialog
-      if (!seats.length || seats.some(v => !v.seatName)) { return this.$message({ message: '座位号不能为空', type: 'warning' }) }
+      if (!seats.length || seats.some(v => !v.seatName)) {
+        return this.$message({ message: '座位号不能为空', type: 'warning' })
+      }
       if ([1, 2].includes(seats[0].status)) {
         this.seatDialog.show = false
         return
