@@ -8,7 +8,7 @@
           <el-checkbox
             v-model="item.check"
             class="c-eli__checkbox"
-            @change="(value) => checkboxChange(value, item.encyclopediaId)"
+            @change="(value) => checkboxChange(value, item)"
           />
           <el-image
             style="width: 80px; height: 80px"
@@ -16,10 +16,19 @@
             fit="cover"
           />
         </div>
-        <div>{{ item.encyclopediaName }}</div>
+        <div class="entry-name">{{ item.encyclopediaName }}</div>
+        <div class="entry-polysemant">{{ item.polysemant }}</div>
       </div>
       <div v-if="!recommendList.length">暂无相关推荐</div>
     </div>
+    <el-button
+      v-if="recommendList.length && recommendTotal > recommendList.length"
+      type="text"
+      class="m-auto"
+      @click="queryRecommendList(true)"
+    >
+      点击展开更多
+    </el-button>
     <div>
       <h2>商会相关</h2>
       <div class="c-entry-list">
@@ -28,7 +37,7 @@
             <el-checkbox
               v-model="item.check"
               class="c-eli__checkbox"
-              @change="(value) => checkboxChange(value, item.encyclopediaId)"
+              @change="(value) => checkboxChange(value, item)"
             />
             <el-image
               style="width: 80px; height: 80px"
@@ -36,12 +45,20 @@
               fit="cover"
             />
           </div>
-          <div>{{ item.encyclopediaName }}</div>
+          <div class="entry-name">{{ item.encyclopediaName }}</div>
+          <div class="entry-polysemant">{{ item.polysemant }}</div>
         </div>
         <div v-if="!chamberList.length">暂无商会相关数据</div>
       </div>
     </div>
-    <el-button v-if="chamberList.length" type="text" class="m-auto">点击展开更多</el-button>
+    <el-button
+      v-if="chamberList.length && chamberTotal > chamberList.length"
+      type="text"
+      class="m-auto"
+      @click="queryChamberList(true)"
+    >
+      点击展开更多
+    </el-button>
     <div v-if="otherList.length">
       <h2>其他</h2>
       <div class="c-entry-list">
@@ -50,7 +67,7 @@
             <el-checkbox
               v-model="item.check"
               class="c-eli__checkbox"
-              @change="(value) => checkboxChange(value, item.encyclopediaId)"
+              @change="(value) => checkboxChange(value, item)"
             />
             <el-image
               style="width: 80px; height: 80px"
@@ -58,11 +75,17 @@
               fit="cover"
             />
           </div>
-          <div>{{ item.encyclopediaName }}</div>
+          <div class="entry-name">{{ item.encyclopediaName }}</div>
+          <div class="entry-polysemant">{{ item.polysemant }}</div>
         </div>
       </div>
     </div>
-    <el-button v-if="otherList.length && otherTotal > otherList.length" type="text" class="m-auto" @click="loadMore">
+    <el-button
+      v-if="otherList.length && otherTotal > otherList.length"
+      type="text"
+      class="m-auto"
+      @click="loadMore"
+    >
       点击展开更多
     </el-button>
     <div class="c-entry-button">
@@ -94,7 +117,10 @@ export default {
       chamberList: [],
       otherList: [],
       recommendFilter: {
-        ckey: '',
+        limit: 10,
+        page: 1
+      },
+      chamberFilter: {
         limit: 10,
         page: 1
       },
@@ -103,8 +129,12 @@ export default {
         limit: 10,
         page: 1
       },
+      recommendTotal: 0,
+      chamberTotal: 0,
       otherTotal: 0,
-      selectionKey: {}
+      selectionKey: {},
+      lastEncyclopediaName: '',
+      timer: 0
     }
   },
   computed: {
@@ -120,6 +150,8 @@ export default {
   watch: {
     entryVisible(val) {
       if (val) {
+        this.selectionKey = {}
+        this.timer = 0
         if (this.entryInfo.selectionData.length) this.setSelectionMap()
         this.recommendList = []
         this.chamberList = []
@@ -133,48 +165,85 @@ export default {
   methods: {
     setSelectionMap() {
       this.entryInfo.selectionData.forEach(item => {
-        this.selectionKey[item.encyclopediaId] = true
+        this.selectionKey[item.encyclopediaId] = item
       })
     },
-    async queryRecommendList() {
-      const { data } = await recommendLexicalRecently({
-        ...this.recommendFilter,
-        ckey: this.entryInfo.ckey
-      })
-      this.recommendList = data.records.map(item => {
-        return {
-          ...item,
-          check: !!this.selectionKey[item.encyclopediaId]
+    async queryRecommendList(loadMore = false) {
+      if (loadMore) this.recommendFilter.page++
+      try {
+        const { data } = await recommendLexicalRecently({
+          ...this.recommendFilter,
+          ckey: this.entryInfo.ckey
+        })
+        if (!data) return
+        this.recommendTotal = data.total || 0
+        const checkData = data.records.map(item => {
+          const selectItem = this.selectionKey[item.encyclopediaId]
+          return {
+            ...item,
+            check: selectItem ? !!selectItem.check : false
+          }
+        })
+        if (this.recommendFilter.page <= 1) {
+          this.recommendList = checkData
+        } else {
+          this.recommendList = this.recommendList.concat(checkData)
         }
-      })
-    },
-    async queryChamberList() {
-      const { data } = await queryChamberLexical({
-        ...this.recommendFilter,
-        ckey: this.entryInfo.ckey
-      })
-      if (data.chamberEntry) {
-        this.chamberList = [data.chamberEntry]
+      } catch (error) {
+        console.log(error)
       }
-      this.chamberList = this.chamberList.concat(data.memberEntry.records)
-      this.chamberList = this.chamberList.map(item => {
-        return {
-          ...item,
-          check: !!this.selectionKey[item.encyclopediaId]
+    },
+    async queryChamberList(loadMore = false) {
+      if (loadMore) this.chamberFilter.page++
+      try {
+        const { data } = await queryChamberLexical({
+          ...this.chamberFilter,
+          ckey: this.entryInfo.ckey
+        })
+        if (!data) return
+        this.chamberTotal = data.total || 0
+        let checkData = []
+        if (data.chamberEntry) {
+          checkData = [data.chamberEntry]
         }
-      })
+        checkData = checkData.concat(data.memberEntry.records)
+        checkData = checkData.map(item => {
+          const selectItem = this.selectionKey[item.encyclopediaId]
+          return {
+            ...item,
+            check: selectItem ? !!selectItem.check : false
+          }
+        })
+
+        if (this.chamberFilter.page <= 1) {
+          this.chamberList = checkData
+        } else {
+          this.chamberList = this.chamberList.concat(checkData)
+        }
+      } catch (error) {
+        console.log(error)
+      }
     },
     async inputHandler() {
-      this.keywordFilter.page = 1
-      this.searchList()
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
+      this.timer = setTimeout(() => {
+        this.keywordFilter.page = 1
+        this.searchList()
+      }, 300)
     },
     async searchList() {
       const { data } = await queryEntryList(this.keywordFilter)
       this.otherTotal = data.total
       const checkData = data.records.map(item => {
-        return { ...item, check: !!this.selectionKey[item.encyclopediaId] }
+        const selectItem = this.selectionKey[item.encyclopediaId]
+        return {
+          ...item,
+          check: selectItem ? !!selectItem.check : false
+        }
       })
-      if (this.keywordFilter <= 1) {
+      if (this.keywordFilter.page <= 1) {
         this.otherList = checkData
       } else {
         this.otherList = this.otherList.concat(checkData)
@@ -189,15 +258,21 @@ export default {
     },
     sureHandler() {
       const encyclopediaIds = []
+      const originIds = []
+      if (Object.keys(this.selectionKey).length > 15) {
+        return this.$message.error('最多选择15个词条关联')
+      }
       for (const key in this.selectionKey) {
-        if (this.selectionKey[key]) {
-          encyclopediaIds.push(key)
+        if (this.selectionKey[key].check) {
+          encyclopediaIds.push(this.selectionKey[key].encyclopediaId)
+          originIds.push(this.selectionKey[key])
         }
       }
-      this.$emit('sure-handler', encyclopediaIds)
+      this.$emit('sure-handler', encyclopediaIds, originIds)
     },
-    checkboxChange(value, encyclopediaId) {
-      this.selectionKey[encyclopediaId] = value
+    checkboxChange(value, item) {
+      this.selectionKey[item.encyclopediaId] = item
+      this.selectionKey[item.encyclopediaId].check = value
     }
   }
 }
@@ -214,6 +289,16 @@ export default {
   text-align: center;
   .img{
     object-fit: cover;
+  }
+  .entry-name {
+    margin: 5px 0;
+    text-align: center;
+    color: #222;
+  }
+  .entry-polysemant{
+    text-align: center;
+    font-size: 12px;
+    color: #666
   }
 }
 .c-eli__relative{

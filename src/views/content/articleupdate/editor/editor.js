@@ -1,5 +1,6 @@
 import { getUpdateDetail, uploadCoverImg, save, getWechatContent, queryVideo } from '@/api/content/article'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
+import { queryRelatedEntryList } from '@/api/bossin/index'
 import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
 import PreviewPh from '@/components/ArticlePreview'
@@ -126,6 +127,7 @@ export default {
     },
     init() {
       this.fetchData()
+      this.queryEntryList()
     },
     beforeAvatarUpload(file, index) {
       this.uploadIndex = index
@@ -212,15 +214,28 @@ export default {
               this.$refs['videoRef'].show(dataObj.vid)
             })
           }
-          // this.$refs.ueditor.setContent(htmlObj === null ? '' : htmlObj)
-          // this.$refs.ckeditor1.init()
-          // setTimeout(() => {
-          //   this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
-          // }, 500)
         }).catch(error => {
           reject(error)
         })
       })
+    },
+    async queryEntryList() {
+      try {
+        const { data } = await queryRelatedEntryList({
+          contentId: this.articleId,
+          contentType: this.$route.query.contentType,
+          page: 1,
+          limit: 100
+        })
+        this.entryList = data.records.map(item => {
+          return {
+            ...item,
+            check: true
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
     },
     addParentHtml(html) {
       this.formObj.contentHtml = html
@@ -242,6 +257,7 @@ export default {
           this.formObj['contentModuleId'] = this.activeName
           // 判断是否为商委会的
           this.formObj['articleType'] = this.committee === true ? 1 : 0
+          this.formObj.encyclopediaIds = this.entryList.map(item => item.encyclopediaId)
           save(this.formObj).then(response => {
             if (response.state === 1) {
               this.$message({
@@ -371,8 +387,8 @@ export default {
       this.$refs['look-kdDialog'].show()
       this.currentImg = val
     },
-    removeHandler() {
-
+    removeHandler(index) {
+      this.entryList.splice(index, 1)
     },
     addEntry() {
       this.entryInfo = {
@@ -381,8 +397,9 @@ export default {
       }
       this.entryVisible = true
     },
-    sureHandler() {
-
+    sureHandler(ids, originData) {
+      this.entryList = originData
+      this.entryVisible = false
     }
   }
 }

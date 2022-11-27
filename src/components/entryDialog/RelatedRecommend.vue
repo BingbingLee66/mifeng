@@ -1,14 +1,16 @@
 <template>
   <div class="entry-list">
     <div v-for="(item, index) in entryList" :key="item.encyclopediaId" class="entry-item">
-      <div class="close-icon-box" @click="removeHandler(index)">
-        <i class="el-icon-error" />
+      <div class="entry-image">
+        <div class="close-icon-box" @click="removeHandler(index)">
+          <i class="el-icon-error" />
+        </div>
+        <el-image :src="item.coverUrl" fit="cover" style="width: 80px; height: 80px" />
       </div>
-      <el-image :src="item.coverUrl" fit="cover" style="width: 80px; height: 80px" />
+      <div class="entry-name">{{ item.encyclopediaName }}</div>
+      <div class="entry-polysemant">{{ item.polysemant }}</div>
     </div>
-    <div class="entry-add" @click="addEntry()">
-      +
-    </div>
+    <div class="entry-add" @click="addEntry()">+</div>
   </div>
 </template>
 <script>
@@ -32,10 +34,17 @@ export default {
 <style lang="scss" scoped>
 .entry-list{
   display: flex;
+  flex-wrap: wrap;
 }
 .entry-item{
-  position: relative;
-  margin-right: 20px;
+  max-width: 120px;
+  margin: 0 20px 10px 0;
+  .entry-image{
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: auto;
+  }
   .close-icon-box{
     position: absolute;
     right: -12px;
@@ -50,6 +59,16 @@ export default {
     line-height: 20px;
     cursor: pointer;
   }
+  .entry-name {
+    margin: 5px 0;
+    text-align: center;
+    color: #222;
+  }
+  .entry-polysemant{
+    text-align: center;
+    font-size: 12px;
+    color: #666
+  }
 }
 .entry-add{
   width: 40px;
@@ -59,7 +78,7 @@ export default {
   font-size: 40px;
   color: #222;
   text-align: center;
-  line-height: 40px;
+  line-height: 36px;
   cursor: pointer;
 }
 </style>

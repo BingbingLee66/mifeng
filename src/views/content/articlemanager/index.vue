@@ -830,7 +830,7 @@
     </div>
     <entry-dialog
       :visible.sync="entryVisible"
-      title="添加词条"
+      :title="entryInfo.existEntry ? '编辑词条' : '添加词条'"
       :entry-info="entryInfo"
       @sure-handler="sureHandler"
     />

@@ -280,7 +280,8 @@ export default {
         name: '添加/修改文章',
         query: {
           activeName: this.activeName,
-          articleId: row.id
+          articleId: row.id,
+          articleType: row.articleType
         }
       })
     },
