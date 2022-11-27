@@ -955,7 +955,10 @@ export default {
     },
     // 上传文件校验
     beforeUploadFile(file) {
-      if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt', 'txt', 'bmp', 'jpg', 'png', 'jpeg'].includes(file.name.split('.')[1])) {
+      const rule = file.name.split('.')
+      if (!rule.length > 0) { this.$message.error('上传格式错误'); return }
+      const type = rule.length && rule[rule.length - 1]
+      if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt', 'txt', 'bmp', 'jpg', 'png', 'jpeg'].includes(type)) {
         this.$message.error('上传文件只能是 word、excel、pdf、ppt、txt 、bmp、jpg、png、jpeg格式!')
         return false
       }
