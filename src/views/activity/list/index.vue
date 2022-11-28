@@ -142,7 +142,7 @@
               <div v-if="ckey || !scope.row.ckey" class="blue-label" @click="editActivity(scope.row)">编辑</div>
               <div class="blue-label" @click="showDel(scope.row)">删除</div>
             </div>
-            <!-- <div class="blue-label" @click="detail(scope.row)">详情</div> -->
+            <div class="blue-label" @click="detail(scope.row)">详情</div>
           </template>
         </el-table-column>
       </el-table>

@@ -389,7 +389,6 @@ export default {
   },
   methods: {
     async downloadFileAttach(item) {
-      console.log('downloadFileAttach', item)
       if (item.type === 'file') {
         window.open(item.url)
       } else {
