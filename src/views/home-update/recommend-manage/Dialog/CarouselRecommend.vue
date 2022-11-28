@@ -94,7 +94,7 @@ export default {
       tableColumn,
       tableData: [],
       rowData: [],
-      position: null,
+      position: null
     }
   },
   computed: {
@@ -159,8 +159,12 @@ export default {
 
     handleConfirm(data) {
       if (data) {
+        if (data.length > 6) {
+          return this.$message.warning('最多选择6个轮播图')
+        }
         this.formObj.contentIds = data.map(i => i.contentId)
         this.tableData = data
+        this.$refs.selectRef.$emit('close')
       }
       this.$refs.formObj.validateField('contentIds')
     },

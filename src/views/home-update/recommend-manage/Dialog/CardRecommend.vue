@@ -172,6 +172,7 @@ export default {
       if (data) {
         this.formObj.contentIds = data.map(i => i.contentId)
         this.tableData = data
+        this.$refs.selectRef.$emit('close')
       }
       this.$refs.formObj.validateField('contentIds')
     },

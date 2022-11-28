@@ -51,6 +51,8 @@ export default {
         selection: false,
         single: false,
         singleKey: 'id',
+        reserve: false,
+        rowKey: '',
         maxHeight: window.innerHeight - 400 + 'px'
       },
       tableData: [],
@@ -77,13 +79,20 @@ export default {
         if (position === 3) {
           this.tableConfig.single = true
           this.tableConfig.selection = false
+          this.tableConfig.reserve = false
+          this.tableConfig.rowKey = ''
         } else {
           this.tableConfig.single = false
           this.tableConfig.selection = true
+          this.tableConfig.reserve = true
+          this.tableConfig.rowKey = 'id'
         }
         this.position = position
         this.dialogVisible = true
         this.fetchData(1)
+      })
+      this.$on('close', () => {
+        this.close()
       })
     })
   },
@@ -117,7 +126,7 @@ export default {
     },
     confirm() {
       this.$emit('confirm', this.selectionData)
-      this.close()
+      // this.close()
     }
   }
 }
