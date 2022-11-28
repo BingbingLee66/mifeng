@@ -49,7 +49,7 @@ const tableColumn = [
     align: 'center',
     type: 'function',
     callback: row => {
-      return row.switchFrequence ? row.switchFrequence + 'ms' : '- -'
+      return row.switchFrequence ? row.switchFrequence + 'ms' : '不切换'
     }
   },
   {
