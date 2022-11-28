@@ -19,22 +19,19 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           size="mini"
-          @change="fetchData"
+          @change="fetchStatistics"
         />
       </div>
 
-      <el-button type="primary" size="mini" style="position: absolute;right: 0;top:10px" @click="showModal = true">添加标签</el-button>
+      <el-button type="primary" size="mini" style="position: absolute;right: 100px;top:10px" @click="showModal('add')">添加标签</el-button>
+      <el-button type="danger" size="mini" style="position: absolute;right: 0;top:10px" @click="showModal('del')">删除标签</el-button>
     </div>
 
-    <el-tabs v-model="activeName">
-      <el-tab-pane label="会长" name="1" />
-      <el-tab-pane label="执行会长" name="2" />
-      <el-tab-pane label="秘书长" name="3" />
-      <el-tab-pane label="会员" name="4" />
-      <el-tab-pane label="其他" name="5" />
+    <el-tabs v-model="activeName" @tab-click="fetchStatistics">
+      <el-tab-pane v-for="tag in youAreTagList" :key="tag.value" :label="tag.label" :name="tag.value" />
     </el-tabs>
 
-    <div class="current-percent">占比：20%</div>
+    <div class="current-percent">占比：{{ currentItem.proportion * 100 }}%</div>
 
     <div class="flex-x-center-center tag-center">
       <v-chart :option="needBarOpt" class="chart-wrap chart-block" />
@@ -45,12 +42,13 @@
       <v-chart :option="industryBarOpt" class="chart-wrap chart-block" />
     </div>
 
-    <TagFormDialog :visible.sync="showModal" />
+    <TagFormDialog :visible.sync="visible" :mode="mode" :you-are-list="youAreTagList" :tag-list="tagList" @success="fetchData" />
   </div>
 </template>
 
 <script>
 import TagFormDialog from './components/tagFormDialog'
+import { getTag, statisticsTag } from '@/api/user-guide'
 
 export default {
   name: 'IdentityTag',
@@ -61,12 +59,30 @@ export default {
         days: 7,
         date: '',
       },
-      activeName: '1',
-      showModal: false,
-      needBarOpt: {
+      activeName: null,
+      youAreTagList: [],
+      tagList: [],
+      visible: false,
+      mode: 'add',
+
+      currentItem: {}
+    }
+  },
+  computed: {
+    needBarOpt() {
+      return {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
         xAxis: {
           type: 'category',
-          data: ['人脉交友', '寻找项目', '资源共享', '商会资讯']
+          data: this.currentItem.needStats?.map(v => v.labelVal) || [],
+          axisLabel: {
+            interval: 0,
+          }
         },
         yAxis: {
           type: 'value',
@@ -77,12 +93,15 @@ export default {
         },
         series: [
           {
-            data: [120, 200, 150, 80],
+            data: this.currentItem.needStats?.map(v => v.num) || [],
             type: 'bar'
           }
         ]
-      },
-      youArePieOpt: {
+      }
+    },
+
+    youArePieOpt() {
+      return {
         title: {
           text: '你是？',
           left: '10px',
@@ -95,7 +114,7 @@ export default {
         legend: {
           top: 10,
           left: 'center',
-          data: ['会长', '执行会长', '会员', '秘书长', '其他']
+          data: this.currentItem.whoStats?.map(tag => tag.labelVal) || []
         },
         series: [
           {
@@ -103,17 +122,12 @@ export default {
             radius: '65%',
             center: ['50%', '50%'],
             selectedMode: 'single',
-            data: [
-              {
-                value: 1548,
-                name: 'CityE',
-              },
-              { value: 735, name: '会长' },
-              { value: 510, name: '执行会长' },
-              { value: 434, name: '会员' },
-              { value: 335, name: '秘书长' },
-              { value: 123, name: '其他' },
-            ],
+            data: this.currentItem.whoStats?.map(tag => {
+              return {
+                name: tag.labelVal,
+                value: tag.num
+              }
+            }) || [],
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
@@ -123,11 +137,14 @@ export default {
             }
           }
         ]
-      },
-      industryBarOpt: {
+      }
+    },
+
+    industryBarOpt() {
+      return {
         xAxis: {
           type: 'category',
-          data: ['IT/互联网', '新零售/电商', '传媒/文化', '能源环保', '医疗健康', '贸易物流', '教育培训', '化工机械', '金融']
+          data: this.currentItem.industryStats?.map(v => v.labelVal) || []
         },
         yAxis: {
           type: 'value',
@@ -138,14 +155,61 @@ export default {
         },
         series: [
           {
-            data: [120, 200, 150, 80, 120, 200, 150, 80, 10],
+            data: this.currentItem.industryStats?.map(v => v.num) || [],
             type: 'bar'
           }
         ]
       }
     }
   },
+  mounted() {
+    this.fetchData()
+  },
   methods: {
+    async fetchData() {
+      await this.fetchTagList()
+      this.initDatePicker()
+    },
+
+    async fetchTagList() {
+      const { data, state } = await getTag()
+      if (state !== 1) return
+
+      this.activeName = String(data[0].id)
+      this.youAreTagList = data.filter(tag => tag.labelName === 1).map(tag => {
+        return {
+          ...tag,
+          label: tag.labelVal,
+          value: String(tag.id),
+        }
+      })
+      this.tagList = data.map(tag => {
+        return {
+          ...tag,
+          label: tag.labelVal,
+          value: String(tag.id),
+        }
+      })
+    },
+
+    async fetchStatistics() {
+      const params = { relLabelId: +this.activeName || 1 }
+      if (this.query.date.length) {
+        params.startTime = new Date(this.query.date[0]).getTime()
+        params.endTime = new Date(this.query.date[1]).getTime()
+      }
+
+      const { data, state } = await statisticsTag(params)
+
+      if (state !== 1) return
+      this.currentItem = data
+    },
+
+    showModal(mode) {
+      this.visible = true
+      this.mode = mode
+    },
+
     initDatePicker() {
       const endDateNs = new Date()
       const startDateNs = new Date()
@@ -154,10 +218,9 @@ export default {
       const defaultStartTime = startDateNs.getFullYear() + '-' + ((startDateNs.getMonth() + 1) >= 10 ? (startDateNs.getMonth() + 1) : '0' + (startDateNs.getMonth() + 1)) + '-' + (startDateNs.getDate() >= 10 ? startDateNs.getDate() : '0' + startDateNs.getDate())
       const defaultEndTime = endDateNs.getFullYear() + '-' + ((endDateNs.getMonth() + 1) >= 10 ? (endDateNs.getMonth() + 1) : '0' + (endDateNs.getMonth() + 1)) + '-' + (endDateNs.getDate() >= 10 ? endDateNs.getDate() : '0' + endDateNs.getDate())
       this.query.date = [defaultStartTime, defaultEndTime]
-      this.fetchData()
+      this.fetchStatistics()
     },
 
-    async fetchData() {}
   }
 }
 </script>
