@@ -144,7 +144,10 @@ export default {
       return {
         xAxis: {
           type: 'category',
-          data: this.currentItem.industryStats?.map(v => v.labelVal) || []
+          data: this.currentItem.industryStats?.map(v => v.labelVal) || [],
+          axisLabel: {
+            interval: 0,
+          }
         },
         yAxis: {
           type: 'value',
