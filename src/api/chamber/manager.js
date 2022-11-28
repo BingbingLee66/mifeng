@@ -79,6 +79,11 @@ export const getClueList = params => request({
   params
 })
 
+// 获取转介绍来源渠道
+export const getPutSource = () => request({
+  url: '/chamber/ysh-clue/getputsource',
+  method: 'get',
+})
 //  商会后台使用统计 全部导出
 export const listAllChamberStatsDataByCkeyDownload = params => request({
   url: '/ec/chamberStats/listAllChamberStatsDataByCkeyDownload',
