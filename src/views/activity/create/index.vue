@@ -9,22 +9,11 @@
 
     <div v-show="activeName === '1'">
       <div class="create-container mydiv">
-        <el-form
-          ref="form"
-          :model="formObj"
-          :rules="rules"
-          label-position="right"
-          label-width="180px"
-        >
+        <el-form ref="form" :model="formObj" :rules="rules" label-position="right" label-width="180px">
           <el-row>
             <el-col style="width: 600px; height: 50px">
               <el-form-item label="活动名称：" prop="activityName">
-                <el-input
-                  v-model="formObj.activityName"
-                  show-word-limit
-                  maxlength="60"
-                  placeholder="限60字内"
-                />
+                <el-input v-model="formObj.activityName" show-word-limit maxlength="60" placeholder="限60字内" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -66,11 +55,7 @@
 
           <el-row>
             <el-col>
-              <el-form-item
-                class="address-wrap"
-                label="活动地点："
-                prop="addressInfo"
-              >
+              <el-form-item class="address-wrap" label="活动地点：" prop="addressInfo">
                 <div class="address-may">
                   <!-- <el-select
                     v-model="provinceValue"
@@ -87,14 +72,23 @@
                     </el-option>
                   </el-select> -->
                   <div class="address-Obscuration">
-                    <el-input v-model="formObj.addressInfo" style="width:450px;" :disabled="status === 2 || status === 3" clearable placeholder="请输入地址" @input="addressChange">
-                      <i
-                        slot="suffix"
-                        class="el-icon-location-information"
-                      />
+                    <el-input
+                      v-model="formObj.addressInfo"
+                      style="width: 450px"
+                      :disabled="status === 2 || status === 3"
+                      clearable
+                      placeholder="请输入地址"
+                      @input="addressChange"
+                    >
+                      <i slot="suffix" class="el-icon-location-information" />
                     </el-input>
                     <div v-if="addressList" class="Obscuration-tier">
-                      <div v-for="(item,index) in addressList" :key="index" class="Obscuration-map" @click="onaddress(item)">
+                      <div
+                        v-for="(item, index) in addressList"
+                        :key="index"
+                        class="Obscuration-map"
+                        @click="onaddress(item)"
+                      >
                         {{ item.title }}
                         <span class="address">{{ item.address }}</span>
                       </div>
@@ -144,7 +138,7 @@
                 ></el-input> -->
 
                 <!-- 腾讯地图 -->
-                <div ref="mapBox" style="width:800px; height:390px;z-index:0" />
+                <div ref="mapBox" style="width: 800px; height: 390px; z-index: 0" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -162,7 +156,7 @@
                   :disabled="status === 2 || status === 3"
                   @change="handleCheckTarget($event, 1)"
                 >
-                  {{ ckey ? "限本商会成员" : "限云商会成员" }}
+                  {{ ckey ? '限本商会成员' : '限云商会成员' }}
                 </el-checkbox>
                 <el-checkbox
                   v-if="ckey"
@@ -188,18 +182,8 @@
           <el-row v-if="applyObject.port">
             <el-col style="width: 600px; height: 40px">
               <el-form-item label="会内职位：" required>
-                <el-select
-                  v-model="portValue"
-                  multiple
-                  placeholder="请选择"
-                  :disabled="status === 2 || status === 3"
-                >
-                  <el-option
-                    v-for="item in portSelect"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
+                <el-select v-model="portValue" multiple placeholder="请选择" :disabled="status === 2 || status === 3">
+                  <el-option v-for="item in portSelect" :key="item.value" :label="item.label" :value="item.value" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -266,17 +250,17 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col style="width: 900px;margin-top: -38px;">
+            <el-col style="width: 900px; margin-top: -38px">
               <el-form-item label="报名审核：" required>
                 <el-checkbox
                   v-model="auditStatus.unlimit"
                   :disabled="status === 2 || status === 3"
-                  @change="handleAuditStatus( 0)"
+                  @change="handleAuditStatus(0)"
                 >无需审核</el-checkbox>
                 <el-checkbox
                   v-model="auditStatus.limit"
                   :disabled="status === 2 || status === 3"
-                  @change="handleAuditStatus( 1)"
+                  @change="handleAuditStatus(1)"
                 >需审核</el-checkbox>
               </el-form-item>
             </el-col>
@@ -284,7 +268,7 @@
 
           <!-- 扩展功能 -->
           <el-row>
-            <el-col style="width: 700px; height: 40px;margin-top: -38px;">
+            <el-col style="width: 700px; height: 40px; margin-top: -38px">
               <el-form-item label="扩展功能：">
                 <el-checkbox-group v-model="roleIds">
                   <el-checkbox :disabled="status === 2 || status === 3" :label="1">签到</el-checkbox>
@@ -296,11 +280,7 @@
           </el-row>
           <el-row>
             <el-col style="width: 600px; height: 160px">
-              <el-form-item
-                label="活动头图："
-                prop="headImage"
-                class="upload-style"
-              >
+              <el-form-item label="活动头图：" prop="headImage" class="upload-style">
                 <el-upload
                   class="uploader-pic-wrap"
                   action="/"
@@ -308,27 +288,16 @@
                   :before-upload="beforeUpload"
                   :http-request="uploadHeadImage"
                 >
-                  <img
-                    v-if="formObj.headImage"
-                    :src="formObj.headImage"
-                    class="pic"
-                    alt=""
-                  >
+                  <img v-if="formObj.headImage" :src="formObj.headImage" class="pic" alt="">
                   <i v-else class="el-icon-plus uploader-pic-icon" />
                 </el-upload>
-                <div style="color: #999; line-height: 1.3; margin-top: 8px">
-                  建议尺寸 744*300，支持jpg、png
-                </div>
+                <div style="color: #999; line-height: 1.3; margin-top: 8px">建议尺寸 744*300，支持jpg、png</div>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col style="width: 600px; height: 120px">
-              <el-form-item
-                label="活动分享图："
-                prop="listImage"
-                class="upload-style"
-              >
+              <el-form-item label="活动分享图：" prop="listImage" class="upload-style">
                 <el-upload
                   class="uploader-lpic-wrap"
                   action="/"
@@ -336,32 +305,38 @@
                   :before-upload="beforeUpload"
                   :http-request="uploadListImage"
                 >
-                  <img
-                    v-if="formObj.listImage"
-                    :src="formObj.listImage"
-                    class="lpic"
-                    alt=""
-                  >
+                  <img v-if="formObj.listImage" :src="formObj.listImage" class="lpic" alt="">
                   <i v-else class="el-icon-plus uploader-lpic-icon" />
                 </el-upload>
-                <div style="color: #999; line-height: 1.3; margin-top: 8px">
-                  建议尺寸 678*540，支持jpg、png
-                </div>
+                <div style="color: #999; line-height: 1.3; margin-top: 8px">建议尺寸 678*540，支持jpg、png</div>
               </el-form-item>
             </el-col>
           </el-row>
-
+          <el-row>
+            <el-col style="width: 600px">
+              <el-form-item label="附件:">
+                <el-upload
+                  ref="uploadFile"
+                  action="/"
+                  :on-remove="handleRemoveAttachment"
+                  :file-list="formObj.attachment"
+                  :limit="9"
+                  :before-upload="beforeUploadFile"
+                  :http-request="uploadFile"
+                  :on-exceed="onExceed"
+                >
+                  <el-button type="primary" size="small">点击上传</el-button>
+                  <div slot="tip" style="color: #999">
+                    上传格式限制word、excel、pdf、ppt、bmp、jpg、png、jpeg 大小限30M，限9个
+                  </div>
+                </el-upload>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-row>
             <el-col>
-              <el-form-item
-                label="活动类型："
-                prop="labels"
-                class="upload-style"
-              >
-                <CustomSelect
-                  v-model="formObj.labels"
-                  @click.native="activeVisible = true"
-                />
+              <el-form-item label="活动类型：" prop="labels" class="upload-style">
+                <CustomSelect v-model="formObj.labels" @click.native="activeVisible = true" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -401,7 +376,7 @@
             </el-col>
           </el-row>
 
-          <div v-if="ruleCkeys.includes(ckey) || (!ckey)">
+          <div v-if="ruleCkeys.includes(ckey) || !ckey">
             <el-row>
               <el-col>
                 <el-form-item label="直播链接类型：">
@@ -451,7 +426,7 @@
                     </el-radio-group>
                   </div>
                   <div>
-                    <span style="color: #F56C6C;padding: 5px; font-size: 16px;">*</span>入口关闭时间：
+                    <span style="color: #f56c6c; padding: 5px; font-size: 16px">*</span>入口关闭时间：
                     <el-date-picker
                       v-model="formObj.liveEntranceCloseTime"
                       format="yyyy-MM-dd HH:mm:ss"
@@ -491,7 +466,7 @@
           <div style="display: flex; flex-direction: column">
             <el-radio-group
               v-model="formObj.cardShow"
-              style="margin-bottom: 10px;"
+              style="margin-bottom: 10px"
               :disabled="status === 2 || status === 3"
             >
               <el-radio :label="1">展示</el-radio>
@@ -509,7 +484,6 @@
               <el-radio :label="4">限报名成功的用户可见 (若需审核，指审核通过的用户)</el-radio>
             </el-radio-group>
           </div>
-
         </div>
 
         <div v-if="formObj.signNeedCard === 1 && formObj.cardShow === 1" class="sgin-way mt-20">
@@ -524,7 +498,8 @@
 
         <div class="sgin-surface">报名表</div>
         <div class="sgin-way">
-          <div class="sgin-left">到场人数
+          <div class="sgin-left">
+            到场人数
             <span><i class="el-icon-question" @click="isPresent = true" /></span>
           </div>
           <el-radio-group v-model="formObj.arriveType">
@@ -535,12 +510,7 @@
       </div>
 
       <div class="create-container mydiv">
-        <el-form
-          v-show="+formObj.signType === 0"
-          ref="form1"
-          :rules="rules"
-          label-position="right"
-        >
+        <el-form v-show="+formObj.signType === 0" ref="form1" :rules="rules" label-position="right">
           <!-- <el-row style="margin-top: 8px">
             <span style="color: #f5222d; margin-left: 60px"
               >提示：报名信息请限制在 10 个以内</span
@@ -594,23 +564,20 @@
             </el-col>
           </el-row> -->
 
-          <el-row style="margin-left:30px;">
+          <el-row style="margin-left: 30px">
             <el-form-item>
               <el-button
                 type="primary"
-                :disabled="arrayData.length >= 20 ||(status === 2 || status === 3)"
+                :disabled="arrayData.length >= 20 || status === 2 || status === 3"
                 @click="iscustom = true"
               >+自定义报名信息</el-button>
             </el-form-item>
           </el-row>
 
-          <div v-for="(item, index) in arrayData" :key="item.id" style="margin-left:30px;">
+          <div v-for="(item, index) in arrayData" :key="item.id" style="margin-left: 30px">
             <el-row>
               <el-col :span="12">
-                <el-form-item
-                  :prop="'col' + index"
-                  :required="item.check === 1"
-                >
+                <el-form-item :prop="'col' + index" :required="item.check === 1">
                   <div class="sign">
                     <span v-if="item.check === 1" class="sign-star">*</span>
                     {{ item.title }}
@@ -632,16 +599,14 @@
                       <i slot="suffix" class="el-icon-arrow-down" />
                     </el-input>
                     <div class="sign-right">
-                      <el-link type="primary" @click="edit(index,item.type)">编辑</el-link>
+                      <el-link type="primary" @click="edit(index, item.type)">编辑</el-link>
                       <el-link type="primary" @click="up(index)">上移</el-link>
                       <el-link type="primary" @click="down(index)">下移</el-link>
                       <el-link type="primary" @click="del(index)">删除</el-link>
                     </div>
                   </div>
-
                 </el-form-item>
               </el-col>
-
             </el-row>
           </div>
         </el-form>
@@ -658,7 +623,12 @@
           <el-button v-if="activeName === '1'" @click="onpreview">预览</el-button>
 
           <el-button v-if="activeName !== '1'" @click="onPrev">上一步</el-button>
-          <el-button v-if="activeName !== '3'" :disabled="activeName === '1' ? disabledApplyBtn : disabledGuestBtn" type="primary" @click="onnext">下一步</el-button>
+          <el-button
+            v-if="activeName !== '3'"
+            :disabled="activeName === '1' ? disabledApplyBtn : disabledGuestBtn"
+            type="primary"
+            @click="onnext"
+          >下一步</el-button>
 
           <template v-if="activeName === '3'">
             <el-button @click="save(0)">保存，暂不发布</el-button>
@@ -669,7 +639,11 @@
     </div>
 
     <!--  选择活动类型  -->
-    <ActiveTypeDialog :visible.sync="activeVisible" :active-type="formObj.labels" @confirm="val => formObj.labels = val" />
+    <ActiveTypeDialog
+      :visible.sync="activeVisible"
+      :active-type="formObj.labels"
+      @confirm="val => (formObj.labels = val)"
+    />
 
     <!-- 自定义信息 -->
     <CustomApplyDialog
@@ -678,17 +652,12 @@
       :dialog-form-visible.sync="dialogFormVisible"
       :iscustom.sync="iscustom"
       :array-data="arrayData"
-      @edit="val => arrayData[editIndex] = val"
+      @edit="val => (arrayData[editIndex] = val)"
       @add="val => arrayData.push(val)"
     />
 
     <!-- 到场人数提示 -->
-    <el-dialog
-      title="到场人数设置后，小程序显示"
-      :visible.sync="isPresent"
-      width="30%"
-      center
-    >
+    <el-dialog title="到场人数设置后，小程序显示" :visible.sync="isPresent" width="30%" center>
       <div class="Present-img">
         <img src="https://ysh-cdn.kaidicloud.com/prod/png/info.png" class="pic" alt="">
       </div>
@@ -702,8 +671,7 @@
 <script src="./create.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-
-@import "src/styles/common.scss";
+@import 'src/styles/common.scss';
 </style>
 
 <style lang="scss">
@@ -825,7 +793,6 @@
   .date-wrap .el-date-editor .el-range-input {
     width: 45%;
   }
-
 }
 .tips {
   font-weight: 400;
@@ -833,46 +800,46 @@
   color: #666666;
   font-size: 14px;
 }
-.sgin-up{
+.sgin-up {
   margin-top: 20px;
   margin-left: 30px;
-  .sgin-way{
+  .sgin-way {
     display: flex;
     //align-items: center;
     font-size: 14px;
     color: #606266;
-    .sgin-left{
+    .sgin-left {
       margin-right: 20px;
-      .el-icon-question{
+      .el-icon-question {
         color: #c8b6ae;
       }
     }
   }
-  .sgin-surface{
+  .sgin-surface {
     font-weight: 700;
     font-size: 23px;
     margin: 20px 0;
   }
 }
-.Present-img{
+.Present-img {
   width: 326px;
   height: 79px;
   margin: 0 auto;
-  .pic{
+  .pic {
     width: 100%;
     height: 100%;
   }
 }
-.address-may{
+.address-may {
   display: flex;
   margin-bottom: 20px;
 }
-.address-Obscuration{
+.address-Obscuration {
   width: 450px;
   position: relative;
-  margin-right:20px;
+  margin-right: 20px;
   z-index: 1000;
-  .Obscuration-tier{
+  .Obscuration-tier {
     width: 100%;
     position: absolute;
     background: rgba(252, 250, 250, 0.918);
@@ -884,53 +851,52 @@
     overflow-y: auto;
     top: 111%;
     left: 0;
-    .Obscuration-map{
-        display: inline-block;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        overflow: hidden;
-        width: 100%;
-        border-bottom: 1px solid #f1f1f1;
-        padding: 5px 10px;
-        margin: 0;
-        cursor: pointer;
-        &:hover {
-          background: #eff6fd;
-        }
-        .address {
-          font-size: 12px;
-          color: #b9b9b9;
-          margin-left: 20px;
-        }
+    .Obscuration-map {
+      display: inline-block;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      width: 100%;
+      border-bottom: 1px solid #f1f1f1;
+      padding: 5px 10px;
+      margin: 0;
+      cursor: pointer;
+      &:hover {
+        background: #eff6fd;
+      }
+      .address {
+        font-size: 12px;
+        color: #b9b9b9;
+        margin-left: 20px;
+      }
     }
   }
 }
-.add-option{
+.add-option {
   color: #409eff;
   margin-left: 120px;
   font-weight: 700;
   cursor: pointer;
 }
-.sign{
+.sign {
   font-size: 14px;
   color: #606266;
   font-weight: 700;
   position: relative;
-  margin-left: 9px;;
-  .sign-star{
+  margin-left: 9px;
+  .sign-star {
     position: absolute;
     top: 4px;
     left: -8px;
-    color: #F56C6C;
+    color: #f56c6c;
   }
 }
-.sign-con{
+.sign-con {
   display: flex;
   align-items: center;
-  .sign-right{
+  .sign-right {
     margin-left: 10px;
     width: 100%;
   }
 }
 </style>
-

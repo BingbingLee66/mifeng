@@ -1,4 +1,5 @@
 import { createActivity, uploadPortrait, getActivity, getAlbumRelevance, getLinkPowerChamberCkeys } from '@/api/activity/activity'
+import { uploadFile } from '@/api/content/article'
 import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
 import { getListOfSelect } from '@/api/member/post'
 import Ckeditor from '@/components/CKEditor'
@@ -105,6 +106,7 @@ export default {
         cardShow: 1,
         cardShowType: 1,
         cardInfoType: 0,
+        attachment: []
       },
       isReleActivity: false,
       roleIds: [], // 多选框 扩展功能
@@ -360,6 +362,9 @@ export default {
         this.formObj.labels = resData.labels
         this.formObj.arriveType = resData.arriveType
         this.formObj.linkType = resData.linkType || 1
+        this.formObj.attachment = resData.attachment.map(m => {
+          return { name: m.fileName, attachment: m.attachment, fileName: m.fileName }
+        })
         if (resData.longitude) this.formObj.longitude = resData.longitude
         if (resData.latitude) this.formObj.latitude = resData.latitude
 
@@ -806,7 +811,7 @@ export default {
         params.cardShowType = 0
       }
       delete params.cardShow
-
+      console.log('params', params)
       createActivity(params).then(res => {
         if (res.state === 1) {
           this.$message.success(res.msg)
@@ -948,6 +953,43 @@ export default {
     addParentHtml(html) {
       this.formObj.introduce = html
     },
+    // 上传文件校验
+    beforeUploadFile(file) {
+      const rule = file.name.split('.')
+      if (!rule.length > 0) { this.$message.error('上传格式错误'); return }
+      const type = rule.length && rule[rule.length - 1]
+      if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt', 'bmp', 'BMP', 'jpg', 'JPG', 'png', 'PNG', 'jpeg', 'JPEG'].includes(type)) {
+        this.$message.error('上传文件只能是 word、excel、pdf、ppt、bmp、jpg、png、jpeg格式!')
+        return false
+      }
+      // 大小限制30M
+      if (file.size / 1024 / 1024 > 30) { this.$message.error('上传文件大于30M！'); return false }
+    },
+    onExceed() {
+      this.$message.error('不能大于9个文件')
+    },
+    // 上传文件
+    uploadFile(content) {
+      const formData = new FormData()
+      formData.append('file', content.file)
+      uploadFile(formData, 'activityAttachment').then(res => {
+        if (res.state === 1) {
+          this.formObj.attachment.push({
+            fileName: content.file.name,
+            name: content.file.name,
 
+            attachment: res.data
+          })
+        } else {
+          const idx = this.$refs.uploadFile.uploadFiles.findIndex(item => item.uid === content.file.uid)
+          this.$refs.uploadFile.uploadFiles.splice(idx, 1)
+          return this.$message.error('上传失败,请重试')
+        }
+      })
+    },
+    // 删除上传文件
+    handleRemoveAttachment(file) {
+      this.formObj.attachment = this.formObj.attachment.filter(item => item.uid !== file.uid)
+    },
   }
 }

@@ -97,3 +97,10 @@ export function getLinkPowerChamberCkeys(params) {
     data: params
   })
 }
+// 查询活动详情
+
+export const activityDetail = params =>
+  request({
+    url: '/api/ec/activity/detail',
+    params
+  })
