@@ -6,6 +6,7 @@ import {
   delActivity
 } from '@/api/activity/activity'
 
+import UpdateTime from './components/UpdateTime'
 export default {
   data() {
     const checkNumber = (rule, value, callback) => {
@@ -48,8 +49,13 @@ export default {
           { validator: checkNumber, trigger: 'blur' }
         ]
       },
+      // 显示修改时间弹框
+      showUpdateTime: false,
+      // 当前操作item的id
+      id: null,
     }
   },
+  components: { UpdateTime },
   created() {
     this.ckey = this.$store.getters.ckey
     if (this.$route.params.type !== undefined) {
@@ -126,6 +132,12 @@ export default {
       this.rowId = row.id
       this.isPublish = isPublish
       this.showUpdateDialog = true
+    },
+    // 修改活动发布时间
+    updateTime(row) {
+      const { id } = row
+      this.id = id
+      this.showUpdateTime = true
     },
     upadteActivity() {
       const params = {

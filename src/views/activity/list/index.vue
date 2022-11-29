@@ -138,11 +138,12 @@
               <div v-if="ckey || !scope.row.ckey" class="blue-label" @click="editActivity(scope.row)">编辑</div>
             </div>
             <div v-else>
-              <div class="blue-label" @click="showUpdate(scope.row, 1)">发布</div>
+              <div class="blue-label" @click="showUpdate(scope.row, 1)">发布1</div>
               <div v-if="ckey || !scope.row.ckey" class="blue-label" @click="editActivity(scope.row)">编辑</div>
               <div class="blue-label" @click="showDel(scope.row)">删除</div>
             </div>
             <div class="blue-label" @click="detail(scope.row)">详情</div>
+            <div class="blue-label" @click="updateTime(scope.row)">修改活动时间</div>
           </template>
         </el-table-column>
       </el-table>
@@ -158,7 +159,7 @@
         @current-change="handleCurrentChange"
       />
     </div>
-
+    <UpdateTime :id="id" :update-time-visiable.sync="showUpdateTime" />
     <!-- 修改权重弹窗 -->
     <el-dialog title="权重" :visible.sync="showSortDialog" width="30%">
       <el-form ref="sortForm" :model="sortForm" label-width="100px" :rules="sortRules">
