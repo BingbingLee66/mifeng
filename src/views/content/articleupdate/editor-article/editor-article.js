@@ -337,7 +337,7 @@ export default {
     // 接口参数提交
     submit() {
       // 判断是否输入全为空格
-      const isAllEmpty = this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4).replaceAll('&nbsp;', '').split('').every(item => item === ' ')
+      const isAllEmpty = this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4).replace('&nbsp;', '').split('').every(item => item === ' ')
       if (isAllEmpty) return this.$message.error('不能提交全为空格的内容！')
 
       if (this.formObj.coverType === 0) {
