@@ -202,6 +202,8 @@
 
       <el-button slot="footer" type="primary" @click="ipCardVisible = false">我知道了</el-button>
     </el-dialog>
+    <!-- 附件详情弹框 -->
+    <attachmentVisible ref="attachmentVisible" :attachment-visible.sync="showAttachment" :item="row" />
   </el-card>
 </template>
 
@@ -227,7 +229,8 @@ import {
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
-    KdPagination: () => import('@/components/common/KdPagination')
+    KdPagination: () => import('@/components/common/KdPagination'),
+    attachmentVisible: () => import('./AttachmentDetail')
   },
   props: {
     activity: {
@@ -303,7 +306,11 @@ export default {
 
       ipCardVisible: false,
 
-      exportLoaing: false
+      exportLoaing: false,
+      // 当前操作的row
+      row: null,
+      // 附件详情弹框
+      showAttachment: false
     }
   },
   computed: {
@@ -356,7 +363,8 @@ export default {
               )
             })
           }
-        }
+        },
+        {}
       ]
 
       try {
@@ -708,6 +716,13 @@ export default {
         }
       ]
     },
+    //
+    showAttachDetail(row) {
+      console.log('审核详情', row)
+      this.row = row
+      this.showAttachment = true
+      this.$refs['attachmentVisible'].formData(row)
+    },
     // 参与人员
     getJoinPersonTableList(list = []) {
       return [
@@ -814,6 +829,9 @@ export default {
                 <div>
                   <el-button type="text" onClick={() => this.onDelSingin(row)}>
                     <div style="color:red;">移除</div>
+                  </el-button>
+                  <el-button type="text" onClick={() => this.showAttachDetail(row)}>
+                    附件详情
                   </el-button>
                 </div>
               </div>

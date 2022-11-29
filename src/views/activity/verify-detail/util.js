@@ -29,3 +29,4 @@ export function formatDate(str) {
   if (!str) return ''
   return formatDateTime(new Date(+str), 'yyyy-MM-dd hh:mm')
 }
+export const filetype = ['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt']
