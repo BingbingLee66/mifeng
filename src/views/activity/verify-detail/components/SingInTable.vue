@@ -397,7 +397,6 @@ export default {
   },
   methods: {
     async downloadFileAttach(item) {
-      console.log('downloadFileAttach', item)
       if (item.type === 'file') {
         window.open(item.url)
       } else {
@@ -718,7 +717,6 @@ export default {
     },
     //
     showAttachDetail(row) {
-      console.log('审核详情', row)
       this.row = row
       this.showAttachment = true
       this.$refs['attachmentVisible'].formData(row)

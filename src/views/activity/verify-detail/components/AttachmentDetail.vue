@@ -66,9 +66,6 @@ export default {
       this.fileList = fileList
       this.imgList = imgList
       this.title = '小可爱的附件'
-
-      console.log('imgList', imgList)
-      console.log('fileList', fileList)
     }
   }
 }
