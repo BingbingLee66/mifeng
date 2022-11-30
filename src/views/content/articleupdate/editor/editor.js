@@ -127,7 +127,6 @@ export default {
     },
     init() {
       this.fetchData()
-      this.queryEntryList()
     },
     beforeAvatarUpload(file, index) {
       this.uploadIndex = index
@@ -188,7 +187,6 @@ export default {
         }
         getUpdateDetail(params).then(response => {
           const dataObj = response.data.dtl
-          // const htmlObj = dataObj.contentHtml
           this.formObj = {
             id: dataObj.id,
             title: dataObj.title,
@@ -214,16 +212,17 @@ export default {
               this.$refs['videoRef'].show(dataObj.vid)
             })
           }
+          this.queryEntryList(dataObj.contentType)
         }).catch(error => {
           reject(error)
         })
       })
     },
-    async queryEntryList() {
+    async queryEntryList(contentType) {
       try {
         const { data } = await queryRelatedEntryList({
           contentId: this.articleId,
-          contentType: this.$route.query.contentType,
+          contentType,
           page: 1,
           limit: 100
         })

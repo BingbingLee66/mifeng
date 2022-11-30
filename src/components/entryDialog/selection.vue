@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="selectionVisible" title="已添加的词条">
+  <el-dialog :visible.sync="selectionVisible" title="已添加的词条" :before-close="closeHandler">
     <RelatedRecommend :entry-list="entryList" @remove-entry="removeHandler" @add-entry="addEntry" />
     <div class="c-entry-button">
       <el-button type="primary" @click="sureHandler()">确认</el-button>
@@ -73,7 +73,7 @@ export default {
       this.$emit('add-entry', this.entryList)
     },
     closeHandler() {
-      this.selectionVisible = false
+      this.$emit('close')
     },
     sureHandler() {
       const encyclopediaIds = this.entryList

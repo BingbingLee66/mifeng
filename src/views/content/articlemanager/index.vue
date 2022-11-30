@@ -833,12 +833,14 @@
       :title="entryInfo.existEntry ? '编辑词条' : '添加词条'"
       :entry-info="entryInfo"
       @sure-handler="sureHandler"
+      @close="(entryVisible = false)"
     />
     <selection-dialog
       :visible.sync="selectionVisible"
       :entry-info="entryInfo"
       @sure-handler="sureHandler"
       @add-entry="addEntryHandler"
+      @close="(selectionVisible = false)"
     />
   </div>
 </template>

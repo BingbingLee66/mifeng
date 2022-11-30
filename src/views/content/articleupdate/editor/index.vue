@@ -277,6 +277,7 @@
       title="添加词条"
       :entry-info="entryInfo"
       @sure-handler="sureHandler"
+      @close="(entryVisible = false)"
     />
   </div>
 

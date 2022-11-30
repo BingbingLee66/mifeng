@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="entryVisible" :title="title">
+  <el-dialog :visible.sync="entryVisible" :title="title" :before-close="closeHandler">
     <el-input v-model="keywordFilter.encyclopediaName" placeholder="请输入关键字" @input="inputHandler" />
     <h2>最近推荐</h2>
     <div class="c-entry-list">
@@ -277,7 +277,7 @@ export default {
       this.searchList()
     },
     closeHandler() {
-      this.visible = false
+      this.$emit('close')
     },
     sureHandler() {
       const encyclopediaIds = []
