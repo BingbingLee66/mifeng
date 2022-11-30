@@ -60,8 +60,7 @@
                 type="primary"
                 :actionid="getId('', '查询')"
                 @click="queryData($event)"
-                >查询</el-button
-              >
+              >查询</el-button>
             </el-form-item>
           </el-row>
           <el-row>
@@ -71,22 +70,20 @@
               size="small"
               :actionid="getId('', '添加文章')"
               @click="add"
-              >创建文章</el-button
-            >
+            >创建文章</el-button>
             <el-button
               v-if="has('', '文章来源管理')"
               type="primary"
               size="small"
               :actionid="getId('', '文章来源管理')"
               @click="articleSourceManager($event)"
-              >文章来源管理</el-button
-            >
+            >文章来源管理</el-button>
           </el-row>
         </div>
         <div v-if="activeName === '2'">
           <el-row style="margin-bottom:0">
             <el-form-item label="来源商会：">
-              <el-select v-model="query.ckey" filterable >
+              <el-select v-model="query.ckey" filterable>
                 <el-option
                   v-for="(item, index) in chamberOptions"
                   :key="index"
@@ -131,21 +128,18 @@
                 type="primary"
                 :actionid="getId('', '查询')"
                 @click="queryData($event)"
-                >查询</el-button
-              >
+              >查询</el-button>
             </el-form-item>
           </el-row>
-             <el-row>
+          <el-row>
             <el-button
               type="primary"
               @click="addDynamic(1)"
-              >发布图文动态</el-button
-            >
+            >发布图文动态</el-button>
             <el-button
               type="primary"
               @click="addDynamic(2)"
-              >发布视频动态</el-button
-            >
+            >发布视频动态</el-button>
           </el-row>
         </div>
       </el-form>
@@ -154,6 +148,7 @@
     <el-table
       v-if="activeName === '1'"
       id="out-table"
+      ref="tableData"
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
@@ -161,7 +156,6 @@
       fit
       highlight-current-row
       @sort-change="changeTableSort"
-      ref="tableData"
     >
       <!-- <el-table-column type="index" label="序号" width="60px">
       </el-table-column> -->
@@ -233,9 +227,9 @@
       <el-table-column label="状态" width="180px" prop="status">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 3">平台已冻结</div>
-                 <div v-if="scope.row.status == 0">商会已冻结</div>
+          <div v-if="scope.row.status == 0">商会已冻结</div>
           <div v-if="scope.row.status == 1">已发布</div>
-             <div v-if="scope.row.status == 5">审核不通过</div>
+          <div v-if="scope.row.status == 5">审核不通过</div>
           <div v-if="scope.row.status == 4">
             定时发布
             <div>{{ scope.row.publishTs }}</div>
@@ -249,33 +243,31 @@
               v-if="has('', '编辑')"
               type="text"
               :actionid="getId('', '编辑')"
-               @click="edit(scope.row)"
-              >编辑</el-button
-            >
+              @click="edit(scope.row)"
+            >编辑</el-button>
           </div>
           <div>
             <el-button
               v-if="
                 (has('', '冻结') && scope.row.status == 1) ||
-                scope.row.status == 4
+                  scope.row.status == 4
               "
               type="text"
               :actionid="getId('', '冻结')"
               @click="updateStatus($event, scope.row)"
-              >冻结</el-button
-            >
+            >冻结</el-button>
             <el-button
               v-if="has('', '解冻') && scope.row.status == 3"
               type="text"
               :actionid="getId('', '解冻')"
               @click="updateStatus($event, scope.row)"
-              >解冻</el-button
-            >
+            >解冻</el-button>
           </div>
           <div>
-            <el-button type="text" @click="detail($event, scope.row)"
-              >详情</el-button
-            >
+            <el-button
+              type="text"
+              @click="detail($event, scope.row)"
+            >详情</el-button>
           </div>
         </template>
       </el-table-column>
@@ -283,14 +275,14 @@
     <el-table
       v-if="activeName === '2'"
       id="out-table"
-     
+
+      ref="tableData"
       :data="dynamicList"
       element-loading-text="Loading"
       border
       fit
       highlight-current-row
       @sort-change="changeTableSort"
-      ref="tableData"
     >
       <!-- <el-table-column type="index" label="序号" width="60px">
       </el-table-column> -->
@@ -307,10 +299,10 @@
       <el-table-column label="内容" prop="contentHtml">
         <template slot-scope="scope">
           <span
-            class="contentHtml"
             id="myspan"
+            class="contentHtml"
             v-html="scope.row.articleResp.contentHtml"
-          ></span>
+          />
         </template>
       </el-table-column>
       <el-table-column
@@ -354,8 +346,8 @@
           <div>{{
             scope.row.articleResp.contentType === 1 ? "图文动态" : "视频动态"
           }}</div>
-           
-            <div v-if="scope.row.backgroundRelease==1">(后台发布)</div>
+
+          <div v-if="scope.row.backgroundRelease==1">(后台发布)</div>
         </template>
       </el-table-column>
       <el-table-column label="发布时间" width="80px" prop="publishTs">
@@ -377,9 +369,9 @@
       <el-table-column label="创建信息" width="200px" prop="operator">
         <template slot-scope="scope">
           <div>【创建人】{{ scope.row.dynamicExtendVO.createName }}</div>
-          <div>【创建时间】{{ scope.row.dynamicExtendVO.createdTs |dateFormat}}</div>
+          <div>【创建时间】{{ scope.row.dynamicExtendVO.createdTs |dateFormat }}</div>
           <div>【更新人】{{ scope.row.dynamicExtendVO.updatedName }}</div>
-          <div>【更新时间】{{ scope.row.dynamicExtendVO.updatedTs |dateFormat}}</div>
+          <div>【更新时间】{{ scope.row.dynamicExtendVO.updatedTs |dateFormat }}</div>
         </template>
       </el-table-column>
       <!-- <el-table-column label="发布时间" width="200px" prop="publishTs">
@@ -398,41 +390,37 @@
               v-if="has('', '编辑')"
               type="text"
               :actionid="getId('', '编辑')"
-               @click="editDynamic(scope.row)"
-            
-              >编辑</el-button
-            >
+              @click="editDynamic(scope.row)"
+            >编辑</el-button>
           </div>
-           <div>
+          <div>
             <el-button
               type="text"
-               @click="deleteDynamic(scope.row)"           
-              >删除</el-button
-            >
+              @click="deleteDynamic(scope.row)"
+            >删除</el-button>
           </div>
           <div>
             <el-button
               v-if="
                 (has('', '冻结') && scope.row.status == 1) ||
-                scope.row.status == 4
+                  scope.row.status == 4
               "
               type="text"
               :actionid="getId('', '冻结')"
               @click="updateStatus($event, scope.row)"
-              >冻结</el-button
-            >
+            >冻结</el-button>
             <el-button
               v-if="has('', '解冻') && scope.row.status == 3"
               type="text"
               :actionid="getId('', '解冻')"
               @click="updateStatus($event, scope.row)"
-              >解冻</el-button
-            >
+            >解冻</el-button>
           </div>
           <div>
-            <el-button type="text" @click="showDialog( scope.row)"
-              >详情</el-button
-            >
+            <el-button
+              type="text"
+              @click="showDialog( scope.row)"
+            >详情</el-button>
           </div>
         </template>
       </el-table-column>
@@ -447,27 +435,27 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-          <div class="art-preview-wrap">
-        <el-dialog
-          :visible.sync="visible"
-          width="60%"
-          @close="closeDia"
-        >
-          <div class="m-preview-wrap">
-            <div class="m-preview-area">
-              <div class="m-article-title">{{ detailObj.title }}</div>
-              <div class="m-article-content" v-html="detailObj.contentHtml" />
+    <div class="art-preview-wrap">
+      <el-dialog
+        :visible.sync="visible"
+        width="60%"
+        @close="closeDia"
+      >
+        <div class="m-preview-wrap">
+          <div class="m-preview-area">
+            <div class="m-article-title">{{ detailObj.title }}</div>
+            <div class="m-article-content" v-html="detailObj.contentHtml" />
 
-              <videoComponent
-                ref="videoRef"
-                v-if="detailObj.vid"
-                :vid="detailObj.vid"
-                height="530px"
-              ></videoComponent>
-            </div>
+            <videoComponent
+              v-if="detailObj.vid"
+              ref="videoRef"
+              :vid="detailObj.vid"
+              height="530px"
+            />
           </div>
-        </el-dialog>
-      </div>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -484,7 +472,7 @@
   .el-dialog {
     margin-top: 5vh !important;
     height: 90vh;
-    
+
   }
 }
 

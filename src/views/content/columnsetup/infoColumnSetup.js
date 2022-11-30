@@ -1,7 +1,5 @@
 import { getInfoColumnList, save, updateStatus, updateColumnLevel } from '@/api/content/columnsetup'
-import
-kdDialog
-from '@/components/common/kdDialog'
+import kdDialog from '@/components/common/kdDialog'
 export default {
   data() {
     const checkNumber = (rule, value, callback) => {

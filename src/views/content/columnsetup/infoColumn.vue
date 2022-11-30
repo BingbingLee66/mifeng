@@ -31,8 +31,9 @@
       <el-table-column label="展示路径">
         <template slot-scope="scope">
           <span v-if="scope.row.typeUrl==1">标签聚合页</span>
-          <span v-else-if="scope.row.typeUrl==2">合作商会</span>
-          <span v-else>标签聚合页与合作商会</span>
+          <span v-if="scope.row.typeUrl==2">合作商会</span>
+          <span v-if="scope.row.typeUrl==3">标签聚合页与合作商会</span>
+          <span v-if="scope.row.typeUrl==4">tab页</span>
         </template>
       </el-table-column>
       <el-table-column label="权重">
