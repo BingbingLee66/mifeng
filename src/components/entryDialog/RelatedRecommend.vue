@@ -5,7 +5,15 @@
         <div class="close-icon-box" @click="removeHandler(index)">
           <i class="el-icon-error" />
         </div>
-        <el-image :src="item.coverUrl" fit="cover" style="width: 80px; height: 80px" />
+        <el-image
+          :src="item.coverUrl"
+          fit="cover"
+          style="width: 80px; height: 80px"
+        >
+          <div slot="error" class="image-slot">
+            <img src="https://ysh-cdn.kaidicloud.com/test/profile/ysh_default_avatar.png" width="80" height="80" alt="">
+          </div>
+        </el-image>
       </div>
       <div class="entry-name">{{ item.encyclopediaName }}</div>
       <div class="entry-polysemant">{{ item.polysemant }}</div>

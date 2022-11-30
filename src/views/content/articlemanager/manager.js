@@ -515,6 +515,7 @@ export default {
         this.$message.success(result.msg || '操作成功')
         this.fetchData()
         this.entryVisible = false
+        this.selectionVisible = false
       } catch (error) {
         this.$message.error('操作失败')
       }

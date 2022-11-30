@@ -14,7 +14,11 @@
             style="width: 80px; height: 80px"
             :src="item.coverUrl"
             fit="cover"
-          />
+          >
+            <div slot="error" class="image-slot">
+              <img :src="defaultImage" width="80" height="80" alt="">
+            </div>
+          </el-image>
         </div>
         <div class="entry-name">{{ item.encyclopediaName }}</div>
         <div class="entry-polysemant">{{ item.polysemant }}</div>
@@ -43,7 +47,11 @@
               style="width: 80px; height: 80px"
               :src="item.coverUrl"
               fit="cover"
-            />
+            >
+              <div slot="error" class="image-slot">
+                <img :src="defaultImage" width="80" height="80" alt="">
+              </div>
+            </el-image>
           </div>
           <div class="entry-name">{{ item.encyclopediaName }}</div>
           <div class="entry-polysemant">{{ item.polysemant }}</div>
@@ -73,7 +81,11 @@
               style="width: 80px; height: 80px"
               :src="item.coverUrl"
               fit="cover"
-            />
+            >
+              <div slot="error" class="image-slot">
+                <img :src="defaultImage" width="80" height="80" alt="">
+              </div>
+            </el-image>
           </div>
           <div class="entry-name">{{ item.encyclopediaName }}</div>
           <div class="entry-polysemant">{{ item.polysemant }}</div>
@@ -134,7 +146,8 @@ export default {
       otherTotal: 0,
       selectionKey: {},
       lastEncyclopediaName: '',
-      timer: 0
+      timer: 0,
+      defaultImage: 'https://ysh-cdn.kaidicloud.com/test/profile/ysh_default_avatar.png'
     }
   },
   computed: {
@@ -150,12 +163,8 @@ export default {
   watch: {
     entryVisible(val) {
       if (val) {
-        this.selectionKey = {}
-        this.timer = 0
+        this.initData()
         if (this.entryInfo.selectionData.length) this.setSelectionMap()
-        this.recommendList = []
-        this.chamberList = []
-        this.otherList = []
         this.queryRecommendList()
         this.queryChamberList()
         this.inputHandler()
@@ -163,6 +172,20 @@ export default {
     }
   },
   methods: {
+    initData() {
+      const data = this.$options.data()
+      this.selectionKey = data.selectionKey
+      this.timer = 0
+      this.recommendFilter = data.recommendFilter
+      this.keywordFilter = data.keywordFilter
+      this.chamberFilter = data.chamberFilter
+      this.recommendTotal = data.recommendTotal
+      this.chamberTotal = data.chamberTotal
+      this.otherTotal = data.otherTotal
+      this.recommendList = []
+      this.chamberList = []
+      this.otherList = []
+    },
     setSelectionMap() {
       this.entryInfo.selectionData.forEach(item => {
         this.selectionKey[item.encyclopediaId] = item
