@@ -156,9 +156,17 @@ export default {
           }
           const obj = {
             ...this.formObj,
-            typeUrl: this.typeUrl.length > 1 ? 3 : this.typeUrl[0]
+            typeUrl: this.typeUrl.toString() === [1, 2].toString() ? 3 : this.formObj.typeUrl
           }
-          console.log(obj)
+          if (this.typeUrl.toString() === [1, 2].toString()) {
+            obj.typeUrl = 3
+          } else if (this.typeUrl.toString() === [2].toString()) {
+            obj.typeUrl = 2
+          } else if (this.typeUrl.toString() === [1].toString()) {
+            obj.typeUrl = 1
+          } else if (this.typeUrl.toString() === [4].toString()) {
+            obj.typeUrl = 4
+          }
           save(obj).then(() => {
             this.$message({
               message: '操作成功',
