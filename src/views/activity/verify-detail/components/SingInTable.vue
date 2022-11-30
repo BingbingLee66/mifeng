@@ -1049,4 +1049,7 @@ export default {
 .el-button--text {
   cursor: pointer;
 }
+.el-button + .el-button {
+  margin-left: 0px;
+}
 </style>
