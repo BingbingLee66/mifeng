@@ -391,7 +391,7 @@ export default {
     },
     addEntry() {
       this.entryInfo = {
-        ckey: '',
+        ckey: this.$store.getters.ckey,
         selectionData: this.entryList
       }
       this.entryVisible = true
