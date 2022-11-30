@@ -723,6 +723,7 @@ export default {
               <el-button type="text" onClick={() => (this.rejectDialog = { show: true, value: '', signinId: row.id })}>
                 <div style="color:red;">驳回</div>
               </el-button>
+              <br />
               <el-button type="text" onClick={() => this.showAttachDetail(row)}>
                 附件详情
               </el-button>
@@ -844,6 +845,7 @@ export default {
                   <el-button type="text" onClick={() => this.onDelSingin(row)}>
                     <div style="color:red;">移除</div>
                   </el-button>
+                  <br />
                   <el-button type="text" onClick={() => this.showAttachDetail(row)}>
                     附件详情
                   </el-button>
