@@ -4,8 +4,8 @@
       <div>
         <div class="hd">图片：</div>
         <el-checkbox-group v-model="selectImg">
-          <el-checkbox v-for="(item, index) in imgList" :key="index" class="item-box">
-            <img class="file-img" :src="item.url">
+          <el-checkbox v-for="(item, index) in imgList" :key="index" class="item-box" :label="index">
+            <el-image :preview-src-list="previewList" class="file-img" :src="item.url" @click="previewImg(item)" />
             <div>{{ item.filename }}</div>
           </el-checkbox>
         </el-checkbox-group>
@@ -14,18 +14,19 @@
 
         <el-checkbox-group v-model="selectFile">
           <el-checkbox v-for="(item, index) in fileList" :key="index" class="item-box" :label="index">
-            <div>{{ item.filename }}</div>
+            <div @click="perview(item)">{{ item.filename }}</div>
           </el-checkbox>
         </el-checkbox-group>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="close">下载</el-button>
+        <el-button @click="download">下载</el-button>
         <el-button type="primary" @click="close">关闭</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
+import { perviewFile, downloadByBlob } from '../util'
 export default {
   props: {
     attachmentVisible: {
@@ -43,13 +44,43 @@ export default {
     return {
       imgList: [],
       fileList: [],
+      // url和name都有可能重复 所有存的是index
       selectImg: [],
-      selectFile: []
+      selectFile: [],
+      title: '',
+      previewList: []
     }
   },
   methods: {
     close() {
       this.$emit('update:attachmentVisible', false)
+      this.selectImg = []
+      this.selectFile = []
+    },
+    perview(row) {
+      perviewFile(row)
+    },
+    previewImg(row) {
+      this.previewList = [row.url]
+    },
+    download() {
+      const { selectImg, selectFile, imgList, fileList } = this
+      const arr = []
+      // 根据index找item
+      selectImg.forEach(i => {
+        arr.push(imgList[i])
+      })
+      selectFile.forEach(i => {
+        arr.push(fileList[i])
+      })
+      arr.forEach(item => {
+        if (item.type === 'file') {
+          window.open(item.url)
+        } else {
+          downloadByBlob(item.url, item.filename)
+        }
+      })
+      this.close()
     },
     formData(row) {
       // attachment signValue  filename type url
@@ -65,7 +96,7 @@ export default {
       })
       this.fileList = fileList
       this.imgList = imgList
-      this.title = '小可爱的附件'
+      this.title = row.subUserName || row.userName || ''
     }
   }
 }
