@@ -99,7 +99,21 @@ export default {
         level: row.level,
         typeUrl: row.typeUrl
       }
-      row.typeUrl === '3' ? this.typeUrl = ['1', '2'] : (this.formObj.typeUrl === '2' ? this.typeUrl = ['2'] : this.typeUrl = ['1'])
+      switch (row.typeUrl) {
+        case 4:
+          this.typeUrl = ['4']
+          break
+        case 3:
+          this.typeUrl = ['1', '2']
+          break
+        case 2:
+          this.typeUrl = ['2']
+          break
+        case 1:
+          this.typeUrl = ['1']
+          break
+      }
+      // row.typeUrl === '3' ? this.typeUrl = ['1', '2'] : (this.formObj.typeUrl === '2' ? this.typeUrl = ['2'] : this.typeUrl = ['1'])
       this.visible = true
     },
     updateStatus(e, row) {
