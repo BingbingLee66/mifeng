@@ -3,7 +3,7 @@ import {
   getActivityList,
   publishActivity,
   updateActivitySort,
-  delActivity
+  delActivity, showActivityTime
 } from '@/api/activity/activity'
 
 import UpdateTime from './components/UpdateTime'
@@ -52,7 +52,7 @@ export default {
       // 显示修改时间弹框
       showUpdateTime: false,
       // 当前操作item的id
-      id: null,
+      item: null,
     }
   },
   components: { UpdateTime },
@@ -134,10 +134,12 @@ export default {
       this.showUpdateDialog = true
     },
     // 修改活动发布时间
-    updateTime(row) {
-      const { id } = row
-      this.id = id
-      this.showUpdateTime = true
+    async updateTime(item) {
+      const res = await showActivityTime(item.id)
+      if (res.state === 1) {
+        this.showUpdateTime = true
+        this.$refs['updateTimeRef'].show(res.data).then(() => { this.fetchData() })
+      }
     },
     upadteActivity() {
       const params = {

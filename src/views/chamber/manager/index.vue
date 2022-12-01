@@ -85,6 +85,13 @@
             <el-option v-for="(item, index) in operatingArr" :key="index" :label="item" :value="item" />
           </el-select>
         </el-form-item>
+        <el-form-item label="直播窗口权限">
+          <el-select v-model="query.livePermission" placeholder="请选择">
+            <el-option label="全部" value="" />
+            <el-option label="有权限" :value="1" />
+            <el-option label="无权限" :value="0" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="">
           <el-button type="primary" size="small" @click.native="selectData($event)">查询 </el-button>
         </el-form-item>
@@ -218,6 +225,7 @@
               <el-button type="text" @click="openMarkSigned(scope.row)">标记已签约 </el-button>
               <el-button type="text" @click="openRemarks(scope.row, 'addTryTimeRef')">延长试用 </el-button>
             </template>
+            <el-button type="text" @click="livePermissionFunc(scope.row)">{{ scope.row.livePermission===1 ?'禁用':'开通' }}直播窗口权限 </el-button>
           </div>
         </template>
       </el-table-column>

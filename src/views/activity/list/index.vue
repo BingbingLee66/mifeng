@@ -157,7 +157,7 @@
         @current-change="handleCurrentChange"
       />
     </div>
-    <UpdateTime :id="id" :update-time-visiable.sync="showUpdateTime" />
+    <UpdateTime ref="updateTimeRef" :item="item" :update-time-visible.sync="showUpdateTime" />
     <!-- 修改权重弹窗 -->
     <el-dialog title="权重" :visible.sync="showSortDialog" width="30%">
       <el-form ref="sortForm" :model="sortForm" label-width="100px" :rules="sortRules">

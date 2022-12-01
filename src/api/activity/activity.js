@@ -104,3 +104,16 @@ export const activityDetail = params =>
     url: '/api/ec/activity/detail',
     params
   })
+// 活动时间修改
+export const updateActivityTime = (id, params) =>
+  request({
+    url: `/api/ec/activity/activities/${id}/time?endTime=${params}`,
+    method: 'put',
+  })
+  // 活动时间回显
+export const showActivityTime = id =>
+  request({
+    url: `/api/ec/activity/activities/${id}/time`,
+    method: 'get',
+  })
+

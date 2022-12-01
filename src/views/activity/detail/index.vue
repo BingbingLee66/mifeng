@@ -319,14 +319,12 @@ export default {
     },
     handelActivityGuests() {
       const { activityGuestsVOS } = this.activity
-      console.log('activityGuestsVOS', activityGuestsVOS)
-      if (!activityGuestsVOS.length > 0) return
+      if (!activityGuestsVOS?.length > 0) return
       activityGuestsVOS.forEach(i => {
         console.log('i.introduction.length', i.introduction.length)
         if (i.introduction.length > 50) {
           i.showMore = true
           i.introduction = i.introduction.slice(0, 50)
-          console.log('i.introduction', i.introduction.length)
         } else {
           i.showMore = false
         }

@@ -161,4 +161,11 @@ export const exportUnSigned = data =>
     data,
     responseType: 'blob'
   })
+// 开通&关闭直播权限
+export const livePermissionUpdate = params =>
+  request({
+    url: '/ec/chamber/live/permission',
+    method: 'put',
+    data: params
+  })
 

@@ -10,7 +10,8 @@ import {
   updateDirector,
   addTryTime,
   unsignedData,
-  exportUnSigned
+  exportUnSigned,
+  livePermissionUpdate
 } from '@/api/chamber/manager'
 import { getAreaTree } from '@/api/area'
 // import { mapGetters } from 'vuex'
@@ -261,6 +262,7 @@ export default {
           settledSource,
           businessName,
           operatingName,
+          livePermission,
         } = this.query
         const params = {
           pageSize: this.limit,
@@ -274,6 +276,7 @@ export default {
           city: area.map(v => v[1]).join(','),
           settledSource, businessName,
           operatingName,
+          livePermission
         }
         getList(params).then(response => {
           this.list = response.data.data.list
@@ -533,7 +536,6 @@ export default {
     },
     // 生成码并且下载
     async exportExcelCode(type = 1) {
-      console.log('生成码并且下载')
       try {
         let blob = null
         if (type === 1) {
@@ -545,7 +547,6 @@ export default {
           // const { name: chamberName, contactPhone, inviteCodePastDue = null, status, businessName = null, operatingName = null } = {...this.query}
           blob = await exportUnSigned(params)
         }
-        console.log('blob', blob)
         downloadFile({
           title: `【${type === 1 ? '生成邀请码' : '未签约商会列表'}】.xlsx`,
           url: window.URL.createObjectURL(blob)
@@ -553,10 +554,15 @@ export default {
         this.$message.success('成功')
         type === 1 && this.hideDialog('invitationCodeRef')
       } catch (error) {
-        this.$message.success(error.msg)
-        console.log('error', error)
+        this.$message.error(error.msg)
       }
     },
+    // 禁用开通直播权限
+    async livePermissionFunc(row) {
+      const { livePermission, ckey } = row
+      const res = await livePermissionUpdate({ ckey, livePermission: +!livePermission })
+      if (res.state === 1) { this.$message.success('成功') } else { this.$message.error(res.msg) }
+    }
   }
 }
 export const useList = async () => {
