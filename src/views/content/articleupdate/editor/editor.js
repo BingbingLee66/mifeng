@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { getUpdateDetail, uploadCoverImg, save, getWechatContent, queryVideo } from '@/api/content/article'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
 import { queryRelatedEntryList } from '@/api/bossin/index'
