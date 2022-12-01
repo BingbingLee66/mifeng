@@ -202,13 +202,20 @@
 
       <el-button slot="footer" type="primary" @click="ipCardVisible = false">我知道了</el-button>
     </el-dialog>
+    <!-- 附件详情弹框 -->
+    <attachmentVisible ref="attachmentVisible" :attachment-visible.sync="showAttachment" :item="row" />
+    <!-- 图片预览 -->
+    <el-dialog :visible.sync="imgDialog" title="图片预览" width="600px">
+      <el-image class="file-img" :src="currentImg" />
+      <el-button slot="footer" type="primary" @click="imgDialog = false">确定</el-button>
+    </el-dialog>
   </el-card>
 </template>
 
 <script>
 import { downloadFile } from '@/utils'
 import { formatDate } from '../util'
-
+import { perviewFile } from '../util'
 import {
   getActivitySigninList,
   uploadSigninData,
@@ -227,7 +234,8 @@ import {
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
-    KdPagination: () => import('@/components/common/KdPagination')
+    KdPagination: () => import('@/components/common/KdPagination'),
+    attachmentVisible: () => import('./AttachmentDetail')
   },
   props: {
     activity: {
@@ -303,7 +311,14 @@ export default {
 
       ipCardVisible: false,
 
-      exportLoaing: false
+      exportLoaing: false,
+      // 当前操作的row
+      row: null,
+      // 附件详情弹框
+      showAttachment: false,
+      // 当前预览图片
+      currentImg: null,
+      imgDialog: false
     }
   },
   computed: {
@@ -356,7 +371,8 @@ export default {
               )
             })
           }
-        }
+        },
+        {}
       ]
 
       try {
@@ -389,11 +405,15 @@ export default {
   },
   methods: {
     async downloadFileAttach(item) {
-      console.log('downloadFileAttach', item)
+      // 改成预览
       if (item.type === 'file') {
-        window.open(item.url)
+        perviewFile(item)
+        // window.open(item.url)
       } else {
-        this.downloadByBlob(item.url, item.filename)
+        this.currentImg = item.url
+        this.imgDialog = true
+        //
+        // this.downloadByBlob(item.url, item.filename)
       }
 
       // if (item.type === 'file') {
@@ -703,10 +723,20 @@ export default {
               <el-button type="text" onClick={() => (this.rejectDialog = { show: true, value: '', signinId: row.id })}>
                 <div style="color:red;">驳回</div>
               </el-button>
+              <br />
+              <el-button type="text" onClick={() => this.showAttachDetail(row)}>
+                附件详情
+              </el-button>
             </div>
           )
         }
       ]
+    },
+    //
+    showAttachDetail(row) {
+      this.row = row
+      this.showAttachment = true
+      this.$refs['attachmentVisible'].formData(row)
     },
     // 参与人员
     getJoinPersonTableList(list = []) {
@@ -814,6 +844,10 @@ export default {
                 <div>
                   <el-button type="text" onClick={() => this.onDelSingin(row)}>
                     <div style="color:red;">移除</div>
+                  </el-button>
+                  <br />
+                  <el-button type="text" onClick={() => this.showAttachDetail(row)}>
+                    附件详情
                   </el-button>
                 </div>
               </div>
@@ -1009,7 +1043,15 @@ export default {
 .attachment {
   color: #1890ff;
 }
+.file-img {
+  width: 480px;
+  height: 480px;
+  text-align: center;
+}
 .el-button--text {
   cursor: pointer;
+}
+.el-button + .el-button {
+  margin-left: 0px;
 }
 </style>
