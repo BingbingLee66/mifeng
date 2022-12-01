@@ -31,7 +31,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col v-if="activity.extraSeat" :span="9" style="max-width: 390px">
+      <el-col v-if="activity.seatFunction" :span="9" style="max-width: 390px">
         <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center">
             <div class="board-left">
@@ -69,7 +69,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <el-row v-if="activity.extraSignin || activity.extraSignout">
+    <el-row v-if="activity.signFunction || activity.signOutFunction">
       <el-col :span="24" style="max-width: 900px">
         <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center">
@@ -221,13 +221,11 @@
     <div class="grid-content">
       <div class="label" style="margin-top: 10px">招商附件：</div>
       <div class="value">
-        <div v-for="(item, index) in activity.attachment" :key="index" @click="downloadFileAttach(item)">
+        <div v-for="(item, index) in activity.attachment" :key="index">
           <el-button type="text">{{ item.fileName }}</el-button>
         </div>
       </div>
     </div>
-    <!-- <iframe :src="activity.attachment[0].attachment" width="100px" height="100px" border="0"></iframe> -->
-
     <div v-if="activity.activityGuestsVOS && activity.activityGuestsVOS.length > 0" class="grid-content guests-content">
       <div class="label">嘉宾信息：</div>
       <div class="value guests">
@@ -244,13 +242,12 @@
               <img class="portrait" :src="item.portrait">
             </div>
             <div style="margin-bottom: 5px">嘉宾介绍：</div>
-            <div style="display: inline">{{ item.showIntroduction }}</div>
-            <span v-if="item.showMore" class="show-more" @click="showMore(item)">查看更多</span>
+            <div>{{ item.introduction }}</div>
+            <span>查看更多</span>
           </div>
         </el-card>
       </div>
     </div>
-    <introduction :introduction-visible.sync="showIntroduction" :content="currentIntroduction" />
   </div>
 </template>
 
@@ -262,15 +259,12 @@ import { getEcActivity } from '@/api/attract'
 import { uploadInvesSeating, deleteInvesSeating } from '@/api/zhaoshang/activity/activity-verify-new'
 import { activityDetail } from '@/api/activity/activity'
 import { formatDate } from '../verify-detail/util'
-import introduction from './components/introduction'
-import { downloadByBlob, filetype } from '../util'
 export default {
   name: 'ActivityDetail',
   components: {
     SaveImgDialog,
     ActivityCode,
-    SignInCode,
-    introduction
+    SignInCode
   },
   data() {
     return {
@@ -291,15 +285,13 @@ export default {
         { title: '签退码', codeKey: 'checkoutCode' }
       ],
       previewSeatDialogShow: false,
-      imgLoading: false,
-      showIntroduction: false,
-      currentIntroduction: ''
+      imgLoading: false
     }
   },
   computed: {
     activityId() {
       // 活动ID
-      return this.$route.params.activeId || ''
+      return this.$route.params.activityId || ''
     },
     applyObject() {
       const { applyObject } = this.activity
@@ -317,15 +309,6 @@ export default {
     this.getActivityInfo()
   },
   methods: {
-    downloadFileAttach(item) {
-      const rule = item.attachment.split('.')
-      if (!rule.length > 0) return
-      if (filetype.includes(rule[rule.length - 1])) {
-        window.open(item.attachment)
-      } else {
-        downloadByBlob(item.attachment, item.fileName)
-      }
-    },
     async getActivityInfo() {
       console.log('this.$route.params.activityId', this.$route.params)
       const { data } = await activityDetail({ id: this.$route.params.activeId })
@@ -336,11 +319,14 @@ export default {
     },
     handelActivityGuests() {
       const { activityGuestsVOS } = this.activity
+      console.log('activityGuestsVOS', activityGuestsVOS)
       if (!activityGuestsVOS.length > 0) return
       activityGuestsVOS.forEach(i => {
+        console.log('i.introduction.length', i.introduction.length)
         if (i.introduction.length > 50) {
           i.showMore = true
-          i.showIntroduction = i.introduction.slice(0, 50)
+          i.introduction = i.introduction.slice(0, 50)
+          console.log('i.introduction', i.introduction.length)
         } else {
           i.showMore = false
         }
@@ -400,10 +386,6 @@ export default {
     onQrCodeDownload(e) {
       this.qrCodeDialog = { ...this.qrCodeDialog, ...e }
       this.$refs.codeDialog.saveImage()
-    },
-    showMore(item) {
-      this.showIntroduction = true
-      this.currentIntroduction = item.introduction
     }
   }
 }
@@ -615,8 +597,5 @@ export default {
 .user-msg {
   display: flex;
   flex-direction: column;
-}
-.show-more {
-  color: #1890ff;
 }
 </style>

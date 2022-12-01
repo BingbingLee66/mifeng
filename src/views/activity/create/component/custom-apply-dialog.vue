@@ -163,7 +163,7 @@ export default {
       const obj = {
         value: ''
       }
-      if (this.colData.selects.length >= 10) return this.$message.error('最多只能添加10个')
+      if (this.colData.selects.length >= 100) return this.$message.error('最多只能添加100个')
       this.colData.selects.push(obj)
     },
 

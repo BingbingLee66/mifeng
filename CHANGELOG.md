@@ -1,6 +1,11 @@
 # CHANGELOG
 
 ## [Released]
+## [2.38.2] - 2022-11-29
+### Added
+- [【归乡活动优化】自定义报名信息下拉项限制放开至100](https://project.feishu.cn/solink/universal_task/detail/2850091)
+
+## [Released]
 ## [2.35.3] - 2022-11-21
 ### Added
 -
