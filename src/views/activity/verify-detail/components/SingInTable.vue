@@ -31,7 +31,13 @@
         <el-button type="primary" size="small" @click="onQueryChange({ pageNum: 1 })">查询</el-button>
       </el-form-item>
     </el-form>
-    <div v-if="status === '1'" class="flex-x-between-center">
+
+    <div v-if="status === '0'" class="flex-x-end-center">
+      <!-- 导表 -->
+      <el-button :loading="exportWaitingLoaing" type="primary" @click="onExportWaitingExcel(1)">导表</el-button>
+    </div>
+
+    <div v-else-if="status === '1'" class="flex-x-between-center">
       <div>
         <el-button type="text" @click="importVisible = true">导入</el-button>
         <el-button
@@ -229,6 +235,7 @@ import {
   resetSigninSeat,
   modifySeatStatus,
   getActivityExcel,
+  getActivityWaitingExcel,
   getCardDetail
 } from '@/api/activity/activity-verify-new'
 export default {
@@ -318,7 +325,9 @@ export default {
       showAttachment: false,
       // 当前预览图片
       currentImg: null,
-      imgDialog: false
+      imgDialog: false,
+
+      exportWaitingLoaing: false
     }
   },
   computed: {
@@ -950,10 +959,32 @@ export default {
           title: `【参与人员】${activity.activityName}.xlsx`,
           url: window.URL.createObjectURL(blob)
         })
-      } catch (error) {
+      } finally {
         // console.log(error)
       }
       this.exportLoaing = false
+    },
+
+    async onExportWaitingExcel(page) {
+      this.exportWaitingLoaing = true
+      const { activityId, activity, total } = this
+      try {
+        const blob = await getActivityWaitingExcel(activityId, {
+          status: 0,
+          page,
+          pageSize: 5000
+        })
+        downloadFile({
+          title: `【待审核】${activity.activityName}${page}.xlsx`,
+          url: window.URL.createObjectURL(blob)
+        })
+      } finally {
+        // console.log(error)
+        this.exportWaitingLoaing = false
+        if (total > page * 5000) {
+          this.onExportWaitingExcel(page + 1)
+        }
+      }
     }
   }
 }
