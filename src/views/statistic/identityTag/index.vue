@@ -113,14 +113,14 @@ export default {
         },
         legend: {
           top: 10,
-          left: 'center',
+          left: '80px',
           data: this.currentItem.whoStats?.map(tag => tag.labelVal) || []
         },
         series: [
           {
             type: 'pie',
             radius: '65%',
-            center: ['50%', '50%'],
+            center: ['50%', '56%'],
             selectedMode: 'single',
             data: this.currentItem.whoStats?.map(tag => {
               return {
