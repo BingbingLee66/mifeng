@@ -5,6 +5,7 @@
       :visible.sync="detailVisible"
       @close="close"
     >
+      <div v-if="freezeReason"> <i class="el-icon-warning" />该商协会由于 <span class="freeze-reason">【{{ freezeReason }}】</span>被冻结，延长试用后将解冻账号，请谨慎操作</div>
       <el-form ref="formName" label-width="160px" :model="formObj" :rules="rules">
         <el-form-item label="商协会：" prop="level">
           <span v-if="formObj">{{ formObj.chamberName }}</span>
@@ -42,7 +43,7 @@ export default {
     return {
       // 状态
       reject: null,
-      reslove: null,
+      resolve: null,
       detailVisible: false,
       formObj: { license: null, address: null, ckey: null },
       rules: {
@@ -54,10 +55,11 @@ export default {
   methods: {
     // 打开
     open(row) {
-      return new Promise((reslove, reject) => {
+      return new Promise((resolve, reject) => {
         this.formObj.chamberName = row.chamberName || ''
         this.formObj.ckey = row.ckey
-        this.reslove = reslove
+        this.freezeReason = row.freezeReason || ''
+        this.resolve = resolve
         this.reject = reject
         this.show()
       })
@@ -71,7 +73,7 @@ export default {
       this.$refs.formName.clearValidate()
       this.detailVisible = false
       this.reject = null
-      this.reslove = null
+      this.resolve = null
       this.formObj = { license: null, address: null, ckey: null }
     },
     beforeAvatarUpload(file) {

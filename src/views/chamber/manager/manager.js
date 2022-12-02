@@ -401,7 +401,7 @@ export default {
         this.showFreeDialog = true
         this.$refs['freezeDialogRef'].show(row.status, row.ckey)
       } else {
-        const msg = `该商协会由于【${row.a}】被冻结，是否确定解冻账号？`
+        const msg = `该商协会由于【${row.freezeReason}】被冻结，是否确定解冻账号？`
         this.$confirm(msg, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
