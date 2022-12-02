@@ -14,8 +14,7 @@
               end-placeholder="结束日期"
             />
           </el-form-item>
-
-          <el-form-item label="直播入口结束时间">
+          <el-form-item v-if="liveEntranceCloseTime" label="直播入口结束时间">
             <el-date-picker
               v-model="liveEntranceCloseTime"
               type="datetime"
@@ -33,10 +32,9 @@
             />
           </el-form-item>
         </el-form>
-
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="close">取 消</el-button>
         <el-button type="primary" @click="submit">确 定</el-button>
       </span>
     </el-dialog>
@@ -88,8 +86,8 @@ export default {
       const res = await updateActivityTime(id, endTime)
       if (res.state === 1) {
         this.$message.success('修改成功')
-        this.success()
         this.resolve()
+        this.close()
       } else { this.$message.error(res.msg) }
     }
   }

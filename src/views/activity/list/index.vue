@@ -131,7 +131,7 @@
             <span class="blue-label" @click="showSort(scope.row)"> {{ scope.row.sort }} </span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right">
+        <el-table-column label="操作" fixed="right" width="130px">
           <template slot-scope="scope">
             <div v-if="type == 1">
               <div class="blue-label" @click="showUpdate(scope.row, 0)">取消发布</div>
@@ -143,7 +143,7 @@
               <div class="blue-label" @click="showDel(scope.row)">删除</div>
             </div>
             <div class="blue-label" @click="detail(scope.row)">详情</div>
-            <div class="blue-label" @click="updateTime(scope.row)">修改活动时间</div>
+            <div v-if="scope.row.status === 2" class="blue-label" @click="updateTime(scope.row)">修改活动时间</div>
           </template></el-table-column></el-table>
       <el-pagination
         background

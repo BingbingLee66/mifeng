@@ -432,13 +432,15 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '活动详情' }
       },
+      // 活动报名审核详情
       {
-        name: '活动详情',
-        path: '/activity/:activeId/detail',
+        path: '/activity/detail',
+        name: 'activityDetail',
         component: () => import('@/views/activity/detail/index.vue'),
         hidden: true,
         meta: { title: '活动详情' }
       },
+
       {
         name: '我收到的名片',
         path: '/zhaoshang/activity/:chamberId/:chamberkey/:type/card-list',
