@@ -50,6 +50,12 @@ import kdDialog from './components/common/kdDialog'
 
 Vue.component('kdDialog', kdDialog)
 
+// 引入并注册全局ysh-table组件和ysh-form组件
+import ysTable from '@/components/ys-table'
+import ysForm from '@/components/ys-form'
+Vue.component('ysh-table', ysTable)
+Vue.component('ysh-form', ysForm)
+
 new Vue({
   el: '#app',
   router,

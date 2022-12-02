@@ -28,16 +28,21 @@
       </el-row>
       <el-row>
         <el-col :span="20">
-          <!-- <el-col > -->
+          <el-form-item label="相关推荐：" class="ue-wrap">
+            <RelatedRecommend
+              :entry-list="entryList"
+              @remove-entry="removeHandler"
+              @add-entry="addEntry"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="20">
           <el-form-item label="文章内容：" class="ue-wrap">
-            <!-- <Ckeditor ref="ckeditor1" @getHtml="getHtml"></Ckeditor> -->
-            <!-- <UEditor ref="ueditor" /> -->
             <editorElem ref="editorElem" :content="formObj.contentHtml" @addParentHtml="addParentHtml" />
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="4">
-          <preview-ph :title="formObj.title" :htmlObj="formObj.contentHtml"></preview-ph>
-        </el-col> -->
       </el-row>
       <el-row>
         <el-col :span="6">
@@ -111,21 +116,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <!-- <el-row v-if="formObj.coverType == 1 || formObj.coverType == 2">
-        <el-form-item label="封面图片：" prop="license">
-          <el-col :span="5" v-for="(img, index) in coverImgs" :key="index">
-            <el-upload
-              class="avatar-uploader"
-              action="/"
-              :show-file-list="false"
-              :before-upload="function (file) { return beforeAvatarUpload(file, index) }"
-              :http-request="upload">
-              <img v-if="img" :src="img" class="avatar">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-          </el-col>
-        </el-form-item>
-      </el-row> -->
       <el-row v-if="formObj.coverType == 1">
         <el-col :span="18">
           <el-form-item label="封面图片：" prop="coverImgs[0]" :rules="rules.coverImg1">
@@ -257,16 +247,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <!-- <el-row>
-        <el-col :span="18">
-          <el-form-item label="是否置顶：">
-            <el-radio-group v-model="formObj.istop">
-              <el-radio :label="true">是</el-radio>
-              <el-radio :label="false">否</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-      </el-row> -->
       <el-form-item>
         <el-col :span="8">
           <el-button v-dbClick type="primary" @click="save">确定</el-button>
@@ -291,6 +271,14 @@
         <img :src="currentImg" style="max-width:90%">
       </div>
     </kdDialog>
+
+    <entry-dialog
+      :visible.sync="entryVisible"
+      title="添加词条"
+      :entry-info="entryInfo"
+      @sure-handler="sureHandler"
+      @close="(entryVisible = false)"
+    />
   </div>
 
 </template>

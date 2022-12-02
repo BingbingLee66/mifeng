@@ -188,7 +188,7 @@ import {
 } from './utils/utilsData'
 import HotSupplyDemandAdder from './components/HotSupplyDemandAdder'
 import { getChamberOptions } from '@/api/mall/channel'
-import weightKdDialog from '@/views/content/kingArea/components/weightKdDialog'
+import weightKdDialog from './components/weight'
 export default {
   components: { HotSupplyDemandAdder, weightKdDialog },
   data() {

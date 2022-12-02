@@ -32,7 +32,7 @@
 
 <script>
 import kdDialog from '@/components/common/kdDialog'
-import { validateWeight } from '../utils/utilRules'
+import { validateWeight } from '@/utils/validate'
 export default {
   name: 'WeightKdDialog',
   components: { kdDialog },
@@ -91,9 +91,9 @@ export default {
      */
     // 点击保存权重
     submitWeight() {
-      this.$refs['formWeightKdDialog'].validate((valid) => {
+      this.$refs['formWeightKdDialog'].validate(valid => {
         if (valid) {
-          let params = {
+          const params = {
             id: this.currentId,
             value: this.formWeight.weight,
           }
@@ -109,9 +109,9 @@ export default {
      */
     // 保存权重 ,fn为传入需要执行的函数
     saveKingKongWeightFunc(params) {
-      let api = this.fn
+      const api = this.fn
       console.log('params', params)
-      api(params).then((res) => {
+      api(params).then(res => {
         if (res.state === 1) {
           this.$message({
             message: '保存成功',

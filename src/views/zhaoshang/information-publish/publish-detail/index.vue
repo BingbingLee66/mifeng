@@ -29,7 +29,7 @@
           </el-tag>
           <span
             v-if="row.data.platformTag.length > 3"
-            class="text-blue"
+            class="text-blue cur"
             @click="handleMoreLabel(row.data)"
           >查看更多</span>
         </div>

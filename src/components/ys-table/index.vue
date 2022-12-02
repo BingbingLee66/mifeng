@@ -25,7 +25,7 @@
       :data="tableData"
       :element-loading-text="tableConfig.loadingText || 'Loading'"
       :height="tableConfig.height || null"
-      :max-height="tableConfig.maxHeight || '800px'"
+      :max-height="tableConfig.maxHeight || tableHeight"
       :size="tableConfig.size || 'medium'"
       :header-cell-style="
         tableConfig.headerCellStyle || {
@@ -62,6 +62,19 @@
       />
 
       <template v-for="item in tableColumn">
+        <!-- 序号 -->
+        <el-table-column
+          v-if="item.type === 'serialNumber'"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width || '100px'"
+          :align="item.align || 'center'"
+        >
+          <template slot-scope="scope">
+            {{ scope.$index+1 }}
+          </template>
+        </el-table-column>
         <!-- 纯文本渲染 -->
         <el-table-column
           v-if="!item.type"
@@ -72,7 +85,11 @@
           :width="item.width || ''"
           :min-width="item.minWidth || ''"
           :align="item.align || 'left'"
-        />
+        >
+          <template slot-scope="scope">
+            {{ scope.row[item.prop] ? scope.row[item.prop] : '- -' }}
+          </template>
+        </el-table-column>
         <!-- 图片渲染 -->
         <el-table-column
           v-if="item.type === 'image'"
@@ -85,9 +102,10 @@
           <template slot-scope="scope">
             <el-image
               :style="{
-                width: '100px',
-                height: '100px',
-                borderRadius: item.radius || 0
+                width: item.imgWidth || '100px',
+                height: item.imgHeight || '100px',
+                borderRadius: item.radius || 0,
+                objectFit: 'cover',
               }"
               :src="item.url && item.url(scope.row)"
               :preview-src-list="item.urlList && item.urlList(scope.row)"
@@ -244,6 +262,44 @@
             />
           </template>
         </el-table-column>
+        <!-- 顺序 -->
+        <el-table-column
+          v-if="item.type === 'order'"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width || ''"
+          :align="item.align || 'left'"
+        >
+          <template slot-scope="scope">
+            <i
+              v-if="scope.$index !== 0"
+              class="el-icon-top"
+              style="font-size: 26px;cursor: pointer;"
+              @click="handleOrder('up', scope.row)"
+            />
+            <i
+              v-if="scope.$index+1 !== tableData.length"
+              class="el-icon-bottom"
+              style="font-size: 26px;cursor: pointer;"
+              @click="handleOrder('down', scope.row)"
+            />
+            <span v-if="tableData.length===1">- -</span>
+          </template>
+        </el-table-column>
+        <!-- 开关 -->
+        <el-table-column
+          v-if="item.type === 'switch'"
+          :key="item.prop"
+          :prop="item.prop"
+          :label="item.label"
+          :width="item.width || ''"
+          :align="item.align || 'left'"
+        >
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row[item.prop]" @change="e => handleSwitchChange(e, scope.row)" />
+          </template>
+        </el-table-column>
       </template>
 
       <!-- 表格操作 -->
@@ -333,9 +389,12 @@ export default {
     }
   },
   computed: {
+    tableHeight() {
+      return (window.innerHeight) - 250 + 'px'
+    },
     getRowKeys(row) {
       return row[this.tableConfig.rowKey]
-    }
+    },
   },
   watch: {
     tableData: {
@@ -382,6 +441,12 @@ export default {
     },
     handleSortChange(e) {
       this.$emit('handleSortChange', e)
+    },
+    handleOrder(e, data) {
+      this.$emit('handleOrder', e, data)
+    },
+    handleSwitchChange(e, data) {
+      this.$emit('handleSwitchChange', e, data)
     }
   }
 }

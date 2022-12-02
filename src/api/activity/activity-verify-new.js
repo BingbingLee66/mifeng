@@ -131,3 +131,11 @@ export const weightIpCardSort = data => request({
   method: 'put',
   data,
 })
+
+// 获取活动excel
+export const getActivityWaitingExcel = (id, params) => request({
+  url: `/api/ec/singin/activity/${id}/exportData`,
+  method: 'get',
+  params,
+  responseType: 'blob'
+})

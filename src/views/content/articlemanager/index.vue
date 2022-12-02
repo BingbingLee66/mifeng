@@ -41,23 +41,23 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :offset="1" :span="4" v-if="activeName !== '1'">
+          <el-col v-if="activeName !== '1'" :offset="1" :span="4">
             <el-form-item label="动态类型：">
               <el-select v-model="query.dynamicType">
                 <el-option
-                  :label="item.label"
-                  :value="item.value"
                   v-for="item in dynamicTypeList"
                   :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
                 />
               </el-select>
             </el-form-item>
           </el-col>
 
           <el-col
+            v-if="query.ckey && activeName == 1"
             :span="4"
             style="margin-left: 10px"
-            v-if="query.ckey && activeName == 1"
           >
             <el-form-item :span="10" label="栏目：">
               <el-select v-model="query.contentColumnId" filterable>
@@ -81,10 +81,10 @@
               <el-form-item label="是否是后台发布：">
                 <el-select v-model="query.backgroundRelease">
                   <el-option
-                    :label="item.label"
-                    :value="item.value"
                     v-for="item in backstageList"
                     :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
                   />
                 </el-select>
               </el-form-item>
@@ -93,10 +93,10 @@
               <el-form-item label="来源">
                 <el-select v-model="query.backgroundRelease">
                   <el-option
-                    :label="item.label"
-                    :value="item.value"
                     v-for="item in backstageList"
                     :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
                   />
                 </el-select>
               </el-form-item>
@@ -121,35 +121,35 @@
                 type="primary"
                 :actionid="getId('', '查询')"
                 @click="queryData($event)"
-                >查询
+              >查询
               </el-button>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
     </div>
-    <br />
+    <br>
     <el-row>
       <el-button
         v-if="has('', '删除')"
         type="danger"
         :actionid="getId('', '删除')"
         @click="batchDelArticle($event)"
-        >删除
+      >删除
       </el-button>
       <el-button
         v-if="has('', '冻结') && activeName == '1'"
         type="danger"
         :actionid="getId('', '冻结')"
         @click="batchUpdateStatus($event)"
-        >冻结
+      >冻结
       </el-button>
       <el-button
         v-if="has('', '置顶管理') && activeName == '1'"
         type="primary"
         :actionid="getId('', '置顶管理')"
         @click="goSettop($event)"
-        >置顶管理
+      >置顶管理
       </el-button>
     </el-row>
     <div v-if="activeName == '1'">
@@ -165,8 +165,6 @@
         @sort-change="handleSortChange"
       >
         <el-table-column type="selection" width="55px" />
-        <!-- <el-table-column type="index" label="序号" width="60px">
-        </el-table-column> -->
         <el-table-column label="文章ID" width="80px">
           <template slot-scope="scope">
             {{ scope.row.id }}
@@ -217,6 +215,13 @@
             {{ scope.row.commentNums ? scope.row.commentNums : "--" }}
           </template>
         </el-table-column>
+        <el-table-column label="关联词条" width="120px" prop="commentNums">
+          <template slot-scope="scope">
+            <el-button type="text" @click="editEntryHandler(scope.row)">
+              {{ scope.row.existEntry ? '修改词条' : '添加词条' }}
+            </el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="来源" width="180px">
           <template slot-scope="scope">
             <div v-if="scope.row.publishType == 1">--</div>
@@ -226,10 +231,10 @@
             <div
               v-if="
                 scope.row.publishType == 3 ||
-                scope.row.publishType == 4 ||
-                scope.row.publishType == 6 ||
-                scope.row.publishType == 7 ||
-                scope.row.publishType == 2
+                  scope.row.publishType == 4 ||
+                  scope.row.publishType == 6 ||
+                  scope.row.publishType == 7 ||
+                  scope.row.publishType == 2
               "
             >
               {{ scope.row.sourceName }}
@@ -355,12 +360,12 @@
             </div>
             <div class="m-preview-area">
               <div class="m-article-title">{{ detailObj.title }}</div>
-               <videoComponent
-                  ref="videoRef"
-                  v-if="detailObj.vid"
-                  :vid="detailObj.vid"
-                  height="530px"
-                ></videoComponent>
+              <videoComponent
+                v-if="detailObj.vid"
+                ref="videoRef"
+                :vid="detailObj.vid"
+                height="530px"
+              />
               <div class="m-article-content" v-html="detailObj.contentHtml" />
             </div>
           </div>
@@ -376,12 +381,11 @@
       >
         <el-checkbox-group v-model="freezeSelectedList">
           <el-checkbox
-            style="display: block; padding-top: 10px; margin-left: 10px"
             v-for="item in freezeOperationList"
             :key="item.value"
+            style="display: block; padding-top: 10px; margin-left: 10px"
             :label="item.value"
-            >{{ item.label }}</el-checkbox
-          >
+          >{{ item.label }}</el-checkbox>
         </el-checkbox-group>
         <span slot="footer" class="dialog-footer">
           <el-button @click="freezeClose">取 消</el-button>
@@ -396,12 +400,11 @@
       >
         <el-checkbox-group v-model="unFreezeSelectedList">
           <el-checkbox
-            style="display: block; padding-top: 10px; margin-left: 10px"
             v-for="item in unFreezeOperationList"
             :key="item.value"
+            style="display: block; padding-top: 10px; margin-left: 10px"
             :label="item.value"
-            >{{ item.label }}</el-checkbox
-          >
+          >{{ item.label }}</el-checkbox>
         </el-checkbox-group>
         <span slot="footer" class="dialog-footer">
           <el-button @click="unFreezeClose">取 消</el-button>
@@ -420,19 +423,11 @@
         @sort-change="handleSortChange"
       >
         <el-table-column type="selection" width="55px" />
-        <!-- <el-table-column type="index" label="序号" width="60px">
-        </el-table-column> -->
         <el-table-column label="文章ID" width="80px">
           <template slot-scope="scope">
             {{ scope.row.id }}
           </template>
         </el-table-column>
-        <!-- <el-table-column label="动态标题">
-          <template slot-scope="scope">
-            {{ !scope.row.title ? scope.row.contentColumn : scope.row.title }}
-          </template>
-        </el-table-column> -->
-
         <el-table-column label="来源商会" width="150px">
           <template slot-scope="scope">
             {{ scope.row.chamberName }}
@@ -448,15 +443,9 @@
         </el-table-column>
         <el-table-column label="内容">
           <template slot-scope="scope">
-            <span class="myspan" v-html="scope.row.contentHtml"></span>
-            <!--            <div v-html="$options.filters.ellipsis(scope.row.contentHtml )"></div>-->
+            <span class="myspan" v-html="scope.row.contentHtml" />
           </template>
         </el-table-column>
-        <!-- <el-table-column label="栏目" width="120px">
-          <template slot-scope="scope">
-            {{ scope.row.contentColumn }}
-          </template>
-        </el-table-column> -->
         <el-table-column
           label="浏览量"
           width="120px"
@@ -496,10 +485,10 @@
             <div
               v-if="
                 scope.row.publishType == 3 ||
-                scope.row.publishType == 4 ||
-                scope.row.publishType == 6 ||
-                scope.row.publishType == 7 ||
-                scope.row.publishType == 2
+                  scope.row.publishType == 4 ||
+                  scope.row.publishType == 6 ||
+                  scope.row.publishType == 7 ||
+                  scope.row.publishType == 2
               "
             >
               {{ scope.row.sourceName }}
@@ -521,7 +510,7 @@
               <div
                 v-if="
                   scope.row.statusNameVO.freezeList &&
-                  scope.row.statusNameVO.freezeList.length > 0
+                    scope.row.statusNameVO.freezeList.length > 0
                 "
               >
                 【已冻结（平台）】
@@ -554,7 +543,6 @@
               定时发布
               <div>{{ scope.row.publishTs }}</div>
             </div>
-            <!-- <div v-if="scope.row.status == 5">审核不通过</div> -->
             <div v-if="scope.row.status == 4">
               定时发布
               <div>{{ scope.row.publishTs }}</div>
@@ -562,25 +550,8 @@
             <div v-if="scope.row.status == 5">审核不通过</div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="是否置顶" width="100px">
-          <template slot-scope="scope">
-            <div v-if="scope.row.istop == 1">是</div>
-            <div v-if="scope.row.istop == 0">否</div>
-          </template>
-        </el-table-column> -->
         <el-table-column label="操作" width="120" fixed="right">
           <template slot-scope="scope">
-            <!--            <div>-->
-            <!--              <el-button-->
-            <!--                v-if="!(!scope.row.title) && has('', '置顶')"-->
-            <!--                type="text"-->
-            <!--                :actionid="getId('', '置顶')"-->
-            <!--                @click="top($event, scope.row)"-->
-            <!--              >-->
-            <!--                置顶-->
-            <!--              </el-button>-->
-            <!--            </div>-->
-            <!-- <div> -->
             <el-button
               v-if="has('', '详情')"
               type="text"
@@ -589,8 +560,6 @@
             >
               详情
             </el-button>
-            <!-- </div> -->
-            <!-- <div> -->
             <el-button
               v-if="has('', '删除')"
               type="text"
@@ -599,20 +568,7 @@
             >
               删除
             </el-button>
-            <br />
-            <!-- </div> -->
-            <!--            <div>-->
-            <!--              <el-button-->
-            <!--                v-if="has('', '编辑')"-->
-            <!--                type="text"-->
-            <!--                :disabled="scope.row.publishType===1 || scope.row.publishType===2 ? true : false"-->
-            <!--                :actionid="getId('', '编辑')"-->
-            <!--                @click="edit(scope.row)"-->
-            <!--              >-->
-            <!--                编辑-->
-            <!--              </el-button>-->
-            <!--            </div>-->
-            <!-- <div> -->
+            <br>
             <el-button
               v-if="has('', '冻结') && scope.row.isCanFreeze == 1"
               type="text"
@@ -621,8 +577,6 @@
             >
               冻结
             </el-button>
-            <!-- </div> -->
-            <!-- <div> -->
             <el-button
               v-if="has('', '解冻') && scope.row.isCanUnFreeze == 1"
               type="text"
@@ -631,7 +585,6 @@
             >
               解冻
             </el-button>
-            <!-- </div> -->
           </template>
         </el-table-column>
       </el-table>
@@ -666,13 +619,12 @@
                   v-if="detailObj.contentHtml"
                   v-html="detailObj.contentHtml"
                 />
-                <!-- <div v-if=" detailObj.contentType === 2" class="m-article-content" id="videoContent"></div> -->
                 <videoComponent
-                  ref="videoRef"
                   v-if="detailObj.vid"
+                  ref="videoRef"
                   :vid="detailObj.vid"
                   height="530px"
-                ></videoComponent>
+                />
               </div>
               <div
                 v-else
@@ -697,8 +649,6 @@
         @sort-change="handleSortChange"
       >
         <el-table-column type="selection" width="55px" />
-        <!-- <el-table-column type="index" label="序号" width="60px">
-        </el-table-column> -->
         <el-table-column label="文章ID" width="80px">
           <template slot-scope="scope">
             {{ scope.row.id }}
@@ -722,11 +672,6 @@
             <div v-if="scope.row.backgroundRelease == 1">(后台发布)</div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="栏目" width="120px">
-          <template slot-scope="scope">
-            {{ scope.row.contentColumn }}
-          </template>
-        </el-table-column> -->
         <el-table-column
           label="浏览量"
           width="120px"
@@ -766,10 +711,10 @@
             <div
               v-if="
                 scope.row.publishType == 3 ||
-                scope.row.publishType == 4 ||
-                scope.row.publishType == 6 ||
-                scope.row.publishType == 7 ||
-                scope.row.publishType == 2
+                  scope.row.publishType == 4 ||
+                  scope.row.publishType == 6 ||
+                  scope.row.publishType == 7 ||
+                  scope.row.publishType == 2
               "
             >
               {{ scope.row.sourceName }}
@@ -794,25 +739,8 @@
             <div v-if="scope.row.status == 5">审核不通过</div>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="是否置顶" width="100px">
-          <template slot-scope="scope">
-            <div v-if="scope.row.istop == 1">是</div>
-            <div v-if="scope.row.istop == 0">否</div>
-          </template>
-        </el-table-column> -->
         <el-table-column label="操作" width="270" fixed="right">
           <template slot-scope="scope">
-            <!--            <div>-->
-            <!--              <el-button-->
-            <!--                v-if="!(!scope.row.title) && has('', '置顶')"-->
-            <!--                type="text"-->
-            <!--                :actionid="getId('', '置顶')"-->
-            <!--                @click="top($event, scope.row)"-->
-            <!--              >-->
-            <!--                置顶-->
-            <!--              </el-button>-->
-            <!--            </div>-->
-            <!-- <div> -->
             <el-button
               v-if="has('', '详情')"
               type="text"
@@ -821,19 +749,6 @@
             >
               详情
             </el-button>
-            <!-- </div> -->
-            <!--            <div>-->
-            <!--              <el-button-->
-            <!--                v-if="has('', '编辑')"-->
-            <!--                type="text"-->
-            <!--                :disabled="scope.row.publishType===1 || scope.row.publishType===2 ? true : false"-->
-            <!--                :actionid="getId('', '编辑')"-->
-            <!--                @click="edit(scope.row)"-->
-            <!--              >-->
-            <!--                编辑-->
-            <!--              </el-button>-->
-            <!--            </div>-->
-            <!-- <div> -->
             <el-button
               v-if="has('', '冻结') && scope.row.status == 1"
               type="text"
@@ -842,7 +757,6 @@
             >
               冻结
             </el-button>
-            <!-- </div> -->
             <div>
               <el-button
                 v-if="has('', '解冻') && scope.row.status == 0"
@@ -904,16 +818,30 @@
               <div class="m-article-content" v-html="detailObj.contentHtml" />
 
               <videoComponent
-                ref="videoRef"
                 v-if="detailObj.vid"
+                ref="videoRef"
                 :vid="detailObj.vid"
                 height="530px"
-              ></videoComponent>
+              />
             </div>
           </div>
         </el-dialog>
       </div>
     </div>
+    <entry-dialog
+      :visible.sync="entryVisible"
+      :title="entryInfo.existEntry ? '编辑词条' : '添加词条'"
+      :entry-info="entryInfo"
+      @sure-handler="sureHandler"
+      @close="(entryVisible = false)"
+    />
+    <selection-dialog
+      :visible.sync="selectionVisible"
+      :entry-info="entryInfo"
+      @sure-handler="sureHandler"
+      @add-entry="addEntryHandler"
+      @close="(selectionVisible = false)"
+    />
   </div>
 </template>
 

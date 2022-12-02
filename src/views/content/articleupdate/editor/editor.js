@@ -1,5 +1,6 @@
 import { getUpdateDetail, uploadCoverImg, save, getWechatContent, queryVideo } from '@/api/content/article'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
+import { queryRelatedEntryList } from '@/api/bossin/index'
 import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
 import PreviewPh from '@/components/ArticlePreview'
@@ -9,6 +10,8 @@ import preview from './component/preview'
 import kdDialog from '@/components/common/kdDialog'
 import videoComponent from '@/components/video/index'
 import videoUpLoad from '@/components/video/upLoad'
+import EntryDialog from '@/components/entryDialog/index'
+import RelatedRecommend from '@/components/entryDialog/RelatedRecommend'
 export default {
   components: {
     Ckeditor,
@@ -18,7 +21,9 @@ export default {
     editorElem,
     preview,
     kdDialog, videoComponent,
-    videoUpLoad
+    videoUpLoad,
+    EntryDialog,
+    RelatedRecommend
   },
   data() {
     return {
@@ -39,7 +44,8 @@ export default {
           sharePoster: '', // 分享海报图片
         },
         vid: '', // 上传视频Id
-        videoCoverURL: '', // 视频封面
+        videoCoverURL: '', // 视频封面,
+        encyclopediaIds: []
       },
       articleId: '',
       coverImgs: ['', '', ''],
@@ -62,6 +68,9 @@ export default {
       },
       articleUrl: '',
       committee: false,
+      entryList: [],
+      entryVisible: false,
+      entryInfo: {}
     }
   },
   mounted() {
@@ -178,7 +187,6 @@ export default {
         }
         getUpdateDetail(params).then(response => {
           const dataObj = response.data.dtl
-          // const htmlObj = dataObj.contentHtml
           this.formObj = {
             id: dataObj.id,
             title: dataObj.title,
@@ -204,15 +212,29 @@ export default {
               this.$refs['videoRef'].show(dataObj.vid)
             })
           }
-          // this.$refs.ueditor.setContent(htmlObj === null ? '' : htmlObj)
-          // this.$refs.ckeditor1.init()
-          // setTimeout(() => {
-          //   this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
-          // }, 500)
+          this.queryEntryList(dataObj.contentType)
         }).catch(error => {
           reject(error)
         })
       })
+    },
+    async queryEntryList(contentType) {
+      try {
+        const { data } = await queryRelatedEntryList({
+          contentId: this.articleId,
+          contentType,
+          page: 1,
+          limit: 100
+        })
+        this.entryList = data.records.map(item => {
+          return {
+            ...item,
+            check: true
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
     },
     addParentHtml(html) {
       this.formObj.contentHtml = html
@@ -238,6 +260,7 @@ export default {
           const isAllEmpty = this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4).replaceAll('&nbsp;', '').split('').every(item => item === ' ')
           if (isAllEmpty) return this.$message.error('不能提交全为空格的内容！')
           console.log(this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4))
+          this.formObj.encyclopediaIds = this.entryList.map(item => item.encyclopediaId)
           save(this.formObj).then(response => {
             if (response.state === 1) {
               this.$message({
@@ -367,5 +390,19 @@ export default {
       this.$refs['look-kdDialog'].show()
       this.currentImg = val
     },
+    removeHandler(index) {
+      this.entryList.splice(index, 1)
+    },
+    addEntry() {
+      this.entryInfo = {
+        ckey: this.$store.getters.ckey,
+        selectionData: this.entryList
+      }
+      this.entryVisible = true
+    },
+    sureHandler(ids, originData) {
+      this.entryList = originData
+      this.entryVisible = false
+    }
   }
 }

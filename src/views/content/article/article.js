@@ -46,7 +46,8 @@ export default {
       optionList: [
         '标签聚合页',
         '商会必参',
-        '标签聚合页/商会必参'
+        '标签聚合页/商会必参',
+        'tab页'
       ],
       loading: false,
 
