@@ -168,4 +168,5 @@ export const livePermissionUpdate = params =>
     method: 'put',
     data: params
   })
-
+// 更新商会状态 (新)
+export const chamberStatusUpdate = data => request({ url: '/ec/chamber/status', method: 'post', data })

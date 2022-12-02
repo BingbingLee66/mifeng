@@ -181,3 +181,4 @@ export const authorizeMemberAuth = params => request({ url: '/ec/memberAuth/auth
 
 // 取消会员认证
 export const cancelAuthorizeMemberAuth = params => request({ url: '/ec/memberAuth/unauthenticate', method: 'post', params })
+

@@ -182,7 +182,10 @@
       <el-table-column label="状态">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 1">正常</div>
-          <div v-if="scope.row.status == 0">已冻结</div>
+          <el-tooltip class="item" effect="dark" :content="scope.row.freezeReason " placement="top-start">
+            <div v-if="scope.row.status == 0"><i class="el-icon-warning" /> 已冻结</div>
+          </el-tooltip>
+
           <div v-if="scope.row.status == 3">待邀请</div>
         </template>
       </el-table-column>
@@ -289,7 +292,9 @@
       <el-table-column label="状态">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 1">正常</div>
-          <div v-if="scope.row.status == 0">已冻结</div>
+          <el-tooltip class="item" effect="dark" :content="scope.row.freezeReason " placement="top-start">
+            <div v-if="scope.row.status == 0"><i class="el-icon-warning" /> 已冻结</div>
+          </el-tooltip>
           <div v-if="scope.row.status == 3">待邀请</div>
         </template>
       </el-table-column>
@@ -331,6 +336,7 @@
             <template v-if="activeName === 'unSignContract'">
               <el-button type="text" @click="openMarkSigned(scope.row)">标记已签约 </el-button>
               <el-button type="text" @click="openRemarks(scope.row, 'addTryTimeRef')">延长试用 </el-button>
+              <el-button type="text" @click="updateStatus($event, scope.row)">{{ scope.row.status == 1 ?'冻结':'解冻' }} </el-button>
             </template>
           </div>
         </template>
@@ -389,8 +395,11 @@
       @hide="hideDialog('addTryTimeRef')"
       @savePopupData="addTryTimed"
     >
-      <div slot="content" class="try-time">延长<el-input v-model="addDay" style="" class="try-time-input" />天</div>
-    </kd-dialog>
+
+      <div slot="content" class="addTimeContent">
+        <div> <i class="el-icon-warning" />该商协会由于 <span class="freeze-reason">【{{ row.freezeReason }}】</span>被冻结，延长试用后将解冻账号，请谨慎操作</div>
+        <div class="try-time">延长<el-input v-model="addDay" style="" class="try-time-input" />天</div><div />
+      </div></kd-dialog>
     <el-dialog title="添加/编辑商会" :visible.sync="editorVisible" width="50%">
       <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="150px">
         <el-row>
@@ -588,6 +597,7 @@
     </el-dialog>
     <levelDialog ref="levelDialog" title="权重" width="30%" />
     <markSigned ref="markSignedRef" />
+    <freezeDialog ref="freezeDialogRef" :free-visible.sync="showFreeDialog" @updateSuccess="fetchData" />
   </div>
 </template>
 
@@ -673,10 +683,20 @@
   display: flex;
   flex-direction: column;
 }
+.addTimeContent{
+  display: flex;
+  justify-content: center;
+   align-items: center;
+   flex-direction: column;
+}
 .try-time {
   display: flex;
   /* justify-content: center; */
   align-items: center;
+  margin-top: 10px;
+}
+.freeze-reason{
+  color: red;
 }
 .try-time-input {
   width: 100px;

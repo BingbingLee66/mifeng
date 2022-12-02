@@ -2,7 +2,6 @@ import {
   getList,
   getDetail,
   save,
-  updateStatus,
   upload,
   registerCodeDownload,
   businessList,
@@ -11,12 +10,14 @@ import {
   addTryTime,
   unsignedData,
   exportUnSigned,
-  livePermissionUpdate
+  livePermissionUpdate,
+  chamberStatusUpdate
 } from '@/api/chamber/manager'
 import { getAreaTree } from '@/api/area'
 // import { mapGetters } from 'vuex'
 import levelDialog from './component/levelDialog.vue'
 import markSigned from './component/markSigned'
+import freezeDialog from './component/freezeDialog'
 import { remarksRules, codeRules, beforeSystemLogoUploadUtil } from './util'
 import { downloadFile } from '@/utils/index'
 export default {
@@ -137,11 +138,13 @@ export default {
         business: '',
         operating: ''
       },
-      addDay: null
+      addDay: null,
+      // 冻结弹框
+      showFreeDialog: false
     }
   },
   components: {
-    levelDialog, markSigned
+    levelDialog, markSigned, freezeDialog
   },
   computed: {
     // ...mapGetters(['has'])
@@ -374,51 +377,48 @@ export default {
     },
     updateStatus(e, row) {
       console.log('rew', row)
-      const h = this.$createElement
-      const self = this
+      // const h = this.$createElement
+      // const self = this
       if (row.status === 1) {
-        this.$msgbox({
-          title: '冻结账号',
-          message: h('p', null, [
-            h('div', null, '是否确定冻结该商会的账号？'),
-            h('div', null, '冻结后，该商会无法登录商会后台，但是不会影响商会在前台的显示'),
-          ]),
-          showCancelButton: true,
+        // this.$msgbox({
+        //   title: '冻结账号',
+        //   message: h('p', null, [
+        //     h('div', null, '是否确定冻结该商会的账号？'),
+        //     h('div', null, '冻结后，该商会无法登录商会后台，但是不会影响商会在前台的显示'),
+        //   ]),
+        //   showCancelButton: true,
+        //   confirmButtonText: '确定',
+        //   cancelButtonText: '取消',
+        //   beforeClose: (action, instance, done) => {
+        //     if (action === 'confirm') {
+        //       self.updateStatusFunc(row)
+        //       done()
+        //     } else {
+        //       done()
+        //     }
+        //   }
+        // })
+        this.showFreeDialog = true
+        this.$refs['freezeDialogRef'].show(row.status, row.ckey)
+      } else {
+        const msg = `该商协会由于【${row.a}】被冻结，是否确定解冻账号？`
+        this.$confirm(msg, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-              self.updateStatusFunc(row)
-              done()
-            } else {
-              done()
-            }
-          }
+          type: 'warning'
+        }).then(() => {
+          this.updateStatusFunc(row)
         })
-      } else {
-        this.updateStatusFunc(row)
       }
     },
-    updateStatusFunc(row) {
+    async updateStatusFunc(row) {
       // window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       const params = {
-        chamberId: row.id,
-        action: row.status === 0 ? 'active' : 'notactive'
+        ckey: row.ckey,
+        status: +!row.status
       }
-      updateStatus(params).then(() => {
-        if (row.status === 0) {
-          this.$message({
-            message: '解冻成功',
-            type: 'success'
-          })
-        } else {
-          this.$message({
-            message: '冻结成功',
-            type: 'success'
-          })
-        }
-        this.fetchData()
-      })
+      const res = await chamberStatusUpdate(params)
+      if (res.state === 1) { this.$message.success('成功'); this.fetchData() }
     },
     enlarge(path) {
       const newwin = window.open()
@@ -560,8 +560,20 @@ export default {
     // 禁用开通直播权限
     async livePermissionFunc(row) {
       const { livePermission, ckey } = row
-      const res = await livePermissionUpdate({ ckey, livePermission: +!livePermission })
-      if (res.state === 1) { this.$message.success('成功') } else { this.$message.error(res.msg) }
+      const { list } = this
+      const res = await livePermissionUpdate({ ckey, grantPermission: !livePermission })
+      if (res.state === 1) {
+        this.$message.success('成功')
+        const index = list.findIndex(i => i.ckey === ckey)
+        if (index > -1) { this.list[index].livePermission = +!livePermission }
+      } else { this.$message.error(res.msg) }
+    },
+    // 冻结成功
+    updateSuccess(ckey) {
+      const { list } = this
+      const index = list.findIndex(i => i.ckey === ckey)
+      console.log('index', index)
+      if (index > -1) { this.list[index].state = +!this.list[index].state }
     }
   }
 }
