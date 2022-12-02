@@ -359,7 +359,6 @@ export default {
 
       // 如果未授权状态
       if (!this.isImpower) this.formObj.publishSet = 0
-
       save(this.formObj).then(response => {
         if (response.state === 1) {
           this.$message({
@@ -372,12 +371,19 @@ export default {
           for (const view of tagsViews) {
             if (view.path === this.$route.path) {
               this.$store.dispatch('tagsView/delView', view).then(() => {
-                this.$router.push({
-                  name: '公众号',
-                  query: {
-                    articleId: response.data.id
-                  }
-                })
+                // 跳文章管理
+                if (!this.isImpower || parseInt(this.formObj.publishSet) === 2) {
+                  this.$router.push({
+                    name: '文章管理'
+                  })
+                } else {
+                  this.$router.push({
+                    name: '公众号',
+                    query: {
+                      articleId: response.data.id
+                    }
+                  })
+                }
               })
               break
             }
