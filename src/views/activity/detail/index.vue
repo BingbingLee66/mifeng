@@ -31,7 +31,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col v-if="activity.seatFunction" :span="9" style="max-width: 390px">
+      <el-col v-if="activity.extraSeat" :span="9" style="max-width: 390px">
         <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center">
             <div class="board-left">
@@ -69,7 +69,7 @@
         </el-card>
       </el-col>
     </el-row>
-    <el-row v-if="activity.signFunction || activity.signOutFunction">
+    <el-row v-if="activity.extraSignin || activity.extraSignout">
       <el-col :span="24" style="max-width: 900px">
         <el-card class="activity-card" shadow="never">
           <div class="board flex-x-between-center">
@@ -222,7 +222,7 @@
       <div class="label" style="margin-top: 10px">招商附件：</div>
       <div class="value">
         <div v-for="(item, index) in activity.attachment" :key="index">
-          <el-button type="text">{{ item.fileName }}</el-button>
+          <el-button type="text" @click="downLoad(item)">{{ item.fileName }}</el-button>
         </div>
       </div>
     </div>
@@ -258,7 +258,8 @@ import SignInCode from '@/views/zhaoshang/activity/verify-detail/components/Save
 import { getEcActivity } from '@/api/attract'
 import { uploadInvesSeating, deleteInvesSeating } from '@/api/zhaoshang/activity/activity-verify-new'
 import { activityDetail } from '@/api/activity/activity'
-import { formatDate } from '../verify-detail/util'
+import { formatDate, filetype } from '../verify-detail/util'
+import { downloadByBlob } from '../util'
 export default {
   name: 'ActivityDetail',
   components: {
@@ -291,7 +292,7 @@ export default {
   computed: {
     activityId() {
       // 活动ID
-      return this.$route.params.activityId || ''
+      return this.$route.query.activityId || ''
     },
     applyObject() {
       const { applyObject } = this.activity
@@ -310,8 +311,7 @@ export default {
   },
   methods: {
     async getActivityInfo() {
-      console.log('this.$route.params.activityId', this.$route.params)
-      const { data } = await activityDetail({ id: this.$route.params.activeId })
+      const { data } = await activityDetail({ id: this.activityId })
       // data.id = this.activityId
       this.activity = data
       this.handelActivityGuests()
@@ -384,6 +384,17 @@ export default {
     onQrCodeDownload(e) {
       this.qrCodeDialog = { ...this.qrCodeDialog, ...e }
       this.$refs.codeDialog.saveImage()
+    },
+    // 下载
+    downLoad(item) {
+      const arr = item.attachment.split('.')
+      const type = arr[arr.length - 1]
+      if (!type) return
+      if (filetype.indexOf(type) !== -1) {
+        window.open(item.attachment)
+      } else {
+        downloadByBlob(item.attachment, item.fileName)
+      }
     }
   }
 }

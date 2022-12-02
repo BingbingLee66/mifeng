@@ -173,7 +173,12 @@ export default {
     },
     // 活动详情
     detail(row) {
-      this.$router.push({ path: `/activity/${row.id}/detail` })
+      this.$router.push({
+        name: 'activityDetail',
+        query: {
+          activityId: row.id,
+        }
+      })
     },
     // 删除活动
     showDel(row) {
