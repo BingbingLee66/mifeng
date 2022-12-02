@@ -1,7 +1,7 @@
 <template>
   <el-dialog :visible.sync="entryVisible" :title="title" :before-close="closeHandler">
     <el-input v-model="keywordFilter.encyclopediaName" placeholder="请输入关键字" @input="inputHandler" />
-    <h2>最近推荐</h2>
+    <h2 class="c-entry-h2">最近推荐</h2>
     <div class="c-entry-list">
       <div v-for="item in recommendList" :key="item.id" class="c-entry-list__item">
         <div class="c-eli__relative">
@@ -23,7 +23,7 @@
         <div class="entry-name">{{ item.encyclopediaName }}</div>
         <div class="entry-polysemant">{{ item.polysemant }}</div>
       </div>
-      <div v-if="!recommendList.length">暂无相关推荐</div>
+      <div v-if="!recommendList.length" class="no-data-text">暂无相关推荐</div>
     </div>
     <el-button
       v-if="recommendList.length && recommendTotal > recommendList.length"
@@ -34,7 +34,7 @@
       点击展开更多
     </el-button>
     <div>
-      <h2>商会相关</h2>
+      <h2 class="c-entry-h2">商会相关</h2>
       <div class="c-entry-list">
         <div v-for="item in chamberList" :key="item.id" class="c-entry-list__item">
           <div class="c-eli__relative">
@@ -56,7 +56,7 @@
           <div class="entry-name">{{ item.encyclopediaName }}</div>
           <div class="entry-polysemant">{{ item.polysemant }}</div>
         </div>
-        <div v-if="!chamberList.length">暂无商会相关数据</div>
+        <div v-if="!chamberList.length" class="no-data-text">暂无商会相关数据</div>
       </div>
     </div>
     <el-button
@@ -68,7 +68,7 @@
       点击展开更多
     </el-button>
     <div v-if="otherList.length">
-      <h2>其他</h2>
+      <h2 class="c-entry-h2">其他</h2>
       <div class="c-entry-list">
         <div v-for="item in otherList" :key="item.id" class="c-entry-list__item">
           <div class="c-eli__relative">
@@ -167,7 +167,6 @@ export default {
         if (this.entryInfo.selectionData.length) this.setSelectionMap()
         this.queryRecommendList()
         this.queryChamberList()
-        this.inputHandler()
       }
     }
   },
@@ -247,7 +246,11 @@ export default {
         console.log(error)
       }
     },
-    async inputHandler() {
+    async inputHandler(val) {
+      if (!val) {
+        this.otherList = []
+        return
+      }
       if (this.timer) {
         clearTimeout(this.timer)
       }
@@ -362,5 +365,12 @@ export default {
 .m-auto {
   display: block;
   margin: auto;
+}
+.c-entry-h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+.no-data-text{
+  margin-bottom: 20px;
 }
 </style>
