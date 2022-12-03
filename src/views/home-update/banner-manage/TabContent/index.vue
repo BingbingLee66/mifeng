@@ -9,7 +9,7 @@
         @click="handleEvent('add')"
       >新增banner图</el-button>
       <el-button
-        v-if="this.tableData.length > 0"
+        v-if="tableData.length > 0"
         type="primary"
         size="medium"
         @click="handleEvent('rate')"
@@ -189,6 +189,7 @@ export default {
       })
       if (res.state === 1) {
         this.fetchData()
+        this.$message.success(res.msg)
       } else {
         this.$message.error(res.msg)
       }

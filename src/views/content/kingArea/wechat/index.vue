@@ -48,7 +48,7 @@
 
 <script>
 import TableMixins from '@/mixins/yshTable'
-import { changeOrder } from '@/utils/utils'
+// import { changeOrder } from '@/utils/utils'
 import Kingkong from '@/api/home-config/KingKong'
 import _data from './data'
 import Dialog from './Dialog'
@@ -155,8 +155,9 @@ export default {
       const num = event === 'up' ? data.num - 1 : data.num + 1
       const res = await Kingkong.changeKingkongOrder(data.id, num)
       if (res.state === 1) {
+        this.fetchData()
         this.$message.success(res.msg)
-        changeOrder(this.tableData, data.id, event)
+        // changeOrder(this.tableData, data.id, event)
       } else {
         this.$message.error(res.msg)
       }
