@@ -30,6 +30,17 @@
             <el-button type="primary" style="margin-left:10px" @click="importArticle">导入微信文章</el-button>
           </el-row>
           <el-row>
+            <el-col :span="20">
+              <el-form-item label="相关推荐：" class="ue-wrap">
+                <RelatedRecommend
+                  :entry-list="entryList"
+                  @remove-entry="removeHandler"
+                  @add-entry="addEntry"
+                />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="24">
               <el-form-item label="文章内容：" class="ue-wrap">
                 <editorElem ref="editorElem" :content="formObj.contentHtml" @addParentHtml="addParentHtml" />
@@ -404,6 +415,13 @@
     </kdDialog>
     <!-- 选择文章 -->
     <selectArticle ref="selectArticle" :article-id="articleId || null" @confirm="onConfirm" />
+    <entry-dialog
+      :visible.sync="entryVisible"
+      title="添加词条"
+      :entry-info="entryInfo"
+      @sure-handler="sureHandler"
+      @close="(entryVisible = false)"
+    />
   </div>
 
 </template>

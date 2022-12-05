@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-const accessSecret = process.env.VUE_ACCESS_SECRET && process.env.VUE_ACCESS_SECRET === 'production'
+const accessSecret = process.env.VUE_APP_ACCESS_SECRET && process.env.VUE_APP_ACCESS_SECRET === 'production'
   ? 'affb6fa2180648d7b584d3c46406e846' : '0ca78fd724ec45ae8d627998a5f252c0'
 // 最近推荐的词条
 export const recommendLexicalRecently = params => request({
