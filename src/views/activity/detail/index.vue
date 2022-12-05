@@ -242,12 +242,13 @@
               <img class="portrait" :src="item.portrait">
             </div>
             <div style="margin-bottom: 5px">嘉宾介绍：</div>
-            <div>{{ item.introduction }}</div>
-            <span>查看更多</span>
+            <div style="display: inline-block">{{ item.showContent }}</div>
+            <span v-if="item.showMore" style="color: #2878ff" @click="showDialog(item)">查看更多</span>
           </div>
         </el-card>
       </div>
     </div>
+    <introduction :content="content" :introduction-visible.sync="showIntroduction" />
   </div>
 </template>
 
@@ -260,12 +261,14 @@ import { uploadInvesSeating, deleteInvesSeating } from '@/api/zhaoshang/activity
 import { activityDetail } from '@/api/activity/activity'
 import { formatDate, filetype } from '../verify-detail/util'
 import { downloadByBlob } from '../util'
+import introduction from './components/introduction'
 export default {
   name: 'ActivityDetail',
   components: {
     SaveImgDialog,
     ActivityCode,
-    SignInCode
+    SignInCode,
+    introduction
   },
   data() {
     return {
@@ -286,7 +289,9 @@ export default {
         { title: '签退码', codeKey: 'checkoutCode' }
       ],
       previewSeatDialogShow: false,
-      imgLoading: false
+      imgLoading: false,
+      showIntroduction: false,
+      content: ''
     }
   },
   computed: {
@@ -322,9 +327,9 @@ export default {
       if (!activityGuestsVOS?.length > 0) return
       activityGuestsVOS.forEach(i => {
         console.log('i.introduction.length', i.introduction.length)
-        if (i.introduction.length > 50) {
+        if (i.introduction.length > 5000) {
           i.showMore = true
-          i.introduction = i.introduction.slice(0, 50)
+          i.showContent = i.introduction.slice(0, 5000)
         } else {
           i.showMore = false
         }
@@ -395,6 +400,11 @@ export default {
       } else {
         downloadByBlob(item.attachment, item.fileName)
       }
+    },
+    showDialog(row) {
+      console.log('row', row)
+      this.showIntroduction = true
+      this.content = row.introduction
     }
   }
 }
