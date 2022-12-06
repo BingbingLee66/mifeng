@@ -5,7 +5,7 @@ import {
   updateActivitySort,
   delActivity, showActivityTime
 } from '@/api/activity/activity'
-
+import { downloadByBlob } from '../util'
 import UpdateTime from './components/UpdateTime'
 export default {
   data() {
@@ -184,6 +184,25 @@ export default {
     showDel(row) {
       this.rowId = row.id
       this.showDelDialog = true
+    },
+    // 创建活动
+    create() {
+      this.$router.push({
+        name: '创建活动',
+      })
+    },
+    // 查看审核详情
+    goVerifyDetail(e) {
+      this.$router.push({
+        name: '审核详情',
+        query: {
+          activityId: e.id,
+          status: 0
+        }
+      })
+    },
+    downloadQrCode(r) {
+      downloadByBlob(r.qrCode, '活动二维码')
     },
     delActivity() {
       const params = {

@@ -41,6 +41,7 @@
           </el-button>
         </el-form-item>
       </el-form>
+      <el-button type="primary" @click="create">创建活动 </el-button>
     </div>
     <div>
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
@@ -99,12 +100,12 @@
             <span v-if="scope.row.isLimit === 1">限{{ scope.row.applyCount }}人 </span>
           </template>
         </el-table-column>
-        <el-table-column label="发布状态" width="100px">
+        <!-- <el-table-column label="发布状态" width="100px">
           <template slot-scope="scope">
             <div v-if="scope.row.isPublish === 1">已发布</div>
             <div v-if="scope.row.isPublish === 0">未发布</div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="活动状态" width="100px">
           <template slot-scope="scope">
             <div v-if="scope.row.isPublish === 0">--</div>
@@ -146,6 +147,8 @@
             <div v-if="scope.row.status === 2 && !ckey" class="blue-label" @click="updateTime(scope.row)">
               修改活动时间
             </div>
+            <div v-if="scope.row.status === 4" class="blue-label" @click="goVerifyDetail(scope.row)">报名审核</div>
+            <div class="blue-label" @click="downloadQrCode(scope.row)">下载活动二维码</div>
           </template></el-table-column></el-table>
       <el-pagination
         background
