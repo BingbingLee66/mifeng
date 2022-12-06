@@ -53,7 +53,7 @@ export const constantRoutes = [
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
         meta: { title: 'dashboard', icon: 'dashboard', affix: true }
-      },
+      }
       // {
       //   path: 'mass-notification/create',
       //   name: 'create',
@@ -554,5 +554,15 @@ export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher
 }
+
+/* 接入百度统计 */
+router.beforeEach(async (to, from, next) => {
+  if (to.path) {
+    if (window._hmt) {
+      window._hmt.push(['_trackPageview', '/#' + to.fullPath])
+    }
+  }
+  next()
+})
 
 export default router
