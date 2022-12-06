@@ -182,7 +182,7 @@
       <el-table-column label="状态">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 1">正常</div>
-          <el-tooltip class="item" effect="dark" :content="scope.row.freezeReason " placement="top-start">
+          <el-tooltip class="item" effect="dark" :content="scope.row.freezeReason" placement="top-start">
             <div v-if="scope.row.status == 0"><i class="el-icon-warning" /> 已冻结</div>
           </el-tooltip>
 
@@ -228,7 +228,11 @@
               <el-button type="text" @click="openMarkSigned(scope.row)">标记已签约 </el-button>
               <el-button type="text" @click="openRemarks(scope.row, 'addTryTimeRef')">延长试用 </el-button>
             </template>
-            <el-button type="text" @click="livePermissionFunc(scope.row)">{{ scope.row.livePermission===1 ?'禁用':'开通' }}直播窗口权限 </el-button>
+            <el-button
+              type="text"
+              @click="livePermissionFunc(scope.row)"
+            >{{ scope.row.livePermission === 1 ? '禁用' : '开通' }}直播窗口权限
+            </el-button>
           </div>
         </template>
       </el-table-column>
@@ -292,7 +296,7 @@
       <el-table-column label="状态">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 1">正常</div>
-          <el-tooltip class="item" effect="dark" :content="scope.row.freezeReason " placement="top-start">
+          <el-tooltip class="item" effect="dark" :content="scope.row.freezeReason" placement="top-start">
             <div v-if="scope.row.status == 0"><i class="el-icon-warning" /> 已冻结</div>
           </el-tooltip>
           <div v-if="scope.row.status == 3">待邀请</div>
@@ -336,7 +340,11 @@
             <template v-if="activeName === 'unSignContract'">
               <el-button type="text" @click="openMarkSigned(scope.row)">标记已签约 </el-button>
               <el-button type="text" @click="openRemarks(scope.row, 'addTryTimeRef')">延长试用 </el-button>
-              <el-button type="text" @click="updateStatus($event, scope.row)">{{ scope.row.status == 1 ?'冻结':'解冻' }} </el-button>
+              <el-button
+                type="text"
+                @click="updateStatus($event, scope.row)"
+              >{{ scope.row.status == 1 ? '冻结' : '解冻' }}
+              </el-button>
             </template>
           </div>
         </template>
@@ -395,11 +403,13 @@
       @hide="hideDialog('addTryTimeRef')"
       @savePopupData="addTryTimed"
     >
-
       <div slot="content" class="addTimeContent">
-        <div> <i class="el-icon-warning" />该商协会由于 <span class="freeze-reason">【{{ row.freezeReason }}】</span>被冻结，延长试用后将解冻账号，请谨慎操作</div>
-        <div class="try-time">延长<el-input v-model="addDay" style="" class="try-time-input" />天</div><div />
-      </div></kd-dialog>
+        <div>
+          <i class="el-icon-warning" />该商协会由于
+          <span class="freeze-reason">【{{ row.freezeReason }}】</span>被冻结，延长试用后将解冻账号，请谨慎操作
+        </div>
+        <div class="try-time">延长<el-input v-model="addDay" style="" class="try-time-input" />天</div>
+        <div /></div></kd-dialog>
     <el-dialog title="添加/编辑商会" :visible.sync="editorVisible" width="50%">
       <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="150px">
         <el-row>
@@ -683,11 +693,11 @@
   display: flex;
   flex-direction: column;
 }
-.addTimeContent{
+.addTimeContent {
   display: flex;
   justify-content: center;
-   align-items: center;
-   flex-direction: column;
+  align-items: center;
+  flex-direction: column;
 }
 .try-time {
   display: flex;
@@ -695,7 +705,7 @@
   align-items: center;
   margin-top: 10px;
 }
-.freeze-reason{
+.freeze-reason {
   color: red;
 }
 .try-time-input {
@@ -704,5 +714,9 @@
 }
 .el-button + .el-button {
   margin-left: 0;
+}
+.el-popper {
+  height: 500px;
+  overflow-y: scroll;
 }
 </style>
