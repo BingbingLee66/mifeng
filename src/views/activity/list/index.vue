@@ -143,7 +143,9 @@
               <div class="blue-label" @click="showDel(scope.row)">删除</div>
             </div>
             <div class="blue-label" @click="detail(scope.row)">详情</div>
-            <div v-if="scope.row.status === 2" class="blue-label" @click="updateTime(scope.row)">修改活动时间</div>
+            <div v-if="scope.row.status === 2 && !ckey" class="blue-label" @click="updateTime(scope.row)">
+              修改活动时间
+            </div>
           </template></el-table-column></el-table>
       <el-pagination
         background

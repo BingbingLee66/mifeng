@@ -22,7 +22,12 @@
             <div class="board-right flex-y-center-center">
               <img class="qr-code" :src="activity.qrCode" @click="activityQrCodeShow = true">
               <div class="qr-code-desc">活动二维码 <el-button type="text" @click="downLoadCode">下载</el-button></div>
-              <SaveImgDialog ref="activityDialog" v-model="activityQrCodeShow" :show-save-btn="false" title="活动二维码">
+              <SaveImgDialog
+                ref="activityDialog"
+                v-model="activityQrCodeShow"
+                :show-save-btn="false"
+                title="活动二维码"
+              >
                 <div class="code">
                   <div class="code-title">活动二维码</div>
                   <img class="code-body" :src="activity.qrCode">
@@ -338,7 +343,6 @@ export default {
       const { activityGuestsVOS } = this.activity
       if (!activityGuestsVOS?.length > 0) return
       activityGuestsVOS.forEach(i => {
-        console.log('i.introduction.length', i.introduction.length)
         if (i.introduction.length > 5000) {
           i.showMore = true
           i.showContent = i.introduction.slice(0, 5000)
