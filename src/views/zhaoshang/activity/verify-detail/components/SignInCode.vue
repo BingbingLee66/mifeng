@@ -8,7 +8,6 @@
 </template>
 
 <script>
-
 export default {
   components: {},
   props: {
@@ -21,8 +20,10 @@ export default {
       default: ''
     }
   },
-  data() { return {} },
-  methods: {},
+  data() {
+    return {}
+  },
+  methods: {}
 }
 </script>
 

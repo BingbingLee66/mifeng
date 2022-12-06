@@ -21,11 +21,13 @@
             </div>
             <div class="board-right flex-y-center-center">
               <img class="qr-code" :src="activity.qrCode" @click="activityQrCodeShow = true">
-              <div class="qr-code-desc">
-                活动二维码 <el-button type="text" @click="$refs.activityDialog.saveImage()">下载</el-button>
-              </div>
-              <SaveImgDialog ref="activityDialog" v-model="activityQrCodeShow" title="活动二维码">
-                <ActivityCode :id="id" slot-scope="{ id }" :activity="activity" />
+              <div class="qr-code-desc">活动二维码 <el-button type="text" @click="downLoadCode">下载</el-button></div>
+              <SaveImgDialog ref="activityDialog" v-model="activityQrCodeShow" :show-save-btn="false" title="活动二维码">
+                <div class="code">
+                  <div class="code-title">活动二维码</div>
+                  <img class="code-body" :src="activity.qrCode">
+                </div>
+                <!-- <ActivityCode :id="id" slot-scope="{ id }" :activity="activity" /> -->
               </SaveImgDialog>
             </div>
           </div>
@@ -88,8 +90,17 @@
                   >下载{{ item.title }}</el-button>
                 </div>
               </div>
-              <SaveImgDialog ref="codeDialog" v-model="qrCodeDialog.show" :title="qrCodeDialog.title">
-                <SignInCode :id="id" slot-scope="{ id }" :title="qrCodeDialog.title" :url="qrCodeDialog.url" />
+              <SaveImgDialog
+                ref="codeDialog"
+                v-model="qrCodeDialog.show"
+                :title="qrCodeDialog.title"
+                :show-save-btn="false"
+              >
+                <div class="code">
+                  <div class="code-title">{{ qrCodeDialog.title }}</div>
+                  <img class="code-body" :src="qrCodeDialog.url">
+                </div>
+                <!-- <SignInCode :id="id" slot-scope="{ id }" :title="qrCodeDialog.title" :url="qrCodeDialog.url" /> -->
               </SaveImgDialog>
             </div>
             <div class="board-right flex-y-center-center">
@@ -254,8 +265,8 @@
 
 <script>
 import SaveImgDialog from '@/views/zhaoshang/activity/verify-detail/components/SaveImgDialog'
-import ActivityCode from '@/views/zhaoshang/activity/verify-detail/components/SaveImgDialog'
-import SignInCode from '@/views/zhaoshang/activity/verify-detail/components/SaveImgDialog'
+// import ActivityCode from '@/views/zhaoshang/activity/verify-detail/components/SaveImgDialog'
+// import SignInCode from '@/views/zhaoshang/activity/verify-detail/components/SaveImgDialog'
 import { getEcActivity } from '@/api/attract'
 import { deleteInvesSeating } from '@/api/zhaoshang/activity/activity-verify-new'
 import { activityDetail, uploadSeating } from '@/api/activity/activity'
@@ -266,8 +277,8 @@ export default {
   name: 'ActivityDetail',
   components: {
     SaveImgDialog,
-    ActivityCode,
-    SignInCode,
+    // ActivityCode,
+    // SignInCode,
     introduction
   },
   data() {
@@ -388,8 +399,9 @@ export default {
       this.qrCodeDialog = { show: true, ...e }
     },
     onQrCodeDownload(e) {
-      this.qrCodeDialog = { ...this.qrCodeDialog, ...e }
-      this.$refs.codeDialog.saveImage()
+      downloadByBlob(e.url, e.title)
+      // this.qrCodeDialog = { ...this.qrCodeDialog, ...e }
+      // this.$refs.codeDialog.saveImage()
     },
     // 下载
     downLoad(item) {
@@ -403,9 +415,11 @@ export default {
       }
     },
     showDialog(row) {
-      console.log('row', row)
       this.showIntroduction = true
       this.content = row.introduction
+    },
+    downLoadCode() {
+      downloadByBlob(this.activity.qrCode, '活动二维码')
     }
   }
 }
@@ -617,5 +631,27 @@ export default {
 .user-msg {
   display: flex;
   flex-direction: column;
+}
+.code {
+  width: 306px;
+  height: 340px;
+  padding-top: 40px;
+  background-color: #fff;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .code-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #222;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .code-body {
+    text-align: center;
+    width: 166px;
+    height: 166px;
+  }
 }
 </style>

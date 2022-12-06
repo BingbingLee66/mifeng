@@ -1,12 +1,12 @@
 <template>
-  <div style="position:relative;">
-    <div v-show="show" class="mask" @click="$emit('change',false)">
+  <div style="position: relative">
+    <div v-show="show" class="mask" @click="$emit('change', false)">
       <div class="save-dialog" @click.stop>
         <slot>
           <div class="save-default" />
         </slot>
-        <div class="save-footer" :loading="isLoading" @click="saveImage">保存图片</div>
-        <i class="save-close el-icon el-icon-close" @click="$emit('change',false)" />
+        <div v-if="showSaveBtn" class="save-footer" :loading="isLoading" @click="saveImage">保存图片</div>
+        <i class="save-close el-icon el-icon-close" @click="$emit('change', false)" />
       </div>
     </div>
     <div class="print">
@@ -15,7 +15,6 @@
       </slot>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -36,6 +35,10 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    showSaveBtn: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -56,8 +59,8 @@ export default {
         console.log(error)
       }
       this.isLoading = false
-    },
-  },
+    }
+  }
 }
 </script>
 
@@ -76,7 +79,7 @@ export default {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
 
   .save-default {
     width: 526px;
@@ -94,7 +97,7 @@ export default {
     align-items: center;
     width: 98px;
     height: 34px;
-    background: linear-gradient(360deg, #E53B4D 0%, #EA5755 100%);
+    background: linear-gradient(360deg, #e53b4d 0%, #ea5755 100%);
     border-radius: 2px;
     font-size: 14px;
     color: #fff;
