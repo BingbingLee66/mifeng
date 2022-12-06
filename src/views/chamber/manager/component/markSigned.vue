@@ -5,7 +5,7 @@
       :visible.sync="detailVisible"
       @close="close"
     >
-      <div v-if="freezeReason"> <i class="el-icon-warning" />该商协会由于 <span class="freeze-reason">【{{ freezeReason }}】</span>被冻结，延长试用后将解冻账号，请谨慎操作</div>
+      <div v-if="freezeReason"> <i class="el-icon-warning" />该商协会由于 <span class="freeze-reason">【{{ freezeReason }}】</span>被冻结，标记签约后将解冻账号，请谨慎操作</div>
       <el-form ref="formName" label-width="160px" :model="formObj" :rules="rules">
         <el-form-item label="商协会：" prop="level">
           <span v-if="formObj">{{ formObj.chamberName }}</span>
