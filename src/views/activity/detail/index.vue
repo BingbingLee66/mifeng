@@ -257,8 +257,8 @@ import SaveImgDialog from '@/views/zhaoshang/activity/verify-detail/components/S
 import ActivityCode from '@/views/zhaoshang/activity/verify-detail/components/SaveImgDialog'
 import SignInCode from '@/views/zhaoshang/activity/verify-detail/components/SaveImgDialog'
 import { getEcActivity } from '@/api/attract'
-import { uploadInvesSeating, deleteInvesSeating } from '@/api/zhaoshang/activity/activity-verify-new'
-import { activityDetail } from '@/api/activity/activity'
+import { deleteInvesSeating } from '@/api/zhaoshang/activity/activity-verify-new'
+import { activityDetail, uploadSeating } from '@/api/activity/activity'
 import { formatDate, filetype } from '../verify-detail/util'
 import { downloadByBlob } from '../util'
 import introduction from './components/introduction'
@@ -322,6 +322,7 @@ export default {
       this.handelActivityGuests()
       console.log(this.activity, 'this.activity')
     },
+    formatDate,
     handelActivityGuests() {
       const { activityGuestsVOS } = this.activity
       if (!activityGuestsVOS?.length > 0) return
@@ -350,7 +351,7 @@ export default {
         })
       }
     },
-    formatDate,
+
     // 上传前校验
     beforeUpload(file) {
       if (!['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type)) {
@@ -371,7 +372,7 @@ export default {
       formData.append('multipartFile', content.file)
 
       try {
-        const { data } = await uploadInvesSeating(formData)
+        const { data } = await uploadSeating(formData)
         this.activity.seating = data
       } catch (error) {
         /*  */

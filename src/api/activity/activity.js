@@ -110,10 +110,16 @@ export const updateActivityTime = (id, params) =>
     url: `/api/ec/activity/activities/${id}/time?endTime=${params}`,
     method: 'put',
   })
-  // 活动时间回显
+// 活动时间回显
 export const showActivityTime = id =>
   request({
     url: `/api/ec/activity/activities/${id}/time`,
     method: 'get',
   })
+// 上传座位表
+export const uploadSeating = data => request({
+  url: '/api/ec/singin/uploadSeating',
+  method: 'post',
+  data
+})
 
