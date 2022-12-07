@@ -441,6 +441,13 @@ export const constantRoutes = [
         meta: { title: '活动详情' }
       },
       {
+        path: '/activity/activity-verify',
+        name: 'activityVerify',
+        component: () => import('@/views/activity/activity-verify/index'),
+        hidden: true,
+        meta: { title: '报名审核' }
+      },
+      {
         path: '/activity/create',
         name: '创建活动',
         component: () => import('@/views/activity/create/index'),
