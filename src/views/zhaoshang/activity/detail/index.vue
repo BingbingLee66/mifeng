@@ -250,13 +250,14 @@ export default {
     }
   },
   computed: {
-    activityId() { // 活动ID
-      return this.$route.params.activeId || ''
-    },
+    // activityId() { // 活动ID
+    //   return this.$route.params.activeId || ''
+    // },
   },
   created() {
     this.fetchData()
     this.getActivityInfo()
+    this.activityId = this.$route.params.activity || ''
   },
   methods: {
     async getActivityInfo() {
