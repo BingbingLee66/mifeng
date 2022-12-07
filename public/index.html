@@ -18,25 +18,23 @@
   <script src="https://cdn.9kd.com/kdnet_js/aliyun-upload-sdk-1.5.2.min.js"></script>
   <script src="https://map.qq.com/api/gljs?v=1.exp&libraries=service&key=CGFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG"></script>
   <script>
-     /** 百度统计全局变量 */ 
+    /** 百度统计全局变量 */ 
     var _hmt = _hmt || [];
-  </script>
-</head>
-
-<body>
-  <script>
      /** 接入百度统计 */ 
     (function(){
        const env='<%= process.env.NODE_ENV %>'
-       let src="https://hm.baidu.com/hm.js?3454deca3f994a4081ca22bea6df3539"
-       if(env==='production') src="https://hm.baidu.com/hm.js?f6e1d9c2d90fa156055b6a1dc048283b"
+       let src="https://hm.baidu.com/hm.js?f6e1d9c2d90fa156055b6a1dc048283b"
+       if(env==='production') src="https://hm.baidu.com/hm.js?3454deca3f994a4081ca22bea6df3539"
        const hm = document.createElement("script");
        hm.src =src ;
        const s = document.getElementsByTagName("script")[0]; 
        s.parentNode.insertBefore(hm, s);
     })()
 </script>
+</head>
 
+<body>
+  
 
 <noscript>
   <strong>We're sorry but <%= webpackConfig.name %> doesn't work properly without JavaScript enabled. Please enable it
