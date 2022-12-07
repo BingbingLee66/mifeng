@@ -422,6 +422,18 @@
       @sure-handler="sureHandler"
       @close="(entryVisible = false)"
     />
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :before-close="handleClose"
+    >
+      <div>
+        <span>已发布，扫码立即分享</span>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleClose">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 
 </template>

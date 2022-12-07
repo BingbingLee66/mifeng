@@ -85,7 +85,8 @@ export default {
       isImpower: false, // 查询商会是否授权公众号
       entryList: [],
       entryVisible: false,
-      entryInfo: {}
+      entryInfo: {},
+      dialogVisible: false
     }
   },
   mounted() {
@@ -387,25 +388,22 @@ export default {
             message: '操作成功',
             type: 'success'
           })
+          // 跳文章管理
+          if (!this.isImpower || parseInt(this.formObj.publishSet) === 2) {
+            this.getShareCode(); return
+          }
           // 退出当前tab, 打开指定tab
           const tagsViews = this.$store.state.tagsView.visitedViews
           // let selectView = null
           for (const view of tagsViews) {
             if (view.path === this.$route.path) {
               this.$store.dispatch('tagsView/delView', view).then(() => {
-                // 跳文章管理
-                if (!this.isImpower || parseInt(this.formObj.publishSet) === 2) {
-                  this.$router.push({
-                    name: '文章管理'
-                  })
-                } else {
-                  this.$router.push({
-                    name: '公众号',
-                    query: {
-                      articleId: response.data.id
-                    }
-                  })
-                }
+                this.$router.push({
+                  name: '公众号',
+                  query: {
+                    articleId: response.data.id
+                  }
+                })
               })
               break
             }
@@ -674,6 +672,17 @@ export default {
     sureHandler(ids, originData) {
       this.entryList = originData
       this.entryVisible = false
+    },
+    // 获取分享码
+    getShareCode() {
+
+    },
+    // 关闭分享弹框
+    handleClose() {
+      this.dialogVisible = false
+      this.$router.push({
+        name: '文章管理'
+      })
     }
   }
 }
