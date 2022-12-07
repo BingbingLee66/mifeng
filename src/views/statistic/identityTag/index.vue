@@ -142,6 +142,12 @@ export default {
 
     industryBarOpt() {
       return {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
         xAxis: {
           type: 'category',
           data: this.currentItem.industryStats?.map(v => v.labelVal) || [],
