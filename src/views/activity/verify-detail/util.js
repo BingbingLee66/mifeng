@@ -74,4 +74,4 @@ function download(href, name) {
   eleLink.remove()
 }
 
-export const filetype = ['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt', 'pptx']
+export const filetype = ['docx', 'doc', 'xls', 'xlsx', 'pdf', 'PPT', 'ppt', 'pptx']

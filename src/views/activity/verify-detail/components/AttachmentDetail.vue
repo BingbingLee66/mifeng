@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-import { perviewFile, downloadByBlob } from '../util'
+import { perviewFile, filetype, downloadByBlob } from '../util'
 export default {
   props: {
     attachmentVisible: {
@@ -86,12 +86,20 @@ export default {
       // attachment signValue  filename type url
       const { attachment } = row
       if (!attachment.length > 0) return
-      let imgList = []
-      let fileList = []
+      const imgList = []
+      const fileList = []
       attachment.forEach(e => {
         if (e.signValue.length > 0) {
-          imgList = imgList.concat(e.signValue.filter(f => f.type === 'image'))
-          fileList = fileList.concat(e.signValue.filter(f => f.type === 'file'))
+          e.signValue.filter(f => {
+            const typeArr = f.url.split('.')
+            if (filetype.indexOf(typeArr[typeArr.length - 1]) !== -1) {
+              fileList.push(f)
+            } else {
+              imgList.push(f)
+            }
+          })
+          // imgList = imgList.concat(e.signValue.filter(f => f.type === 'image'))
+          // fileList = fileList.concat(e.signValue.filter(f => f.type === 'file'))
         }
       })
       this.fileList = fileList
