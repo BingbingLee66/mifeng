@@ -440,6 +440,12 @@ export const constantRoutes = [
         hidden: true,
         meta: { title: '活动详情' }
       },
+      {
+        path: '/activity/create',
+        name: '创建活动',
+        component: () => import('@/views/activity/create/index'),
+        meta: { title: '创建活动' }
+      },
 
       {
         name: '我收到的名片',
