@@ -247,6 +247,7 @@ export default {
       ],
       previewSeatDialogShow: false,
       imgLoading: false,
+      activityId: null
     }
   },
   computed: {
@@ -255,9 +256,9 @@ export default {
     // },
   },
   created() {
+    this.activityId = this.$route.params.activity || ''
     this.fetchData()
     this.getActivityInfo()
-    this.activityId = this.$route.params.activity || ''
   },
   methods: {
     async getActivityInfo() {
