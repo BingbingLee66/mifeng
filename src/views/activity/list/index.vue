@@ -137,6 +137,7 @@
             <div v-if="type == 1">
               <div class="blue-label" @click="showUpdate(scope.row, 0)">取消发布</div>
               <div v-if="ckey || !scope.row.ckey" class="blue-label" @click="editActivity(scope.row)">编辑</div>
+              <div v-if="scope.row.status !== 1" class="blue-label" @click="goVerifyDetail(scope.row)">报名审核</div>
             </div>
             <div v-else>
               <div class="blue-label" @click="showUpdate(scope.row, 1)">发布</div>
@@ -147,7 +148,7 @@
             <div v-if="scope.row.status === 2 && !ckey" class="blue-label" @click="updateTime(scope.row)">
               修改活动时间
             </div>
-            <div v-if="scope.row.status === 4" class="blue-label" @click="goVerifyDetail(scope.row)">报名审核</div>
+
             <div class="blue-label" @click="downloadQrCode(scope.row)">下载活动二维码</div>
           </template></el-table-column></el-table>
       <el-pagination
