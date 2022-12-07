@@ -1,7 +1,5 @@
 import { getInfoColumnList, save, updateStatus, updateColumnLevel } from '@/api/content/columnsetup'
-import
-kdDialog
-from '@/components/common/kdDialog'
+import kdDialog from '@/components/common/kdDialog'
 export default {
   data() {
     const checkNumber = (rule, value, callback) => {
@@ -101,7 +99,21 @@ export default {
         level: row.level,
         typeUrl: row.typeUrl
       }
-      row.typeUrl === '3' ? this.typeUrl = ['1', '2'] : (this.formObj.typeUrl === '2' ? this.typeUrl = ['2'] : this.typeUrl = ['1'])
+      switch (row.typeUrl) {
+        case 4:
+          this.typeUrl = ['4']
+          break
+        case 3:
+          this.typeUrl = ['1', '2']
+          break
+        case 2:
+          this.typeUrl = ['2']
+          break
+        case 1:
+          this.typeUrl = ['1']
+          break
+      }
+      // row.typeUrl === '3' ? this.typeUrl = ['1', '2'] : (this.formObj.typeUrl === '2' ? this.typeUrl = ['2'] : this.typeUrl = ['1'])
       this.visible = true
     },
     updateStatus(e, row) {
@@ -144,9 +156,17 @@ export default {
           }
           const obj = {
             ...this.formObj,
-            typeUrl: this.typeUrl.length > 1 ? 3 : this.typeUrl[0]
+            typeUrl: this.typeUrl.toString() === [1, 2].toString() ? 3 : this.formObj.typeUrl
           }
-          console.log(obj)
+          if (this.typeUrl.toString() === [1, 2].toString()) {
+            obj.typeUrl = 3
+          } else if (this.typeUrl.toString() === [2].toString()) {
+            obj.typeUrl = 2
+          } else if (this.typeUrl.toString() === [1].toString()) {
+            obj.typeUrl = 1
+          } else if (this.typeUrl.toString() === [4].toString()) {
+            obj.typeUrl = 4
+          }
           save(obj).then(() => {
             this.$message({
               message: '操作成功',

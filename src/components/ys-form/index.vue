@@ -24,6 +24,7 @@
           :style="{ width: item.width || '165px' }"
           :placeholder="item.placeholder || ''"
           :maxlength="item.maxlength || ''"
+          :show-word-limit="item.showWordLimit || false"
           :clearable="item.clearable || false"
         />
         <!-- intInput整数 -->
@@ -33,6 +34,7 @@
           :style="{ width: item.width || '165px' }"
           :placeholder="item.placeholder || ''"
           :maxlength="item.maxlength || ''"
+          :show-word-limit="item.showWordLimit || false"
           :clearable="item.clearable || false"
           @input="(val) => checkInt(formData, item.prop, val)"
         />
@@ -43,6 +45,7 @@
           :style="{ width: item.width || '165px' }"
           :placeholder="item.placeholder || ''"
           :maxlength="item.maxlength || ''"
+          :show-word-limit="item.showWordLimit || false"
           :clearable="item.clearable || false"
           @input="(val) => checkPositive(formData, item.prop, val)"
         />
@@ -53,7 +56,7 @@
           type="textarea"
           :style="{ width: item.width || '165px' }"
           :rows="item.rows || 3"
-          :show-word-limit="item.showWordLimit"
+          :show-word-limit="item.showWordLimit || false"
           :placeholder="item.placeholder || ''"
           :maxlength="item.maxlength || ''"
           :clearable="item.clearable || false"
@@ -111,15 +114,21 @@
           :before-upload="item.beforeUpload"
           :http-request="item.upload"
         >
-          <img
+          <el-image
             v-if="formData[item.prop]"
             style="width: 150px; height: 150px"
             :src="formData[item.prop]"
-          >
+            @click.stop="previewImg(formData[item.prop])"
+          />
+          <!-- <img
+            v-if="formData[item.prop]"
+            style="width: 150px; height: 150px"
+            :src="formData[item.prop]"
+          > -->
+          <i v-if="formData[item.prop]" class="el-icon-circle-close close-icon" @click.stop="formData[item.prop] = ''" />
           <i
             v-else
-            style="
-              width: 150px;
+            style="width: 150px;
               height: 150px;
               font-size: 28px;
               color: #8c939d;
@@ -130,7 +139,7 @@
           />
         </el-upload>
         <div v-if="item.formTip">
-          <div v-for="(tips, index) in item.formTip" :key="index">
+          <div v-for="(tips, index) in item.formTip" :key="index" style="color: #999;">
             {{ tips }}
           </div>
         </div>
@@ -148,19 +157,26 @@
           重置
         </el-button>
       </el-form-item>
-      <el-form-item v-if="formConfig.type === 'edit'" label="">
+      <el-form-item v-if="formConfig.type === 'submit'" label="" style="margin-top:40px;">
         <el-button v-dbClick type="primary" @click="submit">确定</el-button>
         <el-button @click="cancel">取消</el-button>
       </el-form-item>
-      <slot name="customConetent" />
+      <slot name="customConetent" :data="formData" />
     </el-form>
+    <el-image-viewer
+      v-if="showViewer"
+      style="z-index: 99999"
+      :on-close="closeViewer"
+      :url-list="[viewerImage]"
+    />
   </div>
 </template>
 
 <script>
+import ElImageViewer from 'element-ui/packages/image/src/image-viewer'
 export default {
   name: 'YyForm',
-
+  components: { ElImageViewer },
   props: {
     // eslint-disable-next-line vue/require-default-prop
     formConfig: {
@@ -182,6 +198,8 @@ export default {
   data() {
     return {
       formData: {},
+      showViewer: false,
+      viewerImage: ''
     }
   },
 
@@ -192,7 +210,7 @@ export default {
           this.formData = JSON.parse(JSON.stringify(this.formObj))
         }
       },
-      immediate: true,
+      immediate: true
     },
   },
 
@@ -242,6 +260,15 @@ export default {
     handleSelectChange(e) {
       this.$emit('selectChange', e)
     },
+
+    previewImg(val) {
+      this.viewerImage = val
+      this.showViewer = true
+    },
+
+    closeViewer() {
+      this.showViewer = false
+    },
   },
 }
 </script>
@@ -256,5 +283,12 @@ export default {
 }
 .uploader-card /deep/.el-upload:hover {
   border-color: #409eff;
+}
+.close-icon {
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #FFCA00;
 }
 </style>

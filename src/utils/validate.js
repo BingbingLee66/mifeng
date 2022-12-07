@@ -16,6 +16,41 @@ export function isExternal(path) {
  * @returns {Boolean}
  */
 export function isvalidUsername(str) {
-  var reg=/^[0-9A-Za-z]{5,32}$/;
+  const reg = /^[0-9A-Za-z]{5,32}$/
   return reg.test(str)
+}
+
+// 权重表单验证
+export const validateWeight = (rule, value, callback) => {
+  if (!(/^[0-9]\d*$/.test(value))) {
+    callback(new Error('请输入正整数'))
+  } else if (value < 0 || value > 999) {
+    callback(new Error('权重范围0-999'))
+  } else {
+    callback()
+  }
+}
+
+// 权重表单验证
+export const validateInt = (rule, value, callback) => {
+  if (!(/^[0-9]\d*$/.test(value))) {
+    callback(new Error('请输入正整数'))
+  } else if (value <= 0) {
+    callback(new Error('请输入正整数'))
+  } else {
+    callback()
+  }
+}
+
+// 检验切换频率
+export const validateRate = (rule, value, callback) => {
+  if (!(/^[0-9]\d*$/.test(value))) {
+    callback(new Error('请输入正整数'))
+  } else if (value <= 0) {
+    callback(new Error('请输入正整数'))
+  } else if (+value > 300000) {
+    callback(new Error('不能大于300000ms'))
+  } else {
+    callback()
+  }
 }

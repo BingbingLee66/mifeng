@@ -11,6 +11,9 @@ import selectArticle from './component/select-article'
 import kdDialog from '@/components/common/kdDialog'
 import videoComponent from '@/components/video/index'
 import videoUpLoad from '@/components/video/upLoad'
+import EntryDialog from '@/components/entryDialog/index'
+import RelatedRecommend from '@/components/entryDialog/RelatedRecommend'
+import { queryRelatedEntryList } from '@/api/bossin/index'
 export default {
   components: {
     Ckeditor,
@@ -21,7 +24,9 @@ export default {
     preview,
     kdDialog, videoComponent,
     videoUpLoad,
-    selectArticle
+    selectArticle,
+    EntryDialog,
+    RelatedRecommend
   },
   data() {
     return {
@@ -78,6 +83,9 @@ export default {
       imgUrl: 'https://ysh-cdn.kaidicloud.com/prod/png/defauil_Accounts.png',
       link: '', // 外部公众号跳转链接
       isImpower: false, // 查询商会是否授权公众号
+      entryList: [],
+      entryVisible: false,
+      entryInfo: {}
     }
   },
   mounted() {
@@ -296,15 +304,29 @@ export default {
               this.$refs['videoRef'].show(dataObj.vid)
             })
           }
-          // this.$refs.ueditor.setContent(htmlObj === null ? '' : htmlObj)
-          // this.$refs.ckeditor1.init()
-          // setTimeout(() => {
-          //   this.$refs.ckeditor1.initHtml(htmlObj === null ? '' : htmlObj)
-          // }, 500)
+          this.queryEntryList(dataObj.contentType)
         }).catch(error => {
           reject(error)
         })
       })
+    },
+    async queryEntryList(contentType) {
+      try {
+        const { data } = await queryRelatedEntryList({
+          contentId: this.articleId,
+          contentType,
+          page: 1,
+          limit: 100
+        })
+        this.entryList = data.records.map(item => {
+          return {
+            ...item,
+            check: true
+          }
+        })
+      } catch (error) {
+        console.log(error)
+      }
     },
     addParentHtml(html) {
       this.formObj.contentHtml = html
@@ -637,6 +659,21 @@ export default {
       if (res.state === 1) {
         this.isImpower = res.data || false
       }
+    },
+
+    removeHandler(index) {
+      this.entryList.splice(index, 1)
+    },
+    addEntry() {
+      this.entryInfo = {
+        ckey: this.$store.getters.ckey,
+        selectionData: this.entryList
+      }
+      this.entryVisible = true
+    },
+    sureHandler(ids, originData) {
+      this.entryList = originData
+      this.entryVisible = false
     }
   }
 }

@@ -20,7 +20,7 @@ import {
 import videoComponent from '@/components/video/index'
 
 export default {
-  components: {videoComponent},
+  components: { videoComponent },
   data() {
     return {
       pageSizes: [10, 20, 50, 100, 500],
@@ -33,42 +33,42 @@ export default {
         title: '',
         contentColumnId: -1,
         articleId: '',
-        //发布状态
+        // 发布状态
         status: '-1',
         creator: '',
         column: '',
         orderType: 0,
         date: '',
-        //动态类型
+        // 动态类型
         dynamicType: '0',
-        //发布时间
+        // 发布时间
         publishTimeType: '0',
-        //来源商会
+        // 来源商会
         ckey: ''
       },
       optionList: [
         '标签聚合页',
         '商会必参',
-        '标签聚合页/商会必参'
+        '标签聚合页/商会必参',
+        'tab页'
       ],
       contentColumnOptions: [],
       formObj: {},
-      //当前激活tab
+      // 当前激活tab
       activeName: '1',
-      //发布时间list
+      // 发布时间list
       publishTimeTypeList,
-      //状态list
+      // 状态list
       statusList,
-      //动态类型数组
+      // 动态类型数组
       dynamicTypeList,
-      //来源商会list
+      // 来源商会list
       chamberOptions: [],
-      //动态列表
+      // 动态列表
       dynamicList: [],
-      visible:false,
-      detailObj:{}
+      visible: false,
+      detailObj: {}
     }
-
   },
   mounted() {
     this.getContentColumnType()
@@ -76,13 +76,13 @@ export default {
   },
   computed: {},
   created() {
-     if(this.$route.params && this.$route.params.activeName) this.activeName = this.$route.params.activeName
+    if (this.$route.params && this.$route.params.activeName) this.activeName = this.$route.params.activeName
   },
   methods: {
 
     // 选择指定列进行排序
     changeTableSort(column) {
-      if (this.activeName == '1') {
+      if (this.activeName === '1') {
         this.getGlobalContentListFunc(true, column)
       } else {
         this.dynamicPagedListFunc(true, column)
@@ -147,29 +147,28 @@ export default {
     handleSizeChange(val) {
       this.limit = val
       this.currentpage = 1
-      this.fetchData(undefined,true)
+      this.fetchData(undefined, true)
     },
     handleCurrentChange(val) {
       this.currentpage = val
-      this.fetchData(undefined,true)
+      this.fetchData(undefined, true)
     },
-    //切换tab
-    handleClick(event) {
-
+    // 切换tab
+    handleClick() {
       this.currentpage = 1
-      this.query.orderType = '';
-      this.limit = this.pageSizes[0];
-      this.query.column = '';
-      this.total=0;
+      this.query.orderType = ''
+      this.limit = this.pageSizes[0]
+      this.query.column = ''
+      this.total = 0
 
       //  this.$refs['tableData'].clearSort();
-      if (this.activeName == '1') {
+      if (this.activeName === '1') {
         this.getGlobalContentListFunc()
       } else {
         this.dynamicPagedListFunc()
       }
       this.$nextTick(() => {
-        this.$refs['tableData'].clearSort();
+        this.$refs['tableData'].clearSort()
       })
     },
     init() {
@@ -183,8 +182,8 @@ export default {
       getContentColumnOptions().then(response => {
         this.contentColumnOptions = response.data.data
         this.contentColumnOptions.unshift({
-          'label': '全部',
-          'value': -1
+          label: '全部',
+          value: -1
         })
       })
     },
@@ -193,67 +192,66 @@ export default {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
       this.currentpage = 1
-      if (this.activeName == '1') {
+      if (this.activeName === '1') {
         this.getGlobalContentListFunc()
       } else {
         this.dynamicPagedListFunc()
       }
     },
-    /**请求类 */
-    //拉取全部商会
+    /** 请求类 */
+    // 拉取全部商会
     getAllChamberList() {
       getChamberAllList().then(res => {
         if (res.state === 1) {
           this.chamberOptions = res.data.data
           this.chamberOptions.unshift({
-            'name': '全部',
-            'ckey': ''
+            name: '全部',
+            ckey: ''
           })
         }
       })
     },
-    //拉取动态列表
+    // 拉取动态列表
     dynamicPagedListFunc(sort = false, column) {
-      let params = {
-        'pageSize': this.limit,
-        'ckey': this.query.ckey,
-        'dynamicType': this.query.dynamicType,
-        'publishTimeType': this.query.publishTimeType,
-        'dynamicType': this.query.dynamicType,
-        'order': '',
-        'pageNum': this.currentpage,
-        'status': this.query.status
+      const params = {
+        pageSize: this.limit,
+        ckey: this.query.ckey,
+        dynamicType: this.query.dynamicType,
+        publishTimeType: this.query.publishTimeType,
+        order: '',
+        pageNum: this.currentpage,
+        status: this.query.status
       }
       // console.log('column',column)
       if (sort && column) {
-        let type = column.order==='ascending' ?  'asc':'desc';
-        params.order = column.prop + ' ' + type;
+        const type = column.order === 'ascending' ? 'asc' : 'desc'
+        params.order = column.prop + ' ' + type
       }
       dynamicPagedList(params).then(res => {
         if (res.state === 1) {
-          this.dynamicList = res.data.list;
-          this.total=res.data.totalRows
+          this.dynamicList = res.data.list
+          this.total = res.data.totalRows
         }
       })
     },
-    //拉取文章列表；
+    // 拉取文章列表；
     getGlobalContentListFunc(sort = false, column) {
-      this.listLoading = true;
-      //为排序拉取数据时
+      this.listLoading = true
+      // 为排序拉取数据时
       if (sort) {
-        this.query.column = column.prop;
+        this.query.column = column.prop
         this.query.orderType = column.order === 'ascending' ? 1 : -1
       }
-      let params = {
-        'pageSize': this.limit,
-        'page': this.currentpage,
-        'title': this.query.title,
-        'contentColumnId': this.query.contentColumnId,
-        'creator': this.query.creator,
-        'articleId': this.query.articleId,
-        'column': this.query.column,
-        'orderType': this.query.orderType,
-        'status': this.query.status
+      const params = {
+        pageSize: this.limit,
+        page: this.currentpage,
+        title: this.query.title,
+        contentColumnId: this.query.contentColumnId,
+        creator: this.query.creator,
+        articleId: this.query.articleId,
+        column: this.query.column,
+        orderType: this.query.orderType,
+        status: this.query.status
       }
       if (this.query.date) {
         params['startTs'] = this.query.date[0]
@@ -263,15 +261,14 @@ export default {
         this.list = response.data.data.list
         this.total = response.data.data.totalRows
         this.listLoading = false
-
       })
     },
-    fetchData(e,sort=false) {
+    fetchData(e, sort = false) {
       if (e !== undefined) {
         window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       }
-      this.listLoading = true;
-      if (this.activeName == '1') {
+      this.listLoading = true
+      if (this.activeName === '1') {
         this.getGlobalContentListFunc()
       } else {
         this.dynamicPagedListFunc(sort)
@@ -302,13 +299,13 @@ export default {
     },
     updateStatus(e, row) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      let ids = []
+      const ids = []
       ids.push(row.id)
-      let params = {
-        'articleIds': ids,
-        'action': row.status === 3 ? 'active' : 'notactive'
+      const params = {
+        articleIds: ids,
+        action: row.status === 3 ? 'active' : 'notactive'
       }
-      updateStatusPlatform(params).then(response => {
+      updateStatusPlatform(params).then(() => {
         if (row.status === 3) {
           this.$message({
             message: '解冻成功',
@@ -343,12 +340,12 @@ export default {
       this.$router.push({
         name: '添加或编辑文章',
         params: {
-          'articleId': row.id
+          articleId: row.id
         }
       })
     },
     editDynamic(row) {
-      let articleResp = row.articleResp;
+      // const { articleResp } = row
       this.$router.push({
         name: '发布动态',
         params: {
@@ -358,66 +355,66 @@ export default {
         }
       })
     },
-    //删除动态
+    // 删除动态
     deleteDynamic(row) {
-      console.log('row', row);
-      let id = row.articleResp.id;
-      const self=this;
+      console.log('row', row)
+      const { id } = row.articleResp
+      const self = this
       this.$confirm('确定删除动态吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {      
+      }).then(() => {
         self.deleteDynamicFunc([id])
       }).catch(() => {
-        return;
-       
-      });
+        return
+      })
     },
-    deleteDynamicFunc(articleIds){
-      console.log('articleIds',articleIds)
-      deleteDynamicByID({articleIds}).then(res=>{
-        console.log('res',res)
-        if(res.state===1){
+    deleteDynamicFunc(articleIds) {
+      console.log('articleIds', articleIds)
+      deleteDynamicByID({ articleIds }).then(res => {
+        console.log('res', res)
+        if (res.state === 1) {
           this.$message({
             type: 'success',
             message: '删除成功!'
-          });
+          })
           this.init()
-        }else{
+        } else {
           this.$message({
             type: 'success',
             message: res.msg
-          });
+          })
         }
       })
     },
-    articleSourceManager(e, row) {
+    articleSourceManager(e) {
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
       this.$router.push({
         name: '文章来源管理'
       })
     },
     detail(e, row) {
-      console.log('row',e,row)
-      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'));
-      let articleId= row.id
-      if(this.actionName==='1'){
-        articleId= articleResp.id
-      }else if(this.actionName==='2'){
-
+      console.log('row', e, row)
+      window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
+      let articleId = row.id
+      if (this.actionName === '1') {
+        // eslint-disable-next-line no-undef
+        articleId = articleResp.id
+      } else if (this.actionName === '2') {
+        //
       }
       this.$router.push({
         name: '文章详情',
         params: {
-          'articleId':articleId
+          articleId
         }
       })
     },
     save() {
-      this.$refs['form'].validate((valid) => {
+      this.$refs['form'].validate(valid => {
         if (valid) {
-          save(this.formObj).then(response => {
+          save(this.formObj).then(() => {
             this.$message({
               message: '操作成功',
               type: 'success'
@@ -430,17 +427,17 @@ export default {
         }
       })
     },
-    //展示动态详情
-    showDialog(row){
-      getDetail({id:row.articleResp.id}).then(res=>{
-        if(res.state===1){
-          this.detailObj=res.data.dtl;
-          this.$nextTick(()=>{
+    // 展示动态详情
+    showDialog(row) {
+      getDetail({ id: row.articleResp.id }).then(res => {
+        if (res.state === 1) {
+          this.detailObj = res.data.dtl
+          this.$nextTick(() => {
             this.$refs['videoRef'].show(this.detailObj.vid)
-          }) 
-          console.log(' this.detailObj', this.detailObj);
+          })
+          console.log(' this.detailObj', this.detailObj)
           this.visible = true
-        }else{
+        } else {
           this.$message({
             message: res.msg,
             type: 'error'
@@ -448,13 +445,12 @@ export default {
         }
       })
       // this.detailObj={...row.articleResp,...row.dynamicExtendVO};
-    
     },
-    closeDia(){
-      if(this.detailObj.vid){
-        this.$refs['videoRef'].closeDia();
+    closeDia() {
+      if (this.detailObj.vid) {
+        this.$refs['videoRef'].closeDia()
       }
-      
+
       this.visible = false
     }
   }

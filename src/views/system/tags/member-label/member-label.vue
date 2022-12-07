@@ -50,30 +50,30 @@
       </template>
       <template v-slot:operate="row">
         <div v-if="dataSource == 0">
-          <span class="text-blue ml-10" @click="handleEdit(row.data)">
+          <span class="text-blue cur ml-10" @click="handleEdit(row.data)">
             编辑
           </span>
-          <span class="text-red-cur" @click="handleDel(row.data)">删除</span>
+          <span class="text-red cur" @click="handleDel(row.data)">删除</span>
           <span v-if="row.data.freeze === 0" class="text-gray">平台冻结</span>
         </div>
         <div v-if="dataSource == 1">
           <span
             v-if="row.data.collectStatus == 0 && row.data.status == 1"
-            class="text-blue ml-10"
+            class="text-blue cur ml-10"
             @click="handleCollect(row.data)"
           >
             采集标签组
           </span>
           <span
             v-if="row.data.status == 1"
-            class="text-red-cur ml-10"
+            class="text-red cur ml-10"
             @click="handleFreeze('freeze', row.data)"
           >
             冻结
           </span>
           <span
             v-if="row.data.status == 2"
-            class="text-green-cur ml-10"
+            class="text-green cur ml-10"
             @click="handleFreeze('unfreeze', row.data)"
           >
             解冻
@@ -90,7 +90,7 @@
         </div>
         <div v-if="dataSource == 2">
           <span
-            class="text-red-cur ml-10"
+            class="text-red cur ml-10"
             @click="handleDel(row.data)"
           >
             删除
