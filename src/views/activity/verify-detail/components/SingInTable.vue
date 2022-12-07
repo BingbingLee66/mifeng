@@ -355,7 +355,7 @@ export default {
           minWidth: 240,
           // prop: 'attachment',
           render: ({ row }) => {
-            const arr = []
+            let arr = []
             row.attachment &&
               row.attachment.forEach(element => {
                 element.signValue &&
@@ -363,9 +363,13 @@ export default {
                     arr.push({ filename: e.filename, url: e.url, type: e.type })
                   })
               })
+            if (arr.length > 3) {
+              arr = arr.slice(0, 2)
+              arr.push({ filename: '查看更多', type: 'text' })
+            }
             return arr.map(m => {
               return (
-                <div onClick={() => this.downloadFileAttach(m)} class="attachment">
+                <div onClick={() => this.downloadFileAttach(m, row)} class="attachment">
                   {m.filename}
                 </div>
               )
@@ -404,16 +408,20 @@ export default {
     }
   },
   methods: {
-    async downloadFileAttach(item) {
-      // 改成预览
-      if (item.type === 'file') {
-        perviewFile(item)
-        // window.open(item.url)
+    async downloadFileAttach(item, row) {
+      if (item.type === 'text') {
+        this.showAttachDetail(row)
       } else {
-        this.currentImg = item.url
-        this.imgDialog = true
-        //
-        // this.downloadByBlob(item.url, item.filename)
+        // 改成预览
+        if (item.type === 'file') {
+          perviewFile(item)
+          // window.open(item.url)
+        } else {
+          this.currentImg = item.url
+          this.imgDialog = true
+          //
+          // this.downloadByBlob(item.url, item.filename)
+        }
       }
 
       // if (item.type === 'file') {
