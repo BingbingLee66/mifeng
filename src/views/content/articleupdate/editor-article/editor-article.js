@@ -1,6 +1,7 @@
 import { getUpdateDetail, uploadCoverImg, save, getWechatContent, queryVideo } from '@/api/content/article'
 import { officialAccountUrl, officialAccountAuthStatus, officialAccountArticleList } from '@/api/content/officialAccount'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
+import { queryMemberEntryEnable } from '@/api/bossin/index'
 import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
 import PreviewPh from '@/components/ArticlePreview'
@@ -85,7 +86,8 @@ export default {
       isImpower: false, // 查询商会是否授权公众号
       entryList: [],
       entryVisible: false,
-      entryInfo: {}
+      entryInfo: {},
+      hasEntry: false
     }
   },
   mounted() {
@@ -114,6 +116,7 @@ export default {
         window.localStorage.removeItem('editor-article')
       }
     }
+    this.getEntryEnable()
   },
   computed: {},
   created() {
@@ -669,6 +672,10 @@ export default {
     sureHandler(ids, originData) {
       this.entryList = originData
       this.entryVisible = false
+    },
+    async getEntryEnable() {
+      const { data } = await queryMemberEntryEnable()
+      this.hasEntry = data
     }
   }
 }
