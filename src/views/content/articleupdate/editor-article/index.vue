@@ -425,13 +425,15 @@
     <el-dialog
       :visible.sync="dialogVisible"
       :before-close="handleClose"
+      width="30%"
     >
-      <div>
+      <div class="share-content">
         <span>已发布，扫码立即分享</span>
+        <img :src="qrCodeUrl">
       </div>
 
       <span slot="footer" class="dialog-footer">
-        <el-button @click="handleClose">取 消</el-button>
+        <el-button @click="handleClose">知道了</el-button>
       </span>
     </el-dialog>
   </div>
@@ -444,7 +446,15 @@
 @import 'src/styles/common.scss';
 </style>
 <style lang="scss" scoped>
-
+.share-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  img{
+    width: 150px;
+    height: 150px;
+  }
+}
 .avatar-uploaders {
   /deep/ .el-upload {
     border: 1px dashed #d9d9d9;

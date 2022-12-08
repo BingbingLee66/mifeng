@@ -14,6 +14,7 @@ import videoUpLoad from '@/components/video/upLoad'
 import EntryDialog from '@/components/entryDialog/index'
 import RelatedRecommend from '@/components/entryDialog/RelatedRecommend'
 import { queryRelatedEntryList } from '@/api/bossin/index'
+import { getArticleQRCode } from '@/api/content/officialAccount'
 export default {
   components: {
     Ckeditor,
@@ -86,7 +87,9 @@ export default {
       entryList: [],
       entryVisible: false,
       entryInfo: {},
-      dialogVisible: false
+      dialogVisible: false,
+      // 文章分享二维码
+      qrCodeUrl: null
     }
   },
   mounted() {
@@ -390,7 +393,7 @@ export default {
           })
           // 跳文章管理
           if (!this.isImpower || parseInt(this.formObj.publishSet) === 2) {
-            this.getShareCode(); return
+            this.getShareCode(response.data.id); return
           }
           // 退出当前tab, 打开指定tab
           const tagsViews = this.$store.state.tagsView.visitedViews
@@ -674,8 +677,16 @@ export default {
       this.entryVisible = false
     },
     // 获取分享码
-    getShareCode() {
-
+    async  getShareCode(articleId) {
+      const params = {
+        ckey: this.$store.getters.ckey,
+        articleId
+      }
+      const res = await getArticleQRCode(params)
+      if (res.state === 1) {
+        this.qrCodeUrl = res.data.qrCodeUrl
+        this.dialogVisible = true
+      }
     },
     // 关闭分享弹框
     handleClose() {
