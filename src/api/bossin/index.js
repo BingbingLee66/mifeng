@@ -34,3 +34,10 @@ export const queryRelatedEntryList = params => request({
   method: 'post',
   data: { ...params, accessSecret }
 })
+
+// 获取内容关联的词条
+export const queryMemberEntryEnable = () => request({
+  url: '/api/ec/bossin-content/hasMemberEntry',
+  method: 'get',
+  params: { accessSecret }
+})

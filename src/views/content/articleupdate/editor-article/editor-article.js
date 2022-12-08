@@ -1,6 +1,7 @@
 import { getUpdateDetail, uploadCoverImg, save, getWechatContent, queryVideo } from '@/api/content/article'
 import { officialAccountUrl, officialAccountAuthStatus, officialAccountArticleList } from '@/api/content/officialAccount'
 import { getContentColumnOptionsWithCkey } from '@/api/content/columnsetup'
+import { queryMemberEntryEnable } from '@/api/bossin/index'
 import Ckeditor from '@/components/CKEditor'
 import UEditor from '@/components/UEditor'
 import PreviewPh from '@/components/ArticlePreview'
@@ -89,7 +90,8 @@ export default {
       entryInfo: {},
       dialogVisible: false,
       // 文章分享二维码
-      qrCodeUrl: null
+      qrCodeUrl: null,
+      hasEntry: false
     }
   },
   mounted() {
@@ -118,6 +120,7 @@ export default {
         window.localStorage.removeItem('editor-article')
       }
     }
+    this.getEntryEnable()
   },
   computed: {},
   created() {
@@ -694,6 +697,10 @@ export default {
       this.$router.push({
         name: '文章管理'
       })
+    },
+    async getEntryEnable() {
+      const { data } = await queryMemberEntryEnable()
+      this.hasEntry = data
     }
   }
 }

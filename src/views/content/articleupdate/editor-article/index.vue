@@ -30,6 +30,13 @@
             <el-button type="primary" style="margin-left:10px" @click="importArticle">导入微信文章</el-button>
           </el-row>
           <el-row>
+            <el-col :span="24">
+              <el-form-item label="文章内容：" class="ue-wrap">
+                <editorElem ref="editorElem" :content="formObj.contentHtml" @addParentHtml="addParentHtml" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row v-if="hasEntry">
             <el-col :span="20">
               <el-form-item label="相关推荐：" class="ue-wrap">
                 <RelatedRecommend
@@ -39,14 +46,6 @@
                 />
               </el-form-item>
             </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="24">
-              <el-form-item label="文章内容：" class="ue-wrap">
-                <editorElem ref="editorElem" :content="formObj.contentHtml" @addParentHtml="addParentHtml" />
-              </el-form-item>
-            </el-col>
-
           </el-row>
           <el-row>
             <el-col :span="10">
@@ -75,7 +74,6 @@
                 <div class="tips">建议视频大小不超过500M, 选填</div>
               </el-form-item>
             </el-col>
-
             <el-col :span="10">
               <el-form-item>
                 <div class="vdo">视频封面</div>
