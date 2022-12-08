@@ -615,8 +615,6 @@
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import 'src/styles/common.scss';
-</style>
-<style>
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
@@ -715,8 +713,11 @@
 .el-button + .el-button {
   margin-left: 0;
 }
-.el-popper {
-  height: 500px;
+ .el-popper {
+  max-height: 500px;
   overflow-y: scroll;
 }
+</style>
+<style>
+
 </style>
