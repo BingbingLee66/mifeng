@@ -1,6 +1,12 @@
 # CHANGELOG
 
 ## [Released]
+## [2.40.0] - 2022-12-08
+### Added
+- [【新用户路径】标签数据后台-身份标签数据](https://project.feishu.cn/solink/universal_task/detail/2743628)
+
+
+## [Released]
 ## [2.38.2] - 2022-11-29
 ### Added
 - [【归乡活动优化】自定义报名信息下拉项限制放开至100](https://project.feishu.cn/solink/universal_task/detail/2850091)
