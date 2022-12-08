@@ -91,10 +91,10 @@ export default {
       const res = await chamberSign({ ...this.formObj })
       if (res.state === 1) {
         this.$message({
-          message: '备注成功',
+          message: '已标记签约',
           type: 'success'
         })
-        this.reslove()
+        this.resolve()
         this.close()
       } else {
         this.$message({
