@@ -150,3 +150,8 @@ div:focus {
 .f-wrap {
   flex-wrap: wrap;
 }
+
+.el-popper {
+  max-height: 500px;
+  overflow-y: auto;
+}

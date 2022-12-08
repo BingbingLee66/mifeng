@@ -715,8 +715,4 @@
 .el-button + .el-button {
   margin-left: 0;
 }
-.el-popper {
-  height: 500px;
-  overflow-y: scroll;
-}
 </style>
