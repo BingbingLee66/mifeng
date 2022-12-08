@@ -182,8 +182,8 @@
       <el-table-column label="状态">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 1">正常</div>
-          <el-tooltip class="item" effect="dark" :content="scope.row.freezeReason" placement="top-start">
-            <div v-if="scope.row.status == 0"><i class="el-icon-warning" /> 已冻结</div>
+          <el-tooltip v-if="scope.row.status == 0 " class="item" effect="dark" :content="scope.row.freezeReason" placement="top-start">
+            <div><i class="el-icon-warning" /> 已冻结</div>
           </el-tooltip>
 
           <div v-if="scope.row.status == 3">待邀请</div>
@@ -296,8 +296,8 @@
       <el-table-column label="状态">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 1">正常</div>
-          <el-tooltip class="item" effect="dark" :content="scope.row.freezeReason" placement="top-start">
-            <div v-if="scope.row.status == 0"><i class="el-icon-warning" /> 已冻结</div>
+          <el-tooltip v-if="scope.row.status == 0" class="item" effect="dark" :content="scope.row.freezeReason" placement="top-start">
+            <div><i class="el-icon-warning" /> 已冻结</div>
           </el-tooltip>
           <div v-if="scope.row.status == 3">待邀请</div>
         </template>
@@ -714,3 +714,4 @@
   margin-left: 0;
 }
 </style>
+
