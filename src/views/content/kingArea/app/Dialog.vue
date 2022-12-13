@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { uploadFile } from '@/api/content/article'
+import { uploadFileRandomName } from '@/api/content/article'
 import { validateWeight } from '@/utils/validate'
 import Kingkong from '@/api/home-config/KingKong'
 
@@ -161,7 +161,7 @@ export default {
     uploadKingkongImage(content, prop) {
       const formData = new FormData()
       formData.append('file', content.file)
-      uploadFile(formData, 'demand').then(res => {
+      uploadFileRandomName(formData, 'demand').then(res => {
         this.$refs.formRef.updateFileds(prop, res.data)
       })
     }

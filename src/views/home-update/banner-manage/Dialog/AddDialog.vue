@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { uploadFile } from '@/api/content/article'
+import { uploadFileRandomName } from '@/api/content/article'
 import Home from '@/api/home-config/Home'
 
 export default {
@@ -148,7 +148,8 @@ export default {
     uploadKingkongImage(content, prop) {
       const formData = new FormData()
       formData.append('file', content.file)
-      uploadFile(formData, 'demand').then(res => {
+      uploadFileRandomName(formData, 'demand').then(res => {
+        console.log('上传 res', res)
         this.$refs.formRef.updateFileds(prop, res.data)
       })
     },

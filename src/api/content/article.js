@@ -151,7 +151,7 @@ export function uploadRichhtmlImg(params) {
   return request({
     url: '/ec/upload/richhtml-img',
     method: 'post',
-    headers: {'Content-Type': 'multipart/form-data'},
+    headers: { 'Content-Type': 'multipart/form-data' },
     data: params
   })
 }
@@ -207,7 +207,7 @@ export function uploadCoverImg(params) {
   return request({
     url: '/ec/upload/article-cover-img',
     method: 'post',
-    headers: {'Content-Type': 'multipart/form-data'},
+    headers: { 'Content-Type': 'multipart/form-data' },
     data: params
   })
 }
@@ -216,14 +216,14 @@ export function uploadCoverImg(params) {
 export function updateColumnLevel(params) {
   return request({
     url: '/ec/contentColumn/updateColumnLevelById?id=' + params.id + '&level=' + params.level,
-    method: 'get',
+    method: 'get'
   })
 }
 // 商会后台-置顶管理列表
 export function chamberTopList(ckey) {
   return request({
     url: '/ec/article/chamberTopList?ckey=' + ckey,
-    method: 'get',
+    method: 'get'
   })
 }
 // 商会后台-置顶/取消置顶
@@ -231,122 +231,129 @@ export function updateChamberTop(params) {
   return request({
     url: '/ec/article/updateChamberTop',
     method: 'put',
-   params
+    params
   })
 }
-//文章预览
+// 文章预览
 export function previewArticle(params) {
   return request({
     url: '/article/preview',
     method: 'post',
-    data:params
+    data: params
   })
 }
-//抓取微信文章内容
-export function getWechatContent(url ) {
+// 抓取微信文章内容
+export function getWechatContent(url) {
   return request({
     url: `/ec/article/getWechatContent?url=${url}`,
-    method: 'get',
+    method: 'get'
   })
 }
 // 会员分享-查询可冻结列表
 export function freezeList(id) {
   return request({
     url: `/ec/article/get-can-freeze-list?id=${id}`,
-    method: 'get',
+    method: 'get'
   })
 }
 // 会员分享-查询可解冻列表
 export function unFreezeList(id) {
   return request({
     url: `/ec/article/get-can-un-freeze-list?id=${id}`,
-    method: 'get',
+    method: 'get'
   })
 }
-//会员分享-冻结
-export function freeze(id,params) {
+// 会员分享-冻结
+export function freeze(id, params) {
   return request({
     url: `/ec/article/freeze/${id}`,
     method: 'post',
-    data:params
+    data: params
   })
 }
-//会员分享-解冻
-export function unFreeze(id,params) {
+// 会员分享-解冻
+export function unFreeze(id, params) {
   return request({
     url: `/ec/article/unFreeze/${id}`,
     method: 'post',
-    data:params
+    data: params
   })
 }
-//分页查询动态列表
+// 分页查询动态列表
 export function dynamicPagedList(params) {
   return request({
-    url: `/ec/dynamic-record/pc-dynamic-paged-list`,
+    url: '/ec/dynamic-record/pc-dynamic-paged-list',
     method: 'get',
     params
   })
 }
-//校验文件
+// 校验文件
 export function checkFile(params) {
   return request({
-    url: `/ec/dynamic-record/check-file`,
+    url: '/ec/dynamic-record/check-file',
     method: 'post',
-    data:params
+    data: params
   })
 }
-//上传文件到对应目录
-export function uploadFile(params,query) {
+// 上传文件到对应目录
+export function uploadFile(params, query) {
   return request({
     url: `/ec/upload/file?folder=${query}`,
     method: 'post',
-    data:params
+    data: params
   })
 }
-//新增或更新动态
+// 上传文件到对应目录
+export function uploadFileRandomName(params, query) {
+  return request({
+    url: `/ec/upload/random/file?folder=${query}`,
+    method: 'post',
+    data: params
+  })
+}
+// 新增或更新动态
 export function editDynamic(params) {
   return request({
-    url: `/ec/dynamic-record/api/wechatAuth/dynamic`,
+    url: '/ec/dynamic-record/api/wechatAuth/dynamic',
     method: 'post',
-    data:params
+    data: params
   })
 }
-//查询可同步的商会
+// 查询可同步的商会
 export function getChamberList(wxUserId) {
   return request({
     url: `/ec/dynamic-record/get-can-synchronize-list?wxUserId=${wxUserId}`,
-    method: 'get',
+    method: 'get'
   })
 }
-//查询可同步的商会
+// 查询可同步的商会
 export function getDynamicDetail(id) {
   return request({
     url: `/ec/dynamic-record/detail/${id}`,
-    method: 'get',
+    method: 'get'
   })
 }
-//上传视频
-export function uploadVideo(params,id=0,source=1) {
+// 上传视频
+export function uploadVideo(params, id = 0, source = 1) {
   return request({
     url: `/ec/dynamic-record/vod/upload/video/${id}/${source}`,
     method: 'post',
-    data:params
+    data: params
   })
 }
-//轮询查视频动态
+// 轮询查视频动态
 export function queryVideo(vid) {
   return request({
     url: `/ec/dynamic-record/vod/info/${vid}`,
-    method: 'get',
+    method: 'get'
   })
 }
-//批量删除动态
+// 批量删除动态
 export function deleteDynamicByID(articleIds) {
-  console.log('articleIds',articleIds)
+  console.log('articleIds', articleIds)
   return request({
-    url: `/ec/dynamic-record/delete`,
+    url: '/ec/dynamic-record/delete',
     method: 'put',
-    data:articleIds
+    data: articleIds
   })
 }
-
