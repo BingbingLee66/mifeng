@@ -75,6 +75,11 @@ export const constantRoutes = [
     redirect: 'noredirect',
     children: [
       {
+        path: '/quest-survey',
+        component: () => import('@/views/quest-survey/create/index'),
+        hidden: true
+      },
+      {
         path: 'profile',
         name: '个人资料',
         component: () => import('@/views/account/profile.vue'),
