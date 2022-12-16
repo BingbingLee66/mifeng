@@ -12,7 +12,16 @@ export const COMPONENT_KEY = {
   // 上传视频
   UPLOAD_VIDEO: 'Component_Upload_Video',
   // 下拉：
-  _PULLDOWN_SELECT: 'Component_Pulldown_Select'
+  PULLDOWN_SELECT: 'Component_Pulldown_Select'
 
 }
-export const msg = 'sss'
+
+export const COMPONENT_KEY_MAP = new Map([
+  [COMPONENT_KEY.SINGLE_SELECT, '单选'],
+  [COMPONENT_KEY.MULTIPLE_SELECT, '多选'],
+  [COMPONENT_KEY.SINGLE_TEXT, '单行文本'],
+  [COMPONENT_KEY.MULTIPLE_TEXT, '多行文本'],
+  [COMPONENT_KEY.UPLOAD_FILE, '上传视频'],
+  [COMPONENT_KEY.UPLOAD_VIDEO, '单选'],
+  [COMPONENT_KEY.PULLDOWN_SELECT, '下拉'],
+])
