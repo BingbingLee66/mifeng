@@ -383,6 +383,7 @@
                   <el-radio-group v-model="formObj.linkType">
                     <el-radio :label="1">云会播小程序</el-radio>
                     <el-radio :label="2">H5链接</el-radio>
+                    <el-radio :label="3">商会直播</el-radio>
                   </el-radio-group>
                 </el-form-item>
               </el-col>
