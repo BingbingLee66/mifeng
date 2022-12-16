@@ -11,7 +11,7 @@
         <div class="title">基础模板</div>
         <draggable v-model="templateList" class="left-content" :group="leftGroup" animation="300" :sort="false">
           <transition-group :style="style">
-            <div v-for="item in templateList" :key="item.id" class="item-left ">{{ item.name }}</div>
+            <div v-for="item in templateList" :key="item.id" class="item-left">{{ item.name }}</div>
           </transition-group>
         </draggable>
       </div>
@@ -48,23 +48,23 @@
           />
           <draggable v-model="componentsList" group="site" animation="100">
             <transition-group :style="style">
-              <div v-for="item in componentsList" :key="item.id" class="item">
-                {{ item.name }}
-                <Component_Single_Select v-if="item.key===COMPONENT_KEY.SINGLE_SELECT" :item="item" />
+              <div v-for="(item, index) in componentsList" :key="item.id" class="item">
+                <Component_Single_Select
+                  v-if="item.componentKey === COMPONENT_KEY.SINGLE_SELECT"
+                  :index="index + 1"
+                  :item="item"
+                />
               </div>
             </transition-group>
           </draggable>
         </div>
-      </div>
-    </div></el-card>
+      </div></div></el-card>
 </template>
 <script>
 import draggable from 'vuedraggable'
 import { COMPONENT_KEY } from './constant/index'
 export default {
-  components: { draggable,
-    Component_Single_Select: () => import('./components/Component_Single_Select.vue')
-  },
+  components: { draggable, Component_Single_Select: () => import('./components/Component_Single_Select.vue') },
   data() {
     return {
       iphone: require('@/assets/img/iphone.png'),
@@ -74,10 +74,10 @@ export default {
         put: false
       },
       templateList: [
-        { id: 1, name: '单选', componentKey: 'Component_Single_Select' },
-        { id: 2, name: '多选', componentKey: 'Component_Single_Select' },
-        { id: 3, name: '上传图片', componentKey: 'Component_Single_Select' },
-        { id: 4, name: '上传视频', componentKey: 'Component_Single_Select' }
+        { id: 1, name: '单选', title: '标题', componentKey: 'Component_Single_Select', componentType: 'uploadImg' },
+        { id: 2, name: '多选', componentKey: 'Component_Single_Select', componentType: 'uploadImg' },
+        { id: 3, name: '上传图片', componentKey: 'Component_Single_Select', componentType: 'uploadImg' },
+        { id: 4, name: '上传视频', componentKey: 'Component_Single_Select', componentType: 'uploadImg' }
       ],
       componentsList: [],
       style: 'min-height:120px;display: block;',
@@ -131,24 +131,24 @@ export default {
     padding: 10px;
     margin-right: 50px;
     width: 340px;
-    .item-left{
-        border: 1px solid  #eee;
-        padding: 10px;
-        display: inline-block;
-        width: 148px;
-        margin: 5px;
-        text-align: center;
+    .item-left {
+      border: 1px solid #eee;
+      padding: 10px;
+      display: inline-block;
+      width: 148px;
+      margin: 5px;
+      text-align: center;
     }
-
   }
   .right-content {
     position: relative;
     z-index: 2;
-    margin: 100px 25px 0px 25px;
+    padding: 100px 25px 0px 25px;
     .query-title {
       text-align: center;
       font-size: 20px;
       font-weight: bold;
+      margin: 16px 0px;
     }
     .query-desc {
       background-color: #fff;
@@ -173,7 +173,8 @@ export default {
 .item {
   margin: 20px 0px;
   border: solid 1px #eee;
-  background-color: #f1f1f1;
+  background-color: #fff;
+  padding: 25px 5px;
 }
 
 .item:hover {

@@ -19,9 +19,18 @@ export const COMPONENT_KEY = {
 export const COMPONENT_KEY_MAP = new Map([
   [COMPONENT_KEY.SINGLE_SELECT, '单选'],
   [COMPONENT_KEY.MULTIPLE_SELECT, '多选'],
-  [COMPONENT_KEY.SINGLE_TEXT, '单行文本'],
+  [COMPONENT_KEY.SINGLE_TEXT, '单行填空'],
   [COMPONENT_KEY.MULTIPLE_TEXT, '多行文本'],
   [COMPONENT_KEY.UPLOAD_FILE, '上传视频'],
-  [COMPONENT_KEY.UPLOAD_VIDEO, '单选'],
+  [COMPONENT_KEY.UPLOAD_VIDEO, '上传视频'],
   [COMPONENT_KEY.PULLDOWN_SELECT, '下拉'],
+])
+export const FILE_TYPE = {
+  UPLOAD_IMG: 'uploadImg',
+  UPLOAD_FILE: 'uploadFile',
+}
+
+export const FILE_TYPE_MAP = new Map([
+  [FILE_TYPE.UPLOAD_IMG, '上传图片'],
+  [FILE_TYPE.UPLOAD_FILE, '上传文件 '],
 ])
