@@ -54,11 +54,19 @@
                   :index="index + 1"
                   :item="item"
                 />
+                <div class="operate">
+                  <el-checkbox v-model="checked">备选项</el-checkbox>
+                  <span>添加选项</span>
+                  <span>添加其他项</span>
+                  <span>下移</span>
+                  <span class="del">删除</span>
+                </div>
               </div>
             </transition-group>
           </draggable>
         </div>
-      </div></div></el-card>
+      </div>
+    </div></el-card>
 </template>
 <script>
 import draggable from 'vuedraggable'
@@ -74,7 +82,21 @@ export default {
         put: false
       },
       templateList: [
-        { id: 1, name: '单选', title: '标题', componentKey: 'Component_Single_Select', componentType: 'uploadImg' },
+        {
+          id: 1,
+          name: '单选',
+          title: '标题',
+          componentKey: 'Component_Single_Select',
+          componentType: 'uploadImg',
+          selectItem: [
+            {
+              select: false, // 是否选择
+              key: '', //
+              value: 'xxx', // 选择组件属性 string
+              label: '选项1' // label文本
+            }
+          ]
+        },
         { id: 2, name: '多选', componentKey: 'Component_Single_Select', componentType: 'uploadImg' },
         { id: 3, name: '上传图片', componentKey: 'Component_Single_Select', componentType: 'uploadImg' },
         { id: 4, name: '上传视频', componentKey: 'Component_Single_Select', componentType: 'uploadImg' }
@@ -161,7 +183,22 @@ export default {
     }
   }
 }
-
+/deep/ .el-checkbox__label {
+  color: #328ffe;
+}
+.operate {
+  font-size: 13px;
+  padding: 10px 0px;
+  color: #328ffe;
+  margin-top: 15px;
+  border-top: 1px dashed #5b5454;
+  * {
+    margin-right: 5px;
+  }
+  .del {
+    color: #d9001b;
+  }
+}
 .title {
   padding: 6px 12px;
 }
@@ -174,7 +211,7 @@ export default {
   margin: 20px 0px;
   border: solid 1px #eee;
   background-color: #fff;
-  padding: 25px 5px;
+  padding: 25px 10px;
 }
 
 .item:hover {

@@ -1,7 +1,7 @@
 <template>
-  <div class="flex-x-0-center">
+  <div class="flex-x-0-center hd">
     <!-- <span>{{ $attrs }}</span> -->
-    <span class="require">*</span>
+    <span v-if="$attrs.item.required" class="require">*</span>
     <span class="title">{{ $attrs.index }}. {{ $attrs.item.title }}</span>
     <!-- 上传文件分为 图片和文件两种 -->
     <div class="components-type">
@@ -21,6 +21,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.hd {
+  margin-bottom: 15px;
+}
 .require {
   color: #d9001b;
 }

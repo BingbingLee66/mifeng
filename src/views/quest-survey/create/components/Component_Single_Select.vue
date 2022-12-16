@@ -1,8 +1,9 @@
 <template>
   <div>
     <hd v-bind="$attrs" />
-    <!-- <el-radio v-model="radio" label="1">备选项</el-radio>
-    <el-radio v-model="radio" label="2">备选项</el-radio> -->
+    <div v-for="(item, index) in $attrs.item.selectItem" :key="index">
+      <el-radio v-model="radio" label="1">{{ item.label }}</el-radio>
+    </div>
   </div>
 </template>
 <script>
@@ -18,6 +19,9 @@ export default {
     //   }
     // },
     // index: { type: Number, require }
+  },
+  data() {
+    return { radio: '' }
   }
 }
 </script>
