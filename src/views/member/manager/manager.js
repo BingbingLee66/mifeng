@@ -119,7 +119,8 @@ export default {
       IndustryformOptions: [],
       // 移除标签对话框
       removeMemberDialog: false,
-      notActiveMember: 0
+      notActiveMember: 0,
+      type: 1
     }
   },
 
@@ -155,7 +156,7 @@ export default {
     this.getSupplyformOptions()
     this.getIndustryformOptions()
   },
-  mouted() {},
+  mouted() { },
   methods: {
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
@@ -381,16 +382,16 @@ export default {
           联系信息:
             data.type === 0
               ? '【会员姓名】' +
-                data.name +
-                '\n' +
-                '【会员手机号】' +
-                data.phone
+              data.name +
+              '\n' +
+              '【会员手机号】' +
+              data.phone
               : '【企业/团体名称】' +
-                data.companyName +
-                '\n【联系人姓名】' +
-                data.contactName +
-                '\n【联系人手机号】' +
-                data.contactPhone,
+              data.companyName +
+              '\n【联系人姓名】' +
+              data.contactName +
+              '\n【联系人手机号】' +
+              data.contactPhone,
           入会时间: data.joinedTs ? data.joinedTs : '',
           会内职位: data.postName ? data.postName : '',
           部门: data.departmentName ? data.departmentName : '',
@@ -520,7 +521,7 @@ export default {
               })
             }
           })
-          .catch(() => {})
+          .catch(() => { })
       })
     },
     // 导入excel表格打开弹窗
@@ -691,8 +692,8 @@ export default {
             type: 'warning'
           }
         )
-          .then(() => {})
-          .catch(() => {})
+          .then(() => { })
+          .catch(() => { })
         return
       }
       this.attachVisible = true
@@ -797,28 +798,33 @@ export default {
         this.getPlatformOptions()
       }
     },
-    showRemoveDialog() {
+    // 1 批量移除 2单个移除
+    showRemoveDialog(type, row) {
       this.notActiveMember = 0
       // if (this.multipleSelection.every(item => item.activatedState !== -1)) {
       //   return this.$message.error('请至少选择一位 “未激活” 的会员')
       // }
-      this.multipleSelection.forEach(item => {
-        if (item.activatedState === -1) {
-          this.notActiveMember++
-        }
-      })
+      // this.multipleSelection.forEach(item => {
+      //   if (item.activatedState === -1) {
+      //     this.notActiveMember++
+      //   }
+      // })
+      if (type === 2) { this.multipleSelection.push(row) }
+      if (!this.multipleSelection.length > 0 && type === 1) { return this.$message.error('请至少选择一位会员') }
       this.removeMemberDialog = true
+      this.type = type
     },
     async confirmRemoveMember() {
       const params = {
         ids: []
       }
-      this.multipleSelection.forEach(item => {
-        if (item.activatedState === -1) {
-          params.ids.push(item.id)
-        }
-      })
-      params.ids = params.ids.join(',')
+      // this.multipleSelection.forEach(item => {
+      //   if (item.activatedState === -1) {
+      //     params.ids.push(item.id)
+      //   }
+      // })
+
+      params.ids = this.multipleSelection.map(m => m.id).join(',')
       const res = await deleteManyMember(params)
       if (res.state === -1) return this.$message.error(res.msg)
       this.init()
