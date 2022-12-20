@@ -4,16 +4,11 @@
       <el-form :inline="true" :model="query" class="demo-form-inline">
         <el-form-item label="关注来源">
           <el-select v-model="query.type">
-            <el-option
-              v-for="item in ORIGIN_OPTION"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
+            <el-option v-for="item in ORIGIN_OPTION" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button type="primary" @click="fetchData">查询</el-button>
         </el-form-item>
       </el-form>
       <KdTable :columns="columns" :rows="tableData" />
@@ -22,6 +17,7 @@
   </div>
 </template>
 <script>
+import { formatDateTime } from '@/utils/date'
 import { getFollowList } from '@/api/dashboard'
 import { ORIGIN_OPTION, ORIGIN_MAP } from './conast.js'
 export default {
@@ -50,10 +46,30 @@ export default {
           )
         },
         { label: '用户名', prop: 'uname' },
-        { label: '已加入的商协会', prop: 'uname' },
-        { label: '关注来源', prop: 'type' },
-        { label: '引发关注的内容', prop: 'type' },
-        { label: '关注日期 ', prop: 'createdTs' }
+        {
+          label: '已加入的商协会',
+          prop: 'chamberList',
+          render: ({ row }) => {
+            return row.chamberList.map(i => {
+              return <div>{i}</div>
+            })
+          }
+        },
+        {
+          label: '关注来源',
+          prop: 'type',
+          render: ({ row }) => {
+            return <div>{row.type === 1 ? '文章' : row.type === 2 ? '活动' : '商会主页'}</div>
+          }
+        },
+        { label: '引发关注的内容', prop: 'notice' },
+        {
+          label: '关注日期 ',
+          prop: 'createdTs',
+          render: ({ row }) => {
+            return <div>{formatDateTime(new Date(+row.createdTs), 'yyyy-MM-dd hh:mm:ss')}</div>
+          }
+        }
       ]
     },
     ckey() {
@@ -65,20 +81,19 @@ export default {
   },
   methods: {
     async fetchData() {
-      console.log('fetchData')
       const {
         query: { type, pageNum: page, pageSize },
         ckey
       } = this
-      const res = await getFollowList({ type, page, pageSize, ckey })
-      console.log('value', res)
-      // this.tableData = list
-      // this.total = totalRows
+      const {
+        data: { list, totalRows }
+      } = await getFollowList({ type, page, pageSize, ckey })
+      this.tableData = list
+      this.total = totalRows
     },
     pageChange(p) {
       this.query = { ...this.query, ...p }
       this.fetchData()
-      console.log(p)
     },
     onSubmit() {}
   }
