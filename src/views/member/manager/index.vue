@@ -203,7 +203,7 @@
         <i class="el-icon-question" />
       </el-tooltip>
       <el-button type="primary" @click="authMember">批量认证身份信息</el-button>
-      <el-button type="primary" @click="showRemoveDialog">批量移除会员</el-button>
+      <el-button type="primary" @click="showRemoveDialog(1)">批量移除会员</el-button>
     </div>
     <div style="margin-bottom: 20px">
       <el-table
@@ -419,6 +419,12 @@
             >
               移除标签
             </div>
+            <div
+              class="text-btn-style"
+              @click="showRemoveDialog(2,scope.row)"
+            >
+              移除
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -558,7 +564,8 @@
       :visible.sync="removeMemberDialog"
       width="30%"
     >
-      <div>共<span style="color:red;">{{ notActiveMember }}</span>位未激活会员，是否确定移除</div>
+      <div v-if="type===1">共<span style="color:red;">{{ multipleSelection.length }}</span>位会员，是否确定移除</div>
+      <div v-else>是否确定移除将该会员从本会中移除？</div>
       <div>移除后可重新导入或添加;</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="removeMemberDialog = false">取 消</el-button>
