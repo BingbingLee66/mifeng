@@ -2,19 +2,63 @@
   <div class="app-container">
     <div class="block form-border">
       <div class="edit_form_container">
-        <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="110px">
+        <el-form ref="form" :model="formObj" :rules="rules" label-position="left" label-width="125px">
           <div class="title_block">入会信息</div>
           <el-row>
             <el-col :span="10">
               <el-form-item label="入会类型：">
                 <el-radio-group v-model="formObj.type">
-                  <el-radio :label="1">企业/团体入会</el-radio>
+                  <el-radio :label="1">企业入会</el-radio>
                   <el-radio :label="0">个人入会</el-radio>
+                  <el-radio :label="2">社会组织</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
           </el-row>
-          <div v-if="formObj.type === 1">
+          <div v-if="formObj.type === 2">
+            <el-row>
+              <el-col :span="7">
+                <el-form-item label="社会组织名称：" prop="companyName">
+                  <el-input v-model.trim="formObj.companyName" max-length="200" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="7">
+                <el-form-item label="社会组织logo：" prop="socialOrganizationLogo">
+                  <el-upload
+                    v-loading="uploadLoading"
+                    action="#"
+                    :multiple="false"
+                    list-type="picture-card"
+                    :show-file-list="false"
+                    :http-request="upload"
+                    :before-upload="beforeUpload"
+                  >
+                    <template slot="default">
+                      <i v-if="!formObj.socialOrganizationLogo" class="el-icon-plus" />
+                      <img v-else style="width: 100%; height: 100%" :src="formObj.socialOrganizationLogo" alt="">
+                    </template>
+                  </el-upload>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="7">
+                <el-form-item label="联系人姓名：" prop="contactName">
+                  <el-input v-model="formObj.contactName" max-length="20" placeholder="请填写真实姓名" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row style="margin-bottom: 15px">
+              <el-col :span="7">
+                <el-form-item label="联系人电话：" prop="contactPhone">
+                  <el-input v-model="formObj.contactPhone" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+          <div v-else-if="formObj.type === 1">
             <el-row>
               <el-col :span="7">
                 <el-form-item label="企业名称：" prop="companyName">
@@ -24,7 +68,7 @@
             </el-row>
             <!-- <el-row>
               <el-col :span="7"> -->
-            <!-- <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
+            <!-- <el-form-item label="企业logo：" label-width="150px" prop="companyLogo">
                   <el-upload
                     class="avatar_uploader"
                     action="/"
@@ -52,7 +96,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row style="margin-bottom:15px">
+            <el-row style="margin-bottom: 15px">
               <el-col :span="7">
                 <el-form-item label="联系人电话：" prop="contactPhone">
                   <el-input v-model="formObj.contactPhone" />
@@ -68,7 +112,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-            <el-row style="margin-bottom:15px">
+            <el-row style="margin-bottom: 15px">
               <el-col :span="7">
                 <el-form-item label="会员手机号：" prop="phone">
                   <el-input v-model="formObj.phone" />
@@ -99,14 +143,14 @@
                   :show-all-levels="false"
                   :options="departmentOptions"
                   :props="{
-                    expandTrigger:'click',
-                    emitPath:false,
+                    expandTrigger: 'click',
+                    emitPath: false,
                     multiple: true,
-                    checkStrictly: true ,
-                    value:'id',
-                    label:'departmentName',
-                    children:'departmentRespList',
-                    disable:'disabled'
+                    checkStrictly: true,
+                    value: 'id',
+                    label: 'departmentName',
+                    children: 'departmentRespList',
+                    disable: 'disabled'
                   }"
                   placeholder="请选择部门"
                   @change="handlerDepartmentChange"
@@ -211,12 +255,12 @@
           </el-row> -->
           <!-- <el-row>
             <el-col v-if="formObj.type === 0" :span="7">
-              <el-form-item label="企业/团体名称：" label-width="130px" prop="companyName">
+              <el-form-item label="企业名称：" label-width="130px" prop="companyName">
                 <el-input v-model.trim="formObj.companyName" max-length="200" />
               </el-form-item>
             </el-col>
             <el-col v-if="formObj.type === 0" :offset="1" :span="7">
-              <el-form-item label="企业/团体logo：" label-width="150px" prop="companyLogo">
+              <el-form-item label="企业logo：" label-width="150px" prop="companyLogo">
                 <el-upload
                   class="avatar_uploader"
                   action="/"
@@ -289,7 +333,7 @@
               </el-row>
               <el-col :span="7">
                 <el-form-item label="企业职位：" prop="companyPositionId">
-                  <el-select v-model="formObj.companyPositionId" placeholder="请选择企业/团体职位">
+                  <el-select v-model="formObj.companyPositionId" placeholder="请选择企业职位">
                     <el-option
                       v-for="position in positionOptions"
                       :key="position.value"
@@ -316,10 +360,10 @@
             </el-col>
           </el-row> -->
           <div class="title_block">身份信息</div>
-          <div v-if="formObj.identityVOList.length>0">
-            <el-row v-for="(item,index) in formObj.identityVOList" :key="index">
+          <div v-if="formObj.identityVOList.length > 0">
+            <el-row v-for="(item, index) in formObj.identityVOList" :key="index">
               <el-col :span="15">
-                <el-form-item :label="item.type===1 ? '企业：': '机构：'" class="adress_style">
+                <el-form-item :label="item.type === 1 ? '企业：' : '机构：'" class="adress_style">
                   <el-input :value="item.unit" max-length="200" disabled />
                 </el-form-item>
               </el-col>
@@ -359,7 +403,7 @@
 <script src="./editor.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import "src/styles/common.scss";
+@import 'src/styles/common.scss';
 </style>
 <style lang="scss">
 .form-border {
@@ -373,8 +417,7 @@
 
   .title_block {
     font-size: 18px;
-    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
-    Microsoft YaHei, Arial, sans-serif;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
     display: flex;
     align-items: center;
     margin-top: 40px;
@@ -382,7 +425,7 @@
     font-weight: 700;
 
     &::before {
-      content: "";
+      content: '';
       display: block;
       width: 3px;
       background: #409eff;
@@ -410,7 +453,7 @@
     overflow: hidden;
   }
 
-  .avatar_uploader .el-upload{
+  .avatar_uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 50%;
     cursor: pointer;

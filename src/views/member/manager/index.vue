@@ -9,7 +9,7 @@
         label-position="right"
         size="small"
       >
-        <el-form-item label="企业/团体名称">
+        <el-form-item label="企业名称">
           <el-input v-model="query.companyName" placeholder="关键词" />
         </el-form-item>
         <el-form-item label="手机号">
@@ -54,7 +54,8 @@
           >
             <el-option label="全部" :value="-1" />
             <el-option label="个人" :value="0" />
-            <el-option label="企业/团体" :value="1" />
+            <el-option label="企业" :value="1" />
+            <el-option label="社会组织" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item label="用户名">
@@ -238,9 +239,9 @@
         </el-table-column>
         <el-table-column label="用户名" width="200px" prop="uname" />
         <el-table-column label="入会类型" width="100px">
-          <template slot-scope="scope">{{
-            scope.row.type == 0 ? "个人" : "企业/团体"
-          }}</template>
+          <template slot-scope="scope">
+            {{ ['个人','企业','社会组织'][scope.row.type] }}
+          </template>
         </el-table-column>
         <el-table-column label="联系信息" width="300px">
           <template slot-scope="scope">
@@ -249,7 +250,13 @@
               <div>【会员手机号】{{ scope.row.phone }}</div>
             </div>
             <div v-if="scope.row.type == 1">
-              <div>【企业/团体名称】{{ scope.row.companyName }}</div>
+              <div>【企业名称】{{ scope.row.companyName }}</div>
+              <div>【联系人姓名】{{ scope.row.contactName }}</div>
+              <div>【联系人手机号】{{ scope.row.contactPhone }}</div>
+            </div>
+            <div v-if="scope.row.type == 2">
+              <div v-if="scope.row.socialOrganizationLogo" class="flex-x">【社会组织logo】<img style="width:60px;height:60px;border-radius:50%;" :src="scope.row.socialOrganizationLogo"></div>
+              <div>【社会组织名称】{{ scope.row.companyName }}</div>
               <div>【联系人姓名】{{ scope.row.contactName }}</div>
               <div>【联系人手机号】{{ scope.row.contactPhone }}</div>
             </div>
