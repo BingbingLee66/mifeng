@@ -392,11 +392,20 @@
               <el-col style="width: 600px; height: 50px">
                 <el-form-item label="直播间链接：" prop="link">
                   <el-input
+                    v-if="formObj.linkType !== 3"
                     v-model="formObj.link"
                     show-word-limit
                     maxlength="2000"
                     placeholder="输入直播间链接，在活动开始后的活动详情页面会显示相应的入口"
                   />
+                  <el-select v-else v-model="formObj.link" clearable placeholder="请选择直播">
+                    <el-option
+                      v-for="item in audienceList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.viewerUrl"
+                    />
+                  </el-select>
                 </el-form-item>
               </el-col>
               <div class="tips" style="width: 600px; padding-left: 120px">
@@ -620,7 +629,7 @@
 
     <div class="btn-group">
       <el-row>
-        <el-col style="width: 600px; padding-left: 120px">
+        <el-col style="width: 600px; padding: 25px 0 60px 120px">
           <el-button v-if="activeName === '1'" @click="onpreview">预览</el-button>
 
           <el-button v-if="activeName !== '1'" @click="onPrev">上一步</el-button>
