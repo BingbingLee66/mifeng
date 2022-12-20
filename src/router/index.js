@@ -537,6 +537,14 @@ export const constantRoutes = [
         component: () => import('@/views/sms/mail-details/index.vue'),
         hidden: true,
         meta: { title: '站内信详情' }
+      },
+      // 关注列表
+      {
+        name: 'follow',
+        path: '/dashboard/follow-list',
+        component: () => import('@/views/dashboard/page/FollowList.vue'),
+        hidden: true,
+        meta: { title: '已关注' }
       }
     ]
   }

@@ -1,43 +1,46 @@
 <template>
   <div class="card-list">
-    <div v-for="(card, index) in cardList" :key="index" class="card-box">
-      <div class="title">
-        <div>{{ card.label }}</div>
-        <el-tooltip effect="dark" placement="top">
-          <p slot="content" style="white-space: pre-wrap; line-height: 25px">{{ card.tips }}</p>
-          <div class="el-icon-warning-outline" />
-        </el-tooltip>
-      </div>
-      <div class="value-box">
-        <div class="value">{{ formatValue(card.value) }}</div>
-        <div class="value-unit">{{ card.unit }}</div>
-      </div>
-      <div class="card-warp">
-        <div class="content">
-          <div>{{ card.contentLabelFirst }}</div>
-          <div class="content-value">{{ card.contentValFirst }}{{ card.unitFirst }}</div>
+    <div v-for="(card, index) in cardList" :key="index" class="card-box flex-y">
+      <div>
+        <div class="title">
+          <div>{{ card.label }}</div>
+          <el-tooltip effect="dark" placement="top">
+            <p slot="content" style="white-space: pre-wrap; line-height: 25px">{{ card.tips }}</p>
+            <div class="el-icon-warning-outline" />
+          </el-tooltip>
         </div>
-        <div class="content">
-          <div>{{ card.contentLabelSecond }}</div>
-          <div class="content-value">{{ card.contentValSecond }}{{ card.unitSecond }}</div>
+        <div class="value-box">
+          <div class="value">{{ formatValue(card.value) }}</div>
+          <div class="value-unit">{{ card.unit }}</div>
+          <span v-if="card.label === '关注人数'" class="follow" @click="cilckItem">立即查看 ></span>
         </div>
-      </div>
-      <div v-if="card.progress === 1" class="progress">
-        <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
-        <el-progress :stroke-width="8" :show-text="false" :percentage="card.contentValSecond" />
-        <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
-      </div>
-      <div v-if="card.progress === 2" class="progress">
-        <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
-        <el-progress :stroke-width="8" :show-text="false" :percentage="card.value" />
-        <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
-      </div>
-      <div class="line mt10" />
-      <div class="day-collect">
-        <div class="label">{{ card.bottomLabel }}</div>
-        <div class="value">{{ formatValue(card.bottomValue) }}{{ card.unitBottom }}</div>
-        <div v-if="card.showTriangle" :class="upOrLow(card.bottomValue) ? 'triangleUp' : 'triangleLow'" />
-      </div>
+        <div class="card-warp">
+          <div class="content">
+            <div>{{ card.contentLabelFirst }}</div>
+            <div v-if="card.contentValFirst!==null" class="content-value">{{ card.contentValFirst }}{{ card.unitFirst }}</div>
+          </div>
+          <div class="content">
+            <div>{{ card.contentLabelSecond }}</div>
+            <div v-if="card.contentValSecond!==null" class="content-value">{{ card.contentValSecond }}{{ card.unitSecond }}</div>
+          </div>
+        </div></div>
+      <div>
+        <div v-if="card.progress === 1" class="progress">
+          <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
+          <el-progress :stroke-width="8" :show-text="false" :percentage="card.contentValSecond" />
+          <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
+        </div>
+        <div v-if="card.progress === 2" class="progress">
+          <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
+          <el-progress :stroke-width="8" :show-text="false" :percentage="card.value" />
+          <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
+        </div>
+        <div class="line mt10" />
+        <div class="day-collect">
+          <div class="label">{{ card.bottomLabel }}</div>
+          <div class="value">{{ formatValue(card.bottomValue) }}{{ card.unitBottom }}</div>
+          <div v-if="card.showTriangle" :class="upOrLow(card.bottomValue) ? 'triangleUp' : 'triangleLow'" />
+        </div></div>
     </div>
   </div>
 </template>
@@ -63,6 +66,9 @@ export default {
       if (value === '--') {
         return (this.cardList[3].showTriangle = false)
       } else return value.split('')[0] !== '-'
+    },
+    cilckItem() {
+      this.$router.push({ path: '/dashboard/follow-list' })
     }
   }
 }
@@ -79,11 +85,11 @@ export default {
   grid-template-rows: 188px;
 
   .card-box {
-    padding: 24px 23px 9px;
-    // height: 188px;
+    padding: 24px 23px 0px;
+    height: 188px;
     // width: calc(95% / 4);
     border-radius: 2px;
-
+    justify-content: space-between;
     .title {
       display: flex;
       align-items: center;
@@ -138,7 +144,7 @@ export default {
     }
     .progress {
       position: relative;
-      margin: 14px 0 13px 0;
+      margin: 10px 0px;
       .progressLabelUp {
         width: 2px;
         height: 4px;
@@ -261,8 +267,18 @@ export default {
       color: rgba(255, 255, 255, 0.85);
     }
     .progress {
-      margin: 26px 0 23px 0;
+      margin: 20px 0 23px 0;
     }
   }
+  .card-box:nth-of-type(5) {
+    background: linear-gradient(180deg, #6fcffa 0%, #44abf0 100%);
+    .title {
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+}
+.follow{
+  color: white;
+  margin-left: 130px;
 }
 </style>

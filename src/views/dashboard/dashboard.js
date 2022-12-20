@@ -8,7 +8,8 @@ import {
   getChamberArticles,
   getChamberAlbums,
   getChamberNotices,
-  getPermission
+  getPermission,
+  getFollow
 } from '@/api/dashboard'
 import { mapGetters } from 'vuex'
 export default {
@@ -77,7 +78,22 @@ export default {
         unitBottom: '%',
         showTriangle: true,
         tips: '群发通知阅读率数据口径：取最近一次群发通知的数据，若是从未发起过群发通知，设置默认值，默认值=100%。计算公式为：已读数/总接收人数*100%；\n环比上次数据口径：若是从未发起过群发通知，或是首次发起群发通知，没有上次的数据，则显示为：--；计算公式为：(本次通知的阅读率-上次通知的阅读率）/上次通知的阅读率 *100%。'
-      }
+      },
+      {
+        label: '关注人数',
+        value: 0,
+        contentLabelFirst: null,
+        contentValFirst: null,
+        contentLabelSecond: '',
+        contentValSecond: null,
+        bottomLabel: '昨日 新增关注 ',
+        bottomValue: 0,
+        unit: '人',
+        unitFirst: '人',
+        unitSecond: '人',
+        unitBottom: '人',
+        tips: '关注了本会的人数'
+      },
     ]
 
     return {
@@ -104,6 +120,7 @@ export default {
         await this.getChamberArticles()
         await this.getChamberAlbums()
         await this.getChamberNotices()
+        this.getFollowQuery()
       }
     },
     async getChamberMembers() {
@@ -174,6 +191,12 @@ export default {
     async getPermission() {
       const { data } = await getPermission()
       this.permission = data
+    },
+    // 关注人数
+    async getFollowQuery() {
+      const { data } = await getFollow()
+      this.cardList[4].bottomValue = data?.day || 0
+      this.cardList[2].value = data?.total || 0
     }
   }
 }
