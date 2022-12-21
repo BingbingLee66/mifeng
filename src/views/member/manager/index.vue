@@ -189,11 +189,17 @@
         @click="exportExcel($event)"
       >导表
       </el-button>
-      <el-button
-        v-downLoad="exportExcelModel"
-        type="primary"
-      >下载导入模板
-      </el-button>
+      <el-dropdown>
+        <el-button type="primary"> 下载导入模板 </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item v-downLoad="personalExportExcel">
+            个人/企业
+          </el-dropdown-item>
+          <el-dropdown-item v-downLoad="organizationExportExcel">
+            社会组织
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-button type="primary" @click="openVisible">导入 </el-button>
       <el-button type="primary" @click="openSmsTab">发送短信 </el-button>
       <el-tooltip icon="el-icon-warning" placement="right-start">
@@ -505,21 +511,35 @@
         <span class="excelSpan">2、其他字段多次导入数据会进行覆盖</span>
       </div>
       <div v-if="execelDate" style="margin-left: 50px">
-        <el-upload
-          class="upload-demo"
-          :multiple="false"
-          :data="importQuery"
-          :show-file-list="false"
-          :headers="uploadHeaders"
-          :on-success="successImport"
-          :action="importUrl"
-        >
-          <span>导入文件：</span>
-          <el-button><i class="el-icon-upload" />点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">
-            <span style="margin-left: 7px" />支持扩展名：xsl、xslx
-          </div>
-        </el-upload>
+        <el-row>
+          <el-col :span="5">导入文件：</el-col>
+          <el-col :span="19">
+            <el-radio v-model="importQuery.type" label="">个人/企业</el-radio>
+            <el-radio v-model="importQuery.type" label="1">社会组织</el-radio>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5" style="opacity:0">1</el-col>
+          <el-col :span="19">
+            <el-upload
+              class="upload-demo"
+              :multiple="false"
+              :data="importQuery"
+              :show-file-list="false"
+              :headers="uploadHeaders"
+              :on-success="successImport"
+              :action="importUrl"
+            >
+              <div>
+                <el-button><i class="el-icon-upload" />点击上传</el-button>
+                <span class="el-upload__tip">
+                  <span style="margin-left: 7px" />
+                  支持扩展名：xsl、xslx
+                </span>
+              </div>
+            </el-upload>
+          </el-col>
+        </el-row>
         <!--          <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em><div class="el-upload__tip" slot="tip">支持扩展名：xsl、xslx</div></div>-->
         <!--            <span  style="font-size: 15px;">导入文件：</span>

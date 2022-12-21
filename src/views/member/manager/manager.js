@@ -30,12 +30,13 @@ export default {
         el.style.cssText = 'cursor:pointer;'
         el.addEventListener('click', () => {
           const link = document.createElement('a')
-          const url = binding.value
+          const { url, title } = binding.value
+
           fetch(url)
             .then(res => res.blob())
             .then(blob => {
               link.href = URL.createObjectURL(blob)
-              link.download = '商会成员信息导入模板.xlsx'
+              link.download = title
               document.body.appendChild(link)
               link.click()
             })
@@ -53,8 +54,15 @@ export default {
       }
     }
     return {
-      exportExcelModel:
-        'https://ysh-cdn.kaidicloud.com/prod/static/%E5%95%86%E4%BC%9A%E6%88%90%E5%91%98%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF%20%281%29.xlsx',
+      personalExportExcel: {
+        url:
+          'https://ysh-cdn.kaidicloud.com/prod/static/%E5%95%86%E4%BC%9A%E6%88%90%E5%91%98%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF%20%281%29.xlsx',
+        title: '个人和企业会员导入模板.xlsx'
+      },
+      organizationExportExcel: {
+        url: 'https://ysh-cdn.kaidicloud.com/prod/static/%E5%AF%BC%E5%85%A5%E4%BC%9A%E5%91%98%E6%A8%A1%E6%9D%BF-%E7%A4%BE%E4%BC%9A%E7%BB%84%E7%BB%87.xlsx',
+        title: '社会组织会员导入模板.xlsx'
+      },
       departmentOptions: [],
       memberPostOptions: [],
       tradeOptions: [],
@@ -99,7 +107,8 @@ export default {
       importUrl: '',
       execelDate: {},
       importQuery: {
-        ckey: ''
+        ckey: '',
+        type: ''
       },
       uploadHeaders: {
         'access-token': ''
@@ -527,6 +536,7 @@ export default {
     // 导入excel表格打开弹窗
     openVisible() {
       this.visible = true
+      this.importQuery.type = ''
     },
     closeVisible() {
       this.visible = false
