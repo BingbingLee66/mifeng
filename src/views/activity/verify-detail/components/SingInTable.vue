@@ -966,7 +966,8 @@ export default {
           signStatus,
           status,
           page: 1,
-          pageSize: 1
+          pageSize: 1,
+          type: 2
         })
         downloadFile({
           title: `【参与人员】${activity.activityName}.xlsx`,
