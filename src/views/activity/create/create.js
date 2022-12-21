@@ -188,10 +188,7 @@ export default {
           this.disabledGuestBtn = +this.formObj.signType === 0 && !this.arrayData.length
         }
         if (this.formObj.linkType === 3) {
-          this.linkType.business = this.formObj.link
-          const { data: res } = await getAudienceList(this.ckey)
-          // const { data: res } = await getAudienceList('tlUMN9')
-          this.audienceList = Object.freeze(res)
+          this.getListAudience()
         }
       },
       deep: true
@@ -250,6 +247,11 @@ export default {
     }
   },
   methods: {
+    // 获取直播列表
+    async getListAudience() {
+      const { data: res } = await getAudienceList(this.ckey)
+      this.audienceList = Object.freeze(res)
+    },
     async getRuleCkeys() {
       const { data, state } = await getLinkPowerChamberCkeys()
       if (state === 1) {
@@ -396,6 +398,7 @@ export default {
         this.formObj.labels = resData.labels
         this.formObj.arriveType = resData.arriveType
         this.formObj.linkType = resData.linkType || 1
+        this.formObj.linkType === 3 && this.getListAudience()
         this.formObj.attachment = resData.attachment.map(m => {
           return { name: m.fileName, attachment: m.attachment, fileName: m.fileName }
         })
