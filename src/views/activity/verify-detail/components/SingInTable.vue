@@ -360,6 +360,11 @@ export default {
           // render: ({ row }) => row.chamberName
         },
         {
+          label: '入会类型',
+          prop: 'memberType',
+          render: ({ row }) => <div>{+row.memberType === -1 ? '-' : +row.memberType === 0 ? '个人' : '企业'}</div>
+        },
+        {
           label: '附件',
           minWidth: 240,
           // prop: 'attachment',
