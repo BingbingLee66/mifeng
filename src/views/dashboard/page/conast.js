@@ -5,12 +5,12 @@ export const ORIGIN_TYPE = {
   ACTIVITY: 2,
   CHAMBER: 3
 }
-export const ORIGIN_MAP = [
+export const ORIGIN_MAP = new Map([
   [ORIGIN_TYPE.ALL, '全部'],
   [ORIGIN_TYPE.ARTICLE, '文章'],
   [ORIGIN_TYPE.ACTIVITY, '活动'],
   [ORIGIN_TYPE.CHAMBER, '商会主页']
-]
+])
 export const ORIGIN_OPTION = [
 
   { label: '全部', value: ORIGIN_TYPE.ALL },

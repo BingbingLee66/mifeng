@@ -59,7 +59,7 @@ export default {
           label: '关注来源',
           prop: 'type',
           render: ({ row }) => {
-            return <div>{row.type === 1 ? '文章' : row.type === 2 ? '活动' : '商会主页'}</div>
+            return <div>{ORIGIN_MAP.get(row.type)}</div>
           }
         },
         { label: '引发关注的内容', prop: 'notice' },
