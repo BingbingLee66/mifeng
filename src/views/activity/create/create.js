@@ -15,6 +15,7 @@ import CustomSelect from './component/custom-select'
 import ActiveGuest from './component/active-guest'
 import { cloneDeep } from 'lodash'
 import editorElem from '@/components/wangEditor/index'
+import { getAudienceList } from '@/api/merchant'
 export default {
   components: {
     Ckeditor,
@@ -45,6 +46,12 @@ export default {
       }
     }
     return {
+      linkType: {
+        wxapp: '',
+        h5: '',
+        business: ''
+      },
+      audienceList: [], // 直播列表
       // 编辑字段限制标识
       status: 1,
       // 树形下拉框 begin
@@ -172,13 +179,16 @@ export default {
   },
   watch: {
     formObj: {
-      handler() {
+      async handler() {
         if (this.activeName === '1') {
           this.disabledApplyBtn = !this.validatorStepOne(false)
         }
 
         if (this.activeName === '2') {
           this.disabledGuestBtn = +this.formObj.signType === 0 && !this.arrayData.length
+        }
+        if (this.formObj.linkType === 3) {
+          this.getListAudience()
         }
       },
       deep: true
@@ -190,7 +200,28 @@ export default {
         }
       },
       deep: true
-    }
+    },
+    // 'formObj.link'(val) {
+    //   if (!val.trim()) return
+    //   if (this.formObj.linkType === 3) {
+    //     this.linkType.business = val
+    //   } else if (this.formObj.linkType === 1) {
+    //     this.linkType.wxapp = val
+    //   } else {
+    //     this.linkType.h5 = val
+    //   }
+    // },
+    // 'formObj.linkType'(val) {
+    //   console.log(111111, this.formObj.link)
+    //   this.formObj.link = ''
+    //   if (val === 1 && this.linkType.wxapp.trim()) {
+    //     this.formObj.link = this.linkType.wxapp
+    //   } else if (val === 2 && this.linkType.h5.trim()) {
+    //     this.formObj.link = this.linkType.h5
+    //   } else if (val === 3 && this.linkType.business.trim()) {
+    //     this.formObj.link = this.linkType.business
+    //   }
+    // }
   },
   created() {
     this.ckey = this.$store.getters.ckey
@@ -216,6 +247,11 @@ export default {
     }
   },
   methods: {
+    // 获取直播列表
+    async getListAudience() {
+      const { data: res } = await getAudienceList(this.ckey)
+      this.audienceList = Object.freeze(res)
+    },
     async getRuleCkeys() {
       const { data, state } = await getLinkPowerChamberCkeys()
       if (state === 1) {
@@ -362,6 +398,7 @@ export default {
         this.formObj.labels = resData.labels
         this.formObj.arriveType = resData.arriveType
         this.formObj.linkType = resData.linkType || 1
+        this.formObj.linkType === 3 && this.getListAudience()
         this.formObj.attachment = resData.attachment.map(m => {
           return { name: m.fileName, attachment: m.attachment, fileName: m.fileName }
         })

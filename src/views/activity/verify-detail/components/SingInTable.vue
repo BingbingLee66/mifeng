@@ -786,9 +786,9 @@ export default {
               <div>预计到场：{row.subscribeTotal}</div>
               <div>
                 到场人数：
-              <span style={row.realTotal > 0 && row.realTotal < row.subscribeTotal ? 'color:red;' : ''}>
-                {row.realTotal ? row.realTotal : '-'}
-              </span>
+                <span style={row.realTotal > 0 && row.realTotal < row.subscribeTotal ? 'color:red;' : ''}>
+                  {row.realTotal ? row.realTotal : '-'}
+                </span>
               </div>
             </div>
           )
@@ -966,7 +966,8 @@ export default {
           signStatus,
           status,
           page: 1,
-          pageSize: 1
+          pageSize: 1,
+          type: 2
         })
         downloadFile({
           title: `【参与人员】${activity.activityName}.xlsx`,
@@ -985,7 +986,8 @@ export default {
         const blob = await getActivityWaitingExcel(activityId, {
           status: 0,
           page,
-          pageSize: 5000
+          pageSize: 5000,
+          type: 2
         })
         downloadFile({
           title: `【待审核】${activity.activityName}${page}.xlsx`,

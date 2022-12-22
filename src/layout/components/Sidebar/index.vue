@@ -11,6 +11,7 @@
         :active-text-color="variables.menuActiveText"
         :collapse-transition="false"
         mode="vertical"
+        @select="handleSelect"
       >
         <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
@@ -23,13 +24,12 @@ import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
+import { gotoMerchant } from '@/api/merchant'
 
 export default {
   components: { SidebarItem, Logo },
   computed: {
-    ...mapGetters([
-      'sidebar'
-    ]),
+    ...mapGetters(['sidebar']),
     routes() {
       return this.$store.state.menu.routes
     },
@@ -50,6 +50,19 @@ export default {
     },
     isCollapse() {
       return !this.sidebar.opened
+    }
+  },
+  methods: {
+    /**
+     * 直播管理跳转
+     * @param index
+     * @returns {Promise<void>}
+     */
+    async handleSelect(index) {
+      if (index === '/livetelecast') {
+        const { data: res } = await gotoMerchant()
+        window.open(res, '_blank')
+      }
     }
   }
 }
