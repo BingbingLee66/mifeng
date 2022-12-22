@@ -17,13 +17,18 @@
         <div class="card-warp">
           <div class="content">
             <div>{{ card.contentLabelFirst }}</div>
-            <div v-if="card.contentValFirst!==null" class="content-value">{{ card.contentValFirst }}{{ card.unitFirst }}</div>
+            <div v-if="card.contentValFirst !== null" class="content-value">
+              {{ card.contentValFirst }}{{ card.unitFirst }}
+            </div>
           </div>
           <div class="content">
             <div>{{ card.contentLabelSecond }}</div>
-            <div v-if="card.contentValSecond!==null" class="content-value">{{ card.contentValSecond }}{{ card.unitSecond }}</div>
+            <div v-if="card.contentValSecond !== null" class="content-value">
+              {{ card.contentValSecond }}{{ card.unitSecond }}
+            </div>
           </div>
-        </div></div>
+        </div>
+      </div>
       <div>
         <div v-if="card.progress === 1" class="progress">
           <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
@@ -40,7 +45,8 @@
           <div class="label">{{ card.bottomLabel }}</div>
           <div class="value">{{ formatValue(card.bottomValue) }}{{ card.unitBottom }}</div>
           <div v-if="card.showTriangle" :class="upOrLow(card.bottomValue) ? 'triangleUp' : 'triangleLow'" />
-        </div></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -277,8 +283,10 @@ export default {
     }
   }
 }
-.follow{
+.follow {
   color: white;
   margin-left: 130px;
+  white-space: nowrap;
+  cursor: pointer;
 }
 </style>

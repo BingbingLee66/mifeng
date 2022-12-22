@@ -196,7 +196,7 @@ export default {
     async getFollowQuery() {
       const { data } = await getFollow()
       this.cardList[4].bottomValue = data?.day || 0
-      this.cardList[2].value = data?.total || 0
+      this.cardList[4].value = data?.total || 0
     }
   }
 }
