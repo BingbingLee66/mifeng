@@ -58,7 +58,8 @@ export default {
         articleLink: '', // 原文链接
         publishSet: 1, // 1.立即发布  2.暂不发布
 
-        wechatArticles: [] // 文章数组
+        wechatArticles: [], // 文章数组
+        encyclopediaIds: []
       },
       articleId: '',
       coverImgs: ['', '', ''],
@@ -386,6 +387,8 @@ export default {
         else this.formObj['articleIds'] = this.formObj.wechatArticles.map(v => v.id)
       } else this.formObj['articleIds'] = []
 
+      this.formObj.encyclopediaIds = this.entryList.map(item => item.encyclopediaId)
+
       // 如果未授权状态
       if (!this.isImpower) this.formObj.publishSet = 0
       save(this.formObj).then(response => {
@@ -701,6 +704,14 @@ export default {
     async getEntryEnable() {
       const { data } = await queryMemberEntryEnable()
       this.hasEntry = data
+    },
+    leftHandler(index) {
+      const current = this.entryList.splice(index, 1)[0]
+      this.entryList.splice(index - 1, 0, current)
+    },
+    rightHandler(index) {
+      const current = this.entryList.splice(index, 1)[0]
+      this.entryList.splice(index + 1, 0, current)
     }
   }
 }

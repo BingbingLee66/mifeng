@@ -43,6 +43,8 @@
                   :entry-list="entryList"
                   @remove-entry="removeHandler"
                   @add-entry="addEntry"
+                  @left-handler="leftHandler"
+                  @right-handler="rightHandler"
                 />
               </el-form-item>
             </el-col>

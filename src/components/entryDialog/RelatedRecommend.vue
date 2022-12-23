@@ -16,7 +16,10 @@
         </el-image>
       </div>
       <div class="entry-name">{{ item.encyclopediaName }}</div>
-      <div class="entry-polysemant">{{ item.polysemant }}</div>
+      <div class="left-right-icon">
+        <img v-if="index !== 0" src="https://ysh-cdn.kaidicloud.com/test/common/to-left-icon.png" alt="" @click="leftHandler(index)">
+        <img v-if="index !== entryList.length - 1" src="https://ysh-cdn.kaidicloud.com/test/common/to-right-icon.png" alt="" @click="rightHandler(index)">
+      </div>
     </div>
     <div class="entry-add" @click="addEntry()">+</div>
   </div>
@@ -35,6 +38,12 @@ export default {
     },
     addEntry() {
       this.$emit('add-entry')
+    },
+    leftHandler(index) {
+      this.$emit('left-handler', index)
+    },
+    rightHandler(index) {
+      this.$emit('right-handler', index)
     }
   }
 }
@@ -71,11 +80,13 @@ export default {
     margin: 5px 0;
     text-align: center;
     color: #222;
+    line-height: 20px;
   }
   .entry-polysemant{
     text-align: center;
     font-size: 12px;
-    color: #666
+    color: #666;
+    line-height: 20px;
   }
 }
 .entry-add{
@@ -88,5 +99,12 @@ export default {
   text-align: center;
   line-height: 36px;
   cursor: pointer;
+}
+.left-right-icon {
+  text-align: center;
+  img{
+    width: 25px;
+    cursor: pointer;
+  }
 }
 </style>
