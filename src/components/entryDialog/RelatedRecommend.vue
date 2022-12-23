@@ -54,7 +54,7 @@ export default {
   flex-wrap: wrap;
 }
 .entry-item{
-  max-width: 120px;
+  max-width: 140px;
   margin: 0 20px 10px 0;
   .entry-image{
     position: relative;

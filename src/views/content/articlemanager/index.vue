@@ -41,6 +41,17 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col v-if="activeName === '1'" :offset="1" :span="4">
+            <el-form-item :span="10" label="绑定词条：">
+              <el-select
+                v-model="query.existEntry"
+              >
+                <el-option label="所有" :value="''" />
+                <el-option label="已绑定" :value="1" />
+                <el-option label="未绑定" :value="0" />
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col v-if="activeName !== '1'" :offset="1" :span="4">
             <el-form-item label="动态类型：">
               <el-select v-model="query.dynamicType">

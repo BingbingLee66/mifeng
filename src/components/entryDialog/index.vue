@@ -21,7 +21,7 @@
           </el-image>
         </div>
         <div class="entry-name">{{ item.encyclopediaName }}</div>
-        <div class="entry-polysemant">{{ item.polysemant }}</div>
+        <div class="entry-position" v-html="item.position" />
       </div>
       <div v-if="!recommendList.length" class="no-data-text">暂无相关推荐</div>
     </div>
@@ -54,7 +54,7 @@
             </el-image>
           </div>
           <div class="entry-name">{{ item.encyclopediaName }}</div>
-          <div class="entry-polysemant">{{ item.polysemant }}</div>
+          <div class="entry-position">{{ item.position }}</div>
         </div>
         <div v-if="!chamberList.length" class="no-data-text">暂无商会相关数据</div>
       </div>
@@ -88,7 +88,7 @@
             </el-image>
           </div>
           <div class="entry-name">{{ item.encyclopediaName }}</div>
-          <div class="entry-polysemant">{{ item.polysemant }}</div>
+          <div class="entry-position" v-html="item.position" />
         </div>
       </div>
     </div>
@@ -199,9 +199,16 @@ export default {
         if (!data) return
         this.recommendTotal = data.total || 0
         const checkData = data.records.map(item => {
+          let position = ''
+          if (item.orgPositionInfo && item.orgPositionInfo.length) {
+            position = item.orgPositionInfo.splice(0, 2).map(org => {
+              return org.position + ' | ' + org.organizationName
+            }).join('<br>')
+          }
           const selectItem = this.selectionKey[item.encyclopediaId]
           return {
             ...item,
+            position,
             check: selectItem ? !!selectItem.check : false
           }
         })
@@ -224,9 +231,14 @@ export default {
         }
         checkData = checkData.concat(data.memberEntry.records)
         checkData = checkData.map(item => {
+          let position = ''
+          if (item.orgPositionInfo && item.orgPositionInfo.length) {
+            position = item.orgPositionInfo.map(org => org.position).join(' | ')
+          }
           const selectItem = this.selectionKey[item.encyclopediaId]
           return {
             ...item,
+            position,
             check: selectItem ? !!selectItem.check : false
           }
         })
@@ -255,8 +267,15 @@ export default {
       this.otherTotal = data.total
       const checkData = data.records.map(item => {
         const selectItem = this.selectionKey[item.encyclopediaId]
+        let position = ''
+        if (item.orgPositionInfo && item.orgPositionInfo.length) {
+          position = item.orgPositionInfo.splice(0, 2).map(org => {
+            return org.position + ' | ' + org.organizationName
+          }).join('<br>')
+        }
         return {
           ...item,
+          position,
           check: selectItem ? !!selectItem.check : false
         }
       })
@@ -308,7 +327,7 @@ export default {
     text-align: center;
     color: #222;
   }
-  .entry-polysemant{
+  .entry-position{
     text-align: center;
     font-size: 12px;
     color: #666

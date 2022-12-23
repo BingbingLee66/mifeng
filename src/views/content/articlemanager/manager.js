@@ -32,7 +32,8 @@ export default {
         contentModuleId: 1,
         dynamicType: '0',
         // 0 否 1 是 '' 全部
-        backgroundRelease: ''
+        backgroundRelease: '',
+        existEntry: '' // 是否绑定词条 0-未绑定 1-已绑定
       },
       pageSizes: [10, 20, 50, 100, 500],
       total: 0,
@@ -243,7 +244,8 @@ export default {
         contentModuleId: this.query.contentModuleId,
         publishTimeType: this.query.publishTimeType,
         dynamicType: this.query.dynamicType,
-        backgroundRelease: this.query.backgroundRelease
+        backgroundRelease: this.query.backgroundRelease,
+        existEntry: this.activeName === '1' ? this.query.existEntry : ''
       }
       getManagerList(params).then(response => {
         this.list = response.data.data.list
