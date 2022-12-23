@@ -1,19 +1,17 @@
 <template>
-  <div>
-    <el-card class="box-card">
-      <el-form :inline="true" :model="query" class="demo-form-inline">
-        <el-form-item label="关注来源">
-          <el-select v-model="query.type">
-            <el-option v-for="item in ORIGIN_OPTION" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="fetchData">查询</el-button>
-        </el-form-item>
-      </el-form>
-      <KdTable :columns="columns" :rows="tableData" />
-      <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="pageChange" />
-    </el-card>
+  <div class="app-container">
+    <el-form :inline="true" :model="query" class="demo-form-inline">
+      <el-form-item label="关注来源">
+        <el-select v-model="query.type">
+          <el-option v-for="item in ORIGIN_OPTION" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="fetchData">查询</el-button>
+      </el-form-item>
+    </el-form>
+    <KdTable :columns="columns" :rows="tableData" />
+    <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="pageChange" />
   </div>
 </template>
 <script>
