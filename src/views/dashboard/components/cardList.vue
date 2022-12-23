@@ -9,10 +9,12 @@
             <div class="el-icon-warning-outline" />
           </el-tooltip>
         </div>
-        <div class="value-box">
-          <div class="value">{{ formatValue(card.value) }}</div>
-          <div class="value-unit">{{ card.unit }}</div>
-          <span v-if="card.label === '关注人数'" class="follow" @click="cilckItem">立即查看 ></span>
+        <div class="value-warp">
+          <div class="value-box">
+            <div class="value">{{ formatValue(card.value) }}</div>
+            <div class="value-unit">{{ card.unit }}</div>
+          </div>
+          <div v-if="card.label === '关注人数'" class="follow" @click="clickItem">立即查看 ></div>
         </div>
         <div class="card-warp">
           <div class="content">
@@ -103,20 +105,25 @@ export default {
       font-size: 14px;
       line-height: 22px;
     }
-    .value-box {
-      margin-top: 4px;
+    .value-warp {
       display: flex;
+      justify-content: space-between;
       align-items: baseline;
-      .value {
-        font-size: 30px;
-        color: #ffffff;
-        line-height: 38px;
-      }
-      .value-unit {
-        font-size: 14px;
-        font-weight: 400;
-        color: rgba(255, 255, 255, 0.85);
-        line-height: 22px;
+      .value-box {
+        margin-top: 4px;
+        display: flex;
+        align-items: baseline;
+        .value {
+          font-size: 30px;
+          color: #ffffff;
+          line-height: 38px;
+        }
+        .value-unit {
+          font-size: 14px;
+          font-weight: 400;
+          color: rgba(255, 255, 255, 0.85);
+          line-height: 22px;
+        }
       }
     }
     .triangleLow {
@@ -285,7 +292,6 @@ export default {
 }
 .follow {
   color: white;
-  margin-left: 130px;
   white-space: nowrap;
   cursor: pointer;
 }
