@@ -206,51 +206,66 @@
                 <div style="font-size: 18px; font-weight: 800">入会信息</div>
               </td>
             </tr>
-            <!-- <div v-if="member.type===0"> -->
-            <tr v-if="member.type === 0" height="45" align="center">
-              <td width="8%">姓名</td>
-              <td width="30%">{{ member.name }}</td>
-              <td width="8%">手机号</td>
-              <td width="30%">{{ member.phone }}</td>
-            </tr>
-            <tr v-if="member.type === 0" height="45" align="center">
-              <td width="8%">会内职位</td>
-              <td width="30%">{{ member.postName }}</td>
-              <td width="8%">所在部门</td>
-              <td width="30%">{{ member.departmentName }}</td>
-            </tr>
-            <!-- </div> -->
+            <template v-if="member.type===0">
+              <tr height="45" align="center">
+                <td width="8%">姓名</td>
+                <td width="30%">{{ member.name }}</td>
+                <td width="8%">手机号</td>
+                <td width="30%">{{ member.phone }}</td>
+              </tr>
+              <tr height="45" align="center">
+                <td width="8%">会内职位</td>
+                <td width="30%">{{ member.postName }}</td>
+                <td width="8%">所在部门</td>
+                <td width="30%">{{ member.departmentName }}</td>
+              </tr>
+            </template>
+            <template v-else-if="member.type === 1">
+              <tr height="45" align="center">
+                <td width="8%">企业名称</td>
+                <td width="30%">{{ member.companyName }}</td>
+                <td width="8%">联系人姓名</td>
+                <td width="30%">{{ member.contactName }}</td>
+              </tr>
+              <tr height="45" align="center">
+                <td width="8%">联系人电话</td>
+                <td width="30%">{{ member.contactPhone }}</td>
+                <td width="8%">会内职位</td>
+                <td width="30%">{{ member.postName }}</td>
+              </tr>
 
-            <!-- <block v-else> -->
-            <tr v-if="member.type === 1" height="45" align="center">
-              <td width="8%">企业名称</td>
-              <td width="30%">{{ member.companyName }}</td>
-              <td width="8%">联系人姓名</td>
-              <td width="30%">{{ member.contactName }}</td>
-            </tr>
-            <tr v-if="member.type === 1" height="45" align="center">
-              <td width="8%">联系人电话</td>
-              <td width="30%">{{ member.contactPhone }}</td>
-              <td width="8%">会内职位</td>
-              <td width="30%">{{ member.postName }}</td>
-            </tr>
-            <!-- </block> -->
-            <!-- 所在部门 -->
-            <!-- <div v-if="member.type===1"> -->
+              <tr height="45" align="center">
+                <td width="8%">所在部门</td>
+                <td width="30%">{{ member.departmentName }}</td>
+              </tr>
+            </template>
+            <template v-else-if="member.type === 2">
+              <tr height="45" align="center">
+                <td width="8%">社会组织名称</td>
+                <td width="30%">{{ member.companyName }}</td>
+                <td width="8%">社会组织logo</td>
+                <td width="30%"><el-button type="text" @click="showSocialOrganizationLogo=true">查看</el-button></td>
+              </tr>
+              <tr height="45" align="center">
+                <td width="8%">联系人姓名</td>
+                <td width="30%">{{ member.contactName }}</td>
+                <td width="8%">联系人电话</td>
+                <td width="30%">{{ member.contactPhone }}</td>
+              </tr>
+              <tr height="45" align="center">
+                <td width="8%">会内职位</td>
+                <td width="30%">{{ member.postName }}</td>
+                <td width="8%">所在部门</td>
+                <td width="30%">{{ member.departmentName }}</td>
+              </tr>
+              <tr height="45" align="center">
+                <td width="8%">入会时间</td>
+                <td width="30%">{{ member.joinedTs }}</td>
+                <td width="8%">商会认证状态</td>
+                <td width="30%">{{ member.authenticate?'已认证':'未认证' }}</td>
+              </tr>
+            </template>
 
-            <tr v-if="member.type === 1" height="45" align="center">
-              <td width="8%">所在部门</td>
-              <td width="30%">{{ member.departmentName }}</td>
-            </tr>
-            <!-- </div> -->
-            <!-- <div > -->
-            <!-- <tr v-else height="45" align="center">
-          <td width="8%">姓名</td>
-          <td width="30%">{{ member.name }}</td>
-          <td width="8%">手机号</td>
-          <td width="30%">{{ member.phone }}</td>
-        </tr> -->
-            <!-- </div> -->
           </table>
           <table width="100%">
             <tr align="left" height="45">
@@ -433,6 +448,16 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="reject">确定</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="社会组织logo" :visible.sync="showSocialOrganizationLogo" width="30%">
+      <el-row><img class="idcard-prv" :src="member.socialOrganizationLogo"></el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button
+          type="primary"
+          @click.native="showSocialOrganizationLogo = false"
+        >确定</el-button>
       </span>
     </el-dialog>
   </div>

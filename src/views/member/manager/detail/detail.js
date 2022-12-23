@@ -117,13 +117,14 @@ export default {
         limit: 10,
         pageSizes: [10, 20, 50, 100, 500],
         total: 0
-      }
+      },
+      showSocialOrganizationLogo: false
     }
   },
   filters: {
     dateFormat(value) {
       if (value) {
-        var myDate = new Date(value.replace('-', '/').replace('-', '/'))
+        const myDate = new Date(value.replace('-', '/').replace('-', '/'))
         return (
           myDate.getFullYear() +
           '年' +
@@ -138,7 +139,7 @@ export default {
   },
   computed: {
     resumeCp() {
-      return function(msg) {
+      return function (msg) {
         let result = msg
         if (!!msg && msg.length > 100) {
           result = msg.substring(0, 100) + '...'
@@ -147,7 +148,7 @@ export default {
       }
     },
     companyInstrodCp() {
-      return function(msg) {
+      return function (msg) {
         let result = msg
         if (!!msg && msg.length > 100) {
           result = msg.substring(0, 100) + '...'
@@ -213,7 +214,7 @@ export default {
       }
     },
     async getMemberLableList() {
-      const userId = this.$route.query.userId
+      const { userId } = this.$route.query
       if (!userId) return
       const { currentpage, limit } = this.pageData
       const res = await Labels.getUserDetailLabelLst(userId, '1', {
@@ -227,9 +228,9 @@ export default {
     },
     // 获取供需标签
     async getSupplyLabelList() {
-      const userId = this.$route.query.userId
-      let params = {
-        userId: userId,
+      const { userId } = this.$route.query
+      const params = {
+        userId,
         pageNum: this.pageData1.currentpage,
         pageSize: this.pageData1.limit
       }
@@ -246,9 +247,9 @@ export default {
     },
     // 获取行业标签
     async getIndustryLabelList() {
-      const userId = this.$route.query.userId
-      let params = {
-        userId: userId,
+      const { userId } = this.$route.query
+      const params = {
+        userId,
         pageNum: this.pageData2.currentpage,
         pageSize: this.pageData2.limit
       }
@@ -297,9 +298,9 @@ export default {
 
     closeTab() {
       // 退出当前tab, 打开指定tab
-      let openPath = window.localStorage.getItem('memberaudit')
-      let tagsViews = this.$store.state.tagsView.visitedViews
-      for (let view of tagsViews) {
+      const openPath = window.localStorage.getItem('memberaudit')
+      const tagsViews = this.$store.state.tagsView.visitedViews
+      for (const view of tagsViews) {
         if (view.path === this.$route.path) {
           this.$store.dispatch('tagsView/delView', view).then(() => {
             this.$router.push({ path: openPath })
@@ -362,14 +363,14 @@ export default {
       })
     },
     approved(row) {
-      let arr = []
+      const arr = []
       arr.push(row.id)
-      let params = {
+      const params = {
         memberId: arr,
         auditStatus: 1
       }
       if (this.type === '1') {
-        updateAudit(params).then(response => {
+        updateAudit(params).then(() => {
           this.$message({
             message: '已通过',
             type: 'success'
@@ -377,7 +378,7 @@ export default {
           this.closeTab()
         })
       } else if (this.type === '2') {
-        updateReaudit(params).then(response => {
+        updateReaudit(params).then(() => {
           this.$message({
             message: '已通过',
             type: 'success'
@@ -392,13 +393,13 @@ export default {
       this.rejectVisible = true
     },
     reject() {
-      let params = {
+      const params = {
         memberId: this.audit.id,
         auditStatus: 2,
         remark: this.audit.remark
       }
       if (this.type === '1') {
-        updateAudit(params).then(response => {
+        updateAudit(params).then(() => {
           this.$message({
             message: '已驳回',
             type: 'success'
@@ -406,7 +407,7 @@ export default {
           this.closeTab()
         })
       } else if (this.type === '2') {
-        updateReaudit(params).then(response => {
+        updateReaudit(params).then(() => {
           this.$message({
             message: '已驳回',
             type: 'success'
