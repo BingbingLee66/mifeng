@@ -186,8 +186,12 @@ export default {
       this.otherList = []
     },
     setSelectionMap() {
-      this.entryInfo.selectionData.forEach(item => {
-        this.selectionKey[item.encyclopediaId] = item
+      console.log(this.entryInfo.selectionData)
+      this.entryInfo.selectionData.forEach((item, index) => {
+        this.selectionKey[item.encyclopediaId] = {
+          ...item,
+          index
+        }
       })
     },
     async queryRecommendList() {
@@ -285,22 +289,23 @@ export default {
       this.$emit('close')
     },
     sureHandler() {
-      const encyclopediaIds = []
-      const originIds = []
       if (Object.keys(this.selectionKey).length > 15) {
         return this.$message.error('最多选择15个词条关联')
       }
-      for (const key in this.selectionKey) {
-        if (this.selectionKey[key].check) {
-          encyclopediaIds.push(this.selectionKey[key].encyclopediaId)
-          originIds.push(this.selectionKey[key])
-        }
-      }
+      const originIds = Object.values(this.selectionKey).sort((a, b) => a.index - b.index).filter(item => item.check)
+      const encyclopediaIds = originIds.map(item => item.encyclopediaId)
       this.$emit('sure-handler', encyclopediaIds, originIds)
     },
     checkboxChange(value, item) {
-      this.selectionKey[item.encyclopediaId] = item
-      this.selectionKey[item.encyclopediaId].check = value
+      if (!this.selectionKey[item.encyclopediaId]) {
+        this.selectionKey[item.encyclopediaId] = {
+          index: Object.keys(this.selectionKey).length,
+          check: value,
+          ...item
+        }
+      } else {
+        this.selectionKey[item.encyclopediaId].check = value
+      }
     },
     handleCurrentChange(page, filterName, queryFn) {
       this[filterName].page = page
