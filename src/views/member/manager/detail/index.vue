@@ -267,7 +267,7 @@
             </template>
 
           </table>
-          <table width="100%">
+          <table v-if="member.type!==2" width="100%">
             <tr align="left" height="45">
               <td width="100%" colspan="5">
                 <div style="font-size: 18px; font-weight: 800">其他信息</div>
