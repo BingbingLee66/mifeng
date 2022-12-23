@@ -1,61 +1,67 @@
 <template>
   <div class="card-list">
-    <div v-for="(card, index) in cardList" :key="index" class="card-box flex-y">
-      <div>
-        <div class="title">
-          <div>{{ card.label }}</div>
-          <el-tooltip effect="dark" placement="top">
-            <p slot="content" style="white-space: pre-wrap; line-height: 25px">{{ card.tips }}</p>
-            <div class="el-icon-warning-outline" />
-          </el-tooltip>
-        </div>
-        <div class="value-warp">
-          <div class="value-box">
-            <div class="value">{{ formatValue(card.value) }}</div>
-            <div class="value-unit">{{ card.unit }}</div>
+    <div class="swiper-wrapper">
+      <div v-for="(card, index) in cardList" :key="index" class="swiper-slide card-box flex-y">
+        <div>
+          <div class="title">
+            <div>{{ card.label }}</div>
+            <el-tooltip effect="dark" placement="top">
+              <p slot="content" style="white-space: pre-wrap; line-height: 25px">{{ card.tips }}</p>
+              <div class="el-icon-warning-outline" />
+            </el-tooltip>
           </div>
-          <div v-if="card.label === '关注人数'" class="follow" @click="clickItem">立即查看 ></div>
-        </div>
-        <div class="card-warp">
-          <div class="content">
-            <div>{{ card.contentLabelFirst }}</div>
-            <div v-if="card.contentValFirst !== null" class="content-value">
-              {{ card.contentValFirst }}{{ card.unitFirst }}
+          <div class="value-warp">
+            <div class="value-box">
+              <div class="value">{{ formatValue(card.value) }}</div>
+              <div class="value-unit">{{ card.unit }}</div>
+            </div>
+            <div v-if="card.label === '关注人数'" class="follow" @click="clickItem">立即查看 ></div>
+          </div>
+          <div class="card-warp">
+            <div class="content">
+              <div>{{ card.contentLabelFirst }}</div>
+              <div v-if="card.contentValFirst !== null" class="content-value">
+                {{ card.contentValFirst }}{{ card.unitFirst }}
+              </div>
+            </div>
+            <div class="content">
+              <div>{{ card.contentLabelSecond }}</div>
+              <div v-if="card.contentValSecond !== null" class="content-value">
+                {{ card.contentValSecond }}{{ card.unitSecond }}
+              </div>
             </div>
           </div>
-          <div class="content">
-            <div>{{ card.contentLabelSecond }}</div>
-            <div v-if="card.contentValSecond !== null" class="content-value">
-              {{ card.contentValSecond }}{{ card.unitSecond }}
-            </div>
+        </div>
+        <div>
+          <div v-if="card.progress === 1" class="progress">
+            <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
+            <el-progress :stroke-width="8" :show-text="false" :percentage="card.contentValSecond" />
+            <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
           </div>
-        </div>
-      </div>
-      <div>
-        <div v-if="card.progress === 1" class="progress">
-          <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
-          <el-progress :stroke-width="8" :show-text="false" :percentage="card.contentValSecond" />
-          <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
-        </div>
-        <div v-if="card.progress === 2" class="progress">
-          <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
-          <el-progress :stroke-width="8" :show-text="false" :percentage="card.value" />
-          <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
-        </div>
-        <div class="line mt10" />
-        <div class="day-collect">
-          <div class="label">{{ card.bottomLabel }}</div>
-          <div class="value">{{ formatValue(card.bottomValue) }}{{ card.unitBottom }}</div>
-          <div v-if="card.showTriangle" :class="upOrLow(card.bottomValue) ? 'triangleUp' : 'triangleLow'" />
+          <div v-if="card.progress === 2" class="progress">
+            <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelUp" />
+            <el-progress :stroke-width="8" :show-text="false" :percentage="card.value" />
+            <div :style="{ left: card.contentValSecond + '%' }" class="progressLabelLow" />
+          </div>
+          <div class="line mt10" />
+          <div class="day-collect">
+            <div class="bottom-label">{{ card.bottomLabel }}</div>
+            <div class="bottom-value">{{ formatValue(card.bottomValue) }}{{ card.unitBottom }}</div>
+            <div v-if="card.showTriangle" :class="upOrLow(card.bottomValue) ? 'triangleUp' : 'triangleLow'" />
+          </div>
         </div>
       </div>
     </div>
+
+    <img class="swiper-next" src="@/assets/img/next-icon.png">
+    <img class="swiper-prev" src="@/assets/img/prev-icon.png">
   </div>
 </template>
 
 <script>
 import { formatValue } from '@/utils/formate-num'
-
+import Swiper from 'swiper'
+import 'swiper/css/swiper.min.css'
 export default {
   name: 'CardList',
   props: {
@@ -68,6 +74,20 @@ export default {
     return {
       formatValue
     }
+  },
+  mounted() {
+    this.$swiper = new Swiper('.card-list', {
+      slidesPerView: 'auto',
+      centeredSlidesBounds: true,
+      spaceBetween: 23,
+      navigation: {
+        nextEl: '.swiper-next',
+        prevEl: '.swiper-prev',
+      }
+    })
+  },
+  beforeDestroy() {
+    this.$swiper.destroy()
   },
   methods: {
     upOrLow(value) {
@@ -84,20 +104,18 @@ export default {
 
 <style scoped lang="scss">
 .card-list {
-  width: 100%;
-  flex-wrap: wrap; /* 换行 */
+  position: relative;
+  width: 103%;
   padding: 26px 25px 0 25px;
-  display: grid;
-  grid-template-columns: repeat(4, 24%);
-  grid-gap: 23px;
-  grid-template-rows: 188px;
+  overflow: hidden;
 
   .card-box {
-    padding: 24px 23px 0px;
+    width: 266px !important;
     height: 188px;
-    // width: calc(95% / 4);
+    padding: 24px 23px 0px;
     border-radius: 2px;
     justify-content: space-between;
+
     .title {
       display: flex;
       align-items: center;
@@ -109,22 +127,22 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      .value-box {
-        margin-top: 4px;
-        display: flex;
-        align-items: baseline;
-        .value {
-          font-size: 30px;
-          color: #ffffff;
-          line-height: 38px;
-        }
-        .value-unit {
-          font-size: 14px;
-          font-weight: 400;
-          color: rgba(255, 255, 255, 0.85);
-          line-height: 22px;
-        }
-      }
+    }
+    .value-box {
+      margin-top: 4px;
+      display: flex;
+      align-items: baseline;
+    }
+    .value {
+      font-size: 30px;
+      color: #ffffff;
+      line-height: 38px;
+    }
+    .value-unit {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 22px;
     }
     .triangleLow {
       margin-left: 4px;
@@ -194,34 +212,22 @@ export default {
       font-weight: 400;
       line-height: 22px;
 
-      .label {
+      .bottom-label {
         color: rgba(255, 255, 255, 0.85);
       }
 
-      .value {
+      .bottom-value {
         color: #ffffff;
         margin-left: 11px;
       }
     }
   }
   .card-box:nth-of-type(1) {
-    background-image: url('../../../../public/img/dashboard-cardlist-bg-1.png');
+    background-image: url('../../../../public/img/dashboard-cardlist-bg-3.png');
     background-repeat: no-repeat;
     background-size: cover;
     .title {
-      color: rgba(0, 0, 0, 0.45);
-    }
-    .value {
-      color: rgba(0, 0, 0, 0.85);
-    }
-    .value-unit {
-      color: rgba(0, 0, 0, 0.65);
-    }
-    .card-warp {
-      color: rgba(0, 0, 0, 0.65);
-    }
-    .label {
-      color: rgba(0, 0, 0, 0.65);
+      color: rgba(255, 255, 255, 0.85);
     }
     .card-warp {
       display: flex;
@@ -239,13 +245,19 @@ export default {
     }
   }
   .card-box:nth-of-type(2) {
-    background-image: url('../../../../public/img/dashboard-cardlist-bg-2.png');
+    background: linear-gradient(180deg, #6fcffa 0%, #44abf0 100%);
+    .title {
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+  .card-box:nth-of-type(3) {
+    background-image: url('../../../../public/img/dashboard-cardlist-bg-1.png');
     background-repeat: no-repeat;
     background-size: cover;
     .title {
       color: rgba(0, 0, 0, 0.45);
     }
-    .value {
+    .value,.bottom-value {
       color: rgba(0, 0, 0, 0.85);
     }
     .value-unit {
@@ -254,25 +266,37 @@ export default {
     .card-warp {
       color: rgba(0, 0, 0, 0.65);
     }
-    .label {
+    .label,.bottom-label {
       color: rgba(0, 0, 0, 0.65);
     }
     .content:nth-of-type(2) {
       margin: 5px 0 6px 0;
     }
   }
-  .card-box:nth-of-type(3) {
-    background-image: url('../../../../public/img/dashboard-cardlist-bg-3.png');
+  .card-box:nth-of-type(4) {
+    background-image: url('../../../../public/img/dashboard-cardlist-bg-2.png');
     background-repeat: no-repeat;
     background-size: cover;
     .title {
-      color: rgba(255, 255, 255, 0.85);
+      color: rgba(0, 0, 0, 0.45);
+    }
+    .value,.bottom-value {
+      color: rgba(0, 0, 0, 0.85);
+    }
+    .value-unit {
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .card-warp {
+      color: rgba(0, 0, 0, 0.65);
+    }
+    .label,.bottom-label {
+      color: rgba(0, 0, 0, 0.65);
     }
     .content:nth-of-type(2) {
       margin: 5px 0 6px 0;
     }
   }
-  .card-box:nth-of-type(4) {
+  .card-box:nth-of-type(5) {
     background-image: url('../../../../public/img/dashboard-cardlist-bg-4.png');
     background-repeat: no-repeat;
     background-size: cover;
@@ -283,11 +307,24 @@ export default {
       margin: 20px 0 23px 0;
     }
   }
-  .card-box:nth-of-type(5) {
-    background: linear-gradient(180deg, #6fcffa 0%, #44abf0 100%);
-    .title {
-      color: rgba(255, 255, 255, 0.85);
+
+  .swiper-next,.swiper-prev {
+    width: 41px;
+    height: 41px;
+    position: absolute;
+    top: calc(50% + 13px);
+    transform: translate(0,-50%);
+    z-index: 9;
+    cursor: pointer;
+    &.swiper-button-disabled {
+      opacity: 0;
     }
+  }
+  .swiper-prev {
+    left: 25px;
+  }
+  .swiper-next {
+    right: 25px;
   }
 }
 .follow {
@@ -295,4 +332,5 @@ export default {
   white-space: nowrap;
   cursor: pointer;
 }
+
 </style>
