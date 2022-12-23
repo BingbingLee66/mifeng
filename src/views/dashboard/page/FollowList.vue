@@ -48,9 +48,9 @@ export default {
           label: '已加入的商协会',
           prop: 'chamberList',
           render: ({ row }) => {
-            return row.chamberList.map(i => {
+            return row.chamberList ? row.chamberList.map(i => {
               return <div>{i}</div>
-            })
+            }) : '--'
           }
         },
         {
