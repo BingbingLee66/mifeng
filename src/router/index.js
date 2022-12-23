@@ -547,6 +547,11 @@ export const constantRoutes = [
         meta: { title: '已关注' }
       }
     ]
+  },
+  {
+    path: '/livetelecast',
+    component: Layout,
+    redirect: '/'
   }
 ]
 

@@ -170,3 +170,9 @@ export const livePermissionUpdate = params =>
   })
 // 更新商会状态 (新)
 export const chamberStatusUpdate = data => request({ url: '/ec/chamber/status', method: 'post', data })
+// 招商入驻列表
+export const getInvsetmentList = params => request({
+  url: '/ec/investment-settle/list',
+  method: 'get',
+  params
+})
