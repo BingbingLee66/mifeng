@@ -25,14 +25,14 @@
       </div>
       <div v-if="!recommendList.length" class="no-data-text">暂无相关推荐</div>
     </div>
-    <el-button
+    <el-pagination
       v-if="recommendList.length && recommendTotal > recommendList.length"
-      type="text"
-      class="m-auto"
-      @click="queryRecommendList(true)"
-    >
-      点击展开更多
-    </el-button>
+      :current-page.sync="recommendFilter.page"
+      :page-size="recommendFilter.limit"
+      layout="prev, pager, next, jumper"
+      :total="recommendTotal"
+      @current-change="(page) => handleCurrentChange(page, 'recommendFilter', 'queryRecommendList')"
+    />
     <div>
       <h2 class="c-entry-h2">商会相关</h2>
       <div class="c-entry-list">
@@ -59,14 +59,14 @@
         <div v-if="!chamberList.length" class="no-data-text">暂无商会相关数据</div>
       </div>
     </div>
-    <el-button
+    <el-pagination
       v-if="chamberList.length && chamberTotal > chamberList.length"
-      type="text"
-      class="m-auto"
-      @click="queryChamberList(true)"
-    >
-      点击展开更多
-    </el-button>
+      :current-page.sync="chamberFilter.page"
+      :page-size="chamberFilter.limit"
+      layout="prev, pager, next, jumper"
+      :total="chamberTotal"
+      @current-change="(page) => handleCurrentChange(page, 'chamberFilter', 'queryChamberList')"
+    />
     <div v-if="otherList.length">
       <h2 class="c-entry-h2">其他</h2>
       <div class="c-entry-list">
@@ -92,14 +92,14 @@
         </div>
       </div>
     </div>
-    <el-button
+    <el-pagination
       v-if="otherList.length && otherTotal > otherList.length"
-      type="text"
-      class="m-auto"
-      @click="loadMore"
-    >
-      点击展开更多
-    </el-button>
+      :current-page.sync="keywordFilter.page"
+      :page-size="keywordFilter.limit"
+      layout="prev, pager, next, jumper"
+      :total="otherTotal"
+      @current-change="(page) => handleCurrentChange(page, 'keywordFilter', 'searchList')"
+    />
     <div class="c-entry-button">
       <el-button type="primary" @click="sureHandler()">确认</el-button>
       <el-button @click="closeHandler()">取消</el-button>
@@ -190,8 +190,7 @@ export default {
         this.selectionKey[item.encyclopediaId] = item
       })
     },
-    async queryRecommendList(loadMore = false) {
-      if (loadMore) this.recommendFilter.page++
+    async queryRecommendList() {
       try {
         const { data } = await recommendLexicalRecently({
           ...this.recommendFilter,
@@ -206,17 +205,12 @@ export default {
             check: selectItem ? !!selectItem.check : false
           }
         })
-        if (this.recommendFilter.page <= 1) {
-          this.recommendList = checkData
-        } else {
-          this.recommendList = this.recommendList.concat(checkData)
-        }
+        this.recommendList = checkData
       } catch (error) {
         console.log(error)
       }
     },
-    async queryChamberList(loadMore = false) {
-      if (loadMore) this.chamberFilter.page++
+    async queryChamberList() {
       try {
         const { data } = await queryChamberLexical({
           ...this.chamberFilter,
@@ -237,11 +231,7 @@ export default {
           }
         })
 
-        if (this.chamberFilter.page <= 1) {
-          this.chamberList = checkData
-        } else {
-          this.chamberList = this.chamberList.concat(checkData)
-        }
+        this.chamberList = checkData
       } catch (error) {
         console.log(error)
       }
@@ -260,6 +250,7 @@ export default {
       }, 300)
     },
     async searchList() {
+      if (!this.keywordFilter.encyclopediaName) return
       const { data } = await queryEntryList(this.keywordFilter)
       this.otherTotal = data.total
       const checkData = data.records.map(item => {
@@ -269,15 +260,7 @@ export default {
           check: selectItem ? !!selectItem.check : false
         }
       })
-      if (this.keywordFilter.page <= 1) {
-        this.otherList = checkData
-      } else {
-        this.otherList = this.otherList.concat(checkData)
-      }
-    },
-    loadMore() {
-      this.keywordFilter.page++
-      this.searchList()
+      this.otherList = checkData
     },
     closeHandler() {
       this.$emit('close')
@@ -299,6 +282,10 @@ export default {
     checkboxChange(value, item) {
       this.selectionKey[item.encyclopediaId] = item
       this.selectionKey[item.encyclopediaId].check = value
+    },
+    handleCurrentChange(page, filterName, queryFn) {
+      this[filterName].page = page
+      this[queryFn]()
     }
   }
 }
