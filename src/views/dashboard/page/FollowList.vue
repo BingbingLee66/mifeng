@@ -57,7 +57,7 @@ export default {
           label: '关注来源',
           prop: 'type',
           render: ({ row }) => {
-            return <div>{ORIGIN_MAP.get(row.type)}</div>
+            return <div>{row.type !== 0 ? ORIGIN_MAP.get(row.type) : '--'}</div>
           }
         },
         { label: '引发关注的内容', prop: 'notice' },
