@@ -82,7 +82,7 @@ export default {
       spaceBetween: 23,
       navigation: {
         nextEl: '.swiper-next',
-        prevEl: '.swiper-prev',
+        prevEl: '.swiper-prev'
       }
     })
   },
@@ -93,7 +93,7 @@ export default {
     upOrLow(value) {
       if (value === '--') {
         return (this.cardList[3].showTriangle = false)
-      } else return value.split('')[0] !== '-'
+      } else return (value + '').split('')[0] !== '-'
     },
     clickItem() {
       this.$router.push({ path: '/dashboard/follow-list' })
@@ -257,7 +257,8 @@ export default {
     .title {
       color: rgba(0, 0, 0, 0.45);
     }
-    .value,.bottom-value {
+    .value,
+    .bottom-value {
       color: rgba(0, 0, 0, 0.85);
     }
     .value-unit {
@@ -266,7 +267,8 @@ export default {
     .card-warp {
       color: rgba(0, 0, 0, 0.65);
     }
-    .label,.bottom-label {
+    .label,
+    .bottom-label {
       color: rgba(0, 0, 0, 0.65);
     }
     .content:nth-of-type(2) {
@@ -280,7 +282,8 @@ export default {
     .title {
       color: rgba(0, 0, 0, 0.45);
     }
-    .value,.bottom-value {
+    .value,
+    .bottom-value {
       color: rgba(0, 0, 0, 0.85);
     }
     .value-unit {
@@ -289,7 +292,8 @@ export default {
     .card-warp {
       color: rgba(0, 0, 0, 0.65);
     }
-    .label,.bottom-label {
+    .label,
+    .bottom-label {
       color: rgba(0, 0, 0, 0.65);
     }
     .content:nth-of-type(2) {
@@ -308,12 +312,13 @@ export default {
     }
   }
 
-  .swiper-next,.swiper-prev {
+  .swiper-next,
+  .swiper-prev {
     width: 41px;
     height: 41px;
     position: absolute;
     top: calc(50% + 13px);
-    transform: translate(0,-50%);
+    transform: translate(0, -50%);
     z-index: 9;
     cursor: pointer;
     &.swiper-button-disabled {
@@ -332,5 +337,4 @@ export default {
   white-space: nowrap;
   cursor: pointer;
 }
-
 </style>
