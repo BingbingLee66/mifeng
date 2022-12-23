@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      query: { type: 1, pageNum: 1, pageSize: 10 },
+      query: { type: 0, pageNum: 1, pageSize: 10 },
       tableData: [],
       total: 0,
       ORIGIN_OPTION,

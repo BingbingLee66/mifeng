@@ -75,7 +75,7 @@ export default {
         return (this.cardList[3].showTriangle = false)
       } else return value.split('')[0] !== '-'
     },
-    cilckItem() {
+    clickItem() {
       this.$router.push({ path: '/dashboard/follow-list' })
     }
   }
