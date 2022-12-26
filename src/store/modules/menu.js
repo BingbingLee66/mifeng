@@ -19,8 +19,35 @@ const actions = {
   getSideMenus({ commit, state }) {
     return new Promise((resolve, reject) => {
       listForRouter().then(response => {
-        let menus = response.data.menu
-        let remoteroutes = traverseRoutes(menus)
+        const menus = response.data.menu
+        console.log(menus)
+        menus.push({
+          id: 9999,
+          parentId: null,
+          menuName: '问卷管理',
+          menuUrl: '/quest-survey',
+          component: 'layout',
+          hidden: false,
+          icon: 'education',
+          hadGuide: false,
+          guideId: null,
+          children: [
+            {
+              id: 11111,
+              parentId: 9999,
+              menuName: '问卷管理',
+              menuUrl: '/quest-survey/manager',
+              component: 'views/quest-survey/manager',
+              hidden: false,
+              icon: 'operation',
+              hadGuide: false,
+              guideId: null,
+              children: []
+            }
+          ]
+        })
+        const remoteroutes = traverseRoutes(menus)
+
         commit('SET_ROUTES', remoteroutes)
         resolve(remoteroutes)
       }).catch(error => {

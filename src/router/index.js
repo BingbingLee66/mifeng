@@ -75,7 +75,7 @@ export const constantRoutes = [
     redirect: 'noredirect',
     children: [
       {
-        path: '/quest-survey',
+        path: '/quest-survey/create',
         component: () => import('@/views/quest-survey/create/index'),
         hidden: true
       },
