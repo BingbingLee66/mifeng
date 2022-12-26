@@ -21,6 +21,7 @@
           </el-image>
         </div>
         <div class="entry-name">{{ item.encyclopediaName }}</div>
+        <div class="entry-position text-black">{{ item.polysemant }}</div>
         <div class="entry-position" v-html="item.position" />
       </div>
       <div v-if="!recommendList.length" class="no-data-text">暂无相关推荐</div>
@@ -54,6 +55,7 @@
             </el-image>
           </div>
           <div class="entry-name">{{ item.encyclopediaName }}</div>
+          <div class="entry-position text-black">{{ item.polysemant }}</div>
           <div class="entry-position">{{ item.position }}</div>
         </div>
         <div v-if="!chamberList.length" class="no-data-text">暂无商会相关数据</div>
@@ -88,6 +90,7 @@
             </el-image>
           </div>
           <div class="entry-name">{{ item.encyclopediaName }}</div>
+          <div class="entry-position text-black">{{ item.polysemant }}</div>
           <div class="entry-position" v-html="item.position" />
         </div>
       </div>
@@ -228,11 +231,8 @@ export default {
           ckey: this.entryInfo.ckey
         })
         if (!data) return
-        this.chamberTotal = data.total || 0
-        let checkData = []
-        if (data.chamberEntry) {
-          checkData = [data.chamberEntry]
-        }
+        this.chamberTotal = data.memberEntry.total || 0
+        let checkData = data.chamberEntry ? [data.chamberEntry] : []
         checkData = checkData.concat(data.memberEntry.records)
         checkData = checkData.map(item => {
           let position = ''
@@ -336,6 +336,9 @@ export default {
     text-align: center;
     font-size: 12px;
     color: #666
+  }
+  .text-black {
+    color: #222;
   }
 }
 .c-eli__relative{
