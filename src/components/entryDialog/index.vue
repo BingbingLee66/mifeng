@@ -62,7 +62,7 @@
       </div>
     </div>
     <el-pagination
-      v-if="chamberList.length && chamberTotal > chamberList.length"
+      v-if="chamberList.length && chamberTotal > chamberFilter.limit"
       :current-page.sync="chamberFilter.page"
       :page-size="chamberFilter.limit"
       layout="prev, pager, next, jumper"
