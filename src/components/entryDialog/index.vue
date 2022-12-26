@@ -1,55 +1,13 @@
 <template>
   <el-dialog :visible.sync="entryVisible" :title="title" :before-close="closeHandler" class="entry-dialog">
-    <div>
-      <el-input v-model="keywordFilter.encyclopediaName" placeholder="请输入关键字" style="width: 340px" />
-      <el-button type="primary" @click="searchHandler()">搜索</el-button>
-    </div>
-    <h2 class="c-entry-h2">最近推荐</h2>
-    <div class="c-entry-list">
-      <div v-for="item in recommendList" :key="item.id" class="c-entry-list__item">
-        <div class="c-eli__relative">
-          <div class="image-name">
-            <el-image
-              style="width: 50px; height: 50px; border-radius: 4px; flex-shrink: 0"
-              :src="item.coverUrl"
-              fit="cover"
-            >
-              <div slot="error" class="image-slot">
-                <img :src="defaultImage" width="50" height="50" alt="">
-              </div>
-            </el-image>
-            <div class="ml-4">
-              <div class="entry-name">{{ item.encyclopediaName }}</div>
-              <template v-if="item.orgPositionInfo && item.orgPositionInfo.length">
-                <div v-for="org in item.orgPositionInfo" :key="org.position+org.organizationName" class="entry-position">
-                  {{ org.position }} | {{ org.organizationName }}
-                </div>
-              </template>
-            </div>
-          </div>
-          <el-checkbox
-            v-model="item.check"
-            class="c-eli__checkbox"
-            @change="(value) => checkboxChange(value, item)"
-          />
-        </div>
-        <div class="entry-polysemant">{{ item.polysemant }}</div>
+    <div class="p-20">
+      <div>
+        <el-input v-model="keywordFilter.encyclopediaName" placeholder="请输入关键字" style="width: 340px" />
+        <el-button type="primary" @click="searchHandler()">搜索</el-button>
       </div>
-      <div v-if="!recommendList.length" class="no-data-text">暂无相关推荐</div>
-    </div>
-    <el-pagination
-      v-if="recommendList.length && recommendTotal > recommendList.length"
-      :background="true"
-      :current-page.sync="recommendFilter.page"
-      :page-size="recommendFilter.limit"
-      layout="total, prev, pager, next, jumper"
-      :total="recommendTotal"
-      @current-change="(page) => handleCurrentChange(page, 'recommendFilter', 'queryRecommendList')"
-    />
-    <div>
-      <h2 class="c-entry-h2">商会相关</h2>
+      <h2 class="c-entry-h2">最近推荐</h2>
       <div class="c-entry-list">
-        <div v-for="item in chamberList" :key="item.id" class="c-entry-list__item">
+        <div v-for="item in recommendList" :key="item.id" class="c-entry-list__item">
           <div class="c-eli__relative">
             <div class="image-name">
               <el-image
@@ -78,65 +36,111 @@
           </div>
           <div class="entry-polysemant">{{ item.polysemant }}</div>
         </div>
-        <div v-if="!chamberList.length" class="no-data-text">暂无商会相关数据</div>
+        <div v-if="!recommendList.length" class="no-data-text">暂无相关推荐</div>
       </div>
-    </div>
-    <el-pagination
-      v-if="chamberList.length && chamberTotal > chamberFilter.limit"
-      background
-      :current-page.sync="chamberFilter.page"
-      :page-size="chamberFilter.limit"
-      layout="total, prev, pager, next, jumper"
-      :total="chamberTotal"
-      @current-change="(page) => handleCurrentChange(page, 'chamberFilter', 'queryChamberList')"
-    />
-    <div v-if="otherList.length">
-      <h2 class="c-entry-h2">其他</h2>
-      <div class="c-entry-list">
-        <div v-for="item in otherList" :key="item.id" class="c-entry-list__item">
-          <div class="c-eli__relative">
-            <div class="image-name">
-              <el-image
-                style="width: 50px; height: 50px; border-radius: 4px; flex-shrink: 0"
-                :src="item.coverUrl"
-                fit="cover"
-              >
-                <div slot="error" class="image-slot">
-                  <img :src="defaultImage" width="50" height="50" alt="">
-                </div>
-              </el-image>
-              <div class="ml-4">
-                <div class="entry-name">{{ item.encyclopediaName }}</div>
-                <template v-if="item.orgPositionInfo && item.orgPositionInfo.length">
-                  <div v-for="org in item.orgPositionInfo" :key="org.position+org.organizationName" class="entry-position">
-                    {{ org.position }} | {{ org.organizationName }}
+      <el-pagination
+        v-if="recommendList.length && recommendTotal > recommendList.length"
+        :background="true"
+        :current-page.sync="recommendFilter.page"
+        :page-size="recommendFilter.limit"
+        layout="total, prev, pager, next, jumper"
+        :total="recommendTotal"
+        @current-change="(page) => handleCurrentChange(page, 'recommendFilter', 'queryRecommendList')"
+      />
+      <div>
+        <h2 class="c-entry-h2">商会相关</h2>
+        <div class="c-entry-list">
+          <div v-for="item in chamberList" :key="item.id" class="c-entry-list__item">
+            <div class="c-eli__relative">
+              <div class="image-name">
+                <el-image
+                  style="width: 50px; height: 50px; border-radius: 4px; flex-shrink: 0"
+                  :src="item.coverUrl"
+                  fit="cover"
+                >
+                  <div slot="error" class="image-slot">
+                    <img :src="defaultImage" width="50" height="50" alt="">
                   </div>
-                </template>
+                </el-image>
+                <div class="ml-4">
+                  <div class="entry-name">{{ item.encyclopediaName }}</div>
+                  <template v-if="item.orgPositionInfo && item.orgPositionInfo.length">
+                    <div v-for="org in item.orgPositionInfo" :key="org.position+org.organizationName" class="entry-position">
+                      {{ org.position }} | {{ org.organizationName }}
+                    </div>
+                  </template>
+                </div>
               </div>
+              <el-checkbox
+                v-model="item.check"
+                class="c-eli__checkbox"
+                @change="(value) => checkboxChange(value, item)"
+              />
             </div>
-            <el-checkbox
-              v-model="item.check"
-              class="c-eli__checkbox"
-              @change="(value) => checkboxChange(value, item)"
-            />
+            <div class="entry-polysemant">{{ item.polysemant }}</div>
           </div>
-          <div class="entry-polysemant">{{ item.polysemant }}</div>
+          <div v-if="!chamberList.length" class="no-data-text">暂无商会相关数据</div>
         </div>
       </div>
       <el-pagination
-        v-if="otherList.length && otherTotal > otherList.length"
+        v-if="chamberList.length && chamberTotal > chamberFilter.limit"
         background
-        :current-page.sync="keywordFilter.page"
-        :page-size="keywordFilter.limit"
+        :current-page.sync="chamberFilter.page"
+        :page-size="chamberFilter.limit"
         layout="total, prev, pager, next, jumper"
-        :total="otherTotal"
-        @current-change="(page) => handleCurrentChange(page, 'keywordFilter', 'searchList')"
+        :total="chamberTotal"
+        @current-change="(page) => handleCurrentChange(page, 'chamberFilter', 'queryChamberList')"
       />
-      <div class="c-entry-button">
-        <el-button type="primary" @click="sureHandler()">确认</el-button>
-        <el-button @click="closeHandler()">取消</el-button>
+      <div v-if="otherList.length">
+        <h2 class="c-entry-h2">其他</h2>
+        <div class="c-entry-list">
+          <div v-for="item in otherList" :key="item.id" class="c-entry-list__item">
+            <div class="c-eli__relative">
+              <div class="image-name">
+                <el-image
+                  style="width: 50px; height: 50px; border-radius: 4px; flex-shrink: 0"
+                  :src="item.coverUrl"
+                  fit="cover"
+                >
+                  <div slot="error" class="image-slot">
+                    <img :src="defaultImage" width="50" height="50" alt="">
+                  </div>
+                </el-image>
+                <div class="ml-4">
+                  <div class="entry-name">{{ item.encyclopediaName }}</div>
+                  <template v-if="item.orgPositionInfo && item.orgPositionInfo.length">
+                    <div v-for="org in item.orgPositionInfo" :key="org.position+org.organizationName" class="entry-position">
+                      {{ org.position }} | {{ org.organizationName }}
+                    </div>
+                  </template>
+                </div>
+              </div>
+              <el-checkbox
+                v-model="item.check"
+                class="c-eli__checkbox"
+                @change="(value) => checkboxChange(value, item)"
+              />
+            </div>
+            <div class="entry-polysemant">{{ item.polysemant }}</div>
+          </div>
+        </div>
+        <el-pagination
+          v-if="otherList.length && otherTotal > otherList.length"
+          background
+          :current-page.sync="keywordFilter.page"
+          :page-size="keywordFilter.limit"
+          layout="total, prev, pager, next, jumper"
+          :total="otherTotal"
+          @current-change="(page) => handleCurrentChange(page, 'keywordFilter', 'searchList')"
+        />
+
       </div>
-    </div></el-dialog>
+    </div>
+    <div class="c-entry-button">
+      <el-button type="primary" @click="sureHandler()">确认</el-button>
+      <el-button @click="closeHandler()">取消</el-button>
+    </div>
+  </el-dialog>
 </template>
 <script>
 import { recommendLexicalRecently, queryChamberLexical, queryEntryList } from '@/api/bossin'
@@ -324,6 +328,7 @@ export default {
     object-fit: cover;
   }
   .entry-name {
+    width: 120px;
     color: #222;
     font-size: 16px;
     font-weight: bold;
@@ -365,8 +370,9 @@ export default {
   top: 0;
 }
 .c-entry-button {
-  margin-top: 10px;
+  padding-top: 20px;
   text-align: center;
+  border-top: 1px solid rgba(0,0,0,0.09);
   .el-button {
     width: 150px;
   }
@@ -405,10 +411,13 @@ export default {
     border-bottom: 1px solid rgba(0,0,0,0.09);
   }
   /deep/.el-dialog__body {
-    padding: 23px 20px;
+    padding: 23px 0px;
   }
 }
 .el-pagination {
   text-align: right;
+}
+.p-20 {
+  padding: 23px 20px;
 }
 </style>
