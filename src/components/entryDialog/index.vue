@@ -1,36 +1,48 @@
 <template>
-  <el-dialog :visible.sync="entryVisible" :title="title" :before-close="closeHandler">
-    <el-input v-model="keywordFilter.encyclopediaName" placeholder="请输入关键字" @input="inputHandler" />
+  <el-dialog :visible.sync="entryVisible" :title="title" :before-close="closeHandler" class="entry-dialog">
+    <div>
+      <el-input v-model="keywordFilter.encyclopediaName" placeholder="请输入关键字" style="width: 340px" />
+      <el-button type="primary" @click="searchHandler()">搜索</el-button>
+    </div>
     <h2 class="c-entry-h2">最近推荐</h2>
     <div class="c-entry-list">
       <div v-for="item in recommendList" :key="item.id" class="c-entry-list__item">
         <div class="c-eli__relative">
+          <div class="image-name">
+            <el-image
+              style="width: 50px; height: 50px; border-radius: 4px; flex-shrink: 0"
+              :src="item.coverUrl"
+              fit="cover"
+            >
+              <div slot="error" class="image-slot">
+                <img :src="defaultImage" width="50" height="50" alt="">
+              </div>
+            </el-image>
+            <div class="ml-4">
+              <div class="entry-name">{{ item.encyclopediaName }}</div>
+              <template v-if="item.orgPositionInfo && item.orgPositionInfo.length">
+                <div v-for="org in item.orgPositionInfo" :key="org.position+org.organizationName" class="entry-position">
+                  {{ org.position }} | {{ org.organizationName }}
+                </div>
+              </template>
+            </div>
+          </div>
           <el-checkbox
             v-model="item.check"
             class="c-eli__checkbox"
             @change="(value) => checkboxChange(value, item)"
           />
-          <el-image
-            style="width: 80px; height: 80px"
-            :src="item.coverUrl"
-            fit="cover"
-          >
-            <div slot="error" class="image-slot">
-              <img :src="defaultImage" width="80" height="80" alt="">
-            </div>
-          </el-image>
         </div>
-        <div class="entry-name">{{ item.encyclopediaName }}</div>
-        <div class="entry-position text-black">{{ item.polysemant }}</div>
-        <div class="entry-position" v-html="item.position" />
+        <div class="entry-polysemant">{{ item.polysemant }}</div>
       </div>
       <div v-if="!recommendList.length" class="no-data-text">暂无相关推荐</div>
     </div>
     <el-pagination
       v-if="recommendList.length && recommendTotal > recommendList.length"
+      :background="true"
       :current-page.sync="recommendFilter.page"
       :page-size="recommendFilter.limit"
-      layout="prev, pager, next, jumper"
+      layout="total, prev, pager, next, jumper"
       :total="recommendTotal"
       @current-change="(page) => handleCurrentChange(page, 'recommendFilter', 'queryRecommendList')"
     />
@@ -39,33 +51,42 @@
       <div class="c-entry-list">
         <div v-for="item in chamberList" :key="item.id" class="c-entry-list__item">
           <div class="c-eli__relative">
+            <div class="image-name">
+              <el-image
+                style="width: 50px; height: 50px; border-radius: 4px; flex-shrink: 0"
+                :src="item.coverUrl"
+                fit="cover"
+              >
+                <div slot="error" class="image-slot">
+                  <img :src="defaultImage" width="50" height="50" alt="">
+                </div>
+              </el-image>
+              <div class="ml-4">
+                <div class="entry-name">{{ item.encyclopediaName }}</div>
+                <template v-if="item.orgPositionInfo && item.orgPositionInfo.length">
+                  <div v-for="org in item.orgPositionInfo" :key="org.position+org.organizationName" class="entry-position">
+                    {{ org.position }} | {{ org.organizationName }}
+                  </div>
+                </template>
+              </div>
+            </div>
             <el-checkbox
               v-model="item.check"
               class="c-eli__checkbox"
               @change="(value) => checkboxChange(value, item)"
             />
-            <el-image
-              style="width: 80px; height: 80px"
-              :src="item.coverUrl"
-              fit="cover"
-            >
-              <div slot="error" class="image-slot">
-                <img :src="defaultImage" width="80" height="80" alt="">
-              </div>
-            </el-image>
           </div>
-          <div class="entry-name">{{ item.encyclopediaName }}</div>
-          <div class="entry-position text-black">{{ item.polysemant }}</div>
-          <div class="entry-position">{{ item.position }}</div>
+          <div class="entry-polysemant">{{ item.polysemant }}</div>
         </div>
         <div v-if="!chamberList.length" class="no-data-text">暂无商会相关数据</div>
       </div>
     </div>
     <el-pagination
       v-if="chamberList.length && chamberTotal > chamberFilter.limit"
+      background
       :current-page.sync="chamberFilter.page"
       :page-size="chamberFilter.limit"
-      layout="prev, pager, next, jumper"
+      layout="total, prev, pager, next, jumper"
       :total="chamberTotal"
       @current-change="(page) => handleCurrentChange(page, 'chamberFilter', 'queryChamberList')"
     />
@@ -74,40 +95,48 @@
       <div class="c-entry-list">
         <div v-for="item in otherList" :key="item.id" class="c-entry-list__item">
           <div class="c-eli__relative">
+            <div class="image-name">
+              <el-image
+                style="width: 50px; height: 50px; border-radius: 4px; flex-shrink: 0"
+                :src="item.coverUrl"
+                fit="cover"
+              >
+                <div slot="error" class="image-slot">
+                  <img :src="defaultImage" width="50" height="50" alt="">
+                </div>
+              </el-image>
+              <div class="ml-4">
+                <div class="entry-name">{{ item.encyclopediaName }}</div>
+                <template v-if="item.orgPositionInfo && item.orgPositionInfo.length">
+                  <div v-for="org in item.orgPositionInfo" :key="org.position+org.organizationName" class="entry-position">
+                    {{ org.position }} | {{ org.organizationName }}
+                  </div>
+                </template>
+              </div>
+            </div>
             <el-checkbox
               v-model="item.check"
               class="c-eli__checkbox"
               @change="(value) => checkboxChange(value, item)"
             />
-            <el-image
-              style="width: 80px; height: 80px"
-              :src="item.coverUrl"
-              fit="cover"
-            >
-              <div slot="error" class="image-slot">
-                <img :src="defaultImage" width="80" height="80" alt="">
-              </div>
-            </el-image>
           </div>
-          <div class="entry-name">{{ item.encyclopediaName }}</div>
-          <div class="entry-position text-black">{{ item.polysemant }}</div>
-          <div class="entry-position" v-html="item.position" />
+          <div class="entry-polysemant">{{ item.polysemant }}</div>
         </div>
       </div>
-    </div>
-    <el-pagination
-      v-if="otherList.length && otherTotal > otherList.length"
-      :current-page.sync="keywordFilter.page"
-      :page-size="keywordFilter.limit"
-      layout="prev, pager, next, jumper"
-      :total="otherTotal"
-      @current-change="(page) => handleCurrentChange(page, 'keywordFilter', 'searchList')"
-    />
-    <div class="c-entry-button">
-      <el-button type="primary" @click="sureHandler()">确认</el-button>
-      <el-button @click="closeHandler()">取消</el-button>
-    </div>
-  </el-dialog>
+      <el-pagination
+        v-if="otherList.length && otherTotal > otherList.length"
+        background
+        :current-page.sync="keywordFilter.page"
+        :page-size="keywordFilter.limit"
+        layout="total, prev, pager, next, jumper"
+        :total="otherTotal"
+        @current-change="(page) => handleCurrentChange(page, 'keywordFilter', 'searchList')"
+      />
+      <div class="c-entry-button">
+        <el-button type="primary" @click="sureHandler()">确认</el-button>
+        <el-button @click="closeHandler()">取消</el-button>
+      </div>
+    </div></el-dialog>
 </template>
 <script>
 import { recommendLexicalRecently, queryChamberLexical, queryEntryList } from '@/api/bossin'
@@ -149,7 +178,6 @@ export default {
       otherTotal: 0,
       selectionKey: {},
       lastEncyclopediaName: '',
-      timer: 0,
       defaultImage: 'https://ysh-cdn.kaidicloud.com/test/profile/ysh_default_avatar.png'
     }
   },
@@ -177,7 +205,6 @@ export default {
     initData() {
       const data = this.$options.data()
       this.selectionKey = data.selectionKey
-      this.timer = 0
       this.recommendFilter = data.recommendFilter
       this.keywordFilter = data.keywordFilter
       this.chamberFilter = data.chamberFilter
@@ -206,16 +233,9 @@ export default {
         if (!data) return
         this.recommendTotal = data.total || 0
         const checkData = data.records.map(item => {
-          let position = ''
-          if (item.orgPositionInfo && item.orgPositionInfo.length) {
-            position = item.orgPositionInfo.splice(0, 2).map(org => {
-              return org.position + ' | ' + org.organizationName
-            }).join('<br>')
-          }
           const selectItem = this.selectionKey[item.encyclopediaId]
           return {
             ...item,
-            position,
             check: selectItem ? !!selectItem.check : false
           }
         })
@@ -230,40 +250,22 @@ export default {
           ...this.chamberFilter,
           ckey: this.entryInfo.ckey
         })
-        if (!data) return
-        this.chamberTotal = data.memberEntry.total || 0
-        let checkData = data.chamberEntry ? [data.chamberEntry] : []
-        checkData = checkData.concat(data.memberEntry.records)
-        checkData = checkData.map(item => {
-          let position = ''
-          if (item.orgPositionInfo && item.orgPositionInfo.length) {
-            position = item.orgPositionInfo.map(org => org.position).join(' | ')
-          }
+        this.chamberTotal = data.total
+        this.chamberList = data.records.map(item => {
           const selectItem = this.selectionKey[item.encyclopediaId]
           return {
             ...item,
-            position,
             check: selectItem ? !!selectItem.check : false
           }
         })
-
-        this.chamberList = checkData
       } catch (error) {
         console.log(error)
       }
     },
-    async inputHandler(val) {
-      if (!val) {
-        this.otherList = []
-        return
-      }
-      if (this.timer) {
-        clearTimeout(this.timer)
-      }
-      this.timer = setTimeout(() => {
-        this.keywordFilter.page = 1
-        this.searchList()
-      }, 300)
+    async searchHandler() {
+      this.otherList = []
+      this.keywordFilter.page = 1
+      this.searchList()
     },
     async searchList() {
       if (!this.keywordFilter.encyclopediaName) return
@@ -271,15 +273,8 @@ export default {
       this.otherTotal = data.total
       const checkData = data.records.map(item => {
         const selectItem = this.selectionKey[item.encyclopediaId]
-        let position = ''
-        if (item.orgPositionInfo && item.orgPositionInfo.length) {
-          position = item.orgPositionInfo.splice(0, 2).map(org => {
-            return org.position + ' | ' + org.organizationName
-          }).join('<br>')
-        }
         return {
           ...item,
-          position,
           check: selectItem ? !!selectItem.check : false
         }
       })
@@ -320,36 +315,53 @@ export default {
   flex-wrap: wrap;
 }
 .c-entry-list__item {
-  width: 20%;
-  padding: 0 5px;
-  margin-bottom: 10px;
-  text-align: center;
+  width: 210px;
+  padding: 12px;
+  margin: 0 16px 10px 0;
+  border-radius: 8px;
+  background: #F7F7F7;
   .img{
     object-fit: cover;
   }
   .entry-name {
-    margin: 5px 0;
-    text-align: center;
     color: #222;
+    font-size: 16px;
+    font-weight: bold;
   }
   .entry-position{
-    text-align: center;
-    font-size: 12px;
-    color: #666
+    width: 135px;
+    margin-top: 2px;
+    font-size: 14px;
+    color: #666;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+  }
+  .entry-polysemant {
+    margin-top: 8px;
+    font-size: 14px;
+    color: rgba(0,0,0,0.35);
+    line-height: 20px;
   }
   .text-black {
     color: #222;
   }
 }
 .c-eli__relative{
+  display: flex;
+  justify-content: space-between;
   position: relative;
-  width: 80px;
-  height: 90px;
-  margin: auto;
+  .image-name {
+    display: flex;
+    .ml-4 {
+      margin-left: 8px;
+    }
+  }
 }
 .c-eli__checkbox{
   position: absolute;
-  right: -15px;
+  right: 0px;
   top: 0;
 }
 .c-entry-button {
@@ -386,5 +398,17 @@ export default {
 }
 .no-data-text{
   margin-bottom: 20px;
+}
+
+.entry-dialog {
+  /deep/.el-dialog__header{
+    border-bottom: 1px solid rgba(0,0,0,0.09);
+  }
+  /deep/.el-dialog__body {
+    padding: 23px 20px;
+  }
+}
+.el-pagination {
+  text-align: right;
 }
 </style>
