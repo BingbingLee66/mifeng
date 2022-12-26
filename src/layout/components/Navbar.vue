@@ -5,6 +5,9 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="login-name flex-x">
+      <a class="help" href="https://www.yuque.com/yunshanghuisolink/help" target="_blank">
+        帮助文档
+      </a>
       <!-- 商会后台显示铃铛 -->
       <div v-if="ckey" class="inform">
         <span @click="goMail">
@@ -170,6 +173,12 @@ export default {
       margin-right: 0;
     }
   }
+}
+
+.help {
+  flex-shrink: 0;
+  color: #40A9FF;
+  margin-right: 52px;
 }
 
 .navbar {

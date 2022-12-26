@@ -8,7 +8,8 @@ import {
   getChamberArticles,
   getChamberAlbums,
   getChamberNotices,
-  getPermission
+  getPermission,
+  getFollow
 } from '@/api/dashboard'
 import { mapGetters } from 'vuex'
 export default {
@@ -36,6 +37,21 @@ export default {
         unitSecond: '%',
         unitBottom: '人',
         tips: '会员人数数据口径：统计历史以来，系统中存在的有效的、唯一能标识会员身份的，商协会下企业会员或者个人会员的去重的账号的总数。剔除已删除，已冻结无效用户;\n激活会员数据口径：统计历史以来，有登录行为的所有有效会员数。剔除已删除，已冻结无效用户;\n会员激活比数据口径：计算公式为：激活会员数/会员数;\n本月新增会员数据口径：统计账号创建时间点在本自然月内，系统中有效的、唯一能标识会员身份的，商协会下企业会员或者个人会员的去重的账号的合计。不计类型，指剔除无效的即可。'
+      },
+      {
+        label: '关注人数',
+        value: 0,
+        contentLabelFirst: null,
+        contentValFirst: null,
+        contentLabelSecond: '',
+        contentValSecond: null,
+        bottomLabel: '昨日 新增关注 ',
+        bottomValue: 0,
+        unit: '人',
+        unitFirst: '人',
+        unitSecond: '人',
+        unitBottom: '人',
+        tips: '关注了本会的人数'
       },
       {
         label: '发布文章数',
@@ -77,7 +93,7 @@ export default {
         unitBottom: '%',
         showTriangle: true,
         tips: '群发通知阅读率数据口径：取最近一次群发通知的数据，若是从未发起过群发通知，设置默认值，默认值=100%。计算公式为：已读数/总接收人数*100%；\n环比上次数据口径：若是从未发起过群发通知，或是首次发起群发通知，没有上次的数据，则显示为：--；计算公式为：(本次通知的阅读率-上次通知的阅读率）/上次通知的阅读率 *100%。'
-      }
+      },
     ]
 
     return {
@@ -104,15 +120,24 @@ export default {
         await this.getChamberArticles()
         await this.getChamberAlbums()
         await this.getChamberNotices()
+        this.getFollowQuery()
       }
+    },
+    changeValueByLabel(label, obj) {
+      const card = this.cardList.find(v => v.label === label)
+      Object.keys(obj).forEach(key => {
+        this.$set(card, key, obj[key])
+      })
     },
     async getChamberMembers() {
       const { data, state, msg } = await getChamberMembers()
       if (state === 1) {
-        this.cardList[0].value = data?.memberNum || 0
-        this.cardList[0].contentValFirst = data?.activeMemberNum || 0
-        this.cardList[0].contentValSecond = data?.activeMemberRatio || 0
-        this.cardList[0].bottomValue = data?.monthNewMemberNum || 0
+        this.changeValueByLabel('会员数', {
+          value: data?.memberNum || 0,
+          contentValFirst: data?.activeMemberNum || 0,
+          contentValSecond: data?.activeMemberRatio || 0,
+          bottomValue: data?.monthNewMemberNum || 0
+        })
       } else {
         this.$message({
           message: msg,
@@ -123,10 +148,12 @@ export default {
     async getChamberArticles() {
       const { data, state, msg } = await getChamberArticles()
       if (state === 1) {
-        this.cardList[1].value = data?.articleNum || 0
-        this.cardList[1].contentValFirst = data?.readNum || 0
-        this.cardList[1].contentValSecond = data?.avgReadNum || 0
-        this.cardList[1].bottomValue = data?.memberShareNum || 0
+        this.changeValueByLabel('发布文章数', {
+          value: data?.articleNum || 0,
+          contentValFirst: data?.readNum || 0,
+          contentValSecond: data?.avgReadNum || 0,
+          bottomValue: data?.memberShareNum || 0
+        })
       } else {
         this.$message({
           message: msg,
@@ -137,10 +164,12 @@ export default {
     async getChamberAlbums() {
       const { data, state, msg } = await getChamberAlbums()
       if (state === 1) {
-        this.cardList[2].value = data?.albumNum || 0
-        this.cardList[2].contentValFirst = data?.exposureNum || 0
-        this.cardList[2].contentValSecond = data?.maxExposureNum || 0
-        this.cardList[2].bottomValue = data?.memberShareNum || 0
+        this.changeValueByLabel('图片直播数', {
+          value: data?.albumNum || 0,
+          contentValFirst: data?.exposureNum || 0,
+          contentValSecond: data?.maxExposureNum || 0,
+          bottomValue: data?.memberShareNum || 0
+        })
       } else {
         this.$message({
           message: msg,
@@ -151,8 +180,10 @@ export default {
     async getChamberNotices() {
       const { data, state, msg } = await getChamberNotices()
       if (state === 1) {
-        this.cardList[3].value = data?.noticeReadRatio || 100
-        this.cardList[3].bottomValue = data?.noticeReadSequential || '--'
+        this.changeValueByLabel('群发通知阅读率', {
+          value: data?.noticeReadRatio || 100,
+          bottomValue: data?.noticeReadSequential || '--'
+        })
       } else {
         this.$message({
           message: msg,
@@ -174,6 +205,14 @@ export default {
     async getPermission() {
       const { data } = await getPermission()
       this.permission = data
+    },
+    // 关注人数
+    async getFollowQuery() {
+      const { data } = await getFollow()
+      this.changeValueByLabel('关注人数', {
+        bottomValue: data?.day || 0,
+        value: data?.total || 0
+      })
     }
   }
 }

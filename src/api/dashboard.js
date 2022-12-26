@@ -48,3 +48,19 @@ export const getPermission = () => {
     method: 'get'
   })
 }
+// 关注人数
+export const getFollow = () => {
+  return request({
+    url: '/api/ec/chamber/home-page/follow-number',
+    method: 'get'
+  })
+}
+// 获取关注列表数据
+export const getFollowList = data => {
+  return request({
+    url: '/ec/follow-chamber/follow-user',
+    method: 'post',
+    data
+  })
+}
+
