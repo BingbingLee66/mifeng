@@ -418,6 +418,6 @@ export default {
   text-align: right;
 }
 .p-20 {
-  padding: 23px 20px;
+  padding: 0 20px 23px 20px;
 }
 </style>
