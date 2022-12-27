@@ -9,7 +9,7 @@
         label-position="right"
         size="small"
       >
-        <el-form-item label="企业/团体名称">
+        <el-form-item label="企业名称">
           <el-input v-model="query.companyName" placeholder="关键词" />
         </el-form-item>
         <el-form-item label="手机号">
@@ -54,7 +54,8 @@
           >
             <el-option label="全部" :value="-1" />
             <el-option label="个人" :value="0" />
-            <el-option label="企业/团体" :value="1" />
+            <el-option label="企业" :value="1" />
+            <el-option label="社会组织" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item label="用户名">
@@ -188,11 +189,17 @@
         @click="exportExcel($event)"
       >导表
       </el-button>
-      <el-button
-        v-downLoad="exportExcelModel"
-        type="primary"
-      >下载导入模板
-      </el-button>
+      <el-dropdown>
+        <el-button type="primary"> 下载导入模板 </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item v-downLoad="personalExportExcel">
+            个人/企业
+          </el-dropdown-item>
+          <el-dropdown-item v-downLoad="organizationExportExcel">
+            社会组织
+          </el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <el-button type="primary" @click="openVisible">导入 </el-button>
       <el-button type="primary" @click="openSmsTab">发送短信 </el-button>
       <el-tooltip icon="el-icon-warning" placement="right-start">
@@ -203,7 +210,7 @@
         <i class="el-icon-question" />
       </el-tooltip>
       <el-button type="primary" @click="authMember">批量认证身份信息</el-button>
-      <el-button type="primary" @click="showRemoveDialog">批量移除会员</el-button>
+      <el-button type="primary" @click="showRemoveDialog(1)">批量移除会员</el-button>
     </div>
     <div style="margin-bottom: 20px">
       <el-table
@@ -238,9 +245,9 @@
         </el-table-column>
         <el-table-column label="用户名" width="200px" prop="uname" />
         <el-table-column label="入会类型" width="100px">
-          <template slot-scope="scope">{{
-            scope.row.type == 0 ? "个人" : "企业/团体"
-          }}</template>
+          <template slot-scope="scope">
+            {{ ['个人','企业','社会组织'][scope.row.type] }}
+          </template>
         </el-table-column>
         <el-table-column label="联系信息" width="300px">
           <template slot-scope="scope">
@@ -249,7 +256,13 @@
               <div>【会员手机号】{{ scope.row.phone }}</div>
             </div>
             <div v-if="scope.row.type == 1">
-              <div>【企业/团体名称】{{ scope.row.companyName }}</div>
+              <div>【企业名称】{{ scope.row.companyName }}</div>
+              <div>【联系人姓名】{{ scope.row.contactName }}</div>
+              <div>【联系人手机号】{{ scope.row.contactPhone }}</div>
+            </div>
+            <div v-if="scope.row.type == 2">
+              <div v-if="scope.row.socialOrganizationLogo" class="flex-x">【社会组织logo】<img style="width:60px;height:60px;border-radius:50%;" :src="scope.row.socialOrganizationLogo"></div>
+              <div>【社会组织名称】{{ scope.row.companyName }}</div>
               <div>【联系人姓名】{{ scope.row.contactName }}</div>
               <div>【联系人手机号】{{ scope.row.contactPhone }}</div>
             </div>
@@ -419,6 +432,12 @@
             >
               移除标签
             </div>
+            <div
+              class="text-btn-style"
+              @click="showRemoveDialog(2,scope.row)"
+            >
+              移除
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -492,21 +511,35 @@
         <span class="excelSpan">2、其他字段多次导入数据会进行覆盖</span>
       </div>
       <div v-if="execelDate" style="margin-left: 50px">
-        <el-upload
-          class="upload-demo"
-          :multiple="false"
-          :data="importQuery"
-          :show-file-list="false"
-          :headers="uploadHeaders"
-          :on-success="successImport"
-          :action="importUrl"
-        >
-          <span>导入文件：</span>
-          <el-button><i class="el-icon-upload" />点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">
-            <span style="margin-left: 7px" />支持扩展名：xsl、xslx
-          </div>
-        </el-upload>
+        <el-row>
+          <el-col :span="5">导入文件：</el-col>
+          <el-col :span="19">
+            <el-radio v-model="importQuery.type" label="">个人/企业</el-radio>
+            <el-radio v-model="importQuery.type" label="1">社会组织</el-radio>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="5" style="opacity:0">1</el-col>
+          <el-col :span="19">
+            <el-upload
+              class="upload-demo"
+              :multiple="false"
+              :data="importQuery"
+              :show-file-list="false"
+              :headers="uploadHeaders"
+              :on-success="successImport"
+              :action="importUrl"
+            >
+              <div>
+                <el-button><i class="el-icon-upload" />点击上传</el-button>
+                <span class="el-upload__tip">
+                  <span style="margin-left: 7px" />
+                  支持扩展名：xsl、xslx
+                </span>
+              </div>
+            </el-upload>
+          </el-col>
+        </el-row>
         <!--          <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em><div class="el-upload__tip" slot="tip">支持扩展名：xsl、xslx</div></div>-->
         <!--            <span  style="font-size: 15px;">导入文件：</span>
@@ -558,7 +591,8 @@
       :visible.sync="removeMemberDialog"
       width="30%"
     >
-      <div>共<span style="color:red;">{{ notActiveMember }}</span>位未激活会员，是否确定移除</div>
+      <div v-if="type===1">共<span style="color:red;">{{ multipleSelection.length }}</span>位会员，是否确定移除</div>
+      <div v-else>是否确定移除将该会员从本会中移除？</div>
       <div>移除后可重新导入或添加;</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="removeMemberDialog = false">取 消</el-button>

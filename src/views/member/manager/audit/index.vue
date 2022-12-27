@@ -1,14 +1,7 @@
 <template>
   <div class="app-container">
     <div class="audit-query-form">
-      <el-form
-        ref="query"
-        :inline="true"
-        label-width="70px"
-        label-position="right"
-        :model="query"
-        size="small"
-      >
+      <el-form ref="query" :inline="true" label-width="70px" label-position="right" :model="query" size="small">
         <el-form-item label="审核状态">
           <el-select v-model="query.auditStatus" placeholder="请选择">
             <el-option label="所有" :value="-1" />
@@ -24,7 +17,8 @@
           <el-select v-model="query.type" placeholder="请选择">
             <el-option label="全部" :value="-1" />
             <el-option label="个人" :value="0" />
-            <el-option label="企业/团体" :value="1" />
+            <el-option label="企业" :value="1" />
+            <el-option label="社会组织" :value="2" />
           </el-select>
         </el-form-item>
         <el-form-item label="姓名">
@@ -34,12 +28,8 @@
           <el-input v-model="query.uname" />
         </el-form-item>
         <el-form-item label="">
-          <el-button
-            v-if="has('', '查询')"
-            type="primary"
-            :actionid="getId('', '查询')"
-            @click="fetchData($event)"
-            >查询
+          <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">
+            查询
           </el-button>
         </el-form-item>
       </el-form>
@@ -78,15 +68,7 @@
         <el-table-column type="selection" width="55px" />
         <el-table-column label="用户头像" width="85px" prop="uavatar">
           <template slot-scope="scope">
-            <img
-              style="
-                width: 60px;
-                height: 60px;
-                border-radius: 50%;
-                object-fit: cover;
-              "
-              :src="scope.row.uavatar"
-            />
+            <img style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover" :src="scope.row.uavatar">
           </template>
         </el-table-column>
         <el-table-column label="用户名" width="200px" prop="uname ">
@@ -96,7 +78,7 @@
         </el-table-column>
         <el-table-column label="入会类型" width="100px">
           <template slot-scope="scope">
-            {{ scope.row.type == 0 ? "个人" : "企业/团体" }}
+            {{ ['个人','企业','社会组织'][scope.row.type] }}
           </template>
         </el-table-column>
         <el-table-column label="联系信息" width="300px">
@@ -105,8 +87,14 @@
               <div>【会员姓名】{{ scope.row.name }}</div>
               <div>【会员手机号】{{ scope.row.phone }}</div>
             </div>
-            <div v-else>
-              <div>【企业/团体名称】{{ scope.row.companyName }}</div>
+            <div v-else-if="scope.row.type == 1">
+              <div>【企业名称】{{ scope.row.companyName }}</div>
+              <div>【联系人姓名】{{ scope.row.contactName }}</div>
+              <div>【联系人手机号】{{ scope.row.contactPhone }}</div>
+            </div>
+            <div v-else-if="scope.row.type == 2">
+              <div v-if="scope.row.socialOrganizationLogo" class="flex-x">【社会组织logo】<img style="width:60px;height:60px;border-radius:50%;" :src="scope.row.socialOrganizationLogo"></div>
+              <div>【社会组织名称】{{ scope.row.companyName }}</div>
               <div>【联系人姓名】{{ scope.row.contactName }}</div>
               <div>【联系人手机号】{{ scope.row.contactPhone }}</div>
             </div>
@@ -131,7 +119,6 @@
             <div v-if="scope.row.registerType == 3">会员邀请</div>
             <div v-if="scope.row.registerType == 4">会员邀请</div>
             <div v-if="scope.row.registerType == 10">app</div>
-
           </template>
         </el-table-column>
         <el-table-column label="状态" width="100px">
@@ -164,13 +151,9 @@
             >
               驳回
             </el-button>
-            <el-button
-              v-if="scope.row.auditStatus !== 0"
-              type="primary"
-              size="small"
-              @click="getDetail(scope.row.id)"
-              >详情</el-button
-            >
+            <el-button v-if="scope.row.auditStatus !== 0" type="primary" size="small" @click="getDetail(scope.row.id)">
+              详情
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -187,12 +170,7 @@
       @current-change="handleCurrentChange"
     />
     <el-dialog title="驳回理由" :visible.sync="visible" width="480px">
-      <el-form
-        ref="form"
-        :model="audit"
-        label-position="left"
-        label-width="50px"
-      >
+      <el-form ref="form" :model="audit" label-position="left" label-width="50px">
         <el-row>
           <el-col :span="24">
             <el-form-item label="">
@@ -201,14 +179,10 @@
                   <el-radio label="资料乱填" value="1">资料乱填</el-radio>
                 </el-row>
                 <el-row>
-                  <el-radio label="不是本商会会员" value="2"
-                    >不是本商会会员</el-radio
-                  >
+                  <el-radio label="不是本商会会员" value="2">不是本商会会员</el-radio>
                 </el-row>
                 <el-row>
-                  <el-radio label="提交资料不齐全" value="3"
-                    >提交资料不齐全</el-radio
-                  >
+                  <el-radio label="提交资料不齐全" value="3">提交资料不齐全</el-radio>
                 </el-row>
                 <el-row class="radio-input-style">
                   <el-radio label="其他">其他(30字内)</el-radio>
@@ -232,12 +206,7 @@
       </span>
     </el-dialog>
     <el-dialog title="驳回理由" :visible.sync="batchVisible" width="30%">
-      <el-form
-        ref="form"
-        :model="audit"
-        label-position="left"
-        label-width="50px"
-      >
+      <el-form ref="form" :model="audit" label-position="left" label-width="50px">
         <el-row>
           <el-col :span="24">
             <el-form-item label="">
@@ -276,16 +245,10 @@
     <!-- ---------------------------详情弹窗--------------------------- -->
     <el-dialog title="详情" :visible.sync="detailDia" width="25%" center>
       <div class="margin-b">操作人：{{ detailObj.auditor }}</div>
-      <div class="margin-b">
-        操作时间：{{ detailObj.auditedTsLong | dateFormat }}
-      </div>
-      <div class="margin-b" v-if="detailObj.auditStatus == 2">
-        驳回原因：{{ detailObj.rejectRemark }}
-      </div>
+      <div class="margin-b">操作时间：{{ detailObj.auditedTsLong | dateFormat }}</div>
+      <div v-if="detailObj.auditStatus == 2" class="margin-b">驳回原因：{{ detailObj.rejectRemark }}</div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="detailDia = false" type="primary"
-          >我知道了</el-button
-        >
+        <el-button type="primary" @click="detailDia = false">我知道了</el-button>
       </div>
     </el-dialog>
   </div>
@@ -294,7 +257,7 @@
 <script src="./audit.js"></script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-@import "src/styles/common.scss";
+@import 'src/styles/common.scss';
 .margin-b {
   margin-bottom: 15px;
 }

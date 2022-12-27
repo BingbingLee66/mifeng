@@ -7,6 +7,7 @@ import {
   add,
   update
 } from '@/api/member/manager'
+import { checkFile, uploadFile } from '@/api/content/article'
 
 import {
   getMemberOptions
@@ -65,7 +66,8 @@ export default {
         license: '',
         companyIntroduction: '',
         departmentId: '',
-        identityVOList: []
+        identityVOList: [],
+        socialOrganizationLogo: ''
       },
       memberPostOptions: [], // 会内职位选择列表
       bindTradeIds: [], // 已选择行业
@@ -137,7 +139,9 @@ export default {
 
       },
       departmentOptions: [],
-      departmentCas: null
+      departmentCas: null,
+
+      uploadLoading: false
     }
   },
 
@@ -165,6 +169,33 @@ export default {
   },
 
   methods: {
+    // 上传前校验
+    beforeUpload(file) {
+      if (!['image/jpeg', 'image/jpg', 'image/png', 'image/gif'].includes(file.type)) {
+        this.$message.error('上传图片只能是 JPG 或 PNG 或 GIF 格式!')
+        return false
+      }
+      if (file.size > 1024 * 1024 * 2) {
+        this.$message.error('上传图片大小不能超过 2MB!')
+        return false
+      }
+    },
+    // 上传逻辑
+    async upload(content) {
+      this.uploadLoading = true
+
+      const formData = new FormData()
+      formData.append('file', content.file)
+
+      try {
+        const { state, msg } = await checkFile(formData)
+        if (state !== 1) return this.$message.error(msg)
+        const { data } = await uploadFile(formData, 'demand')
+        this.$set(this.formObj, 'socialOrganizationLogo', data)
+      } finally {
+        this.uploadLoading = false
+      }
+    },
     closeTab() {
       // 退出当前tab, 打开指定tab
       const openPath = window.localStorage.getItem('membereditor')

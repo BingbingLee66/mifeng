@@ -29,13 +29,14 @@ export default {
       inserted: (el, binding) => {
         el.style.cssText = 'cursor:pointer;'
         el.addEventListener('click', () => {
-          let link = document.createElement('a')
-          let url = binding.value
+          const link = document.createElement('a')
+          const { url, title } = binding.value
+
           fetch(url)
             .then(res => res.blob())
             .then(blob => {
               link.href = URL.createObjectURL(blob)
-              link.download = '商会成员信息导入模板.xlsx'
+              link.download = title
               document.body.appendChild(link)
               link.click()
             })
@@ -45,7 +46,7 @@ export default {
   },
 
   data() {
-    var checkPass = (rule, value, callback) => {
+    const checkPass = (rule, value, callback) => {
       if (!/^\w*$/.test(value)) {
         return callback(new Error('密码只能由字母、数字和下划线"_"组成！'))
       } else {
@@ -53,8 +54,15 @@ export default {
       }
     }
     return {
-      exportExcelModel:
-        'https://ysh-cdn.kaidicloud.com/prod/static/%E5%95%86%E4%BC%9A%E6%88%90%E5%91%98%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF%20%281%29.xlsx',
+      personalExportExcel: {
+        url:
+          'https://ysh-cdn.kaidicloud.com/prod/static/%E5%95%86%E4%BC%9A%E6%88%90%E5%91%98%E4%BF%A1%E6%81%AF%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF%20%281%29.xlsx',
+        title: '个人和企业会员导入模板.xlsx'
+      },
+      organizationExportExcel: {
+        url: 'https://ysh-cdn.kaidicloud.com/prod/static/%E5%AF%BC%E5%85%A5%E4%BC%9A%E5%91%98%E6%A8%A1%E6%9D%BF-%E7%A4%BE%E4%BC%9A%E7%BB%84%E7%BB%87.xlsx',
+        title: '社会组织会员导入模板.xlsx'
+      },
       departmentOptions: [],
       memberPostOptions: [],
       tradeOptions: [],
@@ -99,7 +107,8 @@ export default {
       importUrl: '',
       execelDate: {},
       importQuery: {
-        ckey: ''
+        ckey: '',
+        type: ''
       },
       uploadHeaders: {
         'access-token': ''
@@ -119,13 +128,14 @@ export default {
       IndustryformOptions: [],
       // 移除标签对话框
       removeMemberDialog: false,
-      notActiveMember: 0
+      notActiveMember: 0,
+      type: 1
     }
   },
 
   computed: {
     nativePlaceStr() {
-      return function(str) {
+      return function (str) {
         if (str === null) {
           return ''
         }
@@ -155,7 +165,7 @@ export default {
     this.getSupplyformOptions()
     this.getIndustryformOptions()
   },
-  mouted() {},
+  mouted() { },
   methods: {
     has(tabName, actionName) {
       return this.$store.getters.has({ tabName, actionName })
@@ -291,7 +301,7 @@ export default {
       }
       try {
         const {
-          data: { data = {}}
+          data: { data = {} }
         } = await list(params)
         this.list = data.list || []
         this.list.forEach(item => {
@@ -336,11 +346,11 @@ export default {
         'actionId',
         e.currentTarget.getAttribute('actionid')
       )
-      let params = {
+      const params = {
         id: row.id,
         action: row.status === 0 ? 'active' : 'notactive'
       }
-      updateStatus(params).then(response => {
+      updateStatus(params).then(() => {
         if (row.status === 0) {
           this.$message({
             message: '解冻成功',
@@ -368,29 +378,29 @@ export default {
 
     handleSelectionChange(value) {
       this.multipleSelection = value
-      let datas = value
+      const datas = value
       this.selectionDatas = []
       this.selectionIds = []
       this.selectionWxUserIds = []
-      for (let data of datas) {
+      for (const data of datas) {
         this.selectionIds.push(data.id)
         this.selectionWxUserIds.push(data.wxUserId)
-        let new_data = {
+        const new_data = {
           用户名: data.uname,
           入会类型: data.type === 0 ? '个人' : '企业',
           联系信息:
             data.type === 0
               ? '【会员姓名】' +
-                data.name +
-                '\n' +
-                '【会员手机号】' +
-                data.phone
+              data.name +
+              '\n' +
+              '【会员手机号】' +
+              data.phone
               : '【企业/团体名称】' +
-                data.companyName +
-                '\n【联系人姓名】' +
-                data.contactName +
-                '\n【联系人手机号】' +
-                data.contactPhone,
+              data.companyName +
+              '\n【联系人姓名】' +
+              data.contactName +
+              '\n【联系人手机号】' +
+              data.contactPhone,
           入会时间: data.joinedTs ? data.joinedTs : '',
           会内职位: data.postName ? data.postName : '',
           部门: data.departmentName ? data.departmentName : '',
@@ -418,30 +428,30 @@ export default {
           new_data['身份信息'] = str
         }
         if (data.memberLabelList && data.memberLabelList.length > 0) {
-          let arr = data.memberLabelList.map(item => {
+          const arr = data.memberLabelList.map(item => {
             return item.tagName
           })
-          let str = arr.join('、')
+          const str = arr.join('、')
           new_data['会员标签'] = str
         }
         if (data.bridgeLabels && data.bridgeLabels.length > 0) {
-          let arr = data.bridgeLabels.map(item => {
+          const arr = data.bridgeLabels.map(item => {
             return item.name
           })
-          let str = arr.join('、')
+          const str = arr.join('、')
           new_data['供需标签'] = str
         }
         if (data.tradeBridges && data.tradeBridges.length > 0) {
-          let arr = data.tradeBridges.map(item => {
+          const arr = data.tradeBridges.map(item => {
             return item.name
           })
-          let str = arr.join('、')
+          const str = arr.join('、')
           new_data['行业标签'] = str
         }
         this.selectionDatas.push(new_data)
       }
     },
-    successImport(response, file, fileList) {
+    successImport(response) {
       this.execelDate = response
     },
     exportExcel(e) {
@@ -520,12 +530,13 @@ export default {
               })
             }
           })
-          .catch(() => {})
+          .catch(() => { })
       })
     },
     // 导入excel表格打开弹窗
     openVisible() {
       this.visible = true
+      this.importQuery.type = ''
     },
     closeVisible() {
       this.visible = false
@@ -544,14 +555,14 @@ export default {
           cancelButtonText: '取消'
         }
       ).then(() => {
-        let params = {
+        const params = {
           memberId: this.formObj.id,
           ckey: this.$store.getters.ckey,
           phone: this.formObj.phone,
           president: this.formObj.name,
           password: this.formObj.password
         }
-        transferPresident(params).then(response => {
+        transferPresident(params).then(() => {
           this.$message({
             message: '转换成功',
             type: 'success'
@@ -575,9 +586,9 @@ export default {
         dataSource: 0,
         freeze: 0
       })
-      let memberLabelList = res.data.list || []
-      let _memberLabelList = memberLabelList.map(item => {
-        let obj = {
+      const memberLabelList = res.data.list || []
+      const _memberLabelList = memberLabelList.map(item => {
+        const obj = {
           value: item.id,
           label: item.name,
           children: item.memberLabelVOList.map(item => {
@@ -597,9 +608,9 @@ export default {
         sourceCkeyList: this.$store.getters.ckey,
         freeze: 0
       })
-      let memberLabelList = res.data.list || []
-      let _memberLabelList = memberLabelList.map(item => {
-        let obj = {
+      const memberLabelList = res.data.list || []
+      const _memberLabelList = memberLabelList.map(item => {
+        const obj = {
           value: item.id,
           label: item.name,
           children:
@@ -691,8 +702,8 @@ export default {
             type: 'warning'
           }
         )
-          .then(() => {})
-          .catch(() => {})
+          .then(() => { })
+          .catch(() => { })
         return
       }
       this.attachVisible = true
@@ -708,7 +719,7 @@ export default {
       if (labelIds.length === 0) {
         return this.$message.error('请至少选择一个标签')
       }
-      let wxUserIds = this.multipleSelection.map(item => {
+      const wxUserIds = this.multipleSelection.map(item => {
         return item.wxUserId
       })
       const res = await Labels.attachLabel({
@@ -724,7 +735,7 @@ export default {
     /** 查看更多标签 */
     handleMoreLabel(rowData) {
       this.moreType = ''
-      let moreData = {
+      const moreData = {
         labeList: []
       }
       moreData.labeList = rowData.memberLabelList.map(item => {
@@ -738,7 +749,7 @@ export default {
     },
     handleMorebridgeLabels(rowData) {
       this.moreType = ''
-      let moreData = {
+      const moreData = {
         labeList: []
       }
       moreData.labeList = rowData.bridgeLabels.map(item => {
@@ -752,7 +763,7 @@ export default {
     },
     handleMoretradeBridges(rowData) {
       this.moreType = ''
-      let moreData = {
+      const moreData = {
         labeList: []
       }
       moreData.labeList = rowData.tradeBridges.map(item => {
@@ -773,7 +784,7 @@ export default {
 
     handleRemoveLabel(rowData) {
       this.moreType = 'delete'
-      let moreData = {
+      const moreData = {
         wxUserId: rowData.wxUserId,
         uname: rowData.uname,
         lableList: []
@@ -797,29 +808,34 @@ export default {
         this.getPlatformOptions()
       }
     },
-    showRemoveDialog() {
+    // 1 批量移除 2单个移除
+    showRemoveDialog(type, row) {
       this.notActiveMember = 0
-      if (this.multipleSelection.every(item => item.activatedState !== -1)) {
-        return this.$message.error('请至少选择一位 “未激活” 的会员')
-      }
-      this.multipleSelection.forEach(item => {
-        if (item.activatedState === -1) {
-          this.notActiveMember++
-        }
-      })
+      // if (this.multipleSelection.every(item => item.activatedState !== -1)) {
+      //   return this.$message.error('请至少选择一位 “未激活” 的会员')
+      // }
+      // this.multipleSelection.forEach(item => {
+      //   if (item.activatedState === -1) {
+      //     this.notActiveMember++
+      //   }
+      // })
+      if (type === 2) { this.multipleSelection.push(row) }
+      if (!this.multipleSelection.length > 0 && type === 1) { return this.$message.error('请至少选择一位会员') }
       this.removeMemberDialog = true
+      this.type = type
     },
     async confirmRemoveMember() {
-      let params = {
+      const params = {
         ids: []
       }
-      this.multipleSelection.forEach(item => {
-        if (item.activatedState === -1) {
-          params.ids.push(item.id)
-        }
-      })
-      params.ids = params.ids.join(',')
-      let res = await deleteManyMember(params)
+      // this.multipleSelection.forEach(item => {
+      //   if (item.activatedState === -1) {
+      //     params.ids.push(item.id)
+      //   }
+      // })
+
+      params.ids = this.multipleSelection.map(m => m.id).join(',')
+      const res = await deleteManyMember(params)
       if (res.state === -1) return this.$message.error(res.msg)
       this.init()
       this.$message.success(res.msg)
