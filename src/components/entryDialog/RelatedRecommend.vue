@@ -90,14 +90,15 @@ export default {
   }
 }
 .entry-add{
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 40px;
   height: 40px;
   border: 3px solid #222;
   border-radius: 8px;
   font-size: 40px;
   color: #222;
-  text-align: center;
-  line-height: 36px;
   cursor: pointer;
 }
 .left-right-icon {

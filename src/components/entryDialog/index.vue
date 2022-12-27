@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="entryVisible" :title="title" :before-close="closeHandler" class="entry-dialog">
+  <el-dialog :visible.sync="entryVisible" :title="title" :before-close="closeHandler" class="entry-dialog" width="945px">
     <div class="p-20">
       <div>
         <el-input v-model="keywordFilter.encyclopediaName" placeholder="请输入关键字" style="width: 340px" />
@@ -66,7 +66,7 @@
                   <div class="entry-name">{{ item.encyclopediaName }}</div>
                   <template v-if="item.orgPositionInfo && item.orgPositionInfo.length">
                     <div v-for="org in item.orgPositionInfo" :key="org.position+org.organizationName" class="entry-position">
-                      {{ org.position }} | {{ org.organizationName }}
+                      {{ org.position }}
                     </div>
                   </template>
                 </div>
@@ -220,7 +220,6 @@ export default {
       this.otherList = []
     },
     setSelectionMap() {
-      console.log(this.entryInfo.selectionData)
       this.entryInfo.selectionData.forEach((item, index) => {
         this.selectionKey[item.encyclopediaId] = {
           ...item,
@@ -229,42 +228,20 @@ export default {
       })
     },
     async queryRecommendList() {
-      try {
-        const { data } = await recommendLexicalRecently({
-          ...this.recommendFilter,
-          ckey: this.entryInfo.ckey
-        })
-        if (!data) return
-        this.recommendTotal = data.total || 0
-        const checkData = data.records.map(item => {
-          const selectItem = this.selectionKey[item.encyclopediaId]
-          return {
-            ...item,
-            check: selectItem ? !!selectItem.check : false
-          }
-        })
-        this.recommendList = checkData
-      } catch (error) {
-        console.log(error)
-      }
+      const { total, lists } = await this.requestData(recommendLexicalRecently, {
+        ...this.recommendFilter,
+        ckey: this.entryInfo.ckey
+      })
+      this.recommendTotal = total
+      this.recommendList = lists
     },
     async queryChamberList() {
-      try {
-        const { data } = await queryChamberLexical({
-          ...this.chamberFilter,
-          ckey: this.entryInfo.ckey
-        })
-        this.chamberTotal = data.total
-        this.chamberList = data.records.map(item => {
-          const selectItem = this.selectionKey[item.encyclopediaId]
-          return {
-            ...item,
-            check: selectItem ? !!selectItem.check : false
-          }
-        })
-      } catch (error) {
-        console.log(error)
-      }
+      const { total, lists } = await this.requestData(queryChamberLexical, {
+        ...this.chamberFilter,
+        ckey: this.entryInfo.ckey
+      })
+      this.chamberTotal = total
+      this.chamberList = lists
     },
     async searchHandler() {
       this.otherList = []
@@ -273,16 +250,30 @@ export default {
     },
     async searchList() {
       if (!this.keywordFilter.encyclopediaName) return
-      const { data } = await queryEntryList(this.keywordFilter)
-      this.otherTotal = data.total
-      const checkData = data.records.map(item => {
-        const selectItem = this.selectionKey[item.encyclopediaId]
+      const { total, lists } = await this.requestData(queryEntryList, this.keywordFilter)
+      this.otherTotal = total
+      this.otherList = lists
+    },
+    async requestData(apiFn, params) {
+      try {
+        const { data } = await apiFn(params)
+        const lists = data.records.map(item => {
+          const selectItem = this.selectionKey[item.encyclopediaId]
+          return {
+            ...item,
+            check: selectItem ? !!selectItem.check : false
+          }
+        })
         return {
-          ...item,
-          check: selectItem ? !!selectItem.check : false
+          total: data.total,
+          lists
         }
-      })
-      this.otherList = checkData
+      } catch (error) {
+        return {
+          total: 0,
+          lists: []
+        }
+      }
     },
     closeHandler() {
       this.$emit('close')
@@ -359,6 +350,7 @@ export default {
   position: relative;
   .image-name {
     display: flex;
+    align-items: center;
     .ml-4 {
       margin-left: 8px;
     }
