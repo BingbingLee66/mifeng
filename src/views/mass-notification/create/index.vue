@@ -1,7 +1,7 @@
 <template>
   <div class="containers">
     <el-form ref="indexFormRef" :rules="rules" :model="form">
-      <el-form-item label="类型" prop="type">
+      <el-form-item label="通知类型" prop="type">
         <el-radio-group v-model="form.type">
           <el-radio v-for="(item, index) in labelList" :key="index" :disabled="form.receive == 7 && item.type == 5" :label="item.type">{{ item.n }}</el-radio>
         </el-radio-group>
@@ -87,9 +87,19 @@
           </div>
         </div>
       </div>
+      <el-form-item v-if="form.type === 6" label="选择课程" prop="type" required>
+        <el-select v-model="form.course" clearable style="width:300px" filterable placeholder="请选择课程">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
 
       <!-- 同步渠道 -->
-      <div class="title-hd">同步渠道 <span> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
+      <div class="title-hd">推送平台 <span> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
 
       <el-form v-if="form.receive == '7'" :rules="rules" :model="form" label-position="right" label-width="100px">
         <el-form-item label="站内信标题" :required="true" style="margin-bottom:20px">
@@ -208,6 +218,24 @@ export default {
       ckey: null,
       labelList: [],
       receiveList: [],
+      options: [
+        {
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }
+      ],
       form: {
         // 类型
         type: 2,

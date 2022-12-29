@@ -1,7 +1,7 @@
 <template>
   <div style="margin-bottom: 20px">
     <el-form :model="form">
-      <el-form-item label="接收人" prop="receive">
+      <el-form-item label="通知对象" prop="receive">
         <el-radio-group v-model="form.receive" @change="radioChange">
           <el-radio v-for="(item, index) in receiveList" :key="index" :label="item.type">{{ item.n }}</el-radio>
         </el-radio-group>
