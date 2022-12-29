@@ -11,7 +11,7 @@
         <div class="title">基础模板</div>
         <draggable v-model="templateList" class="left-content" :group="leftGroup" animation="300" :sort="false">
           <transition-group :style="style">
-            <div v-for="item in templateList" :key="item.id" class="item-left">{{ item.name }}</div>
+            <div v-for="item in templateList" :key="item.id" class="item-left" @click="clickComponent(item)">{{ item.name }}</div>
           </transition-group>
         </draggable>
       </div>
@@ -50,16 +50,33 @@
             <transition-group :style="style">
               <div v-for="(item, index) in componentsList" :key="item.id" class="item">
                 <Component_Single_Select
-                  v-if="item.componentKey === COMPONENT_KEY.SINGLE_SELECT"
+                  v-if="item.componentKey === COMPONENT_KEY.SINGLE_SELECT || item.componentKey === COMPONENT_KEY.MULTIPLE_SELECT"
+                  :index="index + 1"
+                  :item="item"
+                />
+                <Component_Pulldown_Select
+                  v-if="item.componentKey === COMPONENT_KEY.PULLDOWN_SELECT"
+                  :index="index + 1"
+                  :item="item"
+                  @addSelectItem="addItem"
+                />
+                <Component_Single_Text
+                  v-if="item.componentKey === COMPONENT_KEY.SINGLE_TEXT"
+                  :index="index + 1"
+                  :item="item"
+                />
+                <Component_Upload
+                  v-if="item.componentKey === COMPONENT_KEY.UPLOAD_FILE || item.componentKey === COMPONENT_KEY.UPLOAD_VIDEO"
                   :index="index + 1"
                   :item="item"
                 />
                 <div class="operate">
-                  <el-checkbox v-model="checked">备选项</el-checkbox>
-                  <span>添加选项</span>
+                  <el-checkbox v-model="item.checked" @change="requireChange(item)">必填</el-checkbox>
+                  <span @click="addItem(item.id)">添加选项</span>
                   <span>添加其他项</span>
+                  <span>上移</span>
                   <span>下移</span>
-                  <span class="del">删除</span>
+                  <span class="del" @click="delComponent(item.id)">删除</span>
                 </div>
               </div>
             </transition-group>
@@ -72,7 +89,11 @@
 import draggable from 'vuedraggable'
 import { COMPONENT_KEY } from './constant/index'
 export default {
-  components: { draggable, Component_Single_Select: () => import('./components/Component_Single_Select.vue') },
+  components: { draggable, Component_Single_Select: () => import('./components/Component_Single_Select.vue'),
+    Component_Pulldown_Select: () => import('./components/Component_Pulldown_Select.vue'),
+    Component_Single_Text: () => import('./components/Component_Single_Text.vue'),
+    Component_Upload: () => import('./components/Component_Upload.vue'),
+  },
   data() {
     return {
       iphone: require('@/assets/img/iphone.png'),
@@ -88,6 +109,7 @@ export default {
           title: '标题',
           componentKey: 'Component_Single_Select',
           componentType: 'uploadImg',
+          required: false,
           selectItem: [
             {
               select: false, // 是否选择
@@ -97,9 +119,19 @@ export default {
             }
           ]
         },
-        { id: 2, name: '多选', componentKey: 'Component_Single_Select', componentType: 'uploadImg' },
-        { id: 3, name: '上传图片', componentKey: 'Component_Single_Select', componentType: 'uploadImg' },
-        { id: 4, name: '上传视频', componentKey: 'Component_Single_Select', componentType: 'uploadImg' }
+        { id: 2, required: false, name: '多选', componentKey: 'Component_Multiple_Select', componentType: 'uploadImg' },
+        { id: 3, required: false, name: '上传图片', componentKey: 'Component_Upload_File', componentType: 'uploadImg' },
+        { id: 4, required: false, name: '上传视频', componentKey: 'Component_Upload_Video', componentType: 'uploadImg' },
+        { id: 5, required: false, name: '单项填坑', componentKey: 'Component_Single_Text', componentType: 'uploadImg' },
+        { id: 6, required: false, name: '下拉', selectItem: [
+          {
+            select: false, // 是否选择
+            key: '', //
+            value: 'xxx', // 选择组件属性 string
+            label: '选项1' // label文本
+          }
+        ], title: '标题', componentKey: 'Component_Pulldown_Select', componentType: 'uploadImg' },
+        // { id: 7, required: false, name: '单项填坑', componentKey: 'Component_Single_Text', componentType: 'uploadImg' },
       ],
       componentsList: [],
       style: 'min-height:120px;display: block;',
@@ -118,6 +150,37 @@ export default {
       } else if (type === 2) {
         this.showDescInput = false
       }
+    },
+    // 点击基础组件
+    clickComponent(item) {
+      this.componentsList.push(item)
+    },
+    // 必填项发生改变
+    requireChange(change) {
+      const { templateList } = this
+      const { id, checked } = change
+      const index = templateList.findIndex(i => i.id === id)
+      if (index > -1) { this.templateList[index].required = checked }
+    },
+    // 添加选项
+    addItem(id) {
+      console.log('添加选项', id)
+      const { componentsList } = this
+      const index = componentsList.findIndex(i => i.id === id)
+      if (index > -1) {
+        componentsList[index].selectItem.push({
+          select: false, // 是否选择
+          key: '', //
+          value: '选项', // 选择组件属性 string
+          label: '选项' // label文本
+        })
+      }
+    },
+    // 删除组件
+    delComponent(id) {
+      const { componentsList } = this
+      const index = componentsList.findIndex(i => i.id === id)
+      index > -1 && this.componentsList.splice(index, 1)
     }
   }
 }
@@ -143,7 +206,8 @@ export default {
     z-index: 1;
   }
   .right {
-    width: 375px;
+    width: 385px;
+
     position: relative;
     background-color: #fff;
   }
@@ -165,6 +229,8 @@ export default {
   .right-content {
     position: relative;
     z-index: 2;
+    height: 645px;
+    overflow-y: scroll;
     padding: 100px 25px 0px 25px;
     .query-title {
       text-align: center;

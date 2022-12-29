@@ -34,3 +34,8 @@ export const FILE_TYPE_MAP = new Map([
   [FILE_TYPE.UPLOAD_IMG, '上传图片'],
   [FILE_TYPE.UPLOAD_FILE, '上传文件 '],
 ])
+
+export const UPLOAD_MAP = new Map([
+  [COMPONENT_KEY.UPLOAD_FILE, ['支持格式：png、jpeg、jpg', '最多9个，每个不超过30MB']],
+  [COMPONENT_KEY.UPLOAD_VIDEO, ['支持格式：mp4 ', '(最多9个，每个不超过300MB)']],
+])
