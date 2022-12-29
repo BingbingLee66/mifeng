@@ -433,7 +433,7 @@ export default {
           label: '所属类型',
           formatter: row => {
             let msg = '自定义通知'
-            if (row.noticeTypeId === 1) { msg = '缴费通知' } else if (row.noticeTypeId === 2) { msg = '活动通知' } else if (row.noticeTypeId === 3) { msg = '招商活动' } else if (row.noticeTypeId === 4) { msg = '邀请入会' }
+            if (row.noticeTypeId === 1) { msg = '缴费通知' } else if (row.noticeTypeId === 2) { msg = '活动通知' } else if (row.noticeTypeId === 3) { msg = '招商活动' } else if (row.noticeTypeId === 4) { msg = '邀请入会' } else if (row.noticeTypeId === 5) { msg = '自定义通知' } else if (row.noticeTypeId === 6) { msg = '课程通知' }
             return msg
           }
         },
