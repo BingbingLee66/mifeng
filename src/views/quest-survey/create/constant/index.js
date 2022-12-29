@@ -12,7 +12,9 @@ export const COMPONENT_KEY = {
   // 上传视频
   UPLOAD_VIDEO: 'Component_Upload_Video',
   // 下拉：
-  PULLDOWN_SELECT: 'Component_Pulldown_Select'
+  PULLDOWN_SELECT: 'Component_Pulldown_Select',
+  // 省市区
+  PROVINCE_CITY_AREA: 'Component_Province_City_Area'
 
 }
 
@@ -39,3 +41,4 @@ export const UPLOAD_MAP = new Map([
   [COMPONENT_KEY.UPLOAD_FILE, ['支持格式：png、jpeg、jpg', '最多9个，每个不超过30MB']],
   [COMPONENT_KEY.UPLOAD_VIDEO, ['支持格式：mp4 ', '(最多9个，每个不超过300MB)']],
 ])
+export const BUSINESS_TYPE = 'YSH_PSQ'

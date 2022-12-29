@@ -4,14 +4,17 @@
     <!-- <el-select v-model="value" placeholder="请选择">
       <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
     </el-select> -->
+    <div v-if="$attrs.item.componentKey === COMPONENT_KEY.PROVINCE_CITY_AREA">ggg</div>
     <div class="my-select flex-x-between-center">
       <span class="select-text">请选择</span>
       <span class="el-icon-arrow-down" />
     </div>
     <div class="select-val">
-      <div v-for="item in $attrs.item.selectItem" :key="item.id" class="select-val-item">
-        <el-input v-model="item.value" placeholder="选项" maxlength="30" /><span class="del">删除</span></div>
-      <span style="color: #328ffe;" @click="addSelectItem">添加选项</span>
+      <div v-for="(item,index) in $attrs.item.selectItem" :key="index" class="select-val-item flex-x-between-center">
+        <el-input v-model="item.value" :disabled="item.otherItems===1 ? true :false" placeholder="选项" maxlength="30" />
+        <span class="del" @click="delSelectItem(index)">删除</span>
+      </div>
+      <span style="color: #328ffe" @click="addSelectItem">添加选项</span>
     </div>
     <!-- <div v-for="(item, index) in $attrs.item.selectItem" :key="index">
       <el-radio v-model="radio" label="1">{{ item.label }}</el-radio>
@@ -19,17 +22,24 @@
   </div>
 </template>
 <script>
+import { COMPONENT_KEY } from '../constant/index'
 export default {
   components: {
     hd: () => import('./Common_Hd.vue')
   },
   data() {
     return {
-      radio: ''
+      radio: '',
+      COMPONENT_KEY
     }
   },
   methods: {
-    addSelectItem() { this.$emit('addSelectItem', this.$attrs.item.id) }
+    addSelectItem() {
+      this.$emit('addSelectItem', this.$attrs.item.id)
+    },
+    delSelectItem(item) {
+      this.$emit('delSelectItem', { index: this.$attrs.index, item })
+    }
   }
 }
 </script>
@@ -46,24 +56,35 @@ export default {
     color: #ccc4d6;
     font-size: 13px;
   }
-
 }
-.select-val{
+.select-val {
   margin-top: 10px;
   border: 1px solid #dcdfe6;
   padding: 0px 10px 10px;
   font-size: 13px;
 }
+
 .del {
-    color: #d9001b;
-
-  }
-
-/deep/ .el-input__inner ,.el-input{
+  color: #d9001b;
+  display: none;
+  margin-left: 5px;
+  flex-shrink: 0;
+}
+.select-val-item:hover .del{
+  display: inline-block;
+}
+.select-val-item:hover /deep/ .el-input__inner{
+  border: 1px solid #dcdfe6;
+  padding: 2px;
+}
+/deep/ .el-input.is-disabled{
+  background-color:#fff
+}
+/deep/ .el-input__inner {
   border: none;
-  min-width: 38px;
-  max-width: 100px;
-  padding: 0;
+  display: inline-block;
+  padding: 2px;
+  background-color:#fff
   // padding-left: 20px;
 }
 // .pull-down-select{

@@ -8,9 +8,9 @@
     </span>
     <span v-else class="components-type">{{ COMPONENT_KEY_MAP.get($attrs.item.componentKey) }}</span>
 
-    <div class="flex-x-0-center">
+    <div class="flex-x-0-center hd-title">
       <span v-if="$attrs.item.required" class="require">*</span>
-      <span class="title">{{ $attrs.index }}. </span>
+      <span class="title">{{ $attrs.index +1 }}. </span>
       <el-input v-model="$attrs.item.title" maxlength="30" placeholder="标题">ee</el-input>
     </div>
   </div>
@@ -30,6 +30,10 @@ export default {
 /deep/ .el-input__inner{
   padding-left: 0;
   border: none;
+}
+.hd-title:hover /deep/.el-input__inner{
+  border: 1px solid #dcdfe6;
+  padding-left: 5;
 }
 .hd {
   margin-bottom: 15px;

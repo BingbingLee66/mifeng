@@ -48,34 +48,36 @@
           />
           <draggable v-model="componentsList" group="site" animation="100">
             <transition-group :style="style">
-              <div v-for="(item, index) in componentsList" :key="item.id" class="item">
+              <div v-for="(item, index) in componentsList" :key="index" class="item">
                 <Component_Single_Select
                   v-if="item.componentKey === COMPONENT_KEY.SINGLE_SELECT || item.componentKey === COMPONENT_KEY.MULTIPLE_SELECT"
-                  :index="index + 1"
+                  :index="index "
                   :item="item"
+                  @delSelectItem="delSelectItem"
                 />
                 <Component_Pulldown_Select
                   v-if="item.componentKey === COMPONENT_KEY.PULLDOWN_SELECT"
-                  :index="index + 1"
+                  :index="index"
                   :item="item"
+                  @delSelectItem="delSelectItem"
                   @addSelectItem="addItem"
                 />
                 <Component_Single_Text
                   v-if="item.componentKey === COMPONENT_KEY.SINGLE_TEXT"
-                  :index="index + 1"
+                  :index="index "
                   :item="item"
                 />
                 <Component_Upload
                   v-if="item.componentKey === COMPONENT_KEY.UPLOAD_FILE || item.componentKey === COMPONENT_KEY.UPLOAD_VIDEO"
-                  :index="index + 1"
+                  :index="index "
                   :item="item"
                 />
                 <div class="operate">
                   <el-checkbox v-model="item.checked" @change="requireChange(item)">必填</el-checkbox>
-                  <span @click="addItem(item.id)">添加选项</span>
-                  <span>添加其他项</span>
-                  <span>上移</span>
-                  <span>下移</span>
+                  <span @click="addItem(item.id,0)">添加选项</span>
+                  <span @click="addItem(item.id,1)">添加其他项</span>
+                  <span @click="sort(1,item.id)">上移</span>
+                  <span @click="sort(2,item.id)">下移</span>
                   <span class="del" @click="delComponent(item.id)">删除</span>
                 </div>
               </div>
@@ -87,7 +89,8 @@
 </template>
 <script>
 import draggable from 'vuedraggable'
-import { COMPONENT_KEY } from './constant/index'
+import { COMPONENT_KEY, BUSINESS_TYPE } from './constant/index'
+import { getBaseQuestion, getCommonList } from '@/api/quest-survey/index'
 export default {
   components: { draggable, Component_Single_Select: () => import('./components/Component_Single_Select.vue'),
     Component_Pulldown_Select: () => import('./components/Component_Pulldown_Select.vue'),
@@ -142,7 +145,18 @@ export default {
       COMPONENT_KEY
     }
   },
+  created() { this.getBaseQuestionFunc(); this.getCommonListFunc },
   methods: {
+    // 请求
+    // 基础题型:列表查询
+    async getBaseQuestionFunc() {
+      const res = await getBaseQuestion({ businessType: BUSINESS_TYPE })
+      console.log('res', res)
+    },
+    async getCommonListFunc() {
+      const res = await getCommonList()
+      console.log('res', res)
+    },
     // 失去焦点 1标题 2 描述
     inputBlur(type = 1) {
       if (type === 1) {
@@ -163,17 +177,23 @@ export default {
       if (index > -1) { this.templateList[index].required = checked }
     },
     // 添加选项
-    addItem(id) {
-      console.log('添加选项', id)
+    addItem(id, type = 0) {
       const { componentsList } = this
       const index = componentsList.findIndex(i => i.id === id)
       if (index > -1) {
-        componentsList[index].selectItem.push({
-          select: false, // 是否选择
-          key: '', //
-          value: '选项', // 选择组件属性 string
-          label: '选项' // label文本
-        })
+        let flag = -1
+        if (type === 1) {
+          flag = componentsList[index].selectItem.findIndex(i => i.otherItems === 1)
+        }
+        if (flag === -1) {
+          componentsList[index].selectItem.push({
+            select: false, // 是否选择
+            key: '', //
+            value: type === 1 ? '其他' : '选项', // 选择组件属性 string
+            label: type === 1 ? '其他' : '选项', // label文本
+            otherItems: type
+          })
+        } else { this.$message.warning('其他选项已经存在') }
       }
     },
     // 删除组件
@@ -181,6 +201,21 @@ export default {
       const { componentsList } = this
       const index = componentsList.findIndex(i => i.id === id)
       index > -1 && this.componentsList.splice(index, 1)
+    },
+    // 上下移动组件 1上移 2下移
+    sort(type, id) {
+      const { componentsList } = this
+      const index = componentsList.findIndex(i => i.id === id)
+      if (index > -1) {
+        const item = this.componentsList.splice(index, 1)
+        item && this.componentsList.splice(type === 1 ? index - 1 : index + 1, 0, ...item)
+      }
+    },
+    // 删除组件的某一项
+    delSelectItem(detail) {
+      const { index, item } = detail
+      this.componentsList[index].selectItem.splice(item, 1)
+      console.log('d', detail)
     }
   }
 }
@@ -229,9 +264,9 @@ export default {
   .right-content {
     position: relative;
     z-index: 2;
-    height: 645px;
+    height: 522px;
     overflow-y: scroll;
-    padding: 100px 25px 0px 25px;
+    margin: 100px 25px 0px 25px;
     .query-title {
       text-align: center;
       font-size: 20px;
@@ -288,5 +323,17 @@ export default {
 .item + .item {
   border-top: none;
   margin-top: 6px;
+}
+.b{
+  display: none;
+  background: rgb(90, 98, 168);
+}
+.a{
+  width: 300px;
+  height: 300px;
+  background: hotpink;
+}
+.a:hover .b{
+  display: block;
 }
 </style>
