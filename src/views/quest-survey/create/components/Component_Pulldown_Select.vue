@@ -4,18 +4,23 @@
     <!-- <el-select v-model="value" placeholder="请选择">
       <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
     </el-select> -->
-    <div v-if="$attrs.item.componentKey === COMPONENT_KEY.PROVINCE_CITY_AREA">ggg</div>
-    <div class="my-select flex-x-between-center">
-      <span class="select-text">请选择</span>
-      <span class="el-icon-arrow-down" />
+    <div v-if="$attrs.item.componentKey === COMPONENT_KEY.PROVINCE_CITY_AREA">
+      <img :src="area" class="area">
     </div>
-    <div class="select-val">
-      <div v-for="(item,index) in $attrs.item.selectItem" :key="index" class="select-val-item flex-x-between-center">
-        <el-input v-model="item.value" :disabled="item.otherItems===1 ? true :false" placeholder="选项" maxlength="30" />
-        <span class="del" @click="delSelectItem(index)">删除</span>
+    <template v-else>
+      <div class="my-select flex-x-between-center">
+        <span class="select-text">请选择</span>
+        <span class="el-icon-arrow-down" />
       </div>
-      <span style="color: #328ffe" @click="addSelectItem">添加选项</span>
-    </div>
+      <div class="select-val">
+        <div v-for="(item,index) in $attrs.item.selectItem" :key="index" class="select-val-item flex-x-between-center">
+          <el-input v-model="item.value" :disabled="item.otherItems===1 ? true :false" placeholder="选项" maxlength="30" />
+          <span class="del" @click="delSelectItem(index)">删除</span>
+        </div>
+        <span style="color: #328ffe" @click="addSelectItem">添加选项</span>
+      </div>
+    </template>
+
     <!-- <div v-for="(item, index) in $attrs.item.selectItem" :key="index">
       <el-radio v-model="radio" label="1">{{ item.label }}</el-radio>
     </div> -->
@@ -30,12 +35,13 @@ export default {
   data() {
     return {
       radio: '',
-      COMPONENT_KEY
+      COMPONENT_KEY,
+      area: require('@/assets/img/area.png'),
     }
   },
   methods: {
     addSelectItem() {
-      this.$emit('addSelectItem', this.$attrs.item.id)
+      this.$emit('addSelectItem')
     },
     delSelectItem(item) {
       this.$emit('delSelectItem', { index: this.$attrs.index, item })
@@ -57,10 +63,13 @@ export default {
     font-size: 13px;
   }
 }
+.area{
+  width: 300px;
+}
 .select-val {
   margin-top: 10px;
   border: 1px solid #dcdfe6;
-  padding: 0px 10px 10px;
+  padding: 10px 10px 10px;
   font-size: 13px;
 }
 

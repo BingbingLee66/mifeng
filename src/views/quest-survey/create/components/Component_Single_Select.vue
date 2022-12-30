@@ -2,7 +2,7 @@
   <div>
     <hd v-bind="$attrs" />
     <div v-for="(item, index) in $attrs.item.selectItem" :key="index" class="select-val-item flex-x-between-center">
-      <el-input v-model="item.value" placeholder="选项4" maxlength="30" class="my-input" />
+      <el-input v-model="item.label" :disabled="item.otherItems===1 ? true :false" placeholder="选项" maxlength="30" class="my-input" />
       <span class="del" @click="delSelectItem(index)">删除</span>
     </div>
   </div>
@@ -75,6 +75,6 @@ export default {
 .select-val-item:hover .my-input:before {content: '';border:none;width:0px;height: 0px;}
 /deep/ .el-input__inner {
   border: none;
-  padding-left: 20px;
+  // padding-left: 20px;
 }
 </style>
