@@ -249,7 +249,7 @@ export default {
   methods: {
     // 获取直播列表
     async getListAudience() {
-      const { data: res } = await getAudienceList(this.ckey)
+      const { data: res } = await getAudienceList(this.ckey || 'ysh')
       this.audienceList = Object.freeze(res)
     },
     async getRuleCkeys() {

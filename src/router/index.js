@@ -548,11 +548,11 @@ export const constantRoutes = [
       }
     ]
   },
-  {
+  /* {
     path: '/livetelecast',
     component: Layout,
     redirect: '/'
-  }
+  } */
 ]
 
 const createRouter = () =>
