@@ -77,7 +77,8 @@ export const constantRoutes = [
       {
         path: '/quest-survey/create',
         component: () => import('@/views/quest-survey/create/index'),
-        hidden: true
+        name: 'createQuest',
+        meta: { title: '创建问卷' }
       },
       {
         path: 'profile',
@@ -550,14 +551,21 @@ export const constantRoutes = [
         component: () => import('@/views/dashboard/page/FollowList.vue'),
         hidden: true,
         meta: { title: '已关注' }
-      }
+      },
+      {
+        path: 'mass-notification/create',
+        name: 'create',
+        hidden: true,
+        component: () => import('@/views/mass-notification/create/index'),
+        meta: { title: '创建群发' }
+      },
     ]
   },
-  {
-    path: '/livetelecast',
-    component: Layout,
-    redirect: '/'
-  }
+  // {
+  //   path: '/livetelecast',
+  //   component: Layout,
+  //   redirect: '/'
+  // }
 ]
 
 const createRouter = () =>

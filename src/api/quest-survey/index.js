@@ -16,10 +16,18 @@ export const getCommonList = params => {
     params
   })
 }
-// 问卷题目保存
+// 总后台:问卷题目保存
 export const saveQuest = params => {
   return request({
     url: '/scrmapi/questionnaire/save',
+    method: 'post',
+    data: params
+  })
+}
+// 秘锋:问卷题目保存
+export const saveQuestByMiF = params => {
+  return request({
+    url: '/crmapi/questionnaire/save',
     method: 'post',
     data: params
   })
@@ -31,6 +39,28 @@ export const uploadAndCheckImg = (params, query) => {
     url: `/ec/upload/uploadAndCheckImg?folder=${query}`,
     method: 'post',
     data: params
+  })
+}
+// 问卷发布-停止
+export const updateState = params => {
+  return request({
+    url: '/crmapi/questionnaire/updateState',
+    method: 'put',
+    params
+  })
+}
+// 总后台问卷二维码
+export const getQrCode = params => {
+  return request({
+    url: `/scrmapi/questionnaire/qrCode?questionnaireId=${params}`,
+    method: 'get',
+  })
+}
+// 秘锋二维码
+export const getQrCodeByMiF = params => {
+  return request({
+    url: `/crmapi/questionnaire/qrCode?questionnaireId=${params}`,
+    method: 'get',
   })
 }
 
