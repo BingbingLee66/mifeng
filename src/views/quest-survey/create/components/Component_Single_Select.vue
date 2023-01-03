@@ -2,7 +2,7 @@
   <div>
     <hd v-bind="$attrs" />
     <div v-for="(item, index) in $attrs.item.selectItem" :key="index" class="select-val-item flex-x-between-center">
-      <el-input v-model="item.label" :disabled="item.otherItems===1 ? true :false" placeholder="选项" maxlength="30" class="my-input" />
+      <el-input v-model="item.label" :disabled="!!(item.otherItems===1 || item.isDisable)" placeholder="选项" maxlength="30" class="my-input" />
       <span class="del" @click="delSelectItem(index)">删除</span>
     </div>
   </div>
