@@ -16,7 +16,7 @@
           <el-option label="已发布" value="2" />
         </el-select>
       </el-form-item>
-      <el-form-item><el-button type="primary">查询</el-button> </el-form-item>
+      <el-form-item><el-button type="primary" @click="fetchData">查询</el-button> </el-form-item>
     </el-form>
     <KdTable v-loading="loading" :columns="columns" :rows="tableData" />
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
@@ -84,7 +84,10 @@ export default {
     this.fetchData()
   },
   methods: {
-    onQueryChange() {},
+    onQueryChange(e) {
+      this.query = { ...this.query, ...e }
+      this.fetchData()
+    },
     generateActions(row) {
       return (<div>
         <el-button type="text" onClick={() => this.onViewQuestionnaire(row)}>查看</el-button>

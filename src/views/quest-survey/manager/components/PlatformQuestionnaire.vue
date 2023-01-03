@@ -95,7 +95,10 @@ export default {
     this.fetchData()
   },
   methods: {
-    onQueryChange() {},
+    onQueryChange(e) {
+      this.query = { ...this.query, ...e }
+      this.fetchData()
+    },
     generateActions(row) {
       return (<div>
         {
