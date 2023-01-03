@@ -143,7 +143,7 @@
 
       </div>
     </div>
-
+    <Save_Dialog :save-visible.sync="showSaveDialog" />
   </el-card>
 </template>
 <script>
@@ -155,6 +155,7 @@ export default {
     Component_Pulldown_Select: () => import('./components/Component_Pulldown_Select.vue'),
     Component_Single_Text: () => import('./components/Component_Single_Text.vue'),
     Component_Upload: () => import('./components/Component_Upload.vue'),
+    Save_Dialog: () => import('./components/Save_Dialog.vue')
   },
   data() {
     return {
@@ -179,6 +180,7 @@ export default {
       active: 1,
       // 表单
       form: { delivery: false, endTime: null, shareImgUrl: '' },
+      showSaveDialog: true
     }
   },
   computed: { showAddItem: () => {
@@ -188,7 +190,11 @@ export default {
       if (arr.includes(item.componentKey)) { return true } else { return false }
     }
   } },
-  created() { this.getBaseQuestionFunc(); this.getCommonListFunc() },
+  created() {
+    this.getBaseQuestionFunc()
+    this.getCommonListFunc()
+    this.questionnaireTitle = this.$route.query.title || '标题'
+  },
   methods: {
     // 请求
     // 基础题型:列表查询
@@ -259,8 +265,6 @@ export default {
     },
     // 上下移动组件 1上移 2下移
     sort(type, index = -1) {
-      // const { componentsList } = this
-      // const index = componentsList.findIndex(i => i.id === id)
       if (index > -1) {
         const item = this.componentsList.splice(index, 1)
         item && this.componentsList.splice(type === 1 ? index - 1 : index + 1, 0, ...item)
@@ -273,7 +277,8 @@ export default {
         commonModelDTOS: componentsList,
         endTime, shareImgUrl, remark, questionnaireTitle
       }
-      await saveQuest(params)
+      const res = await saveQuest(params)
+      if (res.state === 1) { this.questionId() } else { this.$message.error(res.msg) }
     },
     // 删除组件的某一项
     delSelectItem(detail) {

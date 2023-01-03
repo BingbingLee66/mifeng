@@ -33,3 +33,11 @@ export const uploadAndCheckImg = (params, query) => {
     data: params
   })
 }
+// 问卷发布-停止
+export const updateState = params => {
+  return request({
+    url: '/crmapi/questionnaire/updateState',
+    method: 'put',
+    params
+  })
+}
