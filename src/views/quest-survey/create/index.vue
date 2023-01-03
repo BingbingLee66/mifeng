@@ -224,7 +224,8 @@ export default {
     this.type === 2 && this.questionDetailFunc()
   },
   beforeRouteLeave(to, from, next) {
-    if (this.questionId) { next(); return }
+    if (this.questionId) { console.log('return'); next(); return }
+
     if (this.componentsList.length > 0) {
       this.$confirm('系统可能不会保存您所做的更改', '离开此页面？', {
         confirmButtonText: '离开',
@@ -319,17 +320,17 @@ export default {
       }
     },
     async saveQuestFunc() {
-      const { componentsList, form: { endTime, shareImgUrl }, questionnaireTitle, desc: remark } = this
+      const { componentsList, questionId: questionnaireId, form: { endTime, shareImgUrl }, questionnaireTitle, desc: remark } = this
       const params = {
         businessType: 1,
         commonModelDTOS: componentsList,
-        endTime, shareImgUrl, remark, questionnaireTitle
+        endTime, shareImgUrl, remark, questionnaireTitle, questionnaireId
       }
       let API = saveQuest
       if (this.ckey) { API = saveQuestByMiF }
       const res = await API(params)
       if (res.state === 1) {
-        this.questionId = res.data
+        if (res.data) { this.questionId = res.data }
         this.showSaveDialog = true
         this.$refs['saveDialog'].getQrCodeFunc(this.questionId)
       } else { this.$message.error(res.msg) }
@@ -372,7 +373,7 @@ export default {
       this.componentsList = commonModelDTOS
       this.form = { shareImgUrl, endTime, delivery: !!endTime }
       this.isDisable = !!(state === 1 || state === 0)
-      this.componentsList.forEach(i => { i.isDisable = this.isDisable; if (i.selectItem.length > 0) { i.selectItem.forEach(j => { j.isDisable = this.isDisable }) } })
+      this.componentsList.forEach(i => { i.isDisable = this.isDisable; if (i.selectItem?.length > 0) { i.selectItem.forEach(j => { j.isDisable = this.isDisable }) } })
     } }
 }
 </script>
