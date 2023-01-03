@@ -41,3 +41,17 @@ export const updateState = params => {
     params
   })
 }
+// 总后台问卷二维码
+export const getQrCode = params => {
+  return request({
+    url: `/scrmapi/questionnaire/qrCode?questionnaireId=${params}`,
+    method: 'get',
+  })
+}
+// 秘锋二维码
+export const getQrCodeByMiF = params => {
+  return request({
+    url: `/crmapi/questionnaire/qrCode?questionnaireId=${params}`,
+    method: 'get',
+  })
+}

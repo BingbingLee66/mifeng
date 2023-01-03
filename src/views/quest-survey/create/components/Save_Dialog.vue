@@ -24,20 +24,24 @@
 </template>
 <script>
 import { downloadByBlob } from '@/views/activity/util'
-import { updateState } from '@/api/quest-survey/index'
+import { updateState, getQrCode, getQrCodeByMiF } from '@/api/quest-survey/index'
 export default {
   props: {
     saveVisible: {
       type: Boolean,
-      value: false,
+      default: false,
     },
     questionId: {
-      type: Number,
-      value: 1
+      type: String,
+      default: ''
+    },
+    ckey: {
+      type: String,
+      default: ''
     }
   },
   data() {
-    return { questionnaireId: null, link: 'xxxxxxxxxxxxxxxxxxsssss发发发发发', code: 'http://localhost:9528/static/img/logo@2x.7687838b.png' }
+    return { questionnaireId: null, link: '', code: '' }
   },
   methods: {
     close() {
@@ -60,11 +64,19 @@ export default {
     download() { downloadByBlob(this.code, '二维码') },
 
     // 请求类
+    // 获取分享链接和二维码
+    async getQrCodeFunc(questionId) {
+      let API = getQrCode
+      if (this.ckey) { API = getQrCodeByMiF }
+      const { data: { questionnaireCode, questionnaireUrl } } = await API(questionId)
+      this.link = questionnaireUrl
+      this.code = questionnaireCode
+    },
     // 问卷发布
     async updateState() {
-      const { questionnaireId } = this
+      const { questionnaireId, ckey } = this
       const params = {
-        operateType: 1,
+        operateType: ckey ? 2 : 1,
         questionnaireId,
         state: 1
       }
@@ -74,7 +86,7 @@ export default {
         self.$confirm('问卷已发布，您可以立即发短信通知会员填写问卷', '', {
           confirmButtonText: '短信通知',
           cancelButtonText: '暂时不用',
-          type: 'warning'
+          type: 'info', center: true
         }).then(() => {
         // 去到《创建群发通知》页面
           self.$router.push({ name: 'create' })

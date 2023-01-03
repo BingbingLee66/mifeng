@@ -143,7 +143,7 @@
 
       </div>
     </div>
-    <Save_Dialog :save-visible.sync="showSaveDialog" />
+    <Save_Dialog ref="saveDialog" :ckey="ckey" :save-visible.sync="showSaveDialog" :question-id="questionId" />
   </el-card>
 </template>
 <script>
@@ -180,7 +180,8 @@ export default {
       active: 1,
       // 表单
       form: { delivery: false, endTime: null, shareImgUrl: '' },
-      showSaveDialog: true
+      showSaveDialog: false,
+      questionId: null
     }
   },
   computed: { showAddItem: () => {
@@ -189,7 +190,11 @@ export default {
       const arr = [COMPONENT_KEY.SINGLE_SELECT, COMPONENT_KEY.MULTIPLE_SELECT]
       if (arr.includes(item.componentKey)) { return true } else { return false }
     }
-  } },
+  },
+  ckey() {
+    return this.$store.getters.ckey || ''
+  }
+  },
   created() {
     this.getBaseQuestionFunc()
     this.getCommonListFunc()
@@ -246,7 +251,6 @@ export default {
           otherItems: type
         })
       } else { this.$message.warning('其他选项已经存在') }
-      console.log('this.componentsList', this.componentsList)
     },
     // 删除组件
     delComponent(index) {
@@ -278,13 +282,16 @@ export default {
         endTime, shareImgUrl, remark, questionnaireTitle
       }
       const res = await saveQuest(params)
-      if (res.state === 1) { this.questionId() } else { this.$message.error(res.msg) }
+      if (res.state === 1) {
+        this.questionId = res.data
+        this.showSaveDialog = true
+        this.$refs['saveDialog'].getQrCodeFunc(this.questionId)
+      } else { this.$message.error(res.msg) }
     },
     // 删除组件的某一项
     delSelectItem(detail) {
       const { index, item } = detail
       this.componentsList[index].selectItem.splice(item, 1)
-      console.log('d', detail)
     },
     // 上传图片
     async upload(content) {
