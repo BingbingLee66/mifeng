@@ -2,10 +2,12 @@
   <div class="">
     <el-form inline>
       <el-form-item label="商协会">
-        <el-input v-model="query.chamber" placeholder="请输入" />
+        <el-select v-model="query.ckey" filterable>
+          <el-option v-for="item in chamberList" :key="item.id" :label="item.name" :value="item.ckey" />
+        </el-select>
       </el-form-item>
-      <el-form-item label="问卷名称">
-        <el-input v-model="query.title" placeholder="请输入" />
+      <el-form-item label="问卷标题">
+        <el-input v-model="query.questionnaireTitle" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="问卷状态">
         <el-select v-model="query.status">
@@ -18,50 +20,117 @@
     </el-form>
     <KdTable v-loading="loading" :columns="columns" :rows="tableData" />
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
+
+    <!-- 分享弹窗 -->
+    <QuestionnaireShare :visible="dialog.visible && dialog.type==='share'" @update:visible="dialog.visible=$event" />
+    <!-- 冻结弹窗 -->
+    <el-dialog :visible="dialog.visible && dialog.type==='freeze'" title="冻结" width="500px" @update:visible="dialog.visible=$event">
+      <p>
+        是否确定冻结该问卷？
+      </p>
+      <el-input v-model="dialog.value" type="textarea" placeholder="请填写冻结原因，50字以内" maxlength="50" show-word-limit rows="3" resize="none" />
+      <div slot="footer">
+        <el-button type="wran" @click="dialog.visible = false">取消</el-button>
+        <el-button type="primary" @click="onFreeze">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { chamberSearchList } from '@/api/chamber/manager'
+import { getQuestionnaireList, freezeQuestionnaire } from '@/api/quest-survey'
+import { formatDateTime } from '@/utils/date'
 
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
-    KdPagination: () => import('@/components/common/KdPagination')
-
+    KdPagination: () => import('@/components/common/KdPagination'),
+    QuestionnaireShare: () => import('./QuestionnaireShare.vue')
   },
   props: {},
   data() {
     return {
       query: {
-        chamber: '',
-        title: '', // 问卷标题
-        status: '', // 问卷状态
+        ckey: '',
+        questionnaireTitle: '', // 问卷标题
+        state: '', // 问卷状态
         pageSize: 10,
         pageNum: 1
       },
       total: 0,
       columns: [
-        { label: 'ID' },
-        { label: '商协会' },
-        { label: '问卷标题' },
-        { label: '状态' },
-        { label: '答卷' },
-        { label: '创建时间' },
-        {
-          label: '操作',
-          render: ({ row }) => (<div>
-            <el-button type="text" onClick={() => this.onViewQuestionnaire(row)}>查看</el-button>
-            <el-button type="text">分享</el-button>
-            <el-button type="text">冻结</el-button>
-          </div>)
-        }
+        { label: 'ID', prop: 'id' },
+        { label: '商协会', prop: 'chamberName' },
+        { label: '问卷标题', prop: 'title' },
+        { label: '状态', render: ({ row }) => <div> { ['未发布', '已发布', '已冻结', '已停止'][row.state] } </div> },
+        { label: '答卷', prop: 'answersCount' },
+        { label: '创建时间', render: ({ row }) => formatDateTime(+row.createdTs, 'yyyy-MM-dd hh:mm:ss') },
+        { label: '操作', render: ({ row }) => this.generateActions(row) },
       ],
       loading: false,
-      tableData: []
+      tableData: [],
+      chamberList: [],
+      dialog: {
+        visible: false,
+        data: {},
+        type: 'share',
+        value: ''
+      },
     }
   },
+  created() {
+    this.getChamberList()
+    this.fetchData()
+  },
   methods: {
-    onQueryChange() {}
+    onQueryChange() {},
+    generateActions(row) {
+      return (<div>
+        <el-button type="text" onClick={() => this.onViewQuestionnaire(row)}>查看</el-button>
+        <el-button type="text" onClick={() => this.openDialog({ data: row, type: 'share' }) }>分享</el-button>
+        <el-button type="text" onClick={() => this.openDialog({ type: 'freeze', data: row, value: '' })}>冻结</el-button>
+      </div>)
+    },
+    openDialog(dialog) {
+      this.dialog = {
+        ...this.dialog,
+        visible: true,
+        ...dialog
+      }
+    },
+    async getChamberList() {
+      const { data } = await chamberSearchList()
+      this.chamberList = data || []
+    },
+    async fetchData() {
+      this.loading = false
+      try {
+        const { data, state } = await getQuestionnaireList({
+          ...this.query,
+          queryType: 2
+        })
+        if (state !== 1) return
+        this.tableData = data.list
+        this.total = data.totalRows
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async onFreeze() {
+      const value = this.dialog.value.trim()
+      if (!value) return this.$message.warning('请输入冻结理由')
+      const { state, msg } = await freezeQuestionnaire({
+        id: this.dialog.data.id,
+        freezing: value
+      })
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      if (state === 1) {
+        this.dialog.visible = false
+        this.fetchData()
+      }
+    }
   },
 }
 </script>
