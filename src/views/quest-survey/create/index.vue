@@ -135,7 +135,7 @@
       </div>
 
       <div class="next-step">
-        <el-button v-if="active===1" type="primary" @click="active=2">下一步</el-button>
+        <el-button v-if="active===1" :disabled="componentsList.length<1" type="primary" @click="active=2">下一步</el-button>
         <template v-else>
           <el-button plain @click="active=1">上一步</el-button>
           <el-button type="primary" @click="saveQuestFunc">保存</el-button>

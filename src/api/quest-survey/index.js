@@ -16,8 +16,16 @@ export const getCommonList = params => {
     params
   })
 }
-// 问卷题目保存
+// 总后台:问卷题目保存
 export const saveQuest = params => {
+  return request({
+    url: '/scrmapi/questionnaire/save',
+    method: 'post',
+    data: params
+  })
+}
+// 秘锋:问卷题目保存
+export const saveQuestByMiF = params => {
   return request({
     url: '/crmapi/questionnaire/save',
     method: 'post',
