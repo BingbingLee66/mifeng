@@ -79,3 +79,45 @@ export const questionDetail = params => {
     params
   })
 }
+
+// 查询问卷列表
+export const getQuestionnaireList = params => {
+  return request({
+    url: '/scrmapi/questionnaire/list',
+    params
+  })
+}
+// 校验问卷标题
+export const checkQuestionnaireTitle = data => {
+  return request({
+    url: '/scrmapi/questionnaire/checkTitle',
+    data,
+    method: 'post'
+  })
+}
+// 问卷发布停止
+export const updateQuestionnaireState = params => {
+  return request({
+    url: '/scrmapi/questionnaire/updateState',
+    method: 'put',
+    params
+  })
+}
+// 问卷删除
+export const deleteQuestionnaire = params => {
+  return request({
+    url: '/scrmapi/questionnaire/delete',
+    method: 'delete',
+    params
+  })
+}
+
+// 问卷冻结
+export const freezeQuestionnaire = params => {
+  return request({
+    url: '/scrmapi/questionnaire/freeze',
+    method: 'put',
+    params
+  })
+}
+
