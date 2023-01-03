@@ -200,6 +200,16 @@ export default {
     this.getCommonListFunc()
     this.questionnaireTitle = this.$route.query.title || '标题'
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.componentsList.length > 0) {
+      this.$confirm('系统可能不会保存您所做的更改', '离开此页面？', {
+        confirmButtonText: '离开',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => { next() })
+    } else { next() }
+  },
   methods: {
     // 请求
     // 基础题型:列表查询
