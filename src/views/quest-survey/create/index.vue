@@ -84,7 +84,7 @@
                     <el-checkbox v-model="item.required" data-index="index" @change="requireChange(index,item)">必填</el-checkbox>
                     <template v-if="showAddItem(item)">
                       <span @click="addItem(index,0)">添加选项</span>
-                      <span @click="addItem(index,1)">添加其他项</span>
+                      <span v-if="showOtherBtn(item)" @click="addItem(index,1)">添加其他项</span>
                     </template>
                     <span v-if="index!==0" @click="sort(1,index)">上移</span>
                     <span v-if="index!==componentsList.length-1" @click="sort(2,index)">下移</span>
@@ -149,7 +149,7 @@
 <script>
 import draggable from 'vuedraggable'
 import { COMPONENT_KEY, BUSINESS_TYPE, SHARE_TIPS } from './constant/index'
-import { getBaseQuestion, getCommonList, saveQuest, uploadAndCheckImg } from '@/api/quest-survey/index'
+import { getBaseQuestion, getCommonList, saveQuest, uploadAndCheckImg, saveQuestByMiF } from '@/api/quest-survey/index'
 export default {
   components: { draggable, Component_Single_Select: () => import('./components/Component_Single_Select.vue'),
     Component_Pulldown_Select: () => import('./components/Component_Pulldown_Select.vue'),
@@ -191,6 +191,13 @@ export default {
       if (arr.includes(item.componentKey)) { return true } else { return false }
     }
   },
+  showOtherBtn: () => {
+    return item => {
+      const index = item.selectItem.findIndex(i => i.otherItems === 1)
+      if (index === -1) { return true }
+      return false
+    }
+  },
   ckey() {
     return this.$store.getters.ckey || ''
   }
@@ -201,6 +208,7 @@ export default {
     this.questionnaireTitle = this.$route.query.title || '标题'
   },
   beforeRouteLeave(to, from, next) {
+    if (this.questionId) { next(); return }
     if (this.componentsList.length > 0) {
       this.$confirm('系统可能不会保存您所做的更改', '离开此页面？', {
         confirmButtonText: '离开',
@@ -238,6 +246,7 @@ export default {
     setStep() { this.active = 2 },
     // 点击基础组件
     clickComponent(item) {
+      if (this.componentsList.lengh > 99) { this.$message.warning('题目数量达到100，无法添加，请适当缩减'); return }
       this.componentsList.push(JSON.parse(JSON.stringify(item)))
     },
     // 必填项发生改变
@@ -291,7 +300,9 @@ export default {
         commonModelDTOS: componentsList,
         endTime, shareImgUrl, remark, questionnaireTitle
       }
-      const res = await saveQuest(params)
+      let API = saveQuest
+      if (this.ckey) { API = saveQuestByMiF }
+      const res = await API(params)
       if (res.state === 1) {
         this.questionId = res.data
         this.showSaveDialog = true
