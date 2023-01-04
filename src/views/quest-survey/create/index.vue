@@ -390,6 +390,9 @@ export default {
 .step {
   width: 50%;
 }
+.box-card{
+  width: 100% !important;
+}
 .content {
   background-color: #fff;
   // display: flex;
