@@ -54,9 +54,9 @@
               show-word-limit
               @blur="inputBlur(2)"
             />
-            <draggable v-model="componentsList" group="site" animation="100">
+            <draggable v-model="componentsList" filter=".forbid" group="site" animation="100">
               <transition-group :style="style">
-                <div v-for="(item, index) in componentsList" :key="index" class="item">
+                <div v-for="(item, index) in componentsList" :key="index" :class="item.isDisable ? 'item forbid':'item'">
                   <Component_Single_Select
                     v-if="item.componentKey === COMPONENT_KEY.SINGLE_SELECT || item.componentKey === COMPONENT_KEY.MULTIPLE_SELECT"
                     :index="index"
@@ -92,7 +92,7 @@
                       <span v-if="showOtherBtn(item)" @click="addItem(index,1)">添加其他项</span>
                     </template>
                     <template v-if="!item.isDisable">
-                      <span v-if="index!==0" @click="sort(1,index)">上移</span>
+                      <span v-if="index!==0 && showMoveUp(componentsList,index)" @click="sort(1,index)">上移</span>
                       <span v-if="index!==componentsList.length-1" @click="sort(2,index)">下移</span>
                       <span class="del" @click="delComponent(index)">删除</span>
                     </template>
@@ -212,6 +212,15 @@ export default {
       return false
     }
   },
+  showMoveUp: () => {
+    return (componentsList, index) => {
+      if (index - 1 > -1 && componentsList[index - 1]) {
+        return !componentsList[index - 1].isDisable
+      } else {
+        return true
+      }
+    }
+  },
   ckey() {
     return this.$store.getters.ckey || ''
   }
@@ -224,8 +233,7 @@ export default {
     this.type === 2 && this.questionDetailFunc()
   },
   beforeRouteLeave(to, from, next) {
-    if (this.questionId) { console.log('return'); next(); return }
-
+    if (this.questionId) { next(); return }
     if (this.componentsList.length > 0) {
       this.$confirm('系统可能不会保存您所做的更改', '离开此页面？', {
         confirmButtonText: '离开',
@@ -314,6 +322,7 @@ export default {
     },
     // 上下移动组件 1上移 2下移
     sort(type, index = -1) {
+      console.log('index', index)
       if (index > -1) {
         const item = this.componentsList.splice(index, 1)
         item && this.componentsList.splice(type === 1 ? index - 1 : index + 1, 0, ...item)

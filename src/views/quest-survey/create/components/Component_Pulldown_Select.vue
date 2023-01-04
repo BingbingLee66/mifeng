@@ -15,7 +15,7 @@
       <div class="select-val">
         <div v-for="(item,index) in $attrs.item.selectItem" :key="index" class="select-val-item flex-x-between-center">
           <el-input v-model="item.label" :disabled="!!(item.otherItems===1 || item.isDisable)" placeholder="选项" maxlength="30" />
-          <span class="del" @click="delSelectItem(index)">删除</span>
+          <span v-if="!item.isDisable" class="del" @click="delSelectItem(index)">删除</span>
         </div>
         <span style="color: #328ffe" @click="addSelectItem">添加选项</span>
       </div>
