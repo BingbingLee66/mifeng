@@ -291,10 +291,9 @@ export default {
     // 添加选项  0:普通选项 1：其他选项
     addItem(index = -1, type = 0) {
       if (index === -1) return
+      if (this.componentsList[index].selectItem.length > 29) { this.$message.warning('最多30个选项'); return }
       let flag = -1
-      if (type === 1) {
-        flag = this.componentsList[index].selectItem.findIndex(i => i.otherItems === 1)
-      }
+      if (type === 1) { flag = this.componentsList[index].selectItem.findIndex(i => i.otherItems === 1) }
       if (flag === -1) {
         this.componentsList[index].selectItem.push({
           select: false, // 是否选择
@@ -381,7 +380,7 @@ export default {
       this.desc = desc
       this.componentsList = commonModelDTOS
       this.form = { shareImgUrl, endTime, delivery: !!endTime }
-      this.isDisable = !!(state === 1 || state === 0)
+      this.isDisable = !!(state === 1 || state === 3)
       this.componentsList.forEach(i => { i.isDisable = this.isDisable; if (i.selectItem?.length > 0) { i.selectItem.forEach(j => { j.isDisable = this.isDisable }) } })
     } }
 }
