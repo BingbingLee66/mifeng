@@ -54,41 +54,49 @@
               show-word-limit
               @blur="inputBlur(2)"
             />
-            <draggable v-model="componentsList" group="site" animation="100">
+            <draggable v-model="componentsList" filter=".forbid" group="site" animation="100">
               <transition-group :style="style">
-                <div v-for="(item, index) in componentsList" :key="index" class="item">
+                <div v-for="(item, index) in componentsList" :key="index" :class="item.isDisable ? 'item forbid':'item'">
                   <Component_Single_Select
                     v-if="item.componentKey === COMPONENT_KEY.SINGLE_SELECT || item.componentKey === COMPONENT_KEY.MULTIPLE_SELECT"
-                    :index="index "
+                    :index="index"
                     :item="item"
+                    :disable="isDisable"
                     @delSelectItem="delSelectItem"
                   />
                   <Component_Pulldown_Select
                     v-if="item.componentKey === COMPONENT_KEY.PULLDOWN_SELECT || item.componentKey === COMPONENT_KEY.PROVINCE_CITY_AREA"
                     :index="index"
                     :item="item"
+                    :disable="isDisable"
                     @delSelectItem="delSelectItem"
                     @addSelectItem="addItem(index,0)"
                   />
                   <Component_Single_Text
                     v-if="item.componentKey === COMPONENT_KEY.SINGLE_TEXT"
                     :index="index "
+                    :disable="isDisable"
                     :item="item"
                   />
                   <Component_Upload
                     v-if="item.componentKey === COMPONENT_KEY.UPLOAD_FILE || item.componentKey === COMPONENT_KEY.UPLOAD_VIDEO ||item.componentKey === COMPONENT_KEY.UPLOAD_IMAGE"
                     :index="index "
+                    :disable="isDisable"
                     :item="item"
                   />
                   <div class="operate">
                     <el-checkbox v-model="item.required" data-index="index" @change="requireChange(index,item)">必填</el-checkbox>
+
                     <template v-if="showAddItem(item)">
                       <span @click="addItem(index,0)">添加选项</span>
                       <span v-if="showOtherBtn(item)" @click="addItem(index,1)">添加其他项</span>
                     </template>
-                    <span v-if="index!==0" @click="sort(1,index)">上移</span>
-                    <span v-if="index!==componentsList.length-1" @click="sort(2,index)">下移</span>
-                    <span class="del" @click="delComponent(index)">删除</span>
+                    <template v-if="!item.isDisable">
+                      <span v-if="index!==0 && showMoveUp(componentsList,index)" @click="sort(1,index)">上移</span>
+                      <span v-if="index!==componentsList.length-1" @click="sort(2,index)">下移</span>
+                      <span class="del" @click="delComponent(index)">删除</span>
+                    </template>
+
                   </div>
                 </div>
               </transition-group>
@@ -149,7 +157,7 @@
 <script>
 import draggable from 'vuedraggable'
 import { COMPONENT_KEY, BUSINESS_TYPE, SHARE_TIPS } from './constant/index'
-import { getBaseQuestion, getCommonList, saveQuest, uploadAndCheckImg, saveQuestByMiF } from '@/api/quest-survey/index'
+import { getBaseQuestion, questionDetailBiMiF, getCommonList, saveQuest, questionDetail, uploadAndCheckImg, saveQuestByMiF } from '@/api/quest-survey/index'
 export default {
   components: { draggable, Component_Single_Select: () => import('./components/Component_Single_Select.vue'),
     Component_Pulldown_Select: () => import('./components/Component_Pulldown_Select.vue'),
@@ -180,8 +188,14 @@ export default {
       active: 1,
       // 表单
       form: { delivery: false, endTime: null, shareImgUrl: '' },
+      // 弹框
       showSaveDialog: false,
-      questionId: null
+      // 问卷id
+      questionId: null,
+      // 状态 1新增 2编辑
+      type: 1,
+      // 问卷状态是否可以编辑
+      isDisable: false
     }
   },
   computed: { showAddItem: () => {
@@ -198,6 +212,15 @@ export default {
       return false
     }
   },
+  showMoveUp: () => {
+    return (componentsList, index) => {
+      if (index - 1 > -1 && componentsList[index - 1]) {
+        return !componentsList[index - 1].isDisable
+      } else {
+        return true
+      }
+    }
+  },
   ckey() {
     return this.$store.getters.ckey || ''
   }
@@ -206,6 +229,8 @@ export default {
     this.getBaseQuestionFunc()
     this.getCommonListFunc()
     this.questionnaireTitle = this.$route.query.title || '标题'
+    if (this.$route.query.id) { this.type = 2; this.questionId = this.$route.query.id }
+    this.type === 2 && this.questionDetailFunc()
   },
   beforeRouteLeave(to, from, next) {
     if (this.questionId) { next(); return }
@@ -230,6 +255,15 @@ export default {
     async getCommonListFunc() {
       const { data } = await getCommonList({ businessType: BUSINESS_TYPE })
       this.commonList = data
+    },
+    // 问卷详情
+    async questionDetailFunc() {
+      const { questionId: id, ckey } = this
+      const params = { id, businessType: 1 }
+      let API = questionDetail
+      if (ckey) { API = questionDetailBiMiF }
+      const res = await API(params)
+      if (res.state === 1) { this.formatData(res) } else { this.$message.error(res.msg) }
     },
     // 失去焦点 1标题 2 描述
     inputBlur(type = 1) {
@@ -288,23 +322,24 @@ export default {
     },
     // 上下移动组件 1上移 2下移
     sort(type, index = -1) {
+      console.log('index', index)
       if (index > -1) {
         const item = this.componentsList.splice(index, 1)
         item && this.componentsList.splice(type === 1 ? index - 1 : index + 1, 0, ...item)
       }
     },
     async saveQuestFunc() {
-      const { componentsList, form: { endTime, shareImgUrl }, questionnaireTitle, desc: remark } = this
+      const { componentsList, questionId: questionnaireId, form: { endTime, shareImgUrl }, questionnaireTitle, desc: remark } = this
       const params = {
         businessType: 1,
         commonModelDTOS: componentsList,
-        endTime, shareImgUrl, remark, questionnaireTitle
+        endTime, shareImgUrl, remark, questionnaireTitle, questionnaireId
       }
       let API = saveQuest
       if (this.ckey) { API = saveQuestByMiF }
       const res = await API(params)
       if (res.state === 1) {
-        this.questionId = res.data
+        if (res.data) { this.questionId = res.data }
         this.showSaveDialog = true
         this.$refs['saveDialog'].getQrCodeFunc(this.questionId)
       } else { this.$message.error(res.msg) }
@@ -327,6 +362,7 @@ export default {
         })
       }
     },
+    // 工具类函数
     beforeAvatarUpload(file) {
       const arr = ['image/jpeg', 'image/jpg', 'image/png']
       if (!arr.includes(file.type)) {
@@ -338,7 +374,16 @@ export default {
         return false
       }
     },
-  }
+    // 回显数据处理
+    formatData(res) {
+      const { commonModelDTOS, questionnaireTitle, remark: desc, imgUrl: shareImgUrl, endTime, state } = res.data
+      this.questionnaireTitle = questionnaireTitle
+      this.desc = desc
+      this.componentsList = commonModelDTOS
+      this.form = { shareImgUrl, endTime, delivery: !!endTime }
+      this.isDisable = !!(state === 1 || state === 0)
+      this.componentsList.forEach(i => { i.isDisable = this.isDisable; if (i.selectItem?.length > 0) { i.selectItem.forEach(j => { j.isDisable = this.isDisable }) } })
+    } }
 }
 </script>
 

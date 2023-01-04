@@ -49,18 +49,34 @@ export const updateState = params => {
     params
   })
 }
-// 总后台问卷二维码
+// 总后台二维码
 export const getQrCode = params => {
   return request({
     url: `/scrmapi/questionnaire/qrCode?questionnaireId=${params}`,
     method: 'get',
   })
 }
-// 秘锋二维码
+// 秘锋问卷二维码
 export const getQrCodeByMiF = params => {
   return request({
     url: `/crmapi/questionnaire/qrCode?questionnaireId=${params}`,
     method: 'get',
+  })
+}
+// 秘锋:问卷详情回显
+export const questionDetailBiMiF = params => {
+  return request({
+    url: '/crmapi/questionnaire/detail',
+    method: 'get',
+    params
+  })
+}
+// 总后台:问卷详情回显
+export const questionDetail = params => {
+  return request({
+    url: '/scrmapi/questionnaire/detail',
+    method: 'get',
+    params
   })
 }
 

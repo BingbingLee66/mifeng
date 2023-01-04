@@ -1,17 +1,16 @@
 <template>
   <div class=" hd">
-    <!-- <span>{{ $attrs }}</span> -->
+    <!-- <span>{{ $attrs.disable }}</span> -->
     <!-- 上传文件分为 图片和文件两种 -->
 
     <span v-if="$attrs.item.componentKey === COMPONENT_KEY.UPLOAD_FILE" class="components-type">
       <span>{{ FILE_TYPE_MAP.get($attrs.item.componentType) }}</span>
     </span>
     <span v-else class="components-type">{{ COMPONENT_KEY_MAP.get($attrs.item.componentKey) }}</span>
-
     <div class="flex-x-0-center hd-title">
       <span v-if="$attrs.item.required" class="require">*</span>
       <span class="title">{{ $attrs.index +1 }}. </span>
-      <el-input v-model="$attrs.item.title" maxlength="30" placeholder="标题">ee</el-input>
+      <el-input v-model="$attrs.item.title" :disabled="$attrs.item.isDisable" maxlength="30" placeholder="标题">ee</el-input>
     </div>
   </div>
 </template>
