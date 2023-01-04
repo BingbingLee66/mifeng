@@ -108,6 +108,9 @@ export default {
           row.state === 1 ? <el-button type="text" onClick={() => this.updateState({ id: row.id, state: 3 })}>停止</el-button> : ''
         }
         {
+          row.state === 3 ? <el-button type="text" onClick={() => this.updateState({ id: row.id, state: 1 })}>恢复运行</el-button> : ''
+        }
+        {
           // <el-button type="text">短信通知</el-button>
         }
         <el-button type="text" onClick={() => this.openDialog({ data: row, type: 'share' }) }>分享</el-button>
@@ -143,7 +146,7 @@ export default {
     async updateState(row) {
       const { state, msg } = await updateQuestionnaireState({
         operateType: 1,
-        questionnaireId: +row.id,
+        questionnaireId: row.id,
         state: row.state
       })
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
