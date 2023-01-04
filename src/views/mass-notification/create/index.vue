@@ -628,6 +628,12 @@ export default {
         }
       } else if (type === 5) {
         // 自定义通知
+      } else if (type === 6) {
+        // 课程通知
+        if (!this.form.associationId) {
+          this.$message.error('请选择课程')
+          return false
+        }
       }
 
       // if(receive === -1){
