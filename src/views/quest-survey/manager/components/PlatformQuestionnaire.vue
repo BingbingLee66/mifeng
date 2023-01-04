@@ -20,7 +20,7 @@
 
     <!-- 新建弹窗 -->
     <el-dialog :visible="dialog.visible && dialog.type === 'create'" title="创建问卷" width="500px" @update:visible="dialog.visible=$event">
-      <el-input v-model="dialog.data" placeholder="请输入标题" :maxlength="30" show-word-limit />
+      <el-input v-model="dialog.value" placeholder="请输入标题" :maxlength="30" show-word-limit />
       <el-button slot="footer" type="primary" @click="onCreate">确 定</el-button>
     </el-dialog>
 
