@@ -329,6 +329,7 @@ export default {
     },
     async saveQuestFunc() {
       const { componentsList, questionId: questionnaireId, form: { endTime, shareImgUrl }, questionnaireTitle, desc: remark } = this
+      componentsList.forEach(i => { if (i.selectItem.length > 0) { i.selectItem.forEach(j => { if (j.otherItems === 1) { j.label = '' } }) } })
       const params = {
         businessType: 1,
         commonModelDTOS: componentsList,
