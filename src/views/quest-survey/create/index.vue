@@ -133,7 +133,7 @@
                 :http-request="upload"
               >
                 <img v-if="form.shareImgUrl" class="share-img-url" :src="form.shareImgUrl">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
+                <div v-else class="add-icon">+</div>
               </el-upload>
               <div>建议尺寸：750 x 600</div>
               <div>支持格式：png、jpg、jpeg</div>
@@ -291,10 +291,9 @@ export default {
     // 添加选项  0:普通选项 1：其他选项
     addItem(index = -1, type = 0) {
       if (index === -1) return
+      if (this.componentsList[index].selectItem.length > 29) { this.$message.warning('最多30个选项'); return }
       let flag = -1
-      if (type === 1) {
-        flag = this.componentsList[index].selectItem.findIndex(i => i.otherItems === 1)
-      }
+      if (type === 1) { flag = this.componentsList[index].selectItem.findIndex(i => i.otherItems === 1) }
       if (flag === -1) {
         this.componentsList[index].selectItem.push({
           select: false, // 是否选择
@@ -330,6 +329,7 @@ export default {
     },
     async saveQuestFunc() {
       const { componentsList, questionId: questionnaireId, form: { endTime, shareImgUrl }, questionnaireTitle, desc: remark } = this
+      componentsList.forEach(i => { if (i.selectItem.length > 0) { i.selectItem.forEach(j => { if (j.otherItems === 1) { j.label = '' } }) } })
       const params = {
         businessType: 1,
         commonModelDTOS: componentsList,
@@ -381,7 +381,7 @@ export default {
       this.desc = desc
       this.componentsList = commonModelDTOS
       this.form = { shareImgUrl, endTime, delivery: !!endTime }
-      this.isDisable = !!(state === 1 || state === 0)
+      this.isDisable = !!(state === 1 || state === 3)
       this.componentsList.forEach(i => { i.isDisable = this.isDisable; if (i.selectItem?.length > 0) { i.selectItem.forEach(j => { j.isDisable = this.isDisable }) } })
     } }
 }
@@ -390,6 +390,9 @@ export default {
 <style lang="scss" scoped>
 .step {
   width: 50%;
+}
+.box-card{
+  width: 100% !important;
 }
 .content {
   background-color: #fff;
@@ -528,6 +531,13 @@ export default {
     color: #606266;
     font-weight: 700;
     margin-left: 10px;
+    .add-icon{
+      width: 170px;
+    font-size: 30px;
+    height: 170px;
+      font-weight: 200;
+
+    }
 }
 /deep/ .el-form-item__content{
   margin-left: 40px!important;
