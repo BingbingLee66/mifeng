@@ -20,6 +20,10 @@
     <KdTable v-loading="loading" :columns="columns" :rows="tableData" />
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
+    <!-- 查看弹窗 -->
+    <el-dialog :visible="dialog.visible && dialog.type==='look'" title="冻结" width="500px" @update:visible="dialog.visible=$event">
+      <el-button slot="footer" type="primary" @click="dialog.visible = false">关闭</el-button>
+    </el-dialog>
     <!-- 分享弹窗 -->
     <QuestionnaireShare :visible="dialog.visible && dialog.type==='share'" :questionnaire="dialog.data" @update:visible="dialog.visible=$event" />
     <!-- 冻结弹窗 -->
@@ -33,13 +37,7 @@
         <el-button type="primary" @click="onFreeze">确定</el-button>
       </div>
     </el-dialog>
-    <!-- 查看弹窗 -->
-    <el-dialog :visible="dialog.visible && dialog.type==='look'" title="冻结" width="500px" @update:visible="dialog.visible=$event">
-      <div slot="footer">
-        <el-button type="wran" @click="dialog.visible = false">取消</el-button>
-        <el-button type="primary" @click="onFreeze">确定</el-button>
-      </div>
-    </el-dialog>
+
   </div>
 </template>
 

@@ -52,15 +52,15 @@ export const updateState = params => {
 // 总后台二维码
 export const getQrCode = params => {
   return request({
-    url: `/scrmapi/questionnaire/qrCode?questionnaireId=${params}`,
-    method: 'get',
+    url: '/scrmapi/questionnaire/qrCode',
+    params
   })
 }
 // 秘锋问卷二维码
 export const getQrCodeByMiF = params => {
   return request({
-    url: `/crmapi/questionnaire/qrCode?questionnaireId=${params}`,
-    method: 'get',
+    url: '/crmapi/questionnaire/qrCode',
+    params
   })
 }
 // 秘锋:问卷详情回显

@@ -68,7 +68,7 @@ export default {
     async getQrCodeFunc(questionId) {
       let API = getQrCode
       if (this.ckey) { API = getQrCodeByMiF }
-      const { data: { questionnaireCode, questionnaireUrl } } = await API(questionId)
+      const { data: { questionnaireCode, questionnaireUrl } } = await API({ questionId })
       this.link = questionnaireUrl
       this.code = questionnaireCode
     },
