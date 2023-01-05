@@ -32,3 +32,19 @@ export const answersOtherDetail = params => {
     params
   })
 }
+// 秘锋:选项附件下载
+export const downloadByMiF = params => {
+  return request({
+    url: `/crmapi/answers/download?problemId=${params}`,
+    method: 'post',
+    responseType: 'blob'
+  })
+}
+// 总后台:选项附件下载
+export const download = params => {
+  return request({
+    url: `/scrmapi/answers/download?problemId=${params}`,
+    method: 'post',
+    responseType: 'blob'
+  })
+}

@@ -13,26 +13,26 @@
       <div class="answer">
         <!-- item标题 -->
         <div v-for="(item, index) in answersList" :key="item.problemId" class="answer-item">
-          <div class="flex-x-0-center"><span class="dot">*</span>{{ index + 1 }}. {{ item.title }}
+          <div class="flex-x-0-center"><span v-if="item.required" class="dot">*</span>{{ index + 1 }}. {{ item.title }}
             <div class="type">
               <span v-if="item.componentKey === COMPONENT_KEY.UPLOAD_FILE" class="components-type">
                 <span>{{ FILE_TYPE_MAP.get(item.componentType) }}</span>
               </span>
               <span v-else class="components-type">{{ COMPONENT_KEY_MAP.get(item.componentKey) }}</span>
             </div></div>
-
           <!-- 表格 -->
           <div class="answer-table">
-            <KdTable :columns="columns" :rows="item.optionStatistics" />
+            <KdTable v-if="[COMPONENT_KEY.SINGLE_SELECT,COMPONENT_KEY.MULTIPLE_SELECT,COMPONENT_KEY.PULLDOWN_SELECT].includes(item.componentKey)" :columns="columns" :rows="item.optionStatistics" />
+            <el-link v-else type="primary" @click="answerDetail(index,item)">{{ [COMPONENT_KEY.UPLOAD_VIDEO,COMPONENT_KEY.UPLOAD_IMAGE].includes(item.componentKey)?'下载附件':'查看详情' }}</el-link>
           </div>
         </div>
       </div>
     </el-card>
-    <OtherDetail :question-id="questionId" :detail-visible.sync="detailVisible" :show-title="showTitle" />
+    <OtherDetail ref="otherDetail" :show-other="showOther" :current-item="currentItem" :detail-visible.sync="detailVisible" :current-index="currentIndex" />
   </div>
 </template>
 <script>
-import { getAnswersList, getAnswersListByMiF } from '@/api/quest-survey/answer'
+import { getAnswersList, getAnswersListByMiF, downloadByMiF, download } from '@/api/quest-survey/answer'
 import { COMPONENT_KEY, COMPONENT_KEY_MAP, FILE_TYPE_MAP } from '../../create/constant/index'
 export default {
   components: {
@@ -45,17 +45,22 @@ export default {
       answersList: [],
       remark: '',
       title: '',
-      // 当前操作的答卷id
-      questionId: null,
+      // 当前操作的答卷
+      currentItem: {},
+      // 当前操作的答卷index
+      currentIndex: 0,
+      // 详情弹框是否显示其他
+      showOther: false,
       COMPONENT_KEY,
       COMPONENT_KEY_MAP,
       FILE_TYPE_MAP,
-      detailVisible: true,
+      detailVisible: false,
+      questionnaireId: 25,
       columns: [
         { label: '选项', prop: 'optionName', width: 200 },
         { label: '小计', prop: 'subtotal', width: 100 },
         { label: '比例', width: 200, render: ({ row }) => <el-progress percentage={row.proportion * 100}></el-progress> },
-        { label: '操作', prop: 'operation', render: ({ row }) => { if (row.a) { return '' } } },
+        { label: '操作', prop: 'operation', render: ({ row }) => { if (row.otherItems) { return <div onClick={() => this.answerDetailOther(row)}>查看</div> } } },
       ],
     }
   },
@@ -69,18 +74,53 @@ export default {
   },
   methods: {
     handleClick() {},
+    answerDetail(index, item) {
+      if ([COMPONENT_KEY.SINGLE_TEXT, COMPONENT_KEY.PROVINCE_CITY_AREA].includes(item.componentKey)) {
+        this.currentItem = item
+        this.currentIndex = index
+        this.detailVisible = true
+        this.$refs['otherDetail'].getDetail(item.problemId)
+      } else {
+        this.downloadAnswer(item)
+      }
+    },
+    answerDetailOther(row) {
+      const { answersList } = this
+      const index = answersList.findIndex(i => i.problemId === row.problemId)
+      this.currentItem = answersList[index]
+      this.showOther = true
+      this.currentIndex = index
+      this.detailVisible = true
+    },
     /** 请求类函数 */
     // 拉取答卷总览列表
     async getAnswersList() {
       let API = getAnswersList
-      if (this.ckey) {
-        API = getAnswersListByMiF
-      }
-      const params = { businessType: 1, questionnaireId: 25 }
+      if (this.ckey) { API = getAnswersListByMiF }
+      const { questionnaireId } = this
+      const params = { businessType: 1, questionnaireId }
       const { data } = await API(params)
       this.answersList = data?.answers || []
       this.title = data.title
       this.remark = data?.remark || ''
+    },
+    async downloadAnswer(item) {
+      try {
+        let API = download
+        if (this.ckey) { API = downloadByMiF }
+        const result = await API(item.problemId)
+        const link = document.createElement('a') // 创建a标签
+        const blob = new Blob([result], { type: 'application/vnd.ms-excel' }) // 设置文件流
+        link.style.display = 'none'
+        // 设置连接
+        link.href = URL.createObjectURL(blob) // 将文件流转化为blob地址
+        link.download = item.title
+        document.body.appendChild(link)
+        // 模拟点击事件
+        link.click() // 设置点击事件
+      } catch (error) {
+        console.log(error)
+      }
     }
   }
 }
