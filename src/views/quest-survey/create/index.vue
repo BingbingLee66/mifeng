@@ -133,7 +133,7 @@
                 :http-request="upload"
               >
                 <img v-if="form.shareImgUrl" class="share-img-url" :src="form.shareImgUrl">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
+                <div v-else class="add-icon">+</div>
               </el-upload>
               <div>建议尺寸：750 x 600</div>
               <div>支持格式：png、jpg、jpeg</div>
@@ -530,6 +530,13 @@ export default {
     color: #606266;
     font-weight: 700;
     margin-left: 10px;
+    .add-icon{
+      width: 170px;
+    font-size: 30px;
+    height: 170px;
+      font-weight: 200;
+
+    }
 }
 /deep/ .el-form-item__content{
   margin-left: 40px!important;
