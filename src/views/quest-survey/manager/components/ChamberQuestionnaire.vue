@@ -12,8 +12,7 @@
       <el-form-item label="问卷状态">
         <el-select v-model="query.status">
           <el-option label="全部" value="" />
-          <el-option label="未发布" value="1" />
-          <el-option label="已发布" value="2" />
+          <el-option v-for="state in ['0','1','2','3']" :key="state" :label="QUESTIONNAIRE_STATE[state]" :value="state" />
         </el-select>
       </el-form-item>
       <el-form-item><el-button type="primary" @click="fetchData">查询</el-button> </el-form-item>
@@ -22,13 +21,20 @@
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
     <!-- 分享弹窗 -->
-    <QuestionnaireShare :visible="dialog.visible && dialog.type==='share'" @update:visible="dialog.visible=$event" />
+    <QuestionnaireShare :visible="dialog.visible && dialog.type==='share'" :questionnaire="dialog.data" @update:visible="dialog.visible=$event" />
     <!-- 冻结弹窗 -->
     <el-dialog :visible="dialog.visible && dialog.type==='freeze'" title="冻结" width="500px" @update:visible="dialog.visible=$event">
       <p>
         是否确定冻结该问卷？
       </p>
       <el-input v-model="dialog.value" type="textarea" placeholder="请填写冻结原因，50字以内" maxlength="50" show-word-limit rows="3" resize="none" />
+      <div slot="footer">
+        <el-button type="wran" @click="dialog.visible = false">取消</el-button>
+        <el-button type="primary" @click="onFreeze">确定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 查看弹窗 -->
+    <el-dialog :visible="dialog.visible && dialog.type==='look'" title="冻结" width="500px" @update:visible="dialog.visible=$event">
       <div slot="footer">
         <el-button type="wran" @click="dialog.visible = false">取消</el-button>
         <el-button type="primary" @click="onFreeze">确定</el-button>
@@ -41,6 +47,7 @@
 import { chamberSearchList } from '@/api/chamber/manager'
 import { getQuestionnaireList, freezeQuestionnaire } from '@/api/quest-survey'
 import { formatDateTime } from '@/utils/date'
+import { QUESTIONNAIRE_STATE } from '../constant'
 
 export default {
   components: {
@@ -51,6 +58,7 @@ export default {
   props: {},
   data() {
     return {
+      QUESTIONNAIRE_STATE,
       query: {
         ckey: '',
         questionnaireTitle: '', // 问卷标题
@@ -63,8 +71,8 @@ export default {
         { label: 'ID', prop: 'id' },
         { label: '商协会', prop: 'chamberName' },
         { label: '问卷标题', prop: 'title' },
-        { label: '状态', render: ({ row }) => <div> { ['未发布', '已发布', '已冻结', '已停止'][row.state] } </div> },
-        { label: '答卷', prop: 'answersCount' },
+        { label: '状态', render: ({ row }) => QUESTIONNAIRE_STATE[row.state] },
+        { label: '答卷', render: ({ row }) => row.answersCount > 0 ? <el-button type="text" onClick={() => this.$router.push({ path: '/quest-survey/answer/list', query: { id: row.id } })}>{row.answersCount}</el-button> : 0 },
         { label: '创建时间', render: ({ row }) => formatDateTime(+row.createdTs, 'yyyy-MM-dd hh:mm:ss') },
         { label: '操作', render: ({ row }) => this.generateActions(row) },
       ],
