@@ -7,9 +7,8 @@
       <el-form-item label="问卷状态">
         <el-select v-model="query.state">
           <el-option label="全部" value="" />
-          <el-option label="未发布" value="0" />
-          <el-option label="已发布" value="1" />
-          <el-option label="已停止" value="3" />
+          <el-option v-for="state in ['0','1','3']" :key="state" :label="QUESTIONNAIRE_STATE[state]" :value="state" />
+
         </el-select>
       </el-form-item>
       <el-form-item><el-button type="primary" @click="fetchData">查询</el-button> </el-form-item>
@@ -25,7 +24,7 @@
     </el-dialog>
 
     <!-- 分享弹窗 -->
-    <QuestionnaireShare :visible="dialog.visible && dialog.type==='share'" @update:visible="dialog.visible=$event" />
+    <QuestionnaireShare :visible="dialog.visible && dialog.type==='share'" :questionnaire="dialog.data" @update:visible="dialog.visible=$event" />
     <!-- 编辑弹窗 -->
     <el-dialog :visible="dialog.visible && dialog.type==='edit'" title="编辑" width="600px" @update:visible="dialog.visible=$event">
       <p>
@@ -55,7 +54,7 @@
 
 <script>
 import { getQuestionnaireList, updateQuestionnaireState, deleteQuestionnaire, checkQuestionnaireTitle } from '@/api/quest-survey'
-import { formatDateTime } from '@/utils/date'
+import { QUESTIONNAIRE_STATE } from '../constant'
 
 export default {
   components: {
@@ -66,6 +65,7 @@ export default {
   props: {},
   data() {
     return {
+      QUESTIONNAIRE_STATE,
       dialog: {
         visible: false,
         data: {},
@@ -82,9 +82,9 @@ export default {
       columns: [
         { label: 'ID', prop: 'id' },
         { label: '问卷标题', prop: 'title' },
-        { label: '状态', render: ({ row }) => <div> { ['未发布', '已发布', '已冻结', '已停止'][row.state] } </div> },
-        { label: '答卷', prop: 'answersCount' },
-        { label: '创建时间', render: ({ row }) => formatDateTime(+row.createdTs, 'yyyy-MM-dd hh:mm:ss') },
+        { label: '状态', render: ({ row }) => QUESTIONNAIRE_STATE[row.state] },
+        { label: '答卷', render: ({ row }) => row.answersCount > 0 ? <el-button type="text" onClick={() => this.$router.push({ path: '/quest-survey/answer/list', query: { id: row.id } })}>{row.answersCount}</el-button> : 0 },
+        { label: '创建时间', prop: 'createdTs' },
         { label: '操作', render: ({ row }) => this.generateActions(row) }
       ],
       loading: false,
