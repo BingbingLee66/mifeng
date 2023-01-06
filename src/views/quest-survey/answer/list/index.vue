@@ -10,7 +10,7 @@
         <div>说明</div>
         <div style="margin-top: 10px">{{ remark }}</div>
       </div>
-      <div class="answer">
+      <div v-if="activeName==='answerList'" class="answer">
         <!-- item标题 -->
         <div v-for="(item, index) in answersList" :key="item.problemId" class="answer-item">
           <div class="flex-x-0-center"><span v-if="item.required" class="dot">*</span>{{ index + 1 }}. {{ item.title }}
@@ -27,6 +27,8 @@
           </div>
         </div>
       </div>
+      <AnswerDetail v-if="activeName==='answerDetail'" :ckey="ckey" :questionnaire-id="questionnaireId" />
+
     </el-card>
     <OtherDetail ref="otherDetail" :show-other="showOther" :current-item="currentItem" :detail-visible.sync="detailVisible" :current-index="currentIndex" />
   </div>
@@ -37,7 +39,8 @@ import { COMPONENT_KEY, COMPONENT_KEY_MAP, FILE_TYPE_MAP } from '../../create/co
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
-    OtherDetail: () => import('./components/Other_Detail.vue')
+    OtherDetail: () => import('./components/Other_Detail.vue'),
+    AnswerDetail: () => import('./components/Answer_Detail.vue')
   },
   data() {
     return {
@@ -59,7 +62,7 @@ export default {
       columns: [
         { label: '选项', prop: 'optionName', width: 200 },
         { label: '小计', prop: 'subtotal', width: 100 },
-        { label: '比例', width: 200, render: ({ row }) => <el-progress percentage={row.proportion * 100}></el-progress> },
+        { label: '比例', width: 200, render: ({ row }) => <el-progress percentage={row.proportion}></el-progress> },
         { label: '操作', prop: 'operation', render: ({ row }) => { if (row.otherItems) { return <div onClick={() => this.answerDetailOther(row)}>查看</div> } } },
       ],
     }

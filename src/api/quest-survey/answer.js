@@ -48,3 +48,19 @@ export const download = params => {
     responseType: 'blob'
   })
 }
+// 总后台:用户答卷列表
+export const userAnswerList = params => {
+  return request({
+    url: '/scrmapi/answers/user/list',
+    method: 'get',
+    params
+  })
+}
+// 秘锋:用户答卷列表
+export const userAnswerListByMiF = params => {
+  return request({
+    url: '/crmapi/answers/user/list',
+    method: 'get',
+    params
+  })
+}
