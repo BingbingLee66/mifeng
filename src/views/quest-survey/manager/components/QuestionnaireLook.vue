@@ -141,7 +141,7 @@ export default {
       try {
         if (questionnaireMap[questionnaireId]) return
         const { data } = await questionDetail({
-          id: 25,
+          id: questionnaireId,
           businessType: 1
         })
         this.$set(questionnaireMap, questionnaireId, data)
