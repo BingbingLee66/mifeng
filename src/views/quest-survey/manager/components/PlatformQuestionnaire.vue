@@ -24,7 +24,7 @@
     </el-dialog>
 
     <!-- 分享弹窗 -->
-    <QuestionnaireShare :visible="dialog.visible && dialog.type==='share'" :questionnaire="dialog.data" @update:visible="dialog.visible=$event" />
+    <QuestionnaireShare :visible="dialog.visible && dialog.type==='share'" :questionnaire-id="dialog.data.id" @update:visible="dialog.visible=$event" />
     <!-- 编辑弹窗 -->
     <el-dialog :visible="dialog.visible && dialog.type==='edit'" title="编辑" width="600px" @update:visible="dialog.visible=$event">
       <p>

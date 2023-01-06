@@ -20,12 +20,11 @@
     <KdTable v-loading="loading" :columns="columns" :rows="tableData" />
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
 
-    <!-- 查看弹窗 -->
-    <el-dialog :visible="dialog.visible && dialog.type==='look'" title="冻结" width="500px" @update:visible="dialog.visible=$event">
-      <el-button slot="footer" type="primary" @click="dialog.visible = false">关闭</el-button>
-    </el-dialog>
+    <QuestionnaireLook :visible="dialog.visible && dialog.type==='look'" :questionnaire-id="dialog.data.id" @update:visible="dialog.visible=$event" />
+
     <!-- 分享弹窗 -->
-    <QuestionnaireShare :visible="dialog.visible && dialog.type==='share'" :questionnaire="dialog.data" @update:visible="dialog.visible=$event" />
+    <QuestionnaireShare :visible="dialog.visible && dialog.type==='share'" :questionnaire-id="dialog.data.id" @update:visible="dialog.visible=$event" />
+
     <!-- 冻结弹窗 -->
     <el-dialog :visible="dialog.visible && dialog.type==='freeze'" title="冻结" width="500px" @update:visible="dialog.visible=$event">
       <p>
@@ -51,7 +50,8 @@ export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
     KdPagination: () => import('@/components/common/KdPagination'),
-    QuestionnaireShare: () => import('./QuestionnaireShare.vue')
+    QuestionnaireShare: () => import('./QuestionnaireShare.vue'),
+    QuestionnaireLook: () => import('./QuestionnaireLook.vue')
   },
   props: {},
   data() {
@@ -96,9 +96,11 @@ export default {
     },
     generateActions(row) {
       return (<div>
-        <el-button type="text" onClick={() => this.onViewQuestionnaire(row)}>查看</el-button>
+        <el-button type="text" onClick={() => this.openDialog({ data: row, type: 'look' })}>查看</el-button>
         <el-button type="text" onClick={() => this.openDialog({ data: row, type: 'share' }) }>分享</el-button>
-        <el-button type="text" onClick={() => this.openDialog({ type: 'freeze', data: row, value: '' })}>冻结</el-button>
+        {
+          +row.state !== 2 ? <el-button type="text" onClick={() => this.openDialog({ type: 'freeze', data: row, value: '' })}>冻结</el-button> : ''
+        }
       </div>)
     },
     openDialog(dialog) {
@@ -145,5 +147,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//
+
 </style>

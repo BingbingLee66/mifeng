@@ -29,9 +29,9 @@ export default {
       type: Boolean,
       default: false
     },
-    questionnaire: {
-      type: Object,
-      default: null
+    questionnaireId: {
+      type: [Number, String],
+      default: ''
     }
   },
   data() {
@@ -42,28 +42,33 @@ export default {
   },
   computed: {
     curShareInfo() {
-      const { id = '' } = this.questionnaire || {}
-      const { shareMap } = this
-      return shareMap[id] || {}
+      const { shareMap, questionnaireId } = this
+      return shareMap[questionnaireId] || {}
     }
   },
   watch: {
-    questionnaire: {
+    questionnaireId: {
       handler() {
         this.getShareInfo()
       },
       immediate: true
-    }
+    },
+    visible: {
+      handler() {
+        this.getShareInfo()
+      },
+      immediate: true
+    },
   },
   methods: {
     async getShareInfo() {
-      const { id: questionnaireId } = this.questionnaire || {}
-      if (!questionnaireId) return
+      const { questionnaireId, shareMap, visible } = this
+      if (!visible || !questionnaireId || this.loading) return
       this.loading = true
       try {
-        if (this.shareMap[questionnaireId]) return
+        if (shareMap[questionnaireId]) return
         const { data: { questionnaireCode, questionnaireUrl } } = await getQrCode({ questionnaireId })
-        this.$set(this.shareMap, questionnaireId, {
+        this.$set(shareMap, questionnaireId, {
           link: questionnaireUrl,
           qrcode: questionnaireCode
         })
