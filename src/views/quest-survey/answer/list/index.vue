@@ -58,12 +58,12 @@ export default {
       COMPONENT_KEY_MAP,
       FILE_TYPE_MAP,
       detailVisible: false,
-      questionnaireId: 25,
+      questionnaireId: null,
       columns: [
         { label: '选项', prop: 'optionName', width: 200 },
         { label: '小计', prop: 'subtotal', width: 100 },
         { label: '比例', width: 200, render: ({ row }) => <el-progress percentage={row.proportion}></el-progress> },
-        { label: '操作', prop: 'operation', render: ({ row }) => { if (row.otherItems) { return <div onClick={() => this.answerDetailOther(row)}>查看</div> } } },
+        { label: '操作', prop: 'operation', render: ({ row }) => { if (row.otherItems) { return <el-link type="primary" onClick={() => this.answerDetailOther(row)}>查看</el-link> } } },
       ],
     }
   },
@@ -73,6 +73,7 @@ export default {
     }
   },
   created() {
+    this.questionnaireId = this.$route.query.id || null
     this.getAnswersList()
   },
   methods: {

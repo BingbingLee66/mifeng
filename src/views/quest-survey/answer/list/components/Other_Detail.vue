@@ -62,7 +62,7 @@ export default {
     }
   },
   methods: {
-    // 问卷发布
+    // 其他答卷数据
     async getDetail(questionId) {
       const { ckey, pageNum, pageSize } = this
       let API = answersOtherDetail
@@ -72,7 +72,7 @@ export default {
     },
     // 打开对应的答卷
     answerDetail() {},
-    onQueryChange(val) { const { pageSize, pageNum } = val; this.pageNum = pageNum; this.pageSize = pageSize; console.log('val', val) },
+    onQueryChange(val) { const { pageSize, pageNum } = val; this.pageNum = pageNum; this.pageSize = pageSize; console.log('val', val); this.getDetail() },
     close() {
       this.$emit('update:detailVisible', false)
     }

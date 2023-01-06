@@ -87,6 +87,12 @@ export const constantRoutes = [
         meta: { title: '查看答卷' }
       },
       {
+        path: '/quest-survey/answer/detail',
+        component: () => import('@/views/quest-survey/answer/detail/index'),
+        name: 'answerDetail',
+        meta: { title: '答卷详情' }
+      },
+      {
         path: 'profile',
         name: '个人资料',
         component: () => import('@/views/account/profile.vue'),

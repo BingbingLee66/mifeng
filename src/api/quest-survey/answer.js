@@ -64,3 +64,19 @@ export const userAnswerListByMiF = params => {
     params
   })
 }
+// 秘锋:查看个人答卷详情
+export const answersUserDetailByMiF = params => {
+  return request({
+    url: '/crmapi/answers/user/detail',
+    method: 'get',
+    params
+  })
+}
+// 总后台:查看个人答卷详情
+export const answersUserDetail = params => {
+  return request({
+    url: '/scrmapi/answers/user/detail',
+    method: 'get',
+    params
+  })
+}
