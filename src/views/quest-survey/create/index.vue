@@ -280,7 +280,7 @@ export default {
     setStep() { this.active = 2 },
     // 点击基础组件
     clickComponent(item) {
-      if (this.componentsList.lengh > 99) { this.$message.warning('题目数量达到100，无法添加，请适当缩减'); return }
+      if (this.componentsList.length > 99) { this.$message.warning('题目数量达到100，无法添加，请适当缩减'); return }
       this.componentsList.push(JSON.parse(JSON.stringify(item)))
     },
     // 必填项发生改变
