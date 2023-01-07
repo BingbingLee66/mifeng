@@ -16,11 +16,27 @@ const mutations = {
 
 const actions = {
 
-  getSideMenus({ commit, state }) {
+  getSideMenus({ commit }) {
     return new Promise((resolve, reject) => {
       listForRouter().then(response => {
-        let menus = response.data.menu
-        let remoteroutes = traverseRoutes(menus)
+        const menus = response.data.menu
+        menus.forEach(v => {
+          if (v.id === 33) {
+            v.children.push({
+              id: 9999,
+              parentId: 33,
+              menuName: '5G彩信模板管理',
+              menuUrl: '/mass-notification/5g/list',
+              component: 'views/mass-notification/5g/list',
+              hidden: false,
+              icon: 'operation',
+              hadGuide: false,
+              guideId: null,
+              children: []
+            })
+          }
+        })
+        const remoteroutes = traverseRoutes(menus)
         commit('SET_ROUTES', remoteroutes)
         resolve(remoteroutes)
       }).catch(error => {
