@@ -20,7 +20,7 @@
     </div>
     <el-card class="box-card">
       <div class="title">{{ answerDetailObj.name }}</div>
-      <div v-if="remark" class="desc">
+      <div v-if="answerDetailObj.remark" class="desc">
         <div>说明</div>
         <div style="margin-top: 10px">{{ answerDetailObj.remark }}</div>
       </div>
@@ -94,6 +94,11 @@ export default {
       COMPONENT_KEY,
       COMPONENT_KEY_MAP,
       FILE_TYPE_MAP,
+    }
+  },
+  computed: {
+    ckey() {
+      return this.$store.getters.ckey || ''
     }
   },
   created() {
