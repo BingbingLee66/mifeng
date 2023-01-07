@@ -19,10 +19,10 @@
             </div>
             <img class="hint-icon" :src="getCDNImg('questionnaire/hint-close.png')" catch:tap="closeTip">
           </div>
-          <div v-for="model in questionnaire.commonModelDTOS" :key="model.id" class="quest-card">
+          <div v-for="(model,index) in questionnaire.commonModelDTOS" :key="model.id" class="quest-card">
             <div class="card-title flex-x">
               <div class="card-required">*</div>
-              123132132
+              {{ index+1 }}.{{ model.title }}
               <div v-if="model.componentKey === 'Component_Single_Select'" class="tag flex-x-center-center">单选</div>
               <div v-else-if="model.componentKey === 'Component_Multiple_Select'" class="tag flex-x-center-center">多选</div>
               <div v-else-if="model.componentKey === 'Component_Upload_Image'" class="tag flex-x-center-center">上传照片</div>
