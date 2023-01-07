@@ -109,12 +109,10 @@ export default {
       this.$refs[formName].resetFields()
     },
     // 打开对应的答卷
-    answerDetail(row) {
+    answerDetail({ questionnaireId, userId }) {
       this.$router.push({
         path: '/quest-survey/answer/detail',
-        query: {
-          id: row.userId
-        }
+        query: { questionnaireId, userId }
       })
     },
     onQueryChange(val) { const { pageSize, pageNum } = val; this.pageNum = pageNum; this.pageSize = pageSize; this.answerList() },

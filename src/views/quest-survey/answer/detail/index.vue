@@ -8,9 +8,9 @@
           <span>提交时间：{{ answerDetailObj.submitTs }}</span>
         </div>
         <div v-if="ckey">
-          <span>姓名：1</span>
-          <span>会内职位：1</span>
-          <span>联系方式：1</span>
+          <span>姓名：{{ answerDetailObj.name }}</span>
+          <span>会内职位：{{ answerDetailObj.post }}</span>
+          <span>联系方式：{{ answerDetailObj.contactPhone }}</span>
         </div>
         <div v-else>
           <span>用户名：{{ answerDetailObj.name }}</span>
@@ -56,6 +56,10 @@
           </div>
         </div>
 
+      </div>
+      <div class="flex-x-center-center">
+        <el-button @click="nextAnswer()">上一份答卷</el-button>
+        <el-button type="primary" @click="nextAnswer()">下一份答卷</el-button>
       </div>
     </el-card>
   </div>
@@ -103,12 +107,12 @@ export default {
   },
   created() {
     this.answerList()
-    this.questionnaireId = this.$route.query.id || null
   },
   methods: {
     // 用户答卷列表
     async answerList() {
-      const { ckey, questionnaireId, userId } = this
+      const { ckey } = this
+      const { questionnaireId, userId } = this.$route.query
       let API = answersUserDetail
       if (ckey) { API = answersUserDetailByMiF }
       const { data } = await API({ businessType: 1, questionnaireId, userId })
@@ -116,6 +120,15 @@ export default {
       this.answerDetailObj.submitTs = dayjs(+data.submitTs).format('YYYY年MM月DD日 HH:mm')
       this.answersList = data.answers
     },
+    nextAnswer(userId) {
+      this.$router.push({
+        path: '/quest-survey/answer/detail',
+        query: {
+          ...this.$route.query,
+          userId
+        }
+      })
+    }
   }
 }
 </script>
