@@ -80,3 +80,11 @@ export const answersUserDetail = params => {
     params
   })
 }
+
+// 总后台:查看其他选项
+export const getOtherAnswers = params => {
+  return request({
+    url: '/scrmapi/answers/other',
+    params
+  })
+}

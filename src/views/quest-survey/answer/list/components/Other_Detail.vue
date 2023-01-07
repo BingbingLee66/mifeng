@@ -13,8 +13,9 @@
       </div>
       <div v-else class="flex-y">
         <span>答题人补充的其他选项 ：</span>
-        <span v-for="(item,index) in currentItem.optionStatistics" :key="item.problemId" class="optionName">
-          {{ item.optionName }}<span v-if="index!==currentItem.optionStatistics.length-1">、</span> </span>
+        <div class="optionName">
+          {{ otherAnswerList.join('、') }}
+        </div>
       </div>
       <span slot="footer" class="dialog-footer flex-x-center">
         <el-button type="primary" @click="close">关闭</el-button>
@@ -23,7 +24,7 @@
   </div>
 </template>
 <script>
-import { answersOtherDetailByMiF, answersOtherDetail } from '@/api/quest-survey/answer'
+import { answersOtherDetailByMiF, answersOtherDetail, getOtherAnswers } from '@/api/quest-survey/answer'
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
@@ -58,7 +59,24 @@ export default {
     ],
     pageNum: 1,
     pageSize: 10,
-    tableData: []
+    tableData: [],
+    otherAnswerMap: {}
+    }
+  },
+  computed: {
+    problemId() {
+      return this.currentItem.problemId
+    },
+    otherAnswerList() {
+      return this.otherAnswerMap[this.problemId] || []
+    }
+  },
+  watch: {
+    currentItem: {
+      handler() {
+        this.fetchOtherAnswers()
+      },
+      immediate: true
     }
   },
   methods: {
@@ -75,6 +93,12 @@ export default {
     onQueryChange(val) { const { pageSize, pageNum } = val; this.pageNum = pageNum; this.pageSize = pageSize; console.log('val', val); this.getDetail() },
     close() {
       this.$emit('update:detailVisible', false)
+    },
+    async fetchOtherAnswers() {
+      const { problemId, otherAnswerMap } = this
+      if (!problemId || (otherAnswerMap[problemId] && !otherAnswerMap[problemId].length)) return
+      const { data } = await getOtherAnswers({ questionId: this.currentItem.problemId })
+      this.$set(otherAnswerMap, problemId, data || [])
     }
   }
 }
