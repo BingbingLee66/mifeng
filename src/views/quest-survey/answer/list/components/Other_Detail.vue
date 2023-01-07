@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :visible.sync="detailVisible" width="30%" :before-close="close">
+    <el-dialog :visible.sync="detailVisible" width="600px" :before-close="close">
       <div slot="title"><span class="dot">*</span>{{ currentIndex+1 }}.{{ currentItem.title }}</div>
       <div v-if="!showOther">
         <KdTable :columns="columns" :rows="tableData" />
@@ -89,7 +89,12 @@ export default {
       this.tableData = list
     },
     // 打开对应的答卷
-    answerDetail() {},
+    answerDetail(row) {
+      this.$router.push({
+        path: '/quest-survey/answer/detail',
+        query: { questionnaireId: this.$route.query.id, userId: row.externalUserId }
+      })
+    },
     onQueryChange(val) { const { pageSize, pageNum } = val; this.pageNum = pageNum; this.pageSize = pageSize; console.log('val', val); this.getDetail() },
     close() {
       this.$emit('update:detailVisible', false)
