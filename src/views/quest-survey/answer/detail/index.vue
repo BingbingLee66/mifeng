@@ -34,7 +34,7 @@
             <span v-else class="components-type">{{ COMPONENT_KEY_MAP.get(item.key) }}</span>
           </div></div>
         <!-- 只取数组第一个 -->
-        <div v-if="[COMPONENT_KEY.PROVINCE_CITY_AREA,COMPONENT_KEY.SINGLE_TEXT,COMPONENT_KEY.MULTIPLE_TEXT].includes(item.key)">
+        <div v-if="[COMPONENT_KEY.PROVINCE_CITY_AREA,COMPONENT_KEY.SINGLE_TEXT,COMPONENT_KEY.MULTIPLE_TEXT].includes(item.key)" class="item-question">
           <!-- 省市区，拿provinceName，cityName，areaName -->
           <div v-if="item.key===COMPONENT_KEY.PROVINCE_CITY_AREA">
             {{ item.val[0].provinceName }}-{{ item.val[0].cityName }}-{{ item.val[0].areaName }}
@@ -46,11 +46,16 @@
         <!-- v-if="[COMPONENT_KEY.SINGLE_SELECT,COMPONENT_KEY.MULTIPLE_SELECT,COMPONENT_KEY.PULLDOWN_SELECT].includes(item.key)" -->
         <div v-else>
           <div v-for="(item2,index2) in item.val" :key="index2" class="item-question">
-            <div v-if="item.key===COMPONENT_KEY.UPLOAD_VIDEO">
-              拿对象vid，sourceAddr，cover
+            <div v-if="item.key===COMPONENT_KEY.UPLOAD_VIDEO" class="video-item">
+              <!-- 拿对象vid，sourceAddr，cover -->
+              <i class="el-icon-set-up video" /> <span>{{ item2.vid }}</span> <el-link type="primary" @click="downLoadImg(2,item2)">下载</el-link>
             </div>
             <!-- Component_Upload_Image,Component_Upload_File拿value -->
-            <div v-else-if="[COMPONENT_KEY.UPLOAD_IMAGE,COMPONENT_KEY.UPLOAD_FILE].includes(item.key)">{{ item2.value }}</div>
+            <template v-else-if="[COMPONENT_KEY.UPLOAD_IMAGE,COMPONENT_KEY.UPLOAD_FILE].includes(item.key)">
+              <div v-if="item.key===COMPONENT_KEY.UPLOAD_IMAGE" class="upload-img-item"><img :src="item2.value" class="upload-img"> <el-link type="primary">查看原图</el-link><el-link type="primary" @click="downLoadImg(1,item2)">下载</el-link></div>
+              <div v-else>{{ item.value }}</div>
+
+            </template>
             <!-- Component_Single_Select，Component_Multiple_Select，Component_Pulldown_Select 拿label -->
             <div v-else>{{ item2.label }}</div>
           </div>
@@ -58,8 +63,8 @@
 
       </div>
       <div class="flex-x-center-center">
-        <el-button @click="nextAnswer()">上一份答卷</el-button>
-        <el-button type="primary" @click="nextAnswer()">下一份答卷</el-button>
+        <el-button v-if="answerDetailObj.prevId" @click="nextAnswer(answerDetailObj.prevId)">上一份答卷</el-button>
+        <el-button v-if="answerDetailObj.nextId" type="primary" @click="nextAnswer(answerDetailObj.nextId)">下一份答卷</el-button>
       </div>
     </el-card>
   </div>
@@ -69,6 +74,7 @@ import dayjs from 'dayjs'
 import { formatDateTime } from '@/utils/date'
 import { COMPONENT_KEY, COMPONENT_KEY_MAP, FILE_TYPE_MAP } from '../../create/constant/index'
 import { answersUserDetail, answersUserDetailByMiF } from '@/api/quest-survey/answer'
+import { downloadByBlob } from '@/views/activity/util'
 export default {
   components: { },
 
@@ -92,8 +98,8 @@ export default {
       pageNum: 1,
       pageSize: 10,
       answersList: [],
-      userId: 149,
-      questionnaireId: 34,
+      userId: 185,
+      questionnaireId: 47,
       answerDetailObj: {},
       COMPONENT_KEY,
       COMPONENT_KEY_MAP,
@@ -107,12 +113,14 @@ export default {
   },
   created() {
     this.answerList()
+    this.questionnaireId = this.$route.query.id || null
+    this.userId = this.$route.query.userId || null
   },
   methods: {
     // 用户答卷列表
     async answerList() {
       const { ckey } = this
-      const { questionnaireId, userId } = this.$route.query
+      const { questionnaireId, userId } = this
       let API = answersUserDetail
       if (ckey) { API = answersUserDetailByMiF }
       const { data } = await API({ businessType: 1, questionnaireId, userId })
@@ -120,14 +128,35 @@ export default {
       this.answerDetailObj.submitTs = dayjs(+data.submitTs).format('YYYY年MM月DD日 HH:mm')
       this.answersList = data.answers
     },
-    nextAnswer(userId) {
+    // 点击上下份答卷
+    nextAnswer(id) {
+      if (!id) { return }
+      const { userId } = this
       this.$router.push({
         path: '/quest-survey/answer/detail',
         query: {
-          ...this.$route.query,
+          id,
           userId
         }
       })
+    },
+    // 下载图片  1图片 2视频
+    downLoadImg(type = 1, item) {
+      if (type === 1) { downloadByBlob(item.value, '图片') } else if (type === 2) {
+        const link = item.sourceAddr
+        const fileName = item.vid
+        const x = new XMLHttpRequest()
+        x.open('GET', link, true)
+        x.responseType = 'blob'
+        x.onload = () => {
+          const url = window.URL.createObjectURL(x.response)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = fileName
+          a.click()
+        }
+        x.send()
+      }
     }
   }
 }
@@ -142,6 +171,7 @@ export default {
   }
 }
 .answer-item{
+  margin: 10px 0px;
   .item-question{
     margin: 10px 0px;
   }
@@ -173,5 +203,18 @@ export default {
 .optionName{
   margin-top: 30px;
   text-align: center;
+}
+.video-item{
+  display: inline-block;
+  padding: 8px 15px;
+  background-color: #f7f7f7;
+  .video{
+  color: #4b73f1;
+}
+
+}
+.upload-img{
+  width: 100px;
+  height: 100px;
 }
 </style>
