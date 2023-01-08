@@ -246,7 +246,7 @@ export const secretariatConfig = [
 ]
 
 // 审核状态
-export const auditStauts = {
+export const auditStatus = {
   0: '审核中',
   1: '已通过',
   2: '未通过',
