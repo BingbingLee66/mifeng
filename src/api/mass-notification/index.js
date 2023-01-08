@@ -202,3 +202,29 @@ export const stationMailDetail = params => request({ url: '/ec/station-mail/deta
 export const readStationMail = ({ id }) => request({ url: `/ec/station-mail/read-station-mail?id=${id}`, method: 'put' })
 // 铃铛接口
 export const stationMailDing = params => request({ url: '/ec/station-mail/ding', method: 'get', params })
+
+export const uploadFile = (params, data) => {
+  return request({
+    url: '/ec/upload/file2name',
+    method: 'post',
+    params,
+    data
+  })
+}
+
+// 新增5g模板
+export const add5GTemplate = data => {
+  return request({
+    url: '/ec/notice-template-set/add-5G-sms-template',
+    method: 'post',
+    data
+  })
+}
+
+// 5G模板列表
+export const get5GTemplateList = params => {
+  return request({
+    url: '/ec/notice-template/sms-5G-list',
+    params
+  })
+}

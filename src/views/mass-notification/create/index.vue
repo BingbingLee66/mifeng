@@ -91,7 +91,15 @@
       <!-- 同步渠道 -->
       <div class="title-hd">同步渠道 <span> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
 
-      <el-form v-if="form.receive == '7'" :rules="rules" :model="form" label-position="right" label-width="100px">
+      <!-- 5g彩信通知 -->
+      <el-form-item v-if="+form.type === 6" label="5G彩信">
+        <el-select class="select">
+          <el-option>123</el-option>
+        </el-select>
+      </el-form-item>
+
+      <!-- 秘书处后台站内信通知 -->
+      <el-form v-else-if="+form.receive === 7" :rules="rules" :model="form" label-position="right" label-width="100px">
         <el-form-item label="站内信标题" :required="true" style="margin-bottom:20px">
           <el-input
             v-model="form.introduceTitle"
@@ -641,7 +649,7 @@ export default {
         const foo = { title, content, imgs }
         obj = Object.assign(obj, foo)
       }
-      console.log('obj', obj)
+      // console.log('obj', obj)
       return obj
     },
     restTypeData() {

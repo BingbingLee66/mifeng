@@ -122,7 +122,7 @@ export default {
   },
   watch: {
     activityType() {
-      console.log('activityType', this.activityType)
+      // console.log('activityType', this.activityType)
       this.getChamberOptions()
     }
   },
@@ -147,7 +147,7 @@ export default {
     async getChamberOptions() {
       let API = distributionChambers
       if (this.activityType === 3) { API = getInfoList }
-      console.log('API', API)
+      // console.log('API', API)
       const { data } = await API()
       this.chamberList = data
     },

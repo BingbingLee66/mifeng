@@ -52,6 +52,8 @@
       </el-form-item>
       <div class="mass">短信总量： <span class="note">{{ statistics.smsDistributionSum || 0 }}</span></div>
       <div class="mass">剩余短信： <span class="note">{{ statistics.smsRemainSum || 0 }}</span></div>
+      <div class="mass">酷信总量： <span class="note">{{ statistics.smsDistributionSum || 0 }}</span></div>
+      <div class="mass">剩余酷信： <span class="note">{{ statistics.smsRemainSum || 0 }}</span></div>
     </template>
 
     <el-form-item>

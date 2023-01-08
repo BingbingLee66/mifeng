@@ -5,6 +5,7 @@ export const labelType = [
   { n: '招商活动', type: 3, show: 3 },
   { n: '邀请入会', type: 4, show: 2 },
   { n: '自定义通知', type: 5, show: 3 },
+  { n: '5G彩信通知', type: 6, show: 3 },
 ]
 export const receiveType = [
   { n: '所有会员', type: -1, show: 1 },
@@ -40,6 +41,7 @@ export const labelTypeForm = [
   { name: '招商活动', id: 3 },
   { name: '邀请入会', id: 4 },
   { name: '自定义通知', id: 5 },
+  { name: '酷信通知', id: 6 },
 ]
 // 所有会员的table config
 export const memberTableConfig = [
@@ -242,3 +244,11 @@ export const secretariatConfig = [
   },
 
 ]
+
+// 审核状态
+export const auditStauts = {
+  0: '审核中',
+  1: '已通过',
+  2: '未通过',
+  3: '已撤回'
+}

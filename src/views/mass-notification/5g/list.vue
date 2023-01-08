@@ -7,8 +7,7 @@
       <el-form-item label="模板状态">
         <el-select v-model="query.state">
           <el-option label="全部" value="" />
-          <el-option label="已审核" value="1" />
-          <el-option label="未审核" value="2" />
+          <el-option v-for="item in ['1','2']" :key="item" :label="auditStauts[item]" :value="item" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -23,7 +22,8 @@
 </template>
 
 <script>
-
+import { get5GTemplateList } from '@/api/mass-notification'
+import { auditStauts } from '../util/label'
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
@@ -32,6 +32,7 @@ export default {
   props: {},
   data() {
     return {
+      auditStauts,
       query: {
         title: '',
         state: '',
@@ -42,14 +43,17 @@ export default {
       loading: false,
       columns: [
         { label: '模板ID', prop: 'id' },
-        { label: '标题', prop: 'title' },
-        { label: '大小' },
+        { label: '标题', prop: 'templateName' },
+        { label: '大小', render: ({ row }) => `${(row.extend.size / (1024 * 1024)).toFixed(1)}M` },
         { label: '提审时间' },
-        { label: '审核状态' },
+        { label: '审核状态', render: ({ row }) => auditStauts[row.auditStauts] },
         { label: '操作', render: ({ row }) => this.generateActions(row) }
       ],
-      tableData: [{}]
+      tableData: []
     }
+  },
+  created() {
+    this.fetchData()
   },
   methods: {
     generateActions() {
@@ -60,7 +64,17 @@ export default {
     },
     onQueryChange(e) {
       this.query = { ...this.query, ...e }
-    }
+    },
+    async fetchData() {
+      this.loading = true
+      try {
+        const { data } = await get5GTemplateList()
+        this.tableData = data.list || []
+        this.total = data.totalRows || 0
+      } finally {
+        this.loading = false
+      }
+    },
   },
 }
 </script>
