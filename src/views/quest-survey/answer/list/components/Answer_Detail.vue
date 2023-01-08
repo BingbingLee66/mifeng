@@ -91,8 +91,6 @@ export default {
     onSubmit() {},
     // 用户答卷列表
     async answerList() {
-      console.log('this', this)
-      console.log('this.questionnaireId', this.questionnaireId)
       const { ckey, pageNum, pageSize, questionnaireId, form } = this
       let API = userAnswerList
       if (ckey) { API = userAnswerListByMiF }
@@ -105,14 +103,13 @@ export default {
       this.memberPostOptions = data.data
     },
     resetForm(formName) {
-      console.log('重置')
       this.$refs[formName].resetFields()
     },
     // 打开对应的答卷
     answerDetail({ questionnaireId, userId }) {
       this.$router.push({
         path: '/quest-survey/answer/detail',
-        query: { questionnaireId, userId }
+        query: { id: questionnaireId, userId }
       })
     },
     onQueryChange(val) { const { pageSize, pageNum } = val; this.pageNum = pageNum; this.pageSize = pageSize; this.answerList() },
