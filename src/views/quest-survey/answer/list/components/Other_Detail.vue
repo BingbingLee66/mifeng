@@ -95,7 +95,7 @@ export default {
         query: { questionnaireId: this.$route.query.id, userId: row.externalUserId }
       })
     },
-    onQueryChange(val) { const { pageSize, pageNum } = val; this.pageNum = pageNum; this.pageSize = pageSize; console.log('val', val); this.getDetail() },
+    onQueryChange(val) { const { pageSize, pageNum } = val; this.pageNum = pageNum; this.pageSize = pageSize; this.getDetail(this.problemId) },
     close() {
       this.$emit('update:detailVisible', false)
     },

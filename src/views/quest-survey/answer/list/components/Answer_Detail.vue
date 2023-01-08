@@ -71,7 +71,7 @@ export default {
   computed: {
     columns() {
       const arr = [
-        { label: '序号', type: 'index', width: 80 },
+        { label: '序号', prop: 'questionnaireRecordId', width: 190 },
         { label: '用户名', prop: 'username' },
         { label: '会内职位', prop: 'job' },
         { label: '姓名/联系人', prop: 'name' },
