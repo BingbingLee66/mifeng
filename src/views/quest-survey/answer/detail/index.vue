@@ -4,7 +4,7 @@
     <div class="answer-msg">
       <div>
         <div style="margin-bottom:10px">
-          <span>序号：{{ 1 }}</span>
+          <span>序号：{{ answerDetailObj.questionnaireRecordId }}</span>
           <span>提交时间：{{ answerDetailObj.submitTs }}</span>
         </div>
         <div v-if="ckey">
