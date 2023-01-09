@@ -54,8 +54,10 @@
             <img class="action" src="@/assets/img/5g/video-btn.png">
           </el-upload>
 
-          <img class="action" src="@/assets/img/5g/activity-btn.png">
-          <img class="action" src="@/assets/img/5g/article-btn.png">
+          <img class="action" src="@/assets/img/5g/activity-btn.png" @click="openActivitySelector">
+          <ActivityDialog ref="activitySelector" @addActivity="onAddActivity" />
+          <img class="action" src="@/assets/img/5g/article-btn.png" @click="articleVisible = true">
+          <ArticleSelector :visible.sync="articleVisible" @add="onAddArticle" />
         </div>
         <el-button class="submit" type="primary" @click="onSubmit">提交审核</el-button>
       </div>
@@ -77,6 +79,9 @@
             <img v-else-if="item.type === 'image'" class="template-image" :src="item.value">
             <video v-else-if="item.type === 'video'" controls class="template-video" :src="item.value" />
             <AudioPlayBar v-else-if="item.type === 'audio'" controls :src="item.value" />
+            <el-link v-else-if="item.type === 'activity' || item.type === 'article'" type="primary" @click="$copyText(item.value.url).then(() => $message.success('复制成功'))">
+              {{ item.value.url }}
+            </el-link>
 
             <template v-if="isEditing">
               <img class="close" src="@/assets/img/5g/close.png" @click="templateModel.list.splice(index,1)">
@@ -88,7 +93,7 @@
           </div>
         </div>
         <div slot="footer" style="margin-top:9px;">
-          模板总大小：<span class="high-light">{{ (totalSize/(1024*1024)).toFixed(1) }}M</span>
+          模板总大小：<span class="high-light">{{ formatSize(totalSize,1) }}</span>
         </div>
       </SimulatePhone>
     </div>
@@ -96,11 +101,14 @@
 </template>
 
 <script>
-import { uploadFile, add5GTemplate } from '@/api/mass-notification'
+import { uploadFile, add5GTemplate, generateH5SkipUrl } from '@/api/mass-notification'
+import { formatSize } from '@/utils'
 export default {
   components: {
     AudioPlayBar: () => import('./components/AudioPlayBar'),
-    SimulatePhone: () => import('./components/SimulatePhone')
+    SimulatePhone: () => import('./components/SimulatePhone'),
+    ArticleSelector: () => import('./components/ArticleSelector'),
+    ActivityDialog: () => import('../create/components/activityDialog')
   },
   props: {},
   data() {
@@ -110,7 +118,8 @@ export default {
         list: []
       },
       uid: 0,
-      isEditing: false
+      isEditing: false,
+      articleVisible: false
     }
   },
   computed: {
@@ -119,6 +128,8 @@ export default {
         const { type, size, value } = cur
         if (type === 'text') {
           return total + this.getStrSize(value)
+        } else if (type === 'activity' || type === 'article') {
+          return total + this.getStrSize(value.url)
         } else {
           return total + (size || 0)
         }
@@ -127,6 +138,7 @@ export default {
   },
   // /ec/notice-template-set/add-5G-sms-template
   methods: {
+    formatSize,
     onTextChange(item, e) {
       this.$set(item, 'value', e.target.innerText)
     },
@@ -173,6 +185,40 @@ export default {
         this.templateModel.list.push({ type: accept, value: data.url, size: file.size, id: ++this.uid })
       }
     },
+    openActivitySelector() {
+      const { activitySelector } = this.$refs
+      activitySelector.open()
+      activitySelector.$refs['table']?.cancelSelect()
+    },
+    async onAddActivity(e) {
+      const { state, msg, data } = await generateH5SkipUrl({
+        code: 'detailActivity',
+        query: `id=${e[0].id}&ckey=${e[0].ckey || ''}`,
+        skipType: 1
+      })
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      if (state === 1) {
+        this.templateModel.list.push({
+          type: 'activity',
+          value: { id: e.id, url: data }
+        })
+      }
+    },
+    async onAddArticle(e) {
+      const { state, msg, data } = await generateH5SkipUrl({
+        code: 'detailArticle',
+        query: `id=${e.id}&ckey=${e.ckey || ''}`,
+        skipType: 1
+      })
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      if (state === 1) {
+        this.articleVisible = false
+        this.templateModel.list.push({
+          type: 'article',
+          value: { id: e.id, url: data }
+        })
+      }
+    },
     onSort(index, targetIndex) {
       const { list } = this.templateModel
       if (targetIndex < 0 || targetIndex >= list.length) return
@@ -202,7 +248,8 @@ export default {
       const list = this.templateModel.list.filter(v => v.value)
       if (!title) return this.$message.warning('模板标题不能为空')
       if (!list.length) return this.$message.warning('模板内容不能为空')
-      if (list.every(v => v.type !== 'text')) return this.$message.warning('短信内容中必须有文字')
+      if (list.every(v => !['text', 'article', 'activity'].includes(v.type))) return this.$message.warning('短信内容中必须有文字')
+      if (this.totalSize > 1.9 * 1024 * 1024) return this.$message.warning('短信内容不得大于1.9M')
       const { state, msg } = await add5GTemplate({
         extend: {
           size: this.totalSize,

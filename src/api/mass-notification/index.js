@@ -228,3 +228,12 @@ export const get5GTemplateList = params => {
     params
   })
 }
+
+// 生成h5跳转短链
+export const generateH5SkipUrl = data => {
+  return request({
+    url: '/ec/h5SkipConfig/h5Url',
+    data,
+    method: 'post'
+  })
+}

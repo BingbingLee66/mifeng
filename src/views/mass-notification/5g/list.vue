@@ -25,6 +25,7 @@
 import { get5GTemplateList } from '@/api/mass-notification'
 import { auditStatus } from '../util/label'
 import { formatDateTime } from '@/utils/date'
+import { formatSize } from '@/utils'
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
@@ -45,7 +46,7 @@ export default {
       columns: [
         { label: '模板ID', prop: 'id' },
         { label: '标题', prop: 'templateName' },
-        { label: '大小', render: ({ row }) => `${(row.extend.size / (1024 * 1024)).toFixed(1)}M` },
+        { label: '大小', render: ({ row }) => formatSize(row.extend.size, 1) },
         { label: '提审时间', render: ({ row }) => formatDateTime(new Date(+row.createdTs), 'yyyy-MM-dd hh:mm:ss') },
         { label: '审核状态', render: ({ row }) => auditStatus[row.auditStatus] },
         { label: '操作', render: ({ row }) => this.generateActions(row) }
