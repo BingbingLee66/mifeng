@@ -248,6 +248,9 @@ export default {
       if (!list.length) return this.$message.warning('模板内容不能为空')
       if (list.every(v => !['text', 'article', 'activity'].includes(v.type))) return this.$message.warning('短信内容中必须有文字')
       if (this.totalSize > 1.9 * 1024 * 1024) return this.$message.warning('短信内容不得大于1.9M')
+
+      await this.$confirm('提交审核后，预计工信部与运营商在3-5天内完成审核。若视频或链接中包含较复杂逻辑或其他特殊情况，可能会导致审核时间延长。', '提示')
+
       const { state, msg } = await add5GTemplate({
         extend: {
           size: this.totalSize,

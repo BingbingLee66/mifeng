@@ -237,3 +237,11 @@ export const generateH5SkipUrl = data => {
     method: 'post'
   })
 }
+
+// 删除模板
+export const deleteTemplate = id => {
+  return request({
+    url: `/ec/notice-template/del/${id}`,
+    method: 'delete'
+  })
+}

@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { get5GTemplateList } from '@/api/mass-notification'
+import { get5GTemplateList, deleteTemplate } from '@/api/mass-notification'
 import { auditStatus } from '../util/label'
 import { formatDateTime } from '@/utils/date'
 import { formatSize } from '@/utils'
@@ -98,7 +98,7 @@ export default {
     generateActions(row) {
       return (<div>
         <el-button type="text" onClick={() => this.openDialog({ data: row })}>预览</el-button>
-        <el-button type="text">删除</el-button>
+        <el-button type="text" onClick={() => this.onDelete(row)}>删除</el-button>
       </div>)
     },
     onQueryChange(e) {
@@ -123,6 +123,15 @@ export default {
         visible: true,
         ...e
       }
+    },
+    async onDelete(row) {
+      await this.$confirm('', '确定删除？', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消'
+      })
+      const { state, msg } = await deleteTemplate(row.id)
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      if (state === 1) this.fetchData()
     }
   },
 }
