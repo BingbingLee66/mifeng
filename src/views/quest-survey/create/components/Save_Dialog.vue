@@ -24,7 +24,7 @@
 </template>
 <script>
 import { downloadByBlob } from '@/views/activity/util'
-import { updateState, getQrCode, getQrCodeByMiF } from '@/api/quest-survey/index'
+import { updateState, updateStateByMiF, getQrCode, getQrCodeByMiF } from '@/api/quest-survey/index'
 export default {
   props: {
     saveVisible: {
@@ -80,8 +80,10 @@ export default {
         questionnaireId,
         state: 1
       }
+      let API = updateState
+      if (this.ckey) { API = updateStateByMiF }
       const self = this
-      const res = await updateState(params)
+      const res = await API(params)
       if (res.state === 1) {
         self.$confirm('问卷已发布，您可以立即发短信通知会员填写问卷', '', {
           confirmButtonText: '短信通知',

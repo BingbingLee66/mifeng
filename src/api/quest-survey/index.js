@@ -41,10 +41,18 @@ export const uploadAndCheckImg = (params, query) => {
     data: params
   })
 }
-// 问卷发布-停止
-export const updateState = params => {
+// 蜜蜂：问卷发布-停止
+export const updateStateByMiF = params => {
   return request({
     url: '/crmapi/questionnaire/updateState',
+    method: 'put',
+    params
+  })
+}
+// 总后台：问卷发布-停止
+export const updateState = params => {
+  return request({
+    url: '/scrmapi/questionnaire/updateState',
     method: 'put',
     params
   })
