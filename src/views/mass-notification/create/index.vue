@@ -92,10 +92,17 @@
       <div class="title-hd">同步渠道 <span> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
 
       <!-- 5g彩信通知 -->
-      <el-form-item v-if="+form.type === 6" label="5G彩信">
-        <el-select class="select">
-          <el-option>123</el-option>
+      <el-form-item v-if="+form.type === 7" label="5G彩信" required>
+        <el-select v-model="activityChannels[5]" class="select" placeholder="选择模板" @change="activityChannels[5]=$event">
+          <el-option
+            v-for="item in synchChannels[0].templateList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
         </el-select>
+        <el-button v-if="activityChannels[5]" style="margin-left:8px;" @click="visiable5G=true">预览</el-button>
+        <Preivew5G :visible.sync="visiable5G" :template-id="getTemplateId(0)" />
       </el-form-item>
 
       <!-- 秘书处后台站内信通知 -->
@@ -207,7 +214,9 @@ export default {
   components: { ReceiveForm, kdDialog, activityDialog, WangEditor,
     detailsApp: () => import('../templateLibrary/components/details-app'),
     detailsNote: () => import('../templateLibrary/components/details-note'),
-    detailsSubscribe: () => import('../templateLibrary/components/details-subscribe'), },
+    detailsSubscribe: () => import('../templateLibrary/components/details-subscribe'),
+    Preivew5G: () => import('../5g/components/Preivew5G')
+  },
 
   data() {
     return {
@@ -238,6 +247,7 @@ export default {
         introduce: '', // 站内信
         introduceTitle: '', // 站内信标题
       },
+      // 同步渠道
       synchChannels: [
         { label: '短信', templateList: [], id: 1 },
         { label: '微信订阅消息', templateList: [], id: 2 },
@@ -275,6 +285,7 @@ export default {
       originOpt: [], // 商协会
       contentHtml: '', // 编辑器
       qrCode: [], // 活动二维码
+      visiable5G: false
     }
   },
   computed: {
@@ -332,7 +343,10 @@ export default {
         API = selectTemplateList
       }
       const { data } = await API({ channelTypeId, noticeTypeId, ckey })
-      if (noticeTypeId === 4) {
+      if (noticeTypeId === 7) {
+        this.synchChannels = [{ label: '5G彩信', templateList: data || [], id: channelTypeId }]
+        this.form.synchChannels = [channelTypeId]
+      } else if (noticeTypeId === 4) {
         this.synchChannels = [{ label: '短信', templateList: data || [], id: 1 }]
         // this.synchChannels[0].templateList = data || []
         // this.synchChannels.splice(1, 2)
@@ -585,6 +599,11 @@ export default {
         }
       } else if (type === 5) {
         // 自定义通知
+      } else if (type === 7) { // 5g彩信通知
+        if (!this.activityChannels[5]) {
+          this.$message.error('请选择需要发送的智信模板')
+          return false
+        }
       }
 
       // if(receive === -1){
@@ -665,10 +684,11 @@ export default {
       this.form.receive = this.receiveList[0].type
     },
     // 拉取渠道信息
-    async getTemplateUtil() {
-      // 除了邀请入会只有短信1，其他都是三个渠道
-      if (this.form.type === 4) {
-        await this.selectTemplateListFunc(1)
+    getTemplateUtil() {
+      if (this.form.type === 7) { // 5G彩信 只有彩信6
+        this.selectTemplateListFunc(6)
+      } else if (this.form.type === 4) { // 邀请入会 只有短信1
+        this.selectTemplateListFunc(1)
       } else {
         this.synchChannels = [
           { label: '短信', templateList: [], id: 1 },
@@ -676,10 +696,14 @@ export default {
           { label: 'APP通知', templateList: [], id: 3 }
         ]
         // 请求每次只能请求一种，所以要请求3次
-        for (let i = 1; i < 4; i++) {
-          await this.selectTemplateListFunc(i)
-        }
+        Array.from({ length: 3 }).forEach((v, i) => this.selectTemplateListFunc(i + 1))
       }
+    },
+
+    getTemplateId(index) {
+      const { templateList = [], id } = this.synchChannels[index] || {}
+      const template = templateList.find(v => v.id === this.activityChannels[id - 1])
+      return template ? template.ntId : ''
     },
 
     // 图片上传前校验

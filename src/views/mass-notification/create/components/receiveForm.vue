@@ -3,7 +3,8 @@
     <el-form :model="form">
       <el-form-item label="接收人" prop="receive">
         <el-radio-group v-model="form.receive" @change="radioChange">
-          <el-radio v-for="(item, index) in receiveList" :key="index" :label="item.type">{{ item.n }}</el-radio>
+          <!-- 5g彩信渠道 秘书处后台禁用 -->
+          <el-radio v-for="(item, index) in receiveList" :key="index" :label="item.type" :disabled="item.type === 7?activityType === 7:false">{{ item.n }}</el-radio>
         </el-radio-group>
         <!-- 所有会员（总后台） 本商会会员（商会后台）-->
         <SelectShow v-if="form.receive === -1 || form.receive === 1" :num="memberNum" @showDialog="showDialog" />

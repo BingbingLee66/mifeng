@@ -18,32 +18,7 @@
 
     <KdTable v-loading="loading" :columns="columns" :rows="tableData" />
     <KdPagination :page-size="query.pageSize" :current-page="query.pageNum" :total="total" @change="onQueryChange" />
-
-    <el-dialog :visible.sync="dialog.visible" title="预览" width="404px" center>
-      <SimulatePhone>
-        <div class="card">{{ currentRow.templateName }}</div>
-        <div v-for="(item,index) of currentRow.extend.params" :key="index" class="card">
-
-          <template v-if="item.type === 'image'">
-            <img style="max-width:100%" :src="item.value">
-          </template>
-          <template v-else-if="item.type === 'video'">
-            <video style="max-width:100%" :src="item.value" controls />
-          </template>
-          <template v-else-if="item.type === 'audio'">
-            <AudioPlayBar :src="item.value" />
-          </template>
-          <template v-else-if="item.type === 'activity' || item.type === 'article'">
-            <el-link type="primary" @click="$copyText(item.value.url).then(() => $message.success('复制成功'))"> {{ item.value.url }}</el-link>
-          </template>
-
-          <template v-else>
-            {{ item.value }}
-          </template>
-        </div>
-      </SimulatePhone>
-      <el-button slot="footer" type="primary" @click="dialog.visible = false">关闭</el-button>
-    </el-dialog>
+    <Preview5G :visible.sync="dialog.visible" :template-id="dialog.data.id" />
   </div>
 </template>
 
@@ -56,8 +31,7 @@ export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
     KdPagination: () => import('@/components/common/KdPagination'),
-    SimulatePhone: () => import('./components/SimulatePhone'),
-    AudioPlayBar: () => import('./components/AudioPlayBar')
+    Preview5G: () => import('./components/Preivew5G')
   },
   props: {},
   data() {
@@ -82,13 +56,8 @@ export default {
       tableData: [],
       dialog: {
         visible: false,
-        data: null
+        data: {}
       }
-    }
-  },
-  computed: {
-    currentRow() {
-      return this.dialog.data || { extend: { params: [] } }
     }
   },
   created() {
@@ -137,11 +106,3 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.card {
-  padding: 3px;
-  background-color: #eee;
-  border-radius: 5px;
-  margin-bottom: 8px;
-}
-</style>

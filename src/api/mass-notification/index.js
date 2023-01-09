@@ -245,3 +245,10 @@ export const deleteTemplate = id => {
     method: 'delete'
   })
 }
+
+// 获取5G模板详情
+export const get5GTemplateDetail = id => {
+  return request({
+    url: `/ec/notice-template-set/sms-5G-details/${id}`
+  })
+}
