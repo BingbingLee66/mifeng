@@ -6,7 +6,7 @@
         <slot />
       </div>
     </div>
-    <slot name="footer" />
+    <slot name="" />
   </div>
 </template>
 
@@ -23,6 +23,7 @@ export default {
 
 <style lang="scss" scoped>
   .preview-wrap {
+    width: 364px;
     position: relative;
     padding: 16px 32px;
     z-index: 1;

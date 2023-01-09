@@ -70,27 +70,25 @@
         </el-button>
       </div>
       <SimulatePhone>
-        <div class="preview-content">
 
-          <el-input v-model="templateModel.title" class="template-input" style="margin-bottom:23px;" placeholder="请输入标题" size="small" maxlength="15" />
+        <el-input v-model="templateModel.title" class="template-input" style="margin-bottom:23px;" placeholder="请输入标题" size="small" maxlength="15" />
 
-          <div v-for="(item,index) in templateModel.list" :key="item.id" class="template-item">
-            <el-input v-if="item.type === 'text'" v-model="item.value" type="textarea" autosize class="template-input" placeholder="请输入文字内容" resize="none" />
-            <img v-else-if="item.type === 'image'" class="template-image" :src="item.value">
-            <video v-else-if="item.type === 'video'" controls class="template-video" :src="item.value" />
-            <AudioPlayBar v-else-if="item.type === 'audio'" controls :src="item.value" />
-            <el-link v-else-if="item.type === 'activity' || item.type === 'article'" type="primary" @click="$copyText(item.value.url).then(() => $message.success('复制成功'))">
-              {{ item.value.url }}
-            </el-link>
+        <div v-for="(item,index) in templateModel.list" :key="item.id" class="template-item">
+          <el-input v-if="item.type === 'text'" v-model="item.value" type="textarea" autosize class="template-input" placeholder="请输入文字内容" resize="none" />
+          <img v-else-if="item.type === 'image'" class="template-image" :src="item.value">
+          <video v-else-if="item.type === 'video'" controls class="template-video" :src="item.value" />
+          <AudioPlayBar v-else-if="item.type === 'audio'" controls :src="item.value" />
+          <el-link v-else-if="item.type === 'activity' || item.type === 'article'" type="primary" @click="$copyText(item.value.url).then(() => $message.success('复制成功'))">
+            {{ item.value.url }}
+          </el-link>
 
-            <template v-if="isEditing">
-              <img class="close" src="@/assets/img/5g/close.png" @click="templateModel.list.splice(index,1)">
-              <div class="sort">
-                <img v-if="index !== 0" src="@/assets/img/5g/up.png" @click="onSort(index,index-1)">
-                <img v-if="index !== templateModel.list.length-1" src="@/assets/img/5g/down.png" @click="onSort(index,index+1)">
-              </div>
-            </template>
-          </div>
+          <template v-if="isEditing">
+            <img class="close" src="@/assets/img/5g/close.png" @click="templateModel.list.splice(index,1)">
+            <div class="sort">
+              <img v-if="index !== 0" src="@/assets/img/5g/up.png" @click="onSort(index,index-1)">
+              <img v-if="index !== templateModel.list.length-1" src="@/assets/img/5g/down.png" @click="onSort(index,index+1)">
+            </div>
+          </template>
         </div>
         <div slot="footer" style="margin-top:9px;">
           模板总大小：<span class="high-light">{{ formatSize(totalSize,1) }}</span>
