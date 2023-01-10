@@ -308,7 +308,6 @@ export default {
       // 重新请求同步渠道数据
       this.getTemplateUtil()
       // 获取课程列表
-      console.log(`val: ${val}`)
       if (val === 6) {
         this.getCourseList()
       }
