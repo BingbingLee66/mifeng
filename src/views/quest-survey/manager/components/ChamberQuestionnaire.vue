@@ -12,7 +12,7 @@
       <el-form-item label="问卷状态">
         <el-select v-model="query.status">
           <el-option label="全部" value="" />
-          <el-option v-for="state in ['0','1','2','3']" :key="state" :label="QUESTIONNAIRE_STATE[state]" :value="state" />
+          <el-option v-for="(label,state) in QUESTIONNAIRE_STATE" :key="state" :label="label" :value="state" />
         </el-select>
       </el-form-item>
       <el-form-item><el-button type="primary" @click="fetchData">查询</el-button> </el-form-item>
@@ -60,7 +60,7 @@ export default {
       query: {
         ckey: '',
         questionnaireTitle: '', // 问卷标题
-        state: '', // 问卷状态
+        status: '', // 问卷状态
         pageSize: 10,
         pageNum: 1
       },

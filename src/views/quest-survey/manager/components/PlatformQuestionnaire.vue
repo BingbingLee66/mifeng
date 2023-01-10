@@ -7,7 +7,7 @@
       <el-form-item label="问卷状态">
         <el-select v-model="query.state">
           <el-option label="全部" value="" />
-          <el-option v-for="state in ['0','1','3']" :key="state" :label="QUESTIONNAIRE_STATE[state]" :value="state" />
+          <el-option v-for="state in ['0','1','3','9']" :key="state" :label="QUESTIONNAIRE_STATE[state]" :value="state" />
 
         </el-select>
       </el-form-item>
