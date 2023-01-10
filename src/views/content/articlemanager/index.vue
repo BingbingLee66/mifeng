@@ -41,6 +41,17 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col v-if="activeName === '1'" :offset="1" :span="4">
+            <el-form-item :span="10" label="绑定词条：">
+              <el-select
+                v-model="query.existEntry"
+              >
+                <el-option label="所有" :value="''" />
+                <el-option label="已绑定" :value="1" />
+                <el-option label="未绑定" :value="0" />
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col v-if="activeName !== '1'" :offset="1" :span="4">
             <el-form-item label="动态类型：">
               <el-select v-model="query.dynamicType">
@@ -215,10 +226,10 @@
             {{ scope.row.commentNums ? scope.row.commentNums : "--" }}
           </template>
         </el-table-column>
-        <el-table-column label="关联词条" width="120px" prop="commentNums">
+        <el-table-column label="绑定词条" width="120px" prop="commentNums">
           <template slot-scope="scope">
             <el-button type="text" @click="editEntryHandler(scope.row)">
-              {{ scope.row.existEntry ? '修改词条' : '添加词条' }}
+              {{ scope.row.existEntry ? '已绑定' : '未绑定' }}
             </el-button>
           </template>
         </el-table-column>

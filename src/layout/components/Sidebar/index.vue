@@ -59,7 +59,7 @@ export default {
      * @returns {Promise<void>}
      */
     async handleSelect(index) {
-      if (index === '/livetelecast') {
+      if (index === '/livetelecast/manager') {
         const { data: res } = await gotoMerchant()
         window.open(res, '_blank')
       }

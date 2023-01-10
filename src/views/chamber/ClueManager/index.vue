@@ -13,6 +13,7 @@
           <el-option label="全部" :value="-1" />
           <el-option label="小程序名录" value="1" />
           <el-option label="APP名录" value="2" />
+          <el-option label="h5名录" value="3" />
         </el-select>
         <el-select v-else v-model="query.putSource" placeholder="请选择">
           <el-option label="全部" value="" />
@@ -81,7 +82,7 @@ export default {
         { label: '联系人电话', prop: 'contactPhone' },
       ]
       if (this.type === '快速入驻线索') {
-        columnsArr.splice(4, 0, { label: '线索来源', render: ({ row }) => row.source === 1 ? '小程序名录' : 'APP名录' })
+        columnsArr.splice(4, 0, { label: '线索来源', render: ({ row }) => row.source === 1 ? '小程序名录' : row.source === 2 ? 'APP名录' : 'h5名录' })
       } else {
         columnsArr.splice(4, 0, { label: '线索来源', prop: 'putSource' })
       }
@@ -136,7 +137,7 @@ export default {
         线索ID: v.id,
         社会组织名称: v.name,
         创建时间: formatDateTime(new Date(+v.createdTs), 'yyyy年MM月dd日 hh:mm:ss'),
-        线索来源: flag ? (v.source === 1 ? '小程序名录' : 'APP名录') : v.putSource,
+        线索来源: flag ? (v.source === 1 ? '小程序名录' : v.source === 2 ? 'APP名录' : 'h5名录') : v.putSource,
         联系人姓名: v.contactName,
         联系人电话: v.contactPhone,
       }))

@@ -259,7 +259,6 @@ export default {
           // 判断是否输入全为空格
           const isAllEmpty = this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4).replaceAll('&nbsp;', '').split('').every(item => item === ' ')
           if (isAllEmpty) return this.$message.error('不能提交全为空格的内容！')
-          console.log(this.formObj.contentHtml.slice(3, this.formObj.contentHtml.length - 4))
           this.formObj.encyclopediaIds = this.entryList.map(item => item.encyclopediaId)
           save(this.formObj).then(response => {
             if (response.state === 1) {

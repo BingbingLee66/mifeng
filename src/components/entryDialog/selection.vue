@@ -1,6 +1,6 @@
 <template>
   <el-dialog :visible.sync="selectionVisible" title="已添加的词条" :before-close="closeHandler">
-    <RelatedRecommend :entry-list="entryList" @remove-entry="removeHandler" @add-entry="addEntry" />
+    <RelatedRecommend :entry-list="entryList" @remove-entry="removeHandler" @add-entry="addEntry" @left-handler="leftHandler" @right-handler="rightHandler" />
     <div class="c-entry-button">
       <el-button type="primary" @click="sureHandler()">确认</el-button>
       <el-button @click="closeHandler()">取消</el-button>
@@ -79,6 +79,14 @@ export default {
       const encyclopediaIds = this.entryList
         .map(items => items.encyclopediaId)
       this.$emit('sure-handler', encyclopediaIds)
+    },
+    leftHandler(index) {
+      const current = this.entryList.splice(index, 1)[0]
+      this.entryList.splice(index - 1, 0, current)
+    },
+    rightHandler(index) {
+      const current = this.entryList.splice(index, 1)[0]
+      this.entryList.splice(index + 1, 0, current)
     }
   }
 }
