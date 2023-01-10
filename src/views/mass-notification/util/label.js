@@ -170,6 +170,10 @@ export const channelTypeList = [
     id: 5,
     n: '站内信'
   },
+  {
+    id: 6,
+    n: '酷信'
+  }
 ]
 // 群发详情弹框用
 export const sendDetailChannelType = [
@@ -178,6 +182,7 @@ export const sendDetailChannelType = [
   { name: '2', label: '订阅消息' },
   { name: '1', label: '短信' },
   { name: '5', label: '站内信' },
+  { name: '6', label: '酷信' }
 ]
 export const sendStatusList = [
   { name: '1', label: '发送成功', field: 'succNum', num: '0' },

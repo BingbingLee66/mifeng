@@ -251,7 +251,7 @@ export default {
         //   unreadNum
         // this.sendDetailFunc(row.id)
 
-        this.detailConfigUtil(row.receiveTypeId)
+        this.detailConfigUtil(row)
         // 设置初始活跃name值
       } else if (type === 2) {
         // 编辑
@@ -432,9 +432,8 @@ export default {
           prop: 'noticeTypeId',
           label: '所属类型',
           formatter: row => {
-            let msg = '自定义通知'
-            if (row.noticeTypeId === 1) { msg = '缴费通知' } else if (row.noticeTypeId === 2) { msg = '活动通知' } else if (row.noticeTypeId === 3) { msg = '招商活动' } else if (row.noticeTypeId === 4) { msg = '邀请入会' }
-            return msg
+            const msgMap = { 1: '缴费通知', 2: '活动通知', 3: '招商活动', 4: '邀请入会', 7: '酷信通知' }
+            return msgMap[row.noticeTypeId] || '自定义通知'
           }
         },
         {
@@ -469,6 +468,7 @@ export default {
           label: '已读/未读人数',
           width: 180,
           render: (h, scope) => {
+            if (scope.row.noticeTypeId === 7) return <div>--</div> // 5G彩信没有已读
             return (
               scope.row.groupSendStatVOS && scope.row.groupSendStatVOS.map(item => { return <div><span>{this.getTypeById('channel', item.channelTypeId)}：</span><el-link onClick = {() => this.operationClick(1, scope.row)} type="primary" >{item.readNum}/{item.unreadNum}</el-link> </div> })
 
@@ -479,6 +479,7 @@ export default {
           prop: 'readRate',
           label: '已读率',
           formatter: row => {
+            if (row.noticeTypeId === 7) return '--' // 5G彩信没有已读
             return row.readRate * 100 + '%'
           }
         },
@@ -513,7 +514,26 @@ export default {
           prop: 'operation',
           label: '操作',
           render: (h, scope) => {
-            return (<div class="operation"><el-link v-show={scope.row.editAuth === 1} type="primary" onClick={ () => this.operationClick(2, scope.row)}> 编辑</el-link> <el-link type="primary" v-show={scope.row.statAuth === 1} onClick={() => this.operationClick(1, scope.row)}>详情</el-link> <el-link v-show={scope.row.delAuth === 1} type="primary" onClick={() => this.operationClick(3, scope.row)}>删除</el-link> <el-link v-show={scope.row.statAuth === 1} type="primary" onClick={() => this.operationClick(4, scope.row)}>导出发送记录</el-link><el-link v-show={scope.row.resendAuth === 1} type="primary" onClick={() => this.operationClick(5, scope.row)}>未读重发</el-link></div>)
+            return (<div class="operation">
+              <el-link v-show={scope.row.editAuth === 1} type="primary" onClick={ () => this.operationClick(2, scope.row)}>
+               编辑
+              </el-link>
+              <el-link type="primary" v-show={scope.row.statAuth === 1} onClick={() => this.operationClick(1, scope.row)}>
+                详情
+              </el-link>
+              <el-link v-show={scope.row.delAuth === 1} type="primary" onClick={() => this.operationClick(3, scope.row)}>
+                删除
+              </el-link>
+              <el-link v-show={scope.row.statAuth === 1 && scope.row.noticeTypeId !== 7} type="primary" onClick={() => this.operationClick(4, scope.row)}>
+                导出发送记录
+              </el-link>
+              {
+                // 5G彩信没有重发
+              }
+              <el-link v-show={scope.row.resendAuth === 1 && scope.row.noticeTypeId !== 7} type="primary" onClick={() => this.operationClick(5, scope.row)}>
+                未读重发
+              </el-link>
+            </div>)
             // return (<div class="operation"><el-link type="primary" onClick={ () => this.updateItem(scope.row)}> 编辑</el-link> <el-link type="primary" onClick={() => this.detailItem(scope.row)}>详情</el-link> <el-link type="primary" onClick={() => this.deleteItem(scope.row)}>删除</el-link> </div>)
           }
         },
@@ -580,8 +600,8 @@ export default {
       }
       this.columnConfig = columnConfig
     },
-    detailConfigUtil(receiveTypeId) {
-      if (receiveTypeId === 7) {
+    detailConfigUtil(row) {
+      if (row.receiveTypeId === 7) {
         this.dialog.columnConfig = [
           {
             prop: 'remark',
@@ -633,6 +653,9 @@ export default {
             }
           },
         ]
+        if (+row.noticeTypeId === 7) { // 5G彩信没有状态
+          this.dialog.columnConfig = this.dialog.columnConfig.filter(v => v.prop !== 'status')
+        }
       }
     },
     // 根据id查找对应的文本
@@ -654,8 +677,9 @@ export default {
     handleTabChannelUtil(val) {
       const { groupSendStatMap, activeDialogChannelTab } = this
 
-      // 只有短信才有已读未读 成功失败，其他只有已读和未读
-      if (val === '1') {
+      if (+val === 6) { // 5G彩信只有发送成功与失败
+        this.sendStatus = cloneDeep(sendStatusList).filter(v => (v.name === '1' || v.name === '2'))
+      } else if (val === '1') { // 只有短信才有已读未读 成功失败，其他只有已读和未读
         this.sendStatus = cloneDeep(sendStatusList)
       } else {
         this.sendStatus = cloneDeep(sendStatusList).filter(v => (v.name === '3' || v.name === '4'))
