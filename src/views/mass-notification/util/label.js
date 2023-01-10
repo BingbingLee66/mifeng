@@ -41,7 +41,7 @@ export const labelTypeForm = [
   { name: '招商活动', id: 3 },
   { name: '邀请入会', id: 4 },
   { name: '自定义通知', id: 5 },
-  { name: '酷信通知', id: 7 },
+  { name: '5G彩信通知', id: 7 },
 ]
 // 所有会员的table config
 export const memberTableConfig = [
@@ -172,7 +172,7 @@ export const channelTypeList = [
   },
   {
     id: 6,
-    n: '酷信'
+    n: '5G彩信'
   }
 ]
 // 群发详情弹框用
@@ -182,7 +182,7 @@ export const sendDetailChannelType = [
   { name: '2', label: '订阅消息' },
   { name: '1', label: '短信' },
   { name: '5', label: '站内信' },
-  { name: '6', label: '酷信' }
+  { name: '6', label: '5G彩信' }
 ]
 export const sendStatusList = [
   { name: '1', label: '发送成功', field: 'succNum', num: '0' },

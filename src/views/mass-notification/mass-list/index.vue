@@ -432,7 +432,7 @@ export default {
           prop: 'noticeTypeId',
           label: '所属类型',
           formatter: row => {
-            const msgMap = { 1: '缴费通知', 2: '活动通知', 3: '招商活动', 4: '邀请入会', 7: '酷信通知' }
+            const msgMap = { 1: '缴费通知', 2: '活动通知', 3: '招商活动', 4: '邀请入会', 7: '5G彩信通知' }
             return msgMap[row.noticeTypeId] || '自定义通知'
           }
         },
