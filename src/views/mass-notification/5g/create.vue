@@ -5,20 +5,19 @@
       <div class="tips">
         <div class="tip-title">温馨提示</div>
         <div class="tip">1、短信内容中必须有文字，不能只放视频、图片</div>
-        <div class="tip">2、标题只作管理查看显示，收取短信的用户不显示标题</div>
         <div class="tip">
-          3、发布图片、视频各一个，模板总大小：
+          2、发布图片、视频各一个，模板总大小：
           <span class="high-light">1.9M内</span>
         </div>
-        <div class="tip">4、标题字数不能超15个（标点、空格 都算1个字数）</div>
+        <div class="tip">3、标题字数不能超15个（标点、空格 都算1个字数）</div>
         <div class="tip">
-          5、视频格式要求：视频格式：
+          4、视频格式要求：视频格式：
           <span class="high-light"> MPEG-4、3GP</span>
           ，视频编码：
           <span class="high-light">H.264</span>
         </div>
         <div class="tip">
-          6、提交审核后，预计在
+          5、提交审核后，预计在
           <span class="high-light">3-5天</span>
           内完成审核。若视频或者链接中包含较复杂逻辑或其他特殊情况，可能会导致审核时间延长。
         </div>
