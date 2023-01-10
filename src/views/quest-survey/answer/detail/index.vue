@@ -98,8 +98,6 @@ export default {
       pageNum: 1,
       pageSize: 10,
       answersList: [],
-      userId: 185,
-      questionnaireId: 47,
       answerDetailObj: {},
       COMPONENT_KEY,
       COMPONENT_KEY_MAP,
@@ -109,12 +107,16 @@ export default {
   computed: {
     ckey() {
       return this.$store.getters.ckey || ''
+    },
+    questionnaireId() {
+      return this.$route.query.id || null
+    },
+    userId() {
+      return this.$route.query.userId || null
     }
   },
   created() {
     this.answerList()
-    this.questionnaireId = this.$route.query.id || null
-    this.userId = this.$route.query.userId || null
   },
   methods: {
     // 用户答卷列表
