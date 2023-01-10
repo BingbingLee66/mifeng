@@ -11,7 +11,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">查询</el-button>
+        <el-button type="primary" @click="fetchData">查询</el-button>
       </el-form-item>
     </el-form>
     <el-button class="mb-10" type="primary" @click="$router.push('/mass-notification/5g/create')">新建模板</el-button>
@@ -72,6 +72,7 @@ export default {
     },
     onQueryChange(e) {
       this.query = { ...this.query, ...e }
+      this.fetchData()
     },
     async fetchData() {
       this.loading = true
