@@ -298,7 +298,7 @@ export default {
         this.componentsList[index].selectItem.push({
           select: false, // 是否选择
           key: '', //
-          value: type === 1 ? '其他' : '选项', // 选择组件属性 string
+          value: null, // 选择组件属性 string
           label: type === 1 ? '其他' : '选项', // label文本
           otherItems: type
         })
