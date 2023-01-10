@@ -7,7 +7,7 @@
       <el-form-item label="模板状态">
         <el-select v-model="query.auditStatus">
           <el-option label="全部" value="" />
-          <el-option v-for="item in ['1','2']" :key="item" :label="auditStatus[item]" :value="item" />
+          <el-option v-for="item in ['0','1','2']" :key="item" :label="auditStatus[item]" :value="item" />
         </el-select>
       </el-form-item>
       <el-form-item>
