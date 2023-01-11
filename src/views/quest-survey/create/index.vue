@@ -274,14 +274,33 @@ export default {
       }
     },
     cloneDefaultField(e) {
-      return JSON.parse(JSON.stringify(e))
+      return this.buildOption(e)
     },
     // 设置step状态
     setStep() { this.active = 2 },
     // 点击基础组件
     clickComponent(item) {
       if (this.componentsList.length > 99) { this.$message.warning('题目数量达到100，无法添加，请适当缩减'); return }
-      this.componentsList.push(JSON.parse(JSON.stringify(item)))
+      this.componentsList.push(this.buildOption(item))
+    },
+    // 添加两个选项
+    buildOption(item) {
+      // 对于单选、多选题、下拉题，默认生成2个选项
+      const arr = [COMPONENT_KEY.SINGLE_SELECT, COMPONENT_KEY.MULTIPLE_SELECT, COMPONENT_KEY.PULLDOWN_SELECT]
+      const val = JSON.parse(JSON.stringify(item))
+      if (arr.includes(item.componentKey) && val.selectItem.length === 0) {
+        val.title = val.title || '标题'
+        for (let i = 0; i < 2; i++) {
+          val.selectItem.push({
+            select: false, // 是否选择
+            key: '', //
+            value: '选项', // 选择组件属性 string
+            label: '选项', // label文本
+            otherItems: 0
+          })
+        }
+      }
+      return val
     },
     // 必填项发生改变
     requireChange(index = -1, item) {
