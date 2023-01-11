@@ -41,3 +41,9 @@ export const queryMemberEntryEnable = () => request({
   method: 'get',
   params: { accessSecret }
 })
+// 获取课程列表
+export const queryCourseList = params => request({
+  url: '/api/ec/bossin-course/queryCourseByTile',
+  method: 'get',
+  params: { accessSecret, ...params }
+})

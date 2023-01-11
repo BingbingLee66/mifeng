@@ -1,7 +1,7 @@
 <template>
   <div class="containers">
     <el-form ref="indexFormRef" :rules="rules" :model="form">
-      <el-form-item label="类型" prop="type">
+      <el-form-item label="通知类型" prop="type">
         <el-radio-group v-model="form.type">
           <el-radio v-for="(item, index) in labelList" :key="index" :disabled="form.receive == 7 && item.type == 5" :label="item.type">{{ item.n }}</el-radio>
         </el-radio-group>
@@ -87,9 +87,29 @@
           </div>
         </div>
       </div>
+      <el-form-item v-if="form.type === 6" label="选择课程" prop="type" required>
+        <el-select
+          v-model="form.associationId"
+          clearable
+          style="width:300px"
+          filterable
+          remote
+          placeholder="请选择课程"
+          :remote-method="courseRemoteMethod"
+          @clear="clearCourse"
+          @blur="clearCourse"
+        >
+          <el-option
+            v-for="item in courseList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
 
       <!-- 同步渠道 -->
-      <div class="title-hd">同步渠道 <span> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
+      <div class="title-hd">推送平台 <span> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
 
       <el-form v-if="form.receive == '7'" :rules="rules" :model="form" label-position="right" label-width="100px">
         <el-form-item label="站内信标题" :required="true" style="margin-bottom:20px">
@@ -187,6 +207,7 @@
 
 <script>
 import { labelType, receiveType, ruleString } from '../util/label'
+import { queryCourseList } from '@/api/bossin'
 import { uploadFile } from '@/api/content/article'
 import { selectTemplateList, updateSendGetDetail, sendDetail, getNoticeTemplateSetDetailById, selectTemplateListAdmin, sendMsg, distributionChambers } from '@/api/mass-notification/index'
 import { getChamberActivityInfoById } from '@/api/activity/activity-verify-new'
@@ -208,6 +229,7 @@ export default {
       ckey: null,
       labelList: [],
       receiveList: [],
+      courseList: [],
       form: {
         // 类型
         type: 2,
@@ -276,7 +298,7 @@ export default {
     }
   },
   watch: {
-    'form.type'() {
+    'form.type'(val) {
       this.activityList = []
       // 置空活动表格已选
       this.$refs['activityDialogRef'].$refs['table'] && this.$refs['activityDialogRef'].$refs['table'].cancelSelect()
@@ -285,6 +307,10 @@ export default {
       this.form.synchChannels = []
       // 重新请求同步渠道数据
       this.getTemplateUtil()
+      // 获取课程列表
+      if (val === 6) {
+        this.getCourseList()
+      }
     },
     'activityList'(val) {
       this.qrCode = []
@@ -311,6 +337,30 @@ export default {
 
   },
   methods: {
+    /**
+     * 清空课程数据
+     */
+    clearCourse() {
+      this.getCourseList()
+    },
+    /**
+     * 搜索课程列表
+     */
+    courseRemoteMethod(name) {
+      this.getCourseList(name)
+    },
+    /**
+     * 获取课程列表
+     */
+    async getCourseList(name) {
+      const query = {
+        page: 1,
+        limit: 100,
+        courseName: name
+      }
+      const { data } = await queryCourseList(query)
+      this.courseList = data.records
+    },
     /** 请求 */
     async selectTemplateListFunc(channelTypeId) {
       // 拉取总后台
@@ -577,6 +627,12 @@ export default {
         }
       } else if (type === 5) {
         // 自定义通知
+      } else if (type === 6) {
+        // 课程通知
+        if (!this.form.associationId) {
+          this.$message.error('请选择课程')
+          return false
+        }
       }
 
       // if(receive === -1){
@@ -635,6 +691,10 @@ export default {
           obj['associationId'] = activityList[0].id
           obj['activityName'] = activityList[0].activityName
         }
+      }
+      // 当通知类型为6时，{'associationId': 课程id}
+      if (type === 6) {
+        obj['associationId'] = this.form.associationId
       }
       if (type === 5) {
         const { form: { title, content, imgs } } = this
