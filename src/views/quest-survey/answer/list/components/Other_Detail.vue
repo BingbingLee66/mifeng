@@ -92,7 +92,7 @@ export default {
     answerDetail(row) {
       this.$router.push({
         path: '/quest-survey/answer/detail',
-        query: { questionnaireId: this.$route.query.id, userId: row.externalUserId }
+        query: { id: this.$route.query.id, userId: row.externalUserId }
       })
     },
     onQueryChange(val) { const { pageSize, pageNum } = val; this.pageNum = pageNum; this.pageSize = pageSize; this.getDetail(this.problemId) },

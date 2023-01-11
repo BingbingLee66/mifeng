@@ -83,6 +83,7 @@ export default {
         this.currentItem = item
         this.currentIndex = index
         this.detailVisible = true
+        this.showOther = false
         this.$refs['otherDetail'].getDetail(item.problemId)
       } else {
         this.downloadAnswer(item)
