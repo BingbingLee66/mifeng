@@ -35,12 +35,15 @@
           </div></div>
         <!-- 只取数组第一个 -->
         <div v-if="[COMPONENT_KEY.PROVINCE_CITY_AREA,COMPONENT_KEY.SINGLE_TEXT,COMPONENT_KEY.MULTIPLE_TEXT].includes(item.key)" class="item-question">
-          <!-- 省市区，拿provinceName，cityName，areaName -->
-          <div v-if="item.key===COMPONENT_KEY.PROVINCE_CITY_AREA">
-            {{ item.val[0].provinceName }}-{{ item.val[0].cityName }}-{{ item.val[0].areaName }}
-          </div>
-          <!-- Component_Single_Text,Component_Multiple_Text拿value -->
-          <div v-else>{{ item.val[0].value }}</div>
+          <template v-if="item.val && item.val[0]">
+            <!-- 省市区，拿provinceName，cityName，areaName -->
+            <div v-if="item.key===COMPONENT_KEY.PROVINCE_CITY_AREA">
+              {{ item.val[0].provinceName }}-{{ item.val[0].cityName }}-{{ item.val[0].areaName }}
+            </div>
+            <!-- Component_Single_Text,Component_Multiple_Text拿value -->
+            <div v-else>{{ item.val[0].value }}</div>
+          </template>
+
         </div>
         <!-- 遍历数组 -->
         <!-- v-if="[COMPONENT_KEY.SINGLE_SELECT,COMPONENT_KEY.MULTIPLE_SELECT,COMPONENT_KEY.PULLDOWN_SELECT].includes(item.key)" -->
@@ -52,7 +55,11 @@
             </div>
             <!-- Component_Upload_Image,Component_Upload_File拿value -->
             <template v-else-if="[COMPONENT_KEY.UPLOAD_IMAGE,COMPONENT_KEY.UPLOAD_FILE].includes(item.key)">
-              <div v-if="item.key===COMPONENT_KEY.UPLOAD_IMAGE" class="upload-img-item"><img :src="item2.value" class="upload-img"> <el-link type="primary">查看原图</el-link><el-link type="primary" @click="downLoadImg(1,item2)">下载</el-link></div>
+              <div v-if="item.key===COMPONENT_KEY.UPLOAD_IMAGE" class="upload-img-item">
+                <el-image ref="preview" :preview-src-list=" [item2.value]" :src="item2.value" class="upload-img" />
+                <el-link type="primary" @click="onPreview">查看原图</el-link>
+                <el-link type="primary" @click="downLoadImg(1,item2)">下载</el-link>
+              </div>
               <div v-else>{{ item.value }}</div>
 
             </template>
@@ -159,6 +166,10 @@ export default {
         }
         x.send()
       }
+    },
+    onPreview() {
+      console.log('preview', this.$refs['preview'])
+      this.$refs['preview'][0].clickHandler()
     }
   }
 }
@@ -173,7 +184,7 @@ export default {
   }
 }
 .answer-item{
-  margin: 10px 0px;
+  margin: 28px 0px;
   .item-question{
     margin: 10px 0px;
   }
