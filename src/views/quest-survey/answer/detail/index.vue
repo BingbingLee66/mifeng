@@ -19,7 +19,7 @@
       </div>
     </div>
     <el-card class="box-card">
-      <div class="title">{{ answerDetailObj.name }}</div>
+      <div class="title">{{ answerDetailObj.title }}</div>
       <div v-if="answerDetailObj.remark" class="desc">
         <div>说明</div>
         <div style="margin-top: 10px">{{ answerDetailObj.remark }}</div>

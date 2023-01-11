@@ -24,7 +24,7 @@
           <div class="answer-table">
             <div v-if="[COMPONENT_KEY.SINGLE_SELECT,COMPONENT_KEY.MULTIPLE_SELECT,COMPONENT_KEY.PULLDOWN_SELECT].includes(item.componentKey)">
               <KdTable :columns="columns" :rows="item.optionStatistics" />
-              <div style="margin-top:13px;text-align: right;">本题填写人数：{{ subTotal(item.optionStatistics) }}</div>
+              <div style="margin-top:13px;text-align: right;">本题填写人数：{{ item.applicantsCount }}</div>
             </div>
 
             <el-link v-else type="primary" @click="answerDetail(index,item)">{{ [COMPONENT_KEY.UPLOAD_VIDEO,COMPONENT_KEY.UPLOAD_IMAGE].includes(item.componentKey)?'下载附件':'查看详情' }}</el-link>
@@ -75,12 +75,6 @@ export default {
     ckey() {
       return this.$store.getters.ckey || ''
     },
-    subTotal() {
-      return arr => {
-        const sum = arr.reduce((prev, cur) => { prev = prev + cur.subtotal; return prev }, 0)
-        return sum
-      }
-    }
   },
   created() {
     this.questionnaireId = this.$route.query.id || null
