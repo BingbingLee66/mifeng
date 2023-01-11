@@ -90,7 +90,7 @@
           </template>
         </div>
         <div slot="footer" style="margin-top:9px;">
-          模板总大小：<span class="high-light">{{ formatSize(totalSize,1) }}</span>
+          模板总大小：<span :class="['high-light',{red:totalSize>1.9*1024*1024}]">{{ formatSize(totalSize,1) }}</span>
         </div>
       </SimulatePhone>
     </div>
@@ -315,6 +315,10 @@ export default {
 
   .high-light {
     color: #1890FF;
+
+    &.red {
+      color: red;
+    }
   }
 
   .actions {
