@@ -140,12 +140,12 @@ export default {
     // 点击上下份答卷
     nextAnswer(id) {
       if (!id) { return }
-      const { userId } = this
+      const { questionnaireId } = this
       this.$router.push({
         path: '/quest-survey/answer/detail',
         query: {
-          id,
-          userId
+          id: questionnaireId,
+          userId: id
         }
       })
     },

@@ -4,7 +4,7 @@
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username" />
       </el-form-item>
-      <el-form-item v-if="!ckey" label="会内职位" prop="job">
+      <el-form-item v-if="ckey" label="会内职位" prop="job">
         <el-select v-model="form.job" placeholder="请选择">
           <el-option
             v-for="post in memberPostOptions"
@@ -80,7 +80,7 @@ export default {
         { label: '提交时间', prop: 'submitTime', render: ({ row }) => dayjs(parseInt(row.submitTime)).format('YYYY年MM月DD日 HH:mm') },
         { label: '操作', render: ({ row }) => <el-link type="primary" onClick={() => this.answerDetail(row)}>查看答卷</el-link> },
       ]
-      if (this.ckey) { arr.splice(2, 1) }
+      if (!this.ckey) { arr.splice(2, 1) }
       return arr
     }
   },
