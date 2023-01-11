@@ -343,13 +343,24 @@ export default {
     tableList() {
       const commonList = [
         {
-          label: '用户信息',
+          label: '报名人',
           minWidth: 180,
           render: ({ row }) => (
             <div>
               {row.uavatar ? <img style="width:50px;height:50px" src={row.uavatar} /> : ''}
               <div>{row.userName}</div>
               <div>{row.phone}</div>
+            </div>
+          )
+        },
+        {
+          label: '参与人',
+          minWidth: 180,
+          render: ({ row }) => (
+            <div>
+              {/* {row.uavatar ? <img style="width:50px;height:50px" src={row.uavatar} /> : ''} */}
+              <div>用户名： {row.applicantName ? row.applicantName : '--' }</div>
+              <div>联系手机： {row.applicantPhone ? row.applicantPhone : '--'}</div>
             </div>
           )
         },
@@ -786,9 +797,9 @@ export default {
               <div>预计到场：{row.subscribeTotal}</div>
               <div>
                 到场人数：
-                <span style={row.realTotal > 0 && row.realTotal < row.subscribeTotal ? 'color:red;' : ''}>
-                  {row.realTotal ? row.realTotal : '-'}
-                </span>
+              <span style={row.realTotal > 0 && row.realTotal < row.subscribeTotal ? 'color:red;' : ''}>
+                {row.realTotal ? row.realTotal : '-'}
+              </span>
               </div>
             </div>
           )
