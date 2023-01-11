@@ -326,7 +326,6 @@ export default {
       height: 88px;
       background: #F6FFED;
       border-radius: 4px;
-      border: 1px solid #B7EB8F;
       margin-right: 32px;
       margin-bottom: 35px;
       cursor: pointer;
