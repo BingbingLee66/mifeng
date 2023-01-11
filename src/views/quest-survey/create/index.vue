@@ -54,13 +54,14 @@
               show-word-limit
               @blur="inputBlur(2)"
             />
-            <draggable v-model="componentsList" filter=".forbid" group="site" animation="100">
+            <draggable v-model="componentsList" group="site" animation="100" :move="onMove">
               <transition-group :style="style">
-                <div v-for="(item, index) in componentsList" :key="index" :class="item.isDisable ? 'item forbid':'item'">
+                <div v-for="(item, index) in componentsList" :key="index" draggable="false" :class="item.isDisable ? 'item forbid':'item'">
                   <Component_Single_Select
                     v-if="item.componentKey === COMPONENT_KEY.SINGLE_SELECT || item.componentKey === COMPONENT_KEY.MULTIPLE_SELECT"
                     :index="index"
                     :item="item"
+                    draggable="false"
                     :disable="isDisable"
                     @delSelectItem="delSelectItem"
                   />
@@ -380,6 +381,10 @@ export default {
           message: res.msg
         })
       }
+    },
+    // 自定义拖拽
+    onMove(e) {
+      if (e.draggedContext.element?.isDisable) { return false } else { return true }
     },
     // 工具类函数
     beforeAvatarUpload(file) {
