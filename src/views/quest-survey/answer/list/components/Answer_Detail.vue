@@ -30,7 +30,7 @@
     <KdPagination
       :page-size="pageSize"
       :current-page="pageNum"
-      :total="tableData.length"
+      :total="total"
       @change="onQueryChange"
     />
   </div>
@@ -64,6 +64,7 @@ export default {
       },
       pageNum: 1,
       pageSize: 10,
+      total: 0,
       tableData: [],
       memberPostOptions: []
     }
@@ -94,8 +95,9 @@ export default {
       const { ckey, pageNum, pageSize, questionnaireId, form } = this
       let API = userAnswerList
       if (ckey) { API = userAnswerListByMiF }
-      const { data: { list } } = await API({ pageNum, pageSize, questionnaireId, ...form })
+      const { data: { list, totalRows } } = await API({ pageNum, pageSize, questionnaireId, ...form })
       this.tableData = list
+      this.total = totalRows
     },
     // 拉取会内职位
     async  getMember() {
