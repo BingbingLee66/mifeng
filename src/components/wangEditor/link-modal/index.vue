@@ -1,9 +1,14 @@
 <template>
   <div>
     <el-tabs v-model="activeName">
-      <el-tab-pane label="链接" name="link"><Link /></el-tab-pane>
-      <el-tab-pane label="云会甄选小程序" name="miniprogram"><Miniprogram /></el-tab-pane>
+      <el-tab-pane label="链接" name="link">
+        <Link />
+      </el-tab-pane>
+      <el-tab-pane label="云会甄选小程序" name="miniprogram">
+        <Miniprogram @onClick="onClick" />
+      </el-tab-pane>
     </el-tabs>
+
   </div>
 </template>
 
@@ -20,7 +25,12 @@ export default {
   data() {
     return {
       activeName: 'link',
-
+    }
+  },
+  methods: {
+    onClick(data) {
+      this.$emit('click', { ...data, linkType: this.activeName })
+      this.$emit('close')
     }
   }
 }
