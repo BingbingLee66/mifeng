@@ -128,4 +128,12 @@ export const freezeQuestionnaire = params => {
     params
   })
 }
+// 问卷解冻
+export const unFreezeQuestionnaire = params => {
+  return request({
+    url: '/scrmapi/questionnaire/unFreeze',
+    method: 'put',
+    params
+  })
+}
 

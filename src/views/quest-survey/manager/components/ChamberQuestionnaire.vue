@@ -42,7 +42,7 @@
 
 <script>
 import { chamberSearchList } from '@/api/chamber/manager'
-import { getQuestionnaireList, freezeQuestionnaire } from '@/api/quest-survey'
+import { getQuestionnaireList, freezeQuestionnaire, unFreezeQuestionnaire } from '@/api/quest-survey'
 import { QUESTIONNAIRE_STATE } from '../constant'
 
 export default {
@@ -111,7 +111,9 @@ export default {
         <el-button type="text" onClick={() => this.openDialog({ data: row, type: 'look' })}>查看</el-button>
         <el-button type="text" onClick={() => this.openDialog({ data: row, type: 'share' }) }>分享</el-button>
         {
-          +row.state !== 2 ? <el-button type="text" onClick={() => this.openDialog({ type: 'freeze', data: row, value: '' })}>冻结</el-button> : ''
+          +row.state !== 2
+            ? <el-button type="text" onClick={() => this.openDialog({ type: 'freeze', data: row, value: '' })}>冻结</el-button>
+            : <el-button type="text" onClick={() => this.unFreeze(row)}>解冻</el-button>
         }
       </div>)
     },
@@ -151,6 +153,17 @@ export default {
       this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       if (state === 1) {
         this.dialog.visible = false
+        this.fetchData()
+      }
+    },
+
+    async unFreeze(row) {
+      await this.$confirm('', '确定解冻？')
+      const { state, msg } = await unFreezeQuestionnaire({
+        id: row.id
+      })
+      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      if (state === 1) {
         this.fetchData()
       }
     }
