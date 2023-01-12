@@ -1,7 +1,7 @@
 <template>
   <div style="margin-bottom: 20px">
     <el-form :model="form">
-      <el-form-item label="接收人" prop="receive">
+      <el-form-item label="通知对象" prop="receive">
         <el-radio-group v-model="form.receive" @change="radioChange">
           <!-- 5g彩信渠道 秘书处后台禁用 -->
           <el-radio v-for="(item, index) in receiveList" :key="index" :label="item.type" :disabled="item.type === 7?activityType === 7:false">{{ item.n }}</el-radio>
