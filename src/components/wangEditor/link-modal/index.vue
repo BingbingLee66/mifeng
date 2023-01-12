@@ -2,13 +2,12 @@
   <div>
     <el-tabs v-model="activeName">
       <el-tab-pane label="链接" name="link">
-        <Link />
+        <Link @onClick="onClick" />
       </el-tab-pane>
       <el-tab-pane label="云会甄选小程序" name="miniprogram">
         <Miniprogram @onClick="onClick" />
       </el-tab-pane>
     </el-tabs>
-
   </div>
 </template>
 
@@ -20,11 +19,11 @@ export default {
   name: 'LinkModal',
   components: {
     Link,
-    Miniprogram,
+    Miniprogram
   },
   data() {
     return {
-      activeName: 'link',
+      activeName: 'link'
     }
   },
   methods: {
@@ -36,6 +35,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>
