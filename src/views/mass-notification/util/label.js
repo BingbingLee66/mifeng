@@ -42,8 +42,7 @@ export const labelTypeForm = [
   { name: '招商活动', id: 3 },
   { name: '邀请入会', id: 4 },
   { name: '自定义通知', id: 5 },
-  { name: '课程通知', id: 6 },
-  { name: '节日海报', id: 8 }
+  { name: '课程通知', id: 6 }
 
 ]
 // 所有会员的table config
