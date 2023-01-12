@@ -525,6 +525,13 @@ export const constantRoutes = [
         meta: { title: '新增模板' }
       },
       {
+        name: '新增5G彩信模板',
+        path: '/mass-notification/5g/create',
+        component: () => import('@/views/mass-notification/5g/create.vue'),
+        hidden: true,
+        meta: { title: '新增5G彩信模板' }
+      },
+      {
         name: '站内信',
         path: '/sms/mail',
         component: () => import('@/views/sms/mail/index.vue'),

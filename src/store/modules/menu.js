@@ -16,11 +16,11 @@ const mutations = {
 
 const actions = {
 
-  getSideMenus({ commit, state }) {
+  getSideMenus({ commit }) {
     return new Promise((resolve, reject) => {
       listForRouter().then(response => {
-        let menus = response.data.menu
-        let remoteroutes = traverseRoutes(menus)
+        const menus = response.data.menu
+        const remoteroutes = traverseRoutes(menus)
         commit('SET_ROUTES', remoteroutes)
         resolve(remoteroutes)
       }).catch(error => {
