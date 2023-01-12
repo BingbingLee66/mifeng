@@ -162,3 +162,12 @@ export function timeFormat(time) {
     )
   }
 }
+
+// 存储大小格式化
+export const formatSize = (size, digits = 2) => {
+  const MSize = size / 1024 / 1024
+  if (MSize > 1) return `${MSize.toFixed(digits)}M`
+  const KSize = size / 1024
+  if (KSize > 1) return `${KSize.toFixed(digits)}K`
+  return `${size}B`
+}

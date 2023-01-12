@@ -43,7 +43,6 @@
 <script>
 import { chamberSearchList } from '@/api/chamber/manager'
 import { getQuestionnaireList, freezeQuestionnaire } from '@/api/quest-survey'
-import { formatDateTime } from '@/utils/date'
 import { QUESTIONNAIRE_STATE } from '../constant'
 
 export default {
@@ -69,9 +68,22 @@ export default {
         { label: 'ID', prop: 'id' },
         { label: '商协会', prop: 'chamberName' },
         { label: '问卷标题', prop: 'title' },
-        { label: '状态', render: ({ row }) => QUESTIONNAIRE_STATE[row.state] },
-        { label: '答卷', render: ({ row }) => row.answersCount > 0 ? <el-button type="text" onClick={() => this.$router.push({ path: '/quest-survey/answer/list', query: { id: row.id } })}>{row.answersCount}</el-button> : 0 },
-        { label: '创建时间', render: ({ row }) => formatDateTime(+row.createdTs, 'yyyy-MM-dd hh:mm:ss') },
+        {
+          label: '状态',
+          render: ({ row }) => <div>
+            {QUESTIONNAIRE_STATE[row.state]}
+            {
+              // 冻结理由
+              +row.state === 2
+                ? <el-tooltip effect="light" content={row.freezing} placement="top">
+                  <el-button type="text" icon="el-icon-warning-outline" />
+                </el-tooltip>
+                : ''
+            }
+          </div>
+        },
+        { label: '答卷', prop: 'answersCount' },
+        { label: '创建时间', prop: 'createdTs' },
         { label: '操作', render: ({ row }) => this.generateActions(row) },
       ],
       loading: false,

@@ -6,6 +6,7 @@ export const labelType = [
   { n: '招商活动', type: 3, show: 3 },
   { n: '邀请入会', type: 4, show: 2 },
   { n: '自定义通知', type: 5, show: 3 },
+  { n: '5G彩信通知', type: 7, show: 3 },
 ]
 export const receiveType = [
   { n: '所有会员', type: -1, show: 1 },
@@ -41,7 +42,8 @@ export const labelTypeForm = [
   { name: '招商活动', id: 3 },
   { name: '邀请入会', id: 4 },
   { name: '自定义通知', id: 5 },
-  { name: '课程通知', id: 6 }
+  { name: '课程通知', id: 6 },
+  { name: '5G彩信通知', id: 7 }
 ]
 // 所有会员的table config
 export const memberTableConfig = [
@@ -170,6 +172,10 @@ export const channelTypeList = [
     id: 5,
     n: '站内信'
   },
+  {
+    id: 6,
+    n: '5G彩信'
+  }
 ]
 // 群发详情弹框用
 export const sendDetailChannelType = [
@@ -178,6 +184,7 @@ export const sendDetailChannelType = [
   { name: '2', label: '订阅消息' },
   { name: '1', label: '短信' },
   { name: '5', label: '站内信' },
+  { name: '6', label: '5G彩信' }
 ]
 export const sendStatusList = [
   { name: '1', label: '发送成功', field: 'succNum', num: '0' },
@@ -244,3 +251,11 @@ export const secretariatConfig = [
   },
 
 ]
+
+// 审核状态
+export const auditStatus = {
+  0: '审核中',
+  1: '已通过',
+  2: '未通过',
+  3: '已撤回'
+}
