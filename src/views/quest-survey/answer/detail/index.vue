@@ -152,9 +152,12 @@ export default {
     // 下载图片  1图片 2视频
     downLoadImg(type = 1, item) {
       if (type === 1) { downloadByBlob(item.value, '图片') } else if (type === 2) {
-        const link = item.sourceAddr
+        let link = item.sourceAddr
         const fileName = item.vid
         const x = new XMLHttpRequest()
+        // 将http换成https
+        link = link.replace(/http/, 'https')
+        console.log('link', link)
         x.open('GET', link, true)
         x.responseType = 'blob'
         x.onload = () => {
