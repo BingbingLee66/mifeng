@@ -69,7 +69,7 @@ export default {
         { label: '商协会', prop: 'chamberName' },
         { label: '问卷标题', prop: 'title' },
         { label: '状态', render: ({ row }) => QUESTIONNAIRE_STATE[row.state] },
-        { label: '答卷', render: ({ row }) => row.answersCount > 0 ? <el-button type="text" onClick={() => this.$router.push({ path: '/quest-survey/answer/list', query: { id: row.id } })}>{row.answersCount}</el-button> : 0 },
+        { label: '答卷', prop: 'answersCount' },
         { label: '创建时间', prop: 'createdTs' },
         { label: '操作', render: ({ row }) => this.generateActions(row) },
       ],
