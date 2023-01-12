@@ -56,6 +56,9 @@ import ysForm from '@/components/ys-form'
 Vue.component('ysh-table', ysTable)
 Vue.component('ysh-form', ysForm)
 
+import modal from '@/components/wangEditor/link-modal/index'
+Vue.prototype.modal = modal
+
 new Vue({
   el: '#app',
   router,
