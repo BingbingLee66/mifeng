@@ -8,7 +8,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="链接">
-        <el-input v-model="form.link" />
+        <el-input v-model="form.path" />
       </el-form-item>
       <el-form-item v-show="form.type === 1" label="文字内容">
         <el-input v-model="form.content" />
@@ -24,7 +24,7 @@
           :show-file-list="true"
           :on-remove="handleRemove"
         >
-          <el-button v-show="!form.image" type="primary">上传图片</el-button>
+          <el-button v-show="!form.src" type="primary">上传图片</el-button>
           <div slot="tip" style="color: #999">点击图片会打开指定链接</div>
         </el-upload>
       </el-form-item>
@@ -48,20 +48,20 @@ export default {
       activeName: 'link',
       form: {
         type: 1,
-        link: '',
+        path: '',
         content: '',
-        image: ''
+        src: ''
       }
     }
   }, // 接收父组件的内容
   mounted() {},
   methods: {
-    // 上传活动列表图
+    // 上传图片
     uploadListImage(content) {
       const formData = new FormData()
       formData.append('file', content.file)
       console.log(content.file)
-      this.form.image = content.file
+      this.form.src = content.file
     },
     beforeUpload() {
       console.log('beforeUpload')
@@ -69,12 +69,12 @@ export default {
     handleRemove() {
       // 上传按钮等移除完毕再回显
       setTimeout(() => {
-        this.form.image = ''
+        this.form.src = ''
       }, 1200)
     },
     finish() {
       if (this.form.type === 1) {
-        if (!this.form.link || !this.form.content) {
+        if (!this.form.path || !this.form.content) {
           this.$message({
             message: '请输入链接或文字内容',
             type: 'error'
@@ -82,7 +82,7 @@ export default {
           return false
         }
       } else {
-        if (!this.form.link || !this.form.image) {
+        if (!this.form.path || !this.form.src) {
           this.$message({
             message: '请输入链接或图片',
             type: 'error'
@@ -90,8 +90,8 @@ export default {
           return false
         }
       }
-      console.log('finish', this.form)
-      this.$emit('finish', this.form)
+      this.$emit('onClick', this.form)
+      this.$emit('close')
     }
   }
 }
