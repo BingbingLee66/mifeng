@@ -39,9 +39,9 @@ class LinkMenu extends BtnMenu {
 
       if (data.type === 1) {
         // return `<a href="${url}"><img src="https://t7.baidu.com/it/u=1819248061,230866778&fm=193&f=GIF" alt=""></a>`
-        return `<a href="${url}"><img src="${data.src}" alt=""></a>`
+        return `<a href="${url}" style="color: #266BCB"><img src="${data.src}" alt="" /></a>`
       } else {
-        return `<a href="${url}">${data.content}</a>`
+        return `<a href="${url}" style="color: #266BCB">${data.content}</a>`
       }
     }
 

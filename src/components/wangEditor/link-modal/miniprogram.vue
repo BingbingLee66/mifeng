@@ -16,6 +16,10 @@
         <el-input v-model="form.content" />
       </el-form-item>
 
+      <el-form-item v-if="form.type === 1" label="图片" prop="src">
+        <RichUpload @upload="onUpload" />
+      </el-form-item>
+
       <el-form-item>
         <el-button @click="onClick">确定</el-button>
       </el-form-item>
@@ -24,14 +28,18 @@
 </template>
 
 <script>
+import RichUpload from './upload'
+
 export default {
   name: 'Miniprogram',
+  components: { RichUpload },
   data() {
     return {
       form: {
         type: 0,
         path: '',
         content: '',
+        src: '',
       },
       rules: {
         path: [{ required: true, message: '小程序路径不能为空', trigger: 'blur' }],
@@ -51,6 +59,10 @@ export default {
         this.$emit('onClick', this.form)
         this.$emit('close')
       })
+    },
+
+    onUpload(src) {
+      this.form.src = src
     }
   }
 }
