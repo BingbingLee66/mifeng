@@ -78,7 +78,7 @@ export default {
       // 活动报名表参数 begin
       arrayData: [
         {
-          title: '姓名',
+          title: '参与人姓名',
           msgAlert: '请输入姓名',
           lengthLimit: '',
           check: 1,
@@ -92,10 +92,9 @@ export default {
           ],
           key: ';',
           type: '0',
-          // require: true
         },
         {
-          title: '联系手机',
+          title: '参与人手机号',
           msgAlert: '请输入手机号',
           lengthLimit: '',
           check: 1,
@@ -109,7 +108,6 @@ export default {
           ],
           key: ';',
           type: '0',
-          // require: true
         }
       ],
 
@@ -350,7 +348,7 @@ export default {
     },
     // 上移
     up(index) {
-      if (index === 0) {
+      if (index === 0 || index === 2) {
         return
       } else {
         const data = this.arrayData[index]
