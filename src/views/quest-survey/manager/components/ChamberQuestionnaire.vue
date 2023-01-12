@@ -10,7 +10,7 @@
         <el-input v-model="query.questionnaireTitle" placeholder="请输入" />
       </el-form-item>
       <el-form-item label="问卷状态">
-        <el-select v-model="query.status">
+        <el-select v-model="query.state">
           <el-option label="全部" value="" />
           <el-option v-for="(label,state) in QUESTIONNAIRE_STATE" :key="state" :label="label" :value="state" />
         </el-select>
@@ -59,7 +59,7 @@ export default {
       query: {
         ckey: '',
         questionnaireTitle: '', // 问卷标题
-        status: '', // 问卷状态
+        state: '', // 问卷状态
         pageSize: 10,
         pageNum: 1
       },
