@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     close() {
-      this.$emit('update:showSaveDialog', false)
+      this.$emit('update:saveVisible', false)
     },
     copyText(copyText) {
       const text = document.createElement('textarea') // 创建节点
