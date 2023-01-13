@@ -19,7 +19,7 @@ export default {
       },
       listLoading: false,
       random: 1, // 动态改变table试图
-      noticeTypeId: ['', '缴费通知', '活动通知', '招商活动', '邀请入会', '自定义通知', '课程通知', '', '节日海报']
+      noticeTypeId: ['', '缴费通知', '活动通知', '招商活动', '邀请入会', '自定义通知', '课程通知', '5G彩信通知', '节日海报']
     }
   },
   components: {
