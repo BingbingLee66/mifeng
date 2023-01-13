@@ -28,7 +28,7 @@
           <el-upload
             action="#"
             :show-file-list="false"
-            accept="image/jpg,image/png,image/gif"
+            accept="image/jpeg,image/jpg,image/png,image/gif"
             :before-upload="beforeImageUpload"
             :http-request="e => handleUpload('image', e)"
           >
@@ -351,14 +351,10 @@ export default {
 
   .template-image {
     width: 100%;
-    height: 109px;
-    object-fit: cover;
   }
 
   .template-video {
     width: 100%;
-    height: 131px;
-    object-fit: cover;
   }
 
   .close {
