@@ -14,9 +14,9 @@
           />
         </el-select>
       </el-form-item> -->
-      <el-form-item prop="name" label="会员/联系人" label-width="180">
+      <!-- <el-form-item prop="name" label="会员/联系人" label-width="180">
         <el-input v-model="form.name" />
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item prop="phone" label="手机号/联系方式" label-width="180">
         <el-input v-model="form.phone" />
       </el-form-item>
@@ -75,7 +75,7 @@ export default {
         { label: '序号', prop: 'questionnaireRecordId', width: 190 },
         { label: '用户名', prop: 'username' },
         // { label: '会内职位', prop: 'job' },
-        { label: '姓名/联系人', prop: 'name' },
+        // { label: '姓名/联系人', prop: 'name' },
         { label: '手机号/联系方式', prop: 'phone' },
         { label: '提交时间', prop: 'submitTime', render: ({ row }) => dayjs(parseInt(row.submitTime)).format('YYYY年MM月DD日 HH:mm') },
         { label: '操作', render: ({ row }) => <el-link type="primary" onClick={() => this.answerDetail(row)}>查看答卷</el-link> },
