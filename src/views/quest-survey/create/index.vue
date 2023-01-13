@@ -196,7 +196,9 @@ export default {
       // 状态 1新增 2编辑
       type: 1,
       // 问卷状态是否可以编辑
-      isDisable: false
+      isDisable: false,
+      // 问卷状态 初始状态未发布
+      state: 0
     }
   },
   computed: { showAddItem: () => {
@@ -295,7 +297,7 @@ export default {
           val.selectItem.push({
             select: false, // 是否选择
             key: '', //
-            value: '选项', // 选择组件属性 string
+            value: null, // 选择组件属性 string
             label: '选项', // label文本
             otherItems: 0
           })
@@ -360,8 +362,13 @@ export default {
       const res = await API(params)
       if (res.state === 1) {
         if (res.data) { this.questionId = res.data }
-        this.showSaveDialog = true
-        this.$refs['saveDialog'].getQrCodeFunc(this.questionId)
+        // 未发布问卷显示弹窗
+        if (this.state === 0) {
+          this.showSaveDialog = true
+          this.$refs['saveDialog'].getQrCodeFunc(this.questionId)
+        } else {
+          this.$router.push({ path: '/quest-survey/manager' })
+        }
       } else { this.$message.error(res.msg) }
     },
     // 删除组件的某一项
@@ -406,6 +413,7 @@ export default {
       this.componentsList = commonModelDTOS
       this.form = { shareImgUrl, endTime, delivery: !!endTime }
       this.isDisable = !!(state === 1 || state === 3)
+      this.state = state
       this.componentsList.forEach(i => { i.isDisable = this.isDisable; if (i.selectItem?.length > 0) { i.selectItem.forEach(j => { j.isDisable = this.isDisable }) } })
     } }
 }
