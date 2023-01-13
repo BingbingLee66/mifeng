@@ -1,14 +1,5 @@
 <template>
   <div>
-    <!-- 筛选表单 -->
-    <ysh-form
-      :form-config="formConfig"
-      :form-item="formItem"
-      :form-obj="formObj"
-      @query="queryData"
-      @reset="resetData"
-    />
-
     <!-- 操作栏 -->
     <el-row>
       <el-button
@@ -16,7 +7,13 @@
         type="primary"
         size="medium"
         @click="handleEvent('add')"
-      >添加金刚区</el-button>
+      >新增功能入口</el-button>
+      <el-button
+        icon="el-icon-delete"
+        type="primary"
+        size="medium"
+        @click="handleEvent('delete', row.data)"
+      >删除</el-button>
     </el-row>
 
     <!-- 表格数据 -->
@@ -24,20 +21,24 @@
       :table-config="tableConfig"
       :table-column="tableColumn"
       :table-data="tableData"
-      :page-data="pageData"
-      @handleCurrentChange="handleCurrentChange"
-      @handleSizeChange="handleSizeChange"
-      @handleLevelCallback="handleWeight"
+      @handleOrder="handleOrder"
+      @handleSelectionChange="handleSelectionChange"
     >
       <template v-slot:operate="row">
+        <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
         <span
+          v-if="row.data.status === 2"
           class="text-blue cur ml-10"
-          @click="handleEvent('edit', row.data)"
-        >编辑</span>
+          @click="handleEvent('status', row.data)"
+        >启用</span>
         <span
-          class="text-blue cur ml-10"
-          @click="handleEvent('delete', row.data)"
-        >移除</span>
+          v-if="row.data.status === 1"
+          class="text-yellow cur ml-10"
+          @click="handleEvent('status', row.data)"
+        >冻结</span>
+        <!-- <span v-if="row.data.status !== 1" class="text-red cur ml-10" @click="handleEvent('delete', row.data)"
+          >删除</span
+        > -->
       </template>
     </ysh-table>
 
@@ -56,18 +57,14 @@ export default {
   components: { Dialog },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
+  props: {
+    clientType: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
-      /** 筛选表单 */
-      formConfig: {
-        type: 'query',
-        inline: true,
-        labelWidth: '85px',
-        size: 'medium'
-      },
-      formItem: _data.formItem,
-      formObj: _data.formObj,
-
       /** 表格数据 */
       tableConfig: {
         loading: false,
@@ -84,26 +81,19 @@ export default {
 
   methods: {
     /** 获取app金刚区列表数据 */
-    async fetchData(e) {
+    async fetchData() {
       this.tableConfig.loading = true
-      const { name, creatorName, createdTime } = this.formObj
-      const { currentpage, limit } = this.pageData
       const params = {
-        clientType: 1,
-        name,
-        creatorName,
-        createdTsBegin: createdTime ? createdTime[0] : '',
-        createdTsEnd: createdTime ? createdTime[1] : '',
-        pageNum: e === 1 ? 1 : currentpage,
-        pageSize: limit
+        clientType: this.clientType,
+        pageNum: 1,
+        pageSize: 100
       }
-      if (createdTime) {
-        params.createdTsBegin = Date.parse(new Date(params.createdTsBegin))
-        params.createdTsEnd = Date.parse(new Date(params.createdTsEnd)) + 24 * 60 * 60 * 1000 - 1
-      }
-      const res = await Kingkong.getKingkongList(params)
+      const res = await Kingkong.getKingkongListV1(params)
       if (res.state !== 1) return
       this.tableData = res.data.list
+      this.tableData.forEach(i => {
+        i.id = i.kingKongId
+      })
       this.pageData.total = res.data.totalRows
       this.tableConfig.loading = false
     },
@@ -120,20 +110,21 @@ export default {
         case 'delete':
           this.handleDelete(data)
           break
+        case 'status':
+          this.handleStatus(data)
+          break
         default:
           break
       }
     },
 
-    /** 修改金刚区权重 */
-    async handleWeight(data) {
-      const res = await Kingkong.updateKingkongWeight({
-        id: data.id,
-        value: data.level
-      })
+    /** 启用/冻结金刚区 */
+    async handleStatus(data) {
+      const status = data.status === 1 ? 2 : 1
+      const res = await Kingkong.changeKingkongStatus(data.id, status)
       if (res.state === 1) {
         this.$message.success(res.msg)
-        this.fetchData()
+        this.fetchData(1)
       } else {
         this.$message.error(res.msg)
       }

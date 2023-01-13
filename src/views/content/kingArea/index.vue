@@ -21,7 +21,7 @@ export default {
   },
   data() {
     return {
-      clientType: 'wechat'
+      clientType: 'app'
     }
   }
 }

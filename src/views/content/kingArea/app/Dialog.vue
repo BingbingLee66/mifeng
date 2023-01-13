@@ -3,24 +3,25 @@
     <el-dialog
       :visible.sync="dialogVisible"
       :title="dialogTitle"
+      :close-on-click-modal="false"
       width="600px"
       @closed="close"
     >
-      <ysh-form
-        ref="formRef"
-        :form-config="formConfig"
-        :form-item="formItem"
-        :form-obj="formObj"
-        @cancel="close"
-        @submit="submit"
-      />
+      <ysh-form ref="formRef" :form-config="formConfig" :form-item="formItem" :form-obj="formObj" @submit="submit">
+        <template v-slot:customConetent>
+          <div class="text-center mt-40">
+            <el-button class="mr-20" @click="close">取消</el-button>
+            <el-button class="mr-20" @click="handleSubmit(2)">保存</el-button>
+            <el-button type="primary" @click="handleSubmit(1)">发布</el-button>
+          </div>
+        </template>
+      </ysh-form>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import { uploadFileRandomName } from '@/api/content/article'
-import { validateWeight } from '@/utils/validate'
 import Kingkong from '@/api/home-config/KingKong'
 
 export default {
@@ -37,18 +38,17 @@ export default {
       formObj: {
         name: '', // 金刚区名称
         image: '', // 金刚区图片
-        jsonContext: '', // 跳转协议
-        weight: '' // 权重
+        jsonContext: '' // 跳转协议
       },
       formItem: [
         {
-          label: '金刚区名称：',
+          label: '入口名称：',
           prop: 'name',
           type: 'input',
           width: '90%',
           showWordLimit: true,
           maxlength: 6,
-          placeholder: '限6个字内',
+          placeholder: '请输入入口名称,不超过6个字符',
           clearable: true,
           value: '',
           rules: [
@@ -57,42 +57,29 @@ export default {
           ]
         },
         {
-          label: '金刚区图片：',
+          label: '关联内容',
+          prop: 'jsonContext',
+          type: 'textarea',
+          width: '90%',
+          rows: 1,
+          placeholder: '请输入入口跳转链接或路径',
+          clearable: true,
+          value: '',
+          rules: [{ required: true, message: '请输入跳转协议', trigger: 'blur' }]
+        },
+        {
+          label: '上传图片',
           prop: 'image',
           type: 'upload',
           value: '',
           rules: [{ required: true, message: '请上传金刚区图片', trigger: 'change' }],
-          formTip: ['建议尺寸123*123px; 支持png、jpg、gif'],
+          formTip: ['建议尺寸100*100px; 支持png、jpg'],
           beforeUpload: file => {
             this.beforeUpload(file)
           },
           upload: content => {
             this.uploadKingkongImage(content, 'image')
           }
-        },
-        {
-          label: '跳转协议：',
-          prop: 'jsonContext',
-          type: 'textarea',
-          width: '90%',
-          rows: 5,
-          placeholder: '请输入内容',
-          clearable: true,
-          value: '',
-          rules: [{ required: true, message: '请输入跳转协议', trigger: 'blur' }]
-        },
-        {
-          label: '权重：',
-          prop: 'weight',
-          type: 'input',
-          width: '90%',
-          placeholder: '',
-          clearable: true,
-          value: '',
-          rules: [
-            { required: true, message: '请输入权重', trigger: 'blur' },
-            { validator: validateWeight, trigger: 'blur' }
-          ]
         }
       ]
     }
@@ -121,7 +108,7 @@ export default {
     },
 
     close() {
-      this.formObj = { name: '', image: '', jsonContext: '', weight: '' }
+      this.formObj = { title: '', icon: '', jsonContext: '' }
       this.$refs.formRef.resetFileds()
       this.dialogVisible = false
     },
