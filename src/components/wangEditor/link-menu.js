@@ -25,8 +25,6 @@ class LinkMenu extends BtnMenu {
     const that = this
     function handleLink(data) {
       let url = ''
-      const detailActivity = 'subpackage_activity/pages/activity-detail/index'
-      const detailArticle = 'pages/information/info_detail/index'
 
       if (data.linkType === 'miniprogram') {
         const urlParams = data.path.split('?')
@@ -34,13 +32,7 @@ class LinkMenu extends BtnMenu {
         const { appid, miniProgramType = 0 } = parseUrl(params)
         url = `wechatApp?path=${encodeURIComponent(data.path)}&miniId=${appid}&miniProgramType=${miniProgramType}`
       } else if (data.linkType === 'link') {
-        if (data.path.indexOf(detailActivity) > -1) {
-          url = `detailActivity?path=${encodeURIComponent(data.path)}`
-        }
-
-        if (data.path.indexOf(detailArticle) > -1) {
-          url = `detailArticle?path=${encodeURIComponent(data.path)}`
-        }
+        url = data.path
       }
 
       if (data.type === 1) {
