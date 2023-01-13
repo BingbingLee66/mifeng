@@ -25,20 +25,25 @@ class LinkMenu extends BtnMenu {
     const that = this
     function handleLink(data) {
       let url = ''
-
-      const urlParams = data.path.split('?')
-      const params = urlParams[1]
-      if (!params) return
-      const { appid, miniProgramType = 0, id } = parseUrl(params)
+      const detailActivity = 'subpackage_activity/pages/activity-detail/index'
+      const detailArticle = 'pages/information/info_detail/index'
 
       if (data.linkType === 'miniprogram') {
+        const urlParams = data.path.split('?')
+        const params = urlParams[1]
+        const { appid, miniProgramType = 0 } = parseUrl(params)
         url = `wechatApp?path=${encodeURIComponent(data.path)}&miniId=${appid}&miniProgramType=${miniProgramType}`
       } else if (data.linkType === 'link') {
-        url = `detailArticle?path=${encodeURIComponent(data.path)}&id=${id}`
+        if (data.path.indexOf(detailActivity) > -1) {
+          url = `detailActivity?path=${encodeURIComponent(data.path)}`
+        }
+
+        if (data.path.indexOf(detailArticle) > -1) {
+          url = `detailArticle?path=${encodeURIComponent(data.path)}`
+        }
       }
 
       if (data.type === 1) {
-        // return `<a href="${url}"><img src="https://t7.baidu.com/it/u=1819248061,230866778&fm=193&f=GIF" alt=""></a>`
         return `<a href="${url}" style="color: #266BCB"><img src="${data.src}" alt="" /></a>`
       } else {
         return `<a href="${url}" style="color: #266BCB">${data.content}</a>`
