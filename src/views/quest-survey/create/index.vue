@@ -362,8 +362,8 @@ export default {
       const res = await API(params)
       if (res.state === 1) {
         if (res.data) { this.questionId = res.data }
-        // 未发布问卷显示弹窗
-        if (this.state === 0) {
+        // 未发布|已停止问卷显示立即发布弹窗
+        if (this.state === 0 || this.state === 3) {
           this.showSaveDialog = true
           this.$refs['saveDialog'].getQrCodeFunc(this.questionId)
         } else {
