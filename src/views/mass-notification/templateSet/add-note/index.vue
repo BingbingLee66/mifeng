@@ -12,6 +12,7 @@
               <el-radio label="4">邀请入会</el-radio>
               <el-radio label="5">自定义通知</el-radio>
               <el-radio label="6">课程通知</el-radio>
+              <el-radio label="8">节日海报</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>
