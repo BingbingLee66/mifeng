@@ -110,7 +110,7 @@ export default {
       this.hidden = true // s是否展示铃铛数量  true = 不展示  false = 展示
       this.isShow = false
       const res = await stationMailDing()
-      this.count = res.data || 0
+      this.count = typeof(res.data) === 'number' ? res.data : 0
       this.timer = setTimeout(this.onDing, 30000)
       if (res.data && res.data > 0) {
         this.hidden = false

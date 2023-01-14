@@ -429,7 +429,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .activity-detail-wrap {
   padding: 40px;
 

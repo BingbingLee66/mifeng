@@ -329,7 +329,7 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import 'src/styles/common.scss';
 </style>
-<style>
+<style scoped>
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
