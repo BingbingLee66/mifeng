@@ -5,10 +5,10 @@
       <div v-for="(item,index) of template.extend.params" :key="index" class="card">
 
         <template v-if="item.type === 'image'">
-          <img style="max-width:100%" :src="item.value">
+          <img style="width:100%" :src="item.value">
         </template>
         <template v-else-if="item.type === 'video'">
-          <video style="max-width:100%" :src="item.value" controls />
+          <video style="width:100%" :src="item.value" controls />
         </template>
         <template v-else-if="item.type === 'audio'">
           <AudioPlayBar :src="item.value" />
