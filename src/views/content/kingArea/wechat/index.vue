@@ -2,12 +2,7 @@
   <div>
     <!-- 操作栏 -->
     <el-row>
-      <el-button
-        icon="el-icon-folder-add"
-        type="primary"
-        size="medium"
-        @click="handleEvent('add')"
-      >新增功能入口</el-button>
+      <el-button icon="el-icon-folder-add" type="primary" size="medium" @click="handleEvent('add')">新增功能入口</el-button>
     </el-row>
 
     <!-- 表格数据 -->
@@ -19,10 +14,7 @@
       @handleSelectionChange="handleSelectionChange"
     >
       <template v-slot:operate="row">
-        <span
-          class="text-blue cur ml-10"
-          @click="handleEvent('edit', row.data)"
-        >编辑</span>
+        <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
         <span
           v-if="row.data.status === 2"
           class="text-blue cur ml-10"
@@ -33,11 +25,7 @@
           class="text-yellow cur ml-10"
           @click="handleEvent('status', row.data)"
         >冻结</span>
-        <span
-          v-if="row.data.status !== 1"
-          class="text-red cur ml-10"
-          @click="handleEvent('delete', row.data)"
-        >删除</span>
+        <span v-if="row.data.status !== 1" class="text-red cur ml-10" @click="handleEvent('delete', row.data)">删除</span>
       </template>
     </ysh-table>
 
@@ -54,7 +42,9 @@ import _data from './data'
 import Dialog from './Dialog'
 
 export default {
-  components: { Dialog },
+  components: {
+    Dialog
+  },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
   props: {
@@ -164,4 +154,5 @@ export default {
     },
   }
 }
+
 </script>

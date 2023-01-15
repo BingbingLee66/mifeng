@@ -2,18 +2,9 @@
   <div>
     <!-- 操作栏 -->
     <el-row>
-      <el-button
-        icon="el-icon-folder-add"
-        type="primary"
-        size="medium"
-        @click="handleEvent('add')"
-      >新增功能入口</el-button>
-      <el-button
-        icon="el-icon-delete"
-        type="primary"
-        size="medium"
-        @click="handleEvent('delete', row.data)"
-      >删除</el-button>
+      <el-button icon="el-icon-folder-add" type="primary" size="medium" @click="handleEvent('add')">新增功能入口</el-button>
+      <el-button icon="el-icon-delete" type="primary" size="medium" @click="handleEvent('delete', row.data)">删除
+      </el-button>
     </el-row>
 
     <!-- 表格数据 -->
@@ -36,9 +27,6 @@
           class="text-yellow cur ml-10"
           @click="handleEvent('status', row.data)"
         >冻结</span>
-        <!-- <span v-if="row.data.status !== 1" class="text-red cur ml-10" @click="handleEvent('delete', row.data)"
-          >删除</span
-        > -->
       </template>
     </ysh-table>
 
@@ -54,7 +42,9 @@ import _data from './data'
 import Kingkong from '@/api/home-config/KingKong'
 
 export default {
-  components: { Dialog },
+  components: {
+    Dialog
+  },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
   props: {
@@ -68,7 +58,8 @@ export default {
       /** 表格数据 */
       tableConfig: {
         loading: false,
-        maxHeight: window.innerHeight - 400 + 'px'
+        selection: false,
+        maxHeight: window.innerHeight - 260 + 'px'
       },
       tableColumn: _data.tableColumn,
       tableData: []
@@ -88,7 +79,8 @@ export default {
         pageNum: 1,
         pageSize: 100
       }
-      const res = await Kingkong.getKingkongListV1(params)
+      const res = await Kingkong.getKingkongList(params)
+      console.log(res, 'res')
       if (res.state !== 1) return
       this.tableData = res.data.list
       this.tableData.forEach(i => {
@@ -106,9 +98,6 @@ export default {
           break
         case 'edit':
           this.$refs.dialogRef.$emit(event, data)
-          break
-        case 'delete':
-          this.handleDelete(data)
           break
         case 'status':
           this.handleStatus(data)
@@ -139,7 +128,7 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          const res = await Kingkong.deleteKingkong([data.id])
+          const res = await Kingkong.deleteKingkong(data)
           if (res.state === 1) {
             this.$message.success(res.msg)
             this.fetchData(1)
@@ -150,7 +139,21 @@ export default {
         .catch(() => {
           this.$message.info('已取消移除')
         })
-    }
+    },
+    /** 调整上下顺序 */
+    async handleOrder(event, data) {
+      console.log(' order data ', data)
+      const num = event === 'up' ? data.num - 1 : data.num + 1
+      const res = await Kingkong.updateKingkongWeight(data.id, num)
+      if (res.state === 1) {
+        this.fetchData()
+        this.$message.success(res.msg)
+        // changeOrder(this.tableData, data.id, event)
+      } else {
+        this.$message.error(res.msg)
+      }
+    },
   }
 }
+
 </script>
