@@ -23,12 +23,12 @@
       <template v-slot:operate="row">
         <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
         <span
-          v-if="row.data.status === 1"
+          v-if="row.data.status === 2"
           class="text-blue cur ml-10"
           @click="handleEvent('status', row.data)"
         >启用</span>
         <span
-          v-if="row.data.status === 2"
+          v-if="row.data.status === 1"
           class="text-yellow cur ml-10"
           @click="handleEvent('status', row.data)"
         >冻结</span>
@@ -107,7 +107,7 @@ export default {
     /** 启用/冻结金刚区 */
     async handleStatus(data) {
       const status = data.status === 1 ? 2 : 1
-      const res = await Kingkong.changeKingkongStatus(data.id, status)
+      const res = await Kingkong.updateKingkongStatus(data.id, status)
       if (res.state === 1) {
         this.$message.success(res.msg)
         this.fetchData(1)

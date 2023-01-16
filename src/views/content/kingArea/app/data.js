@@ -38,7 +38,7 @@ const tableColumn = [
   },
   {
     label: '关联内容',
-    prop: 'url',
+    prop: 'jsonContext',
     align: 'center'
   },
   {

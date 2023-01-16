@@ -56,7 +56,12 @@ class Kingkong {
       data
     })
   }
-
+  static async updateKingkongStatus(id, status) {
+    return await request({
+      url: `/ec/king-kong-area/${id}/status?status=${status}`,
+      method: 'put'
+    })
+  }
   /** 批量删除金刚区  */
   static async deleteKingkong(data) {
     return await request({
@@ -79,7 +84,7 @@ class Kingkong {
   static async updateKingkongWeight(data) {
     return await request({
       method: 'put',
-      url: `/ec/king-kong-area/weight/${data.id}/${data.value}`,
+      url: `/ec/king-kong-area/weight/${data.id}/${data.value}`
     })
   }
 }

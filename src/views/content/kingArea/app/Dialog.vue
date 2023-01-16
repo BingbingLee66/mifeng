@@ -38,7 +38,7 @@ export default {
       formObj: {
         name: '', // 入口名称
         image: '', // 上传图片
-        url: '' // 关联内容
+        jsonContext: '' // 关联内容
       },
       formItem: [
         {
@@ -67,7 +67,7 @@ export default {
         },
         {
           label: '关联内容：',
-          prop: 'url',
+          prop: 'jsonContext',
           type: 'textarea',
           width: '90%',
           rows: 1,
@@ -113,6 +113,7 @@ export default {
       })
       this.$on('edit', data => {
         this.edit(data)
+        console.log(data, 'data')
       })
     })
   },
@@ -124,13 +125,14 @@ export default {
 
     edit(data) {
       this.dialogTitle = '编辑功能入口'
-      const { name, image, url, kingKongId } = data
+      const { name, image, jsonContext, id } = data
       this.formObj = {
         name,
         image,
-        url,
-        kingKongId
+        jsonContext,
+        id
       }
+      console.log(this.formObj, 'obj')
       this.dialogVisible = true
     },
 
@@ -138,7 +140,7 @@ export default {
       this.formObj = {
         name: '',
         image: '',
-        url: ''
+        jsonContext: ''
       }
       this.$refs.formRef.resetFileds()
       this.dialogVisible = false
