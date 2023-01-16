@@ -21,9 +21,7 @@
 </template>
 
 <script>
-import {
-  uploadFileRandomName
-} from '@/api/content/article'
+import { uploadFileRandomName } from '@/api/content/article'
 import Kingkong from '@/api/home-config/KingKong'
 
 export default {
@@ -38,14 +36,14 @@ export default {
         size: 'medium'
       },
       formObj: {
-        title: '', // 入口名称
-        icon: '', // 上传图片
-        content: '' // 关联内容
+        name: '', // 入口名称
+        image: '', // 上传图片
+        url: '' // 关联内容
       },
       formItem: [
         {
           label: '入口名称：',
-          prop: 'title',
+          prop: 'name',
           type: 'input',
           width: '90%',
           showWordLimit: true,
@@ -69,7 +67,7 @@ export default {
         },
         {
           label: '关联内容：',
-          prop: 'content',
+          prop: 'url',
           type: 'textarea',
           width: '90%',
           rows: 5,
@@ -86,7 +84,7 @@ export default {
         },
         {
           label: '上传图片：',
-          prop: 'icon',
+          prop: 'image',
           type: 'upload',
           value: '',
           formTip: ['建议尺寸100*100px; 支持jpg、png'],
@@ -100,12 +98,12 @@ export default {
           beforeUpload: file => {
             this.beforeUpload(file)
           },
-          upload: content => {
-            this.uploadKingkongImage(content, 'icon')
+          upload: url => {
+            this.uploadKingkongImage(url, 'image')
           }
         }
       ],
-      submitStatus: 1, // 1-发布 2-保存
+      submitStatus: 1 // 1-发布 2-保存
     }
   },
   mounted() {
@@ -126,16 +124,11 @@ export default {
 
     edit(data) {
       this.dialogTitle = '编辑功能入口'
-      const {
-        title,
-        icon,
-        content,
-        kingKongId
-      } = data
+      const { name, image, url, kingKongId } = data
       this.formObj = {
-        title,
-        icon,
-        content,
+        name,
+        image,
+        url,
         kingKongId
       }
       this.dialogVisible = true
@@ -143,9 +136,9 @@ export default {
 
     close() {
       this.formObj = {
-        title: '',
-        icon: '',
-        content: ''
+        name: '',
+        image: '',
+        url: ''
       }
       this.$refs.formRef.resetFileds()
       this.dialogVisible = false
@@ -159,8 +152,8 @@ export default {
     async submit(data) {
       const res = await Kingkong.saveKingkong({
         ...data,
-        clientType: 0,
-        status: this.submitStatus,
+        clientType: 1,
+        status: this.submitStatus
       })
       if (res.state !== 1) {
         this.$message.error(res.msg)
@@ -175,9 +168,9 @@ export default {
     beforeUpload(file) {
       if (
         file.type !== 'image/jpeg' &&
-          file.type !== 'image/jpg' &&
-          file.type !== 'image/gif' &&
-          file.type !== 'image/png'
+        file.type !== 'image/jpg' &&
+        file.type !== 'image/gif' &&
+        file.type !== 'image/png'
       ) {
         this.$message.error('上传图片只能是 JPG 或 PNG 或 gif 格式!')
         return false
@@ -189,14 +182,13 @@ export default {
     },
 
     /** 上传金刚区图片 */
-    uploadKingkongImage(content, prop) {
+    uploadKingkongImage(url, prop) {
       const formData = new FormData()
-      formData.append('file', content.file)
+      formData.append('file', url.file)
       uploadFileRandomName(formData, 'demand').then(res => {
         this.$refs.formRef.updateFileds(prop, res.data)
       })
     }
   }
 }
-
 </script>

@@ -2,9 +2,13 @@
   <div>
     <!-- 操作栏 -->
     <el-row>
-      <el-button icon="el-icon-folder-add" type="primary" size="medium" @click="handleEvent('add')">新增功能入口</el-button>
-      <el-button icon="el-icon-delete" type="primary" size="medium" @click="handleEvent('delete', row.data)">删除
-      </el-button>
+      <el-button
+        icon="el-icon-folder-add"
+        type="primary"
+        size="medium"
+        @click="handleEvent('add')"
+      >新增功能入口</el-button>
+      <el-button icon="el-icon-delete" type="primary" size="medium" @click="deleteKingkong">删除 </el-button>
     </el-row>
 
     <!-- 表格数据 -->
@@ -15,6 +19,7 @@
       @handleOrder="handleOrder"
       @handleSelectionChange="handleSelectionChange"
     >
+      <template v-slot:number="" />
       <template v-slot:operate="row">
         <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
         <span
@@ -47,12 +52,6 @@ export default {
   },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
-  props: {
-    clientType: {
-      type: String,
-      default: ''
-    }
-  },
   data() {
     return {
       /** 表格数据 */
@@ -62,7 +61,8 @@ export default {
         maxHeight: window.innerHeight - 260 + 'px'
       },
       tableColumn: _data.tableColumn,
-      tableData: []
+      tableData: [],
+      selectionDatas: []
     }
   },
 
@@ -75,7 +75,7 @@ export default {
     async fetchData() {
       this.tableConfig.loading = true
       const params = {
-        clientType: this.clientType,
+        clientType: 1,
         pageNum: 1,
         pageSize: 100
       }
@@ -83,14 +83,11 @@ export default {
       console.log(res, 'res')
       if (res.state !== 1) return
       this.tableData = res.data.list
-      this.tableData.forEach(i => {
-        i.id = i.kingKongId
-      })
       this.pageData.total = res.data.totalRows
       this.tableConfig.loading = false
     },
 
-    /** 金刚区新增|编辑|删除 */
+    /** 金刚区新增|编辑|更新*/
     handleEvent(event, data) {
       switch (event) {
         case 'add':
@@ -121,7 +118,7 @@ export default {
 
     /** 移除金刚区 */
     handleDelete(data) {
-      if (!data.id) return
+      if (!data) return
       this.$confirm('确认移除该金刚区吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -153,7 +150,15 @@ export default {
         this.$message.error(res.msg)
       }
     },
+    deleteKingkong() {},
+    handleSelectionChange(value) {
+      console.log(value)
+      const datas = value
+      this.selectionDatas = []
+      for (const data of datas) {
+        this.selectionDatas.push(data.id)
+      }
+    }
   }
 }
-
 </script>

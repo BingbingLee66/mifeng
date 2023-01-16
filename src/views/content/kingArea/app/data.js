@@ -1,38 +1,44 @@
 const tableColumn = [
+  // {
+  //   label: '序号',
+  //   prop: 'serialNumber',
+  //   type: 'serialNumber'
+  // },
   {
     label: '序号',
     prop: 'serialNumber',
-    type: 'serialNumber'
+    type: 'slot',
+    slotName: 'number'
   },
   {
     label: 'id',
-    prop: 'kingKongId',
+    prop: 'id',
     width: '100px',
     align: 'center'
   },
   {
     label: '入口名称',
-    prop: 'title',
+    prop: 'name',
     align: 'center'
   },
   {
     label: '入口icon',
-    prop: 'icon',
+    prop: 'image',
     type: 'image',
     width: '130px',
     align: 'center',
     imgWidth: '76px',
     imgHeight: '76px',
     url: row => {
-      return row.icon
+      return row.image
     },
     urlList: row => {
-      return [row.icon]
+      return [row.image]
     }
   },
   {
     label: '关联内容',
-    prop: 'content',
+    prop: 'url',
     align: 'center'
   },
   {
@@ -44,7 +50,7 @@ const tableColumn = [
   },
   {
     label: '状态',
-    prop: 'status',
+    prop: 'operatorId',
     width: '100px',
     align: 'center',
     type: 'function',
@@ -59,14 +65,14 @@ const tableColumn = [
   },
   {
     label: '更新时间',
-    prop: 'updateTs',
+    prop: 'updatedTs',
     type: 'time',
     width: '160px',
     align: 'center'
   },
   {
     label: '操作人',
-    prop: 'updaterName',
+    prop: 'creatorName',
     width: '160px',
     align: 'center'
   },
