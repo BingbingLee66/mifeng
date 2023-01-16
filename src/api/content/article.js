@@ -357,3 +357,16 @@ export function deleteDynamicByID(articleIds) {
     data: articleIds
   })
 }
+
+/**
+ * 上传富文本文件到对应目录
+ * @param params
+ * @returns {*}
+ */
+export function uploadFileRichImg(params) {
+  return request({
+    url: '/upload/richhtml-custom-img-upload',
+    method: 'post',
+    data: params
+  })
+}

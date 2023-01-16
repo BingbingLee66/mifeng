@@ -6,6 +6,8 @@
 </template>
 <script>
 import E from 'wangeditor'
+import LinkMenu from './link-menu'
+
 export default {
   name: 'EditorElem',
   // hiddenMenu 隐藏菜单栏
@@ -76,7 +78,9 @@ export default {
     editor.config.placeholder = this.placeholder
     // editor.config.menuTooltipPosition = "down";
     editor.config.uploadImgMaxLength = 1 // 一次最多上传 1 个图片
-  
+
+    E.registerMenu('linkMenu', LinkMenu)
+
     // 创建富文本实例
     editor.create()
     this.editor = editor
@@ -95,7 +99,7 @@ export default {
   methods: {
     // 给editor添加事件
     addEvent() {
-      let editor = this.editor
+      const { editor } = this
       // 给富文本添加内容监听事件
       this.addEditorChange(editor)
       // 图片被点击触发的事件
@@ -103,17 +107,17 @@ export default {
     },
     // 监听内容的改变
     addEditorChange(editor) {
-      editor.config.onchange = (html) => {
+      editor.config.onchange = html => {
         this.isChange = true
         // contentNumber 设置限制了次数  如果超过次数走进判断内
-        if(this.hiddenMenu && this.editor.txt.text().length > this.contentNumber){
-          this.editor.txt.html(this.editor.txt.text().substring(0,this.contentNumber))
+        if (this.hiddenMenu && this.editor.txt.text().length > this.contentNumber) {
+          this.editor.txt.html(this.editor.txt.text().substring(0, this.contentNumber))
           this.$emit('textNumber', this.editor.txt.text())
         } else {
           this.$emit('addParentHtml', html)
           this.$emit('textNumber', this.editor.txt.text())
         }
-       
+
         // this.getText()
         // console.log("html", html);
         // this.editorContent = html
@@ -122,7 +126,7 @@ export default {
     },
     // 监听图片被点击
     imgClickFunc(editor) {
-      var myImgClickEvents = function(img) {
+      const myImgClickEvents = function (img) {
         console.log('myImgClickEvents图片被点击拉', img)
       }
       editor.txt.eventHooks.imgClickEvents.push(myImgClickEvents)
@@ -131,7 +135,7 @@ export default {
     editorConfigImg(editor) {
       // 配置图片上传
       editor.config.uploadImgHooks = {
-        before: function(xhr, editor, files) {
+        before(xhr, editor, files) {
           console.log('xhr', xhr)
           console.log('editor', editor)
           console.log('files', files)
@@ -144,31 +148,31 @@ export default {
           //     msg: '放弃上传'
           // }
         },
-        success: function(xhr, editor, result) {
+        success(xhr, editor, result) {
           // 图片上传并返回结果，图片插入成功之后触发
           // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
 
           this.imgUrl = Object.values(result.data).toString()
         },
-        fail: function(xhr, editor, result) {
+        fail(xhr, editor, result) {
           // 图片上传并返回结果，但图片插入错误时触发
           // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象，result 是服务器端返回的结果
         },
-        error: function(xhr, editor) {
+        error(xhr, editor) {
           console.log('xhr', xhr)
           console.log('editor', editor)
           console.log('files', files)
           // 图片上传出错时触发
           // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
         },
-        timeout: function(xhr, editor) {
+        timeout(xhr, editor) {
           // 图片上传超时时触发
           // xhr 是 XMLHttpRequst 对象，editor 是编辑器对象
         },
 
         // 如果服务器端返回的不是 {errno:0, data: [...]} 这种格式，可使用该配置
         // （但是，服务器端返回的必须是一个 JSON 格式字符串！！！否则会报错）
-        customInsert: function(insertImg, result, editor) {
+        customInsert(insertImg, result, editor) {
           // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
           // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
           // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：

@@ -3,6 +3,7 @@ export const labelType = [
   { n: '缴费通知', type: 1, show: 2 },
   { n: '活动通知', type: 2, show: 3 },
   { n: '课程通知', type: 6, show: 1 },
+  { n: '节日海报', type: 8, show: 1 },
   { n: '招商活动', type: 3, show: 3 },
   { n: '邀请入会', type: 4, show: 2 },
   { n: '自定义通知', type: 5, show: 3 },
@@ -43,7 +44,9 @@ export const labelTypeForm = [
   { name: '邀请入会', id: 4 },
   { name: '自定义通知', id: 5 },
   { name: '课程通知', id: 6 },
-  { name: '5G彩信通知', id: 7 }
+  { name: '5G彩信通知', id: 7 },
+  { name: '节日海报', id: 8 }
+
 ]
 // 所有会员的table config
 export const memberTableConfig = [

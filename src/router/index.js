@@ -75,6 +75,24 @@ export const constantRoutes = [
     redirect: 'noredirect',
     children: [
       {
+        path: '/quest-survey/create',
+        component: () => import('@/views/quest-survey/create/index'),
+        name: 'createQuest',
+        meta: { title: '创建问卷' }
+      },
+      {
+        path: '/quest-survey/answer/list',
+        component: () => import('@/views/quest-survey/answer/list/index'),
+        name: 'answerList',
+        meta: { title: '查看答卷' }
+      },
+      {
+        path: '/quest-survey/answer/detail',
+        component: () => import('@/views/quest-survey/answer/detail/index'),
+        name: 'answerDetail',
+        meta: { title: '答卷详情' }
+      },
+      {
         path: 'profile',
         name: '个人资料',
         component: () => import('@/views/account/profile.vue'),
@@ -552,14 +570,21 @@ export const constantRoutes = [
         component: () => import('@/views/dashboard/page/FollowList.vue'),
         hidden: true,
         meta: { title: '已关注' }
-      }
+      },
+      {
+        path: 'mass-notification/create',
+        name: 'create',
+        hidden: true,
+        component: () => import('@/views/mass-notification/create/index'),
+        meta: { title: '创建群发' }
+      },
     ]
   },
-  /* {
-    path: '/livetelecast',
-    component: Layout,
-    redirect: '/'
-  } */
+  // {
+  //   path: '/livetelecast',
+  //   component: Layout,
+  //   redirect: '/'
+  // }
 ]
 
 const createRouter = () =>
