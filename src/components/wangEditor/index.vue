@@ -217,11 +217,4 @@ export default {
 .w-e-text-container {
   z-index: 1 !important;
 }
-// fix:菜单换行下拉框弹出遮挡
-.w-e-menu {
-  z-index: auto !important;
-  .w-e-droplist {
-    z-index: 3 !important;
-  }
-}
 </style>

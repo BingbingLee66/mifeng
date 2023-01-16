@@ -388,4 +388,11 @@ font-family: '微软雅黑', sans-serif;
   background-color: rgba(0, 0, 0, 0.6);
   display: none;
 }
+// fix:菜单换行下拉框弹出遮挡
+/deep/.w-e-menu {
+  z-index: auto !important;
+}
+/deep/.w-e-menu .w-e-droplist {
+    z-index: 3 !important;
+  }
 </style>
