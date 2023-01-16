@@ -23,12 +23,12 @@
       <template v-slot:operate="row">
         <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
         <span
-          v-if="row.data.status === 2"
+          v-if="row.data.status === 1"
           class="text-blue cur ml-10"
           @click="handleEvent('status', row.data)"
         >启用</span>
         <span
-          v-if="row.data.status === 1"
+          v-if="row.data.status === 2"
           class="text-yellow cur ml-10"
           @click="handleEvent('status', row.data)"
         >冻结</span>

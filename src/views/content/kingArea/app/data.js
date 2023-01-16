@@ -56,7 +56,7 @@ const tableColumn = [
     type: 'function',
     callback: row => {
       const statusMap = {
-        0: '删除',
+        0: '无效',
         1: '使用中',
         2: '冻结'
       }

@@ -1,10 +1,5 @@
 const tableColumn = [
   {
-    label: '序号',
-    prop: 'serialNumber',
-    type: 'serialNumber'
-  },
-  {
     label: 'ID',
     prop: 'id',
     align: 'center'
@@ -36,7 +31,7 @@ const tableColumn = [
       const statusMap = {
         0: '隐藏',
         1: '使用中',
-        2: '删除',
+        2: '删除'
       }
       if (row.changeStatus) {
         return '默认选中'

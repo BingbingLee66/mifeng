@@ -70,7 +70,7 @@ export default {
           prop: 'url',
           type: 'textarea',
           width: '90%',
-          rows: 5,
+          rows: 1,
           placeholder: '请输入banner跳转链接或路径',
           clearable: true,
           value: '',
