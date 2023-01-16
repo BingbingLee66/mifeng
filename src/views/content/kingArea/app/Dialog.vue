@@ -125,11 +125,12 @@ export default {
 
     edit(data) {
       this.dialogTitle = '编辑功能入口'
-      const { name, image, jsonContext, id } = data
+      const { name, image, jsonContext, weight, id } = data
       this.formObj = {
         name,
-        image,
         jsonContext,
+        image,
+        weight,
         id
       }
       console.log(this.formObj, 'obj')
