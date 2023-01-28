@@ -25,13 +25,13 @@
     <el-pagination
       background
       layout="total, sizes, prev, pager, next, jumper"
-      :page-sizes="this.pageSizes"
-      :page-size="this.limit"
-      :total="this.total"
-      :current-page.sync="this.currentpage"
+      :page-sizes="pageSizes"
+      :page-size="limit"
+      :total="total"
+      :current-page.sync="currentPage"
       :style="{ 'padding-top': '15px' }"
-      @size-change="this.handleSizeChange"
-      @current-change="this.handleCurrentChange"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
     />
     <!-- 新增/编辑栏目弹窗 -->
     <add-dialog ref="dialogRef" @refresh="fetchData" />
@@ -59,16 +59,10 @@ export default {
       },
       tableColumn: _data.tableColumn,
       tableData: [],
-      currentpage: 1,
+      currentPage: 1,
       limit: 10,
       pageSizes: [10, 20, 50, 100, 500],
-      total: 0,
-      actPage: {
-        currentpage: 1,
-        page: 1,
-        pageSize: 100,
-        allTotal: 0
-      }
+      total: 0
     }
   },
   created() {
@@ -84,7 +78,6 @@ export default {
       if (res.state !== 1) return
       res.data.forEach(item => {
         item.changeStatus = item.changeStatus === '1'
-        console.log(res, 'res')
       })
       this.tableData = res.data
       this.total = res.data.length
