@@ -123,12 +123,12 @@ export default {
     /** 调整显示条数 */
     handleSizeChange(val) {
       this.limit = val
-      this.currentpage = 1
+      this.currentPage = 1
       this.fetchData()
     },
     /** 调整显示页数 */
     handleCurrentChange(val) {
-      this.currentpage = val
+      this.currentPage = val
       this.fetchData()
     }
   }
