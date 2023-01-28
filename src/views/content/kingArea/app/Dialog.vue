@@ -229,10 +229,10 @@ export default {
       console.log(data)
       const res = await Kingkong.saveKingkong({
         ...data,
-        clientType: 1,
-        status: this.submitStatus
+        clientType: 1
       })
-      if (res.state !== 1) {
+      const temp = await Kingkong.updateKingkongStatus(data.id, this.submitStatus)
+      if (res.state !== 1 && temp.state !== 1) {
         this.$message.error(res.msg)
       } else {
         this.$message.success(res.msg)
