@@ -49,7 +49,17 @@
         >删除</span>
       </template>
     </ysh-table>
-
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :page-sizes="pageSizes"
+      :page-size="limit"
+      :total="total"
+      :current-page.sync="currentPage"
+      :style="{ 'padding-top': '15px' }"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
     <!-- 新增/编辑banner弹窗 -->
     <add-dialog ref="dialogRef1" :client-type="'1'" @refresh="fetchData" />
     <!-- 切换频率弹窗 -->
@@ -76,7 +86,11 @@ export default {
         maxHeight: window.innerHeight - 260 + 'px'
       },
       tableColumn,
-      tableData: []
+      tableData: [],
+      currentPage: 1,
+      limit: 10,
+      pageSizes: [10, 20, 50, 100, 500],
+      total: 0
     }
   },
   created() {
@@ -88,18 +102,15 @@ export default {
       this.tableConfig.loading = true
       const res = await Home.getBannerList({
         clientType: 1,
-        pageNum: 1,
-        pageSize: 100
+        page: this.currentPage,
+        pageSize: this.limit
       })
       if (res.state !== 1) return
       const resData = res.data
       console.log(resData, 'res')
       this.tableData = resData.list
-      // this.tableData.forEach(i => {
-      //   i.id = i.bannerId
-      // })
       console.log(this.tableData)
-      this.pageData.total = resData.totalRows
+      this.total = res.data.totalRows
       this.tableConfig.loading = false
     },
 
@@ -187,6 +198,17 @@ export default {
       } else {
         this.$message.error(res.msg)
       }
+    },
+    /** 调整显示条数 */
+    handleSizeChange(val) {
+      this.limit = val
+      this.currentPage = 1
+      this.fetchData()
+    },
+    /** 调整显示页数 */
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.fetchData()
     }
   }
 }
