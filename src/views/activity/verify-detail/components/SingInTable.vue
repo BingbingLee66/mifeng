@@ -348,8 +348,8 @@ export default {
           render: ({ row }) => (
             <div>
               {row.uavatar ? <img style="width:50px;height:50px" src={row.uavatar} /> : ''}
-              <div>{row.userName}</div>
-              <div>{row.phone}</div>
+              <div>{row.applicantName}</div>
+              <div>{row.applicantPhone}</div>
             </div>
           )
         },
@@ -359,8 +359,8 @@ export default {
           render: ({ row }) => (
             <div>
               {/* {row.uavatar ? <img style="width:50px;height:50px" src={row.uavatar} /> : ''} */}
-              <div>用户名： {row.applicantName ? row.applicantName : '--' }</div>
-              <div>联系手机： {row.applicantPhone ? row.applicantPhone : '--'}</div>
+              <div>用户名： {row.userName ? row.userName : '--' }</div>
+              <div>联系手机： {row.phone ? row.phone : '--'}</div>
             </div>
           )
         },
