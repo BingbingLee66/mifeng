@@ -40,7 +40,85 @@ export default {
         image: '', // 上传图片
         jsonContext: '' // 关联内容
       },
-      formItem: [
+      formItem: [],
+      addFormItem: [
+        {
+          label: '入口名称：',
+          prop: 'name',
+          type: 'input',
+          width: '90%',
+          showWordLimit: true,
+          maxlength: 6,
+          placeholder: '请输入入口名称，不超过6个字符',
+          clearable: true,
+          value: '',
+          rules: [
+            {
+              min: 1,
+              max: 6,
+              message: '只限6个字以内哦',
+              trigger: 'blur'
+            },
+            {
+              required: true,
+              message: '请输入入口名称',
+              trigger: 'blur'
+            }
+          ]
+        },
+        {
+          label: '关联内容：',
+          prop: 'jsonContext',
+          type: 'textarea',
+          width: '90%',
+          rows: 1,
+          placeholder: '请输入banner跳转链接或路径',
+          clearable: true,
+          value: '',
+          rules: [
+            {
+              required: true,
+              message: '请输入关联内容',
+              trigger: 'blur'
+            }
+          ]
+        },
+        {
+          label: '上传图片：',
+          prop: 'image',
+          type: 'upload',
+          value: '',
+          formTip: ['建议尺寸100*100px; 支持jpg、png'],
+          rules: [
+            {
+              required: true,
+              message: '请上传图片',
+              trigger: ['blur', 'change']
+            }
+          ],
+          beforeUpload: file => {
+            this.beforeUpload(file)
+          },
+          upload: url => {
+            this.uploadKingkongImage(url, 'image')
+          }
+        }
+      ],
+      editFormItem: [
+        {
+          label: '入口ID：',
+          prop: 'id',
+          type: 'input',
+          width: '90%',
+          showWordLimit: true,
+          value: '',
+          disabled: true,
+          rules: [
+            {
+              required: true
+            }
+          ]
+        },
         {
           label: '入口名称：',
           prop: 'name',
@@ -120,20 +198,15 @@ export default {
   methods: {
     add() {
       this.dialogTitle = '新增功能入口'
+      this.formItem = this.addFormItem
       this.dialogVisible = true
     },
 
     edit(data) {
       this.dialogTitle = '编辑功能入口'
-      const { name, image, jsonContext, weight, id } = data
-      this.formObj = {
-        name,
-        jsonContext,
-        image,
-        weight,
-        id
-      }
-      console.log(this.formObj, 'obj')
+      const { name, image, jsonContext, id } = data
+      this.formObj = { id, name, jsonContext, image }
+      this.formItem = this.editFormItem
       this.dialogVisible = true
     },
 
