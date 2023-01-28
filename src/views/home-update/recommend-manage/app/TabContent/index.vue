@@ -23,8 +23,8 @@
       :total="total"
       :current-page.sync="currentPage"
       :style="{ 'padding-top': '15px' }"
-      @size-change="this.handleSizeChange"
-      @current-change="this.handleCurrentChange"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
     />
     <!-- 编辑轮播推荐 -->
     <carousel-recommend ref="dialogRef1" @refresh="fetchData" />
@@ -120,11 +120,13 @@ export default {
           break
       }
     },
+    /** 调整显示条数 */
     handleSizeChange(val) {
       this.limit = val
       this.currentpage = 1
       this.fetchData()
     },
+    /** 调整显示页数 */
     handleCurrentChange(val) {
       this.currentpage = val
       this.fetchData()
