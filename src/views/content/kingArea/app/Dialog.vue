@@ -204,8 +204,8 @@ export default {
 
     edit(data) {
       this.dialogTitle = '编辑功能入口'
-      const { name, image, jsonContext, id } = data
-      this.formObj = { id, name, jsonContext, image }
+      const { name, image, jsonContext, id, weight } = data
+      this.formObj = { id, name, jsonContext, weight, image }
       this.formItem = this.editFormItem
       this.dialogVisible = true
     },
@@ -226,6 +226,7 @@ export default {
     },
 
     async submit(data) {
+      console.log(data)
       const res = await Kingkong.saveKingkong({
         ...data,
         clientType: 1,
