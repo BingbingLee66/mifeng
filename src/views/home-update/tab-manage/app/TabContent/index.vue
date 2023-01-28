@@ -9,10 +9,7 @@
       @handleSelectionChange="handleSelectionChange"
     >
       <template v-slot:operate="row">
-        <span
-          class="text-blue cur ml-10"
-          @click="handleEvent('edit', row.data)"
-        >编辑</span>
+        <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
         <span
           v-if="row.data.status === '0'"
           class="text-blue cur ml-10"
@@ -25,7 +22,17 @@
         >隐藏</span>
       </template>
     </ysh-table>
-
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :page-sizes="this.pageSizes"
+      :page-size="this.limit"
+      :total="this.total"
+      :current-page.sync="this.currentpage"
+      :style="{ 'padding-top': '15px' }"
+      @size-change="this.handleSizeChange"
+      @current-change="this.handleCurrentChange"
+    />
     <!-- 新增/编辑栏目弹窗 -->
     <add-dialog ref="dialogRef" @refresh="fetchData" />
   </div>
@@ -42,12 +49,7 @@ export default {
   components: { AddDialog },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
-  props: {
-    clientType: {
-      type: String,
-      default: ''
-    }
-  },
+
   data() {
     return {
       tableConfig: {
@@ -56,7 +58,17 @@ export default {
         maxHeight: window.innerHeight - 200 + 'px'
       },
       tableColumn: _data.tableColumn,
-      tableData: []
+      tableData: [],
+      currentpage: 1,
+      limit: 10,
+      pageSizes: [10, 20, 50, 100, 500],
+      total: 0,
+      actPage: {
+        currentpage: 1,
+        page: 1,
+        pageSize: 100,
+        allTotal: 0
+      }
     }
   },
   created() {
@@ -67,14 +79,14 @@ export default {
     async fetchData() {
       this.tableConfig.loading = true
       const res = await Home.getTabList({
-        type: this.clientType
+        type: '1'
       })
       if (res.state !== 1) return
       res.data.forEach(item => {
         item.changeStatus = item.changeStatus === '1'
       })
       this.tableData = res.data
-
+      this.total = res.data.length
       this.tableConfig.loading = false
     },
 
@@ -137,6 +149,15 @@ export default {
       } else {
         this.$message.error(res.msg)
       }
+    },
+    handleSizeChange(val) {
+      this.limit = val
+      this.currentpage = 1
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+      this.currentpage = val
+      this.fetchData()
     }
   }
 }
