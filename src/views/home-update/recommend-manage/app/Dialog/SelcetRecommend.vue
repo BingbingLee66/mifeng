@@ -8,6 +8,14 @@
       :visible.sync="dialogVisible"
       @closed="close"
     >
+      <el-form ref="formSupplyDemand" label-position="right" :inline="true" :model="query">
+        <el-form-item>
+          <el-input v-model="query.title" clearable placeholder="请输入ID/标题" />
+        </el-form-item>
+        <el-form-item label="">
+          <el-button type="primary" @click="handleSearch">搜索</el-button>
+        </el-form-item>
+      </el-form>
       <ysh-table
         ref="tableRef"
         :table-config="tableConfig"
@@ -57,7 +65,10 @@ export default {
       },
       tableData: [],
       /** 推荐位 1-轮播推荐 2-内容推荐 3-内容推荐卡片 */
-      position: null
+      position: null,
+      query: {
+        title: null
+      }
     }
   },
   computed: {
@@ -127,6 +138,13 @@ export default {
     confirm() {
       this.$emit('confirm', this.selectionData)
       // this.close()
+    },
+    handleSearch() {
+      this.searchRecommendContent()
+    },
+    async searchRecommendContent() {
+      console.log(11)
+      // 需要查询接口查询搜索的query的title
     }
   }
 }
