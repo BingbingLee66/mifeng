@@ -15,7 +15,17 @@
         >隐藏</span>
       </template>
     </ysh-table>
-
+    <el-pagination
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :page-sizes="pageSizes"
+      :page-size="limit"
+      :total="total"
+      :current-page.sync="currentPage"
+      :style="{ 'padding-top': '15px' }"
+      @size-change="this.handleSizeChange"
+      @current-change="this.handleCurrentChange"
+    />
     <!-- 编辑轮播推荐 -->
     <carousel-recommend ref="dialogRef1" @refresh="fetchData" />
     <!-- 编辑内容推荐 -->
@@ -44,7 +54,11 @@ export default {
   data() {
     return {
       tableColumn: _data.tableColumn,
-      tableData: []
+      tableData: [],
+      currentPage: 1,
+      limit: 10,
+      pageSizes: [10, 20, 50, 100, 500],
+      total: 0
     }
   },
   created() {
@@ -56,12 +70,13 @@ export default {
       this.tableConfig.loading = true
       const res = await Home.getRecommendList({
         platform: '2',
-        pageNum: 1,
-        pageSize: 100
+        pageNum: this.currentPage,
+        pageSize: this.limit
       })
       if (res.state !== 1) return
       const resData = res.data
       this.tableData = resData.list
+      this.total = res.data.totalRows
       this.tableConfig.loading = false
     },
 
@@ -104,6 +119,15 @@ export default {
           this.$refs.dialogRef3.$emit(event, data)
           break
       }
+    },
+    handleSizeChange(val) {
+      this.limit = val
+      this.currentpage = 1
+      this.fetchData()
+    },
+    handleCurrentChange(val) {
+      this.currentpage = val
+      this.fetchData()
     }
   }
 }

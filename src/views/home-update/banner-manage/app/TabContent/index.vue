@@ -87,7 +87,7 @@ export default {
     async fetchData() {
       this.tableConfig.loading = true
       const res = await Home.getBannerList({
-        clientType: '1',
+        clientType: 1,
         pageNum: 1,
         pageSize: 100
       })

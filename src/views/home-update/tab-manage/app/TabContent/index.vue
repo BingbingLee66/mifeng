@@ -84,6 +84,7 @@ export default {
       if (res.state !== 1) return
       res.data.forEach(item => {
         item.changeStatus = item.changeStatus === '1'
+        console.log(res, 'res')
       })
       this.tableData = res.data
       this.total = res.data.length
