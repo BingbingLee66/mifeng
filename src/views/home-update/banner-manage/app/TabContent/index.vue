@@ -42,6 +42,11 @@
           class="text-blue cur ml-10"
           @click="handleEvent('top', row.data)"
         >置顶</span>
+        <span
+          v-if="row.data.status === 2"
+          class="text-red cur ml-10"
+          @click="handleEvent('delete', row.data)"
+        >删除</span>
       </template>
     </ysh-table>
 
@@ -90,9 +95,10 @@ export default {
       const resData = res.data
       console.log(resData, 'res')
       this.tableData = resData.list
-      this.tableData.forEach(i => {
-        i.id = i.bannerId
-      })
+      // this.tableData.forEach(i => {
+      //   i.id = i.bannerId
+      // })
+      console.log(this.tableData)
       this.pageData.total = resData.totalRows
       this.tableConfig.loading = false
     },

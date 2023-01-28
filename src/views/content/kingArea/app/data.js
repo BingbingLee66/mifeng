@@ -7,8 +7,7 @@ const tableColumn = [
   {
     label: '序号',
     prop: 'serialNumber',
-    type: 'slot',
-    slotName: 'number'
+    type: 'serialNumber'
   },
   {
     label: 'id',

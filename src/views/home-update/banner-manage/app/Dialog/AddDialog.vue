@@ -48,7 +48,61 @@ export default {
         img: '' // 上传图片
       },
       submitStatus: 1, // 1-发布 2-保存
-      formItem: [
+      formItem: [],
+      addFormItem: [
+        {
+          label: '标题：',
+          prop: 'title',
+          type: 'input',
+          width: '90%',
+          showWordLimit: true,
+          maxlength: 20,
+          placeholder: '请输入banner标题，不超过20个字符',
+          clearable: true,
+          value: '',
+          rules: [
+            { min: 1, max: 20, message: '只限20个字以内哦', trigger: 'blur' },
+            { required: true, message: '请输入标题', trigger: 'blur' }
+          ]
+        },
+        {
+          label: '关联内容：',
+          prop: 'content',
+          type: 'textarea',
+          width: '90%',
+          rows: 1,
+          placeholder: '请输入banner跳转链接或路径',
+          // showWordLimit: true,
+          maxlength: 1000,
+          clearable: true,
+          value: ''
+        },
+        {
+          label: '上传图片：',
+          prop: 'img',
+          type: 'upload',
+          value: '',
+          rules: [{ required: true, message: '请上传图片', trigger: 'change' }],
+          formTip: ['建议尺寸400x750px; 支持png、jpg'],
+          beforeUpload: file => {
+            this.beforeUpload(file)
+          },
+          upload: content => {
+            this.uploadKingkongImage(content, 'img')
+          }
+        }
+      ],
+      eidtFormItem: [
+        {
+          label: 'id：',
+          prop: 'bannerId',
+          type: 'input',
+          width: '90%',
+          showWordLimit: true,
+          value: '',
+          disabled: true,
+          rules: [{ required: true }]
+        },
         {
           label: '标题：',
           prop: 'title',
@@ -106,6 +160,7 @@ export default {
   methods: {
     add() {
       this.dialogTitle = '新增banner图'
+      this.formItem = this.addFormItem
       this.dialogVisible = true
     },
 
@@ -113,6 +168,7 @@ export default {
       this.dialogTitle = '编辑banner图'
       const { title, content, img, bannerId } = data
       this.formObj = { title, content, img, bannerId }
+      this.formItem = this.eidtFormItem
       this.dialogVisible = true
     },
 
