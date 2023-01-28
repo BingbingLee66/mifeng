@@ -1,15 +1,8 @@
 <template>
   <div>
-    <ysh-table
-      :table-config="tableConfig"
-      :table-column="tableColumn"
-      :table-data="tableData"
-    >
+    <ysh-table :table-config="tableConfig" :table-column="tableColumn" :table-data="tableData">
       <template v-slot:operate="row">
-        <span
-          class="text-blue cur ml-10"
-          @click="handleEvent('edit', row.data)"
-        >编辑</span>
+        <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
         <span
           v-if="row.data.status === 0"
           class="text-blue cur ml-10"
@@ -48,12 +41,6 @@ export default {
   },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
-  props: {
-    clientType: {
-      type: String,
-      default: ''
-    }
-  },
   data() {
     return {
       tableColumn: _data.tableColumn,
@@ -68,9 +55,9 @@ export default {
     async fetchData() {
       this.tableConfig.loading = true
       const res = await Home.getRecommendList({
-        platform: this.clientType,
+        platform: '2',
         pageNum: 1,
-        pageSize: 100,
+        pageSize: 100
       })
       if (res.state !== 1) return
       const resData = res.data

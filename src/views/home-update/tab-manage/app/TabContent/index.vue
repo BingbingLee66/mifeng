@@ -79,7 +79,7 @@ export default {
     async fetchData() {
       this.tableConfig.loading = true
       const res = await Home.getTabList({
-        type: '1'
+        type: '2'
       })
       if (res.state !== 1) return
       res.data.forEach(item => {
