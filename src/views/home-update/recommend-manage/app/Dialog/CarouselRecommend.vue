@@ -30,7 +30,7 @@
               @handleOrder="handleOrder"
             >
               <template v-slot:operate="row">
-                <span class="text-red cur ml-10" @click="handleRemove(row.data)">移除</span>
+                <span class="text-red cur ml-10" @click="handleRemove(row.data)">移除</span><span style="width: 100px; text-align: center">222</span>
               </template>
             </ysh-table>
           </el-form-item>

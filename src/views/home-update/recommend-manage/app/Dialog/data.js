@@ -31,7 +31,6 @@ const tableColumn = [
     width: '100px',
     type: 'slot',
     slotName: 'operate',
-    fixed: 'right',
     align: 'center'
   }
 ]
@@ -39,7 +38,7 @@ const tableColumn = [
 const tableColumn1 = [
   {
     label: '活动ID/名称',
-    prop: 'label',
+    prop: 'label'
   },
   {
     label: '活动列表图',
@@ -66,7 +65,7 @@ const tableColumn2 = [
   {
     label: '供需标题',
     prop: 'contentTitle',
-    align: 'center',
+    align: 'center'
   },
   {
     label: '顺序',
@@ -95,7 +94,7 @@ const tableColumn3 = [
   {
     label: '文章标题',
     prop: 'contentTitle',
-    align: 'center',
+    align: 'center'
   },
   {
     label: '顺序',
@@ -124,7 +123,7 @@ const tableColumn4 = [
   {
     label: '文章标题',
     prop: 'contentTitle',
-    align: 'center',
+    align: 'center'
   },
   {
     label: '操作',
@@ -142,12 +141,12 @@ const tableColumn5 = [
     label: '文章ID',
     prop: 'id',
     align: 'center',
-    width: '200px',
+    width: '200px'
   },
   {
     label: '文章标题',
     prop: 'contentTitle',
-    align: 'center',
+    align: 'center'
   }
 ]
 
@@ -156,21 +155,13 @@ const tableColumn6 = [
     label: '供需ID/文章ID',
     prop: 'id',
     align: 'center',
-    width: '200px',
+    width: '200px'
   },
   {
     label: '供需标题/文章标题',
     prop: 'contentTitle',
-    align: 'center',
+    align: 'center'
   }
 ]
 
-export {
-  tableColumn,
-  tableColumn1,
-  tableColumn2,
-  tableColumn3,
-  tableColumn4,
-  tableColumn5,
-  tableColumn6
-}
+export { tableColumn, tableColumn1, tableColumn2, tableColumn3, tableColumn4, tableColumn5, tableColumn6 }
