@@ -710,39 +710,39 @@ export default {
       }
     },
 
-    generateSigninInfo() {
-      return {
-        label: '报名信息',
-        minWidth: 200,
-        render: ({ row }) => {
-          const signs = row.signs || []
-          const dom = signs.map(v => (
-            <div>
-              {v.key}：{v.value}
-            </div>
-          ))
-          const cardItemIndex = signs.findIndex(v => v.key === 'card')
+    // generateSigninInfo() {
+    //   return {
+    //     label: '报名信息',
+    //     minWidth: 200,
+    //     render: ({ row }) => {
+    //       const signs = row.signs || []
+    //       const dom = signs.map(v => (
+    //         <div>
+    //           {v.key}：{v.value}
+    //         </div>
+    //       ))
+    //       const cardItemIndex = signs.findIndex(v => v.key === 'card')
 
-          if (cardItemIndex > -1) {
-            dom.splice(cardItemIndex, 1)
-            dom.push(
-              <el-button type="text" onClick={() => this.getCardDetail(signs[cardItemIndex].value)}>
-                IP名片详情
-              </el-button>
-            )
-          }
+    //       if (cardItemIndex > -1) {
+    //         dom.splice(cardItemIndex, 1)
+    //         dom.push(
+    //           <el-button type="text" onClick={() => this.getCardDetail(signs[cardItemIndex].value)}>
+    //             IP名片详情
+    //           </el-button>
+    //         )
+    //       }
 
-          return <div>{signs && signs.length ? dom : '-'}</div>
-        }
-      }
-    },
+    //       return <div>{signs && signs.length ? dom : '-'}</div>
+    //     }
+    //   }
+    // },
 
     // 待审核
     getApprovePersonTableList(list = []) {
       return [
         ...list,
         this.generateSigninTime(),
-        this.generateSigninInfo(),
+        // this.generateSigninInfo(),
         {
           label: '操作',
           fixed: 'right',
@@ -775,7 +775,7 @@ export default {
     getJoinPersonTableList(list = []) {
       return [
         ...list,
-        this.generateSigninInfo(),
+        // this.generateSigninInfo(),
         {
           label: '替补',
           minWidth: 120,
@@ -949,7 +949,7 @@ export default {
           label: '驳回理由',
           prop: 'rejectReason'
         },
-        this.generateSigninInfo(),
+        // this.generateSigninInfo(),
         {
           label: '操作',
           fixed: 'right',
