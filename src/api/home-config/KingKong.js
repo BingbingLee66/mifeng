@@ -56,6 +56,7 @@ class Kingkong {
       data
     })
   }
+  /** 启用/冻结金刚区 */
   static async updateKingkongStatus(id, status) {
     return await request({
       url: `/ec/king-kong-area/${id}/status?status=${status}`,
