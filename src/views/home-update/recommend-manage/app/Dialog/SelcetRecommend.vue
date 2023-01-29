@@ -144,7 +144,27 @@ export default {
     },
     async searchRecommendContent() {
       console.log(11)
+      const { limit } = this.pageData
       // 需要查询接口查询搜索的query的title
+      const res = await Home.getContentList({
+        contentType: this.contentType,
+        keyword: this.query.title,
+        pageNum: 1,
+        pageSize: limit
+      })
+      console.log(res, this.query.title, 'res')
+      if (res.state === 1) {
+        const resData = res.data
+        if (resData.list && resData.list.length > 0) {
+          resData.list.forEach(i => {
+            i.id = i.contentId
+            i.label = i.contentId + ' ' + i.contentTitle
+          })
+        }
+        this.tableData = resData.list
+        this.pageData.total = resData.totalRows
+        this.tableConfig.loading = false
+      }
     }
   }
 }

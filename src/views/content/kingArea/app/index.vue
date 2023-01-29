@@ -201,38 +201,16 @@ export default {
         this.$message.error(res.msg)
       }
     },
-
-    // /** 移除金刚区 */
-    // handleDelete(data) {
-    //   if (!data) return
-    //   this.$confirm('确认移除该金刚区吗?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   })
-    //     .then(async () => {
-    //       const res = await Kingkong.deleteKingkong(data)
-    //       if (res.state === 1) {
-    //         this.$message.success(res.msg)
-    //         this.fetchData(1)
-    //       } else {
-    //         this.$message.error(res.msg)
-    //       }
-    //     })
-    //     .catch(() => {
-    //       this.$message.info('已取消移除')
-    //     })
-    // },
     /** 调整上下顺序 */
     async handleOrder(event, data) {
       console.log(' order data ', data)
       changeOrder(this.tableData, data.id, event)
     },
+    /** 删除金刚区 */
     handleDelete() {
       let delList = []
       if (this.checkAll) {
         delList = this.tableData
-        console.log(delList, 'del')
         delList.forEach(item => {
           if (item.status === 1) {
             this.$message.error('使用中的入口不可删除')
@@ -262,7 +240,6 @@ export default {
     },
     async handleDeleteKing() {
       const res = await Kingkong.deleteKingkong(this.tableDataId)
-      console.log(res, 'Dres')
       if (res.state === 1) {
         this.$message.success(res.msg)
         this.fetchData(1)
@@ -271,18 +248,14 @@ export default {
       }
     },
     handleCheckAllChange(val) {
-      console.log(val, 'val')
       this.selectionDatas.forEach(item => {
         item.itemCheck = val
       })
-      console.log(this.selectionDatas, 'check2')
       this.isIndeterminate = false
     },
     toggleCheck() {
-      console.log(this.selectionDatas, 'check3')
       const temp = this.selectionDatas.filter(item => item.itemCheck)
       this.checkAll = temp.length === this.tableData.length
-      console.log(this.checkAll, length, 'dan2')
       this.isIndeterminate = temp.length > 0 && temp.length < this.tableData.length
     }
   }

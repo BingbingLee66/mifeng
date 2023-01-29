@@ -132,7 +132,6 @@ class Home {
       params
     })
   }
-
   /** 获取推荐内容 */
   static async getRecommendContent(params) {
     return await request({

@@ -227,7 +227,7 @@ export default {
 
     async submit(data) {
       console.log(data)
-      const res = await Kingkong.saveKingkong({
+      const res = await Kingkong.saveKingkongN({
         ...data,
         clientType: 1
       })

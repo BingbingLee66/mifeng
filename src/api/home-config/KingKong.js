@@ -71,6 +71,14 @@ class Kingkong {
       data
     })
   }
+  /** 新增/编辑金刚区 */
+  static async saveKingkongN(data) {
+    return await request({
+      url: '/ec/king-kong-area/app/saveOrUpdate',
+      method: 'post',
+      data
+    })
+  }
 
   /** 保存金刚区 */
   static async saveKingkong(data) {
