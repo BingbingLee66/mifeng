@@ -355,14 +355,27 @@ export default {
         },
         {
           label: '参与人',
-          minWidth: 180,
-          render: ({ row }) => (
-            <div>
-              {/* {row.uavatar ? <img style="width:50px;height:50px" src={row.uavatar} /> : ''} */}
-              <div>用户名： {row.userName ? row.userName : '--' }</div>
-              <div>联系手机： {row.phone ? row.phone : '--'}</div>
-            </div>
-          )
+          minWidth: 200,
+          render: ({ row }) => {
+            const signs = row.signs || []
+            const dom = signs.map(v => (
+              <div>
+                {v.key}：{v.value}
+              </div>
+            ))
+            const cardItemIndex = signs.findIndex(v => v.key === 'card')
+
+            if (cardItemIndex > -1) {
+              dom.splice(cardItemIndex, 1)
+              dom.push(
+                <el-button type="text" onClick={() => this.getCardDetail(signs[cardItemIndex].value)}>
+                IP名片详情
+                </el-button>
+              )
+            }
+
+            return <div>{signs && signs.length ? dom : '-'}</div>
+          }
         },
         {
           label: '所属商会',
@@ -709,32 +722,32 @@ export default {
       }
     },
 
-    // generateSigninInfo() {
-    //   return {
-    //     label: '报名信息',
-    //     minWidth: 200,
-    //     render: ({ row }) => {
-    //       const signs = row.signs || []
-    //       const dom = signs.map(v => (
-    //         <div>
-    //           {v.key}：{v.value}
-    //         </div>
-    //       ))
-    //       const cardItemIndex = signs.findIndex(v => v.key === 'card')
+    generateSigninInfo() {
+      return {
+        label: '参与人',
+        minWidth: 200,
+        render: ({ row }) => {
+          const signs = row.signs || []
+          const dom = signs.map(v => (
+            <div>
+              {v.key}：{v.value}
+            </div>
+          ))
+          const cardItemIndex = signs.findIndex(v => v.key === 'card')
 
-    //       if (cardItemIndex > -1) {
-    //         dom.splice(cardItemIndex, 1)
-    //         dom.push(
-    //           <el-button type="text" onClick={() => this.getCardDetail(signs[cardItemIndex].value)}>
-    //             IP名片详情
-    //           </el-button>
-    //         )
-    //       }
+          if (cardItemIndex > -1) {
+            dom.splice(cardItemIndex, 1)
+            dom.push(
+              <el-button type="text" onClick={() => this.getCardDetail(signs[cardItemIndex].value)}>
+                IP名片详情
+              </el-button>
+            )
+          }
 
-    //       return <div>{signs && signs.length ? dom : '-'}</div>
-    //     }
-    //   }
-    // },
+          return <div>{signs && signs.length ? dom : '-'}</div>
+        }
+      }
+    },
 
     // 待审核
     getApprovePersonTableList(list = []) {
