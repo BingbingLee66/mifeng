@@ -76,40 +76,7 @@ export default {
       portValue: '',
       // 下拉选择 begin
       // 活动报名表参数 begin
-      arrayData: [
-        {
-          title: '参与人姓名',
-          msgAlert: '请输入姓名',
-          lengthLimit: '',
-          check: 1,
-          selects: [
-            {
-              value: ''
-            },
-            {
-              value: ''
-            }
-          ],
-          key: ';',
-          type: '0',
-        },
-        {
-          title: '参与人手机号',
-          msgAlert: '请输入手机号',
-          lengthLimit: '',
-          check: 1,
-          selects: [
-            {
-              value: ''
-            },
-            {
-              value: ''
-            }
-          ],
-          key: ';',
-          type: '0',
-        }
-      ],
+      arrayData: [],
 
       activeVisible: false,
       dialogFormVisible: false,
@@ -230,8 +197,41 @@ export default {
         if (this.formObj.linkType === 3) {
           this.getListAudience()
         }
-        if (this.formObj.signType === 1) {
-          console.log('sadas')
+        if (this.formObj.canReplaceApply === 1) {
+          this.arrayData = [
+            {
+              title: '参与人姓名',
+              msgAlert: '请输入姓名',
+              lengthLimit: '',
+              check: 1,
+              selects: [
+                {
+                  value: ''
+                },
+                {
+                  value: ''
+                }
+              ],
+              key: ';',
+              type: '0',
+            },
+            {
+              title: '参与人手机号',
+              msgAlert: '请输入手机号',
+              lengthLimit: '',
+              check: 1,
+              selects: [
+                {
+                  value: ''
+                },
+                {
+                  value: ''
+                }
+              ],
+              key: ';',
+              type: '0',
+            }
+          ]
         }
       },
       deep: true

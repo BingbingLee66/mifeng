@@ -618,7 +618,7 @@
                     >
                       <i slot="suffix" class="el-icon-arrow-down" />
                     </el-input>
-                    <div v-if="index > 1" class="sign-right">
+                    <div v-if="index > 1 || formObj.canReplaceApply !== 1 " class="sign-right">
                       <el-link type="primary" @click="edit(index, item.type)">编辑</el-link>
                       <el-link type="primary" @click="up(index)">上移</el-link>
                       <el-link type="primary" @click="down(index)">下移</el-link>
