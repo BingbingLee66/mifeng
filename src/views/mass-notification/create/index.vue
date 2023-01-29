@@ -32,8 +32,7 @@
         <el-button size="small " type="primary " @click="selectActivity">选择活动</el-button>
       </div>
       <!-- 通知详情  为自定义通知的时候显示-->
-
-      <div v-if="form.type === 5" class="label-item">
+      <div v-else-if="form.type === 5" class="label-item">
         <div class="title-hd">通知详情 <span>(必填将推送到小程序/APP的会内通知) </span></div>
         <el-form-item label="消息标题" prop="title" style="margin-bottom:20px">
           <el-input
@@ -87,7 +86,7 @@
           </div>
         </div>
       </div>
-      <el-form-item v-if="form.type === 6" label="选择课程" prop="type" required>
+      <el-form-item v-else-if="form.type === 6" label="选择课程" prop="type" required>
         <el-select
           v-model="form.associationId"
           clearable
@@ -107,13 +106,22 @@
           />
         </el-select>
       </el-form-item>
+      <!-- 问卷调查 关联问卷 -->
+      <div v-else-if="+form.type === 9" class="label-item">
+        <div class="title-hd">关联问卷</div>
+        <el-tag v-if="questionnaire.value" closable :disable-transitions="false" @close="questionnaire.value=null">
+          {{ questionnaire.value.title }}
+        </el-tag>
+        <el-button size="small " type="primary" @click="questionnaire.visible = true">选择问卷</el-button>
+        <QuestionnaireSelector v-model="questionnaire.value" :visible.sync="questionnaire.visible" />
+      </div>
 
       <!-- 同步渠道 -->
-      <div class="title-hd">推送平台 <span> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
+      <div class="title-hd">推送平台 <span v-if="![7,9].includes(form.type)"> ( {{ form.type===5 ?'选填':'必填' }}，可多选) </span></div>
 
       <!-- 5g彩信通知 -->
       <el-form-item v-if="+form.type === 7" label="5G彩信" required>
-        <el-select v-model="activityChannels[5]" class="select" placeholder="选择模板" @change="activityChannels[5]=$event">
+        <el-select v-model="activityChannels[synchChannels[0].id-1]" class="select" placeholder="选择模板" @change="activityChannels[synchChannels[0].id-1]=$event">
           <el-option
             v-for="item in synchChannels[0].templateList"
             :key="item.id"
@@ -121,8 +129,16 @@
             :value="item.id"
           />
         </el-select>
-        <el-button v-if="activityChannels[5]" style="margin-left:8px;" @click="visiable5G=true">预览</el-button>
+        <el-button v-if="activityChannels[synchChannels[0].id-1]" style="margin-left:8px;" @click="visiable5G=true">预览</el-button>
         <Preivew5G :visible.sync="visiable5G" :template-id="getTemplateId(0)" />
+      </el-form-item>
+
+      <!-- 问卷调查通知 -->
+      <el-form-item v-else-if="+form.type === 9" label="短信" required>
+        <el-select v-model="activityChannels[synchChannels[0].id-1]" class="select" placeholder="选择模板" @change="activityChannels[synchChannels[0].id-1]=$event">
+          <el-option v-for="item in synchChannels[0].templateList" :key="item.id" :label="item.name" :value="item.id" />
+        </el-select>
+        <el-button v-if="activityChannels[synchChannels[0].id-1]" @click="showTemplate(activityChannels[synchChannels[0].id-1],synchChannels[0].id-1)">预览</el-button>
       </el-form-item>
 
       <!-- 秘书处后台站内信通知 -->
@@ -149,7 +165,7 @@
           <div class="synch-channels">
             <div v-for="(item,index) in synchChannels" :key="item.id">
               <el-checkbox :label="item.id" :disabled="!item.templateList.length > 0">{{ item.label }}</el-checkbox>
-              <el-select v-model="activityChannels[index]" class="select" placeholder="选择模板" @change="function(val){activityChannels[index]=val}">
+              <el-select v-model="activityChannels[index]" class="select" placeholder="选择模板" @change="activityChannels[index]=$event">
                 <el-option
                   v-for="item2 in item.templateList"
                   :key="item2.id"
@@ -236,7 +252,8 @@ export default {
     detailsApp: () => import('../templateLibrary/components/details-app'),
     detailsNote: () => import('../templateLibrary/components/details-note'),
     detailsSubscribe: () => import('../templateLibrary/components/details-subscribe'),
-    Preivew5G: () => import('../5g/components/Preivew5G')
+    Preivew5G: () => import('../5g/components/Preivew5G'),
+    QuestionnaireSelector: () => import('./components/QuestionnaireSelector')
   },
 
   data() {
@@ -307,7 +324,11 @@ export default {
       originOpt: [], // 商协会
       contentHtml: '', // 编辑器
       qrCode: [], // 活动二维码
-      visiable5G: false
+      visiable5G: false,
+      questionnaire: {
+        visible: false,
+        value: null
+      }
     }
   },
   computed: {
@@ -400,6 +421,9 @@ export default {
         this.synchChannels = [{ label: '短信', templateList: data || [], id: 1 }]
         // this.synchChannels[0].templateList = data || []
         // this.synchChannels.splice(1, 2)
+      } else if (noticeTypeId === 9) {
+        this.synchChannels = [{ label: '短信', templateList: data || [], id: channelTypeId }]
+        this.form.synchChannels = [channelTypeId]
       } else {
         this.synchChannels[channelTypeId - 1].templateList = data || []
       }
@@ -441,14 +465,12 @@ export default {
       if (channelTypeTemplateDTOS) {
         // 为了防止重新拉取渠道数据覆盖这个回显，加个延迟
         setTimeout(() => {
-          const { synchChannels } = this
           channelTypeTemplateDTOS.forEach(item => {
-            const index = synchChannels.findIndex(v => v.id === item.channelTypeId)
-            if (index > -1) {
+            if (!this.form.synchChannels.includes(item.channelTypeId)) {
               this.form.synchChannels.push(item.channelTypeId)
-              // console.log('this.form.synchChannels', this.form.synchChannels)
-              this.activityChannels[index] = item.id
             }
+            // console.log('this.form.synchChannels', this.form.synchChannels)
+            this.$set(this.activityChannels, item.channelTypeId - 1, item.id)
           })
         }, 1000)
       }
@@ -461,6 +483,7 @@ export default {
         ref.setSelectMemberList(extend.receiverList)
       } else if (receive === 6) {
         ref.setFormData('phones', extend.receiverList)
+        ref.phoneType = extend.phoneType || 'input'
       } else if (receive === 7) {
         ref.setSelectMemberList(extend.receiverList, extend.selectMemberList)
         this.qrCode = extend.imgs
@@ -482,6 +505,8 @@ export default {
         this.form.title = extend.title
         this.form.content = extend.content
         this.form.imgs = extend.imgs
+      } else if (type === 9) {
+        this.questionnaire.value = { id: extend.associationId, title: extend.questionnaireTitle }
       }
     },
     /** 行为操作 */
@@ -539,22 +564,21 @@ export default {
     // 提交表单
     onSubmit() {
       // 先校验
-      this.extendFunc()
+      // this.extendFunc()
       if (!this.verify()) return
-      const self = this
       this.$refs['indexFormRef'].validate(valid => {
         if (valid) {
-          self.$confirm('确认发送该通知嘛?', '提示', {
+          this.$confirm('确认发送该通知嘛?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            const { ckey, form: { type: noticeTypeId, receive: receiveTypeId, sendTs, sendType } } = self
+            const { ckey, form: { type: noticeTypeId, receive: receiveTypeId, sendTs, sendType } } = this
             const params = {
-              receiverRemove: self.$refs['receiveForm'] && self.$refs['receiveForm']?.$data?.form.receiverRemove ? 1 : 2,
+              receiverRemove: this.$refs['receiveForm'] && this.$refs['receiveForm']?.$data?.form.receiverRemove ? 1 : 2,
               // 组装渠道数据
-              channelTypeTemplateDTOS: self.form.synchChannels.map(item => {
-                return { channelTypeId: item, id: self.activityChannels[item - 1] }
+              channelTypeTemplateDTOS: this.form.synchChannels.map(item => {
+                return { channelTypeId: item, id: this.activityChannels[item - 1] }
               }),
               // 渠道和活跃模板一一对应上
 
@@ -570,7 +594,7 @@ export default {
               // 当通知类型为3时，{'associationId': 招商活动id}
               // 当通知类型为5时：
               // extend:{'title':'标题','content':'内容',imgs:['图片', '图片2']}
-              extend: self.extendFunc(),
+              extend: this.extendFunc(),
               ckey, noticeTypeId, receiveTypeId, sendTs, sendType
             }
             this.send(params)
@@ -593,12 +617,19 @@ export default {
     verify() {
       const {
         form: { type, agreeRule, sendType, sendTs, receive, introduce, introduceTitle },
-        activityList
+        activityList,
+        synchChannels,
+        activityChannels
       } = this
       const refData = this.$refs['receiveForm'].$data
       // 当sendType为2时，需要填写sendTs
       if (parseInt(sendType) === 2 && sendTs.length === 0) {
         this.$message.error('请选择发送时间')
+        return false
+      }
+
+      if (receive === 6 && refData.form.phones.split('\n').filter(v => v).length === 0) {
+        this.$message.error(refData.phoneType === 'input' ? '请输入手机号' : '您上传的文件中没有手机号')
         return false
       }
 
@@ -656,8 +687,13 @@ export default {
           return false
         }
       } else if (type === 7) { // 5g彩信通知
-        if (!this.activityChannels[5]) {
+        if (!activityChannels[synchChannels[0].id - 1]) {
           this.$message.error('请选择需要发送的智信模板')
+          return false
+        }
+      } else if (type === 9) {
+        if (!activityChannels[synchChannels[0].id - 1]) {
+          this.$message.error('请选择短信模板')
           return false
         }
       }
@@ -671,7 +707,7 @@ export default {
     },
     // extend扩展字段
     extendFunc() {
-      const { form: { receive, type }, activityList } = this
+      const { form: { receive, type }, activityList, questionnaire: { value: selectedQuestionnaire } } = this
       let obj = {}
       const refData = this.$refs['receiveForm'].$data
       switch (receive) {
@@ -696,6 +732,7 @@ export default {
         case 6:
           // 手机号集合
           obj['receiverList'] = refData.form.phones.split('\n').map(v => { return { id: v } })
+          obj.phoneType = refData.phoneType || 'input'
           break
         case 7:
           // 秘书处后台
@@ -728,6 +765,9 @@ export default {
         const foo = { title, content, imgs }
         obj = Object.assign(obj, foo)
       }
+      if (+type === 9 && selectedQuestionnaire) {
+        obj = Object.assign(obj, { associationId: selectedQuestionnaire.id, questionnaireTitle: selectedQuestionnaire.title })
+      }
       // console.log('obj', obj)
       return obj
     },
@@ -748,6 +788,8 @@ export default {
       if (this.form.type === 7) { // 5G彩信 只有彩信6
         this.selectTemplateListFunc(6)
       } else if (this.form.type === 4) { // 邀请入会 只有短信1
+        this.selectTemplateListFunc(1)
+      } else if (this.form.type === 9) { // 问卷调查 只有短信1
         this.selectTemplateListFunc(1)
       } else {
         this.synchChannels = [
