@@ -22,7 +22,7 @@
       </div>
     </template>
     <template v-else-if="type==='import'">
-      <el-button type="text">下载导入模板</el-button>
+      <el-button type="text" @click="onDownload">下载导入模板</el-button>
       <input style="cursor:pointer" type="file" :accept="fileAccept.join(',')" :disabled="reading" @change="onFileChange">
       <div style="margin-left:90px;" class="tips">支持格式：xls、xlsx</div>
       <div v-loading="reading" class="table">
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import { downloadFile } from '@/utils'
 import XLSX from 'xlsx'
 export default {
   components: {
@@ -113,6 +114,9 @@ export default {
         }
         fileReader.readAsBinaryString(file)
       })
+    },
+    onDownload() {
+      downloadFile({ url: 'https://ysh-cdn.kaidicloud.com/ysh-prod/excel_template/导入手机号.xlsx', title: '导入手机号.xlsx' })
     }
   },
 }

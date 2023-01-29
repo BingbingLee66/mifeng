@@ -133,14 +133,6 @@
         <Preivew5G :visible.sync="visiable5G" :template-id="getTemplateId(0)" />
       </el-form-item>
 
-      <!-- 问卷调查通知 -->
-      <el-form-item v-else-if="+form.type === 9" label="短信" required>
-        <el-select v-model="activityChannels[synchChannels[0].id-1]" class="select" placeholder="选择模板" @change="activityChannels[synchChannels[0].id-1]=$event">
-          <el-option v-for="item in synchChannels[0].templateList" :key="item.id" :label="item.name" :value="item.id" />
-        </el-select>
-        <el-button v-if="activityChannels[synchChannels[0].id-1]" @click="showTemplate(activityChannels[synchChannels[0].id-1],synchChannels[0].id-1)">预览</el-button>
-      </el-form-item>
-
       <!-- 秘书处后台站内信通知 -->
       <el-form v-else-if="+form.receive === 7" :rules="rules" :model="form" label-position="right" label-width="100px">
         <el-form-item label="站内信标题" :required="true" style="margin-bottom:20px">
@@ -364,7 +356,12 @@ export default {
     const { ckey } = this.$store.getters
     this.ckey = ckey
     this.restTypeData()
-    this.id = this.$route.query.id || null
+    const { id = null, noticeType = 2, questionnaireId, questionnaireTitle } = this.$route.query
+    this.id = id
+    this.form.type = noticeType
+    if (questionnaireId) {
+      this.questionnaire.value = { id: questionnaireId, title: questionnaireTitle }
+    }
     if (this.id) {
       this.sendDetail()
     } else {
