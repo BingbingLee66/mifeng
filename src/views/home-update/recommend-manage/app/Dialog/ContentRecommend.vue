@@ -39,16 +39,43 @@
             </el-row>
           </el-form-item>
           <el-form-item v-if="formObj.contentIds.length > 0" label="">
-            <ysh-table
-              :table-config="tableConfig"
-              :table-column="tableColumn"
-              :table-data="tableData"
-              @handleOrder="handleOrder"
+            <el-table
+              v-loading="dialogLoading"
+              :data="tableData"
+              element-loading-text="Loading"
+              border
+              fit
+              highlight-current-row
             >
-              <template v-slot:operate="row">
-                <span class="text-red cur ml-10" @click="handleRemove(row.data)">移除</span>
-              </template>
-            </ysh-table>
+              <el-table-column :label="this.formObj.contentType === '3' ? '供需ID' : '文章ID'" align="center">
+                <template slot-scope="scope">
+                  <div class="label">{{ scope.row.id }}</div>
+                </template>
+              </el-table-column>
+
+              <el-table-column :label="this.formObj.contentType === '3' ? '供需标题' : '文章标题'" align="center">
+                <template slot-scope="scope">
+                  <div class="label">{{ scope.row.contentTitle }}</div>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" align="center">
+                <template slot-scope="scope">
+                  <span class="text-red cur ml-10" @click="handleRemove(scope.row)">移除</span>
+                  <i
+                    v-if="scope.$index !== 0"
+                    class="el-icon-top"
+                    style="font-size: 26px; cursor: pointer"
+                    @click="handleOrder('up', scope.row)"
+                  />
+                  <i
+                    v-if="scope.$index + 1 !== tableData.length"
+                    class="el-icon-bottom"
+                    style="font-size: 26px; cursor: pointer"
+                    @click="handleOrder('down', scope.row)"
+                  />
+                </template>
+              </el-table-column>
+            </el-table>
           </el-form-item>
           <el-form-item label="">
             <div class="mt-20">
@@ -66,7 +93,6 @@
 <script>
 import SelectRecommend from './SelcetRecommend'
 import { changeOrder, removeItem } from '@/utils/utils'
-import { tableColumn2, tableColumn3 } from './data'
 import Home from '@/api/home-config/Home'
 
 export default {
@@ -88,19 +114,19 @@ export default {
         contentIds: [{ required: true, message: '请选择推荐内容', trigger: 'change' }]
       },
       /** 表格配置 */
-      tableConfig: {
-        loading: false,
-        headerCellStyle: { padding: 0 },
-        maxHeight: '400px'
-      },
+      // tableConfig: {
+      //   loading: false,
+      //   headerCellStyle: { padding: 0 },
+      //   maxHeight: '400px'
+      // },
       rowData: [],
-      position: null,
+      position: null
     }
   },
   computed: {
-    tableColumn() {
-      return this.formObj.contentType === '3' ? tableColumn2 : tableColumn3
-    },
+    // tableColumn() {
+    //   return this.formObj.contentType === '3' ? tableColumn2 : tableColumn3
+    // },
     isDisable() {
       return this.formObj.contentType === ''
     }
@@ -145,6 +171,7 @@ export default {
           i.label = i.contentId + ' ' + i.contentTitle
         })
       }
+      console.log(this.tableData, 'data')
       this.dialogLoading = false
     },
 
@@ -189,7 +216,7 @@ export default {
               contentId: item.contentId, // 活动内容id
               contentImg: item.contentImg, // 活动内容图片
               contentTitle: item.contentTitle, // 活动内容标题
-              title: this.formObj.title, // 推荐位名称
+              title: this.formObj.title // 推荐位名称
             }
           })
           const res = await Home.updateRecommendContent(params)

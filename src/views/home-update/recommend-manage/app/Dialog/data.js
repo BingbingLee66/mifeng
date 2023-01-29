@@ -28,7 +28,6 @@ const tableColumn = [
   {
     label: '操作',
     prop: 'operate',
-    width: '100px',
     type: 'slot',
     slotName: 'operate',
     align: 'center'
