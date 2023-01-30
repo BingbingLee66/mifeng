@@ -198,40 +198,38 @@ export default {
           this.getListAudience()
         }
         if (this.formObj.canReplaceApply === 1) {
-          this.arrayData = [
-            {
-              title: '参与人姓名',
-              msgAlert: '请输入姓名',
-              lengthLimit: '',
-              check: 1,
-              selects: [
-                {
-                  value: ''
-                },
-                {
-                  value: ''
-                }
-              ],
-              key: ';',
-              type: '0',
-            },
-            {
-              title: '参与人手机号',
-              msgAlert: '请输入手机号',
-              lengthLimit: '',
-              check: 1,
-              selects: [
-                {
-                  value: ''
-                },
-                {
-                  value: ''
-                }
-              ],
-              key: ';',
-              type: '0',
-            }
-          ]
+          this.arrayData[0] = {
+            title: '参与人姓名',
+            msgAlert: '请输入姓名',
+            lengthLimit: '',
+            check: 1,
+            selects: [
+              {
+                value: ''
+              },
+              {
+                value: ''
+              }
+            ],
+            key: ';',
+            type: '0',
+          }
+          this.arrayData[1] = {
+            title: '参与人手机号',
+            msgAlert: '请输入手机号',
+            lengthLimit: '',
+            check: 1,
+            selects: [
+              {
+                value: ''
+              },
+              {
+                value: ''
+              }
+            ],
+            key: ';',
+            type: '0',
+          }
         }
       },
       deep: true
