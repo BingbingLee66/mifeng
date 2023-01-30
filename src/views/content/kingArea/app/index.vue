@@ -52,7 +52,7 @@
             class="goods-preview"
             :src="scope.row.image"
             style="width: 67px; height: 67px"
-            @click="openPreviewModal(scope.row.listImage)"
+            @click="openPreviewModal(scope.row.image)"
           >
         </template>
       </el-table-column>
@@ -86,7 +86,7 @@
       </el-table-column>
       <el-table-column label="更新时间" width="160px">
         <template slot-scope="scope">
-          {{ scope.row.updatedTs }}
+          {{ formatTime(scope.row.updatedTs) }}
         </template>
       </el-table-column>
       <el-table-column label="操作人" width="160px">
@@ -121,7 +121,7 @@ import TableMixins from '@/mixins/yshTable'
 import Dialog from './Dialog'
 // import _data from './data'
 import Kingkong from '@/api/home-config/KingKong'
-import { changeOrder } from '@/utils/utils'
+import { changeOrder, parseTime } from '@/utils/index'
 
 export default {
   components: {
@@ -248,6 +248,9 @@ export default {
       const temp = this.selectionDatas.filter(item => item.itemCheck)
       this.checkAll = temp.length === this.tableData.length
       this.isIndeterminate = temp.length > 0 && temp.length < this.tableData.length
+    },
+    formatTime(date) {
+      return parseTime(date)
     }
   }
 }
