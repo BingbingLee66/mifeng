@@ -4,9 +4,9 @@
       <el-tab-pane v-for="item in tabList" :key="item.n" :label="item.l" :name="item.n" />
     </el-tabs>
     <div class="board flex-x">
-      <div v-for="(item,index) in defineList" :key="index" :style="{'border-right':(index+1)%3===0 ? '' :'1px solid #E8E8E8FF'}" class="flex-y-center-center board-item">
-        <span class="title">{{ item.title }}</span>
-        <span>{{ item.val }}</span>
+      <div v-for="(item,index) in defineList" :key="index" :style="{'border-right':(index+1)%3===0 ? '' :'1px solid #E8E8E8FF'}" class="board-item">
+        <div class="title">{{ item.title }}</div>
+        <div>{{ item.val }}</div>
       </div>
     </div>
   </div>
@@ -22,7 +22,8 @@ export default {
       defineList: [
         { title: '累计发布问卷', name: 'questionnaireSum', val: 12 },
         { title: '累计回收答卷', name: 'recycleAnswerSum', val: 12 },
-        { title: '覆盖人数', name: 'overrideUserSum', val: 12 }
+        { title: '覆盖人数', name: 'overrideUserSum', val: 12 },
+        { title: '覆盖人数', name: 'overrideUserSum2', val: 12 }
       ],
       tabList: [
         { l: '总览', n: 'statistic' },
@@ -61,9 +62,12 @@ export default {
   color: rgba(0, 0, 0, 0.85);
   background: #ffffff;
   border-radius: 2px;
+  flex-wrap: wrap;
   .board-item {
     padding: 24px 0px;
     width: 33%;
+    text-align: center;
+    border-bottom: 1px solid #E8E8E8FF;
     .title {
       font-size: 14px;
       color: rgba(0, 0, 0, 0.45);
