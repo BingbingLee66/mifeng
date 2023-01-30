@@ -196,12 +196,11 @@ export default {
       })
       if (res.state !== 1) return
       const resData = res.data
-      console.log(resData, 'res')
       this.tableData = resData.list
       this.tableData.forEach(() => {
         this.selectionDatas.push({ itemCheck: false })
       })
-      console.log(this.tableData)
+      console.log(this.tableData, 'table')
       this.total = res.data.totalRows
       this.tableConfig.loading = false
     },
@@ -312,10 +311,14 @@ export default {
     },
     /** 调整上下顺序 */
     async handleOrder(event, data) {
+      const temp = event === 'up' ? data.num - 1 : data.num + 1
+      console.log(temp, 'temp')
       const res = await Home.changeBannerOrder({
+        clientType: 1,
         bannerId: data.bannerId,
         num: event === 'up' ? data.num - 1 : data.num + 1
       })
+      console.log(res, 'res2')
       if (res.state === 1) {
         this.fetchData()
         this.$message.success(res.msg)

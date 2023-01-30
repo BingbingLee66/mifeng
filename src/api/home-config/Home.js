@@ -84,7 +84,7 @@ class Home {
   /** 修改banner图顺序  */
   static async changeBannerOrder(data) {
     return request({
-      url: `/ec/banner/location/${data.bannerId}/${data.num}`,
+      url: `/ec/banner/location/${data.bannerId}/${data.num}?clientType=${data.clientType}`,
       method: 'put'
     })
   }
