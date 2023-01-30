@@ -9,12 +9,15 @@
         <div>{{ item.val }}</div>
       </div>
     </div>
+    <tableComponent />
+    <div ref="chart" style="width: 100%; height: 100%" />
   </div>
 </template>
 
 <script>
+import * as eCharts from 'echarts'
 export default {
-  components: {},
+  components: { tableComponent: () => import('./components/tableComponent.vue'), },
   props: {},
   data() {
     return {
@@ -32,17 +35,39 @@ export default {
 
       // tab切换值
       activeName: 'Platform',
-
-      // 页面选项
-      pageOptions: [],
-      // 激活活跃看板数据源
-      activateData: {}
+      // 图表实例
+      chart: null
     }
   },
 
   created() {},
-
+  mounted() { this.init() },
   methods: {
+    init() {
+      // 2.初始化
+      this.chart = eCharts.init(this.$refs.chart)
+      // 3.配置数据
+      const option = {
+        title: {
+          text: 'ECharts 入门示例'
+        },
+        tooltip: {},
+        xAxis: {
+          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+        },
+        yAxis: {},
+        // 配置项
+        series: [
+          {
+            name: '销量',
+            type: 'bar',
+            data: [5, 20, 36, 10, 10, 20]
+          }
+        ]
+      }
+      // 4.传入数据
+      this.chart.setOption(option)
+    },
     // tab-切换
     onTabClick({ name }) {
       console.log('name', name)
