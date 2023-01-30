@@ -98,7 +98,7 @@
       </el-table-column>
       <el-table-column label="更新时间" width="160px">
         <template slot-scope="scope">
-          {{ scope.row.updateTs }}
+          {{ formatTime(scope.row.updateTs) }}
         </template>
       </el-table-column>
       <el-table-column label="操作人" width="160px">
@@ -156,6 +156,7 @@ import TableMixins from '@/mixins/yshTable'
 import AddDialog from '../Dialog/AddDialog'
 import RateDialog from '../Dialog/RateDialog'
 import Home from '@/api/home-config/Home'
+import { parseTime } from '@/utils/index'
 
 export default {
   components: { AddDialog, RateDialog },
@@ -343,6 +344,9 @@ export default {
       const temp = this.selectionDatas.filter(item => item.itemCheck)
       this.checkAll = temp.length === this.tableData.length
       this.isIndeterminate = temp.length > 0 && temp.length < this.tableData.length
+    },
+    formatTime(date) {
+      return parseTime(date)
     }
   }
 }

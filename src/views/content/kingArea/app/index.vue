@@ -121,7 +121,8 @@ import TableMixins from '@/mixins/yshTable'
 import Dialog from './Dialog'
 // import _data from './data'
 import Kingkong from '@/api/home-config/KingKong'
-import { changeOrder, parseTime } from '@/utils/index'
+import { parseTime } from '@/utils/index'
+import { changeOrder } from '@/utils/utils'
 
 export default {
   components: {
