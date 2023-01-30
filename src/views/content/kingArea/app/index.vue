@@ -208,34 +208,25 @@ export default {
     },
     /** 删除金刚区 */
     handleDelete() {
-      let delList = []
-      if (this.checkAll) {
-        delList = this.tableData
-        delList.forEach(item => {
-          if (item.status === 1) {
-            this.$message.error('使用中的入口不可删除')
-            return
-          } else {
-            this.tableDataId.push(delList.id)
-            this.handleDeleteKing()
-          }
-        })
-      } else {
-        this.selectionDatas.forEach((item, index) => {
-          if (item.itemCheck) {
-            delList.push(index)
-          }
-        })
-        console.log(delList, 'del')
-        delList.forEach(item => {
-          if (this.tableData[item].status === 1) {
-            this.$message.error('使用中的入口不可删除')
-            return
-          } else {
-            this.tableDataId.push(this.tableData[item].id)
-            this.handleDeleteKing()
-          }
-        })
+      const delList = []
+      let isdel = false
+      this.selectionDatas.forEach((item, index) => {
+        if (item.itemCheck) {
+          delList.push(index)
+        }
+      })
+      console.log(delList, 'del')
+      for (const item of delList) {
+        if (this.tableData[item].status === 1) {
+          this.$message.error('使用中的入口不可删除')
+          isdel = true
+          break
+        } else {
+          this.tableDataId.push(this.tableData[item].id)
+        }
+      }
+      if (!isdel) {
+        this.handleDeleteKing()
       }
     },
     async handleDeleteKing() {
