@@ -279,6 +279,7 @@ export default {
     /** 批量删除 */
     handleDeleteMulti() {
       const delList = []
+      let isdel = false
       this.selectionDatas.forEach((item, index) => {
         if (item.itemCheck) {
           delList.push(index)
@@ -288,12 +289,15 @@ export default {
       for (const item of delList) {
         if (this.tableData[item].status === 1) {
           this.$message.error('使用中的入口不可删除')
+          isdel = true
           break
         } else {
           this.tableDataId.push(this.tableData[item].bannerId)
         }
       }
-      this.handleDeleteBanner()
+      if (isdel) {
+        this.handleDeleteBanner()
+      }
     },
     async handleDeleteBanner() {
       const res = await Home.deleteBanner(this.tableDataId)
