@@ -14,41 +14,124 @@
         size="medium"
         @click="handleEvent('rate')"
       >切换频率</el-button>
-      <el-button icon="el-icon-delete" type="primary" size="medium" @click="handleEvent('delete')">删除</el-button>
+      <el-button icon="el-icon-delete" type="primary" size="medium" @click="handleDeleteMulti">删除</el-button>
     </el-row>
 
     <!-- 表格数据 -->
-    <ysh-table
-      :table-config="tableConfig"
-      :table-column="tableColumn"
-      :table-data="tableData"
-      @handleOrder="handleOrder"
-      @handleSelectionChange="handleSelectionChange"
+    <el-table
+      v-loading="tableConfig.loading"
+      :data="tableData"
+      element-loading-text="Loading"
+      border
+      fit
+      :header-cell-style="{ 'text-align': 'center' }"
+      :cell-style="{ 'text-align': 'center' }"
+      highlight-current-row
     >
-      <template v-slot:operate="row">
-        <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
-        <span
-          v-if="row.data.status === 2"
-          class="text-blue cur ml-10"
-          @click="handleEvent('status', row.data)"
-        >启用</span>
-        <span
-          v-if="row.data.status === 1"
-          class="text-blue cur ml-10"
-          @click="handleEvent('status', row.data)"
-        >冻结</span>
-        <span
-          v-if="row.data.num !== 1 && row.data.status !== 2"
-          class="text-blue cur ml-10"
-          @click="handleEvent('top', row.data)"
-        >置顶</span>
-        <span
-          v-if="row.data.status === 2"
-          class="text-red cur ml-10"
-          @click="handleEvent('delete', row.data)"
-        >删除</span>
-      </template>
-    </ysh-table>
+      <el-table-column width="100px">
+        <template slot="header" slot-scope="">
+          <el-checkbox
+            v-model="checkAll"
+            :indeterminate="isIndeterminate"
+            @change="handleCheckAllChange"
+          >序号</el-checkbox>
+        </template>
+        <template slot-scope="scope">
+          <el-checkbox v-model="selectionDatas[scope.$index].itemCheck" @change="toggleCheck()">{{
+            scope.$index + 1
+          }}</el-checkbox>
+        </template>
+      </el-table-column>
+      <el-table-column label="ID" width="100px">
+        <template slot-scope="scope">
+          <div class="label">{{ scope.row.bannerId }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="标题" width="150px">
+        <template slot-scope="scope">
+          {{ scope.row.title }}
+        </template>
+      </el-table-column>
+      <el-table-column label="图片" width="160px">
+        <template slot-scope="scope">
+          <img
+            class="goods-preview"
+            :src="scope.row.img"
+            style="width: 120px; height: 80px"
+            @click="openPreviewModal(scope.row.img)"
+          >
+        </template>
+      </el-table-column>
+      <el-table-column label="关联内容" width="100px">
+        <template slot-scope="scope">
+          {{ scope.row.content }}
+        </template>
+      </el-table-column>
+      <el-table-column label="轮播顺序" width="100px">
+        <template slot-scope="scope">
+          <i
+            v-if="scope.$index !== 0"
+            class="el-icon-top"
+            style="font-size: 26px; cursor: pointer"
+            @click="handleOrder('up', scope.row)"
+          />
+          <i
+            v-if="scope.$index + 1 !== tableData.length"
+            class="el-icon-bottom"
+            style="font-size: 26px; cursor: pointer"
+            @click="handleOrder('down', scope.row)"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="切换频率" width="160px">
+        <template slot-scope="scope">
+          <span v-if="scope.row.switchFrequence">{{ scope.row.switchFrequence + 'ms' }}</span>
+          <span v-else>不切换</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" width="100px">
+        <template slot-scope="scope">
+          <span v-if="scope.row.status === 0">删除</span>
+          <span v-if="scope.row.status === 1">使用中</span>
+          <span v-if="scope.row.status === 2">冻结</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="更新时间" width="160px">
+        <template slot-scope="scope">
+          {{ scope.row.updateTs }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作人" width="160px">
+        <template slot-scope="scope">
+          {{ scope.row.updaterName }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" fixed="right" width="200px">
+        <template slot-scope="scope">
+          <span class="text-blue cur ml-10" @click="handleEvent('edit', scope.row)">编辑</span>
+          <span
+            v-if="scope.row.status === 2"
+            class="text-blue cur ml-10"
+            @click="handleEvent('status', scope.row)"
+          >启用</span>
+          <span
+            v-if="scope.row.status === 1"
+            class="text-blue cur ml-10"
+            @click="handleEvent('status', scope.row)"
+          >冻结</span>
+          <span
+            v-if="scope.row.num !== 1 && scope.row.status !== 2"
+            class="text-blue cur ml-10"
+            @click="handleEvent('top', scope.row)"
+          >置顶</span>
+          <span
+            v-if="scope.row.status === 2"
+            class="text-red cur ml-10"
+            @click="handleEvent('delete', scope.row)"
+          >删除</span>
+        </template>
+      </el-table-column>
+    </el-table>
     <el-pagination
       background
       layout="total, sizes, prev, pager, next, jumper"
@@ -69,7 +152,7 @@
 
 <script>
 import TableMixins from '@/mixins/yshTable'
-import { tableColumn } from './data'
+// import { tableColumn } from './data'
 import AddDialog from '../Dialog/AddDialog'
 import RateDialog from '../Dialog/RateDialog'
 import Home from '@/api/home-config/Home'
@@ -80,17 +163,22 @@ export default {
   mixins: [TableMixins],
   data() {
     return {
-      tableConfig: {
-        loading: false,
-        selection: false,
-        maxHeight: window.innerHeight - 260 + 'px'
-      },
-      tableColumn,
+      // tableConfig: {
+      //   loading: false,
+      //   selection: false,
+      //   maxHeight: window.innerHeight - 260 + 'px'
+      // },
+      // tableColumn,
       tableData: [],
       currentPage: 1,
       limit: 10,
       pageSizes: [10, 20, 50, 100, 500],
-      total: 0
+      total: 0,
+      isIndeterminate: false,
+      checkAll: false,
+      checkedNumber: [],
+      selectionDatas: [],
+      tableDataId: []
     }
   },
   created() {
@@ -109,6 +197,9 @@ export default {
       const resData = res.data
       console.log(resData, 'res')
       this.tableData = resData.list
+      this.tableData.forEach(() => {
+        this.selectionDatas.push({ itemCheck: false })
+      })
       console.log(this.tableData)
       this.total = res.data.totalRows
       this.tableConfig.loading = false
@@ -185,7 +276,35 @@ export default {
           this.$message.info('取消删除')
         })
     },
-
+    /** 批量删除 */
+    handleDeleteMulti() {
+      const delList = []
+      this.selectionDatas.forEach((item, index) => {
+        if (item.itemCheck) {
+          delList.push(index)
+        }
+      })
+      console.log(delList, 'del')
+      for (const item of delList) {
+        if (this.tableData[item].status === 1) {
+          this.$message.error('使用中的入口不可删除')
+          break
+        } else {
+          this.tableDataId.push(this.tableData[item].bannerId)
+        }
+      }
+      this.handleDeleteBanner()
+    },
+    async handleDeleteBanner() {
+      const res = await Home.deleteBanner(this.tableDataId)
+      this.tableDataId = []
+      if (res.state === 1) {
+        this.$message.success(res.msg)
+        this.fetchData()
+      } else {
+        this.$message.error(res.msg)
+      }
+    },
     /** 调整上下顺序 */
     async handleOrder(event, data) {
       const res = await Home.changeBannerOrder({
@@ -209,6 +328,17 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       this.fetchData()
+    },
+    handleCheckAllChange(val) {
+      this.selectionDatas.forEach(item => {
+        item.itemCheck = val
+      })
+      this.isIndeterminate = false
+    },
+    toggleCheck() {
+      const temp = this.selectionDatas.filter(item => item.itemCheck)
+      this.checkAll = temp.length === this.tableData.length
+      this.isIndeterminate = temp.length > 0 && temp.length < this.tableData.length
     }
   }
 }
