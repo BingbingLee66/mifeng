@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 class Home {
-  /** 获取tab列表  */
+  /** 获取小程序的tab列表  */
   static async getTabList(params) {
     return await request({
       url: '/ec/tab',
@@ -10,6 +10,14 @@ class Home {
     })
   }
 
+  /** 获取app部分的tab列表  */
+  static async getTabListApp(params) {
+    return await request({
+      url: '/ec/tab/withPage',
+      method: 'get',
+      params
+    })
+  }
   /** 编辑tab  */
   static async updateTab(data) {
     return await request({

@@ -72,15 +72,18 @@ export default {
     /** 获tab列表 */
     async fetchData() {
       this.tableConfig.loading = true
-      const res = await Home.getTabList({
+      const res = await Home.getTabListApp({
+        page: this.currentPage,
+        pageSize: this.limit,
         type: '2'
       })
       if (res.state !== 1) return
-      res.data.forEach(item => {
+      console.log(res, 'res')
+      res.data.list.forEach(item => {
         item.changeStatus = item.changeStatus === '1'
       })
-      this.tableData = res.data
-      this.total = res.data.length
+      this.tableData = res.data.list
+      this.total = res.data.totalRows
       this.tableConfig.loading = false
     },
 
