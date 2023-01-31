@@ -89,7 +89,7 @@ export default {
         const { state, data } = await getQuestionnaireList({
           ...this.query,
           ckey: '',
-          queryType: 1 // 平台问卷
+          queryType: -1 // 所有问卷
         })
         if (state !== 1) return
         this.tableData = data.list
