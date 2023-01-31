@@ -20,13 +20,13 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="tabsIndex != 3" :label="tabsIndex == '0' ? '打招呼语言：' : tabsIndex == '1' ? '快捷回复语：' :'常用语：' " prop="textarea">
-            <el-input v-model="formObj.textarea" :autosize="{ minRows: 4, maxRows: 6}" maxlength="200" type="textarea" />
+            <el-input v-model="formObj.textarea" clearable :autosize="{ minRows: 4, maxRows: 6}" maxlength="200" type="textarea" />
           </el-form-item>
           <el-form-item v-if="tabsIndex == 2" label="权重：" prop="size">
             <el-input v-model="formObj.size" maxlength="3" type="number" />
           </el-form-item>
           <el-form-item v-if="tabsIndex == 3" label="场景名称：" prop="name">
-            <el-input v-model="formObj.name" maxlength="6" />
+            <el-input v-model.trim="formObj.name" clearable maxlength="6" />
           </el-form-item>
         </el-form>
       </div>
@@ -87,7 +87,9 @@ export default {
     onConfirm() {
       this.$refs['formName'].validate(valid => {
         if (valid) {
-          console.log(1111111111)
+          this.handleClose()
+          this.$message.success('操作成功')
+          this.$emit('confirm')
         }
       })
     }
