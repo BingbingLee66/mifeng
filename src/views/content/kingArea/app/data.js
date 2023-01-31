@@ -1,9 +1,4 @@
 const tableColumn = [
-  // {
-  //   label: '序号',
-  //   prop: 'serialNumber',
-  //   type: 'serialNumber'
-  // },
   {
     label: '序号',
     prop: 'serialNumber',

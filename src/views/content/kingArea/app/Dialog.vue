@@ -71,7 +71,7 @@ export default {
           prop: 'jsonContext',
           type: 'textarea',
           width: '90%',
-          rows: 1,
+          rows: 5,
           placeholder: '请输入banner跳转链接或路径',
           clearable: true,
           value: '',
@@ -148,7 +148,7 @@ export default {
           prop: 'jsonContext',
           type: 'textarea',
           width: '90%',
-          rows: 1,
+          rows: 5,
           placeholder: '请输入banner跳转链接或路径',
           clearable: true,
           value: '',
@@ -204,8 +204,8 @@ export default {
 
     edit(data) {
       this.dialogTitle = '编辑功能入口'
-      const { name, image, jsonContext, id, weight } = data
-      this.formObj = { id, name, jsonContext, weight, image }
+      const { name, image, jsonContext, id } = data
+      this.formObj = { id, name, jsonContext, image }
       this.formItem = this.editFormItem
       this.dialogVisible = true
     },
@@ -229,7 +229,8 @@ export default {
       console.log(data)
       const res = await Kingkong.saveKingkongN({
         ...data,
-        clientType: 1
+        clientType: 1,
+        isPublish: this.submitStatus === 1
       })
       const temp = await Kingkong.updateKingkongStatus(data.id, this.submitStatus)
       if (res.state !== 1 && temp.state !== 1) {
