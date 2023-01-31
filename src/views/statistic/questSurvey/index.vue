@@ -3,21 +3,35 @@
     <el-tabs :value="activeName" @tab-click="onTabClick">
       <el-tab-pane v-for="item in tabList" :key="item.n" :label="item.l" :name="item.n" />
     </el-tabs>
-    <div class="board flex-x">
-      <div v-for="(item,index) in defineList" :key="index" :style="{'border-right':(index+1)%3===0 ? '' :'1px solid #E8E8E8FF'}" class="board-item">
-        <div class="title">{{ item.title }}</div>
-        <div>{{ item.val }}</div>
+    <div v-if="activeName==='statistic'">
+      <el-button type="primary" class="statistic-btn" @click="showStatisticDialog=true">数据定义</el-button>
+      <div class="board flex-x">
+        <div v-for="(item,index) in defineList" :key="index" :style="{'border-right':(index+1)%3===0 ? '' :'1px solid #E8E8E8FF'}" class="board-item">
+          <div class="title">{{ item.title }}</div>
+          <div>{{ item.val }}</div>
+        </div>
       </div>
+
     </div>
-    <tableComponent />
-    <div ref="chart" style="width: 100%; height: 100%" />
+    <div class="chart">
+      <div class="indicator flex-x">
+        <span>指标筛选：</span>
+        <div v-for="item in statisticsList" :key="item.id" :class="[item.id===indicator ? 'indicator-active':'','indicator-item']" @click="checkIndicator">{{ item.title }}</div>
+      </div>
+      <div ref="chart" style="width: 100%; height: 100%" />
+    </div>
+
+    <tableComponent v-if="activeName==='quest'" />
+    <statisticDialog :dialog-visible.sync="showStatisticDialog" />
   </div>
 </template>
 
 <script>
 import * as eCharts from 'echarts'
+import { statisticsList } from './constant'
 export default {
-  components: { tableComponent: () => import('./components/tableComponent.vue'), },
+  components: { tableComponent: () => import('./components/tableComponent.vue'),
+    statisticDialog: () => import('./components/statisticDialog.vue'), },
   props: {},
   data() {
     return {
@@ -34,9 +48,14 @@ export default {
       ],
 
       // tab切换值
-      activeName: 'Platform',
+      activeName: 'statistic',
       // 图表实例
-      chart: null
+      chart: null,
+      // 显示数据定义对话框
+      showStatisticDialog: false,
+      statisticsList,
+      // 当前活跃的筛选项
+      indicator: statisticsList[0].id
     }
   },
 
@@ -70,7 +89,11 @@ export default {
     },
     // tab-切换
     onTabClick({ name }) {
-      console.log('name', name)
+      this.activeName = name
+    },
+    // 指标筛选改变
+    checkIndicator() {
+
     }
   }
 }
@@ -79,6 +102,32 @@ export default {
 <style lang="scss" scoped>
 .wrap {
   padding: 0 20px;
+  .statistic-btn{
+    color: #000;
+    margin-bottom: 24px;
+  }
+}
+.indicator{
+  font-size: 14px;
+font-family: PingFangSC-Regular, PingFang SC;
+font-weight: 400;
+color: rgba(0,0,0,0.65);
+margin-bottom: 40px;
+.indicator-item{
+  margin-right: 32px;
+  padding: 1px 8px;
+
+}
+.indicator-item:hover{
+  cursor:pointer;
+}
+.indicator-active{
+  background: #F4C820;
+border-radius: 2px;
+}
+}
+.indicator span:first-child{
+  margin-right: 16px;
 }
 .board {
   font-size: 24px;
