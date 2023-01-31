@@ -1,6 +1,13 @@
 <template>
   <div>
-    <ysh-table :table-config="tableConfig" :table-column="tableColumn" :table-data="tableData">
+    <ysh-table
+      :table-config="tableConfig"
+      :table-column="tableColumn"
+      :table-data="tableData"
+      :page-data="pageData"
+      @handleCurrentChange="handleCurrentChange"
+      @handleSizeChange="handleSizeChange"
+    >
       <template v-slot:operate="row">
         <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
         <span
@@ -15,17 +22,7 @@
         >隐藏</span>
       </template>
     </ysh-table>
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-      :page-sizes="pageSizes"
-      :page-size="limit"
-      :total="total"
-      :current-page.sync="currentPage"
-      :style="{ 'padding-top': '15px' }"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
+
     <!-- 编辑轮播推荐 -->
     <carousel-recommend ref="dialogRef1" @refresh="fetchData" />
     <!-- 编辑内容推荐 -->
@@ -54,11 +51,7 @@ export default {
   data() {
     return {
       tableColumn: _data.tableColumn,
-      tableData: [],
-      currentPage: 1,
-      limit: 10,
-      pageSizes: [10, 20, 50, 100, 500],
-      total: 0
+      tableData: []
     }
   },
   created() {
@@ -66,17 +59,19 @@ export default {
   },
   methods: {
     /** 获取推荐位列表数据 */
-    async fetchData() {
+    async fetchData(page) {
       this.tableConfig.loading = true
+      const { currentpage, limit } = this.pageData
+      console.log(limit, 'limit')
       const res = await Home.getRecommendList({
         platform: '2',
-        pageNum: this.currentPage,
-        pageSize: this.limit
+        pageNum: page === 1 ? 1 : currentpage,
+        pageSize: 10
       })
       if (res.state !== 1) return
       const resData = res.data
       this.tableData = resData.list
-      this.total = res.data.totalRows
+      this.pageData.total = resData.totalRows
       this.tableConfig.loading = false
     },
 
@@ -119,17 +114,6 @@ export default {
           this.$refs.dialogRef3.$emit(event, data)
           break
       }
-    },
-    /** 调整显示条数 */
-    handleSizeChange(val) {
-      this.limit = val
-      this.currentPage = 1
-      this.fetchData()
-    },
-    /** 调整显示页数 */
-    handleCurrentChange(val) {
-      this.currentPage = val
-      this.fetchData()
     }
   }
 }
