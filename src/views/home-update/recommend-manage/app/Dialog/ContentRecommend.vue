@@ -39,43 +39,16 @@
             </el-row>
           </el-form-item>
           <el-form-item v-if="formObj.contentIds.length > 0" label="">
-            <el-table
-              v-loading="dialogLoading"
-              :data="tableData"
-              element-loading-text="Loading"
-              border
-              fit
-              highlight-current-row
+            <ysh-table
+              :table-config="tableConfig"
+              :table-column="tableColumn"
+              :table-data="tableData"
+              @handleOrder="handleOrder"
             >
-              <el-table-column :label="this.formObj.contentType === '3' ? '供需ID' : '文章ID'" align="center">
-                <template slot-scope="scope">
-                  <div class="label">{{ scope.row.id }}</div>
-                </template>
-              </el-table-column>
-
-              <el-table-column :label="this.formObj.contentType === '3' ? '供需标题' : '文章标题'" align="center">
-                <template slot-scope="scope">
-                  <div class="label">{{ scope.row.contentTitle }}</div>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" align="center">
-                <template slot-scope="scope">
-                  <span class="text-red cur ml-10" @click="handleRemove(scope.row)">移除</span>
-                  <i
-                    v-if="scope.$index !== 0"
-                    class="el-icon-top"
-                    style="font-size: 26px; cursor: pointer"
-                    @click="handleOrder('up', scope.row)"
-                  />
-                  <i
-                    v-if="scope.$index + 1 !== tableData.length"
-                    class="el-icon-bottom"
-                    style="font-size: 26px; cursor: pointer"
-                    @click="handleOrder('down', scope.row)"
-                  />
-                </template>
-              </el-table-column>
-            </el-table>
+              <template v-slot:operate="row">
+                <span class="text-red cur ml-10" @click="handleRemove(row.data)">移除</span>
+              </template>
+            </ysh-table>
           </el-form-item>
           <el-form-item label="">
             <div class="mt-20">
@@ -94,7 +67,7 @@
 import SelectRecommend from './SelcetRecommend'
 import { changeOrder, removeItem } from '@/utils/utils'
 import Home from '@/api/home-config/Home'
-
+import { tableColumn2, tableColumn3 } from './data'
 export default {
   components: { SelectRecommend },
   data() {
@@ -114,19 +87,19 @@ export default {
         contentIds: [{ required: true, message: '请选择推荐内容', trigger: 'change' }]
       },
       /** 表格配置 */
-      // tableConfig: {
-      //   loading: false,
-      //   headerCellStyle: { padding: 0 },
-      //   maxHeight: '400px'
-      // },
+      tableConfig: {
+        loading: false,
+        headerCellStyle: { padding: 0 },
+        maxHeight: '400px'
+      },
       rowData: [],
       position: null
     }
   },
   computed: {
-    // tableColumn() {
-    //   return this.formObj.contentType === '3' ? tableColumn2 : tableColumn3
-    // },
+    tableColumn() {
+      return this.formObj.contentType === '3' ? tableColumn2 : tableColumn3
+    },
     isDisable() {
       return this.formObj.contentType === ''
     }

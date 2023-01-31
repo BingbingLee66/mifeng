@@ -23,47 +23,16 @@
             </el-row>
           </el-form-item>
           <el-form-item v-if="formObj.contentIds.length > 0" label="">
-            <el-table
-              v-loading="dialogLoading"
-              :data="tableData"
-              element-loading-text="Loading"
-              border
-              fit
-              highlight-current-row
+            <ysh-table
+              :table-config="tableConfig"
+              :table-column="tableColumn"
+              :table-data="tableData"
+              @handleOrder="handleOrder"
             >
-              <el-table-column label="活动ID/名称" align="center">
-                <template slot-scope="scope">
-                  <div class="label">{{ scope.row.label }}</div>
-                </template>
-              </el-table-column>
-              <el-table-column label="活动列表图" width="156px" align="center">
-                <template slot-scope="scope">
-                  <img
-                    class="goods-preview"
-                    :src="scope.row.contentImg"
-                    style="width: 130px; height: 60px"
-                    @click="openPreviewModal(scope.row.contentImg)"
-                  >
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" align="center">
-                <template slot-scope="scope">
-                  <span class="text-red cur ml-10" @click="handleRemove(scope.row)">移除</span>
-                  <i
-                    v-if="scope.$index !== 0"
-                    class="el-icon-top"
-                    style="font-size: 26px; cursor: pointer"
-                    @click="handleOrder('up', scope.row)"
-                  />
-                  <i
-                    v-if="scope.$index + 1 !== tableData.length"
-                    class="el-icon-bottom"
-                    style="font-size: 26px; cursor: pointer"
-                    @click="handleOrder('down', scope.row)"
-                  />
-                </template>
-              </el-table-column>
-            </el-table>
+              <template v-slot:operate="row">
+                <span class="text-red cur ml-10" @click="handleRemove(row.data)">移除</span>
+              </template>
+            </ysh-table>
           </el-form-item>
           <el-form-item label="切换频率：" prop="shuffling">
             <el-switch v-model="formObj.shuffling" />
@@ -90,7 +59,7 @@
 import { validateInt } from '@/utils/validate'
 import { changeOrder, removeItem } from '@/utils/utils'
 import SelectRecommend from './SelcetRecommend'
-// import { tableColumn } from './data'
+import { tableColumn } from './data'
 import Home from '@/api/home-config/Home'
 
 export default {
@@ -117,12 +86,12 @@ export default {
         ]
       },
       /** 表格配置 */
-      // tableConfig: {
-      //   loading: false,
-      //   headerCellStyle: { padding: 0 },
-      //   maxHeight: '600px'
-      // },
-      // tableColumn,
+      tableConfig: {
+        loading: false,
+        headerCellStyle: { padding: 0 },
+        maxHeight: '600px'
+      },
+      tableColumn,
       tableData: [],
       rowData: [],
       position: null
