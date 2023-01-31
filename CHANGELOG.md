@@ -1,5 +1,11 @@
 # CHANGELOG
 
+
+## [Released]
+## [2.40.0] - 2023-1-30
+### Added
+- [【用户发起代报名】](https://project.feishu.cn/solink/user_story/detail/3554922)
+
 ## [Released]
 ## [2.40.0] - 2022-12-08
 ### Added

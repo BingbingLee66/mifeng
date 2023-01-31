@@ -150,6 +150,8 @@
             </div>
 
             <div class="blue-label" @click="downloadQrCode(scope.row)">下载活动二维码</div>
+            <div class="blue-label" @click="copyActivityUrl(scope.row)">复制活动链接</div>
+
           </template></el-table-column></el-table>
       <el-pagination
         background
