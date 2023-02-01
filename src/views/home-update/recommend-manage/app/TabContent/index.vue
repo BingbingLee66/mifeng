@@ -62,14 +62,14 @@ export default {
     async fetchData(page) {
       this.tableConfig.loading = true
       const { currentpage, limit } = this.pageData
-      console.log(limit, 'limit')
       const res = await Home.getRecommendList({
         platform: '2',
         pageNum: page === 1 ? 1 : currentpage,
-        pageSize: 10
+        pageSize: limit
       })
       if (res.state !== 1) return
       const resData = res.data
+      console.log(resData, 'res')
       this.tableData = resData.list
       this.pageData.total = resData.totalRows
       this.tableConfig.loading = false
