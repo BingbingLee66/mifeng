@@ -9,15 +9,6 @@ class Home {
       params
     })
   }
-
-  /** 获取app部分的tab列表  */
-  static async getTabListApp(params) {
-    return await request({
-      url: '/ec/tab/withPage',
-      method: 'get',
-      params
-    })
-  }
   /** 编辑tab  */
   static async updateTab(data) {
     return await request({

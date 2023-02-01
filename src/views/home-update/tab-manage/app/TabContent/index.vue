@@ -22,17 +22,6 @@
         >隐藏</span>
       </template>
     </ysh-table>
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-      :page-sizes="pageSizes"
-      :page-size="limit"
-      :total="total"
-      :current-page.sync="currentPage"
-      :style="{ 'padding-top': '15px' }"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
     <!-- 新增/编辑栏目弹窗 -->
     <add-dialog ref="dialogRef" @refresh="fetchData" />
   </div>
@@ -58,11 +47,7 @@ export default {
         maxHeight: window.innerHeight - 200 + 'px'
       },
       tableColumn: _data.tableColumn,
-      tableData: [],
-      currentPage: 1,
-      limit: 10,
-      pageSizes: [10, 20, 50, 100, 500],
-      total: 0
+      tableData: []
     }
   },
   created() {
@@ -72,18 +57,15 @@ export default {
     /** 获tab列表 */
     async fetchData() {
       this.tableConfig.loading = true
-      const res = await Home.getTabListApp({
-        page: this.currentPage,
-        pageSize: this.limit,
+      const res = await Home.getTabList({
         type: '2'
       })
       if (res.state !== 1) return
       console.log(res, 'res')
-      res.data.list.forEach(item => {
+      res.data.forEach(item => {
         item.changeStatus = item.changeStatus === '1'
       })
-      this.tableData = res.data.list
-      this.total = res.data.totalRows
+      this.tableData = res.data
       this.tableConfig.loading = false
     },
 
@@ -146,15 +128,6 @@ export default {
       } else {
         this.$message.error(res.msg)
       }
-    },
-    handleSizeChange(val) {
-      this.limit = val
-      this.currentpage = 1
-      this.fetchData()
-    },
-    handleCurrentChange(val) {
-      this.currentpage = val
-      this.fetchData()
     }
   }
 }
