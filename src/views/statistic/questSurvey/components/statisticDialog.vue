@@ -8,8 +8,8 @@
     >
       <span>
 
-        <div v-for="item in statisticsList" :key="item.id">
-          <div>{{ item.title }}</div>
+        <div v-for="item in statisticsList" :key="item.id" class="statistics-item">
+          <div class="title">{{ item.title }}</div>
           <div>{{ item.content }}</div>
         </div>
       </span>
@@ -46,6 +46,17 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.statistics-item{
+  margin-bottom: 24px;
+  .title{
+    margin-bottom: 4px;
+    font-weight: 600;
+color: rgba(0,0,0,0.65);
+  }
+}
 
+/deep/ .el-dialog__footer{
+  text-align: center;
+}
 </style>

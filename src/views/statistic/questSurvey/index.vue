@@ -14,9 +14,20 @@
 
     </div>
     <div class="chart">
+      <div class="screen-date">
+        <span>日期：  </span>
+        <span v-for="item in dateList" :key="item" :class="['date-item',item===activeDay ? 'active-date' :'']">{{ item }}天</span>
+        <el-date-picker
+          v-model="dateValue"
+          type="daterange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </div>
       <div class="indicator flex-x">
         <span>指标筛选：</span>
-        <div v-for="item in statisticsList" :key="item.id" :class="[item.id===indicator ? 'indicator-active':'','indicator-item']" @click="checkIndicator">{{ item.title }}</div>
+        <div v-for="item in statisticsList" :key="item.id" :class="[item.id===indicator ? 'indicator-active':'','indicator-item']" @click="checkIndicator(item.id)">{{ item.title }}</div>
       </div>
       <div ref="chart" style="width: 100%; height: 100%" />
     </div>
@@ -46,7 +57,8 @@ export default {
         { l: '总览', n: 'statistic' },
         { l: '问卷', n: 'quest' }
       ],
-
+      dateList: [7, 14, 30],
+      activeDay: 7,
       // tab切换值
       activeName: 'statistic',
       // 图表实例
@@ -55,7 +67,8 @@ export default {
       showStatisticDialog: false,
       statisticsList,
       // 当前活跃的筛选项
-      indicator: statisticsList[0].id
+      indicator: statisticsList[0].id,
+      dateValue: []
     }
   },
 
@@ -92,8 +105,8 @@ export default {
       this.activeName = name
     },
     // 指标筛选改变
-    checkIndicator() {
-
+    checkIndicator(id) {
+      this.indicator = id
     }
   }
 }
@@ -128,6 +141,26 @@ border-radius: 2px;
 }
 .indicator span:first-child{
   margin-right: 16px;
+}
+.screen-date{
+  font-size: 14px;
+font-family: PingFangSC-Medium, PingFang SC;
+font-weight: 500;
+color: rgba(0,0,0,0.85);
+margin-bottom: 24px;
+.date-item{
+  font-family: PingFangSC-Regular, PingFang SC;
+font-weight: 400;
+color: rgba(0,0,0,0.65);
+margin-right: 42px;
+}
+.date-item:hover{
+  cursor: pointer;
+}
+.active-date{
+  font-weight: 500;
+color: #F4C820;
+}
 }
 .board {
   font-size: 24px;
