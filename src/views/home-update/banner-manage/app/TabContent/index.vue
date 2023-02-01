@@ -20,7 +20,10 @@
       :table-config="tableConfig"
       :table-column="tableColumn"
       :table-data="tableData"
+      :page-data="pageData"
       @handleOrder="handleOrder"
+      @handleCurrentChange="handleCurrentChange"
+      @handleSizeChange="handleSizeChange"
       @handleSelectionChange="handleSelectionChange"
     >
       <template v-slot:operate="row">
@@ -47,17 +50,6 @@
         >删除</span>
       </template>
     </ysh-table>
-    <el-pagination
-      background
-      layout="total, sizes, prev, pager, next, jumper"
-      :page-sizes="pageSizes"
-      :page-size="limit"
-      :total="total"
-      :current-page.sync="currentPage"
-      :style="{ 'padding-top': '15px' }"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-    />
     <!-- 新增/编辑banner弹窗 -->
     <add-dialog ref="dialogRef1" :client-type="'1'" @refresh="fetchData" />
     <!-- 切换频率弹窗 -->
@@ -84,11 +76,7 @@ export default {
         maxHeight: window.innerHeight - 260 + 'px'
       },
       tableColumn,
-      tableData: [],
-      currentPage: 1,
-      limit: 10,
-      pageSizes: [10, 20, 50, 100, 500],
-      total: 0
+      tableData: []
     }
   },
   created() {
@@ -98,16 +86,17 @@ export default {
     /** 获取banner图列表数据 */
     async fetchData() {
       this.tableConfig.loading = true
+      const { currentpage, limit } = this.pageData
       const res = await Home.getBannerList({
         clientType: 1,
-        page: this.currentPage,
-        pageSize: this.limit
+        page: currentpage,
+        pageSize: limit
       })
       if (res.state !== 1) return
       const resData = res.data
       this.tableData = resData.list
       console.log(this.tableData, 'table')
-      this.total = res.data.totalRows
+      this.pageData.total = resData.totalRows
       this.tableConfig.loading = false
     },
 
@@ -196,18 +185,6 @@ export default {
       } else {
         this.$message.error(res.msg)
       }
-    },
-
-    /** 调整显示条数 */
-    handleSizeChange(val) {
-      this.limit = val
-      this.currentPage = 1
-      this.fetchData()
-    },
-    /** 调整显示页数 */
-    handleCurrentChange(val) {
-      this.currentPage = val
-      this.fetchData()
     }
   }
 }
