@@ -164,6 +164,7 @@ export default {
         case 14: return this.moduleList14
         case 15: return this.moduleList15
         case 16: return this.moduleList16
+        case 19: return this.moduleList19
       }
     },
     handleSizeChange(val) {

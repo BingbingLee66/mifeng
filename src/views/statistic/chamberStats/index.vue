@@ -132,6 +132,14 @@
       </el-table-column>
       <el-table-column align="center">
         <template slot="header">
+          <div @click="onPopup(19)">问卷管理</div>
+        </template>
+        <template slot-scope="scope">
+          {{ scope.row.questionnaire }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center">
+        <template slot="header">
           <div @click="onPopup(16)">系统设置</div>
         </template>
         <template slot-scope="scope">
