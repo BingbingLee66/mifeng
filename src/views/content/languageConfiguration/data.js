@@ -1,9 +1,9 @@
 const tableColumn1 = [
   {
     label: '序号',
-    prop: 'serialNumber',
-    type: 'serialNumber',
+    prop: 'serialNum',
     width: '100px',
+    align: 'center',
   },
   {
     label: 'ID',
@@ -13,28 +13,21 @@ const tableColumn1 = [
   },
   {
     label: '语言内容',
-    prop: 'name',
+    prop: 'content',
     align: 'center',
+    width: '360px',
   },
   {
     label: '使用场景',
-    prop: 'scene',
+    prop: 'usageSceneName',
     align: 'center',
     width: '160px',
-    type: 'function',
-    callback: row => {
-      const statusMap = {
-        0: '会内好友',
-        1: '我的好友',
-        2: '好友',
-      }
-      return row.scene ? statusMap[row.scene] : '- -'
-    }
   },
   {
     label: '一键打招呼',
-    prop: 'changeStatus',
-    type: 'switch',
+    prop: 'oneClickGreet',
+    type: 'slot',
+    slotName: 'switch',
     align: 'center',
     width: '200px',
   },
@@ -42,30 +35,27 @@ const tableColumn1 = [
     label: '状态',
     prop: 'status',
     align: 'center',
-    width: '160px',
+    // width: '160px',
     type: 'function',
     callback: row => {
       const statusMap = {
-        0: '使用中',
-        1: '冻结',
-        2: '删除',
+        0: '冻结',
+        1: '使用中',
+        2: '已删除',
       }
-      if (row.changeStatus) {
-        return '默认选中'
-      } else {
-        return row.status ? statusMap[row.status] : '- -'
-      }
+      return statusMap[row.status]
     }
   },
   {
     label: '更新时间',
     prop: 'updatedTs',
     width: '250px',
+    type: 'time',
     align: 'center'
   },
   {
     label: '操作人',
-    prop: 'operator',
+    prop: 'operatorName',
     align: 'center'
   },
   {
@@ -82,9 +72,9 @@ const tableColumn1 = [
 const tableColumn2 = [
   {
     label: '序号',
-    prop: 'serialNumber',
-    type: 'serialNumber',
+    prop: 'serialNum',
     width: '100px',
+    align: 'center',
   },
   {
     label: 'ID',
@@ -94,52 +84,40 @@ const tableColumn2 = [
   },
   {
     label: '语言内容',
-    prop: 'name',
+    prop: 'content',
     align: 'center',
   },
   {
     label: '使用场景',
-    prop: 'scene',
+    prop: 'usageSceneName',
     align: 'center',
-    width: '200px',
-    type: 'function',
-    callback: row => {
-      const statusMap = {
-        0: '会内好友',
-        1: '我的好友',
-        2: '好友',
-      }
-      return row.scene ? statusMap[row.scene] : '- -'
-    }
+    width: '160px',
   },
   {
     label: '状态',
     prop: 'status',
     align: 'center',
-    width: '200px',
+    width: '160px',
     type: 'function',
     callback: row => {
       const statusMap = {
-        0: '使用中',
-        1: '冻结',
-        2: '删除',
+        0: '冻结',
+        1: '使用中',
+        2: '已删除',
       }
-      if (row.changeStatus) {
-        return '默认选中'
-      } else {
-        return row.status ? statusMap[row.status] : '- -'
-      }
+      return statusMap[row.status]
     }
   },
   {
     label: '更新时间',
     prop: 'updatedTs',
     width: '250px',
+    type: 'time',
     align: 'center'
   },
   {
     label: '操作人',
-    prop: 'operator',
+    prop: 'operatorName',
     align: 'center'
   },
   {
@@ -156,9 +134,9 @@ const tableColumn2 = [
 const tableColumn3 = [
   {
     label: '序号',
-    prop: 'serialNumber',
-    type: 'serialNumber',
+    prop: 'serialNum',
     width: '100px',
+    align: 'center',
   },
   {
     label: 'ID',
@@ -168,12 +146,12 @@ const tableColumn3 = [
   },
   {
     label: '语言内容',
-    prop: 'name',
+    prop: 'content',
     align: 'center',
   },
   {
     label: '权重',
-    prop: 'weight',
+    prop: 'level',
     align: 'center',
     width: '160px',
   },
@@ -185,26 +163,23 @@ const tableColumn3 = [
     type: 'function',
     callback: row => {
       const statusMap = {
-        0: '使用中',
-        1: '冻结',
-        2: '删除',
+        0: '冻结',
+        1: '使用中',
+        2: '已删除',
       }
-      if (row.changeStatus) {
-        return '默认选中'
-      } else {
-        return row.status ? statusMap[row.status] : '- -'
-      }
+      return statusMap[row.status]
     }
   },
   {
     label: '更新时间',
     prop: 'updatedTs',
     width: '250px',
+    type: 'time',
     align: 'center'
   },
   {
     label: '操作人',
-    prop: 'operator',
+    prop: 'operatorName',
     align: 'center',
     width: '160px'
   },
@@ -221,9 +196,9 @@ const tableColumn3 = [
 const tableColumn4 = [
   {
     label: '序号',
-    prop: 'serialNumber',
-    type: 'serialNumber',
+    prop: 'serialNum',
     width: '100px',
+    align: 'center',
   },
   {
     label: 'ID',
@@ -244,26 +219,23 @@ const tableColumn4 = [
     type: 'function',
     callback: row => {
       const statusMap = {
-        0: '使用中',
-        1: '冻结',
-        2: '删除',
+        0: '未使用',
+        1: '使用中',
+        2: '已删除',
       }
-      if (row.changeStatus) {
-        return '默认选中'
-      } else {
-        return row.status ? statusMap[row.status] : '- -'
-      }
+      return statusMap[row.status]
     }
   },
   {
     label: '更新时间',
     prop: 'updatedTs',
     width: '250px',
+    type: 'time',
     align: 'center'
   },
   {
     label: '操作人',
-    prop: 'operator',
+    prop: 'operatorName',
     align: 'center',
     width: '160px'
   },
