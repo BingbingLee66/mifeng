@@ -4,7 +4,8 @@
     <el-tabs v-model="activeName">
       <el-tab-pane label="活动信息" name="1" />
       <el-tab-pane :disabled="disabledApplyBtn" label="报名信息" name="2" />
-      <el-tab-pane :disabled="disabledGuestBtn" label="活动嘉宾" name="3" />
+      <!-- <el-tab-pane :disabled="disabledGuestBtn" label="活动嘉宾" name="3" /> -->
+      <el-tab-pane :disabled="disabledApplyBtn" label="活动嘉宾" name="3" />
     </el-tabs>
 
     <div v-show="activeName === '1'">
@@ -399,12 +400,7 @@
                     placeholder="输入直播间链接，在活动开始后的活动详情页面会显示相应的入口"
                   />
                   <el-select v-else v-model="formObj.link" clearable placeholder="请选择直播">
-                    <el-option
-                      v-for="item in audienceList"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.viewerUrl"
-                    />
+                    <el-option v-for="item in audienceList" :key="item.id" :label="item.name" :value="item.viewerUrl" />
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -504,6 +500,20 @@
             <el-radio :label="2">隐藏手机号、邮箱</el-radio>
             <el-radio :label="3">隐藏手机号</el-radio>
           </el-radio-group>
+        </div>
+
+        <div class="sgin-way mt-20">
+          <div class="sgin-left">是否支持代报名</div>
+          <el-radio-group v-model="formObj.canReplaceApply">
+            <el-radio :label="2">不支持</el-radio>
+            <el-radio
+              :label="1"
+            >支持
+            </el-radio>
+          </el-radio-group>
+          <el-tooltip content="报名时将不需要上传IP名片，实际参加活动的人可上传IP名片；" placement="top">
+            <i class="el-icon-question" />
+          </el-tooltip>
         </div>
 
         <div class="sgin-surface">报名表</div>
@@ -608,7 +618,7 @@
                     >
                       <i slot="suffix" class="el-icon-arrow-down" />
                     </el-input>
-                    <div class="sign-right">
+                    <div v-if="index > 1 || formObj.canReplaceApply !== 1 " class="sign-right">
                       <el-link type="primary" @click="edit(index, item.type)">编辑</el-link>
                       <el-link type="primary" @click="up(index)">上移</el-link>
                       <el-link type="primary" @click="down(index)">下移</el-link>
@@ -635,11 +645,10 @@
           <el-button v-if="activeName !== '1'" @click="onPrev">上一步</el-button>
           <el-button
             v-if="activeName !== '3'"
-            :disabled="activeName === '1' ? disabledApplyBtn : disabledGuestBtn"
             type="primary"
             @click="onnext"
           >下一步</el-button>
-
+          <!-- :disabled="activeName === '1' ? disabledApplyBtn : disabledGuestBtn"-->
           <template v-if="activeName === '3'">
             <el-button @click="save(0)">保存，暂不发布</el-button>
             <el-button type="primary" @click="save(1)">保存并发布</el-button>

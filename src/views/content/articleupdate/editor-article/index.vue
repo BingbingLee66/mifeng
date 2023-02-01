@@ -710,4 +710,11 @@ font-family: '微软雅黑', sans-serif;
     }
   }
 }
+// fix:菜单换行下拉框弹出遮挡
+/deep/.w-e-menu {
+  z-index: auto !important;
+}
+/deep/.w-e-menu .w-e-droplist {
+    z-index: 3 !important;
+  }
 </style>

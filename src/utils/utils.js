@@ -83,3 +83,13 @@ export const removeItem = (arr, id) => {
   arr.splice(idx1, 1)
   return arr
 }
+
+export const throttle = (fn, delay = 3000) => {
+  let oldNow = Date.now()
+  return function (...args) {
+    const currNow = Date.now()
+    if (currNow - oldNow < delay) return
+    oldNow = currNow
+    fn.call(this, ...args)
+  }
+}

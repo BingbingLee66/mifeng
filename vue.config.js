@@ -36,14 +36,13 @@ module.exports = {
     },
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://localhost/ecadmin`,
+        target: 'http://localhost/ecadmin',
         changeOrigin: true, // target是域名的话，需要这个参数
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       }
     },
-    after: require('./mock/mock-server.js')
   },
   // configureWebpack: {
   //   // provide the app's title in webpack's name field, so that
@@ -54,7 +53,7 @@ module.exports = {
   //       '@': resolve('src')
   //     }
   //   }
-  // }, 
+  // },
   chainWebpack(config) {
     config.plugins.delete('preload')
     config.plugins.delete('prefetch')
@@ -148,7 +147,7 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        data: `@import "@/styles/common.scss";`
+        data: '@import "@/styles/common.scss";'
       }
     }
   }

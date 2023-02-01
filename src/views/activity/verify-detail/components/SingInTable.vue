@@ -343,15 +343,39 @@ export default {
     tableList() {
       const commonList = [
         {
-          label: '用户信息',
+          label: '报名人',
           minWidth: 180,
           render: ({ row }) => (
             <div>
               {row.uavatar ? <img style="width:50px;height:50px" src={row.uavatar} /> : ''}
-              <div>{row.userName}</div>
-              <div>{row.phone}</div>
+              <div>{row.applicantName}</div>
+              <div>{row.applicantPhone}</div>
             </div>
           )
+        },
+        {
+          label: '参与人',
+          minWidth: 200,
+          render: ({ row }) => {
+            const signs = row.signs || []
+            const dom = signs.map(v => (
+              <div>
+                {v.key}：{v.value}
+              </div>
+            ))
+            const cardItemIndex = signs.findIndex(v => v.key === 'card')
+
+            if (cardItemIndex > -1) {
+              dom.splice(cardItemIndex, 1)
+              dom.push(
+                <el-button type="text" onClick={() => this.getCardDetail(signs[cardItemIndex].value)}>
+                IP名片详情
+                </el-button>
+              )
+            }
+
+            return <div>{signs && signs.length ? dom : '-'}</div>
+          }
         },
         {
           label: '所属商会',
@@ -390,7 +414,6 @@ export default {
             })
           }
         },
-        {}
       ]
 
       try {
@@ -701,7 +724,7 @@ export default {
 
     generateSigninInfo() {
       return {
-        label: '报名信息',
+        label: '参与人',
         minWidth: 200,
         render: ({ row }) => {
           const signs = row.signs || []
@@ -731,7 +754,7 @@ export default {
       return [
         ...list,
         this.generateSigninTime(),
-        this.generateSigninInfo(),
+        // this.generateSigninInfo(),
         {
           label: '操作',
           fixed: 'right',
@@ -764,7 +787,7 @@ export default {
     getJoinPersonTableList(list = []) {
       return [
         ...list,
-        this.generateSigninInfo(),
+        // this.generateSigninInfo(),
         {
           label: '替补',
           minWidth: 120,
@@ -786,9 +809,9 @@ export default {
               <div>预计到场：{row.subscribeTotal}</div>
               <div>
                 到场人数：
-                <span style={row.realTotal > 0 && row.realTotal < row.subscribeTotal ? 'color:red;' : ''}>
-                  {row.realTotal ? row.realTotal : '-'}
-                </span>
+              <span style={row.realTotal > 0 && row.realTotal < row.subscribeTotal ? 'color:red;' : ''}>
+                {row.realTotal ? row.realTotal : '-'}
+              </span>
               </div>
             </div>
           )
@@ -938,7 +961,7 @@ export default {
           label: '驳回理由',
           prop: 'rejectReason'
         },
-        this.generateSigninInfo(),
+        // this.generateSigninInfo(),
         {
           label: '操作',
           fixed: 'right',
