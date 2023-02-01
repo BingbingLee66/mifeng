@@ -9,6 +9,7 @@
         @click="handleEvent('add')"
       >新增功能入口</el-button>
     </el-row>
+
     <!-- 表格数据 -->
     <ysh-table
       :table-config="tableConfig"
@@ -36,27 +37,25 @@
         >删除</span>
       </template>
     </ysh-table>
-    <!-- 新增/编辑金刚区弹窗 -->
+
+    <!-- 新增/编辑功能入口弹窗 -->
     <Dialog ref="dialogRef" @refresh="fetchData" />
   </div>
 </template>
 
 <script>
 import TableMixins from '@/mixins/yshTable'
-import Dialog from './Dialog'
-import _data from './data'
+// import { changeOrder } from '@/utils/utils'
 import Kingkong from '@/api/home-config/KingKong'
-import { changeOrder } from '@/utils/utils'
+import _data from './data'
+import Dialog from './Dialog'
 
 export default {
-  components: {
-    Dialog
-  },
+  components: { Dialog },
   // 查询，重置，分页，多选等操作（混入方式实现）
   mixins: [TableMixins],
   data() {
     return {
-      /** 表格数据 */
       tableConfig: {
         loading: false,
         selection: false,
@@ -66,13 +65,11 @@ export default {
       tableData: []
     }
   },
-
-  mounted() {
+  created() {
     this.fetchData()
   },
-
   methods: {
-    /** 获取app金刚区列表数据 */
+    /** 获取小程序金刚区列表数据 */
     async fetchData() {
       this.tableConfig.loading = true
       const params = {
@@ -80,16 +77,17 @@ export default {
         pageNum: 1,
         pageSize: 100
       }
-      const res = await Kingkong.getKingkongList(params)
-
+      const res = await Kingkong.getKingkongListV1(params)
       if (res.state !== 1) return
       this.tableData = res.data.list
-      console.log(this.tableData, 'table')
+      this.tableData.forEach(i => {
+        i.id = i.kingKongId
+      })
       this.pageData.total = res.data.totalRows
       this.tableConfig.loading = false
     },
 
-    /** 金刚区新增|编辑|更新*/
+    /** 金刚区新增|编辑|删除|启用|冻结 */
     handleEvent(event, data) {
       switch (event) {
         case 'add':
@@ -108,6 +106,19 @@ export default {
           break
       }
     },
+
+    /** 启用/冻结金刚区 */
+    async handleStatus(data) {
+      const status = data.status === 1 ? 2 : 1
+      const res = await Kingkong.changeKingkongStatus(data.id, status)
+      if (res.state === 1) {
+        this.$message.success(res.msg)
+        this.fetchData(1)
+      } else {
+        this.$message.error(res.msg)
+      }
+    },
+
     /** 移除金刚区 */
     handleDelete(data) {
       this.$confirm('确认移除该金刚区吗?', '提示', {
@@ -116,7 +127,7 @@ export default {
         type: 'warning'
       })
         .then(async () => {
-          const res = await Kingkong.deleteKingkong([data.id])
+          const res = await Kingkong.deleteKingkongV1([data.id])
           if (res.state === 1) {
             this.$message.success(res.msg)
             this.fetchData(1)
@@ -128,21 +139,21 @@ export default {
           this.$message.info('已取消移除')
         })
     },
-    /** 启用/冻结金刚区 */
-    async handleStatus(data) {
-      const status = data.status === 1 ? 2 : 1
-      const res = await Kingkong.updateKingkongStatus(data.id, status)
-      if (res.state === 1) {
-        this.$message.success(res.msg)
-        this.fetchData(1)
-      } else {
-        this.$message.error(res.msg)
-      }
-    },
+
     /** 调整上下顺序 */
     async handleOrder(event, data) {
       console.log(' order data ', data)
-      changeOrder(this.tableData, data.id, event)
+      const num = event === 'up' ? data.num - 1 : data.num + 1
+      console.log(data.id, num, 'res3')
+      const res = await Kingkong.changeKingkongOrder(data.id, num)
+      console.log(res, 'order')
+      if (res.state === 1) {
+        this.fetchData()
+        this.$message.success(res.msg)
+        // changeOrder(this.tableData, data.id, event)
+      } else {
+        this.$message.error(res.msg)
+      }
     }
   }
 }

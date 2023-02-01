@@ -47,7 +47,7 @@ class Kingkong {
   }
 
   // =========================================================== app ==========================================================
-
+  // 旧接口
   /** 获取金刚区列表 */
   static async getKingkongList(data) {
     return await request({
@@ -71,24 +71,6 @@ class Kingkong {
       data
     })
   }
-  /** 新增/编辑金刚区 */
-  static async saveKingkongN(data) {
-    return await request({
-      url: '/ec/king-kong-area/app/saveOrUpdate',
-      method: 'post',
-      data
-    })
-  }
-
-  /** 保存金刚区 */
-  static async saveKingkong(data) {
-    return await request({
-      url: '/ec/king-kong-area/saveOrUpdate',
-      method: 'post',
-      data
-    })
-  }
-
   /** 修改金刚区权重 */
   static async updateKingkongWeight(data) {
     return await request({
