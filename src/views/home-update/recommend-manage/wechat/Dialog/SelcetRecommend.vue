@@ -8,8 +8,8 @@
       :visible.sync="dialogVisible"
       @closed="close"
     >
-      <div v-if="position === 3" class="search-bar">
-        <el-input v-model="search" style="width: 500px;margin-right: 20px;" placeholder="请输入ID/标题" />
+      <div class="search-bar">
+        <el-input v-model="keyword" clearable style="width: 500px;margin-right: 20px;" placeholder="请输入ID/标题" />
         <el-button type="primary" @click="onSubmit">查询</el-button>
       </div>
       <ysh-table
@@ -62,7 +62,7 @@ export default {
       tableData: [],
       /** 推荐位 1-轮播推荐 2-内容推荐 3-内容推荐卡片 */
       position: null,
-      search: '', // ID/标题
+      keyword: '', // ID/标题
     }
   },
   computed: {
@@ -108,7 +108,8 @@ export default {
       const res = await Home.getContentList({
         contentType: this.contentType,
         pageNum: page === 1 ? 1 : currentpage,
-        pageSize: limit
+        pageSize: limit,
+        keyword: this.keyword
       })
       if (res.state === 1) {
         const resData = res.data
@@ -127,6 +128,7 @@ export default {
       this.pageData.currentpage = 1
       this.pageData.total = 0
       this.tableData = []
+      this.keyword = ''
       this.dialogVisible = false
     },
     confirm() {
