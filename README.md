@@ -26,6 +26,11 @@
 └── pnpm-workspace.yaml
 ```
 
+### 项目架构
+
+![架构图](./docs/images/project-architecture.png)
+
+
 ## 项目应用
 
 - [运营总后台（scrm）](./packages/shanghui-admin/)
