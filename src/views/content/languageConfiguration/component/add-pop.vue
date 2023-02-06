@@ -123,6 +123,7 @@ export default {
         level: '999', // 权重
         name: '', // 场景名称
       }
+      this.id = ''
       this.$refs.formName.clearValidate()
     },
     // 确定
