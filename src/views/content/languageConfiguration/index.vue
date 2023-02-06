@@ -120,6 +120,10 @@ export default {
         oneClickGreet: event ? 1 : 0 // 0关闭 1开启
       })
       if (res.state !== 1) this.$message.error(res.msg)
+      this.tableData.forEach(v => {
+        if (v.id !== data.id) v.oneClickGreet = false
+      })
+      this.$forceUpdate()
     },
     /** 编辑|冻结|启用|删除 */
     handleEvent(event, data) {

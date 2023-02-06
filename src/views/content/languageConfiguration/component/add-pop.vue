@@ -23,7 +23,7 @@
             <el-input v-model="formObj.content" clearable :autosize="{ minRows: 4, maxRows: 6}" maxlength="200" type="textarea" />
           </el-form-item>
           <el-form-item v-if="tabsIndex == 3" label="权重：" prop="level">
-            <el-input v-model="formObj.level" oninput="if(value<=0)value=1" maxlength="3" type="number" />
+            <el-input v-model="formObj.level" oninput="value=value.replace(/^(0+)|[^\d]+/g,'')" maxlength="3" />
           </el-form-item>
           <el-form-item v-if="tabsIndex == 4" label="场景名称：" prop="name">
             <el-input v-model.trim="formObj.name" clearable maxlength="6" />
@@ -64,9 +64,9 @@ export default {
       id: '', // 编辑需要id
       rules: {
         usageSceneId: [{ required: true, message: '请选择场景', trigger: 'change' }],
-        content: [{ required: true, message: '请填写内容', trigger: 'blur' }],
-        level: [{ required: true, message: '请填写权重', trigger: 'blur' }],
-        name: [{ required: true, message: '请填写场景名称', trigger: 'blur' }],
+        content: [{ required: true, message: '请填写内容', trigger: 'change' }],
+        level: [{ required: true, message: '请填写权重', trigger: 'change' }],
+        name: [{ required: true, message: '请填写场景名称', trigger: 'change' }],
       }
     }
   },
@@ -116,7 +116,6 @@ export default {
     },
     // 关闭
     handleClose() {
-      this.dialogVisible = false
       this.formObj = {
         usageSceneId: null, // 使用场景ID
         content: '', // 内容
@@ -125,6 +124,7 @@ export default {
       }
       this.id = ''
       this.$refs.formName.clearValidate()
+      this.dialogVisible = false
     },
     // 确定
     onConfirm() {
@@ -137,6 +137,7 @@ export default {
           } else {
             this.GetConfigSaveOrUpdate()
           }
+          this.handleClose()
         }
       })
     },
