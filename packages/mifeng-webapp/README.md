@@ -59,37 +59,26 @@ vue3 + eslint + prettier + [antd-vue](https://www.antdv.com/components/overview-
 
 ## 环境搭建
 
-推荐使用 [Yarn](https://www.yarnpkg.com/zh-Hans/) 来管理您的依赖
+推荐使用 [pnpm](https://pnpm.io/zh) 来管理您的依赖
 
-### Yarn
+### pnpm
 
-如果你还没有安装过 Yarn，请参照[Yarn 的安装说明](https://www.yarnpkg.com/zh-Hans/docs/install)进行安装。
-
-Yarn 安装完毕后，运行以下命令启用 Yarn Workspaces：
-
+```bash
+npm install -g pnpm
 ```
-yarn config set workspaces-experimental true
-```
-
 ## 运行
 
 - 依次运行
 
 ```
-yarn install
-yarn dev
+pnpm install
+pnpm run dev
 ```
 
 ## 构建
 
 ```
-yarn build
-```
-
-## 检查和修复文件
-
-```
-yarn lint --fix
+pnpm run build
 ```
 
 ## 编辑器配置保存自动修复代码
@@ -98,8 +87,6 @@ yarn lint --fix
 - WebStorm 参考 [此链接](https://prettier.io/docs/en/webstorm.html)
 
 ## 开发规范
-
-文档地址：[前端开发规范](https://gitlab.kd/yunshanghui/engineering/frontend/guidelines/-/wikis/%E5%B7%A5%E4%BD%9C%E8%A7%84%E8%8C%83/%E5%89%8D%E7%AB%AF%E4%BB%A3%E7%A0%81%E8%A7%84%E8%8C%83)
 
 文档地址：[前端团队指引](https://gitlab.kd/webdev-team/guidelines)
 
