@@ -196,7 +196,8 @@ const tableColumn3 = [
 const tableColumn4 = [
   {
     label: '序号',
-    prop: 'serialNum',
+    prop: 'serialNumber',
+    type: 'serialNumber',
     width: '100px',
     align: 'center',
   },
