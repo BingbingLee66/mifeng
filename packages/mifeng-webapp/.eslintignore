@@ -1,0 +1,7 @@
+build/*.js
+src/assets
+public
+dist
+src/components/aliyunVideoPlayer/aliplayercomponents-1.0.5.min.js
+src/components/aliyunVideoPlayer/aliplayer-min.js
+src/utils/exportExcel.js
