@@ -30,6 +30,9 @@
 
 - [运营总后台（scrm）](./packages/shanghui-admin/)
 - [商会管理后台（秘锋）](./packages/mifeng-webapp/)
+
+## 项目公用库 
+
 - [公用资源（common）](./packages/business-common/)
 - [组件（components）](./packages/business-components/)
 - [业务逻辑（logics）](./packages/business-logics/)
