@@ -25,8 +25,11 @@ import VueClipboard from 'vue-clipboard2' // 复制内容
 import DbClick from '@/utils/dbClick' // 防止重复点击
 import { formatDateTime, formatDate } from '@/utils/date' // 格式化时间戳
 import VueUeditorWrap from 'vue-ueditor-wrap'
-
+import { DataCollect } from '@/utils/data-collect'
 require('../src/plugins/aliplayercomponents-1.0.5.min')
+
+DataCollect.Config.init()
+
 Vue.use(Print)
 Vue.use(DbClick)
 

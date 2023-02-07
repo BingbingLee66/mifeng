@@ -90,3 +90,12 @@ export function compare(type, prop) {
     }
   }
 }
+
+/**
+ * 判断值是否可以转为数字
+ * @param targetValue 目标值
+ * @returns {boolean|*}
+ * */
+export function isNumberValue(targetValue) {
+  return !isNaN(parseFloat(targetValue)) && isFinite(targetValue)
+}
