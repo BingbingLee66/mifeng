@@ -16,7 +16,7 @@ export const webDataCollection = data =>
 // 问卷分页列表数据统计
 export const getStatisticsData = params =>
   request({
-    url: '/ecservice/crmapi/questionnaire/statistics/getStatisticsDataByCkey',
+    url: '/scrmapi/questionnaire/statistics/getStatisticsDataByCkeyGroup',
     method: 'get',
     params
   })

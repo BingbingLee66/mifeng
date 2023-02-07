@@ -13,7 +13,7 @@
       </div>
 
     </div>
-    <div class="chart">
+    <div class="chart" :hidden="activeName==='quest'">
       <div class="screen-date">
         <span>日期：  </span>
         <span v-for="item in dateList" :key="item" :class="['date-item',item===activeDay && dateValue.length < 1 ? 'active-date' :'']" @click="clickDateItem(item)">{{ item }}天</span>
@@ -28,7 +28,7 @@
       <div class="indicator flex-x">
         <span>指标筛选：</span>
         <div v-for="item in statisticsList" :key="item.id">
-          <div v-if="item.id!==7" :class="[item.id===indicator ? 'indicator-active':'','indicator-item']" @click="checkIndicator(item.id)">{{ item.title }}</div>
+          <div v-if="item.id!==7 &&item.id!=8" :class="[item.id===indicator ? 'indicator-active':'','indicator-item']" @click="checkIndicator(item.id)">{{ item.title }}</div>
         </div>
 
       </div>
@@ -127,7 +127,7 @@ export default {
         series: [
           {
             name: '销量',
-            data: this.yData[index].data || [],
+            data: index > -1 ? this.yData[index].data : [],
             // data: [],
             type: 'line',
             smooth: true,
