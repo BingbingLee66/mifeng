@@ -28,6 +28,7 @@ importers:
       eslint-plugin-vue: ^8.0.3
       file-saver: ^2.0.5
       html2canvas: ^1.4.1
+      js-cookie: ^3.0.1
       less: ^2.7.2
       less-loader: ^5.0.0
       lint-staged: ^11.1.2
@@ -63,6 +64,7 @@ importers:
       echarts: 5.4.1
       file-saver: 2.0.5
       html2canvas: 1.4.1
+      js-cookie: 3.0.1
       lodash: 4.17.21
       nprogress: 0.2.0
       swiper: 5.4.5
@@ -5321,6 +5323,7 @@ packages:
 
   /graceful-fs/4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
+    requiresBuild: true
     dev: true
 
   /gzip-size/6.0.0:
@@ -5938,6 +5941,11 @@ packages:
       '@sideway/pinpoint': 2.0.0
     dev: true
 
+  /js-cookie/3.0.1:
+    resolution: {integrity: sha512-+0rgsUXZu4ncpPxRL+lNEptWMOWl9etvPHc/koSRp6MPwpRYAhmk0dUG00J4bxVV3r9uUzfo24wW0knS07SKSw==}
+    engines: {node: '>=12'}
+    dev: false
+
   /js-message/1.0.7:
     resolution: {integrity: sha512-efJLHhLjIyKRewNS9EGZ4UpI8NguuL6fKkhRxVuMmrGV2xN/0APGdQYwLFky5w9naebSZ0OwAGp0G6/2Cg90rA==}
     engines: {node: '>=0.6.0'}
@@ -6376,6 +6384,7 @@ packages:
     resolution: {integrity: sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==}
     engines: {node: '>=4'}
     hasBin: true
+    requiresBuild: true
     dev: true
 
   /mimic-fn/1.2.0:
@@ -6426,6 +6435,7 @@ packages:
   /mkdirp/0.5.6:
     resolution: {integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==}
     hasBin: true
+    requiresBuild: true
     dependencies:
       minimist: 1.2.7
     dev: true
