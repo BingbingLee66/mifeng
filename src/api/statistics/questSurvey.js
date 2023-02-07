@@ -23,13 +23,13 @@ export const getStatisticsData = params =>
 // 总览数据统计
 export const getOverviewData = () =>
   request({
-    url: '/ecservice/crmapi/questionnaire/statistics/getOverviewData',
+    url: '/scrmapi/questionnaire/statistics/getOverviewData',
     method: 'get'
   })
 // 时间轴总览数据
 export const getTimelineOverviewData = params =>
   request({
-    url: '/ecservice/crmapi/questionnaire/statistics/getTimelineOverviewData',
+    url: '/scrmapi/questionnaire/statistics/getTimelineOverviewData',
     method: 'get',
     params
   })

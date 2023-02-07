@@ -16,7 +16,7 @@
     <div class="chart">
       <div class="screen-date">
         <span>日期：  </span>
-        <span v-for="item in dateList" :key="item" :class="['date-item',item===activeDay ? 'active-date' :'']" @click="clickDateItem(item)">{{ item }}天</span>
+        <span v-for="item in dateList" :key="item" :class="['date-item',item===activeDay && dateValue.length < 1 ? 'active-date' :'']" @click="clickDateItem(item)">{{ item }}天</span>
         <el-date-picker
           v-model="dateValue"
           type="daterange"
@@ -27,9 +27,12 @@
       </div>
       <div class="indicator flex-x">
         <span>指标筛选：</span>
-        <div v-for="item in statisticsList" :key="item.id" :class="[item.id===indicator ? 'indicator-active':'','indicator-item']" @click="checkIndicator(item.id)">{{ item.title }}</div>
+        <div v-for="item in statisticsList" :key="item.id">
+          <div v-if="item.id!==7" :class="[item.id===indicator ? 'indicator-active':'','indicator-item']" @click="checkIndicator(item.id)">{{ item.title }}</div>
+        </div>
+
       </div>
-      <div ref="chart" style="width: 100%; height: 100%" />
+      <div ref="chart" style="width: 1000px; height: 400px" />
     </div>
 
     <tableComponent v-if="activeName==='quest'" />
@@ -40,7 +43,7 @@
 <script>
 import * as eCharts from 'echarts'
 import { statisticsList } from './constant'
-import { getOverviewData, getTimelineOverviewData } from '@/api/statistic/questSurvey'
+import { getOverviewData, getTimelineOverviewData } from '@/api/statistics/questSurvey'
 import dayjs from 'dayjs'
 export default {
   components: { tableComponent: () => import('./components/tableComponent.vue'),
@@ -49,12 +52,7 @@ export default {
   data() {
     return {
       // 数据定义列表
-      defineList: [
-        { title: '累计发布问卷', name: 'questionnaireSum', val: 12 },
-        { title: '累计回收答卷', name: 'recycleAnswerSum', val: 12 },
-        { title: '覆盖人数', name: 'overrideUserSum', val: 12 },
-        { title: '覆盖人数', name: 'overrideUserSum2', val: 12 }
-      ],
+      defineList: statisticsList.map(i => { return { ...i, val: 3 } }),
       tabList: [
         { l: '总览', n: 'statistic' },
         { l: '问卷', n: 'quest' }
@@ -69,7 +67,7 @@ export default {
       showStatisticDialog: false,
       statisticsList,
       // 当前活跃的筛选项
-      indicator: statisticsList[0].id,
+      indicator: 1,
       // 自定义时间
       dateValue: [],
       xData: [],
@@ -84,13 +82,14 @@ export default {
       this.getTimelineOverview()
     }
   },
-
-  created() {},
-  mounted() { this.init() },
+  created() { this.getOverviewDataFunc() },
+  mounted() { this.getTimelineOverview() },
   methods: {
     init() {
+      const index = this.yData.findIndex(i => i.key === this.indicator)
       // 2.初始化
       this.chart = eCharts.init(this.$refs.chart)
+
       // 3.配置数据
       const option = {
         title: {
@@ -128,7 +127,8 @@ export default {
         series: [
           {
             name: '销量',
-            data: this.yData[this.yData.findIndex(i => i.key === this.indicator)].data ?? [],
+            data: this.yData[index].data || [],
+            // data: [],
             type: 'line',
             smooth: true,
             lineStyle: {
@@ -177,7 +177,7 @@ export default {
     async getOverviewDataFunc() {
       const res = await getOverviewData()
       for (const i in this.defineList) {
-        this.defineList[i].val = res.data[i]
+        this.defineList[i].val = res.data?.[i] || 0
       }
     },
     // 日期帅选改下
@@ -188,9 +188,8 @@ export default {
     // 拉取时间轴数据
     async getTimelineOverview() {
       // 有自定义时间就按自定义，没有就取activeDay
-      const startTime = this.dateValue.length > 0 ? this.dateValue[0].format('YYYY-MM-DD') : dayjs().subtract(this.activeDay, 'day').format('YYYY-MM-DD')
-
-      const endTime = this.dateValue.length > 0 ? this.dateValue[1].format('YYYY-MM-DD') : dayjs().subtract(1, 'day').format('YYYY-MM-DD')
+      const startTime = this.dateValue.length > 0 ? dayjs(this.dateValue[0]).format('YYYY-MM-DD') : dayjs().subtract(this.activeDay, 'day').format('YYYY-MM-DD')
+      const endTime = this.dateValue.length > 0 ? dayjs(this.dateValue[1]).format('YYYY-MM-DD') : dayjs().subtract(1, 'day').format('YYYY-MM-DD')
       const {
         data: { xaxis, series }
       } = await getTimelineOverviewData({ startTime, endTime })
@@ -216,6 +215,7 @@ font-family: PingFangSC-Regular, PingFang SC;
 font-weight: 400;
 color: rgba(0,0,0,0.65);
 margin-bottom: 40px;
+padding: 0px 0px 0px 20px;
 .indicator-item{
   margin-right: 32px;
   padding: 1px 8px;
@@ -238,6 +238,7 @@ font-family: PingFangSC-Medium, PingFang SC;
 font-weight: 500;
 color: rgba(0,0,0,0.85);
 margin-bottom: 24px;
+padding: 20px 0px 0px 20px;
 .date-item{
   font-family: PingFangSC-Regular, PingFang SC;
 font-weight: 400;
@@ -270,5 +271,9 @@ color: #F4C820;
       color: rgba(0, 0, 0, 0.45);
     }
   }
+}
+.chart{
+  background: #fff;
+  margin-top: 30px;
 }
 </style>
