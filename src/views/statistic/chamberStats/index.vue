@@ -210,6 +210,10 @@
           <div class="tit">系统设置</div>
           <div class="sub">统计入会二维码的导航点击和保存图片次数的总和</div>
         </div>
+        <div class="meaning-item">
+          <div class="tit">问卷管理</div>
+          <div class="sub">统计问卷管理的导航、创建问卷、分享问卷、编辑问卷的点击次数</div>
+        </div>
       </div>
       <div style="text-align: center">
         <el-button type="primary" @click="showMeaning = false">我知道了</el-button>
