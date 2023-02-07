@@ -7,7 +7,7 @@ export function getToken() {
 
 export function setToken(token) {
   localStorage.setItem(ACCESS_TOKEN, token)
-  Cookies.set(ACCESS_TOKEN, token)
+  Cookies.set(ACCESS_TOKEN, token, { domain: '.kaidicloud.com' })
 }
 
 export function removeToken() {
