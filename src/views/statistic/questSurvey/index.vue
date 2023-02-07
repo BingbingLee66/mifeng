@@ -16,7 +16,7 @@
     <div class="chart">
       <div class="screen-date">
         <span>日期：  </span>
-        <span v-for="item in dateList" :key="item" :class="['date-item',item===activeDay ? 'active-date' :'']">{{ item }}天</span>
+        <span v-for="item in dateList" :key="item" :class="['date-item',item===activeDay ? 'active-date' :'']" @click="clickDateItem(item)">{{ item }}天</span>
         <el-date-picker
           v-model="dateValue"
           type="daterange"
@@ -40,6 +40,8 @@
 <script>
 import * as eCharts from 'echarts'
 import { statisticsList } from './constant'
+import { getOverviewData, getTimelineOverviewData } from '@/api/statistic/questSurvey'
+import dayjs from 'dayjs'
 export default {
   components: { tableComponent: () => import('./components/tableComponent.vue'),
     statisticDialog: () => import('./components/statisticDialog.vue'), },
@@ -68,7 +70,18 @@ export default {
       statisticsList,
       // 当前活跃的筛选项
       indicator: statisticsList[0].id,
-      dateValue: []
+      // 自定义时间
+      dateValue: [],
+      xData: [],
+      yData: []
+    }
+  },
+  watch: {
+    indicator() {
+      this.init()
+    },
+    dateValue() {
+      this.getTimelineOverview()
     }
   },
 
@@ -81,19 +94,71 @@ export default {
       // 3.配置数据
       const option = {
         title: {
-          text: 'ECharts 入门示例'
+          text: ''
         },
         tooltip: {},
+        legend: {
+          data: ['销量'],
+          orient: 'horizontal',
+
+          x: 'right',
+          y: ' center',
+          padding: [0, 100, 0, 0]
+        },
         xAxis: {
-          data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+          data: this.xData,
+          axisTick: {
+            show: false
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#3333331A'
+            }
+          },
+          axisLabel: {
+            fontSize: 11,
+            textStyle: {
+              color: '#666666FF' // X轴文字颜色
+            },
+            margin: 12
+          }
         },
         yAxis: {},
         // 配置项
         series: [
           {
             name: '销量',
-            type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
+            data: this.yData[this.yData.findIndex(i => i.key === this.indicator)].data ?? [],
+            type: 'line',
+            smooth: true,
+            lineStyle: {
+              // 设置线条的style等
+              normal: {
+                color: '#5C7AE5FF', // 折线线条颜色:红色
+                width: 0.5
+              }
+            },
+            // 区域填充样式。设置后显示成区域面积图
+            areaStyle: {
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [
+                  {
+                    offset: 0,
+                    color: 'rgba(234,239,255,1.000)'
+                  },
+                  {
+                    offset: 1,
+                    color: '#FFFFFF'
+                  }
+                ],
+                global: false
+              }
+            }
           }
         ]
       }
@@ -107,6 +172,31 @@ export default {
     // 指标筛选改变
     checkIndicator(id) {
       this.indicator = id
+    },
+    // 拉取总览数据
+    async getOverviewDataFunc() {
+      const res = await getOverviewData()
+      for (const i in this.defineList) {
+        this.defineList[i].val = res.data[i]
+      }
+    },
+    // 日期帅选改下
+    clickDateItem(item) {
+      this.activeDay = item
+      this.dateValue = []
+    },
+    // 拉取时间轴数据
+    async getTimelineOverview() {
+      // 有自定义时间就按自定义，没有就取activeDay
+      const startTime = this.dateValue.length > 0 ? this.dateValue[0].format('YYYY-MM-DD') : dayjs().subtract(this.activeDay, 'day').format('YYYY-MM-DD')
+
+      const endTime = this.dateValue.length > 0 ? this.dateValue[1].format('YYYY-MM-DD') : dayjs().subtract(1, 'day').format('YYYY-MM-DD')
+      const {
+        data: { xaxis, series }
+      } = await getTimelineOverviewData({ startTime, endTime })
+      this.xData = xaxis
+      this.yData = series
+      this.init()
     }
   }
 }
