@@ -6,9 +6,11 @@ export function getToken() {
 }
 
 export function setToken(token) {
-  return localStorage.setItem(ACCESS_TOKEN, token) && Cookies.set(ACCESS_TOKEN, token)
+  localStorage.setItem(ACCESS_TOKEN, token)
+  Cookies.set(ACCESS_TOKEN, token)
 }
 
 export function removeToken() {
-  return localStorage.removeItem(ACCESS_TOKEN)
+  localStorage.removeItem(ACCESS_TOKEN)
+  Cookies.remove(ACCESS_TOKEN)
 }
