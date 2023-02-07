@@ -29,7 +29,7 @@
     >
       <template v-if="activeName === 'identify'" v-slot:operate="row">
         <el-link type="primary" :underline="false" class="ml-10" @click="showDetail(row.data.id)"> 详情 </el-link>
-        <template v-if="row.data.auditStatus === 0">
+        <template v-if="row.data.auditStatus === 0 && row.data.type !== 6">
           <el-link type="success" :underline="false" class="ml-10" @click="handleResolve(row.data.id)"> 通过 </el-link>
           <el-link :underline="false" class="ml-10" type="danger" @click="handleReject(row.data.id)">拒绝</el-link>
         </template>
@@ -128,7 +128,6 @@ export default {
       this.tableConfig.loading = true
       this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage
       const { currentpage, limit } = this.pageData
-      console.log(limit, 'limit')
       const { chamberName, contactPhone, name, type, status, applySource } = this.formData
       const params = {
         chamberName,
@@ -144,9 +143,7 @@ export default {
         params['joinStartTime'] = this.formData.requestTime[0]
         params['joinEndTime'] = this.formData.requestTime[1]
       }
-      console.log(params)
       const res = await getAllAuditList(params)
-      console.log(res, '会员审核')
       this.tableData = res.data.list || []
       this.pageData.total = res.data.totalRows
       this.tableConfig.loading = false
@@ -155,7 +152,6 @@ export default {
       this.tableConfig.loading = true
       this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage
       const { currentpage, limit } = this.pageData
-      console.log(limit, 'limit')
       const { auditType, auditStatus, source, type, userName } = this.formData
       const params = {
         auditType,
@@ -176,9 +172,7 @@ export default {
         params['auditStartTime'] = this.formData.approvalTime[0]
         params['auditEndTime'] = this.formData.approvalTime[1]
       }
-      console.log(params, '身份审核params')
       const res = await getidentityList(params)
-      console.log(res, '身份审核')
       if (res.state !== 1) return this.$message.error(res.msg)
       this.tableData = res.data.list || []
       this.pageData.total = res.data.totalRows
@@ -259,12 +253,10 @@ export default {
         return
       }
       window.localStorage.setItem('actionId', e.currentTarget.getAttribute('actionid'))
-      console.log(this.selectExportList)
       exportJson2Excel('会员审核', this.selectExportList)
       this.$refs.tableRef.handleSelectionClear()
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
       this.currentpage = 1
       this.pageData.limit = val
       if (this.activeName === 'identify') {
@@ -274,7 +266,6 @@ export default {
       }
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
       this.pageData.currentpage = val
       if (this.activeName === 'identify') {
         this.fetchIdentityData()
@@ -284,11 +275,9 @@ export default {
     },
     handleSelectionChange(value) {
       this.multipleSelection = value
-      // console.log(this.multipleSelection);
       const datas = value
       this.selectExportList = []
       for (const data of datas) {
-        // console.log(data);
         const new_data = {
           商协会名称: data.chamberName,
           入会类型: data.applySource === 0 ? '个人' : '企业/团体入驻',
@@ -335,7 +324,6 @@ export default {
       } else {
         this.changeMember()
       }
-      // console.log(this.activeName)
     },
     // 审核详情
     async showDetail(id) {
@@ -348,14 +336,12 @@ export default {
       const auditDetail = await getAuditDetail({ id: this.currentId })
       this.detailsObject = { ...approveDetail.data, ...auditDetail.data }
       this.detailsObject.trades = this.detailsObject.trades ? this.detailsObject.trades : [{}]
-      console.log(this.detailsObject, '详情内容啊')
     },
     detailsClose() {
       this.detailsVisible = false
     },
     // 列表通过
     async handleResolve(id) {
-      // console.log(id)
       const params = {
         id,
         flag: 1
@@ -364,11 +350,9 @@ export default {
       if (res.state !== 1) return this.$message.error(res.msg)
       this.$message.success(res.msg)
       await this.fetchIdentityData()
-      // console.log(params, '详情里面通过')
     },
     // 详情通过
     async handleDetailResolve() {
-      // console.log(id)
       const params = {
         id: this.currentId,
         flag: 1
@@ -378,18 +362,15 @@ export default {
       this.$message.success(res.msg)
       await this.handleDetails()
       await this.fetchIdentityData()
-      // console.log(params, '详情里面通过')
     },
     // 拒绝弹出框
     rejectDialogClose() {
-      // console.log('拒绝弹出框')
       this.rejectReason = ''
       this.rejectVisible = false
     },
     handleReject(id) {
       this.rejectVisible = true
       this.currentId = id || this.currentId
-      console.log(this.currentId)
     },
     async confirmReject() {
       if (this.rejectReason === '') {
@@ -400,7 +381,6 @@ export default {
         id: this.currentId,
         remark: this.rejectReason
       }
-      // console.log(params, '拒绝的提交啊')
       this.rejectVisible = false
       this.rejectReason = ''
       try {
