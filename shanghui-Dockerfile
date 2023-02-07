@@ -17,5 +17,5 @@ ARG PROJECT_ENV
 RUN pnpm -F scrm-webapp run lint
 RUN pnpm -F scrm-webapp run build:${PROJECT_ENV}
 
-#FROM kaidicloud-registry.cn-shanghai.cr.aliyuncs.com/ops/nginx:1.20
-#COPY --from=build /usr/src/app/dist /usr/share/nginx/html/scrm-webapp
+FROM kaidicloud-registry.cn-shanghai.cr.aliyuncs.com/ops/nginx:1.20
+COPY --from=build /usr/src/app/packages/shanghui-admin/dist /usr/share/nginx/html
