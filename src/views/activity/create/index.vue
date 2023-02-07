@@ -650,8 +650,8 @@
           >下一步</el-button>
           <!-- :disabled="activeName === '1' ? disabledApplyBtn : disabledGuestBtn"-->
           <template v-if="activeName === '3'">
-            <el-button @click="save(0)">保存，暂不发布</el-button>
-            <el-button type="primary" @click="save(1)">保存并发布</el-button>
+            <el-button @click="save(0, formObj.isPublish)">保存，暂不发布</el-button>
+            <el-button type="primary" @click="save(1, formObj.isPublish)">保存并发布</el-button>
           </template>
         </el-col>
       </el-row>
