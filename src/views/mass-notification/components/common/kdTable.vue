@@ -31,6 +31,7 @@
         <el-table-column
           v-if="col.type === undefined || col.type === 'general'"
           :key="col.id"
+          :type="col.type"
           :width="col.width"
           :formatter="col.formatter"
           :prop="col.prop"

@@ -1,10 +1,15 @@
 <template>
   <div class="app-container">
-    <div class="from-block" style="margin:20px 0">
+    <div class="from-block" style="margin: 20px 0">
       <el-form ref="query" label-position="right" :inline="true" size="mini" :model="query">
         <el-form-item label="活动来源">
           <el-select v-model="query.ckey" placeholder="请选择" clearable filterable>
-            <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey" />
+            <el-option
+              v-for="chamber in chamberOptions"
+              :key="chamber.ckey"
+              :label="chamber.name"
+              :value="chamber.ckey"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="活动ID">
@@ -29,17 +34,30 @@
           </el-select>
         </el-form-item>
         <el-form-item label="">
-          <el-button v-if="has('', '查询')" type="primary" :actionid="getId('', '查询')" @click="fetchData($event)">查询
+          <el-button
+            v-if="has('', '查询')"
+            type="primary"
+            :actionid="getId('', '查询')"
+            @click="fetchData($event)"
+          >查询
           </el-button>
         </el-form-item>
       </el-form>
     </div>
-    <div style="margin-bottom:20px;">
+    <div style="margin-bottom: 20px">
       <el-button type="primary" size="small" @click="delMulActivity">移除</el-button>
       <el-button type="danger" size="small" @click="showActivityList">添加活动</el-button>
     </div>
     <div class="block-table">
-      <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+      <el-table
+        v-loading="listLoading"
+        :data="list"
+        element-loading-text="Loading"
+        border
+        fit
+        highlight-current-row
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column type="selection" width="55px" />
         <el-table-column label="活动列表图" width="115px">
           <template slot-scope="scope">
@@ -49,13 +67,11 @@
         <el-table-column label="活动ID/名称" width="250px">
           <template slot-scope="scope">
             <div class="red-label">{{ scope.row.activityId }}</div>
-            <div> {{ scope.row.activityName }}</div>
+            <div>{{ scope.row.activityName }}</div>
           </template>
         </el-table-column>
         <el-table-column label="活动时间" width="166px">
-          <template slot-scope="scope">
-            {{ scope.row.activityStartTime }} - {{ scope.row.activityEndTime }}
-          </template>
+          <template slot-scope="scope"> {{ scope.row.activityStartTime }} - {{ scope.row.activityEndTime }} </template>
         </el-table-column>
         <el-table-column label="活动地点" width="200px">
           <template slot-scope="scope">
@@ -76,15 +92,13 @@
         </el-table-column>
         <el-table-column label="报名人数" width="100px">
           <template slot-scope="scope">
-            <span v-if="scope.row.isLimit===0">不限</span>
-            <span v-if="scope.row.isLimit===1">限{{ scope.row.applyCount }}人 </span>
+            <span v-if="scope.row.isLimit === 0">不限</span>
+            <span v-if="scope.row.isLimit === 1">限{{ scope.row.applyCount }}人 </span>
             <!-- {{ scope.row.applyCount === null ? '不限' : '限' + scope.row.applyCount + '人'}}  -->
           </template>
         </el-table-column>
         <el-table-column label="签到人数" width="100px">
-          <template slot-scope="scope">
-            {{ scope.row.signNum }}人
-          </template>
+          <template slot-scope="scope"> {{ scope.row.signNum }}人 </template>
         </el-table-column>
         <el-table-column label="发布状态" width="100px">
           <template slot-scope="scope">
@@ -121,7 +135,17 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-sizes="pageSizes" :page-size="limit" :total="total" :current-page.sync="currentpage" :style="{'padding-top': '15px'}" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+      <el-pagination
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="pageSizes"
+        :page-size="limit"
+        :total="total"
+        :current-page.sync="currentpage"
+        :style="{ 'padding-top': '15px' }"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
 
     <div class="table-dialog">
@@ -129,7 +153,12 @@
         <el-form ref="query" label-position="right" :inline="true" size="mini" :model="actquery">
           <el-form-item label-width="100px" label="活动来源">
             <el-select v-model="actquery.ckey" placeholder="请选择商品来源" clearable filterable>
-              <el-option v-for="chamber in chamberOptions" :key="chamber.ckey" :label="chamber.name" :value="chamber.ckey" />
+              <el-option
+                v-for="chamber in chamberOptions"
+                :key="chamber.ckey"
+                :label="chamber.name"
+                :value="chamber.ckey"
+              />
             </el-select>
           </el-form-item>
           <el-form-item label-width="100px" label="活动ID">
@@ -146,12 +175,19 @@
             </el-select>
           </el-form-item>
           <el-form-item label=" ">
-            <el-button type="primary" @click="getActivityLists">查询
-            </el-button>
+            <el-button type="primary" @click="getActivityLists">查询 </el-button>
           </el-form-item>
         </el-form>
         <div class="table-block">
-          <el-table v-loading="actLoading" :data="actList" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleAllSelectionChange">
+          <el-table
+            v-loading="actLoading"
+            :data="actList"
+            element-loading-text="Loading"
+            border
+            fit
+            highlight-current-row
+            @selection-change="handleAllSelectionChange"
+          >
             <el-table-column type="selection" width="55px" />
             <el-table-column label="活动列表图" width="115px">
               <template slot-scope="scope">
@@ -161,7 +197,7 @@
             <el-table-column label="活动ID/名称">
               <template slot-scope="scope">
                 <div class="red-label">{{ scope.row.activityId }}</div>
-                <div> {{ scope.row.activityName }}</div>
+                <div>{{ scope.row.activityName }}</div>
               </template>
             </el-table-column>
             <el-table-column label="活动时间" width="166px">
@@ -206,9 +242,9 @@
           </el-table>
           <!-- <el-pagination background layout="total, sizes, prev, pager, next, jumper" :page-size="allPage.pageSize" :total="allPage.allTotal" :current-page.sync="allPage.currentpage" :style="{'padding-top': '15px'}" @size-change="handleAllSizeChange" @current-change="handleAllCurrentChange" /> -->
         </div>
-        <div style="margin:20px 0;text-align:center;">
+        <div style="margin: 20px 0; text-align: center">
           <el-button type="primary" @click="addHotAct">添加</el-button>
-          <el-button @click="showAddDialog=false">取消</el-button>
+          <el-button @click="showAddDialog = false">取消</el-button>
         </div>
       </el-dialog>
     </div>
@@ -222,7 +258,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="updateSort('sortForm')">提交</el-button>
-          <el-button @click="showSortDialog=false">取消</el-button>
+          <el-button @click="showSortDialog = false">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>

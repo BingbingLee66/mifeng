@@ -1,66 +1,63 @@
 const tableColumn = [
   {
-    label: '序号',
-    prop: 'serialNumber',
-    type: 'serialNumber'
-  },
-  {
     label: 'ID',
     prop: 'id',
     align: 'center'
   },
   {
-    label: '栏目名称',
-    prop: 'name',
+    label: '推荐位',
+    prop: 'position',
+    align: 'center',
+    type: 'function',
+    callback(row) {
+      const positionMap = {
+        1: '轮播推荐',
+        2: '内容推荐',
+        3: '内容推荐卡片'
+      }
+      return positionMap[row.position]
+    }
+  },
+  {
+    label: '可推荐内容类型',
+    prop: 'optionalType',
     align: 'center'
   },
   {
-    label: '顺序',
-    prop: 'order',
-    type: 'order',
-    align: 'center'
-  },
-  {
-    label: '默认选中',
-    prop: 'changeStatus',
-    type: 'switch',
+    label: '当前使用内容',
+    prop: 'contentStr',
     align: 'center'
   },
   {
     label: '状态',
     prop: 'status',
     align: 'center',
-    width: '160px',
     type: 'function',
-    callback: row => {
+    callback(row) {
       const statusMap = {
         0: '隐藏',
         1: '使用中',
-        2: '删除',
+        2: '冻结'
       }
-      if (row.changeStatus) {
-        return '默认选中'
-      } else {
-        return row.status ? statusMap[row.status] : '- -'
-      }
+      return row.status || row.status === 0 ? statusMap[row.status] : '- -'
     }
   },
   {
     label: '更新时间',
-    prop: 'updatedTs',
+    prop: 'updateTs',
     width: '160px',
     align: 'center'
   },
   {
     label: '操作人',
-    prop: 'operator',
+    prop: 'operatorStr',
     width: '160px',
     align: 'center'
   },
   {
     label: '操作',
     prop: 'operate',
-    width: '250px',
+    width: '200px',
     type: 'slot',
     slotName: 'operate',
     fixed: 'right',
