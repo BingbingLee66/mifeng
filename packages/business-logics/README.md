@@ -12,7 +12,7 @@
 ├── src
 │   ├── MassNotification
 │   │   ├── hooks
-│   │   └── index.js
+│   │   └── ...
 └── index.js
 
 ```

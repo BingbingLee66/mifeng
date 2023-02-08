@@ -13,7 +13,7 @@
 ├── src
 │   ├── MassTable
 │   │   ├── MassTable.vue
-│   │   ├── index.js
+│   │   ├── ...
 └── index.js
 
 ```
