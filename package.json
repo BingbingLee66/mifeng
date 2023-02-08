@@ -91,8 +91,7 @@
     "vuex": "3.1.1",
     "wangeditor": "^4.7.11",
     "webpack-dev-server": "3.3.1",
-    "xlsx": "^0.16.9",
-    "yarn": "^1.22.19"
+    "xlsx": "^0.16.9"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
