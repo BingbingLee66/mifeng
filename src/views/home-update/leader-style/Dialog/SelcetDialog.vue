@@ -8,6 +8,10 @@
       :visible.sync="dialogVisible"
       @closed="close"
     >
+      <div class="search-bar">
+        <el-input v-model="keyword" clearable style="width: 500px;margin-right: 20px;" placeholder="请输入ID/标题" />
+        <el-button type="primary" @click="onSubmit">查询</el-button>
+      </div>
       <ysh-table
         ref="tableRef"
         :table-config="tableConfig"
@@ -62,7 +66,8 @@ export default {
           prop: 'title',
           align: 'center'
         }
-      ]
+      ],
+      keyword: '', // ID/标题
     }
   },
   mounted() {
@@ -86,7 +91,8 @@ export default {
         contentColumnId: -1,
         status: 1,
         column: '',
-        orderType: 1
+        orderType: 1,
+        keyword: this.keyword
       })
       if (res.data.data.list && res.data.data.list.length > 0) {
         res.data.data.list.forEach(i => {
@@ -106,7 +112,21 @@ export default {
     confirm() {
       this.$emit('confirm', this.selectionData)
       this.close()
+    },
+    // 查询
+    onSubmit() {
+      this.pageData.currentpage = 1
+      // this.pageData.total = 0
+      // this.tableData = []
+      this.fetchData(1)
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+.search-bar{
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+</style>
