@@ -13,6 +13,7 @@
               <el-radio label="5">自定义通知</el-radio>
               <el-radio label="6">课程通知</el-radio>
               <el-radio label="8">节日海报</el-radio>
+              <el-radio label="9">问卷调查</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-col>

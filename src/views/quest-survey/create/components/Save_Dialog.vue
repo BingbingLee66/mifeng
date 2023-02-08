@@ -35,6 +35,10 @@ export default {
       type: String,
       default: ''
     },
+    questionnaireTitle: {
+      type: String,
+      default: ''
+    },
     ckey: {
       type: String,
       default: ''
@@ -74,7 +78,7 @@ export default {
     },
     // 问卷发布
     async updateState() {
-      const { questionId: questionnaireId, ckey } = this
+      const { questionId: questionnaireId, ckey, questionnaireTitle } = this
       const params = {
         operateType: ckey ? 2 : 1,
         questionnaireId,
@@ -85,19 +89,17 @@ export default {
       const self = this
       const res = await API(params)
       if (res.state === 1) {
-        self.$router.push({ path: '/quest-survey/manager' })
-        this.$message({ type: 'success', message: '已发布' })
-        // self.$confirm('问卷已发布，您可以立即发短信通知会员填写问卷', '', {
-        //   confirmButtonText: '短信通知',
-        //   cancelButtonText: '暂时不用',
-        //   type: 'success', center: true
-        // }).then(() => {
-        // // 去到《创建群发通知》页面
-        //   self.$router.push({ name: 'create' })
-        // }).catch(() => {
-        // // 去到问卷管理页面
-        //   self.$router.push({ path: '/quest-survey/manager' })
-        // })
+        self.$confirm('问卷已发布，您可以立即发短信通知会员填写问卷', '', {
+          confirmButtonText: '短信通知',
+          cancelButtonText: '暂时不用',
+          type: 'success', center: true
+        }).then(() => {
+        // 去到《创建群发通知》页面
+          self.$router.push({ path: '/mass-notification/create', query: { noticeType: 9, questionnaireId: questionnaireId || res.data, questionnaireTitle } })
+        }).catch(() => {
+        // 去到问卷管理页面
+          self.$router.push({ path: '/quest-survey/manager' })
+        })
       }
     }
   }

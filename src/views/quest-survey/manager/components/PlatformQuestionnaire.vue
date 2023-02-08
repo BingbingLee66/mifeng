@@ -102,16 +102,16 @@ export default {
     generateActions(row) {
       return (<div>
         {
-          row.state === 0 ? <el-button type="text" onClick={() => this.updateState({ id: row.id, state: 1 })}>发布</el-button> : ''
+          row.state === 0 ? <el-button type="text" onClick={() => this.updateState({ ...row, state: 1 })}>发布</el-button> : ''
         }
         {
-          row.state === 1 ? <el-button type="text" onClick={() => this.updateState({ id: row.id, state: 3 })}>停止</el-button> : ''
+          row.state === 1 ? <el-button type="text" onClick={() => this.updateState({ ...row, state: 3 })}>停止</el-button> : ''
         }
         {
-          row.state === 3 ? <el-button type="text" onClick={() => this.updateState({ id: row.id, state: 1 })}>恢复运行</el-button> : ''
+          row.state === 3 ? <el-button type="text" onClick={() => this.updateState({ ...row, state: 1 })}>恢复运行</el-button> : ''
         }
         {
-          // <el-button type="text">短信通知</el-button>
+          [0, 1].includes(row.state) ? <el-button type="text" onClick={() => this.goCreateNotification(row)}>短信通知</el-button> : ''
         }
         <el-button type="text" onClick={() => this.openDialog({ data: row, type: 'share' }) }>分享</el-button>
         {
@@ -149,8 +149,28 @@ export default {
         questionnaireId: row.id,
         state: row.state
       })
-      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+
       if (state === 1) this.fetchData()
+
+      if (row.state === 1) { // 更新为已发布 显示弹窗
+        await this.$confirm('问卷已发布，您可以立即发短信通知会员填写问卷', '', {
+          confirmButtonText: '短信通知',
+          cancelButtonText: '暂时不用',
+          type: 'success',
+          center: true
+        })
+        this.goCreateNotification(row)
+      } else {
+        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
+      }
+    },
+    goCreateNotification(row) {
+      // 去到《创建群发通知》页面
+      this.$router.push({ path: '/mass-notification/create', query: {
+        noticeType: 9,
+        questionnaireId: row.id,
+        questionnaireTitle: row.title
+      } })
     },
     async onCreate() {
       const value = this.dialog.value.trim()

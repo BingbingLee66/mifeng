@@ -204,6 +204,10 @@ export default {
     downloadQrCode(r) {
       downloadByBlob(r.qrCode, '活动二维码')
     },
+    copyActivityUrl(r) {
+      navigator.clipboard.writeText(r.activityUrl)
+      this.$message.success('复制成功')
+    },
     delActivity() {
       const params = {
         id: this.rowId

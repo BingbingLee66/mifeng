@@ -96,7 +96,7 @@
                 <div class="desc-title">使用说明</div>
                 <div class="desc-item">保存图片打印在活动海报、易拉宝等场合 </div>
                 <div class="desc-item">用户使用微信扫码即签到成功，并显示会场座位号。</div>
-                <div class="desc-item">临时报名签到码用于临时到场会员，未报名无法签到情况，扫码后自动通过并签到。</div>
+                <!-- <div class="desc-item">临时报名签到码用于临时到场会员，未报名无法签到情况，扫码后自动通过并签到。</div> -->
               </div>
             </div>
           </div>
@@ -135,7 +135,7 @@ export default {
       activityQrCodeShow: false,
       codeList: [
         { title: '签到码', codeKey: 'signInCode' },
-        { title: '临时报名签到码', codeKey: 'temporaryCheckInCode' },
+        // { title: '临时报名签到码', codeKey: 'temporaryCheckInCode' },
         { title: '签退码', codeKey: 'checkoutCode' }
       ],
       qrCodeDialog: {

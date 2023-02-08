@@ -1,4 +1,10 @@
-import { createActivity, uploadPortrait, getActivity, getAlbumRelevance, getLinkPowerChamberCkeys } from '@/api/activity/activity'
+import {
+  createActivity,
+  uploadPortrait,
+  getActivity,
+  getAlbumRelevance,
+  getLinkPowerChamberCkeys
+} from '@/api/activity/activity'
 import { uploadFile } from '@/api/content/article'
 import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
 import { getListOfSelect } from '@/api/member/post'
@@ -16,6 +22,7 @@ import ActiveGuest from './component/active-guest'
 import { cloneDeep } from 'lodash'
 import editorElem from '@/components/wangEditor/index'
 import { getAudienceList } from '@/api/merchant'
+import { throttle } from '@/utils/utils'
 export default {
   components: {
     Ckeditor,
@@ -25,7 +32,7 @@ export default {
     CustomApplyDialog,
     ActiveTypeDialog,
     CustomSelect,
-    ActiveGuest,
+    ActiveGuest
   },
   data() {
     const checkSpace = (rule, value, callback) => {
@@ -113,7 +120,8 @@ export default {
         cardShow: 1,
         cardShowType: 1,
         cardInfoType: 0,
-        attachment: []
+        attachment: [],
+        canReplaceApply: 2
       },
       isReleActivity: false,
       roleIds: [], // 多选框 扩展功能
@@ -172,9 +180,8 @@ export default {
         marker: '', // 地图的标识（标注的点）（地图）
         appkey: 'CGFBZ-T3JRX-MVQ4U-76AKV-2XCY3-OKBEG', // appkey是开发者key（地图
         suggest: null, //  新建一个关键字输入提示类
-        infowindow: null, // 地图信息
-      },
-
+        infowindow: null // 地图信息
+      }
     }
   },
   watch: {
@@ -190,6 +197,40 @@ export default {
         if (this.formObj.linkType === 3) {
           this.getListAudience()
         }
+        if (this.formObj.canReplaceApply === 1) {
+          this.arrayData[0] = {
+            title: '参与人姓名',
+            msgAlert: '请输入姓名',
+            lengthLimit: '',
+            check: 1,
+            selects: [
+              {
+                value: ''
+              },
+              {
+                value: ''
+              }
+            ],
+            key: ';',
+            type: '0',
+          }
+          this.arrayData[1] = {
+            title: '参与人手机号',
+            msgAlert: '请输入手机号',
+            lengthLimit: '',
+            check: 1,
+            selects: [
+              {
+                value: ''
+              },
+              {
+                value: ''
+              }
+            ],
+            key: ';',
+            type: '0',
+          }
+        }
       },
       deep: true
     },
@@ -200,7 +241,7 @@ export default {
         }
       },
       deep: true
-    },
+    }
     // 'formObj.link'(val) {
     //   if (!val.trim()) return
     //   if (this.formObj.linkType === 3) {
@@ -260,7 +301,7 @@ export default {
     },
     postSelectInit() {
       const params = {
-        ckey: this.$store.getters.ckey,
+        ckey: this.$store.getters.ckey
       }
       getListOfSelect(params).then(response => {
         this.portSelect = response.data.data
@@ -277,7 +318,7 @@ export default {
     },
     normalizer(node) {
       // 去掉children=[]的children属性
-      if (node.children === null || node.children === 'null' || node.children && !node.children.length) {
+      if (node.children === null || node.children === 'null' || (node.children && !node.children.length)) {
         delete node.children
       }
       return {
@@ -305,7 +346,7 @@ export default {
     },
     // 上移
     up(index) {
-      if (index === 0) {
+      if (index === 0 || index === 2) {
         return
       } else {
         const data = this.arrayData[index]
@@ -351,6 +392,7 @@ export default {
     fetchData() {
       getActivity({ id: this.activityId }).then(res => {
         const resData = res.data
+        console.log(resData, 'resData')
         this.status = resData.status
         this.formObj.activityName = resData.activityName
         this.formObj.headImage = resData.headImage
@@ -395,6 +437,8 @@ export default {
         this.formObj.signNeedCard = resData.signNeedCard
         this.formObj.cardShowType = resData.cardShowType
         this.formObj.cardInfoType = resData.cardInfoType
+        // 是否支持代报名
+        this.formObj.canReplaceApply = resData.canReplaceApply
         this.formObj.labels = resData.labels
         this.formObj.arriveType = resData.arriveType
         this.formObj.linkType = resData.linkType || 1
@@ -480,7 +524,15 @@ export default {
         // 动态字段回显
         // this.arrayData = resData.dtos.map(({title, msgAlert, lengthLimit, check}) => ({title, msgAlert, lengthLimit, check}));
 
-        this.arrayData = resData.dtos.map(({ title, msgAlert, lengthLimit, check, type, selects, key }) => ({ title, msgAlert, lengthLimit, check, type, selects, key }))
+        this.arrayData = resData.dtos.map(({ title, msgAlert, lengthLimit, check, type, selects, key }) => ({
+          title,
+          msgAlert,
+          lengthLimit,
+          check,
+          type,
+          selects,
+          key
+        }))
         this.arrayData.forEach(v => {
           //  0 : 输入框  1：下拉框
           if (+v.type === 1) {
@@ -517,9 +569,7 @@ export default {
 
     // 上传图片校验
     beforeUpload(file) {
-      if (file.type !== 'image/jpeg' &&
-        file.type !== 'image/jpg' &&
-        file.type !== 'image/png') {
+      if (file.type !== 'image/jpeg' && file.type !== 'image/jpg' && file.type !== 'image/png') {
         this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
         return false
       }
@@ -702,7 +752,9 @@ export default {
         case '2':
           // 如果选择了自定义报名 但是没有选择自定义报名信息 就返回提示
           if (+this.formObj.signType === 0 && !this.arrayData.length) {
-            return this.$message.error('自定义报名表需添加报名信息才可以发布活动，若无需自定义报名表，请选择【一键报名】')
+            return this.$message.error(
+              '自定义报名表需添加报名信息才可以发布活动，若无需自定义报名表，请选择【一键报名】'
+            )
           }
           this.activeName = '3'
           break
@@ -771,7 +823,7 @@ export default {
 
       return res
     },
-    save(e) {
+    save: throttle(function (e) {
       this.formObj.isPublish = e
 
       // 扩展功能
@@ -847,6 +899,8 @@ export default {
       if (this.formObj.cardShow === 0) {
         params.cardShowType = 0
       }
+      // 代报名
+      params.canReplaceApply = this.formObj.canReplaceApply
       delete params.cardShow
       console.log('params', params)
       createActivity(params).then(res => {
@@ -862,7 +916,7 @@ export default {
           this.$message.error(res.msg)
         }
       })
-    },
+    }),
     cancel() {
       this.$router.push({
         name: '活动列表',
@@ -894,9 +948,7 @@ export default {
     onselect(e) {
       const myLatLng = this.createZuoBiao(this.formObj.latitude, this.formObj.longitude)
       // 更新地图中心位置
-      this.defaultParams.map.setCenter(
-        new TMap.LatLng(this.formObj.latitude, this.formObj.longitude)
-      )
+      this.defaultParams.map.setCenter(new TMap.LatLng(this.formObj.latitude, this.formObj.longitude))
       // 初始化marker 清除数据
       if (this.defaultParams.marker) {
         this.defaultParams.marker.setMap(null)
@@ -911,7 +963,7 @@ export default {
             width: 25, // 点标记样式宽度（像素）
             height: 35, // 点标记样式高度（像素）
             anchor: { x: 16, y: 32 },
-            src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png', // 图片路径
+            src: 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png' // 图片路径
           })
         },
         geometries: [
@@ -919,7 +971,8 @@ export default {
             id: '1', // 点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
             styleId: 'myStyle', // 指定样式id
             position: myLatLng, // 点标记坐标位置
-            properties: {// 自定义属性
+            properties: {
+              // 自定义属性
               title: 'marker'
             }
           }
@@ -931,8 +984,10 @@ export default {
       this.defaultParams.infowindow = new TMap.InfoWindow({
         position: myLatLng, // 显示信息窗口的坐标
         map: this.defaultParams.map,
-        content: `<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址:${e.province}${e.city}${e.district || ''}</p>`, // 信息窗口内容
-        offset: { x: 0, y: -50 },
+        content: `<h3 style="margin-top:-19px;">${e.title}</h3><p style="margin-top:-18px;">地址:${e.province}${
+          e.city
+        }${e.district || ''}</p>`, // 信息窗口内容
+        offset: { x: 0, y: -50 }
       })
     },
 
@@ -940,25 +995,27 @@ export default {
     async initMap() {
       const myLatLng = this.createZuoBiao(this.formObj.latitude, this.formObj.longitude)
 
-      this.defaultParams.map = new TMap.Map(this.$refs.mapBox, { // 实例化地图，赋值给data中的map
+      this.defaultParams.map = new TMap.Map(this.$refs.mapBox, {
+        // 实例化地图，赋值给data中的map
         center: myLatLng, // 目前的位置
         zoom: 17.2, // 设置地图缩放级别
         rotation: 20, // 设置地图旋转角度
-        pitch: 30, // 设置俯仰角度（0~45）
+        pitch: 30 // 设置俯仰角度（0~45）
       })
 
       // 新建一个关键字输入提示类
       this.defaultParams.suggest = new TMap.service.Suggestion({
-        pageSize: 20, // 返回结果每页条目数
+        pageSize: 20 // 返回结果每页条目数
       })
     },
     // 调用腾讯接口获取地址信息
     ongetSuggestions(value) {
       this.addressList = []
-      this.defaultParams.suggest.getSuggestions({
-        keyword: value,
-        location: this.defaultParams.map.getCenter()
-      })
+      this.defaultParams.suggest
+        .getSuggestions({
+          keyword: value,
+          location: this.defaultParams.map.getCenter()
+        })
         .then(result => {
           this.addressList = result.data || []
         })
@@ -974,11 +1031,7 @@ export default {
       tempVal.forEach(item => {
         if (!this.activityId || typeof item.id === 'number') delete item.id
         delete item.activityId
-        item.isChamber = item.chamberGuestsId
-          ? item.chamberGuestsId !== '0'
-            ? 0
-            : 1
-          : item.isChamber
+        item.isChamber = item.chamberGuestsId ? (item.chamberGuestsId !== '0' ? 0 : 1) : item.isChamber
         if (item.chamberGuestsId === '1') delete item.chamberGuestsId
         if (this.$store.getters.ckey) item.ckey = this.$store.getters.ckey
       })
@@ -993,14 +1046,37 @@ export default {
     // 上传文件校验
     beforeUploadFile(file) {
       const rule = file.name.split('.')
-      if (!rule.length > 0) { this.$message.error('上传格式错误'); return }
+      if (!rule.length > 0) {
+        this.$message.error('上传格式错误')
+        return
+      }
       const type = rule.length && rule[rule.length - 1]
-      if (!['docx', 'doc', 'xls', 'xlsx', 'pdf', 'ppt', 'bmp', 'BMP', 'jpg', 'JPG', 'png', 'PNG', 'jpeg', 'JPEG'].includes(type)) {
+      if (
+        ![
+          'docx',
+          'doc',
+          'xls',
+          'xlsx',
+          'pdf',
+          'ppt',
+          'bmp',
+          'BMP',
+          'jpg',
+          'JPG',
+          'png',
+          'PNG',
+          'jpeg',
+          'JPEG'
+        ].includes(type)
+      ) {
         this.$message.error('上传文件只能是 word、excel、pdf、ppt、bmp、jpg、png、jpeg格式!')
         return false
       }
       // 大小限制30M
-      if (file.size / 1024 / 1024 > 30) { this.$message.error('上传文件大于30M！'); return false }
+      if (file.size / 1024 / 1024 > 30) {
+        this.$message.error('上传文件大于30M！')
+        return false
+      }
     },
     onExceed() {
       this.$message.error('不能大于9个文件')
@@ -1027,6 +1103,6 @@ export default {
     // 删除上传文件
     handleRemoveAttachment(file) {
       this.formObj.attachment = this.formObj.attachment.filter(item => item.uid !== file.uid)
-    },
+    }
   }
 }
