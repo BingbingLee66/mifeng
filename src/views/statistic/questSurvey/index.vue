@@ -52,7 +52,17 @@ export default {
   data() {
     return {
       // 数据定义列表
-      defineList: statisticsList.map(i => { return { ...i, val: 3 } }),
+      defineList: {
+        questionnaireSum: { title: '累计发布问卷', name: 'questionnaireSum', val: 0 },
+        platformQuestionnaireSum: { title: '平台发布问卷', name: 'platformQuestionnaireSum', val: 0 },
+        chamberQuestionnaireSum: { title: '商协会发布问卷', name: 'questionnaireSum', val: 0 },
+        recycleAnswerSum: { title: '累计回收答卷', name: 'recycleAnswerSum', val: 0 },
+        platformRecycleAnswerSum: { title: '平台回收答卷', name: 'platformRecycleAnswerSum', val: 0 },
+        chamberRecycleAnswerSum: { title: '商协会回收答卷', name: 'chamberRecycleAnswerSum', val: 0 },
+        overrideUserSum: { title: '覆盖人数', name: 'overrideUserSum', val: 0 },
+        covererAssociationSum: { title: '覆盖商协会', name: 'covererAssociationSum', val: 0 },
+
+      },
       tabList: [
         { l: '总览', n: 'statistic' },
         { l: '问卷', n: 'quest' }
