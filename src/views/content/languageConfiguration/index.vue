@@ -27,7 +27,7 @@
         <span v-if="tabsIndex != '4' && row.data.status == 1" class="text-blue cur ml-10" @click="handleEvent('freeze', row.data)">冻结</span>
         <span v-if="tabsIndex != '4' && row.data.status == 0" class="text-yellow cur ml-10" @click="handleEvent('start', row.data)">启用</span>
         <span v-if="tabsIndex != '4' " class="text-yellow cur ml-10" @click="handleEvent('delete', row.data)">删除</span>
-        <span v-if="tabsIndex == '4' && row.data.status !== 0" class="text-yellow cur ml-10" @click="handleEvent('delete', row.data)">删除</span>
+        <span v-if="tabsIndex == '4' && row.data.status !== 1" class="text-yellow cur ml-10" @click="handleEvent('delete', row.data)">删除</span>
       </template>
     </ysh-table>
 
