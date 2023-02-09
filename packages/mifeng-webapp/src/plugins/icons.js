@@ -7,7 +7,6 @@ export default {
     const files = require.context('@ant-design/icons-vue', false, /\.js$/, 'lazy')
     files
       .keys()
-      .filter(v => v.includes('@ant-design'))
       .forEach(key => {
         const arr = key.split('/')
         const type = arr[arr.length - 1].replace('.js', '')
