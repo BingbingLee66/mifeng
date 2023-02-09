@@ -95,7 +95,7 @@ export default {
         { name: '入会专属二维码_保存图片', vale: 'unionizeQrCodeAddSum', },
       ],
       moduleList19: [
-        { name: '总点击数', vale: 'total', }, { name: '【问卷管理2级菜单】点击', vale: 'secondLevelMenuHitsSum', },
+        { name: '总点击数', vale: 'total', }, { name: '【问卷管理菜单】点击', vale: 'secondLevelMenuHitsSum', },
         { name: '【创建问卷】按钮点击', vale: 'createdButton', }, { name: '【分享】按钮点击', vale: 'shareButton', },
         { name: '【编辑】按钮点击', vale: 'editButton', }
       ],
