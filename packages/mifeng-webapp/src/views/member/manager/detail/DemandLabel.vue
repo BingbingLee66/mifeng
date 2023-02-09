@@ -24,10 +24,8 @@ import { defineComponent, onMounted, ref } from 'vue'
 import { useAntTable } from '@/use/useAntTable'
 import Labels from '@/api/labels/labels'
 import { useRoute } from 'vue-router'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 
 export default defineComponent({
-  components: { PlusTable },
   setup() {
     const columns = [
       { title: '标签', dataIndex: 'name' },

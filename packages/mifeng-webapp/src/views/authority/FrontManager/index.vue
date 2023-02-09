@@ -42,8 +42,7 @@ import { Modal } from 'ant-design-vue'
 import { getMemberPermissionsList, deleteMemberPermission, setMemberPermissions } from '@/api/authority/front-manager'
 export default {
   components: {
-    MemberDialog: defineAsyncComponent(() => import('./components/MemberDialog.vue')),
-    PlusTable: defineAsyncComponent(() => import('@/components/plusTable/PlusTable.vue'))
+    MemberDialog: defineAsyncComponent(() => import('./components/MemberDialog.vue'))
   },
   setup() {
     const memberDialogVisible = ref(false)

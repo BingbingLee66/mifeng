@@ -54,7 +54,6 @@ import { useAntTable } from '@/use/useAntTable/index'
 import { ARTICLE_STATUS } from '../../../../constant/content'
 import { useDrag } from '@/use/useTableDrag'
 import dayjs from 'dayjs'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 const columns = [
   {
     title: '排序',
@@ -70,7 +69,6 @@ const columns = [
   { title: '操作', key: 'handle', width: 150, fixed: 'right' }
 ]
 export default defineComponent({
-  components: { PlusTable },
   setup() {
     const ckey = inject('ckey')
     const tableData = ref([])

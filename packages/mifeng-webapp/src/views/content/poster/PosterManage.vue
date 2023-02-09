@@ -56,7 +56,6 @@ import { deletePoster } from '@/api/content/poster'
 import { usePosterList } from '@/views/content/poster/usePoster'
 import { POSTER_STATUS_TEXT_MAP } from '@/constant/poster'
 import { PlusOutlined } from '@ant-design/icons-vue'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 const POSTER_STATUS_BADGE_MAP = new Map([
   [0, 'success'],
   [1, 'error']

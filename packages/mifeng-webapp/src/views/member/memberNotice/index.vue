@@ -55,7 +55,6 @@
   </a-modal>
 </template>
 <script setup>
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { inject, ref, reactive, onUnmounted } from 'vue'
 import { Message } from 'ant-design-vue'
 import { useAntTable } from '@/use/useAntTable'

@@ -92,7 +92,6 @@ import { getMapDict } from '@/utils'
 import DetailModal from './modal/DetailModal.vue'
 import RejectModal from './modal/RejectModal.vue'
 import { openModal } from '@/hooks/useModal'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 /**
  * modal 组件显示、隐藏处理
  */
@@ -119,7 +118,7 @@ function useOpenModal() {
 }
 
 export default defineComponent({
-  components: { DetailModal, RejectModal, PlusTable },
+  components: { DetailModal, RejectModal },
   setup() {
     const { AUDIT_STATUS_MAP } = useConstant
     const auditStatusOptions = getMapDict(AUDIT_STATUS_MAP)

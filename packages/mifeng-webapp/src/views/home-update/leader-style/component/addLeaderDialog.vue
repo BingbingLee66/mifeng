@@ -66,16 +66,13 @@
   </a-modal>
 </template>
 <script>
-import { computed, watch, reactive, getCurrentInstance, defineComponent, ref, defineAsyncComponent, inject } from 'vue'
+import { computed, watch, reactive, getCurrentInstance, defineComponent, ref, inject } from 'vue'
 import { getChamberContentList } from '@/api/content/article'
 import { useAntTable } from '@/use/useAntTable'
 // import { useRowSelection } from '@/use'
 import Home from '@/api/home-config/Home'
 
 export default defineComponent({
-  components: {
-    PlusTable: defineAsyncComponent(() => import('@/components/plusTable/PlusTable.vue'))
-  },
   props: {
     editLeader: {
       type: Object,

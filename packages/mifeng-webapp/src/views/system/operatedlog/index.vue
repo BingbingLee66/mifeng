@@ -12,7 +12,6 @@
 </template>
 
 <script setup>
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { ref, reactive, onMounted } from 'vue'
 import { useAntTable } from '@/use/useAntTable/index'
 import { getOperatedType, getLogList } from '@/api/system/operatedlog'

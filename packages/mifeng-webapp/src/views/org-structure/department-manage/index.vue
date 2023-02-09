@@ -43,9 +43,7 @@
 import { inject, reactive, ref, getCurrentInstance } from 'vue'
 import { useAntTable } from '@/use/useAntTable'
 import { getDepartmentList, saveDepartment, delDepartment } from '@/api/org-structure/org'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 export default {
-  components: { PlusTable },
   setup() {
     const tableObj = table()
     return {

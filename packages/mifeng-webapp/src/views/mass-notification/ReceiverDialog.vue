@@ -40,7 +40,6 @@
 </template>
 
 <script setup>
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { receiverInfoList, getChamberMemberList } from '@/api/mass-notification'
 
 import { useAntTable } from '@/use/useAntTable'

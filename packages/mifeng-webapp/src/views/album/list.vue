@@ -34,10 +34,8 @@ import { defineComponent, reactive, ref, inject, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAlbumList, deleteAlbum, auditAlbum } from '@/api/album'
 import { UPDATE_TYPE_OPTIONS, ALBUM_TYPES_LIST } from './constant'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 export default defineComponent({
   name: 'AlbumList',
-  components: { PlusTable },
   setup() {
     const tableFilter = reactive({
       albumName: ''

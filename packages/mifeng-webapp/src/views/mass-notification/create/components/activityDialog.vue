@@ -26,7 +26,6 @@
 </template>
 <script>
 import { inject, ref, reactive, watch, computed } from 'vue'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { useAntTable } from '@/use/useAntTable'
 import { getActivityList } from '@/api/activity/activity'
 import { distributionChambers } from '@/api/mass-notification'
@@ -34,9 +33,6 @@ import { getInfoList, getInvesActivityList } from '@/api/attract/index'
 import { PUBLISH_STATUS_MAP, MEMBER_TYPE_MAP, NOTIFICATION_TYPE } from '@/constant/mass-notification'
 import dayjs from 'dayjs'
 export default {
-  components: {
-    PlusTable
-  },
   props: {
     // 2 普通活动 3招商活动
     activityType: {

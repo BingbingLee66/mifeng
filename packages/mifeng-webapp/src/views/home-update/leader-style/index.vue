@@ -48,8 +48,7 @@ import Home from '@/api/home-config/Home'
 
 export default {
   components: {
-    addLeader: defineAsyncComponent(() => import('./component/addLeaderDialog.vue')),
-    PlusTable: defineAsyncComponent(() => import('@/components/plusTable/PlusTable.vue'))
+    addLeader: defineAsyncComponent(() => import('./component/addLeaderDialog.vue'))
   },
   setup() {
     const ckey = inject('ckey')

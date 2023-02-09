@@ -11,13 +11,11 @@ import AddColumn from '../component/addColumn'
 import SetLevel from '../component/setLevel'
 import { Modal } from 'ant-design-vue'
 import { Column_STATUS } from '../../../constant/content'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { STATUS_POINT_MAP } from '@/constant/member'
 export default defineComponent({
   components: {
     AddColumn,
-    SetLevel,
-    PlusTable
+    SetLevel
   },
   setup() {
     const ArticleListCols = ref([
