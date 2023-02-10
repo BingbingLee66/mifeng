@@ -15,7 +15,7 @@
   </a-modal>
 </template>
 <script>
-import { ref, reactive, inject, defineAsyncComponent } from 'vue'
+import { ref, reactive, inject } from 'vue'
 import { getMemberOptions } from '@/api/member/post'
 import { useAntTable } from '@/use/useAntTable'
 import { getChoosedMemberList, addMemberPermission } from '@/api/authority/front-manager'
@@ -23,9 +23,6 @@ import { getDepartmentList } from '@/api/org-structure/org'
 import { message } from 'ant-design-vue'
 
 export default {
-  components: {
-    PlusTable: defineAsyncComponent(() => import('@/components/plusTable/PlusTable.vue'))
-  },
   setup(props, { emit }) {
     const ckey = inject('ckey')
     const { postOptions } = getOptions()

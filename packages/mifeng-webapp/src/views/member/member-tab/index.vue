@@ -97,7 +97,6 @@ import { useAntTable } from '@/use/useAntTable'
 import { CloseCircleOutlined } from '@ant-design/icons-vue'
 import { message, Modal } from 'ant-design-vue'
 import { cloneDeep } from 'lodash'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 
 function useTable() {
   const tableList = ref([])
@@ -285,7 +284,7 @@ function useTable() {
 }
 
 export default {
-  components: { CloseCircleOutlined, PlusTable },
+  components: { CloseCircleOutlined },
   setup() {
     const table = useTable()
 

@@ -112,7 +112,6 @@
 <script setup>
 import { ref, reactive, computed, defineAsyncComponent } from 'vue'
 import dayjs from 'dayjs'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { message, Modal } from 'ant-design-vue'
 import { sendList, distributionChambers, exportSendItem, deleteSendItem } from '@/api/mass-notification'
 import {

@@ -43,9 +43,7 @@ import { useAntTable } from '@/use/useAntTable'
 import { getList, save, del, postNameExistValid } from '@/api/member/post'
 import { useRouter } from 'vue-router'
 import { Modal } from 'ant-design-vue'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 export default {
-  components: { PlusTable },
   setup() {
     const tableObj = table()
     return {

@@ -59,7 +59,6 @@
 </template>
 
 <script>
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { defineAsyncComponent, defineComponent, inject, ref, reactive } from 'vue'
 import { message, Modal } from 'ant-design-vue'
 import { useAntTable } from '@/use/useAntTable'
@@ -174,8 +173,7 @@ function useDelHotDeman(cb = () => {}) {
 
 export default defineComponent({
   components: {
-    InputModal: defineAsyncComponent(() => import('@/components/InputModal')),
-    PlusTable
+    InputModal: defineAsyncComponent(() => import('@/components/InputModal'))
   },
   setup() {
     const table = useTable()

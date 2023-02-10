@@ -32,7 +32,6 @@
 </template>
 
 <script setup>
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { ref, reactive, onMounted, inject } from 'vue'
 import { useAntTable } from '@/use/useAntTable/index'
 import ImageUpLoad from '@/components/upload/image-uploader'

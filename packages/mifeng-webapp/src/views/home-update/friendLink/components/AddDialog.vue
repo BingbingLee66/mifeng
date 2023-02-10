@@ -25,15 +25,12 @@
   </a-modal>
 </template>
 <script>
-import { defineAsyncComponent, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { getChamberData, addFriendLinks } from '@/api/home/friendLink'
 import { useAntTable } from '@/use/useAntTable'
 import { message } from 'ant-design-vue'
 
 export default {
-  components: {
-    PlusTable: defineAsyncComponent(() => import('@/components/plusTable/PlusTable.vue'))
-  },
   setup(props, { emit }) {
     const tableData = ref([])
     const tableFilter = ref({
