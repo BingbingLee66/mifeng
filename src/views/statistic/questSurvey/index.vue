@@ -204,6 +204,9 @@ export default {
     },
     // 拉取时间轴数据
     async getTimelineOverview() {
+      if (this.dateValue === null) {
+        this.dateValue = []
+      }
       // 有自定义时间就按自定义，没有就取activeDay
       const startTime = this.dateValue.length > 0 ? dayjs(this.dateValue[0]).format('YYYY-MM-DD') : dayjs().subtract(this.activeDay, 'day').format('YYYY-MM-DD')
       const endTime = this.dateValue.length > 0 ? dayjs(this.dateValue[1]).format('YYYY-MM-DD') : dayjs().subtract(1, 'day').format('YYYY-MM-DD')
