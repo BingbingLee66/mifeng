@@ -37,7 +37,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="close">关 闭</el-button>
-        <template v-if="detail.auditStatus === 0">
+        <template v-if="detail.auditStatus === 0 && row.data.type !== 6">
           <el-button type="success" @click="pass">通 过</el-button>
           <el-button type="danger" @click="reject">拒 绝</el-button>
         </template>
