@@ -1,4 +1,4 @@
-FROM node:12.22.1-alpine as build
+FROM node:14-alpine as build
 WORKDIR /usr/src/app
 COPY package.json ./
 ENV SASS_BINARY_SITE=http://npm.taobao.org/mirrors/node-sass

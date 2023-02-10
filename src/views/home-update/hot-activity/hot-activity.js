@@ -8,7 +8,7 @@ import {
 
 export default {
   data() {
-    var checkNumber = (rule, value, callback) => {
+    const checkNumber = (rule, value, callback) => {
       if (!/^([0-9]{0,3})$/.test(value)) {
         return callback(new Error('必须是0-999的整数'))
       } else {
@@ -28,7 +28,7 @@ export default {
         activityStatus: -1,
         isPublish: -1,
         ckey: '',
-        isAdd: 0,
+        isAdd: 0
       },
       // 可添加活动
       actList: [],
@@ -44,7 +44,7 @@ export default {
         activityStatus: -1,
         isPublish: -1,
         ckey: '',
-        isAdd: 1,
+        isAdd: 1
       },
       actIdsList: [],
       selectionDatas: [],
@@ -68,7 +68,7 @@ export default {
       actLoading: false,
       showSortDialog: false,
       showAddDialog: false,
-      previewImgVisible: false,
+      previewImgVisible: false
     }
   },
   created() {
@@ -83,13 +83,13 @@ export default {
       return this.$store.getters.getId({ tabName, actionName })
     },
     handleInput(e) {
-      let regexp = /^[1-9]\d*$/
+      const regexp = /^[1-9]\d*$/
       if (!regexp.test(e)) {
         this.query.activityId = ''
       }
     },
     handleInput2(e) {
-      let regexp = /^[1-9]\d*$/
+      const regexp = /^[1-9]\d*$/
       if (!regexp.test(e)) {
         this.actquery.activityId = ''
       }
@@ -100,15 +100,15 @@ export default {
         this.currentpage = 1
       }
       this.listLoading = true
-      let params = {
-        'activityId': this.query.activityId,
-        'activityName': this.query.activityName,
-        'activityStatus': this.query.activityStatus,
-        'ckey': this.query.ckey,
-        'isPublish': this.query.isPublish,
-        'isAdd': this.query.isAdd,
-        'page': this.currentpage,
-        'pageSize': this.limit,
+      const params = {
+        activityId: this.query.activityId,
+        activityName: this.query.activityName,
+        activityStatus: this.query.activityStatus,
+        ckey: this.query.ckey,
+        isPublish: this.query.isPublish,
+        isAdd: this.query.isAdd,
+        page: this.currentpage,
+        pageSize: this.limit
       }
       getHotActivityList(params).then(res => {
         this.list = res.data.list
@@ -142,14 +142,14 @@ export default {
     },
     getActivityLists() {
       this.actLoading = true
-      let params = {
-        'page': this.actPage.page,
-        'pageSize': this.actPage.pageSize,
-        'activityName': this.actquery.activityName,
-        'activityId': this.actquery.activityId,
-        'ckey': this.actquery.ckey,
-        'activityStatus': this.actquery.activityStatus,
-        'isAdd': this.actquery.isAdd,
+      const params = {
+        page: this.actPage.page,
+        pageSize: this.actPage.pageSize,
+        activityName: this.actquery.activityName,
+        activityId: this.actquery.activityId,
+        ckey: this.actquery.ckey,
+        activityStatus: this.actquery.activityStatus,
+        isAdd: this.actquery.isAdd
       }
       getHotActivityList(params).then(res => {
         console.log('可添加活动列表：', res)
@@ -170,9 +170,9 @@ export default {
     },
     // 添加热门活动
     handleAllSelectionChange(value) {
-      let datas = value
+      const datas = value
       this.actIdsList = []
-      for (let data of datas) {
+      for (const data of datas) {
         this.actIdsList.push(data.id)
       }
     },
@@ -194,33 +194,35 @@ export default {
     },
     // 移除热门活动
     showdel(row) {
-      let delIds = []
+      const delIds = []
       delIds.push(row.id)
       this.$confirm('', '确定移除？', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
-      }).then(() => {
-        delHotActivity(delIds).then(res => {
-          if (res.state === 1) {
-            this.$message({
-              message: '移除成功',
-              type: 'success'
-            })
-            this.fetchData()
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消移除'
-        })
       })
+        .then(() => {
+          delHotActivity(delIds).then(res => {
+            if (res.state === 1) {
+              this.$message({
+                message: '移除成功',
+                type: 'success'
+              })
+              this.fetchData()
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消移除'
+          })
+        })
     },
     // 批量移除
     handleSelectionChange(value) {
-      let datas = value
+      const datas = value
       this.selectionDatas = []
-      for (let data of datas) {
+      for (const data of datas) {
         this.selectionDatas.push(data.id)
       }
     },
@@ -231,22 +233,24 @@ export default {
       this.$confirm('', '确定移除？', {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
-      }).then(() => {
-        delHotActivity(this.selectionDatas).then(res => {
-          if (res.state === 1) {
-            this.$message({
-              message: '移除成功',
-              type: 'success'
-            })
-            this.fetchData()
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消移除'
-        })
       })
+        .then(() => {
+          delHotActivity(this.selectionDatas).then(res => {
+            if (res.state === 1) {
+              this.$message({
+                message: '移除成功',
+                type: 'success'
+              })
+              this.fetchData()
+            }
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消移除'
+          })
+        })
       /* delHotActivity(this.selectionDatas).then(res => {
         if (res.state === 1) {
           this.fetchData()
@@ -260,7 +264,7 @@ export default {
       this.showSortDialog = true
     },
     updateSort(sortForm) {
-      this.$refs[sortForm].validate((valid) => {
+      this.$refs[sortForm].validate(valid => {
         if (valid) {
           updateHotActivitySort(this.sortForm).then(response => {
             if (response.state === 1) {
