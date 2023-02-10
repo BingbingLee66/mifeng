@@ -2,7 +2,7 @@
   <panel>
     <div class="flex">
       <div>
-        <img class="user-avatar" :src="userInfo.systemlogo" />
+        <img class="user-avatar" :src="userInfo.systemlogo || 'https://ysh-cdn.kaidicloud.com/prod/ysh/avatar.png'" />
         <div class="user-info mt-10">
           <UserOutlined class="mr2" style="font-size: 20px; color: #1890ff" />
           {{ userInfo.name }}

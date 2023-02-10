@@ -12,7 +12,7 @@
       <a-dropdown class="username">
         <div>
           <img v-if="userInfo.systemlogo" class="avatar" :src="userInfo.systemlogo" />
-          <img v-else class="avatar" src="@/assets/imgs/commons/default-avatar.png" />
+          <img v-else class="avatar" src="https://ysh-cdn.kaidicloud.com/prod/ysh/avatar.png" />
           {{ userInfo.name }}
         </div>
         <template #overlay>
