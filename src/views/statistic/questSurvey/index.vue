@@ -113,14 +113,14 @@ export default {
           text: ''
         },
         tooltip: {},
-        legend: {
-          data: ['销量'],
-          orient: 'horizontal',
+        // legend: {
+        //   data: ['销量'],
+        //   orient: 'horizontal',
 
-          x: 'right',
-          y: ' center',
-          padding: [0, 100, 0, 0]
-        },
+        //   x: 'right',
+        //   y: ' center',
+        //   padding: [0, 100, 0, 0]
+        // },
         xAxis: {
           data: this.xData,
           axisTick: {
