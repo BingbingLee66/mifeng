@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 登录
 export const login = params => {
   return request({
-    url: '/ecservice/crmapi/user/login',
+    url: '/ecservice/user/login',
     params,
     method: 'post'
   })
