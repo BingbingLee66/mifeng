@@ -8,7 +8,7 @@
       <div class="board flex-x">
         <div v-for="(item,index) in defineList" :key="index" :style="{'border-right':(index+1)%3===0 ? '' :'1px solid #E8E8E8FF'}" class="board-item">
           <div class="title">{{ item.title }}</div>
-          <div>{{ item.val }}</div>
+          <div>{{ num(item.val) }}</div>
         </div>
       </div>
 
@@ -28,7 +28,7 @@
       <div class="indicator flex-x">
         <span>指标筛选：</span>
         <div v-for="item in statisticsList" :key="item.id">
-          <div v-if="item.id!==7 &&item.id!=8" :class="[item.id===indicator ? 'indicator-active':'','indicator-item']" @click="checkIndicator(item.id)">{{ item.title }}</div>
+          <div v-if="item.id!==7 &&item.id!=8" :class="[item.id===indicator ? 'indicator-active':'','indicator-item']" @click="checkIndicator(item.id)">{{ item.id===4 ?'覆盖人次':item.title }}</div>
         </div>
 
       </div>
@@ -82,6 +82,13 @@ export default {
       dateValue: [],
       xData: [],
       yData: []
+    }
+  },
+  computed: {
+    num() {
+      return function (val) {
+        return val > 9999 ? (val / 10000).toFixed(2) + '万' : val
+      }
     }
   },
   watch: {
