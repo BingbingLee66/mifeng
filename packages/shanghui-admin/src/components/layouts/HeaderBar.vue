@@ -8,7 +8,7 @@
       </a-badge>
 
       <img class="chamber-icon" src="https://ysh-cdn.kaidicloud.com/prod/bee/chamber-icon.png" alt="" />
-      <span class="chamber-name">{{ userInfo.chambername }}</span>
+      <span class="chamber-name">{{ userInfo.chamberName || '凯迪云商会总后台管理系统' }}</span>
       <a-dropdown class="username">
         <div>
           <img v-if="userInfo.systemlogo" class="avatar" :src="userInfo.systemlogo" />
