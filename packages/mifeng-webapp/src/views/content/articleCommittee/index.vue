@@ -34,6 +34,7 @@
 </template>
 
 <script setup>
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { ref, reactive, onMounted, inject, getCurrentInstance } from 'vue'
 import { useAntTable } from '@/use/useAntTable/index'
 import { getChamberContentList, updateStatus, getDetail, del } from '@/api/content/article'

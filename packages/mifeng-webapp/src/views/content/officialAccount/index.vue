@@ -72,6 +72,7 @@
 import { useAntTable } from '@/use/useAntTable'
 import { inject, ref } from 'vue'
 import agreement from './component/agreement'
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { Modal } from 'ant-design-vue'
 import {
   officialAccountList,
@@ -262,7 +263,7 @@ function authorization() {
   return { agreements, onBinding, onSave, isShow, type, handleClose, qrCode }
 }
 export default {
-  components: { agreement },
+  components: { PlusTable, agreement },
 
   setup() {
     const { type, ...authInfo } = authorization()

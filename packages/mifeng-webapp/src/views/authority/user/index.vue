@@ -64,8 +64,10 @@ import { getOptions } from '@/api/authority/manager'
 import { useAntTable } from '@/use/useAntTable'
 import { checkUserName, checkPassword, checkName, checkCkey } from './validator'
 import { ref, reactive, inject, getCurrentInstance } from 'vue'
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 
 export default {
+  components: { PlusTable },
   setup() {
     const columns = [
       { title: '序号', dataIndex: 'key' },

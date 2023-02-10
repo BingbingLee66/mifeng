@@ -66,6 +66,7 @@
 </template>
 
 <script setup>
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { inject, ref, reactive } from 'vue'
 
 import { useAntTable } from '@/use/useAntTable'

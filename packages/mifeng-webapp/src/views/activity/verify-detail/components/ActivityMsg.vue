@@ -71,15 +71,17 @@
         <div>
           <div class="board-title">签到/签退码</div>
           <div class="flex-x-between-center">
-            <div v-for="(item, i) of codeList" :key="i" class="qr-code-wrap flex-y-center-center">
-              <img
-                class="qr-code"
-                :src="activity[item.codeKey]"
-                @click="downloadFile({ url: activity[item.codeKey], title: item.title })"
-              />
-              <a-button type="link" @click="downloadFile({ url: activity[item.codeKey], title: item.title })">
-                下载{{ item.title }}
-              </a-button>
+            <div v-for="(item, i) of codeList" :key="i">
+              <div class="qr-code-wrap flex-y-center-center" v-show="activity[item.codeKey]">
+                <img
+                  class="qr-code"
+                  :src="activity[item.codeKey]"
+                  @click="downloadFile({ url: activity[item.codeKey], title: item.title })"
+                />
+                <a-button type="link" @click="downloadFile({ url: activity[item.codeKey], title: item.title })">
+                  下载{{ item.title }}
+                </a-button>
+              </div>
             </div>
           </div>
         </div>

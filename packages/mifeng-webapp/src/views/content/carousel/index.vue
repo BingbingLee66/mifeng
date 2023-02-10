@@ -24,6 +24,7 @@ import { useAntTable } from '@/use/useAntTable'
 import { getBannerImgList, delBanner, dragBannerImg } from '@/api/content/bannerImg'
 import { useRouter } from 'vue-router'
 import { BANNER_DETAIL } from '@/constant'
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 // 表格相关
 function useTable() {
   const ckey = inject('ckey')
@@ -52,6 +53,9 @@ function useTable() {
 }
 
 export default defineComponent({
+  components: {
+    PlusTable
+  },
   setup() {
     const router = useRouter()
     const table = useTable()

@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { defineComponent, ref, getCurrentInstance, reactive } from 'vue'
 import { useAntTable } from '@/use/useAntTable/index'
 import { officialAccountArticleList } from '@/api/content/officialAccount'
@@ -44,6 +45,9 @@ const columns = [
   }
 ]
 export default defineComponent({
+  components: {
+    PlusTable
+  },
   emits: ['confirm'],
   props: {
     // 编辑的文章id

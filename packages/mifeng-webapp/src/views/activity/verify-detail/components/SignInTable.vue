@@ -187,6 +187,7 @@
 </template>
 <script>
 import { reactive, ref, computed, toRefs, watch } from 'vue'
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { statusList, seatList, SOURCE_TYPE_MAP } from '@/constant/activity'
 import { useAntTable } from '@/use/useAntTable'
 import { Modal, Upload, message } from 'ant-design-vue'
@@ -211,7 +212,7 @@ import {
   getCardDetail
 } from '@/api/activity/activity-verify-new'
 export default {
-  components: { AttachmentDetail },
+  components: { PlusTable, AttachmentDetail },
   props: {
     activity: {
       type: Object,

@@ -179,7 +179,7 @@ export default defineComponent({
       } else if (tableFilter.contentModuleId === CHAMBER_TAB.about) {
         const {
           data: { data }
-        } = await getAboutChamberList(pageOption)
+        } = await getAboutChamberList({ ...pageOption, contentModuleId: tableFilter.contentModuleId })
         loading.value = false
         tableData.value = data.list
         orgPageOption.pageSize = data.pageSize

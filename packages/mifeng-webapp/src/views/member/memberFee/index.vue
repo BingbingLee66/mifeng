@@ -73,6 +73,7 @@
 </template>
 
 <script setup>
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { MEMBER_YEARS_LIST } from '../constant.js'
 import { inject, ref, reactive, watch } from 'vue'
 import { Message, Modal } from 'ant-design-vue'

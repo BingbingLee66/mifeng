@@ -30,4 +30,11 @@
 :deep(.editor) {
   width: 100%;
 }
+// fix:菜单换行下拉框弹出遮挡
+:deep(.w-e-menu) {
+  z-index: auto !important;
+  .w-e-droplist {
+    z-index: 3 !important;
+  }
+}
 </style>

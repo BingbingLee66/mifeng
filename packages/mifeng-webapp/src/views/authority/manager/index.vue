@@ -41,8 +41,10 @@ import { getList, updateStatus, save, delRole } from '@/api/authority/manager'
 import { ref, inject, getCurrentInstance } from 'vue'
 import { message, Modal } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 
 export default {
+  components: { PlusTable },
   setup() {
     const columns = [
       { title: '序号', dataIndex: 'key' },

@@ -55,6 +55,7 @@ import { useInputModal } from '@/components/InputModal/hooks'
 export default {
   components: {
     AddDialog: defineAsyncComponent(() => import('./components/AddDialog.vue')),
+    PlusTable: defineAsyncComponent(() => import('@/components/plusTable/PlusTable.vue')),
     InputModal: defineAsyncComponent(() => import('@/components/InputModal/index.vue'))
   },
   setup() {

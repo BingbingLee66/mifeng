@@ -45,6 +45,7 @@ import { useRowSelection } from '@/use'
 import { getSupplyDemandList, addHotSupplyDemand } from '@/api/home-update'
 import { message } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 
 function useTable() {
   const tableFilter = {
@@ -121,6 +122,7 @@ function useTable() {
 }
 
 export default defineComponent({
+  components: { PlusTable },
   setup() {
     const table = useTable()
     const router = useRouter()

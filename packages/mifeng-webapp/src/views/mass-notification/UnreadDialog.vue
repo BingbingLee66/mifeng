@@ -24,6 +24,7 @@
 </template>
 
 <script setup>
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { unreadList, unreadRetry } from '@/api/mass-notification'
 import { ref, computed, reactive, watch } from 'vue'
 import { CHAMBER_MEMBER_COLUMNS } from '@/constant/mass-notification'

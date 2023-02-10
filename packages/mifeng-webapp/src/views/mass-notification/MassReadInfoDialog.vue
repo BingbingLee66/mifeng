@@ -33,6 +33,7 @@
 </template>
 
 <script setup>
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { sendDetailList, sendGetDetail } from '@/api/mass-notification'
 import { ref, computed, reactive, watch } from 'vue'
 import { READ_INFO_COLUMNS, READ_STATUS_MAP, READ_ADMIN_COLUMNS, RECEIVER_TYPE } from '@/constant/mass-notification'

@@ -1,7 +1,17 @@
 <template>
-  <PlusTable :columns="columns" :data-source="tableData" row-key="id" :pagination="false" :loading="loading">
+  <PlusTable
+    :columns="columns"
+    :data-source="tableData"
+    row-key="id"
+    :pagination="pagination"
+    :loading="loading"
+    @change="handleTableChange"
+  >
     <template #toolBar>
-      <a-button class="ml20" type="primary" @click="showAddLeader"><plus-outlined />新增领导</a-button>
+      <a-button v-if="total < 1000" class="ml20" type="primary" @click="showAddLeader">
+        <plus-outlined />
+        新增领导
+      </a-button>
       <a-tooltip placement="topLeft">
         <template #title>
           <span>可设置小程序的商会主页是否使用此功能</span>
@@ -48,7 +58,8 @@ import Home from '@/api/home-config/Home'
 
 export default {
   components: {
-    addLeader: defineAsyncComponent(() => import('./component/addLeaderDialog.vue'))
+    addLeader: defineAsyncComponent(() => import('./component/addLeaderDialog.vue')),
+    PlusTable: defineAsyncComponent(() => import('@/components/plusTable/PlusTable.vue'))
   },
   setup() {
     const ckey = inject('ckey')
@@ -57,11 +68,11 @@ export default {
     const switchVisible = ref(false)
     const addLeaderVisible = ref(false)
     const leaderRecord = ref({})
-    const { fetchTableData, handleTableChange, loading } = useAntTable({
-      async fetchFn() {
+    const { fetchTableData, handleTableChange, loading, pagination, total } = useAntTable({
+      async fetchFn({ current, pageSize }) {
         const { data } = await Home.getLeaderList({
-          pageNum: 1,
-          pageSize: 100
+          page: current,
+          pageSize
         })
         tableData.value = data.list || []
         return { total: data.totalRows || 0 }
@@ -138,6 +149,8 @@ export default {
         { title: '操作', dataIndex: 'operate', align: 'center', width: 240, fixed: 'right' }
       ],
       tableData,
+      pagination,
+      total,
       fetchTableData,
       handleTableChange,
       loading,

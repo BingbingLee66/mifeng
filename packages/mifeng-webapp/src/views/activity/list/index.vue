@@ -93,6 +93,7 @@
   </InputModal>
 </template>
 <script>
+import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { useAntTable } from '@/use/useAntTable'
 import { ref, reactive, inject, computed } from 'vue'
 import { APPLY_OBJECT_MAP, PUBLISH_TYPE_MAP } from '@/constant/activity'
@@ -104,6 +105,7 @@ import { getActivityList, publishActivity, updateActivitySort, delActivity } fro
 import { downloadByBlob } from '../util'
 export default {
   components: {
+    PlusTable,
     InputModal
   },
   setup() {
