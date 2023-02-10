@@ -32,8 +32,8 @@ function traverseMenus(menus, parentPath = '') {
       children: menu.children,
       guideId: menu.guideId,
       hadGuide: menu.hadGuide,
-      // 是否跳转到外部链接
-      isExternal: menu.isExternal || true
+      // 是否是内部模块
+      isInner: menu.isInner
     }
     if (routeMenu.component) {
       routeMenu.component = pageMap[routeMenu.component] || pageMap[`${routeMenu.component}/index`]

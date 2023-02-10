@@ -76,7 +76,7 @@ export default defineComponent({
             window.open(res.data, '_blank')
           })
         } else {
-          if (menu.isExternal) {
+          if (!menu.isInner) {
             const { VUE_APP_BASE_URL, VUE_APP_BUILD_ENV } = process.env
             const isProd = VUE_APP_BUILD_ENV === 'production'
             window.location.href = `${VUE_APP_BASE_URL}${!isProd ? '/ecadmin' : ''}/#${menu.path}`
