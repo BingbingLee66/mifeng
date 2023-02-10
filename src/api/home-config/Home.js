@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 class Home {
-  /** 获取tab列表  */
+  /** 获取小程序的tab列表  */
   static async getTabList(params) {
     return await request({
       url: '/ec/tab',
@@ -9,7 +9,6 @@ class Home {
       params
     })
   }
-
   /** 编辑tab  */
   static async updateTab(data) {
     return await request({
@@ -84,7 +83,7 @@ class Home {
   /** 修改banner图顺序  */
   static async changeBannerOrder(data) {
     return request({
-      url: `/ec/banner/location/${data.bannerId}/${data.num}`,
+      url: `/ec/banner/location/${data.bannerId}/${data.num}?clientType=${data.clientType}`,
       method: 'put'
     })
   }
@@ -132,7 +131,6 @@ class Home {
       params
     })
   }
-
   /** 获取推荐内容 */
   static async getRecommendContent(params) {
     return await request({

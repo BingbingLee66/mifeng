@@ -26,6 +26,7 @@
           :maxlength="item.maxlength || ''"
           :show-word-limit="item.showWordLimit || false"
           :clearable="item.clearable || false"
+          :disabled="item.disabled || false"
         />
         <!-- intInput整数 -->
         <el-input
@@ -36,7 +37,7 @@
           :maxlength="item.maxlength || ''"
           :show-word-limit="item.showWordLimit || false"
           :clearable="item.clearable || false"
-          @input="(val) => checkInt(formData, item.prop, val)"
+          @input="val => checkInt(formData, item.prop, val)"
         />
         <!-- posInput正整数 -->
         <el-input
@@ -47,7 +48,7 @@
           :maxlength="item.maxlength || ''"
           :show-word-limit="item.showWordLimit || false"
           :clearable="item.clearable || false"
-          @input="(val) => checkPositive(formData, item.prop, val)"
+          @input="val => checkPositive(formData, item.prop, val)"
         />
         <!-- textarea -->
         <el-input
@@ -74,12 +75,7 @@
           :collapse-tags="item.collapseTags || false"
           @change="item.selectChange && handleSelectChange($event)"
         >
-          <el-option
-            v-for="option in item.options"
-            :key="option.value"
-            :label="option.label"
-            :value="option.value"
-          />
+          <el-option v-for="option in item.options" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
         <!-- cascader -->
         <el-cascader
@@ -125,50 +121,36 @@
             style="width: 150px; height: 150px"
             :src="formData[item.prop]"
           > -->
-          <i v-if="formData[item.prop]" class="el-icon-circle-close close-icon" @click.stop="formData[item.prop] = ''" />
+          <i
+            v-if="formData[item.prop]"
+            class="el-icon-circle-close close-icon"
+            @click.stop="formData[item.prop] = ''"
+          />
           <i
             v-else
-            style="width: 150px;
-              height: 150px;
-              font-size: 28px;
-              color: #8c939d;
-              line-height: 138px;
-              text-align: center;
-            "
+            style="width: 150px; height: 150px; font-size: 28px; color: #8c939d; line-height: 138px; text-align: center"
             class="el-icon-plus"
           />
         </el-upload>
         <div v-if="item.formTip">
-          <div v-for="(tips, index) in item.formTip" :key="index" style="color: #999;">
+          <div v-for="(tips, index) in item.formTip" :key="index" style="color: #999">
             {{ tips }}
           </div>
         </div>
       </el-form-item>
       <el-form-item v-if="formConfig.type === 'query'" label="">
-        <el-button type="primary" icon="el-icon-search" @click="query()">
-          查询
-        </el-button>
-        <el-button
-          v-if="!formConfig.hideReset"
-          type="warning"
-          icon="el-icon-refresh"
-          @click="reset()"
-        >
+        <el-button type="primary" icon="el-icon-search" @click="query()"> 查询 </el-button>
+        <el-button v-if="!formConfig.hideReset" type="warning" icon="el-icon-refresh" @click="reset()">
           重置
         </el-button>
       </el-form-item>
-      <el-form-item v-if="formConfig.type === 'submit'" label="" style="margin-top:40px;">
+      <el-form-item v-if="formConfig.type === 'submit'" label="" style="margin-top: 40px">
         <el-button v-dbClick type="primary" @click="submit">确定</el-button>
         <el-button @click="cancel">取消</el-button>
       </el-form-item>
       <slot name="customConetent" :data="formData" />
     </el-form>
-    <el-image-viewer
-      v-if="showViewer"
-      style="z-index: 99999"
-      :on-close="closeViewer"
-      :url-list="[viewerImage]"
-    />
+    <el-image-viewer v-if="showViewer" style="z-index: 99999" :on-close="closeViewer" :url-list="[viewerImage]" />
   </div>
 </template>
 
@@ -181,18 +163,18 @@ export default {
     // eslint-disable-next-line vue/require-default-prop
     formConfig: {
       type: Object,
-      value: () => {},
+      value: () => {}
     },
     // eslint-disable-next-line vue/require-default-prop
     formItem: {
       type: Array,
-      value: () => [],
+      value: () => []
     },
     // eslint-disable-next-line vue/require-default-prop
     formObj: {
       type: Object,
-      value: () => {},
-    },
+      value: () => {}
+    }
   },
 
   data() {
@@ -211,7 +193,7 @@ export default {
         }
       },
       immediate: true
-    },
+    }
   },
 
   created() {},
@@ -268,8 +250,8 @@ export default {
 
     closeViewer() {
       this.showViewer = false
-    },
-  },
+    }
+  }
 }
 </script>
 
@@ -289,6 +271,6 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  color: #FFCA00;
+  color: #ffca00;
 }
 </style>
