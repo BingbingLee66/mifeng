@@ -16,11 +16,6 @@ module.exports = {
     requireConfigFile: false,
     parser: '@babel/eslint-parser'
   },
-  babelOptions: {
-    parserOpts: {
-      plugins: ['jsx']
-    }
-  },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
