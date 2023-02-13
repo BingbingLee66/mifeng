@@ -65,7 +65,9 @@ export const NOTIFICATION_TYPE = {
   /** 自定义通知 */
   CUSTOM: 5,
   /** 节日海报 */
-  POSTER: 8
+  POSTER: 8,
+  /** 问卷调查 */
+  QUESTIONNAIRE: 9
 }
 export const NOTIFICATION_TYPE_MAP = new Map([
   [NOTIFICATION_TYPE.ALL, '全部'],
@@ -74,7 +76,8 @@ export const NOTIFICATION_TYPE_MAP = new Map([
   [NOTIFICATION_TYPE.INVESTMENT, '招商活动'],
   [NOTIFICATION_TYPE.INVITATION, '邀请入会'],
   [NOTIFICATION_TYPE.CUSTOM, '自定义通知'],
-  [NOTIFICATION_TYPE.POSTER, '节日海报']
+  [NOTIFICATION_TYPE.POSTER, '节日海报'],
+  [NOTIFICATION_TYPE.QUESTIONNAIRE, '问卷调查']
 ])
 // 通知类型options
 export const NOTICE_TYPE_OPTIONS = [
@@ -84,6 +87,7 @@ export const NOTICE_TYPE_OPTIONS = [
   { label: '招商活动', value: 3 },
   { label: '邀请入会', value: 4 },
   { label: '节日海报', value: 8 },
+  { label: '问卷调查', value: 9 },
   { label: '自定义通知', value: 5 }
 ]
 
@@ -95,13 +99,16 @@ export const RECEIVER_TYPE = {
   /** 指定部门 */
   DEPARMENT_SPECIFY: 3,
   /** 指定会员 */
-  MEMBER_SPECIFY: 4
+  MEMBER_SPECIFY: 4,
+  /** 非本会会员 指定手机号 */
+  PHONE_CUSTOM: 6
 }
 export const RECEIVER_TYPE_MAP = new Map([
   [RECEIVER_TYPE.MEMBER_SELF, '本商会会员'],
   [RECEIVER_TYPE.POSITION_SPECIFY, '指定职位'],
   [RECEIVER_TYPE.DEPARMENT_SPECIFY, '指定部门'],
-  [RECEIVER_TYPE.MEMBER_SPECIFY, '指定会员']
+  [RECEIVER_TYPE.MEMBER_SPECIFY, '指定会员'],
+  [RECEIVER_TYPE.PHONE_CUSTOM, '非本会会员']
 ])
 
 // 通知类型options

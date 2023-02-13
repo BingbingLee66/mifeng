@@ -173,7 +173,10 @@ watch(
   () => props.type,
   async val => {
     // 刷新表格
-    if ([RECEIVER_TYPE.POSITION_SPECIFY, RECEIVER_TYPE.DEPARMENT_SPECIFY].includes(props.type)) return
+    if (
+      [RECEIVER_TYPE.POSITION_SPECIFY, RECEIVER_TYPE.DEPARMENT_SPECIFY, RECEIVER_TYPE.PHONE_CUSTOM].includes(props.type)
+    )
+      return
     if (val) handlerSearch()
   },
   {

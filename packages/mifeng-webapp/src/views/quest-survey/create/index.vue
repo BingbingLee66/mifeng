@@ -225,7 +225,13 @@
         </template>
       </div>
     </div>
-    <Save_Dialog ref="saveDialog" :ckey="ckey" v-model:save-visible="showSaveDialog" :question-id="questionId" />
+    <Save_Dialog
+      ref="saveDialog"
+      :ckey="ckey"
+      v-model:save-visible="showSaveDialog"
+      :question-id="questionId"
+      :questionnaireTitle="questionnaireTitle"
+    />
   </a-card>
 </template>
 <script>

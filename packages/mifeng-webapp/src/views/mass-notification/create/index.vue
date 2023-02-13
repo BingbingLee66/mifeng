@@ -6,10 +6,28 @@
           <a-radio-group v-model:value="formState.type" :options="NOTICE_TYPE_OPTIONS_NOALL" />
         </a-form-item>
         <a-form-item label="通知对象">
-          <a-radio-group v-model:value="formState.receive" :options="RECEIVE_TYPE_OPTIONS" />
+          <template v-if="isQuestionnaire">
+            <a-radio-group
+              class="mt5"
+              :value="isPhoneCustom"
+              :options="[
+                { label: '本会会员', value: false },
+                { label: '非本会会员', value: true }
+              ]"
+              @change="formState.receive = $event.target.value ? RECEIVER_TYPE.PHONE_CUSTOM : RECEIVER_TYPE.MEMBER_SELF"
+            />
+            <br />
+            <a-radio-group v-if="!isPhoneCustom" v-model:value="formState.receive" :options="RECEIVE_TYPE_OPTIONS" />
+          </template>
+          <a-radio-group v-else v-model:value="formState.receive" :options="RECEIVE_TYPE_OPTIONS" />
         </a-form-item>
-        <!-- 接收人相关 -->
-        <div style="margin-top: -20px" class="mb20">
+        <div v-if="isPhoneCustom" style="margin-top: -20px" class="mb20">
+          <a-form-item label="接收号码" name="receiverList_phone" :rules="customPhoneRules">
+            <CustomPhones v-model:value="receiverList" v-model:type="formState.receiverList_phone_type" />
+          </a-form-item>
+        </div>
+        <!-- 接收人相关:本商会会员 -->
+        <div v-else style="margin-top: -20px" class="mb20">
           <!-- 指定职位 -->
           <div class="mt10" v-if="isPOSITION">
             <a-select
@@ -128,7 +146,6 @@
           <!-- 图片 -->
         </div>
         <!-- 节日海报选择 -->
-
         <div v-if="formState.type === NOTIFICATION_TYPE.POSTER" class="label-item">
           <div class="title-hd">节日海报选择 <span>(必填，配置会内通知"立即进入活动详情"跳转页) </span></div>
           <a-form-item label="节日海报" name="posterId" :rules="[{ required: true, message: '请选择节日海报' }]">
@@ -147,15 +164,31 @@
             />
           </a-form-item>
         </div>
+
+        <!-- 关联问卷选择 -->
+        <div v-if="isQuestionnaire" class="label-item">
+          <div class="title-hd">关联问卷</div>
+          <a-form-item name="questionnaire" :rules="[{ required: true, message: '请选择问卷' }]">
+            <a-tag
+              v-model:value="formState.questionnaire"
+              v-if="formState.questionnaire"
+              closable
+              @close="formState.questionnaire = null"
+            >
+              {{ formState.questionnaire.title }}
+            </a-tag>
+            <a-button type="primary" @click="questionnaireVisible = true">选择问卷</a-button>
+            <a-form-item-rest>
+              <QuestionnaireSelector v-model:value="formState.questionnaire" v-model:visible="questionnaireVisible" />
+            </a-form-item-rest>
+          </a-form-item>
+        </div>
+
         <!-- 同步渠道 -->
         <div class="title-hd">
           推送平台 <span> ( {{ isCustomNotice ? '选填' : '必填' }}，可多选) </span>
         </div>
-        <a-form-item
-          label=""
-          name="synchChannels"
-          :rules="[{ required: isCustomNotice ? false : true, message: '请勾选渠道并选择模板' }]"
-        >
+        <a-form-item name="synchChannels" :rules="synchChannelRules">
           <!-- 绑Number类型id，发请求时在组装对象 -->
           <a-checkbox-group v-model:value="formState.synchChannels" name="checkboxgroup">
             <div class="synch-channels">
@@ -266,10 +299,10 @@ import { useFetchDetail } from './use/useFetchData'
 import { useSubmitData } from './use/useSubmitData'
 import { usePosterList } from '@/views/content/poster/usePoster'
 import { useRoute } from 'vue-router'
-import ReceiverDialog from '../ReceiverDialog.vue'
+import ReceiverDialog from '../ReceiverDialog'
 import Preview from '../templateLibrary/components/Preview'
 import { Tag as ATag, Modal, Message, TreeSelect } from 'ant-design-vue'
-import { ref, reactive, inject, watch, computed } from 'vue'
+import { ref, reactive, inject, watch, computed, defineAsyncComponent } from 'vue'
 import { getDepartmentList } from '@/api/org-structure/org'
 import {
   RULE_STRING,
@@ -283,6 +316,12 @@ import {
   SYNC_CHANNELS_ID,
   SYNC_CHANNELS_ID_MAP
 } from '@/constant/mass-notification'
+import { phoneNumberReg } from '@/constant/regExp'
+
+const CustomPhones = defineAsyncComponent(() => import('./components/CustomPhones'))
+const QuestionnaireSelector = defineAsyncComponent(() => import('./components/QuestionnaireSelector'))
+const questionnaireVisible = ref(false)
+
 const route = useRoute()
 
 const NOTICE_TYPE_OPTIONS_NOALL = computed(() =>
@@ -296,11 +335,15 @@ const isInvitation = computed(() => formState.type === NOTIFICATION_TYPE.INVITAT
 const isINVESTMENT = computed(() => formState.type === NOTIFICATION_TYPE.INVESTMENT)
 /** 活动通知  */
 const isACTIVITY = computed(() => formState.type === NOTIFICATION_TYPE.ACTIVITY)
+/** 问卷调查  */
+const isQuestionnaire = computed(() => formState.type === NOTIFICATION_TYPE.QUESTIONNAIRE)
 
 /** 接收人：指定部门 */
 const isDEPARMENT = computed(() => formState.receive === RECEIVER_TYPE.DEPARMENT_SPECIFY)
 /** 接收人：指定职位 */
 const isPOSITION = computed(() => formState.receive === RECEIVER_TYPE.POSITION_SPECIFY)
+/** 接收人：非本会会员 */
+const isPhoneCustom = computed(() => formState.receive === RECEIVER_TYPE.PHONE_CUSTOM)
 
 const formState = reactive({
   type: NOTIFICATION_TYPE.PAYMENT,
@@ -311,10 +354,44 @@ const formState = reactive({
   receiverList_member: [],
   receiverList_department: [],
   receiverList_position: [],
+  receiverList_phone: [],
+  receiverList_phone_type: 'input',
   /** 选中的渠道模板 */
   activityChannels: [],
-  activityData: null
+  activityData: null,
+  questionnaire: null // 关联问卷
 })
+
+// 自定义手机号规则
+const customPhoneRules = [
+  {
+    required: true,
+    trigger: ['blur', 'change'],
+    async validator(rule, value) {
+      if (formState.receiverList_phone_type !== 'input') return
+      if (!value.length) throw '请输入手机号' // eslint-disable-line
+      await value.reduce(async (promise, phone) => {
+        await promise
+        if (phone && +phone && phoneNumberReg.test(phone)) return
+        throw `"${phone}"格式有误。请输入正确的号码，多个手机号请换行隔开` // eslint-disable-line
+      }, Promise.resolve())
+    }
+  }
+]
+
+const synchChannelRules = [
+  {
+    async validator(rule, value) {
+      if (isCustomNotice.value) return
+      if (!value.length) throw '请勾选渠道并选择模板' // eslint-disable-line
+      await value.reduce(async (promise, channelTypeId) => {
+        await promise
+        if (formState.activityChannels[channelTypeId]) return
+        throw `请选择${SYNC_CHANNELS_ID_MAP.get(channelTypeId)}渠道模板` // eslint-disable-line
+      }, Promise.resolve())
+    }
+  }
+]
 
 const ckey = inject('ckey')
 /** 接收人总数 */
@@ -347,6 +424,11 @@ if (route.query.type) {
   formState.type = Number(route.query.type)
 }
 
+if (route.query.questionnaireId) {
+  const { questionnaireId, questionnaireTitle } = route.query
+  formState.questionnaire = { id: questionnaireId, title: questionnaireTitle }
+}
+
 const query = ref({ page: 1, pageSize: 20, title: '' })
 const handlePosterSearch = val => {
   query.value.title = val
@@ -368,6 +450,9 @@ const receiverList = computed({
       case RECEIVER_TYPE.MEMBER_SPECIFY:
         list = formState.receiverList_member
         break
+      case RECEIVER_TYPE.PHONE_CUSTOM:
+        list = formState.receiverList_phone
+        break
     }
     return list
   },
@@ -381,6 +466,9 @@ const receiverList = computed({
         break
       case RECEIVER_TYPE.MEMBER_SPECIFY:
         formState.receiverList_member = val
+        break
+      case RECEIVER_TYPE.PHONE_CUSTOM:
+        formState.receiverList_phone = val
         break
     }
     // 保存当前值
@@ -402,8 +490,13 @@ const showSendRule = () => {
 }
 
 const onSubmit = () => {
-  if (formState.imgs.length > IMG_MAXLEN && isCustomNotice.value) {
-    Message.error(`最多上传${IMG_MAXLEN}张照片,你已上传${formState.imgs.length}张`)
+  const { imgs, receiverList_phone_type, receiverList_phone } = formState
+  if (imgs.length > IMG_MAXLEN && isCustomNotice.value) {
+    Message.error(`最多上传${IMG_MAXLEN}张照片,你已上传${imgs.length}张`)
+    return
+  }
+  if (receiverList_phone_type === 'import' && !receiverList_phone.length) {
+    Message.error('您上传的文件中没有手机号')
     return
   }
   Modal.confirm({
@@ -427,9 +520,9 @@ const getTemplateUtil = () => {
   }
   // 初始化
   synchChannels.value = []
-  // 除了邀请入会只有短信1，其他都是三个渠道
+  // 邀请入会 | 问卷调查只有短信1，其他都是三个渠道
   getTemplateList(SYNC_CHANNELS_ID.NOTE)
-  if (isInvitation.value) return
+  if (isInvitation.value || isQuestionnaire.value) return
   getTemplateList(SYNC_CHANNELS_ID.APP)
   getTemplateList(SYNC_CHANNELS_ID.SUBSCRIBE)
 }
@@ -456,8 +549,9 @@ watch(
     if (!firstFetch) {
       // 置空已选渠道数据
       formState.activityChannels = []
-      formState.synchChannels = []
+      formState.synchChannels = isQuestionnaire.value ? [SYNC_CHANNELS_ID.NOTE] : []
       formState.activityData = null
+      formState.receive = RECEIVER_TYPE.MEMBER_SELF
     } else {
       firstFetch = false
     }

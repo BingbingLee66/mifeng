@@ -28,6 +28,7 @@ export function useFetchDetail(formState, ID, receiverList) {
       formState.sendType = sendType
       if (sendType === SEND_TYPE.TIMING) formState.sendTs = dayjs(+sendTs).format('YYYY-MM-DD HH:mm:ss')
       receiverList.value = extend.receiverList.map(item => item.id)
+      formState.receiverList_phone_type = extend.phoneType || 'input'
       // 当通知类型为2时，{'associationId': 活动id},当通知类型为3时，{'associationId': 招商活动id}
       if (type === NOTIFICATION_TYPE.ACTIVITY || type === NOTIFICATION_TYPE.INVESTMENT) {
         // 回显活动数据
@@ -36,6 +37,8 @@ export function useFetchDetail(formState, ID, receiverList) {
         formState.title = extend.title
         formState.content = extend.content
         formState.imgs = extend.imgs.map(item => ({ url: item }))
+      } else if (type === NOTIFICATION_TYPE.QUESTIONNAIRE) {
+        formState.questionnaire = { id: extend.associationId, title: extend.questionnaireTitle }
       }
     } catch (error) {}
     fetchLoading.value = false

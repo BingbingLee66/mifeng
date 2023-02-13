@@ -38,24 +38,18 @@
       </template>
       <template v-if="column.dataIndex === 'sendTs'">
         <p>{{ SEND_TYPE_MAP.get(record.sendType) }}</p>
-        <p>{{ dayjs(+record.sendTs).format('YYYY-MM-DD hh:mm:ss') }}</p>
+        <p>{{ $filters.dateFormat(record.sendTs) }}</p>
       </template>
       <template v-if="column.dataIndex === 'createInfo'">
         <p>{{ record.createInfo?.operatorName || '' }}</p>
         <p>
-          {{
-            record.createInfo?.operatorTime &&
-            dayjs(parseInt(record.createInfo.operatorTime)).format('YYYY-MM-DD HH:mm:ss')
-          }}
+          {{ record.createInfo?.operatorTime && $filters.dateFormat(+record.createInfo.operatorTime) }}
         </p>
       </template>
       <template v-if="column.dataIndex === 'updateInfo'">
         <p>{{ record.updateInfo?.operatorName || '' }}</p>
         <p>
-          {{
-            record.updateInfo?.operatorTime &&
-            dayjs(parseInt(record.updateInfo.operatorTime)).format('YYYY-MM-DD HH:mm:ss')
-          }}
+          {{ record.updateInfo?.operatorTime && $filters.dateFormat(+record.updateInfo.operatorTime) }}
         </p>
       </template>
       <template v-if="column.dataIndex === 'action'">

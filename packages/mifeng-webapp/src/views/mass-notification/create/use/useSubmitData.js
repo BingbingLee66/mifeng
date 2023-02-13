@@ -29,7 +29,9 @@ export function useSubmitData(formState) {
       imgs,
       synchChannels,
       activityChannels,
-      id
+      id,
+      receiverList_phone_type,
+      questionnaire
     } = formState
     const obj = {
       ckey: ckey.value,
@@ -56,6 +58,13 @@ export function useSubmitData(formState) {
     }
     if (noticeTypeId === NOTIFICATION_TYPE.CUSTOM) {
       Object.assign(obj.extend, { title, content, imgs: imgs.map(item => item.url) })
+    }
+    if (noticeTypeId === NOTIFICATION_TYPE.QUESTIONNAIRE) {
+      Object.assign(obj.extend, {
+        associationId: questionnaire.id,
+        questionnaireTitle: questionnaire.title,
+        phoneType: receiverList_phone_type || 'input'
+      })
     }
     // 编辑
     if (id) obj.id = id

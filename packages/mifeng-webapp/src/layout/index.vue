@@ -21,7 +21,7 @@
   </a-layout>
 </template>
 <script>
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, inject } from 'vue'
 import { Layout } from 'antd'
 import { useStore } from 'vuex'
 import { menus } from '@/router/menus'
@@ -31,6 +31,7 @@ import TitleTips from '@/components/layouts/TitleTips'
 import SiderBar from '@/components/layouts/SiderBar'
 import HeaderBar from '@/components/layouts/HeaderBar'
 import TitleBar from '@/components/layouts/TitleBar'
+import { webDataCollection } from '@/api/statistic/questSurvey'
 
 export default defineComponent({
   components: {
@@ -44,6 +45,7 @@ export default defineComponent({
     const store = useStore()
     const router = useRouter()
     const route = useRoute()
+    const ckey = inject('ckey')
     return {
       menus,
       userInfo: computed(() => store.state.user),
@@ -76,6 +78,10 @@ export default defineComponent({
           })
         } else {
           router.push({ path: menu.path })
+          if (menu.path === '/quest-survey/manager') {
+            // 问卷点击路由埋点
+            webDataCollection({ ckey: ckey.value, url: menu.path })
+          }
         }
       },
       goHome() {

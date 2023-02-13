@@ -21,16 +21,14 @@
         </a-button>
       </template>
       <template v-if="column.dataIndex === 'actions'">
-        <a-button v-if="record.state === 0" type="link" @click="updateState({ id: record.id, state: 1 })">
-          发布
-        </a-button>
-        <a-button v-if="record.state === 1" type="link" @click="updateState({ id: record.id, state: 3 })">
-          停止
-        </a-button>
-        <a-button v-if="record.state === 3" type="link" @click="updateState({ id: record.id, state: 1 })">
+        <a-button v-if="record.state === 0" type="link" @click="updateState({ ...record, state: 1 })"> 发布 </a-button>
+        <a-button v-if="record.state === 1" type="link" @click="updateState({ ...record, state: 3 })"> 停止 </a-button>
+        <a-button v-if="record.state === 3" type="link" @click="updateState({ ...record, state: 1 })">
           恢复运行
         </a-button>
-        <!-- <a-button type="link">短信通知</a-button> -->
+        <a-button v-if="[0, 1].includes(record.state)" type="link" @click="goCreateNotification(record)"
+          >短信通知</a-button
+        >
         <a-button type="link" @click="openShare(record)">分享</a-button>
         <a-button v-if="[0, 1, 3].includes(+record.state)" type="link" @click="openEdit(record)">编辑</a-button>
         <a-button type="link" @click="openDelete(record)">删除</a-button>
@@ -48,7 +46,7 @@
 </template>
 
 <script setup>
-import { defineAsyncComponent, getCurrentInstance, reactive, ref, createVNode } from 'vue'
+import { defineAsyncComponent, watch, getCurrentInstance, reactive, ref, createVNode, inject } from 'vue'
 import { columns } from './constant' // 表格配置
 import { useAntTable } from '@/use/useAntTable'
 import { useInputModal } from '@/components/InputModal/hooks'
@@ -59,6 +57,7 @@ import {
   deleteQuestionnaire,
   getQuestionnaireShareInfo
 } from '@/api/quest-survey'
+import { chamberStatSave } from '@/api/statistic/questSurvey'
 import { message, Modal } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { downloadFile } from '@/utils'
@@ -66,7 +65,7 @@ import { downloadFile } from '@/utils'
 const { proxy } = getCurrentInstance()
 
 const router = useRouter()
-
+const ckey = inject('ckey')
 // 查询参数
 const query = reactive({
   title: '',
@@ -103,6 +102,7 @@ fetchTableData()
 const InputModal = defineAsyncComponent(() => import('@/components/InputModal'))
 const { openInputModal, visible, confirmLoading, handleOk } = useInputModal({
   async handleOk(value) {
+    chamberState(279)
     const { state } = await checkQuestionnaireTitle({
       questionnaireTitle: value
     })
@@ -113,6 +113,18 @@ const { openInputModal, visible, confirmLoading, handleOk } = useInputModal({
   }
 })
 
+// 去到《创建群发通知》页面
+const goCreateNotification = record => {
+  router.push({
+    path: '/mass-notification/create',
+    query: {
+      type: 9,
+      questionnaireId: record.id,
+      questionnaireTitle: record.title
+    }
+  })
+}
+
 // 发布停止问卷
 const updateState = async params => {
   await updateQuestionnaireState({
@@ -120,6 +132,16 @@ const updateState = async params => {
     questionnaireId: params.id,
     state: params.state
   })
+  if (params.state === 1) {
+    Modal.confirm({
+      title: () => '已发布',
+      content: () => '问卷已发布，您可以立即发短信通知会员填写问卷',
+      okText: () => '短信通知',
+      cancelText: () => '暂时不用',
+      centered: 'true',
+      onOk: () => goCreateNotification(params)
+    })
+  }
   fetchTableData()
 }
 
@@ -140,6 +162,7 @@ const openEdit = record => {
       router.push({ path: '/quest-survey/create', query: { id: record.id } })
     }
   })
+  chamberState(281)
 }
 // 删除
 const openDelete = record => {
@@ -200,6 +223,16 @@ const openShare = async record => {
     okText: '关闭',
     width: 500
   })
+  chamberState(280)
+}
+// watch 观察创建按钮是否点击
+watch(visible, val => {
+  if (val) {
+    chamberState(279)
+  }
+})
+const chamberState = async buttonId => {
+  await chamberStatSave({ buttonId, ckey: ckey.value })
 }
 </script>
 

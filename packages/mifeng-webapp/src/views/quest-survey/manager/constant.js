@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-
 // 问卷状态
 export const STATE_MAP = {
   0: '未发布',
@@ -55,8 +53,7 @@ export const columns = [
     dataIndex: 'createdTs',
     filter: true,
     valueType: 'datePicker',
-    formItemProps: { initialValue: '' },
-    customRender: ({ record }) => dayjs(record.createdTs).format('YYYY-MM-DD HH:mm')
+    formItemProps: { initialValue: '' }
   },
   {
     title: '操作',

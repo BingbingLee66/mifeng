@@ -25,7 +25,7 @@
   </div>
 </template>
 <script>
-import { message } from 'ant-design-vue'
+import { message, Modal } from 'ant-design-vue'
 import { useRouter } from 'vue-router'
 import { downloadByBlob } from '@/views/activity/util'
 import { updateState, getQrCodeByMiF } from '@/api/quest-survey/index'
@@ -37,6 +37,10 @@ export default defineComponent({
       default: false
     },
     questionId: {
+      type: String,
+      default: ''
+    },
+    questionnaireTitle: {
       type: String,
       default: ''
     },
@@ -84,24 +88,30 @@ export default defineComponent({
         questionnaireId: props.questionId,
         state: 1
       }
-      await updateState(params)
-      router.push({ path: '/quest-survey/manager' })
-      // Modal.confirm({
-      //   title: () => '已发布',
-      //   content: () => '问卷已发布，您可以立即发短信通知会员填写问卷',
-      //   okText: () => '短信通知',
-      //   cancelText: () => '暂时不用',
-      //   centered: 'true',
-      //   onOk() {
-      //     console.log('OK')
-      //     // 去到《创建群发通知》页面
-      //     router.push({ name: 'create' })
-      //   },
-      //   onCancel() {
-      //     // 去到问卷管理页面
-      //     router.push({ path: '/quest-survey/manager' })
-      //   }
-      // })
+      const { data } = await updateState(params)
+
+      Modal.confirm({
+        title: () => '已发布',
+        content: () => '问卷已发布，您可以立即发短信通知会员填写问卷',
+        okText: () => '短信通知',
+        cancelText: () => '暂时不用',
+        centered: 'true',
+        onOk() {
+          // 去到《创建群发通知》页面
+          router.push({
+            path: '/mass-notification/create',
+            query: {
+              type: 9,
+              questionnaireId: props.questionId || data,
+              questionnaireTitle: props.questionnaireTitle
+            }
+          })
+        },
+        onCancel() {
+          // 去到问卷管理页面
+          router.push({ path: '/quest-survey/manager' })
+        }
+      })
     }
     return {
       router,
