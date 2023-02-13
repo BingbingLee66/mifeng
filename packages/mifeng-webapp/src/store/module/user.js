@@ -1,5 +1,6 @@
 import { login, logout, getUserInfo, register } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/token'
+import { isNumberValue } from '@/utils/formate-num'
 import { clearMenus } from '@/router/menus'
 import { resetPermission } from '@/utils/permission'
 import router from '@/router'
@@ -107,7 +108,8 @@ const actions = {
     // console.log(profile)
     commit('SET_ID', profile.id)
     commit('SET_NAME', profile.remark)
-    commit('SET_MOBILE_NUMBER', profile.userName)
+
+    commit('SET_MOBILE_NUMBER', isNumberValue(profile.userName) ? profile.userName : '')
     commit('SET_PROFILE', profile)
     commit('SET_ROLES', [profile.roleName])
     commit('SET_CKEY', profile.ckey)

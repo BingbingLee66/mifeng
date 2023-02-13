@@ -9,7 +9,7 @@ import '@/styles/common.scss'
 import GlobalComponents from '@/components'
 import VCharts from 'vue-echarts'
 import { use } from 'echarts/core'
-import { DataCollect } from '@/utils/dataCollect'
+import { DataCollect } from '@/utils/data-collect'
 
 // 手动引入 ECharts 各模块来减小打包体积
 import { CanvasRenderer } from 'echarts/renderers'

@@ -1,8 +1,8 @@
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useStore } from 'vuex'
+import store from '@/store'
 import { createActivity, getLinkPowerChamberCkeys, getActivityList } from '@/api/activity/activity'
-import { DataCollect } from '@/utils/dataCollect'
+import { DataCollect } from '@/utils/data-collect'
 import { PUBLISH_TYPE } from '@/constant/activity'
 
 const throttle = (fn, delay = 3000) => {
@@ -20,7 +20,6 @@ export function useSubmitForm(formState, roleIds, ckey, activityId, valueTree, p
   const ruleCkeys = ref([]) // 直播活动ckey
   const router = useRouter()
   const route = useRoute()
-  const store = useStore()
   const type = computed(() => {
     return route.query.type || ''
   })
@@ -31,7 +30,7 @@ export function useSubmitForm(formState, roleIds, ckey, activityId, valueTree, p
     }
   }
   getRuleCkeys()
-  const onSave = throttle(async e => {
+  const onSave = throttle(async (e, lastPublishStatus) => {
     formState.value.isPublish = e
 
     // 扩展功能
@@ -113,36 +112,7 @@ export function useSubmitForm(formState, roleIds, ckey, activityId, valueTree, p
 
     try {
       await createActivity(params)
-
-      try {
-        if (!activityId.value) {
-          // 检索刚创建的活动
-          const isPublished = params.isPublish
-          const activityStartTime = params.activityStartTime + ''
-          const createdTime = new Date().getTime() + 30000
-          const title = params.activityName
-          const getActivityListParams = {
-            page: 1,
-            pageSize: 20,
-            activityName: title,
-            isPublish: isPublished ? PUBLISH_TYPE.PUBLISHED : PUBLISH_TYPE.UN_PUBLISH,
-            ckey: store.state.user.ckey
-          }
-          const { data } = await getActivityList(getActivityListParams)
-          const list = Array.isArray(data.list) ? data.list : []
-          const filterList = list.filter(item => {
-            return title === item.activityName && activityStartTime === item.startTime && createdTime > item.createdTs
-          })
-          const id = filterList.length > 0 ? filterList[0].id : ''
-          // 数据采集上报
-          if (isPublished) {
-            DataCollect.Activity.publish({ store, activity: { id, title } })
-          } else {
-            DataCollect.Activity.saveDraft({ store, activity: { id, title } })
-          }
-        }
-      } catch (error) {}
-
+      track(params, params.isPublish, lastPublishStatus)
       router.push({
         name: '活动列表',
         params: {
@@ -155,5 +125,38 @@ export function useSubmitForm(formState, roleIds, ckey, activityId, valueTree, p
   return {
     ruleCkeys,
     onSave
+  }
+}
+
+export async function track(params, isPublish, lastPublishStatus) {
+  try {
+    // 检索刚创建的活动
+    const isPublished = isPublish
+    const activityStartTime = params.activityStartTime + ''
+    const createdTime = new Date().getTime() + 30000
+    const title = params.activityName
+    const getActivityListParams = {
+      page: 1,
+      pageSize: 20,
+      activityName: title,
+      isPublish: isPublished ? PUBLISH_TYPE.PUBLISHED : PUBLISH_TYPE.UN_PUBLISH,
+      ckey: store.state.user.ckey
+    }
+    const { data } = await getActivityList(getActivityListParams)
+    const list = Array.isArray(data.list) ? data.list : []
+    const filterList = list.filter(item => {
+      return title === item.activityName && activityStartTime === item.startTime && createdTime > item.createdTs
+    })
+    const id = filterList.length > 0 ? filterList[0].id : params.id
+    // 数据采集上报
+    const isPublishNew = isPublished && !params.id
+    const isPublishDraft = isPublished && !lastPublishStatus && params.id
+    if (isPublishNew || isPublishDraft) {
+      DataCollect.Activity.publish({ store, activity: { id, title } })
+    } else if (!params.id) {
+      DataCollect.Activity.saveDraft({ store, activity: { id, title } })
+    }
+  } catch (error) {
+    console.log(error)
   }
 }

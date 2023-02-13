@@ -20,7 +20,7 @@ import SetLevel from '../component/setLevel'
 import { Modal } from 'ant-design-vue'
 import { CHAMBER_TAB, DISABLE_Edit_ARTICLE, ARTICLE_STATUS, ARTICLE_AUDITSTATYUS } from '../../../constant/content'
 import dayjs from 'dayjs'
-import { DataCollect } from '@/utils/dataCollect'
+import { DataCollect } from '@/utils/data-collect'
 export default defineComponent({
   name: 'Articleupdate',
   components: {

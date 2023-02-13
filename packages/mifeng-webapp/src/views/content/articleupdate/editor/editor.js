@@ -24,7 +24,7 @@ import { FormItemRest } from 'ant-design-vue/es/form'
 import AliyunVideoPlayer from '@/components/aliyunVideoPlayer'
 import { Modal } from 'ant-design-vue'
 import { YSH_COVERIMG_NUM } from '../../../../constant/content'
-import { DataCollect } from '@/utils/dataCollect'
+import { DataCollect } from '@/utils/data-collect'
 export default defineComponent({
   name: 'Articleupdate',
   components: {

@@ -10,10 +10,10 @@ const Setting = {
     close: false
   },
   Activity: {
-    close: true
+    close: false
   },
   FestivalPoster: {
-    close: true
+    close: false
   }
 }
 

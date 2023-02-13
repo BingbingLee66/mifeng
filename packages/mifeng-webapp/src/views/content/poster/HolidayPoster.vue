@@ -104,8 +104,8 @@ import { createPoster, editPoster, getPosterDetail, posterModelList } from '@/ap
 import html2canvas from 'html2canvas'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
 import { Modal } from 'ant-design-vue'
+import { DataCollect } from '@/utils/data-collect'
 import { RENDERER } from './Firework'
-import { DataCollect } from '@/utils/dataCollect'
 import useClickOutside from '@/use/useClickOutside'
 
 const store = useStore()

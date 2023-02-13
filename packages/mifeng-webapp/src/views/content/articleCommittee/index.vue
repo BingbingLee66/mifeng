@@ -43,7 +43,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { Modal } from 'ant-design-vue'
 import { ARTICLE_STATUS, ARTICLE_AUDITSTATYUS } from '../../../constant/content'
-import { DataCollect } from '@/utils/dataCollect'
+import { DataCollect } from '@/utils/data-collect'
 const typeOptions = ref([
   {
     label: '全部',

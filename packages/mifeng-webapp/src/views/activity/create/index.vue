@@ -35,8 +35,8 @@
         <a-button v-if="activeName !== '1'" @click="onPrev" class="ml10">上一步</a-button>
         <a-button v-if="activeName !== '3'" type="primary" @click="onNext" class="ml10"> 下一步 </a-button>
         <template v-if="activeName === '3'">
-          <a-button @click="onSave(0)" class="ml10">保存，暂不发布</a-button>
-          <a-button type="primary" @click="onSave(1)" class="ml10">保存并发布</a-button>
+          <a-button @click="onSave(0, formState.isPublish)" class="ml10">保存，暂不发布</a-button>
+          <a-button type="primary" @click="onSave(1, formState.isPublish)" class="ml10">保存并发布</a-button>
         </template>
       </a-form-item>
     </div>
@@ -65,7 +65,7 @@ import BaseInfo from './component/base-info'
 import ApplyInfo from './component/apply-info'
 import { getAlbumRelevance } from '@/api/activity/activity'
 import { cloneDeep } from 'lodash'
-import { DataCollect } from '@/utils/dataCollect'
+import { DataCollect } from '@/utils/data-collect'
 import { useStore } from 'vuex'
 
 export default defineComponent({

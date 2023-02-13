@@ -103,6 +103,7 @@ import { useInputModal } from '@/components/InputModal/hooks'
 import InputModal from '@/components/InputModal/index.vue'
 import { getActivityList, publishActivity, updateActivitySort, delActivity } from '@/api/activity/activity'
 import { downloadByBlob } from '../util'
+import { track } from '../create/use/useSubmitForm'
 export default {
   components: {
     PlusTable,
@@ -258,16 +259,17 @@ function useTable() {
     }
   })
   fetchTableData()
-  const showUpdate = ({ id }, isPublish) => {
+  const showUpdate = (record, isPublish) => {
     Modal.confirm({
       title: '提示',
       content: isPublish === 0 ? '确认取消发布吗？' : '确认发布吗？',
       async onOk() {
         const params = {
-          id,
+          id: record.id,
           isPublish
         }
         await publishActivity(params)
+        track(record, isPublish, record.isPublish)
         fetchTableData()
       }
     })

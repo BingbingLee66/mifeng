@@ -23,7 +23,7 @@ import { ref, onMounted } from 'vue'
 import { Steps as ASteps } from 'ant-design-vue'
 import PosterShare from './PosterShare.vue'
 import HolidayPoster from './HolidayPoster'
-import { DataCollect } from '@/utils/dataCollect'
+import { DataCollect } from '@/utils/data-collect'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 const store = useStore()
