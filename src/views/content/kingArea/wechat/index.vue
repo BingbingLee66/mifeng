@@ -19,10 +19,7 @@
       @handleSelectionChange="handleSelectionChange"
     >
       <template v-slot:operate="row">
-        <span
-          class="text-blue cur ml-10"
-          @click="handleEvent('edit', row.data)"
-        >编辑</span>
+        <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
         <span
           v-if="row.data.status === 2"
           class="text-blue cur ml-10"
@@ -161,7 +158,7 @@ export default {
       } else {
         this.$message.error(res.msg)
       }
-    },
+    }
   }
 }
 </script>

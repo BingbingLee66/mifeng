@@ -578,6 +578,13 @@ export const constantRoutes = [
         component: () => import('@/views/mass-notification/create/index'),
         meta: { title: '创建群发' }
       },
+      {
+        path: '/a',
+        name: 'create',
+        hidden: true,
+        component: () => import('@/views/statistic/questSurvey'),
+        meta: { title: '问卷调查' }
+      },
     ]
   },
   // {

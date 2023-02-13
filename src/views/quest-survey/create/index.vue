@@ -152,7 +152,7 @@
 
       </div>
     </div>
-    <Save_Dialog ref="saveDialog" :ckey="ckey" :save-visible.sync="showSaveDialog" :question-id="questionId" />
+    <Save_Dialog ref="saveDialog" :ckey="ckey" :save-visible.sync="showSaveDialog" :question-id="questionId" :questionnaire-title="questionnaireTitle" />
   </el-card>
 </template>
 <script>

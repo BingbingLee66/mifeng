@@ -3,8 +3,7 @@
     <el-form :model="form">
       <el-form-item label="通知对象" prop="receive">
         <el-radio-group v-model="form.receive" @change="radioChange">
-          <!-- 5g彩信渠道 秘书处后台禁用 -->
-          <el-radio v-for="(item, index) in receiveList" :key="index" :label="item.type" :disabled="item.type === 7?activityType === 7:false">{{ item.n }}</el-radio>
+          <el-radio v-for="(item, index) in receiveList" :key="index" :label="item.type" :disabled="getReceiverDisabled(item)">{{ item.n }}</el-radio>
         </el-radio-group>
         <!-- 所有会员（总后台） 本商会会员（商会后台）-->
         <SelectShow v-if="form.receive === -1 || form.receive === 1" :num="memberNum" @showDialog="showDialog" />
@@ -82,18 +81,21 @@
         </div>
         <!-- 手机号 -->
         <div v-if="form.receive === 6">
-          <el-input
-            v-model="form.phones"
-            type="textarea"
-            placeholder="请输入手机号"
-            autosize
-            style="width: 600px"
-          />
-          <div class="tips">
-            <span>提示:</span>
-            <span>1.输入多个手机号时，请以回车换行。</span>
-            <span>2.单次指定的手机号不得大于1000个。</span>
-          </div>
+          <CustomPhones v-if="activityType === 9" v-model="form.phones" :type.sync="phoneType" />
+          <template v-else>
+            <el-input
+              v-model="form.phones"
+              type="textarea"
+              placeholder="请输入手机号"
+              autosize
+              style="width: 600px"
+            />
+            <div class="tips">
+              <span>提示:</span>
+              <span>1.输入多个手机号时，请以回车换行。</span>
+              <span>2.单次指定的手机号不得大于1000个。</span>
+            </div>
+          </template>
         </div>
         <el-checkbox v-if="form.receive !== 7 && form.receive !== 8 && (activityType===2 || activityType===3 || activityType===4)" v-model="form.receiverRemove">
           {{ activityType===4 ? '接收人名单剔除已激活人员' :'接收人名单剔除未报名当前活动的会员' }}
@@ -192,7 +194,11 @@ import cloneDeep from 'lodash/cloneDeep'
 import { memberTableConfig, memberCountTableConfig, memberPageListConfig, secretariatConfig } from '../../util/label'
 export default {
   name: 'ReceiveForm',
-  components: { receiveDialog, SelectShow },
+  components: {
+    receiveDialog,
+    SelectShow,
+    CustomPhones: () => import('./CustomPhones')
+  },
   props: {
     activityType: {
       type: Number,
@@ -281,6 +287,7 @@ export default {
       platformLabelIds: [], // 存放标签
       platformOptions: [], // 用户标签
       secretaryList: [], // 秘书处前台/后台 选中人数
+      phoneType: 'input'
     }
   },
   computed: {
@@ -374,6 +381,13 @@ export default {
     this.getPlatformOptions()
   },
   methods: {
+    getReceiverDisabled(item) {
+      // 5g彩信渠道 禁用秘书处后台
+      if (+this.activityType === 7) return +item.type === 7
+      // 问卷调查 禁用秘书处后台
+      if (+this.activityType === 9) return +item.type === 7
+      return false
+    },
     // 设置receive phone
     setFormData(type = 'receive', val) {
       // console.log('val', val)

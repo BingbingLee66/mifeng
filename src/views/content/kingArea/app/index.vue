@@ -1,14 +1,5 @@
 <template>
   <div>
-    <!-- 筛选表单 -->
-    <ysh-form
-      :form-config="formConfig"
-      :form-item="formItem"
-      :form-obj="formObj"
-      @query="queryData"
-      @reset="resetData"
-    />
-
     <!-- 操作栏 -->
     <el-row>
       <el-button
@@ -16,7 +7,7 @@
         type="primary"
         size="medium"
         @click="handleEvent('add')"
-      >添加金刚区</el-button>
+      >新增功能入口</el-button>
     </el-row>
 
     <!-- 表格数据 -->
@@ -24,33 +15,40 @@
       :table-config="tableConfig"
       :table-column="tableColumn"
       :table-data="tableData"
-      :page-data="pageData"
-      @handleCurrentChange="handleCurrentChange"
-      @handleSizeChange="handleSizeChange"
-      @handleLevelCallback="handleWeight"
+      @handleOrder="handleOrder"
+      @handleSelectionChange="handleSelectionChange"
     >
       <template v-slot:operate="row">
+        <span class="text-blue cur ml-10" @click="handleEvent('edit', row.data)">编辑</span>
         <span
+          v-if="row.data.status === 2"
           class="text-blue cur ml-10"
-          @click="handleEvent('edit', row.data)"
-        >编辑</span>
+          @click="handleEvent('status', row.data)"
+        >启用</span>
         <span
-          class="text-blue cur ml-10"
+          v-if="row.data.status === 1"
+          class="text-yellow cur ml-10"
+          @click="handleEvent('status', row.data)"
+        >冻结</span>
+        <span
+          v-if="row.data.status !== 1"
+          class="text-red cur ml-10"
           @click="handleEvent('delete', row.data)"
-        >移除</span>
+        >删除</span>
       </template>
     </ysh-table>
 
-    <!-- 新增/编辑金刚区弹窗 -->
+    <!-- 新增/编辑功能入口弹窗 -->
     <Dialog ref="dialogRef" @refresh="fetchData" />
   </div>
 </template>
 
 <script>
 import TableMixins from '@/mixins/yshTable'
-import Dialog from './Dialog'
-import _data from './data'
+// import { changeOrder } from '@/utils/utils'
 import Kingkong from '@/api/home-config/KingKong'
+import _data from './data'
+import Dialog from './Dialog'
 
 export default {
   components: { Dialog },
@@ -58,57 +56,38 @@ export default {
   mixins: [TableMixins],
   data() {
     return {
-      /** 筛选表单 */
-      formConfig: {
-        type: 'query',
-        inline: true,
-        labelWidth: '85px',
-        size: 'medium'
-      },
-      formItem: _data.formItem,
-      formObj: _data.formObj,
-
-      /** 表格数据 */
       tableConfig: {
         loading: false,
-        maxHeight: window.innerHeight - 400 + 'px'
+        selection: false,
+        maxHeight: window.innerHeight - 260 + 'px'
       },
       tableColumn: _data.tableColumn,
       tableData: []
     }
   },
-
-  mounted() {
+  created() {
     this.fetchData()
   },
-
   methods: {
-    /** 获取app金刚区列表数据 */
-    async fetchData(e) {
+    /** 获取小程序金刚区列表数据 */
+    async fetchData() {
       this.tableConfig.loading = true
-      const { name, creatorName, createdTime } = this.formObj
-      const { currentpage, limit } = this.pageData
       const params = {
         clientType: 1,
-        name,
-        creatorName,
-        createdTsBegin: createdTime ? createdTime[0] : '',
-        createdTsEnd: createdTime ? createdTime[1] : '',
-        pageNum: e === 1 ? 1 : currentpage,
-        pageSize: limit
+        pageNum: 1,
+        pageSize: 100
       }
-      if (createdTime) {
-        params.createdTsBegin = Date.parse(new Date(params.createdTsBegin))
-        params.createdTsEnd = Date.parse(new Date(params.createdTsEnd)) + 24 * 60 * 60 * 1000 - 1
-      }
-      const res = await Kingkong.getKingkongList(params)
+      const res = await Kingkong.getKingkongListV1(params)
       if (res.state !== 1) return
       this.tableData = res.data.list
+      this.tableData.forEach(i => {
+        i.id = i.kingKongId
+      })
       this.pageData.total = res.data.totalRows
       this.tableConfig.loading = false
     },
 
-    /** 金刚区新增|编辑|删除 */
+    /** 金刚区新增|编辑|删除|启用|冻结 */
     handleEvent(event, data) {
       switch (event) {
         case 'add':
@@ -120,20 +99,21 @@ export default {
         case 'delete':
           this.handleDelete(data)
           break
+        case 'status':
+          this.handleStatus(data)
+          break
         default:
           break
       }
     },
 
-    /** 修改金刚区权重 */
-    async handleWeight(data) {
-      const res = await Kingkong.updateKingkongWeight({
-        id: data.id,
-        value: data.level
-      })
+    /** 启用/冻结金刚区 */
+    async handleStatus(data) {
+      const status = data.status === 1 ? 2 : 1
+      const res = await Kingkong.changeKingkongStatus(data.id, status)
       if (res.state === 1) {
         this.$message.success(res.msg)
-        this.fetchData()
+        this.fetchData(1)
       } else {
         this.$message.error(res.msg)
       }
@@ -141,14 +121,13 @@ export default {
 
     /** 移除金刚区 */
     handleDelete(data) {
-      if (!data.id) return
       this.$confirm('确认移除该金刚区吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
         .then(async () => {
-          const res = await Kingkong.deleteKingkong([data.id])
+          const res = await Kingkong.deleteKingkongV1([data.id])
           if (res.state === 1) {
             this.$message.success(res.msg)
             this.fetchData(1)
@@ -159,6 +138,22 @@ export default {
         .catch(() => {
           this.$message.info('已取消移除')
         })
+    },
+
+    /** 调整上下顺序 */
+    async handleOrder(event, data) {
+      console.log(' order data ', data)
+      const num = event === 'up' ? data.num - 1 : data.num + 1
+      console.log(data.id, num, 'res3')
+      const res = await Kingkong.changeKingkongOrder(data.id, num)
+      console.log(res, 'order')
+      if (res.state === 1) {
+        this.fetchData()
+        this.$message.success(res.msg)
+        // changeOrder(this.tableData, data.id, event)
+      } else {
+        this.$message.error(res.msg)
+      }
     }
   }
 }

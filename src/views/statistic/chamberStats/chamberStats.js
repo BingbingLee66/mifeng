@@ -144,6 +144,7 @@ export default {
           组织架构: data.organizationSum > 0 ? data.organizationSum : '--',
           内容管理: data.contentSum > 0 ? data.contentSum : '--',
           活动管理: data.activitySum > 0 ? data.activitySum : '--',
+          问卷管理: data.questionnaire > 0 ? data.questionnaire : '--',
           数据统计: data.dataSum > 0 ? data.dataSum : '--',
           系统设置: data.systemSum > 0 ? data.systemSum : '--'
         }
