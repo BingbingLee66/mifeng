@@ -1,7 +1,7 @@
 import { COOKIE_TOKEN } from '@/constant'
 import Cookies from 'js-cookie'
-const isProd = process.env.VUE_APP_BUILD_ENV === 'production'
-const domain = isProd ? '.kaidicloud' : ''
+const isDev = process.env.NODE_ENV === 'development'
+const domain = !isDev ? '.kaidicloud' : ''
 export function getToken() {
   return Cookies.get(COOKIE_TOKEN) || ''
 }
