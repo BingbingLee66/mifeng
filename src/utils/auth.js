@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 
 const TokenKey = 'access-token'
 const isDev = process.env.NODE_ENV === 'development'
-const domain = !isDev ? '.kaidicloud' : ''
+const domain = !isDev ? '.kaidicloud.com' : ''
 export function getToken() {
   return Cookies.get(TokenKey)
 }
