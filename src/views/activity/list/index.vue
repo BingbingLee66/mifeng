@@ -185,7 +185,7 @@
       <div>{{ isPublish === 0 ? '确认取消发布吗？' : '确认发布吗？' }}</div>
       <div slot="footer" style="text-align: center">
         <el-button @click="showUpdateDialog = false">取 消</el-button>
-        <el-button type="primary" @click="upadteActivity">确 定</el-button>
+        <el-button type="primary" @click="upadteActivity(isPublish)">确 定</el-button>
       </div>
     </el-dialog>
 

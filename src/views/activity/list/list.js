@@ -7,6 +7,7 @@ import {
 } from '@/api/activity/activity'
 import { downloadByBlob } from '../util'
 import UpdateTime from './components/UpdateTime'
+import { track } from '../create/create'
 export default {
   data() {
     const checkNumber = (rule, value, callback) => {
@@ -53,6 +54,8 @@ export default {
       showUpdateTime: false,
       // 当前操作item的id
       item: null,
+      // 当前的活动
+      currentRow: null
     }
   },
   components: { UpdateTime },
@@ -71,6 +74,8 @@ export default {
       this.query.activityName = ''
       this.query.ckey = ''
       this.query.status = ''
+      this.query.isPublish = 0
+      this.query.activityStartTime = ''
       this.fetchData(1)
     },
     handleSizeChange(val) {
@@ -132,6 +137,7 @@ export default {
       this.rowId = row.id
       this.isPublish = isPublish
       this.showUpdateDialog = true
+      this.currentRow = row
     },
     // 修改活动发布时间
     async updateTime(item) {
@@ -141,7 +147,8 @@ export default {
         this.$refs['updateTimeRef'].show(res.data).then(() => { this.fetchData() })
       }
     },
-    upadteActivity() {
+    upadteActivity(isPublish) {
+      console.log('------this.currentRow', this.currentRow)
       const params = {
         id: this.rowId,
         isPublish: this.isPublish
@@ -157,6 +164,8 @@ export default {
           this.fetchData(1)
           this.showUpdateDialog = false
           this.$message.success(res.msg)
+          if (!isPublish) return
+          track(this.currentRow, isPublish, this.currentRow.isPublish)
         }
       })
     },

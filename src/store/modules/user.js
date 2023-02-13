@@ -3,10 +3,13 @@ import { login, logout, getInfo, register } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { Message } from 'element-ui'
+import { isNumberValue } from '@/utils/formate-num'
 
 const state = {
+  id: '',
   token: getToken(),
   name: '',
+  mobilenumber: '',
   profile: undefined,
   roles: [],
   ckey: '',
@@ -23,8 +26,14 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
+  SET_ID: (state, id) => {
+    state.id = id
+  },
   SET_NAME: (state, name) => {
     state.name = name
+  },
+  SET_MOBILE_NUMBER: (state, mobilenumber) => {
+    state.mobilenumber = mobilenumber
   },
   SET_PROFILE: (state, profile) => {
     state.profile = profile
@@ -142,7 +151,9 @@ const actions = {
         const { profile, createTime, expireTime, onTrial, trialTime } = data
         const getroles = []
         getroles.push(profile.roleName)
+        commit('SET_ID', profile.id)
         commit('SET_NAME', profile.remark)
+        commit('SET_MOBILE_NUMBER', isNumberValue(profile.userName) ? profile.userName : '')
         commit('SET_PROFILE', profile)
         commit('SET_ROLES', getroles)
         commit('SET_CKEY', profile.ckey)
@@ -164,8 +175,10 @@ const actions = {
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
+        commit('SET_ID', '')
         commit('SET_TOKEN', '')
         commit('SET_NAME', '')
+        commit('SET_MOBILE_NUMBER', '')
         commit('SET_PROFILE', {})
         commit('SET_ROLES', [])
         commit('SET_CKEY', '')

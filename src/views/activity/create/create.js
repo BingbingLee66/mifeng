@@ -3,7 +3,8 @@ import {
   uploadPortrait,
   getActivity,
   getAlbumRelevance,
-  getLinkPowerChamberCkeys
+  getLinkPowerChamberCkeys,
+  getActivityList
 } from '@/api/activity/activity'
 import { uploadFile } from '@/api/content/article'
 import { getDepartmentListTreeSelect } from '@/api/org-structure/org'
@@ -23,6 +24,9 @@ import { cloneDeep } from 'lodash'
 import editorElem from '@/components/wangEditor/index'
 import { getAudienceList } from '@/api/merchant'
 import { throttle } from '@/utils/utils'
+import { DataCollect } from '@/utils/data-collect'
+import { PUBLISH_TYPE } from '@/constant/activity'
+import store from '@/store'
 export default {
   components: {
     Ckeditor,
@@ -32,7 +36,8 @@ export default {
     CustomApplyDialog,
     ActiveTypeDialog,
     CustomSelect,
-    ActiveGuest
+    ActiveGuest,
+    DataCollect
   },
   data() {
     const checkSpace = (rule, value, callback) => {
@@ -278,6 +283,7 @@ export default {
       setTimeout(() => {
         this.$refs.ckeditor1.initHtml('')
       }, 500)
+      DataCollect.Activity.create({ store: this.$store })
     } else {
       this.fetchData()
       this.fetchAlbumRelevance()
@@ -823,7 +829,7 @@ export default {
 
       return res
     },
-    save: throttle(function (e) {
+    save: throttle(function (e, lastPublishStatus) {
       this.formObj.isPublish = e
 
       // 扩展功能
@@ -912,6 +918,7 @@ export default {
               type: this.activityId ? this.type : e
             }
           })
+          track(params, params.isPublish, lastPublishStatus)
         } else {
           this.$message.error(res.msg)
         }
@@ -1104,5 +1111,40 @@ export default {
     handleRemoveAttachment(file) {
       this.formObj.attachment = this.formObj.attachment.filter(item => item.uid !== file.uid)
     }
+  }
+}
+
+export async function track(params, isPublish, lastPublishStatus) {
+  try {
+    if (!this.activityId) {
+      // 检索刚创建的活动
+      const isPublished = isPublish
+      const activityStartTime = params.activityStartTime + ''
+      const createdTime = new Date().getTime() + 30000
+      const title = params.activityName
+      const getActivityListParams = {
+        page: 1,
+        pageSize: 20,
+        activityName: title,
+        isPublish: isPublished ? PUBLISH_TYPE.PUBLISHED : PUBLISH_TYPE.UN_PUBLISH,
+        ckey: store.state.user.ckey
+      }
+      const { data } = await getActivityList(getActivityListParams)
+      const list = Array.isArray(data.list) ? data.list : []
+      const filterList = list.filter(item => {
+        return title === item.activityName && activityStartTime === item.startTime && createdTime > item.createdTs
+      })
+      const id = filterList.length > 0 ? filterList[0].id : ''
+      // 数据采集上报
+      const isPublishNew = isPublished && !this.activityId
+      const isPublishDraft = isPublished && !lastPublishStatus && this.activityId
+      if (isPublishNew || isPublishDraft) {
+        DataCollect.Activity.publish({ store, activity: { id, title } })
+      } else {
+        DataCollect.Activity.saveDraft({ store, activity: { id, title } })
+      }
+    }
+  } catch (error) {
+    console.log(error)
   }
 }
