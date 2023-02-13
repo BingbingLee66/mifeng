@@ -12,5 +12,6 @@ export function setToken(token) {
 }
 
 export function removeToken() {
+  Cookies.remove(TokenKey)
   return Cookies.remove(TokenKey, { domain })
 }
