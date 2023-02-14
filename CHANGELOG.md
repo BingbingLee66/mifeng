@@ -1,6 +1,6 @@
 # CHANGELOG
 ## [Released]
-## [2.47.0] - 2023-2-24
+## [2.47.0] - 2023-2-14
 ### Added
 - 【社交优化】内容资源弹窗优化[3830013](https://project.feishu.cn/solink/user_story/detail/3830013)
 
