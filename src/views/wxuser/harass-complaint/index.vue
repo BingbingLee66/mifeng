@@ -1,0 +1,241 @@
+<template>
+  <div class="app-container">
+    <ys-form :form-item="formItem" :form-config="formConfig" :form-obj="formData" @query="queryData" />
+    <ys-table
+      ref="tableRef"
+      :table-config="tableConfig"
+      :table-column="tableColumn"
+      :table-data="tableData"
+      :page-data="pageData"
+      @handleCurrentChange="handleCurrentChange"
+      @handleSizeChange="handleSizeChange"
+    >
+      <template v-slot:countComment="row">
+        <span class="theme-color cur" @click="handleComment(row.data)">{{ row.data.countComment }}</span>
+      </template>
+      <template v-slot:countMessage="row">
+        <span class="theme-color cur" @click="handleMessage">{{ row.data.countMessage }}</span>
+      </template>
+      <template v-slot:countContent="row">
+        <span class="theme-color cur" @click="handleContent">{{ row.data.countContent }}</span>
+      </template>
+      <template v-slot:countFriend="row">
+        <span class="theme-color cur" @click="handleFriend">{{ row.data.countFriend }}</span>
+      </template>
+      <template v-slot:operate="row">
+        <span class="theme-color cur ml-10" @click="handleDetail(row.data.id)">详情</span>
+        <span v-if="row.data.auditStatus === 0" class="theme-color cur ml-10" @click="handleAudit(row.data)">处理</span>
+      </template>
+    </ys-table>
+    <el-dialog
+      v-if="detailVisible"
+      :visible.sync="detailVisible"
+      title="投诉详情"
+      width="800px"
+      :close-on-click-modal="false"
+    >
+      <el-descriptions :column="1">
+        <el-descriptions-item label="投诉描述">{{ detailObj.content }}</el-descriptions-item>
+        <el-descriptions-item label="内容截图">
+          <img
+            v-for="(img, index) in detailObj.urls"
+            :key="img"
+            :src="img"
+            style="width: 100px; height: 100px; margin-right: 20px"
+            @click="showImage(index)"
+          >
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
+    <!--  处理投诉-->
+    <el-dialog
+      v-if="auditvisible"
+      :visible.sync="auditvisible"
+      title="处理投诉"
+      :close-on-click-modal="false"
+      width="550px"
+    >
+      <el-form ref="auditObj" size="small" :model="auditObj" label-width="80px" inline>
+        <el-form-item label="处理结果" prop="result">
+          <el-input
+            v-model.trim="auditObj.result"
+            type="textarea"
+            max-length="500"
+            rows="6"
+            placeholder="请输入"
+            resize="none"
+            style="width: 400px"
+          />
+        </el-form-item>
+        <!-- <el-form-item label="冻结被投诉用户" prop="addFriendOn">
+          <el-switch v-model="formData.actionOn" :active-value="1" :inactive-value="0" />
+        </el-form-item> -->
+      </el-form>
+      <div slot="footer">
+        <el-button size="small" @click="auditvisible = false">取消</el-button>
+        <el-button type="primary" :disabled="!auditObj.result" @click="handleAuditComfirm">确定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 图片预览 -->
+    <el-dialog :visible.sync="previewVisible" title="图片预览" :modal-append-to-body="false">
+      <div v-if="previewVisible" class="block">
+        <el-carousel trigger="click" class="imgbox" :autoplay="false" arrow="always" indicator-position="outside">
+          <el-carousel-item v-for="(item, index) in imagesPreview" :key="index">
+            <img :src="item" style="width: 100%; height: 100%">
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import YsTable from '@/components/ys-table'
+import YsForm from '@/components/ys-form'
+import _data from './data'
+import { getComplaintLst, getComplaintDetail, auditComplaint } from '@/api/user'
+export default {
+  components: {
+    YsForm,
+    YsTable
+  },
+  data() {
+    return {
+      // 筛选项
+      formConfig: {
+        type: 'query',
+        inline: true,
+        labelWidth: '120px',
+        hideReset: true
+      },
+      formItem: _data.formItem,
+      formData: _data.formData,
+
+      // 表格
+      tableConfig: {
+        loading: false
+      },
+      tableData: [],
+      tableColumn: _data.tableColumn,
+      pageData: {
+        currentpage: 1,
+        limit: 10,
+        pageSizes: [10, 20, 50, 100, 500],
+        total: 0
+      },
+      rowData: null,
+      detailVisible: false,
+      detailObj: {},
+
+      auditvisible: false,
+      auditObj: {
+        result: ''
+      },
+
+      previewVisible: false,
+      imagesPreview: []
+    }
+  },
+  mounted() {
+    this.fetchData()
+  },
+  methods: {
+    async fetchData(e) {
+      this.tableConfig.loading = true
+      this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage
+      const { currentpage, limit } = this.pageData
+      const { fromUserId, fromUserName, toUserId, toUserName, date } = this.formData
+      const params = {
+        fromUserId,
+        fromUserName,
+        toUserId,
+        toUserName,
+        startTime: date ? date[0] : '',
+        endTime: date ? date[1] : '',
+        page: currentpage,
+        pageSize: limit
+      }
+      try {
+        const res = await getComplaintLst(params)
+        this.tableData = res.data.list
+        this.pageData.total = res.data.totalRows
+        this.tableConfig.loading = false
+      } catch (error) {
+        // 联调成功就删掉
+        this.tableData = [
+          {
+            id: '1',
+            fromUserName: 'test001',
+            fromUserId: '2',
+            createdTs: '2023-02-14',
+            toUserId: '3',
+            toUserName: 'test003',
+            content: '我要投诉你呀的',
+            auditStatus: '已处理',
+            auditResult: '处理了',
+            updator: '001',
+            updatedTs: '2023-02-14'
+          }
+        ]
+        console.log('error ===', error)
+      } finally {
+        this.tableConfig.loading = false
+      }
+    },
+    async queryData(formData) {
+      this.formData = { ...formData }
+      this.fetchData(1)
+    },
+    handleSizeChange(val) {
+      this.pageData.limit = val
+      this.fetchData(1)
+    },
+    handleCurrentChange(val) {
+      this.pageData.currentpage = val
+      this.fetchData()
+    },
+    handleAudit(rowData) {
+      this.auditObj.result = ''
+      this.rowData = rowData
+      this.auditvisible = true
+    },
+    async handleAuditComfirm() {
+      const { id } = this.rowData
+      const { result } = this.auditObj
+      const res = await auditComplaint({ id, result })
+      this.$message.success(res.msg)
+    },
+    async handleDetail(id) {
+      try {
+        const res = await getComplaintDetail({ id })
+        this.detailObj = res.data
+      } catch (error) {
+        // 联调成功就删掉
+        this.detailObj = {
+          id: '1',
+          content: '无耻',
+          urls: [
+            'https://ysh-cdn.kaidicloud.com/ysh-prod/demand/eb93c914d73347a58d0cedf4e228fba4.jpg',
+            'https://ysh-cdn.kaidicloud.com/ysh-prod/demand/930feee0410a41c7836fca6ef18efcd3.jpg',
+            'https://ysh-cdn.kaidicloud.com/ysh-prod/demand/a6fb4ee4215148ed9deeb96c6b31b2ad.jpg'
+          ]
+        }
+        console.log('error ===', error)
+      } finally {
+        this.detailVisible = true
+      }
+    },
+    /** 图片预览 */
+    showImage(index) {
+      this.imagesPreview = []
+      this.previewVisible = true
+      const imgArr = this.detailObj.urls
+      const before = imgArr.slice(0, index)
+      const after = imgArr.slice(index)
+      this.imagesPreview = after.concat(before)
+    }
+  }
+}
+</script>
