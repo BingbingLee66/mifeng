@@ -24,7 +24,7 @@
       </template>
       <template v-slot:operate="row">
         <span class="theme-color cur ml-10" @click="handleDetail(row.data.id)">详情</span>
-        <span v-if="row.data.auditStatus === 0" class="theme-color cur ml-10" @click="handleAudit(row.data)">处理</span>
+        <span v-if="parseInt(row.data.auditStatus) === 0" class="theme-color cur ml-10" @click="handleAudit(row.data)">处理</span>
       </template>
     </ys-table>
     <el-dialog
@@ -146,12 +146,13 @@ export default {
       this.tableConfig.loading = true
       this.pageData.currentpage = e === 1 ? 1 : this.pageData.currentpage
       const { currentpage, limit } = this.pageData
-      const { fromUserId, fromUserName, toUserId, toUserName, date } = this.formData
+      const { fromUserId, fromUserName, toUserId, toUserName, date, auditStatus } = this.formData
       const params = {
         fromUserId,
         fromUserName,
         toUserId,
         toUserName,
+        auditStatus,
         startTime: date ? date[0] : '',
         endTime: date ? date[1] : '',
         page: currentpage,
@@ -159,26 +160,10 @@ export default {
       }
       try {
         const res = await getComplaintLst(params)
-        this.tableData = res.data.list
-        this.pageData.total = res.data.totalRows
+        this.tableData = res.data.records
+        this.pageData.total = res.data.total
         this.tableConfig.loading = false
       } catch (error) {
-        // 联调成功就删掉
-        this.tableData = [
-          {
-            id: '1',
-            fromUserName: 'test001',
-            fromUserId: '2',
-            createdTs: '2023-02-14',
-            toUserId: '3',
-            toUserName: 'test003',
-            content: '我要投诉你呀的',
-            auditStatus: '已处理',
-            auditResult: '处理了',
-            updator: '001',
-            updatedTs: '2023-02-14'
-          }
-        ]
         console.log('error ===', error)
       } finally {
         this.tableConfig.loading = false
@@ -206,6 +191,8 @@ export default {
       const { result } = this.auditObj
       const res = await auditComplaint({ id, result })
       this.$message.success(res.msg)
+      this.auditvisible = false
+      this.fetchData(1)
     },
     async handleDetail(id) {
       try {

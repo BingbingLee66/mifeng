@@ -95,7 +95,7 @@ const tableColumn = [
     prop: 'auditStatus',
     type: 'function',
     callback(row) {
-      return row.auditStatus === 0 ? '未处理' : '已处理'
+      return parseInt(row.auditStatus) === 0 ? '未处理' : '已处理'
     }
 
   },
