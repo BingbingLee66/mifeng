@@ -52,6 +52,15 @@
       </a-form-item>
     </a-form>
     <a-modal v-model:visible="selectVisible" width="700px" title="内容资源" @ok="handleOkSelect">
+      <div class="search-bar">
+        <a-input
+          allowClear
+          v-model:value="keyword"
+          style="width: 500px; margin-right: 20px"
+          placeholder="请输入ID/标题"
+        />
+        <a-button type="primary" @click="onSubmit">查询</a-button>
+      </div>
       <PlusTable
         class="p0"
         :row-selection="{ onChange: onSelectChange, selectedRowKeys: selectedTableRow, preserveSelectedRowKeys: true }"
@@ -98,6 +107,7 @@ export default defineComponent({
     const articleList = ref([])
     const selectedTableRow = ref([])
     const chooseTableData = ref([])
+    const keyword = ref('')
     watch(
       () => props.editLeader,
       editLeader => {
@@ -171,7 +181,8 @@ export default defineComponent({
           contentColumnId: -1,
           status: 1,
           column: '',
-          orderType: 1
+          orderType: 1,
+          keyword: keyword.value
         })
         tableData.value = data.list || []
         return { total: data.totalRows || 0 }
@@ -196,6 +207,10 @@ export default defineComponent({
       selectedTableRow.value = index
       chooseTableData.value = row.filter(item => item !== undefined)
     }
+
+    const onSubmit = () => {
+      fetchTableData(true)
+    }
     return {
       leaderFormObj,
       rules,
@@ -217,12 +232,14 @@ export default defineComponent({
       articleList,
       removeArticle,
       onSelectChange,
-      selectedTableRow
+      selectedTableRow,
+      keyword,
+      onSubmit
     }
   }
 })
 </script>
-<style>
+<style lang="scss" scoped>
 .article-label {
   font-size: 12px;
   max-height: 100px;
@@ -232,5 +249,10 @@ export default defineComponent({
   display: block;
   width: auto;
   margin-top: 5px;
+}
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
 }
 </style>
