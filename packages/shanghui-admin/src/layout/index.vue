@@ -79,7 +79,9 @@ export default defineComponent({
           if (!menu.isInner) {
             const { VUE_APP_BASE_URL, VUE_APP_BUILD_ENV } = process.env
             const isProd = VUE_APP_BUILD_ENV === 'production'
-            window.location.href = `${VUE_APP_BASE_URL}${!isProd ? '/ecadmin' : ''}/#${menu.path}`
+            window.location.href = `${
+              isProd ? `https://scrm.kaidicloud.com/#${menu.path}` : `${VUE_APP_BASE_URL}/ecadmin/#${menu.path}`
+            }`
           } else {
             router.push({ path: menu.path })
           }
