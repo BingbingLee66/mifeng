@@ -13,6 +13,7 @@
       @change="handleTableChange"
       bordered
     >
+      <template #toolBar><div></div></template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'handle'">
           <a-switch
