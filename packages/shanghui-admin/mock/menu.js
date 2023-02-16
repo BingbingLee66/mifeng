@@ -302,7 +302,6 @@ const data = Mock.mock({
           hidden: false,
           hadGuide: false,
           guideId: null,
-          isInner: true,
           children: []
         }
       ]
