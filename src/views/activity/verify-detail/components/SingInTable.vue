@@ -39,7 +39,8 @@
 
     <div v-else-if="status === '1'" class="flex-x-between-center">
       <div>
-        <el-button type="text" @click="importVisible = true">导入</el-button>
+        <el-button type="text" @click="applyVisible = true">批量报名</el-button>
+        <el-button type="text" @click="importVisible = true">批量导入座位号</el-button>
         <el-button
           type="text"
           @click="
@@ -56,26 +57,14 @@
       <el-button :loading="exportLoaing" type="primary" @click="onExportExcel">导表</el-button>
     </div>
 
-    <el-dialog :visible.sync="importVisible" title="导入" width="400px">
-      <el-upload
-        action="#"
-        class="import-upload"
-        drag
-        :file-list="fileList"
-        :before-upload="beforeUploadFile"
-        :http-request="uploadFile"
-        :on-remove="() => (fileList = [])"
-      >
-        <div class="import-upload-content">
-          <i class="el-icon-plus" />
-          <div class="import-upload-text">上传批量导入表</div>
-        </div>
-      </el-upload>
-      <div slot="footer" class="flex-x-between-center">
-        <el-button type="text" @click="onDownLoadSignin"> 下载导入表 </el-button>
-        <el-button type="primary" @click="onUploadSignin"> 确认导入 </el-button>
-      </div>
-    </el-dialog>
+    <!-- 批量报名弹窗 -->
+    <ImportApplyDialog :visible.sync="applyVisible" :activity-id="activityId" @fetchData="getTableData" />
+
+    <!-- 批量导入座位号弹窗 -->
+    <ImportSeatDialog :visible.sync="importVisible" :activity-id="activityId" @fetchData="getTableData" />
+
+    <!-- 上传附件弹窗 -->
+    <UploadAttachmentDialog :visible.sync="uploadVisible" :activity-id="activityId" :apply-id="applyId" @fetchData="getTableData" />
 
     <KdTable
       v-loading="tableLoading"
@@ -224,7 +213,6 @@ import { formatDate } from '../util'
 import { perviewFile } from '../util'
 import {
   getActivitySigninList,
-  uploadSigninData,
   modifySigninStatus,
   saveRemark,
   handleSignin,
@@ -242,7 +230,10 @@ export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
     KdPagination: () => import('@/components/common/KdPagination'),
-    attachmentVisible: () => import('./AttachmentDetail')
+    attachmentVisible: () => import('./AttachmentDetail'),
+    ImportApplyDialog: () => import('./ImportApplyDialog'),
+    ImportSeatDialog: () => import('./ImportSeatDialog'),
+    UploadAttachmentDialog: () => import('./UploadAttachmentDialog')
   },
   props: {
     activity: {
@@ -265,9 +256,10 @@ export default {
       tableData: [],
       tableLoading: false,
 
+      applyVisible: false,
+      uploadVisible: false,
+      applyId: '',
       importVisible: false,
-
-      fileList: [],
 
       // 查询参数
       query: {
@@ -332,7 +324,7 @@ export default {
   },
   computed: {
     activityId() {
-      return this.activity.id
+      return this.activity.id || ''
     },
     start() {
       return +this.activity.activityStartTime
@@ -405,13 +397,20 @@ export default {
               arr = arr.slice(0, 2)
               arr.push({ filename: '查看更多', type: 'text' })
             }
-            return arr.map(m => {
+
+            if (row.attachmentCommitPermission) {
               return (
-                <div onClick={() => this.downloadFileAttach(m, row)} class="attachment">
-                  {m.filename}
-                </div>
+                <el-button type="text" onClick={() => this.onClickUpload(row)}>上传</el-button>
               )
-            })
+            } else {
+              return arr.map(m => {
+                return (
+                  <div onClick={() => this.downloadFileAttach(m, row)} class="attachment">
+                    {m.filename}
+                  </div>
+                )
+              })
+            }
           }
         },
       ]
@@ -432,9 +431,6 @@ export default {
         this.getTableData()
       }
     },
-    importVisible(newVal) {
-      if (!newVal && this.fileList.length) this.fileList = []
-    }
   },
   created() {
     this.getStatusCount()
@@ -541,6 +537,11 @@ export default {
       this.tableLoading = false
     },
 
+    onClickUpload(row) {
+      this.uploadVisible = true
+      this.applyId = row.id || ''
+    },
+
     async getCardDetail(cardId) {
       try {
         this.ipCardVisible = true
@@ -561,41 +562,6 @@ export default {
 
     onSelectionChange(e) {
       this.selectionDatas = e
-    },
-
-    beforeUploadFile(file) {
-      if (
-        !['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'].includes(
-          file.type
-        )
-      ) {
-        this.$message.error('上传文件只能是 XLSX 或 XLS 格式!')
-        return false
-      }
-    },
-
-    uploadFile(e) {
-      this.fileList = [e.file]
-    },
-
-    onDownLoadSignin() {
-      downloadFile({
-        title: '报名信息模板表.xlsx',
-        url: `${process.env.VUE_APP_BASE_API}/api/ec/singin/download/dynamicTemplate/${this.activityId}`
-      })
-    },
-
-    async onUploadSignin() {
-      if (!this.fileList.length) return this.$message({ message: '请选择上传文件', type: 'warning' })
-      const formData = new FormData()
-      formData.append('activityId', this.activityId)
-      formData.append('file', this.fileList[0])
-      const { state, msg } = await uploadSigninData(formData)
-      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
-      if (state === 1) {
-        this.importVisible = false
-        this.getTableData()
-      }
     },
 
     initSubDialog(row) {
@@ -809,9 +775,9 @@ export default {
               <div>预计到场：{row.subscribeTotal}</div>
               <div>
                 到场人数：
-              <span style={row.realTotal > 0 && row.realTotal < row.subscribeTotal ? 'color:red;' : ''}>
-                {row.realTotal ? row.realTotal : '-'}
-              </span>
+                <span style={row.realTotal > 0 && row.realTotal < row.subscribeTotal ? 'color:red;' : ''}>
+                  {row.realTotal ? row.realTotal : '-'}
+                </span>
               </div>
             </div>
           )
