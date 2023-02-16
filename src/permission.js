@@ -28,6 +28,7 @@ router.beforeEach(async (to, from, next) => {
       if (outerRoutes.includes(to.path)) {
         const { VUE_APP_NEW_BASE_URL } = process.env
         window.location.href = `${VUE_APP_NEW_BASE_URL}/#${to.path}`
+        next()
       }
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
       if (hasRoles) {
