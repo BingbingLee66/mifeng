@@ -163,3 +163,39 @@ export const getActivityWaitingExcel = (id, params) =>
     responseType: 'blob',
     hiddenError: true
   })
+
+// 获取活动附件表单
+export const getActivityForm = (activityId, params) =>
+  request({
+    url: `/ecservice/api/ec/activity-apply/${activityId}/sign-key/attachment`,
+    method: 'get',
+    params
+  })
+
+// 提交活动报名附件信息
+export const submitApplyInfo = data =>
+  request({
+    url: '/ecservice/api/ec/activity-apply/sign-key/attachment',
+    method: 'put',
+    data,
+    hiddenSuccess: true
+  })
+
+// 下载活动报名导入表
+export const getApplyExcel = (activityId, params) =>
+  request({
+    url: `/ecservice/api/ec/activity-apply/${activityId}/import-template`,
+    method: 'get',
+    params,
+    responseType: 'blob',
+    hiddenError: true
+  })
+
+// 导入活动报名表
+export const importApplyExcel = (activityId, data) =>
+  request({
+    url: `/ecservice/api/ec/activity-apply/${activityId}/import`,
+    method: 'post',
+    data,
+    hiddenSuccess: true
+  })
