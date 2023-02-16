@@ -73,9 +73,9 @@ const columns = ref([
 const tableData = ref([])
 
 const formState = ref({
-  shareAddUseQuota: 47,
+  shareAddUseQuota: '',
   useLimit: true,
-  useQuota: 62
+  useQuota: ''
 })
 
 const fetchFn = async pageOption => {
