@@ -17,7 +17,7 @@ const pageMap = pages.keys().reduce(
   }
 )
 
-export const innerRouteWhiteList = ['/content/aigc']
+export const innerRoutes = ['/content/aigc']
 
 // 遍历菜单
 function traverseMenus(menus, parentPath = '') {
@@ -35,7 +35,7 @@ function traverseMenus(menus, parentPath = '') {
       guideId: menu.guideId,
       hadGuide: menu.hadGuide,
       // 是否是内部模块
-      isInner: innerRouteWhiteList.includes(menu.menuUrl) ? true : menu.isInner
+      isInner: innerRoutes.includes(menu.menuUrl)
     }
     if (routeMenu.component) {
       routeMenu.component = pageMap[routeMenu.component] || pageMap[`${routeMenu.component}/index`]
