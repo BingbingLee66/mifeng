@@ -10,7 +10,9 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
 
-router.beforeEach(async(to, from, next) => {
+const outerRoutes = ['/content/aigc']
+
+router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
   // set page title
@@ -23,6 +25,10 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
+      if (outerRoutes.includes(to.path)) {
+        const { VUE_APP_NEW_BASE_URL } = process.env
+        window.location.href = `${VUE_APP_NEW_BASE_URL}/#${to.path}`
+      }
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
       if (hasRoles) {
         await store.dispatch('permission/getPermission', to)
