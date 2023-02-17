@@ -32,7 +32,7 @@
         <a-button type="link" @click="openShare(record)">分享</a-button>
         <a-button v-if="[0, 1, 3].includes(+record.state)" type="link" @click="openEdit(record)">编辑</a-button>
         <a-button type="link" @click="openDelete(record)">删除</a-button>
-        <a-button type="link" @click="goDownload(record)">分析&下载</a-button>
+        <a-button v-if="record.answersCount" type="link" @click="goDownload(record)">分析&下载</a-button>
       </template>
     </template>
   </PlusTable>
