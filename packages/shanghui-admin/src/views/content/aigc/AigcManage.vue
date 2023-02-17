@@ -33,20 +33,18 @@
         autocomplete="off"
         @finish="save"
       >
-        <a-form-item label="是否限制次数" name="useLimit">
+        <a-form-item label="每日初始体验次数" name="useLimit" style="display: flex">
           <a-radio-group v-model:value="formState.useLimit">
             <a-radio :value="false">不限制</a-radio>
             <a-radio :value="true">限制</a-radio>
           </a-radio-group>
-        </a-form-item>
-
-        <a-form-item
-          v-if="formState.useLimit"
-          label="每日初始体验次数"
-          name="useQuota"
-          :rules="[{ required: true, message: '请输入每日初始体验次数!' }]"
-        >
-          <inputNumber style="width: 250px" v-model:value="formState.useQuota" placeholder="输入大于0的数字" :min="1" />
+          <inputNumber
+            v-if="formState.useLimit"
+            style="width: 250px"
+            v-model:value="formState.useQuota"
+            placeholder="输入大于0的数字"
+            :min="1"
+          />
         </a-form-item>
 
         <a-form-item
@@ -135,6 +133,7 @@ const queryLimit = async () => {
 queryLimit()
 
 const save = async () => {
+  if (formState.value.useLimit && !formState.value.useQuota) return message.warning('请输体验次数')
   await setLimitListConfig({
     shareAddUseQuota: formState.value.shareAddUseQuota,
     useLimit: formState.value.useLimit,
