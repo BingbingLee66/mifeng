@@ -2,8 +2,8 @@
   <Panel>
     <div class="answer-title">{{ answersTitle }}</div>
     <a-tabs v-model:activeKey="compName">
-      <a-tab-pane key="OverView" tab="答卷总览"></a-tab-pane>
-      <a-tab-pane key="LookOver" tab="单个答卷"></a-tab-pane>
+      <a-tab-pane key="OverView" tab="统计&分析"></a-tab-pane>
+      <a-tab-pane key="LookOver" tab="查看下载答卷"></a-tab-pane>
     </a-tabs>
     <component :is="components.get(compName)" @getTitle="getTitle"></component>
   </Panel>
