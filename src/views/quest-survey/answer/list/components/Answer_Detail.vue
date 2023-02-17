@@ -41,6 +41,7 @@ import dayjs from 'dayjs'
 import { userAnswerListByMiF, userAnswerList, excelExporAnswer } from '@/api/quest-survey/answer'
 import { getMemberOptions } from '@/api/member/post'
 import { downloadFile } from '@/utils'
+import { formatDateTime } from '@/utils/date'
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
@@ -52,6 +53,10 @@ export default {
       default: ''
     },
     questionnaireId: {
+      type: String,
+      default: ''
+    },
+    title: {
       type: String,
       default: ''
     }
@@ -93,8 +98,9 @@ export default {
   methods: {
     async downloadAnswer() {
       const blob = await excelExporAnswer({ questionnaireId: this.questionnaireId })
+      const date = formatDateTime(new Date(), 'yyyy-MM-dd hh:mm:ss')
       downloadFile({
-        title: '答卷.xlsx',
+        title: `${this.title}-${date}.xlsx`,
         url: window.URL.createObjectURL(blob)
       })
     },

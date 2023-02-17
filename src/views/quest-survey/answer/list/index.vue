@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <AnswerDetail v-if="activeName==='answerDetail'" :ckey="ckey" :questionnaire-id="questionnaireId" />
+      <AnswerDetail v-if="activeName==='answerDetail'" :title="title" :ckey="ckey" :questionnaire-id="questionnaireId" />
 
     </el-card>
     <OtherDetail ref="otherDetail" :show-other="showOther" :current-item="currentItem" :detail-visible.sync="detailVisible" :current-index="currentIndex" />
