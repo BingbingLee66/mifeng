@@ -31,7 +31,7 @@
 
     <a-modal v-model:visible="resultVisible" title="上传结果" width="400px" @cancel="resultClose">
       <div>共{{ successNum + failNum }}条报名信息，成功报名{{ successNum }}条，失败{{ failNum }}条；</div>
-      <a-button type="text" @click="onDownloadFail">下载失败名单</a-button>
+      <a-button type="link" @click="onDownloadFail">下载失败名单</a-button>
 
       <template #footer>
         <div class="flex-x-center-center">
