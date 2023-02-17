@@ -74,7 +74,9 @@ const onSubmit = async () => {
     attachmentInfo: formList.value.map((v, i) => {
       return {
         signKeyId: v.signKeyId,
-        attachmentValue: JSON.stringify(formState[`list${i}`].map(v => ({ url: v.fileUrl, filename: v.name })))
+        attachmentValue: JSON.stringify(
+          formState[`list${i}`].map(v => ({ url: v.fileUrl, filename: v.name, type: v.type }))
+        )
       }
     })
   })
@@ -134,7 +136,12 @@ const uploadFile = (content, field) => {
 
   uploadFileRandomName(formData, 'activityApply').then(response => {
     if (!formState[field]) formState[field] = []
-    formState[field].push({ ...content.file, name: content.file.name, fileUrl: response.data })
+    formState[field].push({
+      ...content.file,
+      name: content.file.name,
+      fileUrl: response.data,
+      type: content.file.type.indexOf('image') > -1 ? 'image' : 'file'
+    })
   })
 }
 
