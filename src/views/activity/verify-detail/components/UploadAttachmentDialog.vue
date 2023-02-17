@@ -77,7 +77,7 @@ export default {
         attachmentInfo: this.formList.map((v, i) => {
           return {
             signKeyId: v.signKeyId,
-            attachmentValue: JSON.stringify(this.form[`list${i}`].map(v => ({ url: v.url, filename: v.name })))
+            attachmentValue: JSON.stringify(this.form[`list${i}`].map(v => ({ url: v.url, filename: v.name, type: v.type })))
           }
         })
       })
@@ -128,7 +128,7 @@ export default {
 
       uploadFileRandomName(formData, 'activityApply').then(response => {
         if (!this.form[field]) this.form[field] = []
-        this.form[field].push({ url: response.data, name: content.file.name })
+        this.form[field].push({ url: response.data, name: content.file.name, type: content.file.type.indexOf('image') > -1 ? 'image' : 'file' })
       })
     },
 
