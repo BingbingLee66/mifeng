@@ -33,11 +33,12 @@
 
 <script setup>
 import { excelExporAnswer, userAnswerListByMiF } from '@/api/quest-survey'
-import { reactive, ref, onMounted, inject } from 'vue'
+import { reactive, ref, onMounted, inject, defineProps } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAntTable } from '@/use/useAntTable'
 import { getMemberOptions } from '@/api/member/post'
 import { downloadFile } from '@/utils'
+import dayjs from 'dayjs'
 
 function useTableData() {
   // 获取会内职位options
@@ -142,9 +143,10 @@ function useTableData() {
   })
 
   const downloadAnswer = async () => {
+    const date = dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss')
     const blob = await excelExporAnswer({ questionnaireId })
     downloadFile({
-      title: '答卷.xlsx',
+      title: `${props.title}-${date}.xlsx`,
       url: window.URL.createObjectURL(blob)
     })
   }
@@ -173,6 +175,13 @@ function useTableData() {
     handleTableChange
   }
 }
+
+const props = defineProps({
+  title: {
+    type: String,
+    default: ''
+  }
+})
 
 const { columns, tableData, pagination, loading, handleTableChange, handleSearch, downloadAnswer } = useTableData()
 </script>

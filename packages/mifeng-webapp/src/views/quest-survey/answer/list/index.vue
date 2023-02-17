@@ -5,7 +5,7 @@
       <a-tab-pane key="OverView" tab="统计&分析"></a-tab-pane>
       <a-tab-pane key="LookOver" tab="查看下载答卷"></a-tab-pane>
     </a-tabs>
-    <component :is="components.get(compName)" @getTitle="getTitle"></component>
+    <component :is="components.get(compName)" :title="answersTitle" @getTitle="getTitle"></component>
   </Panel>
 </template>
 
