@@ -40,12 +40,26 @@
           </a-radio-group>
         </a-form-item>
 
-        <a-form-item v-if="formState.useLimit" label="每日初始体验次数" name="useQuota">
-          <a-input v-model:value="formState.useQuota" />
+        <a-form-item
+          v-if="formState.useLimit"
+          label="每日初始体验次数"
+          name="useQuota"
+          :rules="[{ required: true, message: '请输入每日初始体验次数!' }]"
+        >
+          <inputNumber style="width: 250px" v-model:value="formState.useQuota" placeholder="输入大于0的数字" :min="1" />
         </a-form-item>
 
-        <a-form-item label="分享成功奖励次数" name="shareAddUseQuota">
-          <a-input v-model:value="formState.shareAddUseQuota" />
+        <a-form-item
+          label="分享成功奖励次数"
+          name="shareAddUseQuota"
+          :rules="[{ required: true, message: '请输入分享成功奖励次数!' }]"
+        >
+          <inputNumber
+            style="width: 250px"
+            v-model:value="formState.shareAddUseQuota"
+            placeholder="输入大于0的数字"
+            :min="1"
+          />
         </a-form-item>
 
         <a-form-item :wrapper-col="{ offset: 2 }">
@@ -59,7 +73,7 @@
 import { ref } from 'vue'
 import { useAntTable } from '@business/logics/src/useAntTable/index'
 import { queryAigcList, switchStatus, queryLimitListConfig, setLimitListConfig } from '@/api/content/aigc'
-import { message } from 'antd'
+import { message, inputNumber } from 'antd'
 const TAB = {
   TURN_ON: '开启功能',
   TIMES_CONFIG: '次数配置'
@@ -106,6 +120,7 @@ const changeStatusHandler = async (checked, event, record) => {
       id: record.id,
       switchStatus: record.switchStatus
     })
+    fetchTableData()
   } catch (error) {
     record.switchStatus = !record.switchStatus
     message.error(error.message)
