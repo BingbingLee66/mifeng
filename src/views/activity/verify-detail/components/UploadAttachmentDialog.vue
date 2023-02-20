@@ -18,7 +18,7 @@
           drag
           :before-upload="beforeUpload"
           :http-request="content => uploadFile(content, `list${index}`)"
-          :on-remove="() => (form[`list${index}`] = [])"
+          :on-remove="(content, list) => onRemove(content, list, `list${index}`)"
         >
           <div class="import-upload">
             <i class="el-icon-plus" />
@@ -71,6 +71,7 @@ export default {
 
     async onSubmit() {
       if (!this.validateForm()) return
+      await this.$confirm('每报名用户仅支持上传一次，请确认是否继续', '确认上传？')
 
       const { state, msg } = await submitApplyInfo({
         applyId: this.applyId,
@@ -90,10 +91,18 @@ export default {
     },
 
     validateForm() {
+      const hasRequireItem = this.formList.some(v => v.checked)
+
+      // 没有必填项也要至少上传一个附件
+      if (!hasRequireItem && (JSON.stringify(this.form) === '{}')) {
+        this.$message.error('请至少上传一个附件')
+        return false
+      }
+
       return this.formList.every((v, i) => {
         if (v.checked) {
           const res = Boolean(this.form[`list${i}`])
-          if (!res) this.$message.error('请完善表单')
+          if (!res) this.$message.error(`${v.title}不能为空`)
           return res
         }
         return true
@@ -130,6 +139,19 @@ export default {
         if (!this.form[field]) this.form[field] = []
         this.form[field].push({ url: response.data, name: content.file.name, type: content.file.type.indexOf('image') > -1 ? 'image' : 'file' })
       })
+    },
+
+    onRemove(content, list, field) {
+      this.form[field] = list.map(v => {
+        const find = this.form[field].find(item => item.name === v.name) || {}
+        return {
+          name: v.name,
+          url: find.url,
+          type: find.type
+        }
+      })
+
+      if (!list.length) delete this.form[field]
     },
 
     close() {
