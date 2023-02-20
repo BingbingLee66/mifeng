@@ -13,7 +13,7 @@
           :file-list="formState[`list${index}`]"
           :before-upload="beforeUpload"
           :customRequest="content => uploadFile(content, `list${index}`)"
-          @remove="() => (formState[`list${index}`] = [])"
+          @remove="content => onRemove(content, `list${index}`)"
         >
           <div class="import-upload">
             <plus-outlined class="a-icon-plus" />
@@ -32,7 +32,7 @@
 </template>
 <script setup>
 import { defineProps, defineEmits, ref, reactive, watch } from 'vue'
-import { message } from 'ant-design-vue'
+import { message, Modal } from 'ant-design-vue'
 import { uploadFileRandomName } from '@/api/content/article'
 import { getActivityForm, submitApplyInfo } from '@/api/activity/activity-verify-new'
 
@@ -66,33 +66,49 @@ watch(
   }
 )
 
-const onSubmit = async () => {
+const onSubmit = () => {
   if (!validateForm()) return
 
-  const { state, msg } = await submitApplyInfo({
-    applyId: props.applyId,
-    attachmentInfo: formList.value.map((v, i) => {
-      return {
-        signKeyId: v.signKeyId,
-        attachmentValue: JSON.stringify(
-          formState[`list${i}`].map(v => ({ url: v.fileUrl, filename: v.name, type: v.type }))
-        )
-      }
-    })
+  Modal.confirm({
+    title: '确认上传？',
+    content: `每个报名用户仅支持上传一次，请确认是否继续`,
+    okText: '上传',
+    cancelText: '取消',
+    onOk: async () => {
+      const { state, msg } = await submitApplyInfo({
+        applyId: props.applyId,
+        attachmentInfo: formList.value.map((v, i) => {
+          return {
+            signKeyId: v.signKeyId,
+            attachmentValue: JSON.stringify(
+              formState[`list${i}`].map(v => ({ url: v.fileUrl, filename: v.name, type: v.type }))
+            )
+          }
+        })
+      })
+
+      message[state === 1 ? 'success' : 'error'](msg)
+      if (!state) return
+
+      close()
+      emit('fetchData')
+    }
   })
-
-  message[state === 1 ? 'success' : 'error'](msg)
-  if (!state) return
-
-  close()
-  emit('fetchData')
 }
 
 const validateForm = () => {
+  const hasRequireItem = formList.value.some(v => v.checked)
+
+  // 没有必填项也要至少上传一个附件
+  if (!hasRequireItem && JSON.stringify(formState) === '{}') {
+    message.error('请至少上传一个附件')
+    return false
+  }
+
   return formList.value.every((v, i) => {
     if (v.checked) {
       const res = Boolean(formState[`list${i}`])
-      if (!res) message.error('请完善表单')
+      if (!res) message.error(`${v.title}不能为空`)
       return res
     }
     return true
@@ -143,6 +159,13 @@ const uploadFile = (content, field) => {
       type: content.file.type.indexOf('image') > -1 ? 'image' : 'file'
     })
   })
+}
+
+const onRemove = (content, field) => {
+  const findIndex = formState[field].findIndex(v => v.fileUrl === content.fileUrl)
+  formState[field].splice(findIndex, 1)
+
+  if (!formState[field].length) delete formState[field]
 }
 
 const close = () => {
