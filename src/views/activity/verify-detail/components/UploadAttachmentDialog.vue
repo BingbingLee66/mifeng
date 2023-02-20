@@ -71,7 +71,7 @@ export default {
 
     async onSubmit() {
       if (!this.validateForm()) return
-      await this.$confirm('每报名用户仅支持上传一次，请确认是否继续', '确认上传？')
+      await this.$confirm('每个报名用户仅支持上传一次，请确认是否继续', '确认上传？')
 
       const { state, msg } = await submitApplyInfo({
         applyId: this.applyId,
