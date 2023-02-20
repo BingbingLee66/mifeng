@@ -23,13 +23,15 @@
         <span class="theme-color cur" @click="handleFriend">{{ row.data.countFriend }}</span>
       </template> -->
       <template v-slot:content="row">
-        <el-tooltip class="item" effect="dark" :content="row.data.content" placement="top">
+        <!--  -->
+        <el-tooltip popper-class="tool-tip" :disabled="(row.data.content.length || 0) < 36 " class="item" effect="dark" :content="row.data.content" placement="top">
           <div class="content">{{ row.data.content }}</div>
         </el-tooltip>
       </template>
       <template v-slot:auditResult="row">
-        <el-tooltip class="item" effect="dark" :content="row.data.auditResult" placement="top">
-          <div class="content">{{ row.data.auditResult || '--' }}</div>
+        <!--  -->
+        <el-tooltip popper-class="tool-tip" :disabled="(row.data.auditResult ? row.data.auditResult.length : 0) < 30 " class="item" effect="dark" :content="row.data.auditResult" placement="top">
+          <div class="content">{{ row.data.auditResult }}</div>
         </el-tooltip>
       </template>
       <template v-slot:operate="row">
@@ -244,5 +246,11 @@ export default {
 .img-box{
   display: flex;
   flex-wrap: wrap;
+}
+</style>
+<style>
+.tool-tip {
+  max-width: 700px;
+  overflow: hidden;
 }
 </style>
