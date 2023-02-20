@@ -89,6 +89,9 @@ const tableColumn = [
   {
     label: '投诉描述',
     prop: 'content',
+    width: '300px',
+    type: 'slot',
+    slotName: 'content',
   },
   {
     label: '处理状态',
@@ -102,6 +105,9 @@ const tableColumn = [
   {
     label: '处理结果',
     prop: 'auditResult',
+    width: '250px',
+    type: 'slot',
+    slotName: 'auditResult',
   },
   {
     label: '操作人',
@@ -110,7 +116,7 @@ const tableColumn = [
   {
     label: '操作时间',
     prop: 'updatedTs',
-    type: 'time'
+    // type: 'time'
   },
   {
     label: '操作',

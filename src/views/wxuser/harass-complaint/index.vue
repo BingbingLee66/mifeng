@@ -10,7 +10,7 @@
       @handleCurrentChange="handleCurrentChange"
       @handleSizeChange="handleSizeChange"
     >
-      <template v-slot:countComment="row">
+      <!-- <template v-slot:countComment="row">
         <span class="theme-color cur" @click="handleComment(row.data)">{{ row.data.countComment }}</span>
       </template>
       <template v-slot:countMessage="row">
@@ -21,6 +21,16 @@
       </template>
       <template v-slot:countFriend="row">
         <span class="theme-color cur" @click="handleFriend">{{ row.data.countFriend }}</span>
+      </template> -->
+      <template v-slot:content="row">
+        <el-tooltip class="item" effect="dark" :content="row.data.content" placement="top">
+          <div class="content">{{ row.data.content }}</div>
+        </el-tooltip>
+      </template>
+      <template v-slot:auditResult="row">
+        <el-tooltip class="item" effect="dark" :content="row.data.auditResult" placement="top">
+          <div class="content">{{ row.data.auditResult || '--' }}</div>
+        </el-tooltip>
       </template>
       <template v-slot:operate="row">
         <span class="theme-color cur ml-10" @click="handleDetail(row.data.id)">详情</span>
@@ -37,13 +47,16 @@
       <el-descriptions :column="1">
         <el-descriptions-item label="投诉描述">{{ detailObj.content }}</el-descriptions-item>
         <el-descriptions-item label="内容截图">
-          <img
-            v-for="(img, index) in detailObj.urls"
-            :key="img"
-            :src="img"
-            style="width: 100px; height: 100px; margin-right: 20px"
-            @click="showImage(index)"
-          >
+          <div class="img-box">
+            <img
+              v-for="(img, index) in detailObj.urls"
+              :key="img"
+              :src="img"
+              style="width: 100px; height: 100px; margin: 0 20px 20px 0;"
+              @click="showImage(index)"
+            >
+          </div>
+
         </el-descriptions-item>
       </el-descriptions>
     </el-dialog>
@@ -61,7 +74,8 @@
           <el-input
             v-model.trim="auditObj.result"
             type="textarea"
-            max-length="500"
+            maxlength="500"
+            show-word-limit
             rows="6"
             placeholder="请输入"
             resize="none"
@@ -83,7 +97,7 @@
       <div v-if="previewVisible" class="block">
         <el-carousel trigger="click" class="imgbox" :autoplay="false" arrow="always" indicator-position="outside">
           <el-carousel-item v-for="(item, index) in imagesPreview" :key="index">
-            <img :src="item" style="width: 100%; height: 100%">
+            <img :src="item" style="width: 100%; height: 100%;object-fit: contain;">
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -199,17 +213,7 @@ export default {
         const res = await getComplaintDetail({ id })
         this.detailObj = res.data
       } catch (error) {
-        // 联调成功就删掉
-        this.detailObj = {
-          id: '1',
-          content: '无耻',
-          urls: [
-            'https://ysh-cdn.kaidicloud.com/ysh-prod/demand/eb93c914d73347a58d0cedf4e228fba4.jpg',
-            'https://ysh-cdn.kaidicloud.com/ysh-prod/demand/930feee0410a41c7836fca6ef18efcd3.jpg',
-            'https://ysh-cdn.kaidicloud.com/ysh-prod/demand/a6fb4ee4215148ed9deeb96c6b31b2ad.jpg'
-          ]
-        }
-        console.log('error ===', error)
+
       } finally {
         this.detailVisible = true
       }
@@ -226,3 +230,19 @@ export default {
   }
 }
 </script>
+<style rel="stylesheet/scss" lang="scss" scoped>
+.content{
+  width: 100%;
+  text-overflow: -o-ellipsis-lastline;
+	overflow: hidden;				//溢出内容隐藏
+	text-overflow: ellipsis;		//文本溢出部分用省略号表示
+	display: -webkit-box;			//特别显示模式
+	-webkit-line-clamp: 2;			//行数
+	line-clamp: 2;
+	-webkit-box-orient: vertical;	//盒子中内容竖直排列
+}
+.img-box{
+  display: flex;
+  flex-wrap: wrap;
+}
+</style>
