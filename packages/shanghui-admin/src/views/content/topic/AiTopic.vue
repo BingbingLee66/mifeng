@@ -59,6 +59,7 @@ import {
 } from '@/api/content/aigc'
 import DialogForm from '../component/DialogForm.vue'
 import dayjs from 'dayjs'
+import { message } from 'antd'
 const STATUS = {
   NORMAL: 1,
   FREEZE: 2
@@ -187,7 +188,7 @@ const fetchFn = async (page = 1) => {
   }
   const {
     data: { records, total }
-  } = activeName.value === TAB.TURN_ON ? await queryTopic(prams) : await queryTopicCategory(prams)
+  } = activeName.value === TAB.TURN_ON ? await queryTopic(prams) : await queryCategory(prams)
   tableData.value = records
   query[activeName.value].total = total
   return {
@@ -202,10 +203,25 @@ const handleTableChange = ({ current, pageSize }) => {
   fetchFn(current)
 }
 
+const queryCategory = async params => {
+  try {
+    const { data } = await queryTopicCategory(params)
+    return { data }
+  } catch (error) {
+    message.error(error.message)
+    return {
+      data: {
+        records: [],
+        total: 0
+      }
+    }
+  }
+}
+
 const queryAllCategory = async () => {
   const {
     data: { records }
-  } = await queryTopicCategory({ pageSize: 100000, page: 1 })
+  } = await queryCategory({ pageSize: 100000, page: 1 })
   categoryData.value = records.map(item => {
     return {
       label: item.name,
