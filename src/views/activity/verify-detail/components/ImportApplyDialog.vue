@@ -84,8 +84,7 @@ export default {
       formData.append('activityId', String(this.activityId))
       formData.append('file', this.fileList[0])
       const { state, msg, data } = await importApplyExcel(this.activityId, formData)
-      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
-      if (!state) return
+      if (!state) return this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
 
       this.close()
       this.$emit('fetchData')
@@ -95,6 +94,8 @@ export default {
         this.failNum = data.failNum
         this.failCauseFile = data.failCauseFile
         this.resultVisible = true
+      } else {
+        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       }
     },
 
