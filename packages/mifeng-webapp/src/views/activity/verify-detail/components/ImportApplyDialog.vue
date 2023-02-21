@@ -20,8 +20,8 @@
       </a-upload>
 
       <template #footer>
-        <div class="flex-x-center-center">
-          <a-button type="default" class="mr-20" @click="close">取消</a-button>
+        <div class="flex-x-center-center" style="padding: 4px">
+          <a-button type="default" @click="close">取消</a-button>
           <a-button type="primary" :loading="loading" @click="onImportApply">{{
             loading ? '导入中' : '确定'
           }}</a-button>
