@@ -263,22 +263,14 @@ const submit = async res => {
 }
 
 const createTopic = async res => {
-  const {
-    content,
-    categoryId,
-    status,
-    weight,
-    timeRange: [startTime, endTime]
-  } = res
-
-  const params = {
+  const params = (({ content, categoryId, status, weight, timeRange: [startTime, endTime] }) => ({
     content,
     categoryId,
     status,
     weight,
     startTime: dayjs(startTime).valueOf(),
     endTime: dayjs(endTime).valueOf()
-  }
+  }))(res)
 
   formState.value.id
     ? await updateAiTopic({
