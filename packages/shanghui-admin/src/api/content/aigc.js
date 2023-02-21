@@ -64,7 +64,7 @@ export const queryTopic = params => {
   })
 }
 
-// 添加话题
+// 添加话题分类
 export const addCategory = params => {
   return request({
     url: '/ecservice/ec/aigc/category/add',
@@ -73,7 +73,7 @@ export const addCategory = params => {
   })
 }
 
-// 更新话题
+// 更新话题分类
 export const updateCategory = params => {
   return request({
     url: '/ecservice/ec/aigc/category/update',
