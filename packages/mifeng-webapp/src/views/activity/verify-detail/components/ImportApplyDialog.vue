@@ -92,8 +92,7 @@ const onImportApply = async () => {
   formData.append('file', fileList.value[0])
   const { state, msg, data } = await importApplyExcel(props.activityId, formData)
 
-  message[state === 1 ? 'success' : 'error'](msg)
-  if (!state) return
+  if (!state) return message[state === 1 ? 'success' : 'error'](msg)
 
   close()
   emit('fetchData')
@@ -103,6 +102,8 @@ const onImportApply = async () => {
     failNum.value = data.failNum
     failCauseFile.value = data.failCauseFile
     resultVisible.value = true
+  } else {
+    message[state === 1 ? 'success' : 'error'](msg)
   }
 }
 
