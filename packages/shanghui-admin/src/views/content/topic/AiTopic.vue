@@ -6,6 +6,7 @@
     </a-tabs>
     <PlusTable
       :columns="columns[activeName]"
+      :scroll="{ x: 'max-content' }"
       :data-source="tableData"
       :pagination="pagination[activeName]"
       @change="handleTableChange"
@@ -24,12 +25,17 @@
         <template v-if="column.key === 'endTime'">
           {{ dayjs(Number(record.endTime)).format('YYYY-MM-DD HH:mm') }}
         </template>
+        <template v-if="column.key === 'status'">
+          {{ STATUS_ZH[record.status] }}
+        </template>
         <template v-if="column.key === 'handle'">
-          <a-button @click="showDialog(record)">编辑</a-button>
-          <a-button class="ml-4" @click="upDateHandler(record)">冻结</a-button>
+          <a-button type="link" primary @click="showDialog(record)">编辑</a-button>
+          <a-button type="link" primary class="ml-4" @click="freezeSwitch(record)">
+            {{ record.status === STATUS.NORMAL ? '冻结' : '解冻' }}</a-button
+          >
         </template>
         <template v-if="column.key === 'category-handle'">
-          <a-button @click="showDialog(record)">编辑</a-button>
+          <a-button type="link" primary @click="showDialog(record)">编辑</a-button>
         </template>
       </template>
     </PlusTable>
@@ -53,6 +59,14 @@ import {
 } from '@/api/content/aigc'
 import DialogForm from '../component/DialogForm.vue'
 import dayjs from 'dayjs'
+const STATUS = {
+  NORMAL: 1,
+  FREEZE: 2
+}
+const STATUS_ZH = {
+  [STATUS.NORMAL]: '正常',
+  [STATUS.FREEZE]: '冻结'
+}
 const TAB = {
   TURN_ON: '推荐话题',
   TIMES_CONFIG: '话题分类'
@@ -126,8 +140,8 @@ const FormList = ref({
       rules: { required: true, message: '请选择状态!' },
       formItemProps: {
         options: [
-          { label: '正常', value: 1 },
-          { label: '冻结', value: '2' }
+          { label: '正常', value: STATUS.NORMAL },
+          { label: '冻结', value: STATUS.FREEZE }
         ]
       }
     },
@@ -167,7 +181,6 @@ const query = reactive({
 const pagination = computed(() => query)
 
 const fetchFn = async (page = 1) => {
-  console.log(query[activeName.value].pageSize)
   const prams = {
     pageSize: query[activeName.value].pageSize,
     page
@@ -182,6 +195,7 @@ const fetchFn = async (page = 1) => {
   }
 }
 fetchFn(query[activeName.value].current)
+
 const handleTableChange = ({ current, pageSize }) => {
   query[activeName.value].current = current
   query[activeName.value].pageSize = pageSize
@@ -220,7 +234,7 @@ const showDialog = async data => {
       name: ''
     }
   }
-  await queryAllCategory()
+  activeName.value === TAB.TURN_ON && (await queryAllCategory())
   visible.value = true
 }
 
@@ -257,14 +271,22 @@ const createTopic = async res => {
       })
     : await addAiTopic(params)
   visible.value = false
-  fetchFn(query[activeName.value].page)
+  fetchFn(query[activeName.value].current)
 }
 
 const createCategory = async res => {
   const { name, id } = res
-
   formState.value.id ? await updateCategory({ name, id }) : await addCategory({ name })
   visible.value = false
-  fetchFn(query[activeName.value].page)
+  fetchFn(query[activeName.value].current)
+}
+
+const freezeSwitch = data => {
+  formState.value = {
+    ...data,
+    status: data.status === STATUS.NORMAL ? STATUS.FREEZE : STATUS.NORMAL,
+    timeRange: [Number(data.startTime), Number(data.endTime)]
+  }
+  createTopic(formState.value)
 }
 </script>
