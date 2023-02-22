@@ -184,7 +184,8 @@ const identityFormItem = [
       { label: '企业微信认证', value: 2 },
       { label: '钉钉认证', value: 3 },
       { label: '工牌认证', value: 4 },
-      { label: '邀请商协会认证', value: 5 }
+      { label: '邀请商协会认证', value: 5 },
+      { label: '会员入驻', value: 6 }
     ],
   },
   {
@@ -265,13 +266,16 @@ const identityTableColumn = [
     prop: 'type',
     type: 'function',
     callback(row) {
-      return row.type === 1
-        ? '法人证人'
-        : row.type === 2
-          ? '企业微信认证'
-          : (row.type === 3
-            ? '钉钉认证'
-            : (row.type === 4 ? '工牌认证' : '邀请商协会认证'))
+      const statusMap = {
+        0: '未知',
+        1: '法人证人',
+        2: '企业微信认证',
+        3: '钉钉认证',
+        4: '工牌认证',
+        5: '邀请商协会认证',
+        6: '会员入驻',
+      }
+      return statusMap[row.type] || '--'
     }
   },
   {

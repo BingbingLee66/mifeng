@@ -56,8 +56,8 @@
             <!-- Component_Upload_Image,Component_Upload_File拿value -->
             <template v-else-if="[COMPONENT_KEY.UPLOAD_IMAGE,COMPONENT_KEY.UPLOAD_FILE].includes(item.key)">
               <div v-if="item.key===COMPONENT_KEY.UPLOAD_IMAGE" class="upload-img-item">
-                <el-image ref="preview" :preview-src-list=" [item2.value]" :src="item2.value" class="upload-img" />
-                <el-link type="primary" @click="onPreview">查看原图</el-link>
+                <el-image :ref="`preview${index2}`" :preview-src-list=" [item2.value]" :src="item2.value" class="upload-img" />
+                <el-link type="primary" @click="onPreview(`preview${index2}`)">查看原图</el-link>
                 <el-link type="primary" @click="downLoadImg(1,item2)">下载</el-link>
               </div>
               <div v-else>{{ item.value }}</div>
@@ -170,9 +170,8 @@ export default {
         x.send()
       }
     },
-    onPreview() {
-      console.log('preview', this.$refs['preview'])
-      this.$refs['preview'][0].clickHandler()
+    onPreview(key) {
+      this.$refs[key][0].clickHandler()
     }
   }
 }

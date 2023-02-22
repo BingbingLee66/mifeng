@@ -3,8 +3,8 @@
     <el-card>
       <div class="title">{{ title }}</div>
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="答卷总览" name="answerList" />
-        <el-tab-pane label="查看答卷" name="answerDetail" />
+        <el-tab-pane label="统计&分析" name="answerList" />
+        <el-tab-pane label="查看下载答卷" name="answerDetail" />
       </el-tabs>
       <div v-if="remark" class="desc">
         <div>说明</div>
@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <AnswerDetail v-if="activeName==='answerDetail'" :ckey="ckey" :questionnaire-id="questionnaireId" />
+      <AnswerDetail v-if="activeName==='answerDetail'" :title="title" :ckey="ckey" :questionnaire-id="questionnaireId" />
 
     </el-card>
     <OtherDetail ref="otherDetail" :show-other="showOther" :current-item="currentItem" :detail-visible.sync="detailVisible" :current-index="currentIndex" />

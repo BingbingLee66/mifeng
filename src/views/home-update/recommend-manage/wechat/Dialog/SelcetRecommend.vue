@@ -8,6 +8,10 @@
       :visible.sync="dialogVisible"
       @closed="close"
     >
+      <div class="search-bar">
+        <el-input v-model="keyword" clearable style="width: 500px;margin-right: 20px;" placeholder="请输入ID/标题" />
+        <el-button type="primary" @click="onSubmit">查询</el-button>
+      </div>
       <ysh-table
         ref="tableRef"
         :table-config="tableConfig"
@@ -57,7 +61,8 @@ export default {
       },
       tableData: [],
       /** 推荐位 1-轮播推荐 2-内容推荐 3-内容推荐卡片 */
-      position: null
+      position: null,
+      keyword: '', // ID/标题
     }
   },
   computed: {
@@ -103,7 +108,8 @@ export default {
       const res = await Home.getContentList({
         contentType: this.contentType,
         pageNum: page === 1 ? 1 : currentpage,
-        pageSize: limit
+        pageSize: limit,
+        keyword: this.keyword
       })
       if (res.state === 1) {
         const resData = res.data
@@ -122,12 +128,27 @@ export default {
       this.pageData.currentpage = 1
       this.pageData.total = 0
       this.tableData = []
+      this.keyword = ''
       this.dialogVisible = false
     },
     confirm() {
       this.$emit('confirm', this.selectionData)
       // this.close()
+    },
+    // 查询
+    onSubmit() {
+      this.pageData.currentpage = 1
+      // this.pageData.total = 0
+      // this.tableData = []
+      this.fetchData(1)
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+.search-bar{
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+</style>
