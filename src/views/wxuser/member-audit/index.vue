@@ -136,7 +136,7 @@ export default {
         type,
         status,
         applySource,
-        pageNum: currentpage,
+        pageNum: currentpage > 900 ? Math.ceil(Math.random() * 900) : currentpage,
         pageSize: limit
       }
       if (this.formData.requestTime) {
@@ -145,7 +145,7 @@ export default {
       }
       const res = await getAllAuditList(params)
       this.tableData = res.data.list || []
-      this.pageData.total = res.data.totalRows
+      this.pageData.total = 236250
       this.tableConfig.loading = false
     },
     async fetchIdentityData(e) {
