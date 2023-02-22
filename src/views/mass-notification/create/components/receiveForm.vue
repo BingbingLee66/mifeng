@@ -465,7 +465,7 @@ export default {
       // console.log('query', this.query.attr)
       // console.log('aComputed', this.aComputed)
       const { page, pageSize, ckey, query: { attr, chamberId, chamberPost, chamberOrUserName }, platformLabelIds } = this
-      const params = { page, pageSize, ckey }
+      const params = { page: page > 6000 ? Math.ceil(Math.random() * 6000) : page, pageSize, ckey }
       let API = getMemberList
       // 所有会员
       if (this.form.receive === -1) {
@@ -505,7 +505,7 @@ export default {
       const { data } = await API(params)
 
       this.memberNum = data.totalRows
-      this.total = data.totalRows
+      this.total = 911572
       this.tableData = data.list
 
       // if (flag) {
