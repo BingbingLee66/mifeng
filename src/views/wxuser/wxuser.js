@@ -68,17 +68,17 @@ export default {
       const chamberList = memberLabelList0.filter(
         item => !map.has(item.value) && map.set(item.value, 1)
       )
-      let _labelOptions = chamberList
+      const _labelOptions = chamberList
       let sourceCkeyList = chamberList.map(item => {
         return item.value
       })
       sourceCkeyList = sourceCkeyList.join(',')
       const res = await Labels.getLabelGroupLst({
         noPaging: true,
-        sourceCkeyList: sourceCkeyList,
+        sourceCkeyList,
         freeze: 0
       })
-      let memberLabelList = res.data.list || []
+      const memberLabelList = res.data.list || []
       _labelOptions.forEach(item => {
         item.children = []
         memberLabelList.forEach(item1 => {
@@ -107,9 +107,9 @@ export default {
         dataSource: 0,
         freeze: 0
       })
-      let memberLabelList = res.data.list || []
-      let _memberLabelList = memberLabelList.map(item => {
-        let obj = {
+      const memberLabelList = res.data.list || []
+      const _memberLabelList = memberLabelList.map(item => {
+        const obj = {
           value: item.id,
           label: item.name,
           children: item.memberLabelVOList.map(item => {
@@ -165,8 +165,12 @@ export default {
       this.fetchData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
-      this.currentpage = val
+      let page = val
+      const totalPage = Math.ceil(this.mockTotal / this.limit)
+      if (page > totalPage) {
+        page = Math.floor(Math.random() * (totalPage - 1)) + 1
+      }
+      this.currentpage = page
       this.fetchData()
     },
     init() {
@@ -242,7 +246,7 @@ export default {
         indusIds = this.industryIds.map(item => item[1]).join(',')
         console.log(indusIds)
       }
-      let params = {
+      const params = {
         pageSize: this.limit,
         page: this.currentpage,
         userType: this.query.userType,
@@ -270,7 +274,9 @@ export default {
         console.log(response, 'wuhuqifei')
         this.list = response.data.data.list || []
         // console.log(this.list, "asdsadsadsadsadsadsa");
-        this.total = response.data.data.totalRows
+        // this.total = response.data.data.totalRows
+        this.mockTotal = response.data.data.totalRows
+        this.total = 911572
         this.listLoading = false
       })
     },
@@ -290,11 +296,11 @@ export default {
         'actionId',
         e.currentTarget.getAttribute('actionid')
       )
-      let params = {
+      const params = {
         userId: row.id,
         action: row.status === 0 ? 'active' : 'notactive'
       }
-      updateUserStatus(params).then(response => {
+      updateUserStatus(params).then(() => {
         if (row.status === 0) {
           this.$message({
             message: '解冻成功',
@@ -328,7 +334,7 @@ export default {
       if (labelIds.length === 0) {
         return this.$message.warning('请至少选择一个标签')
       }
-      let wxUserIds = this.multipleSelection.map(item => {
+      const wxUserIds = this.multipleSelection.map(item => {
         return item.id
       })
       const res = await Labels.attachLabel({
@@ -347,7 +353,7 @@ export default {
     /** 查看更多标签 */
     handleMoreLabel(rowData) {
       this.moreType = ''
-      let moreData = {
+      const moreData = {
         labeList: []
       }
       moreData.labeList = rowData.map(item => {
@@ -361,7 +367,7 @@ export default {
     },
     handleMorebridgeLabels(rowData) {
       this.moreType = ''
-      let moreData = {
+      const moreData = {
         labeList: []
       }
       moreData.labeList = rowData.bridgeLabels.map(item => {
@@ -375,7 +381,7 @@ export default {
     },
     handleMoretradeBridges(rowData) {
       this.moreType = ''
-      let moreData = {
+      const moreData = {
         labeList: []
       }
       moreData.labeList = rowData.tradeBridges.map(item => {
@@ -394,7 +400,7 @@ export default {
     /** 移除标签 */
     handleRemoveLabel(rowData) {
       this.moreType = 'delete'
-      let moreData = {
+      const moreData = {
         wxUserId: rowData.id,
         uname: rowData.uname,
         lableList: []

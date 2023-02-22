@@ -1,17 +1,17 @@
 <template>
   <div class="app-container">
-    <officialComponent :type="1" ref="officialDialog" :chamberOptions="chamberOptions"></officialComponent>
+    <officialComponent ref="officialDialog" :type="1" :chamber-options="chamberOptions" />
     <div class="block">
       <el-form ref="query" label-width="auto" label-position="left" :model="query" :inline="true">
         <el-form-item label="用户ID：">
           <el-input v-model="query.wxUserId" maxlength="10" onkeyup="this.value=this.value.replace(/\D/g,'')" placeholder="请输入ID" />
         </el-form-item>
         <el-form-item label="用户名：">
-          <el-input v-model="query.uName" placeholder="请输入用户名"/>
+          <el-input v-model="query.uName" placeholder="请输入用户名" />
         </el-form-item>
         <el-form-item label="手机号：">
-                  <el-input v-model="query.phone" placeholder="请输入手机号" />
-                </el-form-item>
+          <el-input v-model="query.phone" placeholder="请输入手机号" />
+        </el-form-item>
         <el-form-item label="所属商会：">
           <el-select v-model="query.chamberId" placeholder="请选择" filterable>
             <el-option v-for="chamber in chamberOptions" :key="chamber.id" :label="chamber.name" :value="chamber.id" />
@@ -21,19 +21,19 @@
         <el-form-item :span="12" label="状态：">
           <el-select v-model="query.status" placeholder="请选择操作行为">
             <!-- <el-option v-for="(item, index) in typeOptions" :label="item" :value="item" :key="index"></el-option> -->
-            <el-option label="全部" :value="-1"/>
-            <el-option label="正常" :value="1"/>
-            <el-option label="已冻结" :value="0"/>
+            <el-option label="全部" :value="-1" />
+            <el-option label="正常" :value="1" />
+            <el-option label="已冻结" :value="0" />
           </el-select>
         </el-form-item>
-     
+
         <el-form-item label="">
-          <el-button  type="primary"  @click="queryData">查询
+          <el-button type="primary" @click="queryData">查询
           </el-button>
         </el-form-item>
-        
+
         <el-row>
-            <el-button  type="primary"  @click="showOfficialDialog($event)">添加官方账号
+          <el-button type="primary" @click="showOfficialDialog($event)">添加官方账号
           </el-button>
         </el-row>
       </el-form>
@@ -60,14 +60,14 @@
           {{ scope.row.phone }}
         </template>
       </el-table-column>
-      
+
       <el-table-column label="所属商会">
         <template slot-scope="scope">
           <div v-if="scope.row.chamberName">{{ scope.row.chamberName }}</div>
           <div v-if="!scope.row.chamberName">未加入商会</div>
         </template>
       </el-table-column>
-    
+
       <el-table-column label="状态" width="80px">
         <template slot-scope="scope">
           <div v-if="scope.row.status == 1">正常</div>
@@ -76,13 +76,13 @@
       </el-table-column>
       <el-table-column label="添加信息">
         <template slot-scope="scope">
-          <div >【添加人】:{{scope.row.createdName}}</div>
-             <div >【添加时间】:{{scope.row.createdTs|dateFormat}}</div>
+          <div>【添加人】:{{ scope.row.createdName }}</div>
+          <div>【添加时间】:{{ scope.row.createdTs|dateFormat }}</div>
         </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button  type="text"  @click="detail($event, scope.row)">
+          <el-button type="text" @click="detail($event, scope.row)">
             移除
           </el-button>
         </template>
@@ -98,7 +98,6 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-    
 
   </div>
 
