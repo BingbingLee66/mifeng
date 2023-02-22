@@ -19,7 +19,7 @@
         </div>
       </el-upload>
 
-      <div slot="footer" class="flex-x-center-center">
+      <div slot="footer" class="flex-x-center-center" style="padding: 4px;">
         <el-button type="default" class="mr-20" @click="close">取消</el-button>
         <el-button type="primary" :loading="loading" @click="onImportApply">{{ loading ? '导入中' : '确定' }}</el-button>
       </div>
@@ -84,8 +84,7 @@ export default {
       formData.append('activityId', String(this.activityId))
       formData.append('file', this.fileList[0])
       const { state, msg, data } = await importApplyExcel(this.activityId, formData)
-      this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
-      if (!state) return
+      if (!state) return this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
 
       this.close()
       this.$emit('fetchData')
@@ -95,6 +94,8 @@ export default {
         this.failNum = data.failNum
         this.failCauseFile = data.failCauseFile
         this.resultVisible = true
+      } else {
+        this.$message({ message: msg, type: state === 1 ? 'success' : 'error' })
       }
     },
 
