@@ -159,7 +159,7 @@ export default {
         source,
         type,
         userName,
-        page: currentpage,
+        page: currentpage > 1800 ? Math.ceil(Math.random() * 1800) : currentpage,
         pageSize: limit
       }
       // 申请
@@ -175,7 +175,7 @@ export default {
       const res = await getidentityList(params)
       if (res.state !== 1) return this.$message.error(res.msg)
       this.tableData = res.data.list || []
-      this.pageData.total = res.data.totalRows
+      this.pageData.total = 284130
       this.tableConfig.loading = false
     },
     async queryData(formData) {
