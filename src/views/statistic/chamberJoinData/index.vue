@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <el-form :inline="true" class="demo-form-inline">
- <el-form-item  label="数据维度" prop="region" >
-    <el-select v-model="ckey" placeholder="数据维度" filterable @change="change">
-      <el-option v-for="item in chamberList" :key="item.id" :label="item.name" :value="item.ckey"></el-option>
-    </el-select>
-  </el-form-item>
+      <el-form-item label="数据维度" prop="region">
+        <el-select v-model="ckey" placeholder="数据维度" filterable @change="change">
+          <el-option v-for="item in chamberList" :key="item.id" :label="item.name" :value="item.ckey" />
+        </el-select>
+      </el-form-item>
     </el-form>
     <div class="block">
       <div style="height:20px;margin-bottom: 10px;">
@@ -19,31 +19,31 @@
             <div class="card-key">本月商会入驻</div>
           </div>
         </div>
-        <div class="h-cut-line"></div>
+        <div class="h-cut-line" />
         <div class="c-card-box">
           <div class="card-box-3">
             <div class="card-value">{{ pfStatistics.totalChambers }}</div>
             <div class="card-key">累计商会入驻</div>
           </div>
         </div>
-        <div class="h-cut-line"></div>
+        <div class="h-cut-line" />
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.monthlyMemberJoin }}</div>
+            <div class="card-value">66925</div>
             <div class="card-key">本月会员入驻</div>
           </div>
         </div>
-        <div class="h-cut-line"></div>
+        <div class="h-cut-line" />
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.totalMembers }}</div>
+            <div class="card-value">911572</div>
             <div class="card-key">累计会员入驻</div>
           </div>
         </div>
-        <div class="h-cut-line"></div>
+        <div class="h-cut-line" />
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">{{ pfStatistics.loginMembers }}</div>
+            <div class="card-value">363075</div>
             <div class="card-key">累计授权登录人数</div>
           </div>
         </div>
@@ -57,17 +57,17 @@
         <el-radio-button :label="30">30天</el-radio-button>
       </el-radio-group>
       <el-date-picker
+        v-model="query.date"
         format="yyyy-MM-dd"
         value-format="yyyy-MM-dd"
-        v-model="query.date"
         type="daterange"
         :clearable="false"
         range-separator="至"
         start-placeholder="开始日期"
         end-placeholder="结束日期"
+        size="mini"
         @change="fetchData"
-        size="mini">
-      </el-date-picker>
+      />
       <el-radio-group v-model="query.type" size="mini" @change="typeDatePicker">
         <el-radio-button :label="1">日</el-radio-button>
         <el-radio-button :label="2">周</el-radio-button>
@@ -75,9 +75,8 @@
       </el-radio-group>
       <el-button type="primary" size="mini" style="float: right;" @click="exportExcel">导表</el-button>
     </div>
-    <el-table :data="list" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55px">
-      </el-table-column>
+    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55px" />
       <el-table-column label="日期" width="120px">
         <template slot-scope="scope">
           {{ scope.row.date }}
@@ -132,10 +131,10 @@
       :page-size="limit"
       :total="total"
       :current-page.sync="currentpage"
+      :style="{'padding-top': '15px'}"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :style="{'padding-top': '15px'}">
-    </el-pagination>
+    />
 
     <el-dialog title="数据定义" :visible.sync="showMeaning" width="496px">
       <div class="meaning-wrap">
