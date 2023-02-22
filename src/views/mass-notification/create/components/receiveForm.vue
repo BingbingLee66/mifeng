@@ -6,7 +6,7 @@
           <el-radio v-for="(item, index) in receiveList" :key="index" :label="item.type" :disabled="getReceiverDisabled(item)">{{ item.n }}</el-radio>
         </el-radio-group>
         <!-- 所有会员（总后台） 本商会会员（商会后台）-->
-        <SelectShow v-if="form.receive === -1 || form.receive === 1" :num="memberNum" @showDialog="showDialog" />
+        <SelectShow v-if="form.receive === -1 || form.receive === 1" :num="911572" @showDialog="showDialog" />
         <!-- 指定商会会员 -->
         <SelectShow
           v-if="form.receive === 5"
