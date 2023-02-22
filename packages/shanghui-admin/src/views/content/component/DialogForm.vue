@@ -1,5 +1,5 @@
 <template>
-  <a-modal :visible="visible" title="添加话题" destroyOnClose @ok="handleOk" @cancel="handleCancel">
+  <a-modal :visible="visible" :title="title" destroyOnClose @ok="handleOk" @cancel="handleCancel">
     <a-form
       :model="formState"
       name="basic"
@@ -47,6 +47,10 @@ const props = defineProps({
   visible: {
     type: Boolean,
     default: false
+  },
+  title: {
+    type: String,
+    default: ''
   }
 })
 const emit = defineEmits(['update:formState', 'update:visible', 'sure', 'change'])

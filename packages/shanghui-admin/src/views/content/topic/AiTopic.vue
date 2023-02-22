@@ -13,7 +13,7 @@
       bordered
     >
       <template #toolBar>
-        <a-button type="primary" @click="showDialog()">添加</a-button>
+        <a-button type="primary" @click="showDialog(null, TITLE_OBJ.ADD[activeName])">添加</a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'createdTs'">
@@ -29,13 +29,13 @@
           {{ STATUS_ZH[record.status] }}
         </template>
         <template v-if="column.key === 'handle'">
-          <a-button type="link" primary @click="showDialog(record)">编辑</a-button>
+          <a-button type="link" primary @click="showDialog(record, TITLE_OBJ.EDIT_TOPIC)">编辑</a-button>
           <a-button type="link" primary class="ml-4" @click="freezeSwitch(record)">
             {{ record.status === STATUS.NORMAL ? '冻结' : '解冻' }}</a-button
           >
         </template>
         <template v-if="column.key === 'category-handle'">
-          <a-button type="link" primary @click="showDialog(record)">编辑</a-button>
+          <a-button type="link" primary @click="showDialog(record, TITLE_OBJ.EDIT_CATEGORY)">编辑</a-button>
         </template>
       </template>
     </PlusTable>
@@ -43,6 +43,7 @@
   <DialogForm
     v-model:visible="visible"
     v-model:formState="formState"
+    :title="dialogTitle"
     :list="FormList[activeName]"
     @sure="submit"
   ></DialogForm>
@@ -72,6 +73,14 @@ const TAB = {
   TURN_ON: '推荐话题',
   TIMES_CONFIG: '话题分类'
 }
+const TITLE_OBJ = {
+  ADD: {
+    [TAB.TURN_ON]: '添加话题',
+    [TAB.TIMES_CONFIG]: '添加话题分类'
+  },
+  EDIT_TOPIC: '编辑话题',
+  EDIT_CATEGORY: '编辑话题分类'
+}
 const activeName = ref(TAB.TURN_ON)
 const columns = reactive({
   [TAB.TURN_ON]: [
@@ -95,6 +104,7 @@ const columns = reactive({
 const tableData = ref([])
 
 const visible = ref(false)
+const dialogTitle = ref('添加话题')
 const formState = ref({
   id: '',
   content: '',
@@ -230,7 +240,7 @@ const queryAllCategory = async () => {
   })
 }
 
-const showDialog = async data => {
+const showDialog = async (data, title) => {
   if (data) {
     formState.value = { ...data }
     if (activeName.value === TAB.TURN_ON) {
@@ -251,6 +261,7 @@ const showDialog = async data => {
     }
   }
   activeName.value === TAB.TURN_ON && (await queryAllCategory())
+  dialogTitle.value = title
   visible.value = true
 }
 
@@ -283,8 +294,8 @@ const createTopic = async res => {
 }
 
 const createCategory = async res => {
-  const { name, id } = res
-  formState.value.id ? await updateCategory({ name, id }) : await addCategory({ name })
+  const { name } = res
+  formState.value.id ? await updateCategory({ name, id: formState.value.id }) : await addCategory({ name })
   visible.value = false
   fetchFn(query[activeName.value].current)
 }
