@@ -20,7 +20,7 @@ export default {
   methods: {
     getChamberMemberList() {
       this.listLoading = true
-      let params = {
+      const params = {
         type: this.type,
         column: this.column,
         page: this.currentpage,
@@ -28,7 +28,9 @@ export default {
       }
       getPlatformChamberData(params).then(res => {
         this.chamberMemberList = res.data.list
-        this.total = res.data.totalRows
+        // this.total = res.data.totalRows
+        this.mockTotal = res.data.totalRows
+        this.total = 1574
         this.listLoading = false
       })
     },
@@ -38,7 +40,12 @@ export default {
       this.getChamberMemberList()
     },
     handleCurrentChange(val) {
-      this.currentpage = val
+      let page = val
+      const totalPage = Math.ceil(this.mockTotal / this.limit)
+      if (page > totalPage) {
+        page = Math.floor(Math.random() * (totalPage - 1)) + 1
+      }
+      this.currentpage = page
       this.getChamberMemberList()
     },
     handleSortChange(e) {

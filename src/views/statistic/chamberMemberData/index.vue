@@ -6,7 +6,7 @@
         <span style="float: right;" class="text-btn-style" @click="showMeaning=true">数据定义</span>
       </div>
     </div>
-    <el-table :data="chamberMemberList" v-loading="listLoading" element-loading-text="Loading" border fit highlight-current-row @sort-change="handleSortChange">
+    <el-table v-loading="listLoading" :data="chamberMemberList" element-loading-text="Loading" border fit highlight-current-row @sort-change="handleSortChange">
       <el-table-column label="商/协会">
         <template slot-scope="scope">
           {{ scope.row.date ? scope.row.date : '--' }}
@@ -56,10 +56,10 @@
       :page-size="limit"
       :total="total"
       :current-page.sync="currentpage"
+      :style="{'padding-top': '15px'}"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :style="{'padding-top': '15px'}">
-    </el-pagination>
+    />
 
     <el-dialog title="数据定义" :visible.sync="showMeaning" width="450px">
       <div class="meaning-wrap">

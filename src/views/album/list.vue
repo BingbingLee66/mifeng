@@ -144,7 +144,7 @@ export default {
         {
           label: '操作',
           fixed: 'right',
-          width: '120',
+          width: '140',
           render: ({ row }) => <div>
             {
               isPlatform

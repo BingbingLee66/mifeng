@@ -74,7 +74,7 @@ div:focus {
   color: #ff0000;
 }
 
-.text-yellow {
+.text-yellow, .theme-color {
   // color: #e6a23c;
   color: #FFCA00;
 }
@@ -153,4 +153,9 @@ div:focus {
 
 .el-cascader-menu__wrap {
   height: 204px !important;
+}
+
+.el-button {
+  margin-left: 0!important;
+  margin-right: 10px!important;
 }

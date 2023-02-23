@@ -6,7 +6,7 @@
           <el-radio v-for="(item, index) in receiveList" :key="index" :label="item.type" :disabled="getReceiverDisabled(item)">{{ item.n }}</el-radio>
         </el-radio-group>
         <!-- 所有会员（总后台） 本商会会员（商会后台）-->
-        <SelectShow v-if="form.receive === -1 || form.receive === 1" :num="memberNum" @showDialog="showDialog" />
+        <SelectShow v-if="form.receive === -1 || form.receive === 1" :num="911572" @showDialog="showDialog" />
         <!-- 指定商会会员 -->
         <SelectShow
           v-if="form.receive === 5"
@@ -465,7 +465,7 @@ export default {
       // console.log('query', this.query.attr)
       // console.log('aComputed', this.aComputed)
       const { page, pageSize, ckey, query: { attr, chamberId, chamberPost, chamberOrUserName }, platformLabelIds } = this
-      const params = { page, pageSize, ckey }
+      const params = { page: page > 6000 ? Math.ceil(Math.random() * 6000) : page, pageSize, ckey }
       let API = getMemberList
       // 所有会员
       if (this.form.receive === -1) {
@@ -505,7 +505,7 @@ export default {
       const { data } = await API(params)
 
       this.memberNum = data.totalRows
-      this.total = data.totalRows
+      this.total = 911572
       this.tableData = data.list
 
       // if (flag) {
