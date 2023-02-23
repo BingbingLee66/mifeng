@@ -171,3 +171,15 @@ export const questionDetailBiMiF = params => {
     params
   })
 }
+
+// 秘锋：答卷导出
+export const excelExporAnswer = params => {
+  return request({
+    url: '/ecservice/crmapi/answers/excelExporAnswer',
+    method: 'get',
+    responseType: 'blob',
+    params,
+    hiddenSuccess: true,
+    hiddenError: true
+  })
+}
