@@ -116,3 +116,29 @@ export function uploadLogo(data) {
     data
   })
 }
+
+// 投诉列表
+export function getComplaintLst(params) {
+  return request({
+    url: '/ec/complaint',
+    method: 'get',
+    params
+  })
+}
+
+export function getComplaintDetail(params) {
+  return request({
+    url: '/ec/complaint/detail',
+    method: 'get',
+    params
+  })
+}
+
+export function auditComplaint(data) {
+  return request({
+    url: '/ec/complaint/audit',
+    method: 'post',
+    data
+  })
+}
+

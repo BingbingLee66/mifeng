@@ -119,6 +119,9 @@ export default {
           [0, 1, 3].includes(+row.state) ? <el-button type="text" onClick={() => this.openDialog({ data: row, type: 'edit' })} >编辑</el-button> : ''
         }
         <el-button type="text" onClick={() => this.openDialog({ data: row, type: 'delete' })}>删除</el-button>
+        {
+          row.answersCount > 0 && <el-button type="text" onClick={() => this.goDownload(row)}>分析&下载</el-button>
+        }
       </div>)
     },
     openDialog(dialog) {
@@ -171,6 +174,9 @@ export default {
         questionnaireId: row.id,
         questionnaireTitle: row.title
       } })
+    },
+    goDownload(row) {
+      this.$router.push({ path: '/quest-survey/answer/list', query: { id: row.id } })
     },
     async onCreate() {
       const value = this.dialog.value.trim()

@@ -23,6 +23,7 @@
       <el-form-item>
         <el-button type="primary" @click="answerList">查询</el-button>
         <el-button @click="resetForm('form')">重置</el-button>
+        <el-button type="primary" @click="downloadAnswer">下载答卷数据</el-button>
       </el-form-item>
     </el-form>
 
@@ -37,8 +38,10 @@
 </template>
 <script>
 import dayjs from 'dayjs'
-import { userAnswerListByMiF, userAnswerList } from '@/api/quest-survey/answer'
+import { userAnswerListByMiF, userAnswerList, excelExporAnswer } from '@/api/quest-survey/answer'
 import { getMemberOptions } from '@/api/member/post'
+import { downloadFile } from '@/utils'
+import { formatDateTime } from '@/utils/date'
 export default {
   components: {
     KdTable: () => import('@/components/common/KdTable'),
@@ -50,6 +53,10 @@ export default {
       default: ''
     },
     questionnaireId: {
+      type: String,
+      default: ''
+    },
+    title: {
       type: String,
       default: ''
     }
@@ -89,7 +96,14 @@ export default {
     this.getMember()
   },
   methods: {
-    onSubmit() {},
+    async downloadAnswer() {
+      const blob = await excelExporAnswer({ questionnaireId: this.questionnaireId })
+      const date = formatDateTime(new Date(), 'yyyy-MM-dd hh:mm:ss')
+      downloadFile({
+        title: `${this.title}-${date}.xlsx`,
+        url: window.URL.createObjectURL(blob)
+      })
+    },
     // 用户答卷列表
     async answerList() {
       const { ckey, pageNum, pageSize, questionnaireId, form } = this
