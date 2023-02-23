@@ -276,7 +276,7 @@ export default {
         // console.log(this.list, "asdsadsadsadsadsadsa");
         // this.total = response.data.data.totalRows
         this.mockTotal = response.data.data.totalRows
-        this.total = 911572
+        this.total = 912078
         this.listLoading = false
       })
     },

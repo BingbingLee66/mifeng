@@ -30,7 +30,7 @@ export default {
         this.chamberMemberList = res.data.list
         // this.total = res.data.totalRows
         this.mockTotal = res.data.totalRows
-        this.total = 1567
+        this.total = 1574
         this.listLoading = false
       })
     },
