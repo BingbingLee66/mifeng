@@ -25,15 +25,15 @@
         {{ index + 1 }}
       </template>
       <template v-if="column.key === 'img'">
-        <img style="width: 70px; height: 70px; object-fit: cover" src="{{ record.content }}" />
+        <img style="width: 80px; height: 80px; object-fit: cover" :src="record.content" />
       </template>
       <template v-if="column.key === 'createdTs'">
         <div>{{ record.creatorName }}</div>
         <div>{{ record.createdTs }}</div>
       </template>
-    </template>
-    <template v-if="column.key === 'handle'">
-      <a-button type="link" @click="delAlbum(record)" danger> 删除 </a-button>
+      <template v-if="column.key === 'handle'">
+        <a-button type="link" @click="delAlbum(record)" danger> 删除 </a-button>
+      </template>
     </template>
   </PlusTable>
   <!-- 新增 -->
@@ -47,7 +47,7 @@
   >
     <a-input
       v-if="activeName === '1'"
-      style="width: 70%; margin: 20px 0"
+      style="width: 80%; margin: 20px 0"
       v-model:value="contents"
       show-count
       :maxlength="30"
@@ -148,14 +148,14 @@ export default defineComponent({
     const handleOk = async () => {
       if (activeName.value === '1' && !contents.value) return message.warning('请输入文本内容')
       if (activeName.value === '2' && !fileList.value.length) return message.warning('请上传图片')
-
+      const arr = []
+      arr.push(contents.value)
       const params = {
         type: activeName.value, // 类型 0 未知 1文本库 2图片库
-        contents: activeName.value === '1' ? contents.value : fileList.value.map(v => v.url)
+        contents: activeName.value === '1' ? arr : fileList.value.map(v => v.url)
       }
       const { state, msg } = await yshCheckInTextInsert(params)
       if (state === 1) {
-        message.success('操作成功')
         fetchTableData(true)
         onCancel()
       } else {
@@ -165,16 +165,17 @@ export default defineComponent({
 
     // 删除
     const delAlbum = async row => {
-      console.log(row)
       const ids = []
       ids.push(row.id)
+      const params = {
+        ids
+      }
+
       Modal.confirm({
         title: activeName.value === '1' ? '是否删除该文本' : '是否删除该图片',
-        // content: '确定删除？',
         onOk: async () => {
-          const { state, msg } = await yshCheckInTextDelBatch({ ids })
+          const { state, msg } = await yshCheckInTextDelBatch(params)
           if (state !== 1) return message.error(msg)
-          message.success('删除成功')
           fetchTableData(true)
         }
       })

@@ -10,10 +10,11 @@ export function yshCheckInTextList(params) {
 }
 
 // 批量删除签到文本列表
-export function yshCheckInTextDelBatch(ids) {
+export function yshCheckInTextDelBatch(params) {
   return request({
-    url: '/ecservice/ec/ysh-check-in-text/delBatch?ids=' + ids,
-    method: 'delete'
+    url: '/ecservice/ec/ysh-check-in-text/delBatch',
+    method: 'delete',
+    data: params
   })
 }
 
