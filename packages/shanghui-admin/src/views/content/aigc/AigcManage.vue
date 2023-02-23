@@ -106,11 +106,8 @@ const fetchFn = async pageOption => {
     total: records.total
   }
 }
-const { pagination, fetchTableData, loading } = useAntTable({ fetchFn })
+const { pagination, fetchTableData, loading, handleTableChange } = useAntTable({ fetchFn })
 fetchTableData(true)
-const handleTableChange = () => {
-  fetchTableData(true)
-}
 const changeStatusHandler = async (checked, event, record) => {
   record.loading = true
   try {
