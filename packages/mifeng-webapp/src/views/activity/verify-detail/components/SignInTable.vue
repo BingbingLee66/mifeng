@@ -17,7 +17,10 @@
         <a-button type="primary" html-type="submit">查询</a-button>
       </template>
       <template #toolBar>
-        <a-button type="link" @click="importVisible = true" v-show="activeKey === 'participants'">导入</a-button>
+        <a-button type="link" @click="applyVisible = true" v-show="activeKey === 'participants'">批量报名</a-button>
+        <a-button type="link" @click="importVisible = true" v-show="activeKey === 'participants'"
+          >批量导入座位号</a-button
+        >
         <a-button type="link" @click="goIpSort" v-show="activeKey === 'participants'">参与人与名片排序设置</a-button>
         <a-button type="primary" @click="exportExcel()" v-show="activeKey !== 'reject'">导表</a-button>
       </template>
@@ -184,6 +187,17 @@
   </a-modal>
   <!-- 附件详情弹框 -->
   <AttachmentDetail ref="attachmentCom" :attachmentVisible="showAttachment" @update="showAttachment = false" />
+
+  <!-- 批量报名弹窗 -->
+  <ImportApplyDialog v-model:visible="applyVisible" :activity-id="activity.id" @fetchData="fetchTableData" />
+
+  <!-- 上传附件弹窗 -->
+  <UploadAttachmentDialog
+    v-model:visible="uploadVisible"
+    :activity-id="activity.id"
+    :apply-id="applyId"
+    @fetchData="fetchTableData"
+  />
 </template>
 <script>
 import { reactive, ref, computed, toRefs, watch } from 'vue'
@@ -195,6 +209,8 @@ import { useRouter } from 'vue-router'
 import { perviewFile } from '../../util'
 import { downloadFile } from '@/utils'
 import AttachmentDetail from './AttachmentDetail.vue'
+import ImportApplyDialog from './ImportApplyDialog'
+import UploadAttachmentDialog from './UploadAttachmentDialog'
 import {
   getActivitySigninList,
   uploadSigninData,
@@ -212,7 +228,7 @@ import {
   getCardDetail
 } from '@/api/activity/activity-verify-new'
 export default {
-  components: { PlusTable, AttachmentDetail },
+  components: { PlusTable, AttachmentDetail, ImportApplyDialog, UploadAttachmentDialog },
   props: {
     activity: {
       type: Object,
@@ -227,6 +243,7 @@ export default {
     const countInfo = useCount(props)
     const tableInfo = useTable(props.activity, countInfo)
     const uploadInfo = useUpload(props.activity, tableInfo.fetchTableData)
+    const importInfo = useImport()
     const remarkInfo = useRemark(tableInfo.list)
     const subPersonInfo = useSubperson(tableInfo.fetchTableData)
     watch(
@@ -244,7 +261,7 @@ export default {
       },
       { deep: true }
     )
-    return { ...tableInfo, ...countInfo, ...uploadInfo, ...remarkInfo, ...subPersonInfo }
+    return { ...tableInfo, ...countInfo, ...uploadInfo, ...importInfo, ...remarkInfo, ...subPersonInfo }
   }
 }
 function useCount({ activity: { id }, initStatus }) {
@@ -342,7 +359,37 @@ function useTable({ id: activityId, activityStartTime, activityEndTime, activity
     {
       title: '附件',
       dataIndex: 'subAttr',
-      width: 240
+      width: 240,
+      customRender: ({ record }) => {
+        let arr = []
+        record.attachment &&
+          record.attachment.forEach(element => {
+            element.signValue &&
+              element.signValue.forEach(e => {
+                arr.push({ filename: e.filename, url: e.url, type: e.type })
+              })
+          })
+        if (arr.length > 3) {
+          arr = arr.slice(0, 2)
+          arr.push({ filename: '查看更多', type: 'text' })
+        }
+
+        if (record.attachmentCommitPermission) {
+          return (
+            <a-button type="link" onClick={() => onClickUpload(record)}>
+              上传
+            </a-button>
+          )
+        } else {
+          return arr.map(m => {
+            return (
+              <div onClick={() => downloadFileAttach(m, record)} class="attachment">
+                {m.filename}
+              </div>
+            )
+          })
+        }
+      }
     },
     // {
     //   title: '报名信息',
@@ -629,6 +676,11 @@ function useTable({ id: activityId, activityStartTime, activityEndTime, activity
       ipCardModal.ipCardVisible = true
     } catch (error) {}
   }
+  const importModal = reactive({ uploadVisible: false, applyId: '' })
+  const onClickUpload = row => {
+    importModal.uploadVisible = true
+    importModal.applyId = row.id || ''
+  }
   const seatDialog = reactive({ seatDialogShow: false, seats: [], maxNum: 0, seatId: '' })
   const initSeatDialog = row => {
     const value = {
@@ -803,6 +855,7 @@ function useTable({ id: activityId, activityStartTime, activityEndTime, activity
     onDelSignin,
     ...toRefs(ipCardModal),
     ...toRefs(attachModal),
+    ...toRefs(importModal),
     downloadFileAttach,
     onRejectApply,
     ...toRefs(rejectModal),
@@ -902,6 +955,12 @@ function useUpload({ id: activityId }, fetchTableData) {
     })
   }
   return { importVisible, beforeUploadFile, uploadFile, fileList, onUploadSignin, onDownLoadSignin }
+}
+
+function useImport() {
+  const applyVisible = ref(false)
+
+  return { applyVisible }
 }
 </script>
 <style lang="scss" scoped>

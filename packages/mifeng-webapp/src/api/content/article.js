@@ -311,6 +311,16 @@ export function uploadFile(params, query) {
     hiddenSuccess: true
   })
 }
+// 上传文件到对应目录
+export function uploadFileRandomName(params, query) {
+  return request({
+    url: `/ecservice/ec/upload/random/file?folder=${query}`,
+    method: 'post',
+    data: params,
+    hiddenError: true,
+    hiddenSuccess: true
+  })
+}
 // 新增或更新动态
 export function editDynamic(params) {
   return request({

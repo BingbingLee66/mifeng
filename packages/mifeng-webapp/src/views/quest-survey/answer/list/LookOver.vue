@@ -10,6 +10,9 @@
     row-key="id"
     @change="handleTableChange"
   >
+    <template #toolBar>
+      <a-button type="primary" @click="downloadAnswer">下载答卷数据</a-button>
+    </template>
     <template #bodyCell="{ record, column }">
       <template v-if="column.dataIndex === 'operation'">
         <a-button
@@ -29,11 +32,13 @@
 </template>
 
 <script setup>
-import { userAnswerListByMiF } from '@/api/quest-survey'
-import { reactive, ref, onMounted, inject } from 'vue'
+import { excelExporAnswer, userAnswerListByMiF } from '@/api/quest-survey'
+import { reactive, ref, onMounted, inject, defineProps } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAntTable } from '@/use/useAntTable'
 import { getMemberOptions } from '@/api/member/post'
+import { downloadFile } from '@/utils'
+import dayjs from 'dayjs'
 
 function useTableData() {
   // 获取会内职位options
@@ -136,6 +141,16 @@ function useTableData() {
       }
     }
   })
+
+  const downloadAnswer = async () => {
+    const date = dayjs(Date.now()).format('YYYY-MM-DD HH:mm:ss')
+    const blob = await excelExporAnswer({ questionnaireId })
+    downloadFile({
+      title: `${props.title}-${date}.xlsx`,
+      url: window.URL.createObjectURL(blob)
+    })
+  }
+
   const handleSearch = obj => {
     const { username, job, name, phone } = obj
     tableFilter.username = username
@@ -155,12 +170,20 @@ function useTableData() {
     pagination,
     loading,
     fetchTableData,
+    downloadAnswer,
     handleSearch,
     handleTableChange
   }
 }
 
-const { columns, tableData, pagination, loading, handleTableChange, handleSearch } = useTableData()
+const props = defineProps({
+  title: {
+    type: String,
+    default: ''
+  }
+})
+
+const { columns, tableData, pagination, loading, handleTableChange, handleSearch, downloadAnswer } = useTableData()
 </script>
 
 <style></style>
