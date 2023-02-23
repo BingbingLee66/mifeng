@@ -175,7 +175,7 @@ export default {
       const res = await getidentityList(params)
       if (res.state !== 1) return this.$message.error(res.msg)
       this.tableData = res.data.list || []
-      this.pageData.total = 284130
+      this.pageData.total = 284542
       this.tableConfig.loading = false
     },
     async queryData(formData) {

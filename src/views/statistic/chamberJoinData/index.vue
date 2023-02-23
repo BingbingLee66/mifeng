@@ -29,21 +29,21 @@
         <div class="h-cut-line" />
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">66925</div>
+            <div class="card-value">67670</div>
             <div class="card-key">本月会员入驻</div>
           </div>
         </div>
         <div class="h-cut-line" />
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">911572</div>
+            <div class="card-value">912317</div>
             <div class="card-key">累计会员入驻</div>
           </div>
         </div>
         <div class="h-cut-line" />
         <div class="c-card-box">
           <div class="card-box-3">
-            <div class="card-value">363075</div>
+            <div class="card-value">363581</div>
             <div class="card-key">累计授权登录人数</div>
           </div>
         </div>
