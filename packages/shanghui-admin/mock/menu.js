@@ -314,6 +314,17 @@ const data = Mock.mock({
           hadGuide: false,
           guideId: null,
           children: []
+        },
+        {
+          id: 1224,
+          parentId: 12,
+          menuName: '签到文本',
+          menuUrl: '/content/sign-in',
+          component: 'views/content/signIn/index',
+          hidden: false,
+          hadGuide: false,
+          guideId: null,
+          children: []
         }
       ]
     },

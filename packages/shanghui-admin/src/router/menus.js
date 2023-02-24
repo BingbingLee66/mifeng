@@ -17,7 +17,7 @@ const pageMap = pages.keys().reduce(
   }
 )
 
-export const innerRoutes = ['/content/aigc', '/content/ai-topic']
+export const innerRoutes = ['/content/aigc', '/content/ai-topic', '/content/sign-in']
 
 // 遍历菜单
 function traverseMenus(menus, parentPath = '') {
