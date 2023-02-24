@@ -10,7 +10,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
 
-const outerRoutes = ['/content/aigc', '/content/ai-topic']
+const outerRoutes = ['/content/aigc', '/content/ai-topic', '/content/sign-in']
 
 router.beforeEach(async (to, from, next) => {
   // start progress bar
