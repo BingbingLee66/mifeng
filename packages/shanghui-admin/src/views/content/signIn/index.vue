@@ -1,85 +1,86 @@
 <template>
-  <a-tabs v-model:activeKey="activeName" class="bg-white pl-8" @change="fetchTableData(true)">
-    <a-tab-pane key="1" tab="文本库" />
-    <a-tab-pane key="2" tab="图片库" force-render />
-  </a-tabs>
+  <panel>
+    <a-tabs v-model:activeKey="activeName" class="bg-white" @change="fetchTableData(true)">
+      <a-tab-pane key="1" tab="文本库" />
+      <a-tab-pane key="2" tab="图片库" force-render />
+    </a-tabs>
 
-  <PlusTable
-    class="p-main-padding"
-    row-key="edge_device_id"
-    :loading="loading"
-    :scroll="{ x: 'max-content' }"
-    :columns="activeName === '1' ? textColumn : imgColum"
-    :data-source="tableData"
-    :pagination="pagination"
-    @change="handleTableChange"
-    bordered
-  >
-    <template #toolBar>
-      <a-button style="margin-right: 25px" type="primary" @click="addColumn" size="large">
-        {{ activeName === '1' ? '添加文本' : '添加图片' }}
-      </a-button>
-    </template>
-    <template #bodyCell="{ column, record, index }">
-      <template v-if="column.key === 'id'">
-        {{ index + 1 }}
+    <PlusTable
+      row-key="edge_device_id"
+      :loading="loading"
+      :scroll="{ x: 'max-content' }"
+      :columns="activeName === '1' ? textColumn : imgColum"
+      :data-source="tableData"
+      :pagination="pagination"
+      @change="handleTableChange"
+      bordered
+    >
+      <template #toolBar>
+        <a-button type="primary" @click="addColumn" size="large">
+          {{ activeName === '1' ? '添加文本' : '添加图片' }}
+        </a-button>
       </template>
-      <template v-if="column.key === 'img'">
-        <img style="width: 80px; height: 80px; object-fit: cover" :src="record.content" />
+      <template #bodyCell="{ column, record, index }">
+        <template v-if="column.key === 'id'">
+          {{ index + 1 }}
+        </template>
+        <template v-if="column.key === 'img'">
+          <img style="width: 80px; height: 80px; object-fit: cover" :src="record.content" />
+        </template>
+        <template v-if="column.key === 'createdTs'">
+          <div>{{ record.creatorName }}</div>
+          <div>{{ record.createdTs }}</div>
+        </template>
+        <template v-if="column.key === 'handle'">
+          <a-button type="link" @click="delAlbum(record)" danger> 删除 </a-button>
+        </template>
       </template>
-      <template v-if="column.key === 'createdTs'">
-        <div>{{ record.creatorName }}</div>
-        <div>{{ record.createdTs }}</div>
-      </template>
-      <template v-if="column.key === 'handle'">
-        <a-button type="link" @click="delAlbum(record)" danger> 删除 </a-button>
-      </template>
-    </template>
-  </PlusTable>
-  <!-- 新增 -->
-  <a-modal
-    v-model:visible="visible"
-    :maskClosable="false"
-    :title="activeName === '1' ? '添加文本' : '添加图片'"
-    @ok="handleOk"
-    @cancel="onCancel"
-    width="33%"
-  >
-    <a-input
-      v-if="activeName === '1'"
-      style="width: 80%; margin: 20px 0"
-      v-model:value="contents"
-      show-count
-      :maxlength="30"
-      placeholder="请输入30字内的文本"
-    />
+    </PlusTable>
+    <!-- 新增 -->
+    <a-modal
+      v-model:visible="visible"
+      :maskClosable="false"
+      :title="activeName === '1' ? '添加文本' : '添加图片'"
+      @ok="handleOk"
+      @cancel="onCancel"
+      width="33%"
+    >
+      <a-input
+        v-if="activeName === '1'"
+        style="width: 80%; margin: 20px 0"
+        v-model:value="contents"
+        show-count
+        :maxlength="30"
+        placeholder="请输入30字内的文本"
+      />
 
-    <div class="add-img" v-if="activeName === '2'">
-      <a-upload
-        accept="image/*"
-        :file-list="fileList"
-        list-type="picture-card"
-        :before-upload="handleBeforeUpload"
-        class="upload-list-inline"
-        @change="handleChange"
-        :customRequest="customRequest"
-        @preview="handlePreview"
-      >
-        <div v-if="fileList.length < maximum">
-          <plus-outlined />
-          <div class="ant-upload-text">上传图片</div>
-          <div class="ant-upload-text">({{ fileList.length }}/{{ maximum }})</div>
-        </div>
-      </a-upload>
-    </div>
-
-    <!-- 图片预览 -->
-    <a-modal width="50%" :visible="previewVisible" title="图片预览" :footer="null" @cancel="handleCancel">
-      <div class="preview-box">
-        <img class="previewImg" alt="example" :src="previewImage" />
+      <div class="add-img" v-if="activeName === '2'">
+        <a-upload
+          accept="image/*"
+          :file-list="fileList"
+          list-type="picture-card"
+          :before-upload="handleBeforeUpload"
+          class="upload-list-inline"
+          @change="handleChange"
+          :customRequest="customRequest"
+          @preview="handlePreview"
+        >
+          <div v-if="fileList.length < maximum">
+            <plus-outlined />
+            <div class="ant-upload-text">上传图片</div>
+            <div class="ant-upload-text">({{ fileList.length }}/{{ maximum }})</div>
+          </div>
+        </a-upload>
       </div>
+
+      <!-- 图片预览 -->
+      <a-modal width="50%" :visible="previewVisible" title="图片预览" :footer="null" @cancel="handleCancel">
+        <div class="preview-box">
+          <img class="previewImg" alt="example" :src="previewImage" />
+        </div>
+      </a-modal>
     </a-modal>
-  </a-modal>
+  </panel>
 </template>
 
 <script>
@@ -89,11 +90,10 @@ import { defineComponent, ref, onMounted } from 'vue'
 import { useAntTable } from './useAntTable'
 import uploadRequest from './upload-request'
 import { useHandleUpload } from './use-handle-upload'
-import PlusTable from '@/components/plusTable/PlusTable.vue'
 import { PlusOutlined } from '@ant-design/icons-vue'
+
 export default defineComponent({
   components: {
-    PlusTable,
     PlusOutlined
   },
   setup(props) {
@@ -251,9 +251,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-:deep(.ant-tabs-nav) {
-  margin: 0;
-}
 .add-img {
   display: flex;
   flex-wrap: wrap;
