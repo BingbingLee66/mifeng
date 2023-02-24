@@ -17,6 +17,8 @@ const pageMap = pages.keys().reduce(
   }
 )
 
+export const innerRoutes = ['/content/aigc', '/content/ai-topic']
+
 // 遍历菜单
 function traverseMenus(menus, parentPath = '') {
   const routes = menus.map((menu, index) => {
@@ -33,7 +35,7 @@ function traverseMenus(menus, parentPath = '') {
       guideId: menu.guideId,
       hadGuide: menu.hadGuide,
       // 是否是内部模块
-      isInner: menu.isInner
+      isInner: innerRoutes.includes(menu.menuUrl)
     }
     if (routeMenu.component) {
       routeMenu.component = pageMap[routeMenu.component] || pageMap[`${routeMenu.component}/index`]
@@ -83,7 +85,6 @@ export const menuMap = computed(() =>
 // 初始化菜单
 export const initMenus = async () => {
   const { data } = process.env.NODE_ENV === 'development' ? await getMockMenuList() : await getMenuList()
-  // const { data } = await getMenuList()
 
   setMenus([...staticRoutes, ...data.menu])
 }

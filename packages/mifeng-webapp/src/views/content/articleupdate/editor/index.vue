@@ -226,7 +226,7 @@
             <template #tab>
               <span>
                 <img class="cover-img" src="https://ysh-cdn.kaidicloud.com/prod/png/weixin.png" />
-                云商会
+                公众号
               </span>
             </template>
             <div v-if="!isImpower" class="impower">

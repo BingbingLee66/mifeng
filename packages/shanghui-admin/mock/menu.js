@@ -292,6 +292,28 @@ const data = Mock.mock({
           hadGuide: false,
           guideId: null,
           children: []
+        },
+        {
+          id: 1222,
+          parentId: 12,
+          menuName: 'AIGC',
+          menuUrl: '/content/aigc',
+          component: 'views/content/aigc/AigcManage',
+          hidden: false,
+          hadGuide: false,
+          guideId: null,
+          children: []
+        },
+        {
+          id: 1223,
+          parentId: 12,
+          menuName: 'AI话题',
+          menuUrl: '/content/ai-topic',
+          component: 'views/content/topic/AiTopic',
+          hidden: false,
+          hadGuide: false,
+          guideId: null,
+          children: []
         }
       ]
     },
