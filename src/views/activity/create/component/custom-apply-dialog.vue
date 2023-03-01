@@ -18,14 +18,14 @@
         <!-- 输入框 -->
         <div v-if="+infoDate.info === 0">
           <el-form-item label="标题" prop="title" :rules="[{ required: true, message: '不能为空' }]">
-            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15" />
+            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，50字内" :maxlength="50" />
           </el-form-item>
           <el-form-item label="输入框提示" prop="msgAlert" :rules="[{ required: true, message: '不能为空' }]">
             <el-input
               v-model="colData.msgAlert"
               autocomplete="off"
-              placeholder="输入框提示文字，15字内"
-              :maxlength="15"
+              placeholder="输入框提示文字，50字内"
+              :maxlength="50"
             />
           </el-form-item>
           <el-form-item label="输入字数限制" prop="lengthLimit">
@@ -36,7 +36,7 @@
         <!-- 文件上传 -->
         <div v-else-if="+infoDate.info === 2">
           <el-form-item label="标题" prop="title" :rules="[{ required: true, message: '不能为空' }]">
-            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15" />
+            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，50字内" :maxlength="50" />
           </el-form-item>
           <div style="margin-left: 116px">
             (支持文件类型：PDF、Word、Excel、PPT )大小限制30M
@@ -49,7 +49,7 @@
         <!-- 下拉框 -->
         <div v-else>
           <el-form-item label="标题" prop="title" :rules="[{ required: true, message: '不能为空' }]">
-            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15" />
+            <el-input v-model="colData.title" autocomplete="off" placeholder="标题，50字内" :maxlength="50" />
           </el-form-item>
           <el-form-item
             v-for="(item, index) in colData.selects"
@@ -57,7 +57,7 @@
             :label="`选项${index + 1}`"
             :rules="[{ required: true }]"
           >
-            <el-input v-model="item.value" autocomplete="off" placeholder="选项，10字内" :maxlength="10" />
+            <el-input v-model="item.value" autocomplete="off" placeholder="选项，50字内" :maxlength="50" />
           </el-form-item>
           <div class="add-option" @click="onOptions">+添加选项</div>
         </div>
