@@ -234,8 +234,8 @@ export default defineComponent({
         return false
       }
 
-      if (file && file.size > 2 * 1024 * 1024) {
-        message.error(`图片不能超过2M`)
+      if (file && file.size > 4 * 1024 * 1024) {
+        message.error(`图片不能超过4M`)
         return false
       }
       return true
