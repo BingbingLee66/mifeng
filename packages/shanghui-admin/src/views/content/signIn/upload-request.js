@@ -47,16 +47,16 @@ export default async function upload(option) {
 
   formData.append('file', option.file)
 
-  try {
-    const { state } = await checkFile(formData)
-    if (state !== 1) {
-      throw Error()
-    }
-  } catch (error) {
-    Message.error(`${option.file.name}照片审核失败`)
-    option.onError(new Error('照片审核失败'))
-    return
-  }
+  // try {
+  //   const { state } = await checkFile(formData)
+  //   if (state !== 1) {
+  //     throw Error()
+  //   }
+  // } catch (error) {
+  //   Message.error(`${option.file.name}照片审核失败`)
+  //   option.onError(new Error('照片审核失败'))
+  //   return
+  // }
 
   formData.append('folder', 'mifeng')
 
