@@ -218,8 +218,8 @@ export default defineComponent({
     const handleBeforeUpload = async file => {
       const pattern = /\.(?:png|jpg|jpeg|gif)$/i
 
-      if (!(await checkImageWH(file, 1032, 1410))) {
-        message.error('请上传尺寸为1032px*1410px的图片')
+      if (!(await checkImageWH(file, 1029, 1410))) {
+        message.error('请上传尺寸为1029px*1410px的图片')
         return false
       }
 

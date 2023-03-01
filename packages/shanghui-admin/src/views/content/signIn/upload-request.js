@@ -15,8 +15,8 @@
 // }
 import axios from 'axios'
 import store from '@/store'
-import { checkFile } from '@/api/content/article'
-import { Message } from 'ant-design-vue'
+// import { checkFile } from '@/api/content/article'
+// import { Message } from 'ant-design-vue'
 const ACCESS_TOKEN = 'ACCESS_TOKEN'
 const APP_CODE = 'echamber'
 const { token } = store.state.user
