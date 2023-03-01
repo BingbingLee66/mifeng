@@ -71,6 +71,7 @@
             <div class="ant-upload-text">({{ fileList.length }}/{{ maximum }})</div>
           </div>
         </a-upload>
+        <div style="color: #999; line-height: 1.3; margin-top: 8px">建议尺寸 1032*1410，支持jpg、png</div>
       </div>
 
       <!-- 图片预览 -->
@@ -187,12 +188,41 @@ export default defineComponent({
       visible.value = false
     }
 
+    // 上传图片尺寸限制
+    const checkImageWH = (file, width, height) => {
+      // 参数分别是上传的file，想要限制的宽，想要限制的高
+      return new Promise(function (resolve, reject) {
+        const filereader = new FileReader()
+        filereader.onload = e => {
+          const src = e.target.result
+          const image = new Image()
+          image.onload = function () {
+            console.log('w', this.width, this.height)
+            if (this.width !== width || this.height !== height) {
+              resolve(false)
+            } else {
+              resolve(true)
+            }
+          }
+          image.onerror = reject
+          image.src = src
+        }
+        filereader.readAsDataURL(file)
+      })
+    }
+
     /**
      * 文件上传前
      * @param file 上传的文件
      */
-    const handleBeforeUpload = file => {
+    const handleBeforeUpload = async file => {
       const pattern = /\.(?:png|jpg|jpeg|gif)$/i
+
+      if (!(await checkImageWH(file, 1032, 1410))) {
+        message.error('请上传尺寸为1032px*1410px的图片')
+        return false
+      }
+
       // 判断数量
       if (fileList.value.length === maximum.value) {
         message.error(`${file.name}上传失败。最多上传2张`)
