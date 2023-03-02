@@ -1,5 +1,11 @@
 # CHANGELOG
 ## [Released]
+## [2.50.0] - 2023-3-2
+### Added
+- 【打卡签到】签到文本后台配置[4207394](https://project.feishu.cn/solink/user_story/detail/4207394)
+
+
+## [Released]
 ## [2.47.0] - 2023-2-14
 ### Added
 - 【社交优化】内容资源弹窗优化[3830013](https://project.feishu.cn/solink/user_story/detail/3830013)
