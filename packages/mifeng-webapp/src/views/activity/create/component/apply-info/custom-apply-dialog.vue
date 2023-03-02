@@ -18,10 +18,10 @@
         <!-- 输入框 -->
         <div v-if="+infoData.info === 0">
           <a-form-item label="标题" name="title" :rules="[{ required: true, message: '不能为空' }]">
-            <a-input v-model:value="formData.title" placeholder="标题，15字内" :maxlength="15" />
+            <a-input v-model:value="formData.title" placeholder="标题，50字内" :maxlength="50" />
           </a-form-item>
           <a-form-item label="输入框提示" name="msgAlert" :rules="[{ required: true, message: '不能为空' }]">
-            <a-input v-model:value="formData.msgAlert" placeholder="输入框提示文字，15字内" :maxlength="15" />
+            <a-input v-model:value="formData.msgAlert" placeholder="输入框提示文字，50字内" :maxlength="50" />
           </a-form-item>
           <a-form-item label="输入字数限制" name="lengthLimit">
             <a-input v-model:value="formData.lengthLimit" placeholder="不限制" type="number" />
@@ -31,7 +31,7 @@
         <!-- 文件上传 -->
         <div v-else-if="+infoData.info === 2">
           <a-form-item label="标题" name="title" :rules="[{ required: true, message: '不能为空' }]">
-            <a-input v-model:value="formData.title" autocomplete="off" placeholder="标题，15字内" :maxlength="15" />
+            <a-input v-model:value="formData.title" autocomplete="off" placeholder="标题，50字内" :maxlength="50" />
           </a-form-item>
           <div style="margin-left: 116px">
             (支持文件类型：PDF、Word、Excel、PPT )大小限制30M
@@ -47,7 +47,7 @@
         <!-- 下拉框 -->
         <div v-else>
           <a-form-item label="标题" name="title" :rules="[{ required: true, message: '不能为空' }]">
-            <a-input v-model:value="formData.title" placeholder="标题，15字内" :maxlength="15" />
+            <a-input v-model:value="formData.title" placeholder="标题，50字内" :maxlength="50" />
           </a-form-item>
           <a-form-item
             v-for="(item, index) in formData.selects"
@@ -55,7 +55,7 @@
             :label="`选项${index + 1}`"
             :rules="[{ required: true }]"
           >
-            <a-input v-model:value="item.value" placeholder="选项，10字内" :maxlength="10" />
+            <a-input v-model:value="item.value" placeholder="选项，50字内" :maxlength="50" />
           </a-form-item>
           <div class="add-option" @click="addOptions">+添加选项</div>
         </div>
