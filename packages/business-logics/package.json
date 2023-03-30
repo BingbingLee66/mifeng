@@ -1,0 +1,26 @@
+{
+  "name": "@business/logics",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@business/common": "workspace:^1.0.0"
+  },
+  "peerDependencies": {
+    "@diting/sdk-js": ">=1.2.21",
+    "@qianxing/sdk-js": ">=1.1.0",
+    "html2canvas": ">=1.4.1",
+    "@ant-design/icons-vue": ">=6.1.0",
+    "ant-design-vue": ">=3.2.11",
+    "vue": ">=3.2.13",
+    "vue-router": ">=4.0.3",
+    "vuex": ">=4.0.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
